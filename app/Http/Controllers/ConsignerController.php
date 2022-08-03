@@ -225,11 +225,16 @@ class ConsignerController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
 
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id == $role_id->id){
-            $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
+        if($authuser->role_id !=1){
+            if($authuser->role_id ==2 || $role_id->id ==3){
+                $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
+            }else{
+                $regclients = RegionalClient::whereIn('regionalclient_id',$regclient)->orderby('name','ASC')->get();
+            }
         }else{
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
-        }
+        } 
+
         $getconsigner = Consigner::where('id',$id)->first();
         return view('consigners.update-consigner')->with(['prefix'=>$this->prefix,'getconsigner'=>$getconsigner,'states'=>$states,'regclients'=>$regclients, 'title'=>$this->title, 'pagetitle'=>'Update']);
     }
