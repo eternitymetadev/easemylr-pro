@@ -134,10 +134,12 @@ a.badge.alert.bg-secondary.shadow-sm {
                 </div>
                 <div class="widget-content widget-content-area br-6"> 
                     <div class="mb-4 mt-4">
+                    <form method="post" action="{{url($prefix.'/download-bulklr')}}">
                         @csrf
                         <table id="bulk-table" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
-                            <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Download PDF</a>
+                            <input class="btn btn-success" type="submit"  value="Download Bulk Pdf"  style="font-size: 13px; padding: 6px 0px;"/>
+                            <!-- <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Download PDF</a> -->
                             <!-- <button type="button" class="btn btn-warning disableDrs" id="download_bulkLr" style="font-size: 11px;">
                              Download All LR
                               </button> -->
@@ -168,6 +170,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                                 @endforeach
                             </tbody>
                         </table>
+                </form>
                     </div>
                 </div>
             </div>
