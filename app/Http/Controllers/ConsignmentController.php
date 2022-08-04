@@ -762,17 +762,19 @@ class ConsignmentController extends Controller
                             <meta charset="utf-8">
                             <meta name="viewport" content="width=device-width, initial-scale=1">
                             <style>
+                            .aa,.ff,.rr {
+                                border: 1px solid black;
+                                border-collapse: collapse;
+                              }
                                 .aa{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
+                                    
                                 }
                                 .bb{
                                     border: 1px solid black;
                                     border-collapse: collapse;
                                 }
                                 .cc{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
+                                   
                                 }
                                 h2.l {
                                     margin-left: 90px;
@@ -899,36 +901,46 @@ class ConsignmentController extends Controller
             <div class="main">' . $adresses . '</div>
             <span><hr id="e"></hr></span><br>';
             $html .= '<div class="bb">
-                <table class="aa" width="100%">
-                    <tr>
-                        <th class="cc">Sr.No.</th>
-                        <th class="cc">Description</th>
-                        <th class="cc">Quantity</th>
-                        <th class="cc">Net Weight</th>
-                        <th class="cc">Gross Weight</th>
-                        <th class="cc">Freight</th>
-                        <th class="cc">Payment Terms</th>
-                    </tr>';
-            ///
+                <table class="aa" width="100%">';
+            
             $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
-                $html .= '<tr>' .
-                    '<td class="cc">' . $counter . '</td>' .
-                    '<td class="cc">' . $dataitem['description'] . '</td>' .
-                    '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
-                    '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
-                    '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
-                    '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
-                    '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
+                $html .='<tr class="ff">
+                            <td class="rr">Order ID</td>
+                            <td class="rr">Invoice No.</td>
+                            <td class="rr">Invoice Date</td>
+                            <td class="rr">Invoice Amount</td>
+                            <td class="rr">E-Way Bill No.</td>
+                            <td class="rr">E-Way Bill Date</td>
+                            </tr>
+                            <tr class="ff">
+                            <td class="rr">' . $dataitem['order_id'] . '</td>
+                            <td class="rr">' . $dataitem['invoice_no'] . '</td>
+                            <td class="rr">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                            <td class="rr">' . $dataitem['invoice_amount'] . '</td>
+                            <td rowspan="3" class="rr">' . $dataitem['e_way_bill'] . '</td>
+                            <td  rowspan="3" class="rr">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                            </tr>
+                            <tr class="ff">
+                            <td class="rr">Description</td>
+                            <td class="rr">Quantity</td>
+                            <td class="rr">Net Weight</td>
+                            <td class="rr">Gross Weight</td>
+                            </tr>
+                            <tr class="ff">
+                            <td class="rr">' . $dataitem['description'] . '</td>
+                            <td class="rr">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>
+                            <td class="rr">' . $dataitem['weight'] . ' Kgs.</td>
+                            <td class="rr">' . $dataitem['gross_weight'] . ' Kgs.</td>'.
                     '</tr>';
             }
-            $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
+            $html .= '<tr class="ff"><td colspan="1" class="cc"><b>TOTAL</b></td>
                             <td class="cc">' . $data['total_quantity'] . '</td>
                             <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
                             <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
-                            <td class="cc"></td>
-                            <td class="cc"></td>
+                            <td class="cc" colspan="2" ></td>
+                            
                         </tr></table></div><br><br>
                         <span><hr id="e"></hr></span>';
 
