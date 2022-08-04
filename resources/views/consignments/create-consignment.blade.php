@@ -296,71 +296,59 @@
                                             <td>
                                                 <div class="form-group">
                                                     <label>Description</label>
-                                                    <input type="text" class="form-control seteing sel1"
-                                                        id="description-1" value="Pesticide" name="data[1][description]"
-                                                        list="json-datalist" onkeyup="showResult(this.value)">
+                                                    <input type="text" class="form-control seteing sel1" id="description-1" value="Pesticide" name="data[1][description]" list="json-datalist" onkeyup="showResult(this.value)">
                                                     <datalist id="json-datalist"></datalist>
                                                 </div>
                                                 <div class="form-group mt-2">
                                                     <label>Order Id</label>
-                                                    <input type="text" class="form-control seteing orderid" value=""
-                                                        name="data[1][order_id]">
+                                                    <input type="text" class="form-control seteing orderid" value="" name="data[1][order_id]">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <label>Mode of packing</label>
-                                                    <input type="text" class="form-control seteing mode" id="mode-1"
-                                                        value="Case/s" name="data[1][packing_type]">
+                                                    <input type="text" class="form-control seteing mode" id="mode-1" value="Case/s" name="data[1][packing_type]">
                                                 </div>
                                                 <div class="form-group mt-2">
                                                     <label>Invoice no</label>
-                                                    <input type="text" class="form-control seteing invc_no" value=""
-                                                        name="data[1][invoice_no]">
+                                                    <input type="text" class="form-control seteing invc_no" value="" name="data[1][invoice_no]">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <label>Quantity</label>
-                                                    <input type="number" class="form-control seteing qnt" value=""
-                                                        name="data[1][quantity]">
+                                                    <input type="number" class="form-control seteing qnt" value="" name="data[1][quantity]">
                                                 </div>
                                                 <div class="form-group mt-2">
                                                     <label>Invoice Date</label>
-                                                    <input type="date" class="form-control seteing invc_date" value=""
-                                                        name="data[1][invoice_date]">
+                                                    <input type="date" class="form-control seteing invc_date" value="" name="data[1][invoice_date]">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <label>Net Weight</label>
-                                                    <input type="number" class="form-control seteing net" value=""
-                                                        name="data[1][weight]">
+                                                    <input type="number" class="form-control seteing net" value="" name="data[1][weight]">
                                                 </div>
                                                 <div class="form-group mt-2">
                                                     <label>Invoice Amount</label>
-                                                    <input type="number" class="form-control seteing invc_amt" value=""
-                                                        name="data[1][invoice_amount]">
+                                                    <input type="number" class="form-control seteing invc_amt" value="" name="data[1][invoice_amount]">
                                                 </div>
                                             </td>
 
                                             <td>
                                                 <div class="form-group">
                                                     <label>Gross Weight</label>
-                                                    <input type="number" class="form-control seteing gross" value=""
-                                                        name="data[1][gross_weight]">
+                                                    <input type="number" class="form-control seteing gross" value="" name="data[1][gross_weight]">
                                                 </div>
                                                 <div class="form-group mt-2">
                                                     <label>E Way Bill</label>
-                                                    <input type="number" class="form-control seteing ew_bill" value=""
-                                                        name="data[1][e_way_bill]">
+                                                    <input type="number" class="form-control seteing ew_bill" value="" name="data[1][e_way_bill]">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
                                                     <label>Payment Terms</label>
-                                                    <select class="form-control seteing term"
-                                                        name="data[1][payment_type]">
+                                                    <select class="form-control seteing term" name="data[1][payment_type]">
                                                         <option value="To be Billed">To be Billed</option>
                                                         <option value="To Pay">To Pay</option>
                                                         <option value="Paid">Paid</option>
