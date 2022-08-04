@@ -102,7 +102,7 @@ class ConsignerController extends Controller
             if($authuser->role_id ==2 || $role_id->id ==3){
                 $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
             }else{
-                $regclients = RegionalClient::whereIn('regionalclient_id',$regclient)->orderby('name','ASC')->get();
+                $regclients = RegionalClient::whereIn('id',$regclient)->orderby('name','ASC')->get();
             }
         }else{
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
