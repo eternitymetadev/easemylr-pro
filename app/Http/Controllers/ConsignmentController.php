@@ -1637,7 +1637,7 @@ class ConsignmentController extends Controller
         return response()->json($response);
 
     }
-    ////////////////////////////////////////////////////
+    ///////////////////////////Reports/////////////////////////
     public function consignmentReports()
     {
         $this->prefix = request()->route()->getPrefix();
@@ -1670,6 +1670,7 @@ class ConsignmentController extends Controller
         return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
 
     }
+
 
     public function updateDeliveryDateOneBy(Request $request)
     {
