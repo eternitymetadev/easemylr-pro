@@ -617,6 +617,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             var tds = '<tr>';
             var item_no = $('tr', this).length;
+            
             tds += '<td><div class="srno">'+item_no+'</div></td>';
             tds += '<td><div class="form-group"><label>Description</label><input type="text" class="form-control seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></div>';
             tds += '<div class="form-group mt-2"><label>Order Id</label>';
@@ -626,19 +627,19 @@ jQuery(document).ready(function(){
             tds += '<div class="form-group mt-2"><label>Invoice no</label>';
             tds += '<input type="text" class="form-control seteing invc_no" name="data['+item_no+'][invoice_no]"></div></td>';
 
-            tds += '<td><div><label>Quantity</label><input type="number" class="form-control seteing qnt" name="data['+item_no+'][quantity]"></div>';
+            tds += '<td><div class="form-group"><label>Quantity</label><input type="number" class="form-control seteing qnt" name="data['+item_no+'][quantity]"></div>';
             tds += '<div class="form-group mt-2"><label>Invoice Date</label>';
             tds += '<input type="date" class="form-control seteing invc_date" name="data['+item_no+'][invoice_date]"></div></td>';
 
-            tds += '<td><div><label>Net Weight</label> <input type="number" class="form-control seteing net" name="data['+item_no+'][weight]"></div>';
+            tds += '<td><div class="form-group"><label>Net Weight</label> <input type="number" class="form-control seteing net" name="data['+item_no+'][weight]"></div>';
             tds += '<div class="form-group mt-2"><label>Invoice Amount</label>';
             tds += '<input type="number" class="form-control seteing invc_amt" name="data['+item_no+'][invoice_amount]"></div></td>';
 
-            tds += '<td><div><label>Gross Weight</label> <input type="number" class="form-control seteing gross" name="data['+item_no+'][gross_weight]"></div>';
+            tds += '<td><div class="form-group"><label>Gross Weight</label> <input type="number" class="form-control seteing gross" name="data['+item_no+'][gross_weight]"></div>';
             tds += '<div class="form-group mt-2"><label>E Way Bill</label>';
             tds += '<input type="number" class="form-control seteing ew_bill" name="data['+item_no+'][e_way_bill]"></div></td>';
 
-            tds += '<td><div><label>Payment Terms</label> <select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></div>';
+            tds += '<td><div class="form-group"><label>Payment Terms</label> <select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></div>';
             tds += '<div class="form-group mt-2"><label>E Way Bill Date</label>';
             tds += ' <input type="date" class="form-control seteing ewb_date" name="data['+item_no+'][e_way_bill_date]"></div></td>';
 
@@ -676,7 +677,7 @@ jQuery(document).ready(function(){
                 $(t.rows[i]).closest('tr').find('.qnt').attr('name', 'data['+i+'][quantity]');
                 $(t.rows[i]).closest('tr').find('.net').attr('name', 'data['+i+'][weight]');
                 $(t.rows[i]).closest('tr').find('.gross').attr('name', 'data['+i+'][gross_weight]');
-                $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
+                // $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
                 $(t.rows[i]).closest('tr').find('.term').attr('name', 'data['+i+'][payment_type]');
 
                 $(t.rows[i]).closest('tr').find('.orderid').attr('name', 'data['+i+'][order_id]');
@@ -707,21 +708,21 @@ jQuery(document).ready(function(){
             var qty = (!$('[name="data['+w+'][quantity]"]').val()) ? 0 : parseInt($('[name="data['+w+'][quantity]"]').val());
             var ntweight = (!$('[name="data['+w+'][weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][weight]"]').val());
             var grweight = (!$('[name="data['+w+'][gross_weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][gross_weight]"]').val());
-            var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
+            // var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
             total_quantity += qty;
             total_net_weight += ntweight;
             total_gross_weight += grweight;
-            total_freight += frt;
+            // total_freight += frt;
         }
         $('#tot_qty').html(total_quantity);
         $('#tot_nt_wt').html(total_net_weight);
         $('#tot_gt_wt').html(total_gross_weight);
-        $('#tot_frt').html(total_freight);
+        // $('#tot_frt').html(total_freight);
 
         $('#total_quantity').val(total_quantity);
         $('#total_weight').val(total_net_weight);
         $('#total_gross_weight').val(total_gross_weight);
-        $('#total_freight').val(total_freight);
+        // $('#total_freight').val(total_freight);
     }
 
     /*===== get location on edit click =====*/

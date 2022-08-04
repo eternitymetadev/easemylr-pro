@@ -235,7 +235,7 @@ class ConsignmentController extends Controller
         }else if($authuser->role_id != 2 || $authuser->role_id != 3){
             if($authuser->role_id !=1){
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-            }else{
+                }else{
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
         }else{
@@ -342,7 +342,7 @@ class ConsignmentController extends Controller
             $consignmentsave['total_quantity'] = $request->total_quantity;
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            $consignmentsave['total_freight'] = $request->total_freight;
+            // $consignmentsave['total_freight'] = $request->total_freight;
             $consignmentsave['transporter_name']  = $request->transporter_name;
             $consignmentsave['vehicle_type']      = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
@@ -835,10 +835,7 @@ class ConsignmentController extends Controller
                                 <p><b>Consignment No.</b></p>
                                 <p><b>Consignment Date</b></p>
                                 <p><b>Dispatch From</b></p>
-                                <p><b>Order Id</b></p>
-                                <p><b>Invoice No.</b></p>
-                                <p><b>Invoice Date</b></p>
-                                <p><b>Value INR</b></p>
+                                
                                 <p><b>Vehicle No.</b></p>
                                 <p><b>Driver Name</b></p>
                             </td>
@@ -858,27 +855,27 @@ class ConsignmentController extends Controller
             } else {
                 $html .= '<p> N/A </p>';
             }
-            if (@$data['order_id'] != '') {
-                $html .= '<p>' . $data['order_id'] . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['invoice_no'] != '') {
-                $html .= '<p>' . $data['invoice_no'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['invoice_date'] != '') {
-                $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
+            // if (@$data['order_id'] != '') {
+            //     $html .= '<p>' . $data['order_id'] . '</p>';
+            // } else {
+            //     $html .= '<p> - </p>';
+            // }
+            // if (@$data['invoice_no'] != '') {
+            //     $html .= '<p>' . $data['invoice_no'] . '</p>';
+            // } else {
+            //     $html .= '<p> N/A </p>';
+            // }
+            // if (@$data['invoice_date'] != '') {
+            //     $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
+            // } else {
+            //     $html .= '<p> N/A </p>';
+            // }
 
-            if (@$data['invoice_amount'] != '') {
-                $html .= '<p>' . $data['invoice_amount'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
+            // if (@$data['invoice_amount'] != '') {
+            //     $html .= '<p>' . $data['invoice_amount'] . '</p>';
+            // } else {
+            //     $html .= '<p> N/A </p>';
+            // }
             if (@$data['vehicle_detail']['regn_no'] != '') {
                 $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
             } else {
