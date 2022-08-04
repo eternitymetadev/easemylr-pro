@@ -194,8 +194,9 @@ class ConsignerController extends Controller
         $id = decrypt($id);      
         $states = Helper::getStates();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
 
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         if($authuser->role_id !=1){
             if($authuser->role_id ==2 || $role_id->id ==3){
