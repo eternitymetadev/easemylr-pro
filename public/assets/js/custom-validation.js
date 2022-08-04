@@ -796,7 +796,6 @@ jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
    
     let drs_no   = jQuery(this).attr('drs-no');
-
         var data =  {drs_no:drs_no};
         
         jQuery.ajax({
@@ -845,14 +844,25 @@ jQuery(document).on('click','.drs_cancel',function(event){
    
     
     let drs_no   = jQuery(this).attr('drs-no');
-   
     var dataaction = jQuery(this).attr('data-action');
     var updatestatus = 'updatestatus';
 
     jQuery('#commonconfirm').modal('show');
     // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
     jQuery( ".commonconfirmclick").one( "click", function() {
-        //alert('d');
+        var status_value = jQuery('#drs_status').val();
+         
+    if(status_value == 'Successful'){
+        var consignmentID = [];
+        $('input[name="delivery_date[]"]').each(function() {
+          if(this.value == '') {
+           alert('Please filled all delevery date');
+           exit;
+          }
+            consignmentID.push(this.value);
+        });
+    }
+
         var drs_status = jQuery('#drs_status').val();
         //alert(drs_status);
         var data =  {drs_no:drs_no,drs_status:drs_status,updatestatus:updatestatus};
