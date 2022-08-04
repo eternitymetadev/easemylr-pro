@@ -425,24 +425,24 @@ class ConsignmentController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = $this->prefix . '/consignments';
-                $response['success'] = true;
-                $response['success_message'] = "Consignment Added successfully";
-                $response['error'] = false;
-                // $response['resetform'] = true;
-                $response['page'] = 'create-consignment';
-                $response['redirect_url'] = $url;
+                    $url = $this->prefix . '/consignments';
+                    $response['success'] = true;
+                    $response['success_message'] = "Consignment Added successfully";
+                    $response['error'] = false;
+                    // $response['resetform'] = true;
+                    $response['page'] = 'create-consignment';
+                    $response['redirect_url'] = $url;
             } else {
-                $response['success'] = false;
-                $response['error_message'] = "Can not created consignment please try again";
-                $response['error'] = true;
+                    $response['success'] = false;
+                    $response['error_message'] = "Can not created consignment please try again";
+                    $response['error'] = true;
             }
             DB::commit();
         } catch (Exception $e) {
-            $response['error'] = false;
-            $response['error_message'] = $e;
-            $response['success'] = false;
-            $response['redirect_url'] = $url;
+                    $response['error'] = false;
+                    $response['error_message'] = $e;
+                    $response['success'] = false;
+                    $response['redirect_url'] = $url;
         }
         return response()->json($response);
     }

@@ -13,7 +13,7 @@
         width: 145px;
         height: 38px;
     }
-
+ 
     /* .table > tbody > tr > td {
     color: #4361ee;
 } */
@@ -65,7 +65,7 @@
                                 <input type="date" class="form-control" name="last_date">
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary">Get</button>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 38px;">Get</button>
                             </div>
                         </div>
                     </form>
