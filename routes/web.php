@@ -243,6 +243,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
 
 });
@@ -333,6 +334,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
 
     
@@ -424,6 +426,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
 
     
@@ -477,6 +480,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
 
 });
@@ -565,6 +569,7 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
     
 });

@@ -10,7 +10,7 @@ div.relative {
     top: 24px;
     z-index: 1;
     width: 145px;
-    height: 38px;
+    height: 38px; 
 }
 /* .table > tbody > tr > td {
     color: #4361ee;
@@ -50,8 +50,24 @@ div.relative {
                 </div>
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
+                    <form id="filter_reportall">
+                        <div class="row mt-4" style="margin-left: 193px;">
+                            <div class="col-sm-4">
+                                <label>from</label>
+                                <input type="date" class="form-control" name="first_date">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>To</label>
+                                <input type="date" class="form-control" name="last_date">
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 111px">Filter Data</button>
+                            </div>
+                        </div>
+                    </form>
                         @csrf
-                        <table id="consignment_report" class="table table-hover" style="width:100%">
+                        <table id="consignment_reportall" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
                                 <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
                             </div>
@@ -156,4 +172,104 @@ div.relative {
     </div>
 @include('models.delete-user')
 @include('models.common-confirm')
+@endsection
+@section('js')
+<script>
+    $('#filter_reportall').submit(function (e) {
+        // alert('k');
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            url: "get-filter-reportall",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                $('#consignment_reportall').dataTable().fnClearTable();
+                $('#consignment_reportall').dataTable().fnDestroy();
+            },
+            success: (data) => {
+                // console.log(data.fetch); return false;
+                $.each(data.fetch, function (key, value) {
+
+                    if (value.status == 0) {
+                        var lrstatus = 'Cancel';
+                    } else if (value.status == 1) {
+                        var lrstatus = 'Active';
+                    } else if (value.status == 2) {
+                        var lrstatus = 'Unverified';
+                    }
+                    ///////////
+                    if (value.delivery_date == null || value.delivery_date == '') {
+                        var ddate = '-';
+                    } else {
+                        var ddate = value.delivery_date;
+                    }
+                    ////////Tat/////
+                    var start = new Date(value.consignment_date);
+                    var end = new Date(value.delivery_date);
+                    var diff = new Date(end - start);
+                    var days = diff / 1000 / 60 / 60 / 24;
+                    if (value.delivery_date == null || value.delivery_date == '') {
+                        var nodat = '-';
+                    } else {
+                        var nodat = days;
+                    }
+                    //////Driver name///////
+                    if(value.drivers_name == null || value.drivers_name == ''){
+                        var driverName = '-';
+                    }else{
+                        var driverName = value.drivers_name;
+                    }
+                    ///////////Driver Number///////
+                    if(value.drivers_phone == null || value.drivers_phone == ''){
+                        var driverPhon = '-';
+                    }else{
+                        var driverPhon = value.drivers_phone;
+                    }
+                    ///////////Driver Fleet///////
+                    if(value.fleet == null || value.fleet == ''){
+                        var fleet = '-';
+                    }else{
+                        var fleet = value.fleet;
+                    }
+                    
+
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+
+                });
+                $('#consignment_reportall').DataTable({
+                    "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                        "<'table-responsive'tr>" +
+                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    buttons: {
+                        buttons: [
+                            // { extend: 'copy', className: 'btn btn-sm' },
+                            // { extend: 'csv', className: 'btn btn-sm' },
+                            { extend: 'excel', className: 'btn btn-sm' },
+                            // { extend: 'print', className: 'btn btn-sm' }
+                        ]
+                    },
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+
+                    "ordering": true,
+                    "paging": true,
+                    "pageLength": 80,
+
+                });
+
+            }
+        });
+    });
+</script>
+
+
 @endsection
