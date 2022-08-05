@@ -365,15 +365,18 @@ $('#consignment_report').DataTable( {
 
         ///////////////////////////////////
         /////////////////////////////////////////////////
-function lrCheck(that) {
-    if (that.value == "Successful") {
-        document.getElementById("lrid").style.display = "block";
-   
-    } else{
-        document.getElementById("lrid").style.display = "none";
-          
-    }
-}
+        function lrCheck(that) {
+            if (that.value == "Successful") {
+                document.getElementById("lrid").style.display = "block";
+        
+            } else{
+                document.getElementById("lrid").style.display = "none";         
+            }
+        }
 
-    </script>
-    <!-- END PAGE LEVEL SCRIPTS -->  
+        $(".bulk_loder").on("submit", function(){
+    // alert('hello');
+    $("#pageloader").fadeIn();
+  });//submit
+            </script>
+            <!-- END PAGE LEVEL SCRIPTS -->  

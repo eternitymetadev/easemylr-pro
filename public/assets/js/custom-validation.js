@@ -617,6 +617,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             var tds = '<tr>';
             var item_no = $('tr', this).length;
+            alert(item_no);
             tds += '<td><div class="srno">'+item_no+'</div></td>';
             tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
             tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></td>'

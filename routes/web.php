@@ -229,9 +229,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
     Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
-
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
     Route::resource('orders', OrderController::class);
 

@@ -62,7 +62,7 @@ div.relat {
                 </div>
                 <!-- <div class="table-responsive mb-4 mt-4"> -->
                 <div class="mb-4 mt-4">
-                    @csrf
+                    @csrf 
                     <table id="consignerstable" class="table table-hover" style="width:100%">
                         <div class="btn-group relative">
                             <a class="btn-primary btn-cstm btn w-100" id="add_role" href="{{'consigners/create'}}" style="font-size: 12px; padding: 8px 0px;"><span><i class="fa fa-plus"></i> Add New</span></a>
@@ -74,7 +74,7 @@ div.relat {
                         <thead>
                             <tr>
                                 <th>Cnr ID</th>
-                                <!-- <th>Client Name</th> -->
+                                <th>Client Name</th>
                                 <th>Consigner Nick Name</th>
                                 <th>Contact Person Name</th>
                                 <th>Mobile No.</th>
@@ -114,14 +114,14 @@ var table = $('#consignerstable').DataTable({
         "sLengthMenu": "Results :  _MENU_",
         },
    
-
+ 
         "stripeClasses": [],
         "pageLength": 30,
         drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered'); },
 
     columns: [
         {data: 'id', name: 'id', defaultContent: '-'},
-        // {data: 'regionalclient_id', name: 'regionalclient_id', defaultContent: '-'},
+        {data: 'regional_clientname', name: 'regional_clientname', defaultContent: '-'},
         {data: 'nick_name', name: 'nick_name', defaultContent: '-'},
         {data: 'contact_name', name: 'contact_name', defaultContent: '-'},
         {data: 'phone', name: 'phone', defaultContent: '-'},
@@ -130,7 +130,6 @@ var table = $('#consignerstable').DataTable({
         {data: 'district', name: 'district', defaultContent: '-'},
         // {data: 'State.name', name: 'state_id', defaultContent: '-'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
-        
     ]
 
 });
