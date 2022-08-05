@@ -375,8 +375,8 @@ class ConsignmentController extends Controller
            $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode','vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone')
            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-           ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-           ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+           ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+           ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
            ->where('consignment_notes.id', $consignment_id)
            ->first(['consignees.city']);
            $simplyfy = json_decode(json_encode($consignmentdrs), true);
