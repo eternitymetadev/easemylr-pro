@@ -146,7 +146,9 @@
                                     <li>
                                         <a href="{{$prefixurl.'consignment-report'}}"> MIS Report </a>
                                     </li>
-                                   
+                                    <li>
+                                        <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>
+                                    </li>
                                 </ul>
                             </li>             
                 <li class="menu single-menu menu-extras">
