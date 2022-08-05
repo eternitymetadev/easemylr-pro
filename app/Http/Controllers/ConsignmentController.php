@@ -1706,9 +1706,6 @@ class ConsignmentController extends Controller
             return Response::json($response);
       }
 
-
-
-
     public function updateDeliveryDateOneBy(Request $request)
     {
 

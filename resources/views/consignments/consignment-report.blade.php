@@ -48,7 +48,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
                         <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment
-                                Reports</a></li>
+                                Reports</a></li> 
                     </ol>
                 </nav>
             </div>
@@ -98,7 +98,6 @@
                                 <th>Delivery Date</th>
                                 <th>Delivery Status</th>
                                 <th>TAT</th>
-
                             </tr>
                         </thead>
                         <tbody>
