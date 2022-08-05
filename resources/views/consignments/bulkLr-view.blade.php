@@ -138,7 +138,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                         @csrf
                         <table id="bulk-table" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
-                            <input class="btn btn-success" type="submit"  value="Download Bulk Pdf"  style="font-size: 13px; padding: 6px 0px;"/>
+                            <input class="btn btn-success bulk_loder" type="submit"  value="Download Bulk Pdf" id="bulk" style="font-size: 13px; padding: 6px 0px;" disabled/><div class="spinner-border text-primary  align-self-center"  id ="pageloader" style="display: none;"></div>
                             <!-- <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Download PDF</a> -->
                             <!-- <button type="button" class="btn btn-warning disableDrs" id="download_bulkLr" style="font-size: 11px;">
                              Download All LR
@@ -165,7 +165,6 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <td>{{$value->consigner_name}}</td>
                                     <td>{{$value->consignee_name}}</td>
                                     <td>{{$value->city}}</td>
-                                 
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -182,7 +181,7 @@ a.badge.alert.bg-secondary.shadow-sm {
 <script>
   jQuery(document).on('click','#checkAll_Lr',function(){
         if(this.checked){
-            jQuery('#create_edd').prop('disabled', false);
+            jQuery('#bulk').prop('disabled', false);
             jQuery('.checkLr').each(function(){
                 this.checked = true;
             });
@@ -191,7 +190,7 @@ a.badge.alert.bg-secondary.shadow-sm {
             jQuery('.checkLr').each(function(){
                 this.checked = false;
             });
-            jQuery('#create_edd').prop('disabled', true);
+            jQuery('#bulk').prop('disabled', true);
         }
     });
 
@@ -201,9 +200,9 @@ a.badge.alert.bg-secondary.shadow-sm {
         }else{
             var checklength = $('.checkLr:checked').length;
             if(checklength < 1){
-                jQuery('#create_edd').prop('disabled', true);
+                jQuery('#bulk').prop('disabled', true);
             }else{
-                jQuery('#create_edd').prop('disabled', false);
+                jQuery('#bulk').prop('disabled', false);
             }
 
             $('#checkAll_Lr').prop('checked',false);
@@ -278,6 +277,8 @@ a.badge.alert.bg-secondary.shadow-sm {
             "pageLength": 80,
             
         } );
+
+     
     </script>
 
     @endsection

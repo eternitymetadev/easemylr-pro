@@ -1920,10 +1920,9 @@ class ConsignmentController extends Controller
         $locations = Location::whereIn('id', $cc)->first();
         foreach($lrno as $key => $value){
     
-
         $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        echo'<pre>'; print_r($data); print_r('</pre>');
+        // echo'<pre>'; print_r($data); print_r('</pre>');
        
         if ($data['consigner_detail']['nick_name'] != null) {
             $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
@@ -2312,8 +2311,8 @@ class ConsignmentController extends Controller
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
             $pdf->setPaper('A4', 'portrait');
-            $pdf->save(public_path() . '/bulk/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
-            $pdf_name[] = 'congn-' . $i . '.pdf';
+            $pdf->save(public_path() . '/bulk/congn-' . $i . '-'.$value.'.pdf')->stream('congn-' . $i . '-'.$value.'.pdf');
+            $pdf_name[] = 'congn-' . $i . '-'.$value.'.pdf';
         }
     }
         $pdfMerger = PDFMerger::init();

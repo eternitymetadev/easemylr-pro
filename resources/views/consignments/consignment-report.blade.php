@@ -48,14 +48,14 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
                         <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment
-                                List</a></li>
+                                Reports</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-                <div class="mb-4 mt-4">
-                    <form id="filter_report">
-                        <div class="row">
+                <div class="mb-4">
+                <form id="filter_report">
+                        <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
                                 <label>from</label>
                                 <input type="date" class="form-control" name="first_date">
@@ -65,15 +65,14 @@
                                 <input type="date" class="form-control" name="last_date">
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 38px;">Get</button>
+                                <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 111px">Filter Data</button>
                             </div>
                         </div>
                     </form>
                     @csrf
                     <table id="consignment_report" class="table table-hover" style="width:100%">
-                        <div class="btn-group relative">
-                            <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
-                        </div>
+                   
                         <thead>
                             <tr>
                                 <!-- <th> </th> -->

@@ -373,5 +373,10 @@ $('#consignment_report').DataTable( {
                 document.getElementById("lrid").style.display = "none";         
             }
         }
+
+        $(".bulk_loder").on("submit", function(){
+    // alert('hello');
+    $("#pageloader").fadeIn();
+  });//submit
             </script>
             <!-- END PAGE LEVEL SCRIPTS -->  
