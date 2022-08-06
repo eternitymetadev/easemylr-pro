@@ -81,6 +81,7 @@ div.relative {
                                         <th>District</th>
                                         <th>City</th>
                                         <th>Pin Code</th> 
+                                        <th>Zone</th> 
                                         <th>Boxes</th> 
                                         <th>Net Weight</th>
                                        
@@ -101,6 +102,7 @@ div.relative {
                                     <td>{{ $consignment->consignee_district ?? "-" }}</td>
                                     <td>{{ $consignment->city ?? "-" }}</td>
                                     <td>{{ $consignment->pincode ?? "-" }}</td>
+                                    <td>{{ $consignment->zone ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
                                   

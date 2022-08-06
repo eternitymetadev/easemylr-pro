@@ -78,7 +78,7 @@
                         </tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;">Client:</b></td>
-                            <td colspan ="2" style="text-align:center;"><b>Nurture.Farm</b></td>
+                            <td colspan ="2" style="text-align:center;"><b><?php echo $baseclient ?></b></td>
                         </tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;">NO Of Boxes:</b></td>

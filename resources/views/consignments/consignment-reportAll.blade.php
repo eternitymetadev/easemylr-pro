@@ -235,7 +235,7 @@ div.relative {
                     }else{
                         var fleet = value.fleet;
                     }
-                    
+                    ///////////state id///////
 
                     $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
