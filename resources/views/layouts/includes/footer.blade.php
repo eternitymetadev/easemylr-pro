@@ -345,7 +345,8 @@ $('#consignment_report').DataTable( {
                 buttons: [
                     // { extend: 'copy', className: 'btn btn-sm' },
                     // { extend: 'csv', className: 'btn btn-sm' },
-                    { extend: 'excel', className: 'btn btn-sm' },
+                    { extend: 'excel', className: 'btn btn-sm',title:'', },
+                    
                     // { extend: 'print', className: 'btn btn-sm' }
                 ]
             },
@@ -371,7 +372,7 @@ $('#consignment_report').DataTable( {
                 buttons: [
                     // { extend: 'copy', className: 'btn btn-sm' },
                     // { extend: 'csv', className: 'btn btn-sm' },
-                    { extend: 'excel', className: 'btn btn-sm' },
+                    { extend: 'excel', className: 'btn btn-sm', title:'',  },
                     // { extend: 'print', className: 'btn btn-sm' }
                 ]
             },
@@ -401,8 +402,8 @@ $('#consignment_report').DataTable( {
         }
 
         $(".bulk_loder").on("submit", function(){
-    // alert('hello');
-    $("#pageloader").fadeIn();
-  });//submit
+            // alert('hello');
+            $("#pageloader").fadeIn();
+        });//submit_for_pdf
             </script>
             <!-- END PAGE LEVEL SCRIPTS -->  
