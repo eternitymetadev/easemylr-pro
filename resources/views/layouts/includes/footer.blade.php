@@ -1,4 +1,4 @@
-            <div class="footer-wrapper">
+<div class="footer-wrapper">
                 <div class="footer-section f-section-1">
                     <p class="">Copyright © {{ date('Y') }} <a target="_blank" href="#">ETERNITY</a>, All rights reserved.</p>
                 </div>
@@ -68,7 +68,7 @@
 				'<div class="card-body">'+
 								'<ul class="nav nav-tabs nav-primary" role="tablist">'+
 									'<li class="nav-item" role="presentation">'+
-										'<a class="nav-link active" data-bs-toggle="tab" href="#primaryhome" role="tab" aria-selected="true">'+
+										'<a class="nav-link active" data-toggle="tab" href="#primaryhome" role="tab" aria-selected="true">'+
 											'<div class="d-flex align-items-center">'+
 												'<div class="tab-icon"><i class="bx bx-home font-18 me-1"></i>'+
 												'</div>'+
@@ -76,30 +76,53 @@
 											'</div>'+
 										'</a>'+
 									'</li>'+
+                                    '<li class="nav-item" role="presentation">'+
+										'<a class="nav-link" data-toggle="tab" href="#primaryprofile" role="tab" aria-selected="false">'+
+											'<div class="d-flex align-items-center">'+
+												'<div class="tab-icon"><i class="bx bx-user-pin font-18 me-1"></i>'+
+												'</div>'+
+												'<div class="tab-title">Timeline</div>'+
+											'</div>'+
+										'</a>'+
+									'</li>'+
+									'<li class="nav-item" role="presentation">'+
+										'<a class="nav-link" data-toggle="tab" href="#primarycontact" role="tab" aria-selected="true">'+
+											'<div class="d-flex align-items-center">'+
+												'<div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>'+
+												'</div>'+
+												'<div class="tab-title">Others</div>'+
+											'</div>'+
+										'</a>'+
+									'</li>'+
 								'</ul>'+
 								'<div class="tab-content py-3">'+
 									'<div class="tab-pane active" id="primaryhome" role="tabpanel">'+
                                     '<div class="row">'+
-                                    '<div class="col-md-3">'+
-                                    '<strong class="labels">Job Id:</strong> '+d.job_id+'<br/>'+
-                                    '<strong class="labels">Oder No:</strong> '+d.order_id+'<br/>'+
-                                    '<strong class="labels">Lr No:</strong> '+d.id+'<br/>'+
+                                    '<div class="col-md-4">'+
+                                    '<strong class="labels">Shadow Job Id:</strong> '+d.job_id+'<br/>'+
+                                    '<strong class="labels">Driver Name:</strong> '+d.driver_name+'<br/>'+
+                                    '<strong class="labels">Driver Number:</strong> '+d.driver_phone+'<br/>'+
+                                    '<strong class="labels">Vehicle No:</strong> '+d.regn_no+'<br/>'+
+                                    '<strong class="labels">No. of Boxes:</strong> '+d.total_quantity+'<br/>'+
+                                    '<strong class="labels">Net Weight:</strong> '+d.total_weight+'<br/>'+
+                                    '<strong class="labels">Gross Weight:</strong> '+d.total_gross_weight +'<br/>'+
                                     '<strong class="labels">Consigner:</strong> '+d.consigner_id+'<br/>'+
-                                    '<strong class="labels">Consigner City:</strong> '+d.con_city+'<br/>'+
+                                    '<strong class="labels">Consigner Address:</strong> '+d.con_pincode +','+ d.con_city+ ','+ d.con_district+'<br/>'+
                                     '<strong class="labels">Consignee :</strong> '+d.consignee_id+'<br/>'+
-                                    '<strong class="labels">Consignee Address:</strong> '+d.city+'<br/>'+
+                                    '<strong class="labels">Consignee Address:</strong>'+d.pincode +','+d.city+','+d.conee_district +'<br/>'+
                                     '<strong class="labels">Invoice No:</strong> '+d.invoice_no+'<br/>'+
                                     '<strong class="labels">Invoice Date :</strong> '+d.invoice_date+'<br/>'+
-                                    '<strong class="labels">Invoice Amount:</strong> '+d.invoice_amount+'<br/>'+
-                                    '<strong class="labels">Vehicle No:</strong> '+d.consignee_id+'<br/>'+
-                                    '<strong class="labels">Boxes:</strong> '+d.total_quantity+'<br/>'+
-                                    '<strong class="labels">Net Weight:</strong> '+d.total_weight+'<br/><br/>'+
+                                    '<strong class="labels">Invoice Amount:</strong> '+d.invoice_amount+'<br/><br/><br/>'+
                                     ''+d.route+'<br/>'+
                                     '</div>'+
-                                    '<div class="col-md-9">'+
+                                    '<div class="col-md-8">'+
                                     '<div id="map-'+d.id+'"><iframe id="iGmap" width="100%" height="400px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+d.tracking_link+'" ></iframe></div>'+
                                     '</div>'+
                                     '</div>'+
+									'</div>'+
+                                    '<div class="tab-pane fade" id="primaryprofile" role="tabpanel">'+d.trail+
+									'</div>'+
+									'<div class="tab-pane fade" id="primarycontact" role="tabpanel">'+
 									'</div>'+
 								'</div>'+
 							'</div>'+
@@ -230,6 +253,8 @@
     }
 
 });
+
+
 
 ////////////////////////////////////////////////////////
         // $("#select_all").click(function () {
