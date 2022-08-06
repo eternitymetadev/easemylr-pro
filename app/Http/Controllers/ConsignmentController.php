@@ -149,101 +149,107 @@ class ConsignmentController extends Controller
         ->addColumn('trail', function($data){
 
             $json = json_decode($data->trail);
-            $trcking_history = array_reverse($json->task_history);
+            if(!empty($json)){
+                $trcking_history = array_reverse($json->task_history);
 
-            //echo "<pre>";print_r($trcking_history);die;
-
-            $trail = '<div class="container">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <ul class="cbp_tmtimeline">';
-            /*$result = array();
-                foreach ($trcking_history as $element) {
-                        $result[$element->type][] = $element;
-                 }*/
-             //echo "<pre>"; print_r($trcking_history);   die; 
-            foreach($trcking_history as $task){
-                $timestamp = $task->creation_datetime;
-                $date = new \DateTime($timestamp);
-                $task_date = $date->format('d-m-Y h:i');
-                $type = $task->type;
-        
-                $des_data = '';
-                if($type == 'image_added'){
-                    $des_data .= 'Attachment uploaded by '.$task->fleet_name.'<br/>    <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
-                    View Attachment
-                  </button>
-
-                  <!-- Modal -->
-              <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Attachment</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                              </button>
-                          </div>
-                          <div class="modal-body">
-                          <img src="'.$task->description.'" width="100%"  seamless="">   
-                          </div>
-                          <div class="modal-footer">
-                              <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-                              
+                //echo "<pre>";print_r($trcking_history);die;
+    
+                $trail = '<div class="container">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <ul class="cbp_tmtimeline">';
+                /*$result = array();
+                    foreach ($trcking_history as $element) {
+                            $result[$element->type][] = $element;
+                     }*/
+                 //echo "<pre>"; print_r($trcking_history);   die; 
+                foreach($trcking_history as $task){
+                    $timestamp = $task->creation_datetime;
+                    $date = new \DateTime($timestamp);
+                    $task_date = $date->format('d-m-Y h:i');
+                    $type = $task->type;
+            
+                    $des_data = '';
+                    if($type == 'image_added'){
+                        $des_data .= 'Attachment uploaded by '.$task->fleet_name.'<br/>    <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
+                        View Attachment
+                      </button>
+    
+                      <!-- Modal -->
+                  <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Attachment</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                              <img src="'.$task->description.'" width="100%"  seamless="">   
+                              </div>
+                              <div class="modal-footer">
+                                  <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
+                                  
+                              </div>
                           </div>
                       </div>
-                  </div>
-              </div>';
-                }
-                elseif($type == 'signature_image_added'){
-                    $des_data .= 'Signature Added by '.$task->fleet_name.'<br/><img src="'.$task->description.'" width="10%"><br/><br/><button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
-                    View Signatures
-                  </button>
-
-                  <!-- Modal -->
-              <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Signatures</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                              </button>
-                          </div>
-                          <div class="modal-body">
-                          <iframe src="'.$task->description.'" width="100%" height="298" seamless=""></iframe>   
-                          </div>
-                          <div class="modal-footer">
-                              <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-                              
+                  </div>';
+                    }
+                    elseif($type == 'signature_image_added'){
+                        $des_data .= 'Signature Added by '.$task->fleet_name.'<br/><img src="'.$task->description.'" width="10%"><br/><br/><button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
+                        View Signatures
+                      </button>
+    
+                      <!-- Modal -->
+                  <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Signatures</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                              <iframe src="'.$task->description.'" width="100%" height="298" seamless=""></iframe>   
+                              </div>
+                              <div class="modal-footer">
+                                  <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
+                                  
+                              </div>
                           </div>
                       </div>
-                  </div>
-              </div>';
-                }
-                else{
-                    $str = trim($task->label_description, 'at').' by '.$task->fleet_name;
-                    if (str_contains($str, 'CREATED')) { 
-                        $des_data .= "LR Created";
+                  </div>';
                     }
                     else{
-                        $des_data .= $str;
+                        $str = trim($task->label_description, 'at').' by '.$task->fleet_name;
+                        if (str_contains($str, 'CREATED')) { 
+                            $des_data .= "LR Created";
+                        }
+                        else{
+                            $des_data .= $str;
+                        }
                     }
+                    
+                    $trail .= '
+                                <li>
+                                    <time class="cbp_tmtime" datetime="'.$task_date.'"><span class="hidden">'.$task_date.'</span></time>
+                                    <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div>
+                                    <div class="cbp_tmlabel empty"> <span>'.$des_data.'</span> </div>
+                                </li>'; 
                 }
-                
-                $trail .= '
-                            <li>
-                                <time class="cbp_tmtime" datetime="'.$task_date.'"><span class="hidden">'.$task_date.'</span></time>
-                                <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div>
-                                <div class="cbp_tmlabel empty"> <span>'.$des_data.'</span> </div>
-                            </li>'; 
-            }
-
-            $trail .= '</ul>  
-                    </div>
-                </div>
-            </div>';
     
+                $trail .= '</ul>  
+                        </div>
+                    </div>
+                </div>';
+        
+            }
+            else{
+                $trail ="No data available";
+            }
+           
             //echo "<pre>";print_r($trcking_history);die;
 
             return $trail;
