@@ -312,6 +312,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
     Route::resource('orders', OrderController::class);
 
@@ -403,6 +405,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
 
     Route::resource('orders', OrderController::class);
@@ -548,6 +552,8 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('remove-lr', [ConsignmentController::class, 'removeLR']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
 
     Route::resource('locations', LocationController::class);
