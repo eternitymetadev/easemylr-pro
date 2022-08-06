@@ -18,6 +18,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ImportCsvController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\API\ReceiveAddressController;
 
 /*
@@ -164,6 +165,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
     Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
     Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+
     
 });
 
@@ -225,9 +229,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
     Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
-
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
     Route::resource('orders', OrderController::class);
 
@@ -236,6 +241,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
 
     Route::resource('clients', ClientController::class);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -303,6 +312,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
     Route::resource('orders', OrderController::class);
 
@@ -323,6 +334,10 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
 
     Route::resource('clients', ClientController::class);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
 
     
 });
@@ -390,6 +405,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
 
     Route::resource('orders', OrderController::class);
@@ -411,6 +428,10 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
 
     Route::resource('clients', ClientController::class);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
 
     
 });
@@ -461,6 +482,10 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
@@ -527,6 +552,8 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('remove-lr', [ConsignmentController::class, 'removeLR']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+
 
 
     Route::resource('locations', LocationController::class);
@@ -546,6 +573,10 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
 
     Route::resource('clients', ClientController::class);
+
+    Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
     
 });
 

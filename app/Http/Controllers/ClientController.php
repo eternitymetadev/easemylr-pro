@@ -193,6 +193,7 @@ class ClientController extends Controller
                     if(!empty($save_data['hidden_id'])){
                         $updatedata['name'] = $save_data['name'];
                         $updatedata['baseclient_id'] = (int)$request->baseclient_id;
+                        $updatedata['status'] = "1";
                         $hidden_id=$save_data['hidden_id'];
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::where('id',$hidden_id)->update($updatedata);
@@ -200,6 +201,7 @@ class ClientController extends Controller
                         $insertdata['name'] = $save_data['name'];
                         $insertdata['baseclient_id'] = (int)$request->baseclient_id;
                         $insertdata['location_id'] = $save_data['location_id'];
+                        $insertdata['status'] = "1";
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::create($insertdata);
                     }

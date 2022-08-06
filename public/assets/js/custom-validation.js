@@ -617,6 +617,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             var tds = '<tr>';
             var item_no = $('tr', this).length;
+            alert(item_no);
             tds += '<td><div class="srno">'+item_no+'</div></td>';
             tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
             tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></td>'
@@ -796,7 +797,6 @@ jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
    
     let drs_no   = jQuery(this).attr('drs-no');
-
         var data =  {drs_no:drs_no};
         
         jQuery.ajax({
@@ -845,14 +845,25 @@ jQuery(document).on('click','.drs_cancel',function(event){
    
     
     let drs_no   = jQuery(this).attr('drs-no');
-   
     var dataaction = jQuery(this).attr('data-action');
     var updatestatus = 'updatestatus';
 
     jQuery('#commonconfirm').modal('show');
     // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
     jQuery( ".commonconfirmclick").one( "click", function() {
-        //alert('d');
+        var status_value = jQuery('#drs_status').val();
+         
+    if(status_value == 'Successful'){
+        var consignmentID = [];
+        $('input[name="delivery_date[]"]').each(function() {
+          if(this.value == '') {
+           alert('Please filled all delevery date');
+           exit;
+          }
+            consignmentID.push(this.value);
+        });
+    }
+
         var drs_status = jQuery('#drs_status').val();
         //alert(drs_status);
         var data =  {drs_no:drs_no,drs_status:drs_status,updatestatus:updatestatus};
