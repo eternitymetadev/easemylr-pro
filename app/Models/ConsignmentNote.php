@@ -74,5 +74,6 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
     }
+    
 
 }
