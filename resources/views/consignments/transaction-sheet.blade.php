@@ -91,7 +91,7 @@ div.relative {
                                  <?php }else{?>
                                 <td>
                                
-                              <?php  if(empty($trns->vehicle_no)){ ?>
+                              <?php  if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)){ ?>
                                     <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}" style="margin-right:4px;">Draft</button> 
                                    <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}" style="margin-right:4px;">Save</button> 
                                    <?php } ?>
@@ -188,7 +188,6 @@ div.relative {
                         $('#sheet tbody').append("<tr id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td></tr>");
                                     
                     });
-
                     // alert(totalBox);
                     var rowCount = $("#sheet tbody tr").length; 
                     $("#total_box").html("No Of Boxes: "+totalBox);

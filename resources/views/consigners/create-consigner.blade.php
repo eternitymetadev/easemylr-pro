@@ -35,6 +35,7 @@
                                     if($authuser->role_id == 4){
                                     ?>
                                     <select class="form-control" id="regionalclient_id" name="regionalclient_id">
+                                    <option value="">Select</option>
                                         <?php 
                                         if(count($regclients)>0) {
                                             foreach ($regclients as $key => $client) {

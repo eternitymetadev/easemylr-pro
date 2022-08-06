@@ -33,34 +33,62 @@ class ConsignerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
-        $this->prefix = request()->route()->getPrefix();
+    { 
+        $this->prefix = request()->route()->getPrefix(); 
         if ($request->ajax()) {
             $query = Consigner::query();
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
-            $regclient = explode(',',$authuser->regionalclient_id);
+            $regclient = explode(',',$authuser->regionalclient_id); 
             $cc = explode(',',$authuser->branch_id);
            //echo "<pre>"; print_r($authuser->role_id); die;
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
-                    $consigners = $query->whereIn('branch_id',$cc)->orderBy('id','DESC')->with('State')->get();
+                    $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                    ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                    ->whereIn('consigners.branch_id', $cc)
+                    ->get();
+
+                    // $consigners = $query->whereIn('branch_id',$cc)->orderBy('id','DESC')->with('State','RegClient')->get();
                 }else{
-                    $consigners = $query->orderBy('id','DESC')->with('State')->get();
+                    $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                    ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                    ->get();
+                    // $consigners = $query->orderBy('id','DESC')->with('State','RegClient')->get();
                 }
             }else if($authuser->role_id != 2 || $authuser->role_id != 3){
                 if($authuser->role_id == $role_id->id){
                     if($authuser->role_id !=1){
-                        $consigners = $query->whereIn('regionalclient_id',$regclient)->orderBy('id','DESC')->with('State')->get();
+                        $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                    ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                    ->whereIn('consigners.regionalclient_id', $regclient)
+                    ->get();
+                        // $consigners = $query->whereIn('regionalclient_id',$regclient)->orderBy('id','DESC')->with('State','RegClient')->get();
                     }else{
-                        $consigners = $query->orderBy('id','DESC')->with('State')->get();
+                          //$consigners = $query->orderBy('id','DESC')->with('State','RegClient')->count();
+                        $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                        ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                        ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                        ->get();
                     }
                 }else{
-                    $consigners = $query->orderBy('id','DESC')->with('State')->get();
+                    $consigners = DB::table('consigners')->select('consigners.*','regional_clients.name as regional_clientname', 'states.name as state_id')
+                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                    ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                    ->get();
+                    // $consigners = $query->orderBy('id','DESC')->with('State','RegClient')->get();
                 }
             }else{
-                $consigners = $query->orderBy('id','DESC')->with('State')->get();
+                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                ->get();
+                // $consigners = $query->orderBy('id','DESC')->with('State','RegClient')->get();
             }
+
             return datatables()->of($consigners)
                 ->addIndexColumn()
                 // ->addColumn('State', function (Consigner $post) {
@@ -102,7 +130,7 @@ class ConsignerController extends Controller
             if($authuser->role_id ==2 || $role_id->id ==3){
                 $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
             }else{
-                $regclients = RegionalClient::whereIn('regionalclient_id',$regclient)->orderby('name','ASC')->get();
+                $regclients = RegionalClient::whereIn('id',$regclient)->orderby('name','ASC')->get();
             }
         }else{
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
@@ -194,14 +222,20 @@ class ConsignerController extends Controller
         $id = decrypt($id);      
         $states = Helper::getStates();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
 
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id == $role_id->id){
-            $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
+        if($authuser->role_id !=1){
+            if($authuser->role_id ==2 || $role_id->id ==3){
+                $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
+            }else{
+                $regclients = RegionalClient::whereIn('id',$regclient)->orderby('name','ASC')->get();
+            }
         }else{
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
-        }
+        } 
+
         $getconsigner = Consigner::where('id',$id)->first();
         return view('consigners.update-consigner')->with(['prefix'=>$this->prefix,'getconsigner'=>$getconsigner,'states'=>$states,'regclients'=>$regclients, 'title'=>$this->title, 'pagetitle'=>'Update']);
     }
