@@ -44,7 +44,7 @@ class ReportController extends Controller
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
+                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->get(['consignees.city']);
                     // echo'<pre>'; print_r($consignments); die;
@@ -57,7 +57,7 @@ class ReportController extends Controller
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
+                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->get(['consignees.city']);
 
             }
@@ -83,7 +83,7 @@ class ReportController extends Controller
                  ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                  ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                  ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                 ->join('states', 'states.id', '=', 'consignees.state_id')
+                 ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                  ->whereIn('consignment_notes.branch_id', $cc)
                  ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
                  ->get(['consignees.city']);
@@ -97,7 +97,7 @@ class ReportController extends Controller
                  ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                  ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                  ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                 ->join('states', 'states.id', '=', 'consignees.state_id')
+                 ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                  ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
                  ->get(['consignees.city']);
 
