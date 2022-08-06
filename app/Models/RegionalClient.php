@@ -11,4 +11,11 @@ class RegionalClient extends Model
     protected $fillable = [
         'baseclient_id', 'location_id', 'name', 'email', 'phone', 'address', 'status', 'created_at', 'updated_at'
     ];
+
+
+    public function BaseClient()
+    {
+        return $this->hasOne('App\Models\BaseClient','id','baseclient_id');
+    }
+
 }

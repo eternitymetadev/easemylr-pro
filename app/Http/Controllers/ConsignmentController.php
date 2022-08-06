@@ -8,6 +8,7 @@ use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
+use App\Models\RegionalClient;
 use App\Models\Driver;
 use App\Models\Location;
 use App\Models\TransactionSheet;
@@ -1122,19 +1123,21 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::first();
         $locations = Location::whereIn('id', $cc)->first();
-
+ 
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
+        $regional = $data['consigner_detail']['regionalclient_id'];
 
-        //echo "<pre>";print_r($data);die;
-
+        $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
+        $sl = json_decode(json_encode($getdataregional), true);
+        $baseclient = $sl['base_client']['client_name'];
+        
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
         //echo $barcode; die;
-
-        return view('consignments.consignment-sticker', ['data' => $data]);
+        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
 
     }
 
@@ -1147,22 +1150,22 @@ class ConsignmentController extends Controller
         $cc = explode(',',$authuser->branch_id);
         if($authuser->role_id !=1){
             if($authuser->role_id == $role_id->id){
-                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district')
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district','zones.primary_zone as zone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                    ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
                     ->where('consignment_notes.status', '=', '2')
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->get(['consignees.city']);
-                //echo'<pre>';print_r($consignments);die;
+                // echo'<pre>';print_r($consignments);die;
             }
         } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district')
+            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district','zones.primary_zone as zone')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+               ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
                 ->where('consignment_notes.status', '=', '2')
                 ->get(['consignees.city']);
         }
