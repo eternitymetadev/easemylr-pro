@@ -27,10 +27,12 @@ use Helper;
 class ConsignmentController extends Controller
 {
 
+
     public function __construct()
     {
         $this->title = "Consignments";
         $this->segment = \Request::segment(2);
+        $this->apikey = \Config::get('keys.api');
     }
     /**
      * Display a listing of the resource.
@@ -1799,7 +1801,7 @@ class ConsignmentController extends Controller
         foreach ($taskDetails as $task){
 
             $td = '{
-                "api_key": "53606486f24a031f54467d38434b7c471ae1ccf323d8733c541506c9",
+                "api_key": "'.$this->apikey.'",
                 "order_id": "'.$task['consignment_no'].'",
                 "job_description": "DRS-'.$task['id'].'",
                 "customer_email": "'.$task['email'].'",
@@ -1898,7 +1900,7 @@ class ConsignmentController extends Controller
             //echo "<pre>"; print_r($de_json);die;
 
          $apidata = '{
-                "api_key": "53606486f24a031f54467d38434b7c471ae1ccf323d8733c541506c9",
+                "api_key": "'.$this->apikey.'",
                 "fleet_id": "'.$taskDetails[0]['fleet_id'].'",
                 "timezone": -330,
                 "has_pickup": 0,
