@@ -2414,11 +2414,12 @@ class ConsignmentController extends Controller
          $jobData['response_data'] = $data;
          $jobData['status'] = $json['job_state'];
          $jobData['type'] = 1;
+         //$consignment_no = $json['job_state'];
          //echo "<pre>"; print_r($jobData);
 
          $saveJobresponse = Job::create($jobData);
 
-        event(new \App\Events\RealTimeMessage('Status updated as <strong>'. $json['job_state']. '</strong> for consignment no -'.$consignment_no));
+        event(new \App\Events\RealTimeMessage('Status updated as <strong>'. $json['job_state']. '</strong> for consignment no -'.$job_id));
 
 
     }
