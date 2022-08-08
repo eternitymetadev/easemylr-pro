@@ -2418,7 +2418,7 @@ class ConsignmentController extends Controller
 
          $saveJobresponse = Job::create($jobData);
 
-        event(new App\Events\RealTimeMessage('Status updated as <strong>'. $json['job_state']. '</strong> for consignment no -'.$consignment_no));
+        event(new \App\Events\RealTimeMessage('Status updated as <strong>'. $json['job_state']. '</strong> for consignment no -'.$consignment_no));
 
 
     }
