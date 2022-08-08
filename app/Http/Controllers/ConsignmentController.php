@@ -568,7 +568,7 @@ class ConsignmentController extends Controller
         $data = json_decode(json_encode($getdata), true);
 
         if ($data['consigner_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
+            $nick_name = '<p>' . $data['consigner_detail']['nick_name'] . '</p>';
         } else {
             $nick_name = '';
         }
@@ -618,11 +618,11 @@ class ConsignmentController extends Controller
             $phone = '';
         }
 
-        $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
+        $conr_add = '<p><b>' . 'CONSIGNOR NAME & ADDRESS' . '</b></p>
             ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
         if ($data['consignee_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
+            $nick_name = '<p>' . $data['consignee_detail']['nick_name'] . '</p>';
         } else {
             $nick_name = '';
         }
@@ -673,11 +673,11 @@ class ConsignmentController extends Controller
             $phone = '';
         }
 
-        $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
+        $consnee_add = '<p><b>' . 'CONSIGNEE NAME & ADDRESS' . '</b></p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
         if ($data['shipto_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
+            $nick_name = '<p>' . $data['shipto_detail']['nick_name'] . '</p>';
         } else {
             $nick_name = '';
         }
@@ -727,7 +727,7 @@ class ConsignmentController extends Controller
             $phone = '';
         }
 
-        $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
+        $shiptoadd = '<p><b>' . 'SHIP TO NAME & ADDRESS' . '</b></p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
         $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
@@ -766,13 +766,14 @@ class ConsignmentController extends Controller
                                 border: 1px solid black;
                                 border-collapse: collapse;
                               }
-                                .aa{
-                                    
+
+                              .aa{
+                                margin-top: 10px;
+                              }
+                                .rr{
+                                    padding-left: 5px;
                                 }
-                                .bb{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
-                                }
+                                
                                 .cc{
                                    
                                 }
@@ -901,12 +902,12 @@ class ConsignmentController extends Controller
             <div class="main">' . $adresses . '</div>
             <span><hr id="e"></hr></span><br>';
             $html .= '<div class="bb">
-                <table class="aa" width="100%">';
+                ';
             
             $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
-                $html .='<tr class="ff">
+                $html .='<table class="aa" width="100%"><tr class="ff">
                             <td class="rr">Order ID</td>
                             <td class="rr">Invoice No.</td>
                             <td class="rr">Invoice Date</td>
@@ -933,18 +934,18 @@ class ConsignmentController extends Controller
                             <td class="rr">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>
                             <td class="rr">' . $dataitem['weight'] . ' Kgs.</td>
                             <td class="rr">' . $dataitem['gross_weight'] . ' Kgs.</td>'.
-                    '</tr>';
+                    '</tr></table>';
             }
-            $html .= '<tr class="ff"><td colspan="1" class="cc"><b>TOTAL</b></td>
-                            <td class="cc">' . $data['total_quantity'] . '</td>
-                            <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
-                            <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
-                            <td class="cc" colspan="2" ></td>
+            // $html .= '<table class="aa" width="100%"><tr class="ff"><td colspan="1" class="cc"><b>TOTAL</b></td>
+            //                 <td class="cc">' . $data['total_quantity'] . '</td>
+            //                 <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
+            //                 <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
+            //                 <td class="cc" colspan="2" ></td>
                             
-                        </tr></table></div><br><br>
-                        <span><hr id="e"></hr></span>';
+            //             </tr></table></div><br><br>
+            //             <span><hr id="e"></hr></span>';
 
-            $html .= '<div class="nn">
+            $html .= '<div class="nn" style="margin-top:50px;">
                                 <table  width="100%">
                                     <tr>
                                         <td>
