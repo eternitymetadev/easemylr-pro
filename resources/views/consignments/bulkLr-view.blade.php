@@ -134,10 +134,12 @@ a.badge.alert.bg-secondary.shadow-sm {
                 </div>
                 <div class="widget-content widget-content-area br-6"> 
                     <div class="mb-4 mt-4">
+                    <form method="post" action="{{url($prefix.'/download-bulklr')}}">
                         @csrf
                         <table id="bulk-table" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
-                            <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                            <input class="btn btn-success bulk_loder" type="submit"  value="Download Bulk Pdf" id="bulk" style="font-size: 13px; padding: 6px 0px;" disabled/><div class="spinner-border text-primary  align-self-center"  id ="pageloader" style="display: none;"></div>
+                            <!-- <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Download PDF</a> -->
                             <!-- <button type="button" class="btn btn-warning disableDrs" id="download_bulkLr" style="font-size: 11px;">
                              Download All LR
                               </button> -->
@@ -163,11 +165,11 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <td>{{$value->consigner_name}}</td>
                                     <td>{{$value->consignee_name}}</td>
                                     <td>{{$value->city}}</td>
-                                 
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                </form>
                     </div>
                 </div>
             </div>
@@ -179,7 +181,7 @@ a.badge.alert.bg-secondary.shadow-sm {
 <script>
   jQuery(document).on('click','#checkAll_Lr',function(){
         if(this.checked){
-            jQuery('#create_edd').prop('disabled', false);
+            jQuery('#bulk').prop('disabled', false);
             jQuery('.checkLr').each(function(){
                 this.checked = true;
             });
@@ -188,7 +190,7 @@ a.badge.alert.bg-secondary.shadow-sm {
             jQuery('.checkLr').each(function(){
                 this.checked = false;
             });
-            jQuery('#create_edd').prop('disabled', true);
+            jQuery('#bulk').prop('disabled', true);
         }
     });
 
@@ -198,9 +200,9 @@ a.badge.alert.bg-secondary.shadow-sm {
         }else{
             var checklength = $('.checkLr:checked').length;
             if(checklength < 1){
-                jQuery('#create_edd').prop('disabled', true);
+                jQuery('#bulk').prop('disabled', true);
             }else{
-                jQuery('#create_edd').prop('disabled', false);
+                jQuery('#bulk').prop('disabled', false);
             }
 
             $('#checkAll_Lr').prop('checked',false);
@@ -252,8 +254,8 @@ a.badge.alert.bg-secondary.shadow-sm {
             //////////////////////////////////////////    
                 $('#bulk-table').DataTable( {
             "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-        "<'table-responsive'tr>" +
-        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+           "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             buttons: {
                 buttons: [
                     // { extend: 'copy', className: 'btn btn-sm' },
@@ -263,18 +265,20 @@ a.badge.alert.bg-secondary.shadow-sm {
                 ]
             },
             "oLanguage": {
-                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "oPaginate": {"sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'},
                 "sInfo": "Showing page _PAGE_ of _PAGES_",
                 "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
                 "sSearchPlaceholder": "Search...",
                "sLengthMenu": "Results :  _MENU_",
             },
-            
+
             "ordering": true,
             "paging": true,
             "pageLength": 80,
             
         } );
+
+     
     </script>
 
     @endsection

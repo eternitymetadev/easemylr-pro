@@ -144,9 +144,11 @@
                                 </a>
                                 <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
                                     <li>
-                                        <a href="{{$prefixurl.'consignment-report'}}"> MIS Report </a>
+                                        <a href="{{$prefixurl.'consignment-report'}}"> MIS Report Nurture</a>
                                     </li>
-                                   
+                                    <li>
+                                        <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>
+                                    </li>
                                 </ul>
                             </li>             
                 <li class="menu single-menu menu-extras">

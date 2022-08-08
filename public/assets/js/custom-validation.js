@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	/*======== check box checked create/update user permission page  ========*/
+	/* check box checked create/update user permission page  */
     jQuery(document).on('click','#ckbCheckAll',function(){
         if(this.checked){
             jQuery('#dropdownMenuButton').prop('disabled', false);
@@ -617,7 +617,6 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             var tds = '<tr>';
             var item_no = $('tr', this).length;
-            
             tds += '<td><div class="srno">'+item_no+'</div></td>';
             tds += '<td><div class="form-group"><label>Description</label><input type="text" class="form-control seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></div>';
             tds += '<div class="form-group mt-2"><label>Order Id</label>';
@@ -822,7 +821,6 @@ jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
    
     let drs_no   = jQuery(this).attr('drs-no');
-
         var data =  {drs_no:drs_no};
         
         jQuery.ajax({
@@ -865,22 +863,30 @@ jQuery(document).on('click','.drs_cancel',function(event){
 
 
 });
-//    Drs Cncel status update+++++++++++++++++++++++++++++++++++++
+///// Drs Cncel status update ////////
 jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
-   
     
     let drs_no   = jQuery(this).attr('drs-no');
-   
     var dataaction = jQuery(this).attr('data-action');
     var updatestatus = 'updatestatus';
 
     jQuery('#commonconfirm').modal('show');
     // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
     jQuery( ".commonconfirmclick").one( "click", function() {
-        //alert('d');
+        var status_value = jQuery('#drs_status').val();
+         
+        if(status_value == 'Successful'){
+            var consignmentID = [];
+            $('input[name="delivery_date[]"]').each(function() {
+                if(this.value == '') {
+                    alert('Please filled all delevery date');
+                    exit;
+                }
+                consignmentID.push(this.value);
+            });
+        }
         var drs_status = jQuery('#drs_status').val();
-        //alert(drs_status);
         var data =  {drs_no:drs_no,drs_status:drs_status,updatestatus:updatestatus};
         
         jQuery.ajax({
@@ -1018,7 +1024,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
         jQuery('.editBranchadd').css('display','none');
     });
 
-    /*===== For create/update consigner/consignee page  =====*/
+    /* For create/update consigner/consignee page  */
     $(document).on('keyup', "#gst_number",function () {
         var gstno = $(this).val().toUpperCase();
         var gstno = gstno.replace(/[^A-Z0-9]/g, '');
@@ -1144,7 +1150,7 @@ $(document).on('blur', "#edd",function () {
 
 
 });
-/*====== End document ready function =====*/ 
+/* End document ready function */ 
 function get_delivery_date()
 {
     $('.delivery_d').blur(function () {
