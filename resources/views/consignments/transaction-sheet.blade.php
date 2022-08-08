@@ -76,11 +76,20 @@ div.relative {
                             </thead>
                             <tbody>
                                 @foreach($transaction as $trns)
-                                <?php  $creation = date('d-m-Y',strtotime($trns->created_at));    ?>
+                                <?php 
+                                
+                               $date = new DateTime($trns->created_at, new DateTimeZone('UTC'));
+                                 $date->setTimezone(new DateTimeZone('IST'));
+                                
+                                //  echo $date->format('Y-m-d'); die;
+
+                            //   $creation = date('d-m-Y',strtotime($trns->created_at));  
+                            //   echo'<pre>'; print_r($date); die;
+                                  ?>
                               <tr>
                                 
                                 <td>DRS-{{$trns->drs_no}}</td>
-                                <td>{{$creation}}</td>
+                                <td>{{$date->format('Y-m-d')}}</td>
                                 <td>{{$trns->vehicle_no}}</td>
                                 <td>{{$trns->driver_name}}</td>
                                 <td>{{$trns->driver_no}}</td>
