@@ -89,7 +89,7 @@ div.relative {
                               <tr>
                                 
                                 <td>DRS-{{$trns->drs_no}}</td>
-                                <td>{{$date->format('Y-m-d')}}</td>
+                                <td>{{$date->format('Y-m-d H:i:s')}}</td>
                                 <td>{{$trns->vehicle_no}}</td>
                                 <td>{{$trns->driver_name}}</td>
                                 <td>{{$trns->driver_no}}</td>
