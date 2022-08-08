@@ -25,6 +25,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
 {
