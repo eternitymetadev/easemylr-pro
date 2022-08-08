@@ -302,7 +302,7 @@ class ConsignmentController extends Controller
                     $st = '<a class="activestatus btn btn-success" data-id = "'.$data->id.'" data-text="consignment" data-status = "0" ><span><i class="fa fa-check-circle-o"></i> Active</span';    
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success">Unverified</span>';    
+                    $st = '<span class="badge bg-success activestatus" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
                     $st = '<span class="badge bg-gradient-bloody text-white shadow-sm ">Unknown</span>';  
