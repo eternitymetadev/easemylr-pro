@@ -376,7 +376,6 @@
                 // { extend: 'copy', className: 'btn btn-sm' },
                 // { extend: 'csv', className: 'btn btn-sm' },
                 { extend: 'excel', className: 'btn btn-sm', title: '', },
-
                 // { extend: 'print', className: 'btn btn-sm' }
             ]
         },
@@ -425,7 +424,6 @@
     function lrCheck(that) {
         if (that.value == "Successful") {
             document.getElementById("lrid").style.display = "block";
-
         } else {
             document.getElementById("lrid").style.display = "none";
         }
