@@ -302,7 +302,7 @@ class ConsignmentController extends Controller
                     $st = '<a class="activestatus btn btn-success" data-id = "'.$data->id.'" data-text="consignment" data-status = "0" ><span><i class="fa fa-check-circle-o"></i> Active</span';    
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success">Unverified</span>';    
+                    $st = '<span class="badge bg-success activestatus" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
                     $st = '<span class="badge bg-gradient-bloody text-white shadow-sm ">Unknown</span>';  
@@ -341,10 +341,7 @@ class ConsignmentController extends Controller
                      $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
                  }
                 
-
                 return $dt;
-                
-
             })                      
         ->rawColumns(['lrdetails','route','impdates','poptions','status', 'delivery_status', 'trail'])    
         ->make(true);
@@ -1772,7 +1769,9 @@ class ConsignmentController extends Controller
     public function DownloadBulkLr(Request $request)
     {
         $lrno = $request->checked_lr;
-        // echo'<pre>'; print_r($lrno); die;
+        $pdftype = $request->type;
+       //echo'<pre>'; print_r($pdftype); die;
+        
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
@@ -1969,8 +1968,20 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         // }
-        for ($i = 1; $i < 3; $i++) {
-            if ($i == 1) {$type = 'TRIPLICATE';} elseif ($i == 2) {$type = 'QUADRUPLE';}
+
+        // $type = count($pdftype);
+       foreach($pdftype as $i => $pdf){
+             
+            if($pdf == 1){
+                $type = 'ORIGINAL';
+            }elseif($pdf == 2){
+                $type = 'DUPLICATE';
+            }elseif ($pdf == 3){
+               $type = 'TRIPLICATE';
+            }elseif ($pdf == 4){
+              $type = 'QUADRUPLE';
+            }
+
             $html = '<!DOCTYPE html>
                     <html lang="en">
                         <head>
@@ -2039,7 +2050,8 @@ class ConsignmentController extends Controller
                                             </span>
                                         </td>
                                         <td width="50%">
-                                            <h2 class="l">CONSIGNMENT NOTE</h2>
+                                            <h2 class="l">CONSIGNMENT NOTE</h2> 
+
                                             <p class="l">' . $type . '</p>
                                         </td>
                                     </tr>
