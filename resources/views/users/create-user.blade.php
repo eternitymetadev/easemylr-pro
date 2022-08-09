@@ -194,16 +194,19 @@ $('#role_id').change(function() {
         $('.selectClient').show();
         $('.singleLocation').show();
         $('.multiLocation').hide();
+    }else if(role_id == 7) {            //role_id = 7 for client user
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false)
+        $('.chkBoxClass[value="7"]').prop('checked', true)
+
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+       
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
-
         $('.selectClient').hide();
-
-        // $('#ckbCheckAll').attr('checked',true);
-        // $('.chkBoxClass[value="1"]').prop('checked', true)
-        // $('.chkBoxClass[value="2"]').prop('checked', true)
-        // $('.chkBoxClass').prop('checked', true);
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
