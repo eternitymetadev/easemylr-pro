@@ -59,6 +59,9 @@ Route::get('/', function () {
         else if($userrole == 6) {
             return redirect('/client-account/dashboard');
         }
+        else if($userrole == 7) {
+            return redirect('/client-user/consignments');
+        }
     }
    else
     {
@@ -219,7 +222,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']); 
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
-    Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']);
+    Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']); 
     Route::any('view-draftSheet/{id}', [ConsignmentController::class, 'view_saveDraft']);
     Route::any('update-delivery/{id}', [ConsignmentController::class, 'updateDelivery']);
     Route::any('update-delivery-status', [ConsignmentController::class, 'updateDeliveryStatus']);
@@ -310,6 +313,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('update-delivery-date', [ConsignmentController::class, 'updateDeliveryDateOneBy']);
     Route::any('remove-lr', [ConsignmentController::class, 'removeLR']);
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
+    Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
+    Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
@@ -403,6 +408,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('update-delivery-date', [ConsignmentController::class, 'updateDeliveryDateOneBy']);
     Route::any('remove-lr', [ConsignmentController::class, 'removeLR']);
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
+    Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
+    Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
@@ -477,6 +484,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
+    Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
+    Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
 
     
     Route::resource('locations', LocationController::class);
@@ -553,7 +562,8 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('remove-lr', [ConsignmentController::class, 'removeLR']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
-
+    Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
+    Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
 
 
     Route::resource('locations', LocationController::class);
@@ -578,6 +588,12 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
     
+});
+Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']], function()
+{
+    Route::resource('consignments', ConsignmentController::class);
+    Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
 });
 
 Route::middleware(['auth'])->group(function () {

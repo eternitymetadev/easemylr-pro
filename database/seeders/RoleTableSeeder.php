@@ -50,7 +50,13 @@ class RoleTableSeeder extends Seeder
                 'slug' => 'client-account',
                 'status' => 1,
                 'created_at' => time()
-            ], 
+            ],
+            [
+                'name' => 'Client User',
+                'slug' => 'client-user',
+                'status' => 1,
+                'created_at' => time()
+            ],
             
         ];
         foreach ($input as $val) {
