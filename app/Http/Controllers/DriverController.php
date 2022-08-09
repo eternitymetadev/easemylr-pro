@@ -46,9 +46,6 @@ class DriverController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
         }
-        //$peritem = 20;
-        // $query = Driver::query();
-        // $drivers = $query->orderBy('id','DESC')->get();
         return view('drivers.driver-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);
     }
 
