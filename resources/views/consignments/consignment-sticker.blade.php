@@ -77,6 +77,10 @@
                             <td colspan ="2" style="text-align:center;"><b><?php echo $data['order_id'] ?></b></td>
                         </tr>
                         <tr>
+                            <td width="30%"><b style="margin-left: 8px;">Invoice No:</b></td>
+                            <td colspan ="2" style="text-align:center;"><b><?php echo $data['invoice_no'] ?></b></td>
+                        </tr>
+                        <tr>
                             <td width="30%"><b style="margin-left: 8px;">Client:</b></td>
                             <td colspan ="2" style="text-align:center;"><b><?php echo $baseclient ?></b></td>
                         </tr>
