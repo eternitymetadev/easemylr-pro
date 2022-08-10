@@ -1132,7 +1132,7 @@ class ConsignmentController extends Controller
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
         $sl = json_decode(json_encode($getdataregional), true);
-        $baseclient = $sl['base_client']['client_name'];
+        @$baseclient = $sl['base_client']['client_name'];
         
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
