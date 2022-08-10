@@ -93,7 +93,10 @@ class LoginController extends Controller
             }
             else if($getauthuser->role_id == 6) {
                 $url = URL::to('/client-account/dashboard');  
-            } 
+            }
+            else if($getauthuser->role_id == 7) {
+                $url = URL::to('/client-user/consignments');
+            }
             // Log::channel('customlog')->info('Activity: User Logged In, Name: '.Auth::user()->name);
             $response['success'] = true;
             $response['page'] = "login";

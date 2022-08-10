@@ -295,50 +295,61 @@ class ConsignmentController extends Controller
                 return $po;
             }) 
             ->addColumn('status', function($data){
+                $authuser = Auth::user();
+                if($authuser->role_id ==7) { 
+                    $disabled = true; 
+                } else {
+                    $disabled = false; 
+                }
                 if($data->status == 0){
-                 $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
+                    $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
-                    $st = '<a class="activestatus btn btn-success" data-id = "'.$data->id.'" data-text="consignment" data-status = "0" ><span><i class="fa fa-check-circle-o"></i> Active</span';    
+                    $st = '<a class="activestatus btn btn-success <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success activestatus" data-id = "'.$data->id.'">Unverified</span>';    
+                    $st = '<span class="badge bg-success activestatus <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
-                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm ">Unknown</span>';  
+                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>">Unknown</span>';  
                 }
 
                 return $st;
             })   
             ->addColumn('delivery_status', function($data){
-          
+                $authuser = Auth::user();
+                if($authuser->role_id ==7) { 
+                    $disabled = true; 
+                } else {
+                    $disabled = false; 
+                }
                 if($data->delivery_status == "Unassigned"){
 
-                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Assigned"){
 
-                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Started"){
 
-                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Successful"){
 
-                    $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Accepted"){
 
-                    $dt = '<span class="badge alert bg-info shadow-sm" lr-no = "'.$data->id.'">Acknowledged</span>';
+                    $dt = '<span class="badge alert bg-info shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">Acknowledged</span>';
 
                  }
                  else{
-                     $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
+                     $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">need to update</span>';
                  }
                 
                 return $dt;
@@ -1131,13 +1142,24 @@ class ConsignmentController extends Controller
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
         $sl = json_decode(json_encode($getdataregional), true);
-        $baseclient = $sl['base_client']['client_name'];
+        if(!empty($sl)){
+            $baseclient = $sl['base_client']['client_name'];
+        }
+        else{
+            $baseclient = ''; 
+        }
+        
         
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
+        if($authuser->branch_id == 28){
+            return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
+        }
+        else{
+            return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
+        }
         //echo $barcode; die;
-        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
 
     }
 
