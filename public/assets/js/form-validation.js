@@ -848,14 +848,6 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            invoice_no: {
-                required: true,
-                // AlphabetandNumbers: true,
-            },
-            invoice_amount: { 
-                required: true,
-                // AlphabetandNumbers: true,
-            },
             driver_id : {
                 // required: true,
             },
@@ -867,12 +859,6 @@ jQuery(document).ready(function(){
             },
             vehicle_id : {
                 // required: true,
-            },
-            e_way_bill: {
-                required: true,
-            },
-            e_way_bill_date: {
-                required: true,
             },
             'quantity[]': {
                 required: true,
@@ -901,14 +887,6 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: "Select ship to address",
             },
-            invoice_no: {
-                required: "Enter invoice no.",
-                AlphabetandNumbers: "Enter only alphabets and numbers",
-            },
-            invoice_amount: {
-                required: "Enter invoice amount",
-                AlphabetandNumbers: "Enter only alphabets and numbers",
-            },
             driver_id : {
                 required: "Select driver",
             },
@@ -920,12 +898,6 @@ jQuery(document).ready(function(){
             },
             vehicle_id : {
                 required: "Select vehicle no.",
-            },
-            e_way_bill : {
-                required: "Enter E Way Bill Number",
-            },
-            e_way_bill_date : {
-                required: "Enter E Way Bill Date",
             },
             'quantity[]': {
                 required: "Enter quantity",
@@ -1484,7 +1456,7 @@ function formSubmitRedirect(form)
             }
             if($('.edd_error').css('display') == 'block'){
                 //alert('Please select a valid alert message');
-                return false;
+                // return false;
            }
            $('.disableme').prop('disabled', true);
             // if ($('#vehicle_no').val() != '' && $("#edd").val() == null) {

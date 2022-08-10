@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	/*======== check box checked create/update user permission page  ========*/
+	/* check box checked create/update user permission page  */
     jQuery(document).on('click','#ckbCheckAll',function(){
         if(this.checked){
             jQuery('#dropdownMenuButton').prop('disabled', false);
@@ -617,15 +617,31 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             var tds = '<tr>';
             var item_no = $('tr', this).length;
-            alert(item_no);
             tds += '<td><div class="srno">'+item_no+'</div></td>';
-            tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
-            tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></td>'
-            tds += '<td> <input type="number" class="seteing qnt" name="data['+item_no+'][quantity]"></td>';
-            tds += '<td> <input type="number" class="seteing net" name="data['+item_no+'][weight]"></td>';
-            tds += '<td> <input type="number" class="seteing gross" name="data['+item_no+'][gross_weight]"></td>';
-            tds += '<td> <input type="text" class="seteing frei" name="data['+item_no+'][freight]"></td>';
-            tds += '<td><select class="seteing term" name="data['+item_no+'][payment_type]"><option value=""></option><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></td>'
+            tds += '<td><div class="form-group"><label>Description</label><input type="text" class="form-control seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></div>';
+            tds += '<div class="form-group mt-2"><label>Order Id</label>';
+            tds += '<input type="text" class="form-control seteing orderid" name="data['+item_no+'][order_id]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Mode of packing</label><input type="text" class="form-control seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice no</label>';
+            tds += '<input type="text" class="form-control seteing invc_no" name="data['+item_no+'][invoice_no]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Quantity</label><input type="number" class="form-control seteing qnt" name="data['+item_no+'][quantity]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice Date</label>';
+            tds += '<input type="date" class="form-control seteing invc_date" name="data['+item_no+'][invoice_date]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Net Weight</label> <input type="number" class="form-control seteing net" name="data['+item_no+'][weight]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice Amount</label>';
+            tds += '<input type="number" class="form-control seteing invc_amt" name="data['+item_no+'][invoice_amount]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Gross Weight</label> <input type="number" class="form-control seteing gross" name="data['+item_no+'][gross_weight]"></div>';
+            tds += '<div class="form-group mt-2"><label>E Way Bill</label>';
+            tds += '<input type="number" class="form-control seteing ew_bill" name="data['+item_no+'][e_way_bill]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Payment Terms</label> <select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></div>';
+            tds += '<div class="form-group mt-2"><label>E Way Bill Date</label>';
+            tds += ' <input type="date" class="form-control seteing ewb_date" name="data['+item_no+'][e_way_bill_date]"></div></td>';
+
             tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
             tds += '</tr>';
             if ($('tbody', this).length > 0) {
@@ -660,8 +676,16 @@ jQuery(document).ready(function(){
                 $(t.rows[i]).closest('tr').find('.qnt').attr('name', 'data['+i+'][quantity]');
                 $(t.rows[i]).closest('tr').find('.net').attr('name', 'data['+i+'][weight]');
                 $(t.rows[i]).closest('tr').find('.gross').attr('name', 'data['+i+'][gross_weight]');
-                $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
+                // $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
                 $(t.rows[i]).closest('tr').find('.term').attr('name', 'data['+i+'][payment_type]');
+
+                $(t.rows[i]).closest('tr').find('.orderid').attr('name', 'data['+i+'][order_id]');
+                $(t.rows[i]).closest('tr').find('.invc_no').attr('name', 'data['+i+'][invoice_no]');
+                $(t.rows[i]).closest('tr').find('.invc_date').attr('name', 'data['+i+'][invoice_date]');
+                $(t.rows[i]).closest('tr').find('.invc_amt').attr('name', 'data['+i+'][invoice_amount]');
+                $(t.rows[i]).closest('tr').find('.ew_bill').attr('name', 'data['+i+'][e_way_bill]');
+                $(t.rows[i]).closest('tr').find('.ewb_date').attr('name', 'data['+i+'][e_way_bill_date]');
+
                 i++;
             }
         });
@@ -683,21 +707,21 @@ jQuery(document).ready(function(){
             var qty = (!$('[name="data['+w+'][quantity]"]').val()) ? 0 : parseInt($('[name="data['+w+'][quantity]"]').val());
             var ntweight = (!$('[name="data['+w+'][weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][weight]"]').val());
             var grweight = (!$('[name="data['+w+'][gross_weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][gross_weight]"]').val());
-            var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
+            // var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
             total_quantity += qty;
             total_net_weight += ntweight;
             total_gross_weight += grweight;
-            total_freight += frt;
+            // total_freight += frt;
         }
         $('#tot_qty').html(total_quantity);
         $('#tot_nt_wt').html(total_net_weight);
         $('#tot_gt_wt').html(total_gross_weight);
-        $('#tot_frt').html(total_freight);
+        // $('#tot_frt').html(total_freight);
 
         $('#total_quantity').val(total_quantity);
         $('#total_weight').val(total_net_weight);
         $('#total_gross_weight').val(total_gross_weight);
-        $('#total_freight').val(total_freight);
+        // $('#total_freight').val(total_freight);
     }
 
     /*===== get location on edit click =====*/
@@ -839,10 +863,9 @@ jQuery(document).on('click','.drs_cancel',function(event){
 
 
 });
-//    Drs Cncel status update+++++++++++++++++++++++++++++++++++++
+///// Drs Cncel status update ////////
 jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
-   
     
     let drs_no   = jQuery(this).attr('drs-no');
     var dataaction = jQuery(this).attr('data-action');
@@ -853,19 +876,17 @@ jQuery(document).on('click','.drs_cancel',function(event){
     jQuery( ".commonconfirmclick").one( "click", function() {
         var status_value = jQuery('#drs_status').val();
          
-    if(status_value == 'Successful'){
-        var consignmentID = [];
-        $('input[name="delivery_date[]"]').each(function() {
-          if(this.value == '') {
-           alert('Please filled all delevery date');
-           exit;
-          }
-            consignmentID.push(this.value);
-        });
-    }
-
+        if(status_value == 'Successful'){
+            var consignmentID = [];
+            $('input[name="delivery_date[]"]').each(function() {
+                if(this.value == '') {
+                    alert('Please filled all delevery date');
+                    exit;
+                }
+                consignmentID.push(this.value);
+            });
+        }
         var drs_status = jQuery('#drs_status').val();
-        //alert(drs_status);
         var data =  {drs_no:drs_no,drs_status:drs_status,updatestatus:updatestatus};
         
         jQuery.ajax({
@@ -1003,7 +1024,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
         jQuery('.editBranchadd').css('display','none');
     });
 
-    /*===== For create/update consigner/consignee page  =====*/
+    /* For create/update consigner/consignee page  */
     $(document).on('keyup', "#gst_number",function () {
         var gstno = $(this).val().toUpperCase();
         var gstno = gstno.replace(/[^A-Z0-9]/g, '');
@@ -1129,7 +1150,7 @@ $(document).on('blur', "#edd",function () {
 
 
 });
-/*====== End document ready function =====*/ 
+/* End document ready function */ 
 function get_delivery_date()
 {
     $('.delivery_d').blur(function () {
