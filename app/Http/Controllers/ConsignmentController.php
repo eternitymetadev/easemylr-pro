@@ -108,7 +108,23 @@ class ConsignmentController extends Controller
                         ->where('consignment_notes.user_id', $authuser->id)
                         ->orderBy('id', 'DESC')
                         ->get(['consignees.city']);
-            }else {
+            }elseif($authuser->role_id ==7){
+                $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail','consigners.regionalclient_id as regionalclient_id')
+                
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                    ->leftjoin('jobs', function($data){
+                        $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                             ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+                    })
+                    ->whereIn('regional_clients.id', $regclient)
+                    ->orderBy('id', 'DESC')
+                    ->get(['consignees.city']);
+            }
+            else {
                 $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')

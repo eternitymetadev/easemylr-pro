@@ -79,7 +79,7 @@
                             <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
-                                    <option value="">Select</option>
+                                    <option value="" disabled>Select</option>
                                     <?php 
                                     if(count($branches)>0) {
                                         foreach ($branches as $key => $branch) {
@@ -198,11 +198,10 @@ $('#role_id').change(function() {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
         $('.chkBoxClass[value="7"]').prop('checked', true)
-
-        $('.multiLocation').show();
-        $('.singleLocation').hide();
-        $('.selectClient').hide();
-       
+        
+        $('.selectClient').show();
+        $('.singleLocation').show();
+        $('.multiLocation').hide();
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
@@ -218,26 +217,26 @@ $('#role_id').change(function() {
 $('#branch_id').change(function() {
     $('#select_regclient').empty();
     let branch_id = $(this).val();
-        $.ajax({
-            type      : 'get',
-            url       : APP_URL+'/get_regclients',
-            data      : {branch_id:branch_id},
-            headers   : {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType  : 'json',
-            success:function(res){
-                console.log(res);
-                if(res.data){
-                    $('#select_regclient').append('<option value="">Select regional client</option>');
-                    $.each(res.data,function(key,value){
-                        $('#select_regclient').append('<option value="'+value.id+'">'+value.name+'</option>');
-                    });
-                }
+    $.ajax({
+        type      : 'get',
+        url       : APP_URL+'/get_regclients',
+        data      : {branch_id:branch_id},
+        headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType  : 'json',
+        success:function(res){
+            console.log(res);
+            if(res.data){
+                $('#select_regclient').append('<option value="">Select regional client</option>');
+                $.each(res.data,function(key,value){
+                    $('#select_regclient').append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
             }
-        });
-
+        }
+    });
 });
+
 
 </script>
 @endsection

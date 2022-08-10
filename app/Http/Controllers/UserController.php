@@ -297,7 +297,7 @@ class UserController extends Controller
     public function regClients(Request $request)
     {
         $getclients = RegionalClient::select('id', 'name', 'baseclient_id', 'location_id')->where(['location_id' => $request->branch_id, 'status' => '1'])->get();
-        
+    
         if ($getclients) {
             $response['success'] = true;
             $response['success_message'] = "Client list fetch successfully";
