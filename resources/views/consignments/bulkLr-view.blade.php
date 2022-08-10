@@ -128,7 +128,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                     <nav class="breadcrumb-one" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment List</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Bulk Lr Downlaod</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -139,11 +139,20 @@ a.badge.alert.bg-secondary.shadow-sm {
                         <table id="bulk-table" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
                             <input class="btn btn-success bulk_loder" type="submit"  value="Download Bulk Pdf" id="bulk" style="font-size: 13px; padding: 6px 0px;" disabled/><div class="spinner-border text-primary  align-self-center"  id ="pageloader" style="display: none;"></div>
+                           
                             <!-- <a href="{{'download-bulklr'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Download PDF</a> -->
                             <!-- <button type="button" class="btn btn-warning disableDrs" id="download_bulkLr" style="font-size: 11px;">
                              Download All LR
                               </button> -->
                             </div>
+                            <input type="checkbox" id="vehicle1" name="type[]" value="1" style="margin-left:170px;">
+                            <label for="vehicle1" style="margin-left:9px;">ORIGINAL</label>
+                            <input type="checkbox" id="vehicle2" name="type[]" value="2" style="margin-left:9px;">
+                            <label for="vehicle2" style="margin-left:9px;"> DUPLICATE</label>
+                            <input type="checkbox" id="vehicle3" name="type[]" value="3" style="margin-left:9px;" checked>
+                            <label for="vehicle3" style="margin-left:9px;"> TRIPLICATE</label>
+                            <input type="checkbox" id="vehicle3" name="type[]" value="4" style="margin-left:9px;" >
+                            <label for="vehicle3" style="margin-left:9px;"> QUADRUPLE</label>
                             <thead>
                                 <tr>
                                 <th>
