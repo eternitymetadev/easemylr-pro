@@ -62,7 +62,7 @@
     }
 
     .cusright {
-        min-height: 238px;
+        min-height: 203px;
         box-shadow: -7px 0px 6px -8px #000;
     }
 
