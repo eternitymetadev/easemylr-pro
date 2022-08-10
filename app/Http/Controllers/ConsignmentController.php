@@ -1139,13 +1139,24 @@ class ConsignmentController extends Controller
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
         $sl = json_decode(json_encode($getdataregional), true);
-        $baseclient = $sl['base_client']['client_name'];
+        if(!empty($sl)){
+            $baseclient = $sl['base_client']['client_name'];
+        }
+        else{
+            $baseclient = ''; 
+        }
+        
         
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
+        if($authuser->branch_id == 28){
+            return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
+        }
+        else{
+            return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
+        }
         //echo $barcode; die;
-        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
 
     }
 
