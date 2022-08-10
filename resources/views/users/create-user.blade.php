@@ -62,8 +62,8 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 baseclient" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Base Client<span class="text-danger">*</span></label>
-                                <select class="form-control" id="baseclient_id" name="baseclient_id[]">
+                                <label for="exampleFormControlSelect1">Select Base Client</label>
+                                <select class="form-control" id="baseclient_id" name="baseclient_id">
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($baseclients)>0) {
@@ -77,7 +77,7 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 singleLocation">
-                                <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
+                                <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control" id="branch_id" name="branch_id[]">
                                     <option value="">Select</option>
                                     <?php 
@@ -92,7 +92,7 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 multiLocation" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
+                                <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
                                     <?php 
@@ -107,7 +107,7 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 selectClient" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Regional Clients<span class="text-danger">*</span></label>
+                                <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
                                     <option value="">Select</option>
                                     

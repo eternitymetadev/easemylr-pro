@@ -70,6 +70,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
             'name' => 'required',
@@ -113,8 +114,7 @@ class UserController extends Controller
             $usersave['branch_id']  = implode(',',$branch);
         }
         if(!empty($request->baseclient_id)){
-            $baseclients = $request->baseclient_id;
-            $usersave['baseclient_id'] = implode(',', $baseclients);
+            $usersave = $request->baseclient_id;
         }
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
@@ -124,8 +124,8 @@ class UserController extends Controller
             $news = $request->permisssion_id;
             $usersave['assign_permission'] = implode(',', $news);
         }
-        $usersave['status']  = "1";
-
+        $usersave['status'] = "1";
+    dd($usersave);
         $saveuser = User::create($usersave); 
         if($saveuser)
         {
