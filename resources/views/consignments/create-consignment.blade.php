@@ -228,15 +228,20 @@
                                                         name="dispatch" value="" placeholder="" readonly
                                                         style="border:none;">
                                                 </div>
-                                                <!-- <div class=" col-sm-4" style="margin-top:10px;">
-                                                <label for="exampleFormControlInput2">Order ID</label>
                                             </div>
-                                            <div class=" col-sm-8" style="margin-top:2px;">
-                                                <input type="text" class="form-seteing" id="order_id" name="order_id" value="" placeholder=""
-                                                    style="border:none;" Required>
-                                            </div> -->
+
+                                            <div class="row">
+                                                <div class=" col-sm-4" style="margin-top:10px;">
+                                                    <label for="exampleFormControlInput2">Regional Client</label>
+                                                </div>
+                                                <div class=" col-sm-8" style="margin-top:2px;">
+                                                    <input type="text" class="form-seteing" id="regclient"
+                                                        name="regclient" value="" placeholder="" readonly
+                                                        style="border:none;">
+                                                </div>
 
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -271,11 +276,26 @@
                                                     <label for="exampleFormControlInput2">EDD</label>
                                                 </div>
                                                 <div class="col-sm-8" style="margin-top:2px;">
-                                                    <input type="date" class="form-seteing" id="edd" name="edd" value=""
-                                                        placeholder="" style="border:none;">
+                                                    <input type="date" class="form-seteing" id="edd" name="edd" value="" placeholder="" style="border:none;">
                                                     <!-- <p class="edd_error text-danger" style="display: none; color: #ff0000; font-weight: 500;">Please enter edd </p> -->
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class=" col-sm-4" style="margin-top:15px;">
+                                                    <label for="exampleFormControlInput2">Driver Name</label>
+                                                </div>
+                                                <div class="col-sm-8" style="margin-top:10px;">
+                                                    <select class="my-select2 form-seteing" id="driver_id" name="driver_id" tabindex="-1">
+                                                    <option value="">Select driver</option>
+                                                    @foreach($drivers as $driver)
+                                                    <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                                        '-'}}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -435,19 +455,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class=" col-sm-1">
-                            <label for="exampleFormControlInput2">Driver Name</label>
-                        </div>
-                        <div class=" col-sm-2">
-                            <select class="my-select2 sete" id="driver_id" name="driver_id" tabindex="-1">
-                                <option value="">Select driver</option>
-                                @foreach($drivers as $driver)
-                                <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
-                                    '-'}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                         <div class=" col-sm-1">
                             <label for="exampleFormControlInput2">Purchase Price</label>
                         </div>

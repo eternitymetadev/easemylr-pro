@@ -668,8 +668,8 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsigners(Request $request)
     {
-        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id')->with('GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
-
+        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
+        
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
             $response['success'] = true;
