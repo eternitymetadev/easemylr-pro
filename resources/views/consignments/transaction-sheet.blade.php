@@ -78,7 +78,7 @@ div.relative {
                                 @foreach($transaction as $trns)
                                 <?php 
                                 
-                               $date = new DateTime($trns->created_at, new DateTimeZone('UTC'));
+                               $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
                                  $date->setTimezone(new DateTimeZone('IST'));
                                 
                                 //  echo $date->format('Y-m-d'); die;
