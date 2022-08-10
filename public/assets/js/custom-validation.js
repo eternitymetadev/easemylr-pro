@@ -434,7 +434,7 @@ jQuery(document).ready(function(){
                     $('#select_consignee, #select_ship_to').append('<option value="'+value.id+'">'+value.nick_name+'</option>');
                 });
                 if(res.data){
-                    //console.log(res.data);
+                    console.log(res.data);
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
                     }else{
@@ -469,6 +469,13 @@ jQuery(document).ready(function(){
                     $('#consigner_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
 
                     $("#dispatch").val(res.data.city);
+
+                    if(res.data.get_reg_client.name == null){
+                        var regclient = '';
+                    }else{
+                        var regclient = res.data.get_reg_client.name;
+                    }
+                    $("#regclient").val(regclient);
                 }
             }
         });
