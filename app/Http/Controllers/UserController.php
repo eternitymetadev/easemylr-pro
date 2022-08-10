@@ -10,6 +10,7 @@ use App\Models\UserPermission;
 use App\Models\Permission;
 use App\Models\Location;
 use App\Models\RegionalClient;
+use App\Models\BaseClient;
 use DB;
 use URL;
 use Helper;
@@ -54,9 +55,10 @@ class UserController extends Controller
         $getpermissions = Permission::all();
         $getroles = Role::all();
         $branches = Helper::getLocations();
+        $baseclients = BaseClient::all();
         $regionalclients = Helper::getRegionalClients();
 
-        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
+        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'baseclients'=>$baseclients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
     }
     
     /**
@@ -109,6 +111,10 @@ class UserController extends Controller
         if(!empty($request->branch_id)){
             $branch = $request->branch_id;
             $usersave['branch_id']  = implode(',',$branch);
+        }
+        if(!empty($request->baseclient_id)){
+            $baseclients = $request->baseclient_id;
+            $usersave['baseclient_id'] = implode(',', $baseclients);
         }
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
