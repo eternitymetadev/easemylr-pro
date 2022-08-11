@@ -377,7 +377,14 @@ a.badge.alert.bg-secondary.shadow-sm {
                         @csrf
                         <table id="lrlist" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
-                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                            <?php  $authuser = Auth::user(); 
+                            if($authuser->role_id == 7){ 
+                                $disabled = true; 
+                            } else {
+                                $disabled = false; 
+                            } ?>
+                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right <?php if ($disabled){ ?> disable_n <?php } ?>" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                                
                             </div>
                             <thead>
                                 <tr>

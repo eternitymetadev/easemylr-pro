@@ -59,6 +59,9 @@ Route::get('/', function () {
         else if($userrole == 6) {
             return redirect('/client-account/dashboard');
         }
+        else if($userrole == 7) {
+            return redirect('/client-user/consignments');
+        }
     }
    else
     {
@@ -595,6 +598,12 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
     
+});
+Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']], function()
+{
+    Route::resource('consignments', ConsignmentController::class);
+    Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
 });
 
 Route::middleware(['auth'])->group(function () {
