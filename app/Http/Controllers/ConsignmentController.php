@@ -333,25 +333,24 @@ class ConsignmentController extends Controller
             }) 
             ->addColumn('status', function($data){
                 $authuser = Auth::user();
-                if($authuser->role_id == 7) { 
-                    $disabled = true; 
-                } else {
-                    $disabled = false; 
+                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                    $disable = 'disable_n'; 
+                    
+                } else{
+                    $disable = '';
                 }
                 if($data->status == 0){
                     $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
-                    if($disabled){
-                        $disable = 'disable_n';
-                    }
-                    $st = '<a class="activestatus btn btn-success"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
+
+                    $st = '<a class="activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success activestatus <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'">Unverified</span>';    
+                    $st = '<span class="badge bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
-                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>">Unknown</span>';  
+                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm">Unknown</span>';  
                 }
 
                 return $st;
@@ -365,31 +364,31 @@ class ConsignmentController extends Controller
                 }
                 if($data->delivery_status == "Unassigned"){
 
-                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Assigned"){
 
-                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Started"){
 
-                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Successful"){
 
-                    $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
 
                  }
                  elseif($data->delivery_status == "Accepted"){
 
-                    $dt = '<span class="badge alert bg-info shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">Acknowledged</span>';
+                    $dt = '<span class="badge alert bg-info shadow-sm" lr-no = "'.$data->id.'">Acknowledged</span>';
 
                  }
                  else{
-                     $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">need to update</span>';
+                     $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
                  }
                 
                 return $dt;
