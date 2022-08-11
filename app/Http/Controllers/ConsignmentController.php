@@ -357,10 +357,11 @@ class ConsignmentController extends Controller
             })   
             ->addColumn('delivery_status', function($data){
                 $authuser = Auth::user();
-                if($authuser->role_id ==7) { 
-                    $disabled = true; 
-                } else {
-                    $disabled = false; 
+                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                    $disable = 'disable_n'; 
+                    
+                } else{
+                    $disable = '';
                 }
                 if($data->delivery_status == "Unassigned"){
 
