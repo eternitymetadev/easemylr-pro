@@ -114,28 +114,24 @@ class UserController extends Controller
             $usersave['branch_id']  = implode(',',$branch);
         }
         if(!empty($request->baseclient_id)){
-            $usersave = $request->baseclient_id;
+            $usersave['baseclient_id'] = $request->baseclient_id;
         }
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
             $usersave['regionalclient_id'] = implode(',', $regclients);
         }
-        if(!empty($request->permisssion_id)){
-            $news = $request->permisssion_id;
-            $usersave['assign_permission'] = implode(',', $news);
-        }
         $usersave['status'] = "1";
-    dd($usersave);
-        $saveuser = User::create($usersave); 
+        
+        $saveuser = User::create($usersave);
         if($saveuser)
         {
             $userid = $saveuser->id;
             if(!empty($request->permisssion_id)){         
-              foreach ($request->permisssion_id as $key => $permissionvalue){
-                  $savepermissions[] = [
-                    'user_id'=>$userid,
-                    'permisssion_id'=>$permissionvalue,
-                  ];   
+                foreach ($request->permisssion_id as $key => $permissionvalue){
+                    $savepermissions[] = [
+                        'user_id'=>$userid,
+                        'permisssion_id'=>$permissionvalue,
+                    ];
                 }
                 UserPermission::insert($savepermissions); 
             }
