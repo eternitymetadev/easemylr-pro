@@ -998,6 +998,8 @@ class ConsignmentController extends Controller
                                 <p><b>Value INR</b></p>
                                 <p><b>Vehicle No.</b></p>
                                 <p><b>Driver Name</b></p>
+                                <p><b>Driver Number</b></p>
+
                             </td>
                             <td width="30%">';
             if (@$data['consignment_no'] != '') {
@@ -1043,6 +1045,11 @@ class ConsignmentController extends Controller
             }
             if (@$data['driver_detail']['name'] != '') {
                 $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
+            } else {
+                $html .= '<p> - </p>';
+            }
+            if (@$data['driver_detail']['phone'] != '') {
+                $html .= '<p>' . ucwords($data['driver_detail']['phone']) . '</p>';
             } else {
                 $html .= '<p> - </p>';
             }
