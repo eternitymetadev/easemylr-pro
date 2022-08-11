@@ -46,8 +46,9 @@ class ReportController extends Controller
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->whereIn('consignment_notes.user_id', $authuser->id)
+                    ->where('consignment_notes.user_id', $authuser->id)
                     ->get(['consignees.city']);
+                    // dd($consignments);
             }else{
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'regional_clients.name as regional_name','base_clients.client_name as baseclient_name','drivers.name as drivers_name', 'drivers.phone as drivers_phone', 'drivers.fleet_id as fleet','ship.nick_name as ship_nick')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -60,7 +61,6 @@ class ReportController extends Controller
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->get(['consignees.city']);
-                    
             }
         } else {
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'regional_clients.name as regional_name','base_clients.client_name as baseclient_name','drivers.name as drivers_name', 'drivers.phone as drivers_phone', 'drivers.fleet_id as fleet','ship.nick_name as ship_nick')
@@ -95,7 +95,7 @@ class ReportController extends Controller
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->whereIn('consignment_notes.user_id', $authuser->id)
+                    ->where('consignment_notes.user_id', $authuser->id)
                     ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
                     ->get(['consignees.city']);
             }else{
