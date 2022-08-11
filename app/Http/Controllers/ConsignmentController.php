@@ -1238,7 +1238,8 @@ class ConsignmentController extends Controller
             //echo "<pre>";print_r($json['data']['deliveries']);die;
         }
         else{
-            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+    
+            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         }
 
         $response['success'] = true;
@@ -1289,8 +1290,6 @@ class ConsignmentController extends Controller
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
                 }elseif($request->drs_status == 'Successful'){
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
-                }elseif($request->drs_status == 0){
-                    TransactionSheet::where('drs_no', $request->drs_no)->update(['status' => $request->drs_status]);
                 }
             }
 
@@ -1539,7 +1538,7 @@ class ConsignmentController extends Controller
         $cc = $authuser->branch_id;
 
          $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
-        $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
+         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->whereIn('consignment_notes.id', $consignmentId)
@@ -1722,10 +1721,10 @@ class ConsignmentController extends Controller
 
     public function getdeliverydatamodel(Request $request)
     {
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_notes.status as lrstatus','consignment_notes.edd as edd','consignment_notes.delivery_date as dd'  )
-         ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->where('consignment_notes.status', '1')->get();
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_notes.status as lrstatus','consignment_notes.edd as edd','consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs')
+         ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->where('consignment_notes.status', '1')->whereIn('transaction_sheets.status', ['1','0','3'])->get();
         $result = json_decode(json_encode($transcationview), true);
-        //echo'<pre>'; print_r($result); exit;
+         //echo'<pre>'; print_r($result); exit;
         $response['fetch'] = $result;
 
         $response['success'] = true;
@@ -1734,7 +1733,7 @@ class ConsignmentController extends Controller
 
     }
 
-    //========================Bulk Print LR ==============================//
+    //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -2456,6 +2455,68 @@ class ConsignmentController extends Controller
     $response['success'] = true;
 
     return response()->json($response);
+
+   }
+// //////////   ACTIVE CANCEL STATUS DRS
+   public function drsStatus(Request $request)
+   {
+    $this->prefix = request()->route()->getPrefix();
+
+    if ($request->ajax()) {
+        if (isset($request->updatestatus)) {
+
+            TransactionSheet::where('drs_no', $request->drs_id)->update(['status' => 0]);
+
+            $drs = DB::table('transaction_sheets')->select('consignment_no')->where('drs_no', $request->drs_id)->get();
+            $simplyfydrs = $data = json_decode(json_encode($drs), true);
+            foreach($simplyfydrs as $consgnment){
+                $lrNo = $consgnment['consignment_no'];
+               
+             ConsignmentNote::where('id', $lrNo)->update(['status' => 2]);
+            }
+
+        }
+
+
+        $url = $this->prefix . '/transaction-sheet';
+        $response['success'] = true;
+        $response['success_message'] = "Dsr cancel status updated successfully";
+        $response['error'] = false;
+        $response['page'] = 'dsr-cancel-update';
+        $response['redirect_url'] = $url;
+
+        return response()->json($response);
+    }
+
+   }
+   public function uploadDrsImg(Request $request)
+   {
+    try {
+   
+        $file= $request->file('file');
+        $filename= $file->getClientOriginalName();
+        $file-> move(public_path('drs/Image'), $filename);
+        if(!empty($filename)){
+        ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename]);
+
+        $response['success'] = true;
+        $response['messages'] = 'img uploaded successfully';
+        return Response::json($response);
+        }else{
+        $response['success'] = false;
+        $response['messages'] = 'Img not Found';
+        return Response::json($response);
+
+        }
+
+
+    }catch (\Exception $e) {
+        $bug = $e->getMessage();
+        $response['success'] = false;
+        $response['messages'] = $bug;
+        return Response::json($response);
+    }
+    
 
    }
 
