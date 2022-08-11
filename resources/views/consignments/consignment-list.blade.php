@@ -392,7 +392,11 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <th>LR Details</th>
                                     <th>Route</th>
                                     <th>Dates</th>
+                                    <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                                     <th>Printing options</th>
+                                    <?php }else {?>
+                                        <th></th>
+                                        <?php }?>
                                     <th>LR Status</th>
                                     <th>Delivery Status</th>
                                 </tr>

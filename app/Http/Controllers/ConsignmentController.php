@@ -291,8 +291,14 @@ class ConsignmentController extends Controller
                 return $dates;
             })
             ->addColumn('poptions', function($data){
+                $authuser = Auth::user();
+                if($authuser->role_id !=6 && $authuser->role_id !=7){
                 $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-info shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-view/2/" target="_blank" class="badge alert bg-info shadow-sm">Print LR</a>';
                 return $po;
+                }else{
+                    $po = '';
+                    return $po;
+                }
             }) 
             ->addColumn('status', function($data){
                 $authuser = Auth::user();
