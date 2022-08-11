@@ -10,6 +10,7 @@ use App\Models\UserPermission;
 use App\Models\Permission;
 use App\Models\Location;
 use App\Models\RegionalClient;
+use App\Models\BaseClient;
 use DB;
 use URL;
 use Helper;
@@ -54,9 +55,10 @@ class UserController extends Controller
         $getpermissions = Permission::all();
         $getroles = Role::all();
         $branches = Helper::getLocations();
+        $baseclients = BaseClient::all();
         $regionalclients = Helper::getRegionalClients();
 
-        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
+        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'baseclients'=>$baseclients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
     }
     
     /**
@@ -68,6 +70,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
             'name' => 'required',
@@ -110,26 +113,25 @@ class UserController extends Controller
             $branch = $request->branch_id;
             $usersave['branch_id']  = implode(',',$branch);
         }
+        if(!empty($request->baseclient_id)){
+            $usersave['baseclient_id'] = $request->baseclient_id;
+        }
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
             $usersave['regionalclient_id'] = implode(',', $regclients);
         }
-        if(!empty($request->permisssion_id)){
-            $news = $request->permisssion_id;
-            $usersave['assign_permission'] = implode(',', $news);
-        }
-        $usersave['status']  = "1";
-
-        $saveuser = User::create($usersave); 
+        $usersave['status'] = "1";
+        
+        $saveuser = User::create($usersave);
         if($saveuser)
         {
             $userid = $saveuser->id;
             if(!empty($request->permisssion_id)){         
-              foreach ($request->permisssion_id as $key => $permissionvalue){
-                  $savepermissions[] = [
-                    'user_id'=>$userid,
-                    'permisssion_id'=>$permissionvalue,
-                  ];   
+                foreach ($request->permisssion_id as $key => $permissionvalue){
+                    $savepermissions[] = [
+                        'user_id'=>$userid,
+                        'permisssion_id'=>$permissionvalue,
+                    ];
                 }
                 UserPermission::insert($savepermissions); 
             }
@@ -297,7 +299,7 @@ class UserController extends Controller
     public function regClients(Request $request)
     {
         $getclients = RegionalClient::select('id', 'name', 'baseclient_id', 'location_id')->where(['location_id' => $request->branch_id, 'status' => '1'])->get();
-        
+    
         if ($getclients) {
             $response['success'] = true;
             $response['success_message'] = "Client list fetch successfully";
