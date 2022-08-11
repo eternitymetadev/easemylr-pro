@@ -291,7 +291,7 @@ class ConsignmentController extends Controller
         ->addColumn('route', function($data){
            // echo "<pre>";print_r($data);die;
             $troute = '<ul class="ant-timeline">
-            <li class="ant-timeline-item  css-b03s4t">
+            <li class="ant-timeline-item  css-b03s4t">  
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
                 <div class="ant-timeline-item-content">
