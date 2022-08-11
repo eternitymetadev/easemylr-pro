@@ -333,7 +333,7 @@ class ConsignmentController extends Controller
             }) 
             ->addColumn('status', function($data){
                 $authuser = Auth::user();
-                if($authuser->role_id ==7) { 
+                if($authuser->role_id == 7) { 
                     $disabled = true; 
                 } else {
                     $disabled = false; 
@@ -342,7 +342,10 @@ class ConsignmentController extends Controller
                     $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
-                    $st = '<a class="activestatus btn btn-success <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
+                    if($disabled){
+                        $disable = 'disable_n';
+                    }
+                    $st = '<a class="activestatus btn btn-success"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
                 }
                 elseif($data->status == 2){
                     $st = '<span class="badge bg-success activestatus <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'">Unverified</span>';    
