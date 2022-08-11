@@ -86,7 +86,8 @@ div.relative {
                                     <th>Pin Code</th> 
                                     <th>District</th>
                                     <th>State</th>
-                                    <th>Ship To</th>
+                                    <th>Ship To Name</th>
+                                    <th>Ship To City</th>
                                     <th>Invoice No</th>
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
@@ -127,6 +128,7 @@ div.relative {
                                     <td>{{ $consignment->district ?? "-" }}</td>
                                     <td>{{ $consignment->state ?? "-" }}</td>
                                     <td>{{ $consignment->ship_nick ?? "-" }}</td>
+                                    <td>{{ $consignment->ship_city ?? "-" }}</td>
                                     <td>{{ $consignment->invoice_no ?? "-" }}</td>
                                     <td>{{ $consignment->invoice_date ?? "-" }}</td>
                                     <td>{{ $consignment->invoice_amount ?? "-" }}</td>
@@ -239,7 +241,7 @@ div.relative {
                     }
                     ///////////state id///////
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.ship_nick + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.ship_nick + "</td><td>" + value.ship_city + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
