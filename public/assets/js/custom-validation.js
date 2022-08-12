@@ -1032,7 +1032,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
     let lr_no   = jQuery(this).attr('lr-no');
 
         var data =  {lr_no:lr_no};
-        
+        var base_url = window.location.origin;
         jQuery.ajax({
             url         : "get-delivery-dateLR",
             type        : 'get',
@@ -1057,12 +1057,19 @@ jQuery(document).on('click','.manual_updateLR',function(event){
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
                     $.each(data.fetch, function(index, value) {
-                        // alert(value.delivery_date);
+                     console.log(value);
 
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
+                        var drs_sign = value.signed_drs;
+                        var storage_img = base_url+'/drs/Image/'+drs_sign;
+                        if(value.signed_drs == null) {
+                            var field = "<input type='file' name='img' data-id='"+ value.id+ "' placeholder='Choose image' class='drs_image'>";
+                        }else{
+                            var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
+                        }
                         
-                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'></td></tr>");      
+                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'><td>"+ field +"</td></tr>");      
 
                     });
                      get_delivery_date();
@@ -1262,6 +1269,7 @@ function get_delivery_date()
             // alert(data.success);
             if(data.success == true){
                swal("success","image upload successfully", 'success')
+               location.reload();
             }else{
                 swal("error","Something went wrong uploading image", 'error')
             }

@@ -1,5 +1,5 @@
-<div class="modal fade" id="manualLR" tabindex="-1" role="dialog" aria-hidden="true">
-   <div class="modal-dialog">
+<div class="modal fade bd-example-modal-xl" id="manualLR" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog modal-xl">
      <div class="modal-content">
        <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
        <!-- Modal Header -->
@@ -11,7 +11,7 @@
        <div class="form-row mb-0">
                         <div class="form-group col-md-12">
                             <label for="location_name">Status</label>
-
+ 
                             <select class="form-control" id="lr_status" name="lr_status" onchange="lrCheck(this);" tabindex="-1" >
                                 <option value="">Select status</option>
                                 <option value="Unassigned">Unassigned</option>
@@ -33,8 +33,10 @@
                             <thead>
                                 <tr>
                                     <th>LR No</th>
+                                    <th>Consignee</th>
+                                    <th>City</th>
                                     <th>Delivery Date</th>
-
+                                    <th>Image</th>
                                 </tr>
                             </thead>
                             <tbody>

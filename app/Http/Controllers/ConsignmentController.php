@@ -2248,11 +2248,11 @@ class ConsignmentController extends Controller
     ////////////////get delevery date LR//////////////////////
     public function getDeleveryDateLr(Request $request)
     {
-        $transcationview = DB::table('consignment_notes')->select('*')
-            ->where('id', $request->lr_no)->get();
+        $transcationview = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_nick', 'consignees.city as conee_city')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->where('consignment_notes.id', $request->lr_no)->get();
         $result = json_decode(json_encode($transcationview), true);
         $response['fetch'] = $result;
-
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);

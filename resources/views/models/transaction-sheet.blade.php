@@ -57,7 +57,7 @@
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>
                                 <tr>
-                                    <th>LR No</th>
+                                    <th>LR No</th> 
                                     <th>Consignee</th>
                                     <th>City</th>
                                     <th>Delivery Date</th>
