@@ -822,6 +822,48 @@ jQuery(document).ready(function(){
             });
         });
     });
+//////////////////////// Active Cancel Status in drs/////////////////////////////////
+// consignment status change onchange
+jQuery(document).on('click','.active_drs',function(event){
+    event.stopPropagation(); 
+    let drs_id   = jQuery(this).attr('drs-no');
+    // alert(drs_id);
+    var updatestatus = 'updatestatus';
+
+    jQuery('#drs_commonconfirm').modal('show');
+    jQuery( ".commonconfirmclick").one( "click", function() {
+
+        var data =  {drs_id:drs_id,updatestatus:updatestatus};
+        
+        jQuery.ajax({
+            url         : 'drs-status',
+            type        : 'get',
+            cache       : false,
+            data        :  data,
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend  : function () {
+                // jQuery("input[type=submit]").attr("disabled", "disabled");
+            },
+            complete: function () {
+                //jQuery("#loader-section").css('display','none');
+            },
+
+            success:function(response){
+                if(response.success){
+                    jQuery('#commonconfirm').modal('hide');
+                    if(response.page == 'dsr-cancel-update'){
+                        setTimeout(() => {window.location.href = response.redirect_url},10);
+                    }
+                }
+                
+            }
+        });
+    });
+});
  ///////////////////////get data successful model++++++++++++++++++++++++++++
  
 jQuery(document).on('click','.drs_cancel',function(event){
@@ -829,7 +871,7 @@ jQuery(document).on('click','.drs_cancel',function(event){
    
     let drs_no   = jQuery(this).attr('drs-no');
         var data =  {drs_no:drs_no};
-        
+        var base_url = window.location.origin;
         jQuery.ajax({
             url         : "get-delivery-datamodel",
             type        : 'get',
@@ -854,11 +896,18 @@ jQuery(document).on('click','.drs_cancel',function(event){
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
                     $.each(data.fetch, function(index, value) {
-
+                        var drs_sign = value.signed_drs;
+                        var storage_img = base_url+'/drs/Image/'+drs_sign;
+                        if(value.signed_drs == null) {
+                            var field = "<input type='file' name='img' data-id='"+ value.consignment_no+ "' placeholder='Choose image' class='drs_image'>";
+                        }else{
+                            var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
+                        }
+                    //   alert(storage_img);
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td><td>"+field+"</td></tr>");      
 
 
                     });
@@ -1004,7 +1053,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
 
             success:function(data){
                 console.log(data.fetch);
-            //     var re = jQuery.parseJSON(data)
+            //  var re = jQuery.parseJSON(data)
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
                     $.each(data.fetch, function(index, value) {
@@ -1180,3 +1229,44 @@ function get_delivery_date()
                     })
            });
     }
+    /*======upload drs delevery img============================== */
+    $(document).on('change', '.drs_image', function(){
+        
+        var files = $(this)[0].files
+        var lr_no = $(this).attr('data-id');
+
+        var form_data = new FormData();
+        var ext = files[0]['name'].split('.').pop().toLowerCase();
+        if(jQuery.inArray(ext, ['png','jpg','jpeg','pdf']) == -1) 
+        {
+         swal("error","Invalid img file", "error"); return false;
+        }
+
+        form_data.append('file',files[0]);
+        form_data.append('lr', lr_no);
+         $.ajax({
+          url:"upload-delivery-img",
+          method:"POST",
+          data: form_data,
+          contentType: false,
+          cache: false,
+          processData: false,
+          headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+          beforeSend:function(){
+          
+          },   
+          success:function(data)
+          {
+            // alert(data.success);
+            if(data.success == true){
+               swal("success","image upload successfully", 'success')
+            }else{
+                swal("error","Something went wrong uploading image", 'error')
+            }
+           
+          }
+         });
+        });
+       

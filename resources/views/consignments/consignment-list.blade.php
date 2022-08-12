@@ -378,13 +378,9 @@ a.badge.alert.bg-secondary.shadow-sm {
                         <table id="lrlist" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
                             <?php  $authuser = Auth::user(); 
-                            if($authuser->role_id == 7){ 
-                                $disabled = true; 
-                            } else {
-                                $disabled = false; 
-                            } ?>
-                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right <?php if ($disabled){ ?> disable_n <?php } ?>" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
-                                
+                            if($authuser->role_id != 6 && $authuser->role_id != 7){ ?>
+                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                                <?php } ?>
                             </div>
                             <thead>
                                 <tr>
@@ -392,7 +388,11 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <th>LR Details</th>
                                     <th>Route</th>
                                     <th>Dates</th>
+                                    <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                                     <th>Printing options</th>
+                                    <?php }else {?>
+                                        <th></th>
+                                        <?php }?>
                                     <th>LR Status</th>
                                     <th>Delivery Status</th>
                                 </tr>
