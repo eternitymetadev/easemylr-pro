@@ -36,8 +36,9 @@
                   margin-right: auto;
                 }
                 .ff{
-                    font-size: 52px;
-                    margin: -12px;
+                    margin-top: 7px;
+                    font-size: 28px;
+                    margin-bottom: 2px;
                 }
                 .kk{
                     margin-top: 4px;
@@ -60,7 +61,7 @@
             </head>
             <body onload="window.print()">
                 <div class="ticket">
-                    <table style="width:90%" style="background-color: aquamarine;">
+                    <table style="width:100%" style="background-color: aquamarine;">
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <img src="/assets/img/logo_se.jpg" class="imu">
@@ -68,30 +69,30 @@
                             
                         </tr>
                         <tr>
-                            <td width="30%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
-                            <td colspan ="2" style="text-align:center; padding:5px 0px"><h3 class="ff"><?php echo $data['id'] ?></h3></td>
+                            <td width="30%" ><b style="margin-left: 8px; ">LR No.</b></td>
+                            <td colspan ="2" style="text-align:center;"><h3 class="ff"><?php echo $data['id'] ?></h3></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['order_id'] ?></b></td>
+                            <td width="30%"><b style="margin-left: 8px;">Order ID:</b></td>
+                            <td colspan ="2" style="text-align:center;"><b><?php echo $data['order_id'] ?></b></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['invoice_no'] ?></b></td>
+                            <td width="30%"><b style="margin-left: 8px;">Invoice No:</b></td>
+                            <td colspan ="2" style="text-align:center;"><b><?php echo $data['invoice_no'] ?></b></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:20px;"><?php echo $baseclient ?></b></td>
+                            <td width="30%"><b style="margin-left: 8px;">Client:</b></td>
+                            <td colspan ="2" style="text-align:center;"><b><?php echo $baseclient ?></b></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;">No Of Box:</b></td>
-                            <td colspan ="2" style="text-align:center;"><p style="font-size: 70px;margin: -15px;font-weight:bold;position: relative;top: 8px;"><?php echo $data['total_quantity'] ?><p></td>
+                            <td width="30%"><b style="margin-left: 8px;">NO Of Boxes:</b></td>
+                            <td colspan ="2" style="text-align:center;"><p style="font-size: 36px;margin: 1px;font-weight:bold;position: relative;top: 8px;"><?php echo $data['total_quantity'] ?><p></td>
                         </tr>
                         <tr>
                             <td width="30%" style="text-align:center;"><img src="/assets/img/barcode.png" style="width: 80px;"></td>
                             <td colspan ="2">
                                 <div class="row" style="margin-left: 8px;">
-                                <p  style="font-weight:bold; font-size:18px;">Ship To: <br/><?php echo $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2']; ?></p>
+                                <p  style="font-weight:bold">Ship to: <br/><?php echo $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2']; ?></p>
                                 </div>
                             </td>
                         </tr>

@@ -45,7 +45,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // dd($request->all());
         $rules = array(
             'login_id' => 'required',
             'password' => 'required',
@@ -92,8 +91,11 @@ class LoginController extends Controller
                 $url = URL::to('/account-manager/dashboard');  
             }
             else if($getauthuser->role_id == 6) {
-                $url = URL::to('/client-account/dashboard');  
-            } 
+                $url = URL::to('/client-account/consignments');  
+            }
+            else if($getauthuser->role_id == 7) {
+                $url = URL::to('/client-user/consignments');
+            }
             // Log::channel('customlog')->info('Activity: User Logged In, Name: '.Auth::user()->name);
             $response['success'] = true;
             $response['page'] = "login";

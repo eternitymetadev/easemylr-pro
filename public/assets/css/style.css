@@ -28,3 +28,4 @@ label.error {
   left: 98px;
   z-index: 99999;
 } 
+.disable_n { pointer-events: none; cursor: default;}

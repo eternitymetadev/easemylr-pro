@@ -1,6 +1,245 @@
 @extends('layouts.main')
 @section('content')
 <style>
+
+.accepted {
+    color: #ffffff !important;
+    background: #007bff;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+.started {
+    color: #ffffff !important;
+    background: #e2a03f;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+.successful {
+    color: #ffffff !important;
+    background: #009688;
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+.cbp_tmtimeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: relative
+}
+
+.cbp_tmtimeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #eee;
+    left: 20%;
+    margin-left: -6px
+}
+
+.cbp_tmtimeline>li {
+    position: relative
+}
+
+.cbp_tmtimeline>li:first-child .cbp_tmtime span.large {
+    color: #444;
+    font-size: 17px !important;
+    font-weight: 700
+}
+
+.cbp_tmtimeline>li:first-child .cbp_tmicon {
+    background: #fff;
+    color: #666
+}
+
+.cbp_tmtimeline>li:nth-child(odd) .cbp_tmtime span:last-child {
+    color: #444;
+    font-size: 13px
+}
+
+.cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel {
+    background: #f0f1f3
+}
+
+.cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel:after {
+    border-right-color: #f0f1f3
+}
+
+.cbp_tmtimeline>li .empty span {
+    color: #777
+}
+
+.cbp_tmtimeline>li .cbp_tmtime {
+    display: block;
+    width: 23%;
+    padding-right: 70px;
+    position: absolute
+}
+
+.cbp_tmtimeline>li .cbp_tmtime span {
+    display: block;
+    text-align: right
+}
+
+.cbp_tmtimeline>li .cbp_tmtime span:first-child {
+    font-size: 15px;
+    color: #3d4c5a;
+    font-weight: 700
+}
+
+.cbp_tmtimeline>li .cbp_tmtime span:last-child {
+    font-size: 14px;
+    color: #444;
+    margin-top: 10px;
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel {
+    margin: 0 0 15px 25%;
+    background: #f0f1f3;
+    padding: 1.2em;
+    position: relative;
+    border-radius: 5px
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel:after {
+    right: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-right-color: #f0f1f3;
+    border-width: 10px;
+    top: 10px
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel blockquote {
+    font-size: 16px
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel .map-checkin {
+    border: 5px solid rgba(235, 235, 235, 0.2);
+    -moz-box-shadow: 0px 0px 0px 1px #ebebeb;
+    -webkit-box-shadow: 0px 0px 0px 1px #ebebeb;
+    box-shadow: 0px 0px 0px 1px #ebebeb;
+    background: #fff !important
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel h2 {
+    margin: 0px;
+    padding: 0 0 10px 0;
+    line-height: 26px;
+    font-size: 16px;
+    font-weight: normal
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel h2 a {
+    font-size: 15px
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel h2 a:hover {
+    text-decoration: none
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel h2 span {
+    font-size: 15px
+}
+
+.cbp_tmtimeline>li .cbp_tmlabel p {
+    color: #444
+}
+
+.cbp_tmtimeline>li .cbp_tmicon {
+    width: 15px;
+    height: 15px;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    font-size: 1.4em;
+    line-height: 40px;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    color: #fff;
+    background: #1a545a;
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px #f4f4f4;
+    text-align: center;
+    left: 21%;
+    top: 12px;
+    margin: 0 0 0 -21px;
+}
+
+@media screen and (max-width: 992px) and (min-width: 768px) {
+    .cbp_tmtimeline>li .cbp_tmtime {
+        padding-right: 60px
+    }
+}
+
+@media screen and (max-width: 65.375em) {
+    .cbp_tmtimeline>li .cbp_tmtime span:last-child {
+        font-size: 12px
+    }
+}
+
+@media screen and (max-width: 47.2em) {
+    .cbp_tmtimeline:before {
+        display: none
+    }
+    .cbp_tmtimeline>li .cbp_tmtime {
+        width: 100%;
+        position: relative;
+        padding: 0 0 20px 0
+    }
+    .cbp_tmtimeline>li .cbp_tmtime span {
+        text-align: left
+    }
+    .cbp_tmtimeline>li .cbp_tmlabel {
+        margin: 0 0 30px 0;
+        padding: 1em;
+        font-weight: 400;
+        font-size: 95%
+    }
+    .cbp_tmtimeline>li .cbp_tmlabel:after {
+        right: auto;
+        left: 20px;
+        border-right-color: transparent;
+        border-bottom-color: #f5f5f6;
+        top: -20px
+    }
+    .cbp_tmtimeline>li .cbp_tmicon {
+        position: relative;
+        float: right;
+        left: auto;
+        margin: -64px 5px 0 0px
+    }
+    .cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel:after {
+        border-right-color: transparent;
+        border-bottom-color: #f5f5f6
+    }
+}
+
+.bg-green {
+    background-color: #50d38a !important;
+    color: #fff;
+}
+
+.bg-blush {
+    background-color: #ff758e !important;
+    color: #fff;
+}
+
+.bg-orange {
+    background-color: #ffc323 !important;
+    color: #fff;
+}
+
+.bg-info {
+    background-color: #2CA8FF !important;
+}    
         .dt--top-section {
     margin:none;
 }
@@ -119,6 +358,7 @@ a.badge.alert.bg-secondary.shadow-sm {
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
+    
 <!-- END PAGE LEVEL CUSTOM STYLES -->  
 
     <div class="layout-px-spacing">
@@ -137,7 +377,14 @@ a.badge.alert.bg-secondary.shadow-sm {
                         @csrf
                         <table id="lrlist" class="table table-hover" style="width:100%">
                             <div class="btn-group relative">
-                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                            <?php  $authuser = Auth::user(); 
+                            if($authuser->role_id == 7){ 
+                                $disabled = true; 
+                            } else {
+                                $disabled = false; 
+                            } ?>
+                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right <?php if ($disabled){ ?> disable_n <?php } ?>" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
+                                
                             </div>
                             <thead>
                                 <tr>
