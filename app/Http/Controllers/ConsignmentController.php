@@ -1399,7 +1399,7 @@ class ConsignmentController extends Controller
         //dd($transcationview);
         $simplyfy = json_decode(json_encode($transcationview), true);
         $no_of_deliveries =  count($simplyfy);
-        $details = $simplyfy[0];
+        $details = $simplyfy[0]; 
 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
