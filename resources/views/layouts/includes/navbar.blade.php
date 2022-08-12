@@ -9,10 +9,16 @@
                 $authuser = Auth::user();
                 $permissions = App\Models\UserPermission::where('user_id',$authuser->id)->pluck('permisssion_id')->ToArray();
                 $submenusegment = Request::segment(3);
+
+                if($authuser->role_id == 6 || $authuser->role_id == 7) { 
+                    $disable = 'disable_n';
+                } else{
+                    $disable = '';
+                }
                 ?>
 
     <div class="nav-logo align-self-center">
-    <a class="navbar-brand" href="{{$prefixurl.'dashboard'}}"><img alt="logo" src="{{asset('assets/img/LOGO_Frowarders.jpg')}}"> <span class="navbar-brand-name"></span></a>
+    <a class="navbar-brand <?php echo $disable; ?>" href="{{$prefixurl.'dashboard'}}"><img alt="logo" src="{{asset('assets/img/LOGO_Frowarders.jpg')}}"> <span class="navbar-brand-name"></span></a>
     </div>
    
 

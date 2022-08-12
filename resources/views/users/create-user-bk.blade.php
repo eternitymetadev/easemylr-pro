@@ -61,23 +61,8 @@
                                 ?>                            
                                 </select>
                             </div>
-                            <div class="form-group mb-4 baseclient" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Base Client</label>
-                                <select class="form-control" id="baseclient_id" name="baseclient_id">
-                                    <option value="">Select</option>
-                                    <?php 
-                                    if(count($baseclients)>0) {
-                                        foreach ($baseclients as $key => $baseclient) {
-                                    ?>
-                                        <option value="{{ $baseclient->id }}">{{ucwords($baseclient->client_name)}}</option>
-                                        <?php 
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
                             <div class="form-group mb-4 singleLocation">
-                                <label for="exampleFormControlSelect1">Select Location</label>
+                                <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
                                 <select class="form-control" id="branch_id" name="branch_id[]">
                                     <option value="">Select</option>
                                     <?php 
@@ -92,9 +77,9 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 multiLocation" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Location</label>
+                                <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
-                                    <option value="" disabled>Select</option>
+                                    <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
                                         foreach ($branches as $key => $branch) {
@@ -107,7 +92,7 @@
                                 </select>
                             </div>
                             <div class="form-group mb-4 selectClient" style="display: none;">
-                                <label for="exampleFormControlSelect1">Select Regional Clients</label>
+                                <label for="exampleFormControlSelect1">Select Regional Clients<span class="text-danger">*</span></label>
                                 <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
                                     <option value="">Select</option>
                                     
@@ -169,8 +154,8 @@ $('#role_id').change(function() {
     if(role_id == 1) {            //role_id = 1 for Admin
         $('.multiLocation').hide();
         $('.singleLocation').show();
+
         $('.selectClient').hide();
-        $('.baseclient').hide();
 
         $('#ckbCheckAll').attr('checked',true);
         $('.chkBoxClass[value="1"]').prop('checked', true)
@@ -186,7 +171,7 @@ $('#role_id').change(function() {
         $('.multiLocation').hide();
         $('.singleLocation').show();
         $('.selectClient').hide();
-        $('.baseclient').hide();
+
     }else if(role_id == '') {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -199,7 +184,7 @@ $('#role_id').change(function() {
         $('.multiLocation').show();
         $('.singleLocation').hide();
         $('.selectClient').hide();
-        $('.baseclient').hide();
+       
     }else if(role_id == 4) {            //role_id = 4 for branch User
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -209,30 +194,19 @@ $('#role_id').change(function() {
         $('.selectClient').show();
         $('.singleLocation').show();
         $('.multiLocation').hide();
-        $('.baseclient').hide();
-    }else if(role_id == 6) {            //role_id = 6 for client account
-        $('#ckbCheckAll').attr('checked', false);
-        $('.chkBoxClass').prop('checked', false)
-        $('.chkBoxClass[value="7"]').prop('checked', true)
-        
-        $('.baseclient').show();
-        $('.selectClient').hide();
-        $('.singleLocation').hide();
-        $('.multiLocation').hide();
     }else if(role_id == 7) {            //role_id = 7 for client user
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
         $('.chkBoxClass[value="7"]').prop('checked', true)
-        
-        $('.selectClient').show();
-        $('.singleLocation').show();
-        $('.multiLocation').hide();
-        $('.baseclient').hide();
+
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+       
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
         $('.selectClient').hide();
-        $('.baseclient').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -244,26 +218,26 @@ $('#role_id').change(function() {
 $('#branch_id').change(function() {
     $('#select_regclient').empty();
     let branch_id = $(this).val();
-    $.ajax({
-        type      : 'get',
-        url       : APP_URL+'/get_regclients',
-        data      : {branch_id:branch_id},
-        headers   : {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        dataType  : 'json',
-        success:function(res){
-            console.log(res);
-            if(res.data){
-                $('#select_regclient').append('<option value="">Select regional client</option>');
-                $.each(res.data,function(key,value){
-                    $('#select_regclient').append('<option value="'+value.id+'">'+value.name+'</option>');
-                });
+        $.ajax({
+            type      : 'get',
+            url       : APP_URL+'/get_regclients',
+            data      : {branch_id:branch_id},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(res){
+                console.log(res);
+                if(res.data){
+                    $('#select_regclient').append('<option value="">Select regional client</option>');
+                    $.each(res.data,function(key,value){
+                        $('#select_regclient').append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+                }
             }
-        }
-    });
-});
+        });
 
+});
 
 </script>
 @endsection
