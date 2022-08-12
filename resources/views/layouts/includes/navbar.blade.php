@@ -107,7 +107,7 @@
                     </a>
                 </li>
                 <?php }
-                }if($authuser->role_id !=7){
+                }if($authuser->role_id !=6 && $authuser->role_id !=7){
                 if(!empty($permissions)){
                     if(in_array('7', $permissions))
                     { ?>
