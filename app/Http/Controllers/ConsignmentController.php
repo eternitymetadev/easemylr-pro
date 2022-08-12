@@ -2,33 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\BranchAddress;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
-use App\Models\RegionalClient;
 use App\Models\Driver;
+use App\Models\Job;
 use App\Models\Location;
+use App\Models\RegionalClient;
+use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\Vehicle;
-use App\Models\Role;
-use App\Models\Job;
 use App\Models\VehicleType;
-use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Auth;
+use DataTables;
 use DB;
+use Helper;
+use Illuminate\Http\Request;
+use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use QrCode;
+use Response;
 use Storage;
 use Validator;
-use DataTables;
-use Helper;
-use Response;
 
 class ConsignmentController extends Controller
 {
-
 
     public function __construct()
     {
@@ -52,8 +51,8 @@ class ConsignmentController extends Controller
             $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-             // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-             // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
                 ->whereIn('consignment_notes.branch_id', $cc)
                 ->get(['consignees.city']);
 
@@ -87,8 +86,8 @@ class ConsignmentController extends Controller
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
-    public function consignment_list(){
-        
+    public function consignment_list()
+    {
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
@@ -127,7 +126,6 @@ class ConsignmentController extends Controller
                     ->get(['consignees.city']);
             }elseif($authuser->role_id ==7){               //for client user (select regional client)
                 $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail','consigners.regionalclient_id as regionalclient_id')
-                
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -141,76 +139,76 @@ class ConsignmentController extends Controller
                     ->orderBy('id', 'DESC')
                     ->get(['consignees.city']);
             }
-            else {
+           else {
                 $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->leftjoin('jobs', function($data){
+                    ->leftjoin('jobs', function ($data) {
                         $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                             ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+                            ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                     })
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->orderBy('id', 'DESC')
                     ->get(['consignees.city']);
             }
         } else {
-            $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode','consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone','jobs.status as job_status', 'jobs.response_data as trail' )
+            $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3', 'consignees.district as conee_district', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                 ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->leftjoin('jobs', function($data){
+                ->leftjoin('jobs', function ($data) {
                     $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+                        ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                 })
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
         }
 
         return Datatables::of($data)
-        ->addColumn('lrdetails', function($data){
-                     
-            $trps = '<div class="">
-                     <div class=""><span style="color:#4361ee;">LR No: </span>'.$data->id.'</div>
-                     <div class=""><span style="color:#4361ee;">Order No: </span>'.$data->order_id.'</div>
-                     <div class=""><span style="color:#4361ee;">Invoice No: </span>'.$data->invoice_no.'</div>
-                     </div>'; 
+            ->addColumn('lrdetails', function ($data) {
 
-            return $trps;
-        })
-        ->addColumn('trail', function($data){
+                $trps = '<div class="">
+                     <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . '</div>
+                     <div class=""><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
+                     <div class=""><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
+                     </div>';
 
-            $json = json_decode($data->trail);
-            if(!empty($json)){
-                $trcking_history = array_reverse($json->task_history);
+                return $trps;
+            })
+            ->addColumn('trail', function ($data) {
 
-                //echo "<pre>";print_r($trcking_history);die;
-    
-                $trail = '<div class="container">
+                $json = json_decode($data->trail);
+                if (!empty($json)) {
+                    $trcking_history = array_reverse($json->task_history);
+
+                    //echo "<pre>";print_r($trcking_history);die;
+
+                    $trail = '<div class="container">
                             <div class="row">
                                 <div class="col-md-10">
                                     <ul class="cbp_tmtimeline">';
-                /*$result = array();
-                    foreach ($trcking_history as $element) {
-                            $result[$element->type][] = $element;
-                     }*/
-                 //echo "<pre>"; print_r($trcking_history);   die; 
-                foreach($trcking_history as $task){
-                    $timestamp = $task->creation_datetime;
-                    $date = new \DateTime($timestamp);
-                    $task_date = $date->format('d-m-Y h:i');
-                    $type = $task->type;
-            
-                    $des_data = '';
-                    if($type == 'image_added'){
-                        $des_data .= 'Attachment uploaded by '.$task->fleet_name.'<br/>    <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
+                    /*$result = array();
+                foreach ($trcking_history as $element) {
+                $result[$element->type][] = $element;
+                }*/
+                    //echo "<pre>"; print_r($trcking_history);   die;
+                    foreach ($trcking_history as $task) {
+                        $timestamp = $task->creation_datetime;
+                        $date = new \DateTime($timestamp);
+                        $task_date = $date->format('d-m-Y h:i');
+                        $type = $task->type;
+
+                        $des_data = '';
+                        if ($type == 'image_added') {
+                            $des_data .= 'Attachment uploaded by ' . $task->fleet_name . '<br/>    <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_' . $task->id . '">
                         View Attachment
                       </button>
-    
+
                       <!-- Modal -->
-                  <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal fade" id="mod_' . $task->id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
                               <div class="modal-header">
@@ -220,23 +218,22 @@ class ConsignmentController extends Controller
                                   </button>
                               </div>
                               <div class="modal-body">
-                              <img src="'.$task->description.'" width="100%"  seamless="">   
+                              <img src="' . $task->description . '" width="100%"  seamless="">
                               </div>
                               <div class="modal-footer">
                                   <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-                                  
+
                               </div>
                           </div>
                       </div>
                   </div>';
-                    }
-                    elseif($type == 'signature_image_added'){
-                        $des_data .= 'Signature Added by '.$task->fleet_name.'<br/><img src="'.$task->description.'" width="10%"><br/><br/><button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'.$task->id.'">
+                        } elseif ($type == 'signature_image_added') {
+                            $des_data .= 'Signature Added by ' . $task->fleet_name . '<br/><img src="' . $task->description . '" width="10%"><br/><br/><button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_' . $task->id . '">
                         View Signatures
                       </button>
-    
+
                       <!-- Modal -->
-                  <div class="modal fade" id="mod_'.$task->id.'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal fade" id="mod_' . $task->id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                           <div class="modal-content">
                               <div class="modal-header">
@@ -246,58 +243,55 @@ class ConsignmentController extends Controller
                                   </button>
                               </div>
                               <div class="modal-body">
-                              <iframe src="'.$task->description.'" width="100%" height="298" seamless=""></iframe>   
+                              <iframe src="' . $task->description . '" width="100%" height="298" seamless=""></iframe>
                               </div>
                               <div class="modal-footer">
                                   <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-                                  
+
                               </div>
                           </div>
                       </div>
                   </div>';
-                    }
-                    else{
-                        $str = trim($task->label_description, 'at').' by '.$task->fleet_name;
-                        if (str_contains($str, 'CREATED')) { 
-                            $des_data .= "LR Created";
+                        } else {
+                            $str = trim($task->label_description, 'at') . ' by ' . $task->fleet_name;
+                            if (str_contains($str, 'CREATED')) {
+                                $des_data .= "LR Created";
+                            } else {
+                                $des_data .= $str;
+                            }
                         }
-                        else{
-                            $des_data .= $str;
-                        }
-                    }
-                    
-                    $trail .= '
+
+                        $trail .= '
                                 <li>
-                                    <time class="cbp_tmtime" datetime="'.$task_date.'"><span class="hidden">'.$task_date.'</span></time>
+                                    <time class="cbp_tmtime" datetime="' . $task_date . '"><span class="hidden">' . $task_date . '</span></time>
                                     <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div>
-                                    <div class="cbp_tmlabel empty"> <span>'.$des_data.'</span> </div>
-                                </li>'; 
-                }
-    
-                $trail .= '</ul>  
+                                    <div class="cbp_tmlabel empty"> <span>' . $des_data . '</span> </div>
+                                </li>';
+                    }
+
+                    $trail .= '</ul>
                         </div>
                     </div>
                 </div>';
-        
-            }
-            else{
-                $trail ="No data available";
-            }
-           
-            //echo "<pre>";print_r($trcking_history);die;
 
-            return $trail;
-        })
-        ->addColumn('route', function($data){
-           // echo "<pre>";print_r($data);die;
-            $troute = '<ul class="ant-timeline">
+                } else {
+                    $trail = "No data available";
+                }
+
+                //echo "<pre>";print_r($trcking_history);die;
+
+                return $trail;
+            })
+            ->addColumn('route', function ($data) {
+                // echo "<pre>";print_r($data);die;
+                $troute = '<ul class="ant-timeline">
             <li class="ant-timeline-item  css-b03s4t">
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
                 <div class="ant-timeline-item-content">
-                    <div class="css-16pld72">'.$data->con_pincode.', '.$data->con_city.','.$data->con_district.' </div>
-                    <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">     
-                    <span>'.$data->consigner_id.'</span>
+                    <div class="css-16pld72">' . $data->con_pincode . ', ' . $data->con_city . ',' . $data->con_district . ' </div>
+                    <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
+                    <span>' . $data->consigner_id . '</span>
                 </div>
                 </div>
             </li>
@@ -305,93 +299,86 @@ class ConsignmentController extends Controller
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                 <div class="ant-timeline-item-content">
-                <div class="css-16pld72">'.$data->pincode.', '.$data->city.' ,'.$data->conee_district.'</div>
-                <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">     
-                    <span>'.$data->consignee_id.'</span>
+                <div class="css-16pld72">' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</div>
+                <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
+                    <span>' . $data->consignee_id . '</span>
                 </div>
                 </div>
             </li>
             </ul>';
                 return $troute;
             })
-            ->addColumn('impdates', function($data){
-                     
+            ->addColumn('impdates', function ($data) {
+
                 $dates = '<div class="">
-                         <div class=""><span style="color:#4361ee;">LR Date: </span>'.$data->consignment_date.'</div>
-                         <div class=""><span style="color:#4361ee;">EDD: </span>'.$data->edd.'</div>
-                         </div>'; 
-    
+                         <div class=""><span style="color:#4361ee;">LR Date: </span>' . $data->consignment_date . '</div>
+                         <div class=""><span style="color:#4361ee;">EDD: </span>' . $data->edd . '</div>
+                         </div>';
+
                 return $dates;
             })
             ->addColumn('poptions', function($data){
+                $authuser = Auth::user();
+                if($authuser->role_id !=6 && $authuser->role_id !=7){
                 $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-info shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-view/2/" target="_blank" class="badge alert bg-info shadow-sm">Print LR</a>';
                 return $po;
+                }else{
+                    $po = '';
+                    return $po;
+                }
             }) 
             ->addColumn('status', function($data){
                 $authuser = Auth::user();
-                if($authuser->role_id ==7) { 
-                    $disabled = true; 
-                } else {
-                    $disabled = false; 
+                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                    $disable = 'disable_n'; 
+                    
+                } else{
+                    $disable = '';
                 }
-                if($data->status == 0){
+                if ($data->status == 0) {
                     $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
-                    $st = '<a class="activestatus btn btn-success <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
+
+                    $st = '<a class="activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success activestatus <?php if ($disabled){ ?> disable_n <?php } ?>" data-id = "'.$data->id.'">Unverified</span>';    
+                    $st = '<span class="badge bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
-                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>">Unknown</span>';  
+                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm">Unknown</span>';  
                 }
 
                 return $st;
-            })   
-            ->addColumn('delivery_status', function($data){
+            })
+            ->addColumn('delivery_status', function ($data) {
                 $authuser = Auth::user();
-                if($authuser->role_id ==7) { 
-                    $disabled = true; 
-                } else {
-                    $disabled = false; 
+                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                    $disable = 'disable_n'; 
+                    
+                } else{
+                    $disable = '';
                 }
-                if($data->delivery_status == "Unassigned"){
-
-                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-
-                 }
-                 elseif($data->delivery_status == "Assigned"){
-
-                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-
-                 }
-                 elseif($data->delivery_status == "Started"){
-
-                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-
-                 }
-                 elseif($data->delivery_status == "Successful"){
-
-                    $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-
-                 }
-                 elseif($data->delivery_status == "Accepted"){
-
-                    $dt = '<span class="badge alert bg-info shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">Acknowledged</span>';
+                if ($data->delivery_status == "Unassigned") {
+                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                } elseif ($data->delivery_status == "Assigned") {
+                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                } elseif ($data->delivery_status == "Started") {
+                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                } elseif ($data->delivery_status == "Successful") {
+                    $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                } elseif ($data->delivery_status == "Accepted") {
+                    $dt = '<span class="badge alert bg-info shadow-sm" lr-no = "'.$data->id.'">Acknowledged</span>';
 
                  }
                  else{
-                     $dt = '<span class="badge alert bg-success shadow-sm <?php if ($disabled){ ?> disable_n <?php } ?>" lr-no = "'.$data->id.'">need to update</span>';
+                     $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
                  }
-                
                 return $dt;
-            })                      
-        ->rawColumns(['lrdetails','route','impdates','poptions','status', 'delivery_status', 'trail'])    
-        ->make(true);
+            })
+            ->rawColumns(['lrdetails', 'route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail'])
+            ->make(true);
 
-        
-     
     }
 
     /**
@@ -403,14 +390,14 @@ class ConsignmentController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
 
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
-            if($authuser->role_id == $role_id->id){
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+            if ($authuser->role_id == $role_id->id) {
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('branch_id', $cc)->get();
-            }else{
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
         }else if($authuser->role_id != 2 || $authuser->role_id != 3){
@@ -419,14 +406,14 @@ class ConsignmentController extends Controller
                 }else{
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else{
+        } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
         $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
         if (empty($consignees)) {
             $consignees = Consignee::select('id', 'nick_name')->get();
         }
-            // $consignees = Consignee::select('id','nick_name')->whereIn('branch_id',$cc)->get();
+        // $consignees = Consignee::select('id','nick_name')->whereIn('branch_id',$cc)->get();
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
@@ -449,7 +436,7 @@ class ConsignmentController extends Controller
         // $cc = explode('-',$cn->consignment_no);
         // $getconsignmentno = $cc[1] + 1;
         // $consignmentno = $cc[0].'-'.$getconsignmentno;
-        if(empty($consignmentno)) {
+        if (empty($consignmentno)) {
             $consignmentno = "";
         }
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -484,7 +471,7 @@ class ConsignmentController extends Controller
                 $response['validation'] = false;
                 $response['formErrors'] = true;
                 $response['errors'] = $errors;
-                return response()->json($response); 
+                return response()->json($response);
             }
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
@@ -528,53 +515,49 @@ class ConsignmentController extends Controller
             $consignmentsave['vehicle_type']      = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
             $consignmentsave['user_id'] = $authuser->id;
-            $consignmentsave['vehicle_id']        = $request->vehicle_id;
+            $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
             $consignmentsave['branch_id'] = $authuser->branch_id;
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
-            if (!empty($request->vehicle_id)) {    
+            if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Assigned";
-            }else{
+            } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
             $saveconsignment = ConsignmentNote::create($consignmentsave);
             $consignment_id = $saveconsignment->id;
-
            //===================== Create DRS in LR ================================= //
            if(!empty($request->vehicle_id)){
+                $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                    ->where('consignment_notes.id', $consignment_id)
+                    ->first(['consignees.city']);
+                $simplyfy = json_decode(json_encode($consignmentdrs), true);
+                //echo'<pre>'; print_r($simplyfy); die;
 
-           $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode','vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone')
-           ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-           ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-           ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-           ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-           ->where('consignment_notes.id', $consignment_id)
-           ->first(['consignees.city']);
-           $simplyfy = json_decode(json_encode($consignmentdrs), true);
-           //echo'<pre>'; print_r($simplyfy); die;
+                $no_of_digit = 5;
+                $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
+                $drs_no = json_decode(json_encode($drs), true);
+                if (empty($drs_no) || $drs_no == null) {
+                    $drs_no['drs_no'] = 0;
+                }
+                $number = $drs_no['drs_no'] + 1;
+                $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
-            $no_of_digit = 5;
-            $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
-            $drs_no = json_decode(json_encode($drs), true);
-            if (empty($drs_no) || $drs_no == null) {
-                $drs_no['drs_no'] = 0;
+                $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
             }
-            $number = $drs_no['drs_no'] + 1;
-            $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
-
-
-            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'],'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id , 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'],'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned','status' => '1']);
-           }
-           //===========================End drs lr ================================= //
+            //===========================End drs lr ================================= //
             if ($saveconsignment) {
 
-                
                 /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-                $vn =  $consignmentsave['vehicle_id'];
+                $vn = $consignmentsave['vehicle_id'];
                 $lid = $saveconsignment->id;
-                $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name','consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
+                $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                     ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
@@ -582,13 +565,13 @@ class ConsignmentController extends Controller
                     ->where('consignment_notes.id', $lid)
                     ->get();
                 $simplyfy = json_decode(json_encode($lrdata), true);
-                 //echo "<pre>";print_r($simplyfy);die;       
+                //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
                 if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                     $createTask = $this->createTookanTasks($simplyfy);
                     $json = json_decode($createTask[0], true);
-                    $job_id= $json['data']['job_id'];
-                    $tracking_link= $json['data']['tracking_link'];
+                    $job_id = $json['data']['job_id'];
+                    $tracking_link = $json['data']['tracking_link'];
                     $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
                 }
                 // insert consignment items
@@ -600,24 +583,24 @@ class ConsignmentController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                    $url = $this->prefix . '/consignments';
-                    $response['success'] = true;
-                    $response['success_message'] = "Consignment Added successfully";
-                    $response['error'] = false;
-                    // $response['resetform'] = true;
-                    $response['page'] = 'create-consignment';
-                    $response['redirect_url'] = $url;
+                $url = $this->prefix . '/consignments';
+                $response['success'] = true;
+                $response['success_message'] = "Consignment Added successfully";
+                $response['error'] = false;
+                // $response['resetform'] = true;
+                $response['page'] = 'create-consignment';
+                $response['redirect_url'] = $url;
             } else {
-                    $response['success'] = false;
-                    $response['error_message'] = "Can not created consignment please try again";
-                    $response['error'] = true;
+                $response['success'] = false;
+                $response['error_message'] = "Can not created consignment please try again";
+                $response['error'] = true;
             }
             DB::commit();
         } catch (Exception $e) {
-                    $response['error'] = false;
-                    $response['error_message'] = $e;
-                    $response['success'] = false;
-                    $response['redirect_url'] = $url;
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
         }
         return response()->json($response);
     }
@@ -633,10 +616,10 @@ class ConsignmentController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
             if ($authuser->role_id == $role_id->id) {
                 $getconsignment = $query->whereIn('branch_id', $cc)->orderby('id', 'DESC')->get();
             }
@@ -1024,6 +1007,8 @@ class ConsignmentController extends Controller
                                 
                                 <p><b>Vehicle No.</b></p>
                                 <p><b>Driver Name</b></p>
+                                <p><b>Driver Number</b></p>
+
                             </td>
                             <td width="30%">';
             if (@$data['consignment_no'] != '') {
@@ -1069,6 +1054,11 @@ class ConsignmentController extends Controller
             }
             if (@$data['driver_detail']['name'] != '') {
                 $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
+            } else {
+                $html .= '<p> - </p>';
+            }
+            if (@$data['driver_detail']['phone'] != '') {
+                $html .= '<p>' . ucwords($data['driver_detail']['phone']) . '</p>';
             } else {
                 $html .= '<p> - </p>';
             }
@@ -1167,7 +1157,7 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::first();
         $locations = Location::whereIn('id', $cc)->first();
- 
+
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
@@ -1175,21 +1165,18 @@ class ConsignmentController extends Controller
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
         $sl = json_decode(json_encode($getdataregional), true);
-        if(!empty($sl)){
+        if (!empty($sl)) {
             $baseclient = $sl['base_client']['client_name'];
+        } else {
+            $baseclient = '';
         }
-        else{
-            $baseclient = ''; 
-        }
-        
-        
+
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
-        if($authuser->branch_id == 28){
+        if ($authuser->branch_id == 28) {
             return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        }
-        else{
+        } else {
             return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
         }
         //echo $barcode; die;
@@ -1200,12 +1187,12 @@ class ConsignmentController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == $role_id->id){ 
-                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district','zones.primary_zone as zone')
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == $role_id->id) {
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
@@ -1213,14 +1200,13 @@ class ConsignmentController extends Controller
                     ->where('consignment_notes.status', '=', '2')
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->get(['consignees.city']);
-                // echo'<pre>';print_r($consignments);die;
             }
         } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district','zones.primary_zone as zone')
+            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-               ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+                ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
                 ->where('consignment_notes.status', '=', '2')
                 ->get(['consignees.city']);
         }
@@ -1238,7 +1224,6 @@ class ConsignmentController extends Controller
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
-
     public function updateUnverifiedLr(Request $request)
     {
 
@@ -1249,12 +1234,11 @@ class ConsignmentController extends Controller
         $adddriverId = $request->driver_id;
         $vehicleType = $request->vehicle_type;
         $transporterName = $request->transporter_name;
-        
 
         $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'delivery_status' => 'Assigned']);
         //echo'hii';
 
-        $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name','consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
+        $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
@@ -1280,30 +1264,30 @@ class ConsignmentController extends Controller
         $chk_tooken = Driver::where('id', $adddriverId)->select('team_id', 'fleet_id')->get();
         $tooken_details = json_decode(json_encode($chk_tooken), true);
         // Push to tooken if Team Id & Fleet Id Available
-        if(!empty($tooken_details[0]['fleet_id'])){
+        if (!empty($tooken_details[0]['fleet_id'])) {
             $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
             $createTask = $this->createTookanMultipleTasks($simplyfy);
             $json = json_decode($createTask, true);
             $response = $json['data']['deliveries'];
-            foreach($response as $res){
-                $job_id= $res['job_id'];
-                $orderId= $res['order_id'];
-                $tracking_link= $res['result_tracking_link'];
-                 //echo "<pre>";print_r($json['data']['deliveries']);die;
+            foreach ($response as $res) {
+                $job_id = $res['job_id'];
+                $orderId = $res['order_id'];
+                $tracking_link = $res['result_tracking_link'];
+                //echo "<pre>";print_r($json['data']['deliveries']);die;
                 $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
                 $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
             }
             //echo "<pre>";print_r($json['data']['deliveries']);die;
-        }
-        else{
-            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+        } else {
+
+            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
 
-    }    
+    }
 
     public function transactionSheet(Request $request)
     {
@@ -1312,43 +1296,41 @@ class ConsignmentController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == 4){ 
-                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no','transaction_sheets.driver_name','transaction_sheets.vehicle_no', 'transaction_sheets.status','transaction_sheets.delivery_status','transaction_sheets.created_at','transaction_sheets.driver_no','consignment_notes.user_id','consignment_notes.user_id')
-                ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                ->whereIn('transaction_sheets.status', ['1','0','3'])
-                ->where('consignment_notes.user_id', $authuser->id)
-                ->groupBy('transaction_sheets.drs_no')
-                ->get();
-            }else{
-                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no','transaction_sheets.driver_name','transaction_sheets.vehicle_no', 'transaction_sheets.status','transaction_sheets.delivery_status','transaction_sheets.created_at','transaction_sheets.driver_no','consignment_notes.user_id','consignment_notes.user_id')
-                ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                ->whereIn('transaction_sheets.status', ['1','0','3'])
-                ->whereIn('transaction_sheets.branch_id', [$cc])
-                ->groupBy('transaction_sheets.drs_no')
-                ->get();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == 4) {
+                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
+                    ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
+                    ->whereIn('transaction_sheets.status', ['1', '0', '3'])
+                    ->where('consignment_notes.user_id', $authuser->id)
+                    ->groupBy('transaction_sheets.drs_no')
+                    ->get();
+            } else {
+                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
+                    ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
+                    ->whereIn('transaction_sheets.status', ['1', '0', '3'])
+                    ->whereIn('transaction_sheets.branch_id', [$cc])
+                    ->groupBy('transaction_sheets.drs_no')
+                    ->get();
             }
         } else {
-            $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no','transaction_sheets.driver_name','transaction_sheets.vehicle_no', 'transaction_sheets.status','transaction_sheets.delivery_status','transaction_sheets.created_at','transaction_sheets.driver_no','consignment_notes.user_id','consignment_notes.user_id')
+            $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                 ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                ->whereIn('transaction_sheets.status', ['1','0','3'])
+                ->whereIn('transaction_sheets.status', ['1', '0', '3'])
                 ->groupBy('transaction_sheets.drs_no')
                 ->get();
             // $transaction = DB::table('transaction_sheets')->select('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no', DB::raw('count("drs_no") as total'))
-            // ->groupBy('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no')->whereIn('status', ['1','0','3'])->get();  
+            // ->groupBy('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no')->whereIn('status', ['1','0','3'])->get();
         }
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
-                if($request->drs_status == 'Started'){
+                if ($request->drs_status == 'Started') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
-                }elseif($request->drs_status == 'Successful'){
+                } elseif ($request->drs_status == 'Successful') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
-                }elseif($request->drs_status == 0){
-                    TransactionSheet::where('drs_no', $request->drs_no)->update(['status' => $request->drs_status]);
                 }
             }
 
@@ -1369,9 +1351,9 @@ class ConsignmentController extends Controller
     {
         $id = $_GET['cat_id'];
 
-       $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
-       ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
-       $result = json_decode(json_encode($transcationview), true);
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+        $result = json_decode(json_encode($transcationview), true);
 
         $response['fetch'] = $result;
         $response['success'] = true;
@@ -1384,12 +1366,11 @@ class ConsignmentController extends Controller
         //echo'<pre>'; print_r(); die;
         $id = $request->id;
         //echo'<pre>'; print_r($id); die;
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','consigneeDetail')->where('drs_no', $id)->whereIn('status', ['1','3'])->orderby('order_no', 'asc')->get();
+        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
         //dd($transcationview);
         $simplyfy = json_decode(json_encode($transcationview), true);
         $no_of_deliveries =  count($simplyfy);
-        $details = $simplyfy[0];
-
+        $details = $simplyfy[0]; 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         //<img src="" alt="logo" alt="" width="80" height="70">
@@ -1414,7 +1395,7 @@ class ConsignmentController extends Controller
            /* p { page-break-after: always; }
             p:last-child { page-break-after: never; } */
             * {
-                box-sizing: border-box;  
+                box-sizing: border-box;
               }
 
 
@@ -1456,7 +1437,7 @@ class ConsignmentController extends Controller
                             </tr>
                             <tr>
                                 <td>No. of Deliveries</td>
-                                <td>'.$no_of_deliveries.'</td>
+                                <td>' . $no_of_deliveries . '</td>
                                 <td>Driver No.</td>
                                 <td>' . @$details['driver_no'] . '</td>
                             </tr>
@@ -1465,8 +1446,8 @@ class ConsignmentController extends Controller
 
                     </div>
                      <div class="column" style="margin-left: 56px;">
-                        <img src="'.$pay.'" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
-                    </div> 
+                        <img src="' . $pay . '" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
+                    </div>
                 </div>
                 <br>
                 <div id="content"><div class="row" style="border: 1px solid black;">
@@ -1499,23 +1480,22 @@ class ConsignmentController extends Controller
                     </div>
                 </div></footer>
                     <main style="margin-top:150px;">';
-                    $i = 0;
-                    $total_Boxes = 0;
-                    $total_weight = 0;
+        $i = 0;
+        $total_Boxes = 0;
+        $total_weight = 0;
 
-                    foreach ($simplyfy as $dataitem) {
-                    //echo'<pre>'; print_r($dataitem); die;
+        foreach ($simplyfy as $dataitem) {
+            //echo'<pre>'; print_r($dataitem); die;
 
-
-                    $i++;
+            $i++;
             if ($i % 7 == 0) {
                 $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
             }
-           
+
             $total_Boxes += $dataitem['total_quantity'];
             $total_weight += $dataitem['total_weight'];
             //echo'<pre>'; print_r($dataitem['consignment_no']); die;
-            $html .= '  
+            $html .= '
                 <div class="row" style="border: 1px solid black;">
                     <div class="column" style="width:75px;">
                       <p style="margin-top:0px; overflow-wrap: break-word;">' . $dataitem['consignment_detail']['order_id'] . '</p>
@@ -1523,7 +1503,7 @@ class ConsignmentController extends Controller
                     </div>
                     <div class="column" style="width:75px;">
                         <p style="margin-top:0px;">' . $dataitem['consignment_no'] . '</p>
-                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']). '</p>
+                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']) . '</p>
                     </div>
                     <div class="column" style="width:140px;">
                         <p style="margin-top:0px;">' . $dataitem['consignee_id'] . '</p>
@@ -1577,13 +1557,12 @@ class ConsignmentController extends Controller
     //////////////////////////////////remove lr////////////////////
     public function removeLR(Request $request)
     {
-    //    
+        //
         $consignmentId = $_GET['consignment_id'];
         //echo'<pre>'; print_r($consignmentId); die;
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['status' => '2']);
         $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->update(['status' => '2']);
 
-       
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
@@ -1596,7 +1575,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-         $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -1628,7 +1607,7 @@ class ConsignmentController extends Controller
             $total_weight = $value['total_weight'];
             //echo'<pre>'; print_r($data); die;
 
-            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned','status' => '1']);
+            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
         }
 
         $response['success'] = true;
@@ -1640,7 +1619,7 @@ class ConsignmentController extends Controller
     public function updateSuffle(Request $request)
     {
         $page_id = $request->page_id_array;
-        
+
         for ($count = 0; $count < count($page_id); $count++) {
             $drs = DB::table('transaction_sheets')->where('id', $page_id[$count])->update(['order_no' => $count + 1]);
         }
@@ -1651,8 +1630,8 @@ class ConsignmentController extends Controller
         //echo'hi';
         $id = $_GET['draft_id'];
         // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->orderby('order_no', 'asc')->get();
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_notes.status as lrstatus','consignment_notes.edd as edd' )
-       ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
 
         $response['fetch'] = $result;
@@ -1667,10 +1646,10 @@ class ConsignmentController extends Controller
         $id = $_GET['draft_id'];
         // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->get();
 
-       $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_notes.status as lrstatus','consignment_notes.edd as edd','consignment_notes.delivery_date as dd'  )
-         ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->get();
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd')
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->get();
         $result = json_decode(json_encode($transcationview), true);
-  
+
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -1701,11 +1680,20 @@ class ConsignmentController extends Controller
 
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
+
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         if($authuser->role_id !=1){
-            if($authuser->role_id == $role_id->id){
+            if($authuser->role_id == 4){
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
+                    ->where('consignment_notes.user_id', $authuser->id)
+                    ->get(['consignees.city']);
+            }else{ 
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -1713,31 +1701,37 @@ class ConsignmentController extends Controller
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->get(['consignees.city']);
-                    // echo'<pre>'; print_r($consignments); die;
-            }} else {
+            }
+        } else {
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                     ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->get(['consignees.city']);
-
-            }
-        //echo'<pre>'; print_r($consignments); die;
-
+        }
         return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
 
     }
-      public function getFilterReport(Request $request)
-      {
-       // echo'<pre>'; print_r($_POST); die;
+    public function getFilterReport(Request $request)
+    {
+        // echo'<pre>'; print_r($_POST); die;
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         if($authuser->role_id !=1){
-            if($authuser->role_id == $role_id->id){
+            if($authuser->role_id == 4){
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
+                    ->where('consignment_notes.user_id', $authuser->id)
+                    ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
+                    ->get(['consignees.city']);
+            }else{
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -1746,7 +1740,8 @@ class ConsignmentController extends Controller
                     ->whereIn('consignment_notes.branch_id', $cc)
                     ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
                     ->get(['consignees.city']);
-            }} else {
+            }
+        } else {
                 $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -1754,13 +1749,12 @@ class ConsignmentController extends Controller
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
                     ->get(['consignees.city']);
-
-            }
-            $response['fetch'] = $consignments;
-            $response['success'] = true;
-            $response['messages'] = 'Succesfully loaded';
-            return Response::json($response);
-      }
+        }
+        $response['fetch'] = $consignments;
+        $response['success'] = true;
+        $response['messages'] = 'Succesfully loaded';
+        return Response::json($response);
+    }
 
     public function updateDeliveryDateOneBy(Request $request)
     {
@@ -1775,13 +1769,13 @@ class ConsignmentController extends Controller
             return response()->json(['error' => 'Something went wrong']);
         }
     }
-   
+
     //+++++++++++++get delevery data model+++++++++++++++++++++++++
 
     public function getdeliverydatamodel(Request $request)
     {
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_notes.status as lrstatus','consignment_notes.edd as edd','consignment_notes.delivery_date as dd'  )
-         ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->where('consignment_notes.status', '1')->get();
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs')
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->where('consignment_notes.status', '1')->whereIn('transaction_sheets.status', ['1', '0', '3'])->get();
         $result = json_decode(json_encode($transcationview), true);
         //echo'<pre>'; print_r($result); exit;
         $response['fetch'] = $result;
@@ -1792,7 +1786,7 @@ class ConsignmentController extends Controller
 
     }
 
-    //========================Bulk Print LR ==============================//
+    //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -1806,7 +1800,6 @@ class ConsignmentController extends Controller
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->whereIn('consignment_notes.branch_id', $cc)
                 ->get(['consignees.city']);
-                
 
             // $consignments = $query->whereIn('branch_id',$cc)->orderby('id','DESC')->get();
         } else {
@@ -1817,204 +1810,204 @@ class ConsignmentController extends Controller
 
             // $consignments = $query->orderby('id','DESC')->get();
         }
-      
-        return view('consignments.bulkLr-view', ['prefix' => $this->prefix,'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
+
+        return view('consignments.bulkLr-view', ['prefix' => $this->prefix, 'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
 
     public function DownloadBulkLr(Request $request)
     {
         $lrno = $request->checked_lr;
         $pdftype = $request->type;
-       //echo'<pre>'; print_r($pdftype); die;
-        
+        //echo'<pre>'; print_r($pdftype); die;
+
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::first();
         $locations = Location::whereIn('id', $cc)->first();
-        foreach($lrno as $key => $value){
-    
-        $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
-        $data = json_decode(json_encode($getdata), true);
-        // echo'<pre>'; print_r($data); print_r('</pre>');
-       
-        if ($data['consigner_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
-        } else {
-            $nick_name = '';
-        }
-        if ($data['consigner_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
-        } else {
-            $address_line1 = '';
-        }
-        if ($data['consigner_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
-        } else {
-            $address_line2 = '';
-        }
-        if ($data['consigner_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
-        } else {
-            $address_line3 = '';
-        }
-        if ($data['consigner_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
-        } else {
-            $address_line4 = '';
-        }
-        if ($data['consigner_detail']['city'] != null) {
-            $city = $data['consigner_detail']['city'] . ',';
-        } else {
-            $city = '';
-        }
-        if ($data['consigner_detail']['district'] != null) {
-            $district = $data['consigner_detail']['district'] . ',';
-        } else {
-            $district = '';
-        }
-        if ($data['consigner_detail']['postal_code'] != null) {
-            $postal_code = $data['consigner_detail']['postal_code'];
-        } else {
-            $postal_code = '';
-        }
-        if ($data['consigner_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
-        } else {
-            $gst_number = '';
-        }
-        if ($data['consigner_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
-        } else {
-            $phone = '';
-        }
+        foreach ($lrno as $key => $value) {
 
-        $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
+            $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
+            $data = json_decode(json_encode($getdata), true);
+            // echo'<pre>'; print_r($data); print_r('</pre>');
+
+            if ($data['consigner_detail']['nick_name'] != null) {
+                $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
+            } else {
+                $nick_name = '';
+            }
+            if ($data['consigner_detail']['address_line1'] != null) {
+                $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
+            } else {
+                $address_line1 = '';
+            }
+            if ($data['consigner_detail']['address_line2'] != null) {
+                $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
+            } else {
+                $address_line2 = '';
+            }
+            if ($data['consigner_detail']['address_line3'] != null) {
+                $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
+            } else {
+                $address_line3 = '';
+            }
+            if ($data['consigner_detail']['address_line4'] != null) {
+                $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
+            } else {
+                $address_line4 = '';
+            }
+            if ($data['consigner_detail']['city'] != null) {
+                $city = $data['consigner_detail']['city'] . ',';
+            } else {
+                $city = '';
+            }
+            if ($data['consigner_detail']['district'] != null) {
+                $district = $data['consigner_detail']['district'] . ',';
+            } else {
+                $district = '';
+            }
+            if ($data['consigner_detail']['postal_code'] != null) {
+                $postal_code = $data['consigner_detail']['postal_code'];
+            } else {
+                $postal_code = '';
+            }
+            if ($data['consigner_detail']['gst_number'] != null) {
+                $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
+            } else {
+                $gst_number = '';
+            }
+            if ($data['consigner_detail']['phone'] != null) {
+                $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
+            } else {
+                $phone = '';
+            }
+
+            $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
             ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
-        } else {
-            $nick_name = '';
-        }
-        if ($data['consignee_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
-        } else {
-            $address_line1 = '';
-        }
-        if ($data['consignee_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
-        } else {
-            $address_line2 = '';
-        }
-        if ($data['consignee_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
-        } else {
-            $address_line3 = '';
-        }
-        if ($data['consignee_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
-        } else {
-            $address_line4 = '';
-        }
-        if ($data['consignee_detail']['city'] != null) {
-            $city = $data['consignee_detail']['city'] . ',';
-        } else {
-            $city = '';
-        }
-        if ($data['consignee_detail']['district'] != null) {
-            $district = $data['consignee_detail']['district'] . ',';
-        } else {
-            $district = '';
-        }
-        if ($data['consignee_detail']['postal_code'] != null) {
-            $postal_code = $data['consignee_detail']['postal_code'];
-        } else {
-            $postal_code = '';
-        }
+            if ($data['consignee_detail']['nick_name'] != null) {
+                $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
+            } else {
+                $nick_name = '';
+            }
+            if ($data['consignee_detail']['address_line1'] != null) {
+                $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
+            } else {
+                $address_line1 = '';
+            }
+            if ($data['consignee_detail']['address_line2'] != null) {
+                $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
+            } else {
+                $address_line2 = '';
+            }
+            if ($data['consignee_detail']['address_line3'] != null) {
+                $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
+            } else {
+                $address_line3 = '';
+            }
+            if ($data['consignee_detail']['address_line4'] != null) {
+                $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
+            } else {
+                $address_line4 = '';
+            }
+            if ($data['consignee_detail']['city'] != null) {
+                $city = $data['consignee_detail']['city'] . ',';
+            } else {
+                $city = '';
+            }
+            if ($data['consignee_detail']['district'] != null) {
+                $district = $data['consignee_detail']['district'] . ',';
+            } else {
+                $district = '';
+            }
+            if ($data['consignee_detail']['postal_code'] != null) {
+                $postal_code = $data['consignee_detail']['postal_code'];
+            } else {
+                $postal_code = '';
+            }
 
-        if ($data['consignee_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
-        } else {
-            $gst_number = '';
-        }
-        if ($data['consignee_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
-        } else {
-            $phone = '';
-        }
+            if ($data['consignee_detail']['gst_number'] != null) {
+                $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
+            } else {
+                $gst_number = '';
+            }
+            if ($data['consignee_detail']['phone'] != null) {
+                $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
+            } else {
+                $phone = '';
+            }
 
-        $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
+            $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
-        } else {
-            $nick_name = '';
-        }
-        if ($data['shipto_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
-        } else {
-            $address_line1 = '';
-        }
-        if ($data['shipto_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
-        } else {
-            $address_line2 = '';
-        }
-        if ($data['shipto_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
-        } else {
-            $address_line3 = '';
-        }
-        if ($data['shipto_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
-        } else {
-            $address_line4 = '';
-        }
-        if ($data['shipto_detail']['city'] != null) {
-            $city = $data['shipto_detail']['city'] . ',';
-        } else {
-            $city = '';
-        }
-        if ($data['shipto_detail']['district'] != null) {
-            $district = $data['shipto_detail']['district'] . ',';
-        } else {
-            $district = '';
-        }
-        if ($data['shipto_detail']['postal_code'] != null) {
-            $postal_code = $data['shipto_detail']['postal_code'];
-        } else {
-            $postal_code = '';
-        }
-        if ($data['shipto_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
-        } else {
-            $gst_number = '';
-        }
-        if ($data['shipto_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
-        } else {
-            $phone = '';
-        }
+            if ($data['shipto_detail']['nick_name'] != null) {
+                $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
+            } else {
+                $nick_name = '';
+            }
+            if ($data['shipto_detail']['address_line1'] != null) {
+                $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
+            } else {
+                $address_line1 = '';
+            }
+            if ($data['shipto_detail']['address_line2'] != null) {
+                $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
+            } else {
+                $address_line2 = '';
+            }
+            if ($data['shipto_detail']['address_line3'] != null) {
+                $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
+            } else {
+                $address_line3 = '';
+            }
+            if ($data['shipto_detail']['address_line4'] != null) {
+                $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
+            } else {
+                $address_line4 = '';
+            }
+            if ($data['shipto_detail']['city'] != null) {
+                $city = $data['shipto_detail']['city'] . ',';
+            } else {
+                $city = '';
+            }
+            if ($data['shipto_detail']['district'] != null) {
+                $district = $data['shipto_detail']['district'] . ',';
+            } else {
+                $district = '';
+            }
+            if ($data['shipto_detail']['postal_code'] != null) {
+                $postal_code = $data['shipto_detail']['postal_code'];
+            } else {
+                $postal_code = '';
+            }
+            if ($data['shipto_detail']['gst_number'] != null) {
+                $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
+            } else {
+                $gst_number = '';
+            }
+            if ($data['shipto_detail']['phone'] != null) {
+                $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
+            } else {
+                $phone = '';
+            }
 
-        $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
+            $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
-        $output_file = '/qr-code/img-' . time() . '.svg';
-        Storage::disk('public')->put($output_file, $generate_qrcode);
-        $fullpath = storage_path('app/public/' . $output_file);
-        //echo'<pre>'; print_r($fullpath);
-        //  dd($generate_qrcode);
-        // if ($request->typeid == 1) {
-        //     $adresses = '<table width="100%">
-        //             <tr>
-        //                 <td style="width:50%">' . $conr_add . '</td>
-        //                 <td style="width:50%">' . $consnee_add . '</td>
-        //             </tr>
-        //         </table>';
-        // } else if ($request->typeid == 2) {
+            $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
+            $output_file = '/qr-code/img-' . time() . '.svg';
+            Storage::disk('public')->put($output_file, $generate_qrcode);
+            $fullpath = storage_path('app/public/' . $output_file);
+            //echo'<pre>'; print_r($fullpath);
+            //  dd($generate_qrcode);
+            // if ($request->typeid == 1) {
+            //     $adresses = '<table width="100%">
+            //             <tr>
+            //                 <td style="width:50%">' . $conr_add . '</td>
+            //                 <td style="width:50%">' . $consnee_add . '</td>
+            //             </tr>
+            //         </table>';
+            // } else if ($request->typeid == 2) {
             $adresses = '<table width="100%">
                         <tr>
                             <td style="width:33%">' . $conr_add . '</td>
@@ -2022,22 +2015,22 @@ class ConsignmentController extends Controller
                             <td style="width:33%">' . $shiptoadd . '</td>
                         </tr>
                     </table>';
-        // }
+            // }
 
-        // $type = count($pdftype);
-       foreach($pdftype as $i => $pdf){
-             
-            if($pdf == 1){
-                $type = 'ORIGINAL';
-            }elseif($pdf == 2){
-                $type = 'DUPLICATE';
-            }elseif ($pdf == 3){
-               $type = 'TRIPLICATE';
-            }elseif ($pdf == 4){
-              $type = 'QUADRUPLE';
-            }
+            // $type = count($pdftype);
+            foreach ($pdftype as $i => $pdf) {
 
-            $html = '<!DOCTYPE html>
+                if ($pdf == 1) {
+                    $type = 'ORIGINAL';
+                } elseif ($pdf == 2) {
+                    $type = 'DUPLICATE';
+                } elseif ($pdf == 3) {
+                    $type = 'TRIPLICATE';
+                } elseif ($pdf == 4) {
+                    $type = 'QUADRUPLE';
+                }
+
+                $html = '<!DOCTYPE html>
                     <html lang="en">
                         <head>
                             <title>PDF</title>
@@ -2088,7 +2081,7 @@ class ConsignmentController extends Controller
                         <div class="container">
                             <div class="row">';
 
-            $html .= '<h2>' . $branch_add->name . '</h2>
+                $html .= '<h2>' . $branch_add->name . '</h2>
                                 <table width="100%">
                                     <tr>
                                         <td width="50%">
@@ -2105,13 +2098,13 @@ class ConsignmentController extends Controller
                                             </span>
                                         </td>
                                         <td width="50%">
-                                            <h2 class="l">CONSIGNMENT NOTE</h2> 
+                                            <h2 class="l">CONSIGNMENT NOTE</h2>
 
                                             <p class="l">' . $type . '</p>
                                         </td>
                                     </tr>
                                 </table></div></div>';
-            $html .= '<div class="row"><div class="col-sm-6">
+                $html .= '<div class="row"><div class="col-sm-6">
                                 <table width="100%">
                                 <tr>
                             <td width="30%">
@@ -2126,54 +2119,54 @@ class ConsignmentController extends Controller
                                 <p><b>Driver Name</b></p>
                             </td>
                             <td width="30%">';
-            if (@$data['consignment_no'] != '') {
-                $html .= '<p>' . $data['id'] . '</p>';
-            } else {
-                $html .= '<p>N/A</p>';
-            }
-            if (@$data['consignment_date'] != '') {
-                $html .= '<p>' . date('d-m-Y', strtotime($data['consignment_date'])) . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['consigner_detail']['city'] != '') {
-                $html .= '<p> ' . $data['consigner_detail']['city'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['order_id'] != '') {
-                $html .= '<p>' . $data['order_id'] . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['invoice_no'] != '') {
-                $html .= '<p>' . $data['invoice_no'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['invoice_date'] != '') {
-                $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
+                if (@$data['consignment_no'] != '') {
+                    $html .= '<p>' . $data['id'] . '</p>';
+                } else {
+                    $html .= '<p>N/A</p>';
+                }
+                if (@$data['consignment_date'] != '') {
+                    $html .= '<p>' . date('d-m-Y', strtotime($data['consignment_date'])) . '</p>';
+                } else {
+                    $html .= '<p> N/A </p>';
+                }
+                if (@$data['consigner_detail']['city'] != '') {
+                    $html .= '<p> ' . $data['consigner_detail']['city'] . '</p>';
+                } else {
+                    $html .= '<p> N/A </p>';
+                }
+                if (@$data['order_id'] != '') {
+                    $html .= '<p>' . $data['order_id'] . '</p>';
+                } else {
+                    $html .= '<p> - </p>';
+                }
+                if (@$data['invoice_no'] != '') {
+                    $html .= '<p>' . $data['invoice_no'] . '</p>';
+                } else {
+                    $html .= '<p> N/A </p>';
+                }
+                if (@$data['invoice_date'] != '') {
+                    $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
+                } else {
+                    $html .= '<p> N/A </p>';
+                }
 
-            if (@$data['invoice_amount'] != '') {
-                $html .= '<p>' . $data['invoice_amount'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['vehicle_detail']['regn_no'] != '') {
-                $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['driver_detail']['name'] != '') {
-                $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
+                if (@$data['invoice_amount'] != '') {
+                    $html .= '<p>' . $data['invoice_amount'] . '</p>';
+                } else {
+                    $html .= '<p> N/A </p>';
+                }
+                if (@$data['vehicle_detail']['regn_no'] != '') {
+                    $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
+                } else {
+                    $html .= '<p> - </p>';
+                }
+                if (@$data['driver_detail']['name'] != '') {
+                    $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
+                } else {
+                    $html .= '<p> - </p>';
+                }
 
-            $html .= '</td>
+                $html .= '</td>
                             <td width="50%" colspan="3" style="text-align: center;">
                             <img src= "' . $fullpath . '" alt="barcode">
                             </td>
@@ -2184,7 +2177,7 @@ class ConsignmentController extends Controller
             </div>
             <div class="main">' . @$adresses . '</div>
             <span><hr id="e"></hr></span><br>';
-            $html .= '<div class="bb">
+                $html .= '<div class="bb">
                 <table class="aa" width="100%">
                     <tr>
                         <th class="cc">Sr.No.</th>
@@ -2195,21 +2188,21 @@ class ConsignmentController extends Controller
                         <th class="cc">Freight</th>
                         <th class="cc">Payment Terms</th>
                     </tr>';
-            ///
-            $counter = 0;
-            foreach ($data['consignment_items'] as $k => $dataitem) {
-                $counter = $counter + 1;
-                $html .= '<tr>' .
-                    '<td class="cc">' . $counter . '</td>' .
-                    '<td class="cc">' . $dataitem['description'] . '</td>' .
-                    '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
-                    '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
-                    '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
-                    '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
-                    '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
-                    '</tr>';
-            }
-            $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
+                ///
+                $counter = 0;
+                foreach ($data['consignment_items'] as $k => $dataitem) {
+                    $counter = $counter + 1;
+                    $html .= '<tr>' .
+                        '<td class="cc">' . $counter . '</td>' .
+                        '<td class="cc">' . $dataitem['description'] . '</td>' .
+                        '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
+                        '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
+                        '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
+                        '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
+                        '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
+                        '</tr>';
+                }
+                $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
                             <td class="cc">' . $data['total_quantity'] . '</td>
                             <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
                             <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
@@ -2218,7 +2211,7 @@ class ConsignmentController extends Controller
                         </tr></table></div><br><br>
                         <span><hr id="e"></hr></span>';
 
-            $html .= '<div class="nn">
+                $html .= '<div class="nn">
                                 <table  width="100%">
                                     <tr>
                                         <td>
@@ -2233,15 +2226,14 @@ class ConsignmentController extends Controller
                             </div>
                         </body>
                     </html>';
-                    
 
-            $pdf = \App::make('dompdf.wrapper');
-            $pdf->loadHTML($html);
-            $pdf->setPaper('A4', 'portrait');
-            $pdf->save(public_path() . '/bulk/congn-' . $i . '-'.$value.'.pdf')->stream('congn-' . $i . '-'.$value.'.pdf');
-            $pdf_name[] = 'congn-' . $i . '-'.$value.'.pdf';
+                $pdf = \App::make('dompdf.wrapper');
+                $pdf->loadHTML($html);
+                $pdf->setPaper('A4', 'portrait');
+                $pdf->save(public_path() . '/bulk/congn-' . $i . '-' . $value . '.pdf')->stream('congn-' . $i . '-' . $value . '.pdf');
+                $pdf_name[] = 'congn-' . $i . '-' . $value . '.pdf';
+            }
         }
-    }
         $pdfMerger = PDFMerger::init();
         foreach ($pdf_name as $pdf) {
             $pdfMerger->addPDF(public_path() . '/bulk/' . $pdf);
@@ -2250,16 +2242,14 @@ class ConsignmentController extends Controller
         $pdfMerger->save("all.pdf", "browser");
         $file = new Filesystem;
         $file->cleanDirectory('pdf');
-        
 
     }
-
 
     ////////////////get delevery date LR//////////////////////
     public function getDeleveryDateLr(Request $request)
     {
         $transcationview = DB::table('consignment_notes')->select('*')
-        ->where('id', $request->lr_no)->get();
+            ->where('id', $request->lr_no)->get();
         $result = json_decode(json_encode($transcationview), true);
         $response['fetch'] = $result;
 
@@ -2275,17 +2265,17 @@ class ConsignmentController extends Controller
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
 
-                if($request->lr_status == 'Unassigned'){
-                   
+                if ($request->lr_status == 'Unassigned') {
+
                     ConsignmentNote::where('id', $request->lr_no)->update(['delivery_status' => $request->lr_status]);
-                }elseif($request->lr_status == 'Assigned'){
-                    
+                } elseif ($request->lr_status == 'Assigned') {
+
                     ConsignmentNote::where('id', $request->lr_no)->update(['delivery_status' => $request->lr_status]);
-                }elseif($request->lr_status == 'Started'){
-                   
+                } elseif ($request->lr_status == 'Started') {
+
                     ConsignmentNote::where('id', $request->lr_no)->update(['delivery_status' => $request->lr_status]);
-                }elseif($request->lr_status == 'Successful'){
-                   
+                } elseif ($request->lr_status == 'Successful') {
+
                     ConsignmentNote::where('id', $request->lr_no)->update(['delivery_status' => $request->lr_status]);
                 }
 
@@ -2305,217 +2295,280 @@ class ConsignmentController extends Controller
 
     //++++++++++++++++++++++ Tookan API Push +++++++++++++++++++++++++++++++++++//
 
-    public function createTookanTasks($taskDetails) {
+    public function createTookanTasks($taskDetails)
+    {
 
         //echo "<pre>";print_r($taskDetails);die;
-       
-        foreach ($taskDetails as $task){
+
+        foreach ($taskDetails as $task) {
 
             $td = '{
-                "api_key": "'.$this->apikey.'",
-                "order_id": "'.$task['consignment_no'].'",
-                "job_description": "DRS-'.$task['id'].'",
-                "customer_email": "'.$task['email'].'",
-                "customer_username": "'.$task['consignee_name'].'",
-                "customer_phone": "'.$task['phone'].'",
-                "customer_address": "'.$task['pincode'].','.$task['city'].',India",
+                "api_key": "' . $this->apikey . '",
+                "order_id": "' . $task['consignment_no'] . '",
+                "job_description": "DRS-' . $task['id'] . '",
+                "customer_email": "' . $task['email'] . '",
+                "customer_username": "' . $task['consignee_name'] . '",
+                "customer_phone": "' . $task['phone'] . '",
+                "customer_address": "' . $task['pincode'] . ',' . $task['city'] . ',India",
                 "latitude": "",
                 "longitude": "",
-                "job_delivery_datetime": "'.$task['edd'].' 21:00:00",
+                "job_delivery_datetime": "' . $task['edd'] . ' 21:00:00",
                 "custom_field_template": "Template_1",
                 "meta_data": [
                     {
                         "label": "Invoice Amount",
-                        "data": "'.$task['invoice_amount'].'"
+                        "data": "' . $task['invoice_amount'] . '"
                     },
                     {
                         "label": "Quantity",
-                        "data": "'.$task['total_weight'].'"
+                        "data": "' . $task['total_weight'] . '"
                     }
                 ],
-                "team_id": "'.$task['team_id'].'",
+                "team_id": "' . $task['team_id'] . '",
                 "auto_assignment": "1",
                 "has_pickup": "0",
                 "has_delivery": "1",
                 "layout_type": "0",
                 "tracking_link": 1,
                 "timezone": "-330",
-                "fleet_id": "'.$task['fleet_id'].'",
+                "fleet_id": "' . $task['fleet_id'] . '",
                 "notify": 1,
                 "tags": "",
                 "geofence": 0
             }';
 
-           //echo "<pre>";print_r($td);echo "</pre>";die;
+            //echo "<pre>";print_r($td);echo "</pre>";die;
 
             //die;
 
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-              CURLOPT_URL => 'https://api.tookanapp.com/v2/create_task',
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => '',
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 0,
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => 'POST',
-              CURLOPT_POSTFIELDS =>$td,
-              CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-              ),
+                CURLOPT_URL => 'https://api.tookanapp.com/v2/create_task',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $td,
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                ),
             ));
-            
+
             $response[] = curl_exec($curl);
-            
+
             curl_close($curl);
 
         }
         //echo "<pre>";print_r($response);echo "</pre>";die;
         return $response;
-        
+
     }
 
-     // Multiple Deliveries at once
+    // Multiple Deliveries at once
 
-     public function createTookanMultipleTasks($taskDetails) {
+    public function createTookanMultipleTasks($taskDetails)
+    {
         //echo "<pre>";print_r($taskDetails);die;
         $deliveries = array();
-        foreach ($taskDetails as $task){
+        foreach ($taskDetails as $task) {
 
-        $deliveries[] = '{
-                "address": "'.$task['pincode'].','.$task['city'].',India",
-                "name": "'.$task['consignee_name'].'",
+            $deliveries[] = '{
+                "address": "' . $task['pincode'] . ',' . $task['city'] . ',India",
+                "name": "' . $task['consignee_name'] . '",
                 "latitude": " ",
                 "longitude": " ",
-                "time": "'.$task['edd'].'",
-                "phone": "'.$task['phone'].'",
-                "job_description": "LR-ID:'.$task['id'].'",
+                "time": "' . $task['edd'] . '",
+                "phone": "' . $task['phone'] . '",
+                "job_description": "LR-ID:' . $task['id'] . '",
                 "template_name": "Template_1",
                 "template_data": [
                   {
                     "label": "Invoice Amount",
-                    "data":  "'.$task['invoice_amount'].'"
+                    "data":  "' . $task['invoice_amount'] . '"
                   },
                   {
                     "label": "Quantity",
-                    "data": "'.$task['total_weight'].'"
+                    "data": "' . $task['total_weight'] . '"
                   }
                 ],
                 "email": null,
-                 "order_id":  "'.$task['id'].'"
-                }';  
-            }
-            $de_json = implode(",", $deliveries);
-            //echo "<pre>"; print_r($de_json);die;
+                 "order_id":  "' . $task['id'] . '"
+                }';
+        }
+        $de_json = implode(",", $deliveries);
+        //echo "<pre>"; print_r($de_json);die;
 
-         $apidata = '{
-                "api_key": "'.$this->apikey.'",
-                "fleet_id": "'.$taskDetails[0]['fleet_id'].'",
+        $apidata = '{
+                "api_key": "' . $this->apikey . '",
+                "fleet_id": "' . $taskDetails[0]['fleet_id'] . '",
                 "timezone": -330,
                 "has_pickup": 0,
                 "has_delivery": 1,
                 "layout_type": 0,
                 "geofence": 0,
-                "team_id": "'.$taskDetails[0]['team_id'].'",
+                "team_id": "' . $taskDetails[0]['team_id'] . '",
                 "auto_assignment": 1,
                 "tags": "",
-                "deliveries": ['.$de_json.']
+                "deliveries": [' . $de_json . ']
               }';
 
-            //echo "<pre>";print_r($apidata);echo "</pre>";die;
+        //echo "<pre>";print_r($apidata);echo "</pre>";die;
 
-            //die;
+        //die;
 
-            $curl = curl_init();
+        $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => 'https://api.tookanapp.com/v2/create_multiple_tasks',
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => '',
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 0,
-              CURLOPT_FOLLOWLOCATION => true,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => 'POST',
-              CURLOPT_POSTFIELDS =>$apidata,
-              CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-              ),
-            ));
-            
-            $response = curl_exec($curl);
-            
-            curl_close($curl);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.tookanapp.com/v2/create_multiple_tasks',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $apidata,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+            ),
+        ));
 
-          // echo "<pre>";print_r($response);echo "</pre>";die;
+        $response = curl_exec($curl);
 
-            return $response;
-        
-    }
+        curl_close($curl);
 
-   //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
+        // echo "<pre>";print_r($response);echo "</pre>";die;
 
-    public function handle(Request $request){
-         header('Content-Type: application/json');
-         $request = file_get_contents('php://input');
-         $req_dump = print_r( $request, true );
-         $fp = Storage::disk('local')->put('file.json', $req_dump);
-         $data = Storage::disk('local')->get('file.json');
-         $json = json_decode($data, true);
-         $job_id= $json['job_id'];
-         $time = strtotime($json['job_delivery_datetime']);
-         $newformat = date('Y-m-d',$time);
-         $delivery_status = $json['job_state'];
-
-         //Update LR
-
-         $update = \DB::table('consignment_notes') ->where('job_id', $job_id) ->limit(1) ->update( [ 'delivery_status' => $json['job_state'],'delivery_date' => $newformat]); 
-
-         //Update DRS
-
-         $updatedrs = \DB::table('transaction_sheets') ->where('job_id', $job_id) ->limit(1) ->update( [ 'delivery_status' => $json['job_state'],'delivery_date' => $newformat]); 
-
-         //Save jobs response
-         
-         $jobData['job_id'] = $json['job_id'];
-         $jobData['response_data'] = $data;
-         $jobData['status'] = $json['job_state'];
-         $jobData['type'] = 1;
-         //echo "<pre>"; print_r($jobData);
-
-         $saveJobresponse = Job::create($jobData);
+        return $response;
 
     }
 
-   //Notify on status update
+    //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
 
-   public function notifications(){
-    $jobs = Job::select('job_id')->where('type', 1)->get();
-    $simplyfy = json_decode(json_encode($jobs), true);
-    $count = count($simplyfy);
-    $jids = array();
-    foreach($simplyfy as $jid){
-        $lr = ConsignmentNote::select('id')->where('job_id', $jid['job_id'])->first();
-        $smf = json_decode(json_encode($lr), true);
-        //echo "<pre>"; print_r($smf);die;
-        $jids[] = $smf['id'];
+    public function handle(Request $request)
+    {
+        header('Content-Type: application/json');
+        $request = file_get_contents('php://input');
+        $req_dump = print_r($request, true);
+        $fp = Storage::disk('local')->put('file.json', $req_dump);
+        $data = Storage::disk('local')->get('file.json');
+        $json = json_decode($data, true);
+        $job_id = $json['job_id'];
+        $time = strtotime($json['job_delivery_datetime']);
+        $newformat = date('Y-m-d', $time);
+        $delivery_status = $json['job_state'];
+
+        //Update LR
+
+        $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+
+        //Update DRS
+
+        $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+
+        //Save jobs response
+
+        $jobData['job_id'] = $json['job_id'];
+        $jobData['response_data'] = $data;
+        $jobData['status'] = $json['job_state'];
+        $jobData['type'] = 1;
+        //echo "<pre>"; print_r($jobData);
+
+        $saveJobresponse = Job::create($jobData);
+
     }
-    //return $count;
-    $j = implode(',', $jids);
-    return $j;
-   }
-  
-   public function update_notifications(){
 
-    $update = DB::table('jobs')->where('type', 1)->update(['type' => 0]); 
-    
-    $response['success'] = true;
+    //Notify on status update
 
-    return response()->json($response);
+    public function notifications()
+    {
+        $jobs = Job::select('job_id')->where('type', 1)->get();
+        $simplyfy = json_decode(json_encode($jobs), true);
+        $count = count($simplyfy);
+        $jids = array();
+        foreach ($simplyfy as $jid) {
+            $lr = ConsignmentNote::select('id')->where('job_id', $jid['job_id'])->first();
+            $smf = json_decode(json_encode($lr), true);
+            //echo "<pre>"; print_r($smf);die;
+            $jids[] = $smf['id'];
+        }
+        //return $count;
+        $j = implode(',', $jids);
+        return $j;
+    }
 
-   }
+    public function update_notifications()
+    {
 
+        $update = DB::table('jobs')->where('type', 1)->update(['type' => 0]);
+
+        $response['success'] = true;
+
+        return response()->json($response);
+
+    }
+// //////////   ACTIVE CANCEL STATUS DRS
+    public function drsStatus(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        if ($request->ajax()) {
+            if (isset($request->updatestatus)) {
+
+                TransactionSheet::where('drs_no', $request->drs_id)->update(['status' => 0]);
+
+                $drs = DB::table('transaction_sheets')->select('consignment_no')->where('drs_no', $request->drs_id)->get();
+                $simplyfydrs = $data = json_decode(json_encode($drs), true);
+                foreach ($simplyfydrs as $consgnment) {
+                    $lrNo = $consgnment['consignment_no'];
+
+                    ConsignmentNote::where('id', $lrNo)->update(['status' => 2]);
+                }
+
+            }
+
+            $url = $this->prefix . '/transaction-sheet';
+            $response['success'] = true;
+            $response['success_message'] = "Dsr cancel status updated successfully";
+            $response['error'] = false;
+            $response['page'] = 'dsr-cancel-update';
+            $response['redirect_url'] = $url;
+
+            return response()->json($response);
+        }
+
+    }
+    public function uploadDrsImg(Request $request)
+    {
+        try {
+
+            $file = $request->file('file');
+            $filename = $file->getClientOriginalName();
+            $file->move(public_path('drs/Image'), $filename);
+            if (!empty($filename)) {
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename]);
+
+                $response['success'] = true;
+                $response['messages'] = 'img uploaded successfully';
+                return Response::json($response);
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Img not Found';
+                return Response::json($response);
+
+            }
+
+        } catch (\Exception $e) {
+            $bug = $e->getMessage();
+            $response['success'] = false;
+            $response['messages'] = $bug;
+            return Response::json($response);
+        }
+
+    }
 
 }
