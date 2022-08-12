@@ -366,7 +366,7 @@ class ConsignmentController extends Controller
                 } elseif ($data->delivery_status == "Started") {
                     $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
                 } elseif ($data->delivery_status == "Successful") {
-                    $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
+                    $dt = '<span class="badge alert bg-success shadow-sm manual_updateLR" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
                 } elseif ($data->delivery_status == "Accepted") {
                     $dt = '<span class="badge alert bg-info shadow-sm" lr-no = "'.$data->id.'">Acknowledged</span>';
 
