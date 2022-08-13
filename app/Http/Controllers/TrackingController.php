@@ -26,11 +26,19 @@ class TrackingController extends Controller
         $this->title = "Consignments Tracking";
     }
     
-    public function trackorder(Request $request)
+    public function trackOrder(Request $request)
     {
+       $lr_no = $request->lr ;
+       
+       $getconsi = ConsignmentNote::select('*')->with('ConsigneeDetail','ConsignerDetail','ShiptoDetail','VehicleDetail','DriverDetail','JobDetail')->where(['id' => $lr_no])
+       ->get();
+       $simplify = json_decode(json_encode($getconsi), true);
 
-        echo "<pre>";print_r("hii");die;
-
+            $response['fetch'] = $simplify;
+            $response['success'] = true;
+            $response['messages'] = 'Succesfully loaded';
+            return Response::json($response);
+        
     }
 
 }    

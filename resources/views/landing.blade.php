@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>easemyLR</title>
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
@@ -217,7 +218,7 @@
                             <!-- an error submitting the form-->
                             <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                             <!-- Submit Button-->
-                            <div class="d-grid"><button class="btn btn-primary rounded-pill btn-lg disabled" id="submitButton" type="submit">Submit</button></div>
+                            <div class="d-grid"><button class="btn btn-primary rounded-pill btn-lg disabled" id="submitButton" type="button">Submit</button></div>
                         </form>
                     </div>
                 </div>
@@ -229,5 +230,37 @@
        
 
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script src="{{asset('newasset/assets/js/libs/jquery-3.1.1.min.js')}}"></script>
+
+        <script>
+            $(document).ready(function() {
+               
+                $(document).on('click','#submitButton', function(){
+                 var lr = $('#phone').val();
+             $.ajax({
+                 type: "post",
+                 url: "track-order", 
+                 data: {lr:lr},
+                 headers   : {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                 //dataType: "json",
+                 beforeSend:                      //reinitialize Datatables
+                function(){   
+              
+               },
+                 success: function(data){
+                    console.log(data.fetch);
+                    
+                    $('.fw-bolder').html(data.fetch);
+ 
+                    
+         } 
+         
+     });
+ });
+       
+});
+</script>
     </body>
 </html>
