@@ -48,7 +48,7 @@
                         <!-- Mashead text and app badges-->
                         <div class="mb-5 mb-lg-0 text-center text-lg-start">
                             <h1 class="display-1 lh-1 mb-3">Track Your Shipment</h1>
-                            <p class="lead fw-normal text-muted mb-5">Launch your mobile app landing page faster with this free, open source theme from Start Bootstrap!</p>
+                            
                             <div class="d-flex flex-column flex-lg-row align-items-center">
                                 <a class="me-lg-3 mb-4 mb-lg-0" href="https://play.google.com/store/apps/details?id=com.tookan"><img class="app-badge" src="{{asset('landing-page/assets/img/google-play-badge.svg')}}" alt="..." /></a>
                             </div>
@@ -107,7 +107,7 @@
                                     <div class="text-center">
                                         <i class="bi-phone icon-feature text-gradient d-block mb-3"></i>
                                         <h3 class="font-alt">EXPRESS DELIVERY</h3>
-                                        <p class="text-muted mb-0">Ready to use HTML/CSS device mockups, no Photoshop required!</p>
+                                        <!--<p class="text-muted mb-0">Ready to use HTML/CSS device mockups, no Photoshop required!</p>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-5">
@@ -115,7 +115,7 @@
                                     <div class="text-center">
                                         <i class="bi-box icon-feature text-gradient d-block mb-3"></i>
                                         <h3 class="font-alt">TRUCKLOAD FREIGHT</h3>
-                                        <p class="text-muted mb-0">Put an image, video, animation, or anything else in the screen!</p>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                     <div class="text-center">
                                         <i class="bi-truck icon-feature text-gradient d-block mb-3"></i>
                                         <h3 class="font-alt">PARTIAL TRUCKLOAD</h3>
-                                        <p class="text-muted mb-0">As always, this theme is free to download and use for any purpose!</p>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -133,7 +133,7 @@
                                     <div class="text-center">
                                         <i class="bi-patch-check icon-feature text-gradient d-block mb-3"></i>
                                         <h3 class="font-alt">SUPPLY CHAIN</h3>
-                                        <p class="text-muted mb-0">Since this theme is MIT licensed, you can use it commercially!</p>
+                                       
                                     </div>
                                 </div>
                             </div>
