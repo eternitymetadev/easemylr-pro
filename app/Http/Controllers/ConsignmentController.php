@@ -764,10 +764,10 @@ class ConsignmentController extends Controller
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
 
-        if ($data['consigner_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
+        if ($data['consigner_detail']['legal_name'] != null) {
+            $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
         } else {
-            $nick_name = '';
+            $legal_name = '';
         }
         if ($data['consigner_detail']['address_line1'] != null) {
             $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
@@ -816,7 +816,7 @@ class ConsignmentController extends Controller
         }
 
         $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
-            ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+            ' . $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
         if ($data['consignee_detail']['nick_name'] != null) {
             $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
