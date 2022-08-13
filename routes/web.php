@@ -41,8 +41,6 @@ Route::get('/landing', function () {
     return view('landing');
 });
 
-Route::get('tracklr', [TrackingController::class, 'trackorder']);
-
 Route::get('/', function () {
     if(Auth::check())
     {
@@ -615,6 +613,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);
+Route::any('track-order', [TrackingController::class, 'trackOrder']);
+
 
 
 
