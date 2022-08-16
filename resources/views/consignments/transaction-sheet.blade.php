@@ -81,14 +81,13 @@ div.relative {
                                 
                                $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
                                  $date->setTimezone(new DateTimeZone('IST'));
+                                 $getdeldate =  Helper::getdeleveryDate($trns->drs_no) ?? "" ;
                                 
-                                //  echo $date->format('Y-m-d'); die;
 
                             //   $creation = date('d-m-Y',strtotime($trns->created_at));  
                             //   echo'<pre>'; print_r($date); die;
                                   ?>
                               <tr>
-                                
                                 <td>DRS-{{$trns->drs_no}}</td>
                                 <td>{{$date->format('Y-m-d')}}</td>
                                 <td>{{$trns->vehicle_no}}</td>
@@ -120,6 +119,7 @@ div.relative {
                                       <?php } ?>
                                       <!------- end Action ---- -->
                                      <!-- delivery Status ---- -->
+
                                      <td>
                                     <?php if($trns->status == 0){?>
                                        <label class="badge badge-dark">Cancelled</label>
@@ -127,13 +127,18 @@ div.relative {
                                         <label class="badge badge-warning">No Status</label>
                                    <?php }else{ ?>
                                       <?php 
-                                        if($trns->delivery_status == 'Assigned'){ ?>
-                                        <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Started</span></a>
+                                        if($trns->delivery_status == 'Assigned'){ 
+                                            if($getdeldate > 0){?>
+                                             <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Partial Delivered</span></a>
+                                           <?php }else{ ?>
+                                            <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Started</span></a>
+                                               
+                                            <?php }?>
                                       <?php }elseif($trns->delivery_status == 'Successful'){?>
-                                         <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Successful</span></a>
-                                      <?php }  ?>
+                                                <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Successful</span></a>
+                                        <?php }  ?>
                                       <?php } ?>
-                                      <?php } ?>
+                                <?php } ?>
                                       </td>
                                     <!-- END Delivery Status  -------------  -->
                                     <!-- DRS STATUS --------------->

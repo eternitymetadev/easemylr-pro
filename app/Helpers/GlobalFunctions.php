@@ -115,4 +115,14 @@ class GlobalFunctions {
         return $data;
      }
 
+     public static function getdeleveryDate($drs_number){
+        $data = DB::table('transaction_sheets')->select( 'consignment_notes.delivery_date as deliverydate')
+        ->join('consignment_notes','consignment_notes.id','=','transaction_sheets.consignment_no')
+        ->where('transaction_sheets.drs_no',$drs_number)
+        ->where('consignment_notes.delivery_date','!=', null)
+        ->count();
+     
+        return $data;
+     }
+
 }
