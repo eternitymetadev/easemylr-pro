@@ -219,7 +219,7 @@
             "sLengthMenu": "Results :  _MENU_",
         },
 
-        "ordering": true,
+         "ordering": false,
         "paging": true,
         "pageLength": 100,
 
