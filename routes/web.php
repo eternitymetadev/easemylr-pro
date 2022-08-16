@@ -217,6 +217,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
@@ -302,6 +303,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
@@ -399,6 +401,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
@@ -490,6 +493,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
     Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
