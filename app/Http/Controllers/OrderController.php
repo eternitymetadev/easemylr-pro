@@ -252,9 +252,9 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = $this->prefix . '/consignments';
+                $url = $this->prefix . '/orders';
                 $response['success'] = true;
-                $response['success_message'] = "Consignment Added successfully";
+                $response['success_message'] = "Order Added successfully";
                 $response['error'] = false;
                 // $response['resetform'] = true;
                 $response['page'] = 'create-consignment';

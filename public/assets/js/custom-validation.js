@@ -621,7 +621,26 @@ jQuery(document).ready(function(){
 
     // Add Another Row
     $(document).on('click', '.insert-more', function(){
+        
         $("#items_table").each(function() {
+            var segments = $(location).attr('href').split("/")[4];
+            if(segments == 'orders'){
+                var tds = '<tr>';
+                var item_no = $('tr', this).length;
+                tds += '<td><div class="srno">'+item_no+'</div></td>';
+                tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
+                
+                tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]">';
+                tds += '<td><input type="number" class="seteing qnt" name="data['+item_no+'][quantity]"></td>';
+
+                tds += '<td><input type="number" class="seteing net" name="data['+item_no+'][weight]"></td>';
+                tds += '<td><input type="number" class="seteing gross" name="data['+item_no+'][gross_weight]"></td>';
+
+                tds += '<td><select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></td>';
+                
+                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                tds += '</tr>';
+            }else{
             var tds = '<tr>';
             var item_no = $('tr', this).length;
             tds += '<td><div class="srno">'+item_no+'</div></td>';
@@ -651,6 +670,7 @@ jQuery(document).ready(function(){
 
             tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
             tds += '</tr>';
+            }
             if ($('tbody', this).length > 0) {
                 $('tbody', this).append(tds);
             } else {
