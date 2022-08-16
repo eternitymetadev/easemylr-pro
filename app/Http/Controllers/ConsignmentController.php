@@ -403,7 +403,7 @@ class ConsignmentController extends Controller
         }else if($authuser->role_id != 2 || $authuser->role_id != 3){
             if($authuser->role_id !=1){
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-                }else{
+            }else{
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
         } else {
@@ -435,7 +435,7 @@ class ConsignmentController extends Controller
         }
         // $cc = explode('-',$cn->consignment_no);
         // $getconsignmentno = $cc[1] + 1;
-        // $consignmentno = $cc[0].'-'.$getconsignmentno;
+        // $consignmentno = $cc[0].'-'.$getconsignmentno;.
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
