@@ -320,20 +320,20 @@ class OrderController extends Controller
 
         if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             if ($authuser->role_id == $role_id->id) {
-                $consigners = Consigner::select('id', 'nick_name')->whereIn('branch_id', $cc)->get();
+                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
             } else {
-                $consigners = Consigner::select('id', 'nick_name')->get();
+                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
             }
         }else if($authuser->role_id != 2 || $authuser->role_id != 3){
             if($authuser->role_id !=1){
-                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
+                $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
                 }else{
-                $consigners = Consigner::select('id', 'nick_name')->get();
+                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
             }
         } else {
-            $consigners = Consigner::select('id', 'nick_name')->get();
+            $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
         }
-        $consignees = Consignee::select('id', 'nick_name')->get();
+        $consignees = Consignee::orderby('nick_name','ASC')->pluck('nick_name','id');
         
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
@@ -447,7 +447,8 @@ class OrderController extends Controller
             }
 
             $updateconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
-            $consignment_id = $request->consignment_id;
+            $consignment_id = (int)$request->consignment_id;
+            // dd($consignment_id);
            // ===================== Create DRS in LR ================================= //
            if(!empty($request->vehicle_id)){
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
@@ -458,7 +459,7 @@ class OrderController extends Controller
                     ->where('consignment_notes.id', $consignment_id)
                     ->first(['consignees.city']);
                 $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                //echo'<pre>'; print_r($simplyfy); die;
+                // echo'<pre>'; print_r($simplyfy); die;
 
                 $no_of_digit = 5;
                 $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
