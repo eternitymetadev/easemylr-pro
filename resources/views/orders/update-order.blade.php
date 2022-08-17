@@ -165,6 +165,7 @@
                                         <div class="col-sm-9">
                                             <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" disabled>
                                                 <option value="">Select Consignee</option>
+                                                
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
                                                 <option value="{{ $consignee->id }}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>{{ucwords($consignee->nick_name)}}

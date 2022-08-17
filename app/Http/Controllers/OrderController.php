@@ -333,10 +333,8 @@ class OrderController extends Controller
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
-        if (empty($consignees)) {
-            $consignees = Consignee::select('id', 'nick_name')->get();
-        }
+        $consignees = Consignee::select('id', 'nick_name')->get();
+        
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
@@ -450,7 +448,7 @@ class OrderController extends Controller
 
             $updateconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
             $consignment_id = $request->consignment_id;
-           //===================== Create DRS in LR ================================= //
+           // ===================== Create DRS in LR ================================= //
            if(!empty($request->vehicle_id)){
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
