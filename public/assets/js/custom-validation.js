@@ -853,7 +853,7 @@ jQuery(document).on('click','.active_drs',function(event){
     jQuery('#drs_commonconfirm').modal('show');
     jQuery( ".commonconfirmclick").one( "click", function() {
 
-        var data =  {drs_id:drs_id,updatestatus:updatestatus};
+        var data =  {drs_id:drs_id,updatestatus:updatestatus}; 
         
         jQuery.ajax({
             url         : 'drs-status',
@@ -923,15 +923,28 @@ jQuery(document).on('click','.drs_cancel',function(event){
                         }else{
                             var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
                         }
+                        // delivery date//
+                        if(value.dd == null){
+                            var deliverydate = "<input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'>";
+                        }else{
+                            var deliverydate = value.dd ;
+                        }
+                        //////button status
+                          ///save button check//
+                       if(value.dd != null && value.signed_drs != null){
+                        var butontext = 'Successful';
+                       }else{
+                       var butontext = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
+                       }
                     //   alert(storage_img);
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td><td>"+field+"</td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td>"+butontext+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
 
 
                     });
-                    get_delivery_date();
+                    // get_delivery_date();  
                
             }
         });
@@ -999,7 +1012,6 @@ jQuery(document).on('click','.drs_cancel',function(event){
 jQuery(document).on('click','.manual_updateLR',function(event){
     event.stopPropagation();
    
-    
      let lr_no   = jQuery(this).attr('lr-no');
    
     //   var dataaction = jQuery(this).attr('data-action');
@@ -1008,11 +1020,14 @@ jQuery(document).on('click','.manual_updateLR',function(event){
     jQuery('#manualLR').modal('show');
     
     // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
-    jQuery( ".commonconfirmclick").one( "click", function() {
+    // jQuery( ".commonconfirmclick").one( "click", function() {
+        $(".commonconfirmclick").unbind().click(function() {
         // alert('d');
         var lr_status = jQuery('#lr_status').val();
+
         //alert(drs_status);
         var data =  {lr_no:lr_no,lr_status:lr_status,updatestatus:updatestatus};
+        
         
         jQuery.ajax({
             url         : 'update-lrstatus',
@@ -1066,6 +1081,8 @@ jQuery(document).on('click','.manual_updateLR',function(event){
             beforeSend  : function () {
                 $('#get-delvery-dateLR').dataTable().fnClearTable();             
                 $('#get-delvery-dateLR').dataTable().fnDestroy();
+                $('#lr_status').empty();
+               
             },
             complete: function () {
                
@@ -1088,11 +1105,37 @@ jQuery(document).on('click','.manual_updateLR',function(event){
                         }else{
                             var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
                         }
-                        
-                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'><td>"+ field +"</td></tr>");      
+                        ///////////delivery date check
+                        if(value.delivery_date == null)
+                        {
+                            var deliverydat = "<input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'>";
+                        }else{
+                            var deliverydat = value.delivery_date
+                        }
+                       ///save button check//
+                       if(value.delivery_date != null && value.signed_drs != null){
+                             var buton = 'Successful';
+                       }else{
+                            var buton = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
+                       }
 
+                        
+                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td>" + deliverydat + "</td><td>"+ field +"</td><td>"+buton+"</td></tr>");  
+                      
+                        
+                        if(value.delivery_status != 'Successful'){
+                           var statushtml = "<option value=''>Select status</option><option value='Started'>Started</option><option value='Successful'>Successful</option>";
+                           $('.commonconfirmclick').show();
+                          
+                        }else{
+                            var statushtml = "<option value='Successful'>Successful</option>";
+                            document.getElementById("lrid").style.display = "block";
+                            $('.commonconfirmclick').hide();
+                        }
+                        $('#lr_status').append(statushtml);
+                        
                     });
-                     get_delivery_date();
+                    //  get_delivery_date();
                
             }
         });
@@ -1257,20 +1300,24 @@ function get_delivery_date()
            });
     }
     /*======upload drs delevery img============================== */
-    $(document).on('change', '.drs_image', function(){
+    $(document).on('click', '.onelrupdate', function(){
         
-        var files = $(this)[0].files
-        var lr_no = $(this).attr('data-id');
+        var lr_no = $(this).closest('tr').find("td").eq(0).text();
+        var delivery_date = $(this).closest('tr').find("td:eq(3) input[type='date']"). val();
+        var files = $(this).closest('tr').find('td').eq(4).children('.drs_image')[0].files;
 
         var form_data = new FormData();
+        if(files.length != 0){
         var ext = files[0]['name'].split('.').pop().toLowerCase();
-        if(jQuery.inArray(ext, ['png','jpg','jpeg','pdf']) == -1) 
-        {
-         swal("error","Invalid img file", "error"); return false;
+            if(jQuery.inArray(ext, ['png','jpg','jpeg','pdf']) == -1) 
+            {
+            swal("error","Invalid img file", "error"); return false;
+            }
         }
 
         form_data.append('file',files[0]);
         form_data.append('lr', lr_no);
+        form_data.append('delivery_date',delivery_date);
          $.ajax({
           url:"upload-delivery-img",
           method:"POST",

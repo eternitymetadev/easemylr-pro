@@ -1735,6 +1735,7 @@ class ConsignmentController extends Controller
                     ->groupBy('transaction_sheets.drs_no')
                     ->orderBy('transaction_sheets.id', 'desc')
                     ->get();
+                    //echo'<pre>'; print_r($transaction); die;
             }
         } else {
             $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
@@ -2674,6 +2675,7 @@ class ConsignmentController extends Controller
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->where('consignment_notes.id', $request->lr_no)->get();
         $result = json_decode(json_encode($transcationview), true);
+
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -2968,11 +2970,17 @@ class ConsignmentController extends Controller
     {
         try {
 
+            $deliverydate = $request->delivery_date;
             $file = $request->file('file');
+            if(!empty($file)){
             $filename = $file->getClientOriginalName();
             $file->move(public_path('drs/Image'), $filename);
-            if (!empty($filename)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename]);
+            }else{
+                $filename = NULL;
+            }
+            if (!empty($deliverydate)) {
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 $response['success'] = true;
                 $response['messages'] = 'img uploaded successfully';

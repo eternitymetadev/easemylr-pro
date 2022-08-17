@@ -35,35 +35,23 @@
        </div>
        <!-- Modal body -->
        <div class="modal-body">
-       <div class="form-row mb-0">
-                        <div class="form-group col-md-12">
-                            <label for="location_name">Status</label>
-
-                            <select class="form-control" id="drs_status" name="drs_status" onchange="catagoriesCheck(this);" tabindex="-1" >
-                                <option value="">Select status</option>
-                                <option value="Started">Started</option>
-                                <option value="Successful">Successful</option>
-
-                               
-                            </select>
-                        </div>
-                        </div>
+      
           <div class="Delt-content text-center">
             <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
           </div>
-          <div class="table-responsive" id="opi" style="display: none;">
+          <div class="table-responsive" id="opi">
                         <table id="get-delvery-date" class="table table-hover"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
                             <thead>
                                 <tr>
                                     <th>LR No</th> 
                                     <th>Consignee</th>
                                     <th>City</th>
                                     <th>Delivery Date</th>
+                                    <th>Upload Image</th>
+                                    <th>Status</th>
                                     <th>Action</th>
-                                    <th>Image</th>
-                                 
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,8 +64,8 @@
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+               <!-- <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
+               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a><span style="margin-left: 200px;">Click 'OK' to update delivery status</span> -->
            </div>
        </div>
      </div>
