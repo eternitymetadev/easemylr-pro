@@ -1601,6 +1601,8 @@ function formSubmitRedirect(form)
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-order' || response.page == 'update-order'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);
             }else if(response.page == 'client-create' || response.page == 'client-update'){

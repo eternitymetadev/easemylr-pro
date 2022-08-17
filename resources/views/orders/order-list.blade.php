@@ -102,7 +102,7 @@ div.relative {
                                         @endif
                                     </td> -->
                                     <td>
-                                        <a class="btn btn-primary" href="{{url($prefix.'/edit-order/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a>
+                                        <!-- <a class="btn btn-primary" href="{{url($prefix.'/edit-order/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a> -->
                                          <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                         <!-- <a href="Javascript:void();" class="btn btn-danger delete_consignment" data-id="{{ $consignment->id }}" data-action="<?php// echo URL::to($prefix.'/consignments/delete-consignment'); ?>"><span><i class="fa fa-trash"></i></span></a> -->
                                     </td>
