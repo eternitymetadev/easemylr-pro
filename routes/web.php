@@ -239,6 +239,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+
     
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
@@ -324,6 +325,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
+    Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
 
 
 
@@ -422,8 +424,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
-
-
+    Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
 
 
     Route::resource('orders', OrderController::class);
@@ -498,6 +499,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('bulklr-view', [ConsignmentController::class, 'BulkLrView']);
     Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
+    Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
 
 
     
