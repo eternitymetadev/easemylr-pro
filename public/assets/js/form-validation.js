@@ -95,10 +95,10 @@ jQuery(document).ready(function(){
     });
   /*===== End create role =====*/
 
-  jQuery('#add_role').click(function(){
-    jQuery('#role_savebtn').text('Add');
-    $("#createrole").trigger("reset");
-  });
+    jQuery('#add_role').click(function(){
+        jQuery('#role_savebtn').text('Add');
+        $("#createrole").trigger("reset");
+    });
 
   /*=== get role on edit click in role listing page ===*/
     jQuery(document).on('click','.editrole',function(){
@@ -1032,6 +1032,90 @@ jQuery(document).ready(function(){
         }
     });
 
+    $('#updateorder').validate({ 
+        rules: {
+            consigner_id: {
+                required: true,
+            },
+            consignee_id: {
+                required: true
+            },
+            ship_to_id: {
+                required: true
+            },
+            driver_id : {
+                // required: true,
+            },
+            transporter_name : {
+                // required: true,
+            },
+            vehicle_type : {
+                // required: true,
+            },
+            vehicle_id : {
+                // required: true,
+            },
+            'quantity[]': {
+                required: true,
+                //   lettersonly:true
+                },
+           'weight[]': {
+                  required: true
+                },
+           'gross_weight[]': {
+                  required: true
+                },
+           'freight[]': {
+                  required: true
+                },
+            'payment_type[]': {
+                required: true
+                },
+        },
+        messages: {
+            consigner_id: {
+                required: "Select consigner address",
+            },
+            consignee_id: {
+                required: "Select consignee address",
+            },
+            ship_to_id: {
+                required: "Select ship to address",
+            },
+            driver_id : {
+                required: "Select driver",
+            },
+            transporter_name : {
+                required: "Enter transporter name",
+            },
+            vehicle_type : {
+                required: "Select vehicle type",
+            },
+            vehicle_id : {
+                required: "Select vehicle no.",
+            },
+            'quantity[]': {
+                required: "Enter quantity",
+            },
+            'weight[]': {
+                required: "Enter weight",
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight",
+            },
+            'freight[]': {
+                required: "Enter freight",
+            },
+            'payment_type[]': {
+                required: "Select payment type",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
     /*===== Create payment =====*/
     $('#createpayment').validate({ 
         rules: {
@@ -1516,6 +1600,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'bulk-imports'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-consignment'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-order' || response.page == 'update-order'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);

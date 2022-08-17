@@ -100,8 +100,8 @@ label.error{
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{$prefix.'/consignments'}}">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Consignment</a></li>
+                        <li class="breadcrumb-item"><a href="{{$prefix.'/orders'}}">Orders</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Order</a></li>
                     </ol>
                 </nav>
             </div>
@@ -294,7 +294,7 @@ label.error{
 
                     </div> -->
                     <!-- Row -->
-                    <div class="row" >
+                    <!-- <div class="row" >
                         <div class="col-sm-12" >
                             <div style="overflow-x:auto; background-color: white;">
                                 <table id="items_table" class="table table-striped primary-items">
@@ -306,7 +306,7 @@ label.error{
                                             <th width="10%">Quantity</th>
                                             <th width="10%">Net Weight</th>
                                             <th width="10%">Gross Weight</th>
-                                            <!-- <th width="10%">Freight</th> -->
+                                            <th width="10%">Freight</th>
                                             <th width="15%">Payment Terms</th>
                                             <th width="10%"></th>
                                         </tr>
@@ -327,8 +327,8 @@ label.error{
                                                     name="data[1][weight]"></td>
                                             <td> <input type="number" class="seteing gross" value=""
                                                     name="data[1][gross_weight]"></td>
-                                            <!-- <td> <input type="text" class="seteing frei" value=""
-                                                    name="data[1][freight]"></td> -->
+                                            <td> <input type="text" class="seteing frei" value=""
+                                                    name="data[1][freight]"></td>
                                             <td>
                                                 <select class="seteing term" name="data[1][payment_type]">
                                                     <option value="To be Billed">To be Billed
@@ -369,16 +369,16 @@ label.error{
                                         <tr>
                                             <th scope="row" colspan="3">TOTAL</th>
                                             <td align="center"><span id="tot_qty">
-                                                    <?php echo "0";?>
+                                                    <?php// echo "0";?>
                                                 </span></td>
                                             <td align="center"><span id="tot_nt_wt">
-                                                    <?php echo "0";?>
+                                                    <?php// echo "0";?>
                                                 </span> Kgs.</td>
                                             <td align="center"><span id="tot_gt_wt">
-                                                    <?php echo "0";?>
+                                                    <?php// echo "0";?>
                                                 </span> Kgs.</td>
                                             <td align="center">INR <span id="tot_frt">
-                                                    <?php echo "0";?>
+                                                    <?php// echo "0";?>
                                                 </span></td>
                                             <td></td>
                                             <td></td>
@@ -387,7 +387,7 @@ label.error{
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="row cuss fuss" style="margin-top: 15px;">
                         <!-- <div class=" col-sm-1">

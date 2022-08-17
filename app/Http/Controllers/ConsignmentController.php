@@ -407,24 +407,23 @@ class ConsignmentController extends Controller
         }else if($authuser->role_id != 2 || $authuser->role_id != 3){
             if($authuser->role_id !=1){
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-                }else{
+            }else{
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
-        if (empty($consignees)) {
-            $consignees = Consignee::select('id', 'nick_name')->get();
-        }
-        // $consignees = Consignee::select('id','nick_name')->whereIn('branch_id',$cc)->get();
+        // $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
+        // if (empty($consignees)) {
+        //     $consignees = Consignee::select('id', 'nick_name')->get();
+        // }
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        // $con_series = $getconsignment->consignment_no;
+        
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -437,9 +436,7 @@ class ConsignmentController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        // $cc = explode('-',$cn->consignment_no);
-        // $getconsignmentno = $cc[1] + 1;
-        // $consignmentno = $cc[0].'-'.$getconsignmentno;
+        
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
@@ -447,7 +444,7 @@ class ConsignmentController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
     }
 
     /**
