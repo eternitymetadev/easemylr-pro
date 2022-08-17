@@ -937,7 +937,7 @@ jQuery(document).on('click','.drs_cancel',function(event){
 
 
                     });
-                    get_delivery_date();
+                    get_delivery_date();  
                
             }
         });
