@@ -4,7 +4,7 @@
        <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
        <!-- Modal Header -->
        <div class="modal-header text-center">
-        	<h4 class="modal-title">Update DRS Status</h4>
+        	<h4 class="modal-title">Update Delivery Status</h4>
        </div> 
        <!-- Modal body -->
        <div class="modal-body">

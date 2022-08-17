@@ -923,11 +923,17 @@ jQuery(document).on('click','.drs_cancel',function(event){
                         }else{
                             var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
                         }
+                        // delivery date//
+                        if(value.dd == null){
+                            var deliverydate = "<input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'>";
+                        }else{
+                            var deliverydate = value.dd ;
+                        }
                     //   alert(storage_img);
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td><td>"+field+"</td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td><td>"+field+"</td></tr>");      
 
 
                     });
@@ -1088,8 +1094,14 @@ jQuery(document).on('click','.manual_updateLR',function(event){
                         }else{
                             var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
                         }
+                        if(value.delivery_date == null)
+                        {
+                            var deliverydat = "<input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'>";
+                        }else{
+                            var deliverydat = value.delivery_date
+                        }
                         
-                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'><td>"+ field +"</td></tr>");      
+                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td>" + deliverydat + "</td><td>"+ field +"</td></tr>");      
 
                     });
                      get_delivery_date();

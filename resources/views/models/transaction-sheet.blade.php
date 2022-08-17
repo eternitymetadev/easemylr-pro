@@ -76,8 +76,8 @@
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+               <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
+               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a><span style="margin-left: 200px;">Click 'OK' to update delivery status</span>
            </div>
        </div>
      </div>
