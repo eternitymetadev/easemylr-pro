@@ -95,10 +95,10 @@ jQuery(document).ready(function(){
     });
   /*===== End create role =====*/
 
-  jQuery('#add_role').click(function(){
-    jQuery('#role_savebtn').text('Add');
-    $("#createrole").trigger("reset");
-  });
+    jQuery('#add_role').click(function(){
+        jQuery('#role_savebtn').text('Add');
+        $("#createrole").trigger("reset");
+    });
 
   /*=== get role on edit click in role listing page ===*/
     jQuery(document).on('click','.editrole',function(){

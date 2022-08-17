@@ -52,7 +52,7 @@ class OrderController extends Controller
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->where('consignment_notes.user_id', $authuser->id)
-                ->whereNull('vehicle_id')
+                ->whereNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
             }elseif($authuser->role_id == 6) {     //for client account (select base client)
@@ -60,7 +60,7 @@ class OrderController extends Controller
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->whereIn('base_clients.id', $baseclient)
-                ->whereNull('vehicle_id')
+                ->whereNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
             }elseif($authuser->role_id ==7){               //for client user (select regional client)
@@ -68,7 +68,7 @@ class OrderController extends Controller
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->whereIn('regional_clients.id', $regclient)
-                ->whereNull('vehicle_id')
+                ->whereNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
             }else{
@@ -76,7 +76,7 @@ class OrderController extends Controller
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
                 ->whereIn('consignment_notes.branch_id', $cc)
-                ->whereNull('vehicle_id')
+                ->whereNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
             }
@@ -84,7 +84,7 @@ class OrderController extends Controller
             $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->whereNull('vehicle_id')
+                ->whereNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
         }
@@ -136,18 +136,14 @@ class OrderController extends Controller
         }else{
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
-        if (empty($consignees)) {
-            $consignees = Consignee::select('id', 'nick_name')->get();
-        }
-            // $consignees = Consignee::select('id','nick_name')->whereIn('branch_id',$cc)->get();
+        
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        // $con_series = $getconsignment->consignment_no;
+        
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -160,9 +156,7 @@ class OrderController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        // $cc = explode('-',$cn->consignment_no);
-        // $getconsignmentno = $cc[1] + 1;
-        // $consignmentno = $cc[0].'-'.$getconsignmentno;
+
         if(empty($consignmentno)) {
             $consignmentno = "";
         }
@@ -170,7 +164,7 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
     }
 
     /**
@@ -189,7 +183,6 @@ class OrderController extends Controller
                 'consigner_id' => 'required',
                 'consignee_id' => 'required',
                 'ship_to_id' => 'required',
-                // 'invoice_no' => 'required',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -216,7 +209,7 @@ class OrderController extends Controller
             } else {
                 $con_series = '';
             }
-            // $con_series = $getconsignment->consignment_no;
+
             $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
             if ($cn) {
                 if (!empty($cn->consignment_no)) {
@@ -281,7 +274,6 @@ class OrderController extends Controller
                 $response['success'] = true;
                 $response['success_message'] = "Order Added successfully";
                 $response['error'] = false;
-                // $response['resetform'] = true;
                 $response['page'] = 'create-order';
                 $response['redirect_url'] = $url;
             } else {
@@ -345,14 +337,13 @@ class OrderController extends Controller
         if (empty($consignees)) {
             $consignees = Consignee::select('id', 'nick_name')->get();
         }
-        // $consignees = Consignee::select('id','nick_name')->whereIn('branch_id',$cc)->get();
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        // $con_series = $getconsignment->consignment_no;
+        
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -365,9 +356,7 @@ class OrderController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        // $cc = explode('-',$cn->consignment_no);
-        // $getconsignmentno = $cc[1] + 1;
-        // $consignmentno = $cc[0].'-'.$getconsignmentno;
+        
         if (empty($consignmentno)) {
             $consignmentno = "";
         }

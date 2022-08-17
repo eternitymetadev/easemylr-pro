@@ -113,9 +113,8 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{$prefix.'/consignments'}}">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Consignment</a></li>
+                        <li class="breadcrumb-item"><a href="{{$prefix.'/orders'}}">Orders</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Order</a></li>
                     </ol>
                 </nav>
             </div>
@@ -131,12 +130,10 @@
                                 <div class="panel-body" style="padding: 10px;">
                                     <div class="row con1" style="background: white; padding: 0px;">
                                         <div class=" col-sm-3" style="margin-top:3px;">
-                                            <label class=" control-label" style="font-weight: bold;">Select
-                                                Consignor<span class="text-danger">*</span></label>
+                                            <label class=" control-label" style="font-weight: bold;">Select Consignor<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9" style="margin-top:3px;">
-                                        <select id="select_consigner" class="my-select2 form-seteing" type="text"
-                                                name="consigner_id">
+                                        <select id="select_consigner" class="my-select2 form-seteing" type="text" name="consigner_id" disabled>
                                                 <option value="">Select</option>
                                                 @if(count($consigners) > 0)
                                                 @foreach($consigners as $k => $consigner)
@@ -166,8 +163,7 @@
                                                 Consignee<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9">
-                                            <select class="my-select2 form-seteing" type="text" name="consignee_id"
-                                                id="select_consignee">
+                                            <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" disabled>
                                                 <option value="">Select Consignee</option>
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
@@ -195,8 +191,7 @@
                                                     class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9" style="margin-top:2px;">
-                                            <select class="my-select2 form-seteing" type="text" name="ship_to_id"
-                                                id="select_ship_to">
+                                            <select class="my-select2 form-seteing" type="text" name="ship_to_id" id="select_ship_to" disabled>
                                                 <option value="">Select Ship To</option>
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
