@@ -12,6 +12,7 @@ use App\Models\Location;
 use App\Models\State;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
+use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use URL;
 use Crypt;
@@ -121,8 +122,25 @@ class GlobalFunctions {
         ->where('transaction_sheets.drs_no',$drs_number)
         ->where('consignment_notes.delivery_date','!=', null)
         ->count();
-     
         return $data;
      }
+
+     public static function getdeleveryStatus($drs_number){
+       
+        $total = TransactionSheet::where('drs_no',$drs_number)->count();
+        $partial = TransactionSheet::where('drs_no',$drs_number)->where('delivery_status', 'Successful')->count();
+        $assigned = TransactionSheet::where('drs_no',$drs_number)->whereIn('delivery_status', ['Assigned','Started'])->count();
+
+        if($partial == $total){
+            $status = "Successful";
+        }elseif($assigned == $total){
+            $status = "Started";
+        }else{
+            $status = "Partial Delivered";
+        }
+
+        return $status;
+     }
+
 
 }

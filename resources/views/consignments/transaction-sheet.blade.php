@@ -81,7 +81,7 @@ div.relative {
                                 
                                $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
                                  $date->setTimezone(new DateTimeZone('IST'));
-                                 $getdeldate =  Helper::getdeleveryDate($trns->drs_no) ?? "" ;
+                                 $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
                                 
 
                             //   $creation = date('d-m-Y',strtotime($trns->created_at));  
@@ -126,17 +126,7 @@ div.relative {
                                  <?php } else { ?>                                      <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) { ?>
                                         <label class="badge badge-warning">No Status</label>
                                    <?php }else{ ?>
-                                      <?php 
-                                        if($trns->delivery_status == 'Assigned'){ 
-                                            if($getdeldate > 0){?>
-                                             <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Partial Delivered</span></a>
-                                           <?php }else{ ?>
-                                            <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Started</span></a>
-                                               
-                                            <?php }?>
-                                      <?php }elseif($trns->delivery_status == 'Successful'){?>
-                                                <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>Successful</span></a>
-                                        <?php }  ?>
+                                    <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>{{$getdeldate}}</span></a>
                                       <?php } ?>
                                 <?php } ?>
                                       </td>

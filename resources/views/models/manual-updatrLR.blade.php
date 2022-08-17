@@ -13,13 +13,8 @@
                             <label for="location_name">Status</label>
  
                             <select class="form-control" id="lr_status" name="lr_status" onchange="lrCheck(this);" tabindex="-1" >
-                                <option value="">Select status</option>
-                                <option value="Unassigned">Unassigned</option>
-                                <option value="Assigned">Assigned</option>
-                                <option value="Started">Started</option>
-                                <option value="Successful">Successful</option>
+                                
 
-                               
                             </select>
                         </div>
                         </div>
@@ -37,6 +32,7 @@
                                     <th>City</th>
                                     <th>Delivery Date</th>
                                     <th>Image</th>
+                                    <th>update</th>
                                 </tr>
                             </thead>
                             <tbody>
