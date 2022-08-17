@@ -239,9 +239,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
-
     
     Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);

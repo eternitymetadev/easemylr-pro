@@ -57,16 +57,14 @@ div.relative {
                                 <tr>
                                     <!-- <th> </th> -->
                                     <th>LR No</th>
-                                    <th>CN Date</th>
+                                    <th>Consigner Name</th>
                                     <th>Consignee Name</th>
                                     <th>City</th>
-                                    <th>Pin Code</th> 
+                                    <!-- <th>Pin Code</th> 
                                     <th>Boxes</th>
                                     <th>Net Weight</th>
-                                    <th>EDD</th>
-                                    <!-- <th>LR Status</th> -->
+                                    <th>EDD</th> -->
                                     <th>Action</th>
-                                    <!-- <th>Delivery Status</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,13 +74,13 @@ div.relative {
                                 <tr>
                                   <!-- <td class="dt-control">+</td> -->
                                     <td>{{ $consignment->id ?? "-" }}</td>
-                                    <td>{{ $consignment->consignment_date}}</td>
+                                    <td>{{ $consignment->consigner_id}}</td>
                                     <td>{{ $consignment->consignee_id}}</td>
                                     <td>{{ $consignment->city ?? "-" }}</td>
-                                    <td>{{ $consignment->pincode ?? "-" }}</td>
+                                    <!-- <td>{{ $consignment->pincode ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                    <td>{{ $consignment->edd ?? "-" }}</td>
+                                    <td>{{ $consignment->edd ?? "-" }}</td> -->
                                     <?php
                                     if($consignment->status==1){
                                         $status = 'Active';
@@ -102,8 +100,8 @@ div.relative {
                                         @endif
                                     </td> -->
                                     <td>
-                                        <a class="btn btn-primary" href="{{url($prefix.'/consignments/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a>
-                                         <a class="btn btn-primary" href="{{url($prefix.'/consignments/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
+                                        <!-- <a class="btn btn-primary" href="{{url($prefix.'/edit-order/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a> -->
+                                         <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                         <!-- <a href="Javascript:void();" class="btn btn-danger delete_consignment" data-id="{{ $consignment->id }}" data-action="<?php// echo URL::to($prefix.'/consignments/delete-consignment'); ?>"><span><i class="fa fa-trash"></i></span></a> -->
                                     </td>
                                     <!-- <?php 
