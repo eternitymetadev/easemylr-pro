@@ -137,12 +137,12 @@
                                                 <option value="">Select</option>
                                                 @if(count($consigners) > 0)
                                                 @foreach($consigners as $k => $consigner)
-
-                                                <option value="{{ $consigner->id }}" {{ $consigner->id == $getconsignments->consigner_id ? 'selected' : ''}}>{{ucwords($consigner->nick_name)}}
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->consigner_id ? 'selected' : ''}}>{{ucwords($consigner)}}
                                                 </option>
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input  type="hidden" name="consigner_id" value="{{$getconsignments->consigner_id}}" />
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consigner_address">
@@ -165,14 +165,13 @@
                                         <div class="col-sm-9">
                                             <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" disabled>
                                                 <option value="">Select Consignee</option>
-                                                
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
-                                                <option value="{{ $consignee->id }}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>{{ucwords($consignee->nick_name)}}
-                                                </option>
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->consignee_id ? 'selected' : ''}}>{{ucwords($consignee)}}</option>
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input  type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consignee_address">
@@ -196,11 +195,11 @@
                                                 <option value="">Select Ship To</option>
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
-                                                <option value="{{ $consignee->id }}" {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>{{ucwords($consignee->nick_name)}}
-                                                </option>
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->ship_to_id ? 'selected' : ''}}>{{ucwords($consignee)}}</option>
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:11px">
                                             <div id="ship_to_address">
