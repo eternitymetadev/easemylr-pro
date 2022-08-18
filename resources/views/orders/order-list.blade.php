@@ -93,25 +93,9 @@ div.relative {
                                         $class = "btn-danger";
                                     }
                                     ?>
-                                    <!-- <td>@if($consignment->status == 1)
-                                        <a class="inactivestatus btn {{$class}}" data-id = "{{$consignment->id}}" data-text="consignment" data-status = "0" data-action = "<?php //echo URL::current();?>"><span><i class="fa fa-check-circle-o"></i> {{ $status }}</span></a>
-                                        @else
-                                        <a class="btn {{$class}}" data-id = "{{$consignment->id}}" data-text="consignment" data-status = "1" data-action = ""><span>  {{ $status }}</span></a>
-                                        @endif
-                                    </td> -->
                                     <td>
-                                        <!-- <a class="btn btn-primary" href="{{url($prefix.'/edit-order/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a> -->
                                          <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
-                                        <!-- <a href="Javascript:void();" class="btn btn-danger delete_consignment" data-id="{{ $consignment->id }}" data-action="<?php// echo URL::to($prefix.'/consignments/delete-consignment'); ?>"><span><i class="fa fa-trash"></i></span></a> -->
                                     </td>
-                                    <!-- <?php 
-                                   // if($consignment->delivery_status==1){ ?>
-                                        <td><button class="btn btn-danger">UnDelivered</button></td>
-                                    <?php //}elseif($consignment->delivery_status==2){ ?>
-                                        <td><button class="btn btn-warning">Out For Delivery</button></td>
-                                    <?php //}else{ ?>
-                                        <td><button class="btn btn-success">Delivered</button></td>
-                                    <?php// } ?> -->
                                 </tr>
                                 <?php 
                                     }
