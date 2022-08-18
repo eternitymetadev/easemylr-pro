@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	/*======== check box checked create/update user permission page  ========*/
+	/* check box checked create/update user permission page  */
     jQuery(document).on('click','#ckbCheckAll',function(){
         if(this.checked){
             jQuery('#dropdownMenuButton').prop('disabled', false);
@@ -434,7 +434,7 @@ jQuery(document).ready(function(){
                     $('#select_consignee, #select_ship_to').append('<option value="'+value.id+'">'+value.nick_name+'</option>');
                 });
                 if(res.data){
-                    //console.log(res.data);
+                    console.log(res.data);
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
                     }else{
@@ -469,6 +469,13 @@ jQuery(document).ready(function(){
                     $('#consigner_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
 
                     $("#dispatch").val(res.data.city);
+
+                    if(res.data.get_reg_client.name == null){
+                        var regclient = '';
+                    }else{
+                        var regclient = res.data.get_reg_client.name;
+                    }
+                    $("#regclient").val(regclient);
                 }
             }
         });
@@ -614,19 +621,56 @@ jQuery(document).ready(function(){
 
     // Add Another Row
     $(document).on('click', '.insert-more', function(){
+        
         $("#items_table").each(function() {
+            var segments = $(location).attr('href').split("/")[4];
+            if(segments == 'orders'){
+                var tds = '<tr>';
+                var item_no = $('tr', this).length;
+                tds += '<td><div class="srno">'+item_no+'</div></td>';
+                tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
+                
+                tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]">';
+                tds += '<td><input type="number" class="seteing qnt" name="data['+item_no+'][quantity]"></td>';
+
+                tds += '<td><input type="number" class="seteing net" name="data['+item_no+'][weight]"></td>';
+                tds += '<td><input type="number" class="seteing gross" name="data['+item_no+'][gross_weight]"></td>';
+
+                tds += '<td><select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></td>';
+                
+                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                tds += '</tr>';
+            }else{
             var tds = '<tr>';
             var item_no = $('tr', this).length;
             tds += '<td><div class="srno">'+item_no+'</div></td>';
-            tds += '<td><input type="text" class="seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>';
-            tds += '<td><input type="text" class="seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></td>'
-            tds += '<td> <input type="number" class="seteing qnt" name="data['+item_no+'][quantity]"></td>';
-            tds += '<td> <input type="number" class="seteing net" name="data['+item_no+'][weight]"></td>';
-            tds += '<td> <input type="number" class="seteing gross" name="data['+item_no+'][gross_weight]"></td>';
-            tds += '<td> <input type="text" class="seteing frei" name="data['+item_no+'][freight]"></td>';
-            tds += '<td><select class="seteing term" name="data['+item_no+'][payment_type]"><option value=""></option><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></td>'
+            tds += '<td><div class="form-group"><label>Description</label><input type="text" class="form-control seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></div>';
+            tds += '<div class="form-group mt-2"><label>Order Id</label>';
+            tds += '<input type="text" class="form-control seteing orderid" name="data['+item_no+'][order_id]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Mode of packing</label><input type="text" class="form-control seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice no</label>';
+            tds += '<input type="text" class="form-control seteing invc_no" name="data['+item_no+'][invoice_no]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Quantity</label><input type="number" class="form-control seteing qnt" name="data['+item_no+'][quantity]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice Date</label>';
+            tds += '<input type="date" class="form-control seteing invc_date" name="data['+item_no+'][invoice_date]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Net Weight</label> <input type="number" class="form-control seteing net" name="data['+item_no+'][weight]"></div>';
+            tds += '<div class="form-group mt-2"><label>Invoice Amount</label>';
+            tds += '<input type="number" class="form-control seteing invc_amt" name="data['+item_no+'][invoice_amount]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Gross Weight</label> <input type="number" class="form-control seteing gross" name="data['+item_no+'][gross_weight]"></div>';
+            tds += '<div class="form-group mt-2"><label>E Way Bill</label>';
+            tds += '<input type="number" class="form-control seteing ew_bill" name="data['+item_no+'][e_way_bill]"></div></td>';
+
+            tds += '<td><div class="form-group"><label>Payment Terms</label> <select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></div>';
+            tds += '<div class="form-group mt-2"><label>E Way Bill Date</label>';
+            tds += ' <input type="date" class="form-control seteing ewb_date" name="data['+item_no+'][e_way_bill_date]"></div></td>';
+
             tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
             tds += '</tr>';
+            }
             if ($('tbody', this).length > 0) {
                 $('tbody', this).append(tds);
             } else {
@@ -659,8 +703,16 @@ jQuery(document).ready(function(){
                 $(t.rows[i]).closest('tr').find('.qnt').attr('name', 'data['+i+'][quantity]');
                 $(t.rows[i]).closest('tr').find('.net').attr('name', 'data['+i+'][weight]');
                 $(t.rows[i]).closest('tr').find('.gross').attr('name', 'data['+i+'][gross_weight]');
-                $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
+                // $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
                 $(t.rows[i]).closest('tr').find('.term').attr('name', 'data['+i+'][payment_type]');
+
+                $(t.rows[i]).closest('tr').find('.orderid').attr('name', 'data['+i+'][order_id]');
+                $(t.rows[i]).closest('tr').find('.invc_no').attr('name', 'data['+i+'][invoice_no]');
+                $(t.rows[i]).closest('tr').find('.invc_date').attr('name', 'data['+i+'][invoice_date]');
+                $(t.rows[i]).closest('tr').find('.invc_amt').attr('name', 'data['+i+'][invoice_amount]');
+                $(t.rows[i]).closest('tr').find('.ew_bill').attr('name', 'data['+i+'][e_way_bill]');
+                $(t.rows[i]).closest('tr').find('.ewb_date').attr('name', 'data['+i+'][e_way_bill_date]');
+
                 i++;
             }
         });
@@ -682,21 +734,21 @@ jQuery(document).ready(function(){
             var qty = (!$('[name="data['+w+'][quantity]"]').val()) ? 0 : parseInt($('[name="data['+w+'][quantity]"]').val());
             var ntweight = (!$('[name="data['+w+'][weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][weight]"]').val());
             var grweight = (!$('[name="data['+w+'][gross_weight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][gross_weight]"]').val());
-            var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
+            // var frt = (!$('[name="data['+w+'][freight]"]').val()) ? 0 : parseInt($('[name="data['+w+'][freight]"]').val());
             total_quantity += qty;
             total_net_weight += ntweight;
             total_gross_weight += grweight;
-            total_freight += frt;
+            // total_freight += frt;
         }
         $('#tot_qty').html(total_quantity);
         $('#tot_nt_wt').html(total_net_weight);
         $('#tot_gt_wt').html(total_gross_weight);
-        $('#tot_frt').html(total_freight);
+        // $('#tot_frt').html(total_freight);
 
         $('#total_quantity').val(total_quantity);
         $('#total_weight').val(total_net_weight);
         $('#total_gross_weight').val(total_gross_weight);
-        $('#total_freight').val(total_freight);
+        // $('#total_freight').val(total_freight);
     }
 
     /*===== get location on edit click =====*/
@@ -790,6 +842,48 @@ jQuery(document).ready(function(){
             });
         });
     });
+//////////////////////// Active Cancel Status in drs/////////////////////////////////
+// consignment status change onchange
+jQuery(document).on('click','.active_drs',function(event){
+    event.stopPropagation(); 
+    let drs_id   = jQuery(this).attr('drs-no');
+    // alert(drs_id);
+    var updatestatus = 'updatestatus';
+
+    jQuery('#drs_commonconfirm').modal('show');
+    jQuery( ".commonconfirmclick").one( "click", function() {
+
+        var data =  {drs_id:drs_id,updatestatus:updatestatus}; 
+        
+        jQuery.ajax({
+            url         : 'drs-status',
+            type        : 'get',
+            cache       : false,
+            data        :  data,
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend  : function () {
+                // jQuery("input[type=submit]").attr("disabled", "disabled");
+            },
+            complete: function () {
+                //jQuery("#loader-section").css('display','none');
+            },
+
+            success:function(response){
+                if(response.success){
+                    jQuery('#commonconfirm').modal('hide');
+                    if(response.page == 'dsr-cancel-update'){
+                        setTimeout(() => {window.location.href = response.redirect_url},10);
+                    }
+                }
+                
+            }
+        });
+    });
+});
  ///////////////////////get data successful model++++++++++++++++++++++++++++
  
 jQuery(document).on('click','.drs_cancel',function(event){
@@ -797,7 +891,7 @@ jQuery(document).on('click','.drs_cancel',function(event){
    
     let drs_no   = jQuery(this).attr('drs-no');
         var data =  {drs_no:drs_no};
-        
+        var base_url = window.location.origin;
         jQuery.ajax({
             url         : "get-delivery-datamodel",
             type        : 'get',
@@ -822,15 +916,35 @@ jQuery(document).on('click','.drs_cancel',function(event){
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
                     $.each(data.fetch, function(index, value) {
-
+                        var drs_sign = value.signed_drs;
+                        var storage_img = base_url+'/drs/Image/'+drs_sign;
+                        if(value.signed_drs == null) {
+                            var field = "<input type='file' name='img' data-id='"+ value.consignment_no+ "' placeholder='Choose image' class='drs_image'>";
+                        }else{
+                            var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
+                        }
+                        // delivery date//
+                        if(value.dd == null){
+                            var deliverydate = "<input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'>";
+                        }else{
+                            var deliverydate = value.dd ;
+                        }
+                        //////button status
+                          ///save button check//
+                       if(value.dd != null && value.signed_drs != null){
+                        var butontext = 'Successful';
+                       }else{
+                       var butontext = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
+                       }
+                    //   alert(storage_img);
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td>"+butontext+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
 
 
                     });
-                    get_delivery_date();
+                    // get_delivery_date();  
                
             }
         });
@@ -838,10 +952,9 @@ jQuery(document).on('click','.drs_cancel',function(event){
 
 
 });
-//    Drs Cncel status update+++++++++++++++++++++++++++++++++++++
+///// Drs Cncel status update ////////
 jQuery(document).on('click','.drs_cancel',function(event){
     event.stopPropagation();
-   
     
     let drs_no   = jQuery(this).attr('drs-no');
     var dataaction = jQuery(this).attr('data-action');
@@ -852,19 +965,17 @@ jQuery(document).on('click','.drs_cancel',function(event){
     jQuery( ".commonconfirmclick").one( "click", function() {
         var status_value = jQuery('#drs_status').val();
          
-    if(status_value == 'Successful'){
-        var consignmentID = [];
-        $('input[name="delivery_date[]"]').each(function() {
-          if(this.value == '') {
-           alert('Please filled all delevery date');
-           exit;
-          }
-            consignmentID.push(this.value);
-        });
-    }
-
+        if(status_value == 'Successful'){
+            var consignmentID = [];
+            $('input[name="delivery_date[]"]').each(function() {
+                if(this.value == '') {
+                    alert('Please filled all delevery date');
+                    exit;
+                }
+                consignmentID.push(this.value);
+            });
+        }
         var drs_status = jQuery('#drs_status').val();
-        //alert(drs_status);
         var data =  {drs_no:drs_no,drs_status:drs_status,updatestatus:updatestatus};
         
         jQuery.ajax({
@@ -901,7 +1012,6 @@ jQuery(document).on('click','.drs_cancel',function(event){
 jQuery(document).on('click','.manual_updateLR',function(event){
     event.stopPropagation();
    
-    
      let lr_no   = jQuery(this).attr('lr-no');
    
     //   var dataaction = jQuery(this).attr('data-action');
@@ -910,11 +1020,14 @@ jQuery(document).on('click','.manual_updateLR',function(event){
     jQuery('#manualLR').modal('show');
     
     // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
-    jQuery( ".commonconfirmclick").one( "click", function() {
+    // jQuery( ".commonconfirmclick").one( "click", function() {
+        $(".commonconfirmclick").unbind().click(function() {
         // alert('d');
         var lr_status = jQuery('#lr_status').val();
+
         //alert(drs_status);
         var data =  {lr_no:lr_no,lr_status:lr_status,updatestatus:updatestatus};
+        
         
         jQuery.ajax({
             url         : 'update-lrstatus',
@@ -954,7 +1067,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
     let lr_no   = jQuery(this).attr('lr-no');
 
         var data =  {lr_no:lr_no};
-        
+        var base_url = window.location.origin;
         jQuery.ajax({
             url         : "get-delivery-dateLR",
             type        : 'get',
@@ -968,6 +1081,8 @@ jQuery(document).on('click','.manual_updateLR',function(event){
             beforeSend  : function () {
                 $('#get-delvery-dateLR').dataTable().fnClearTable();             
                 $('#get-delvery-dateLR').dataTable().fnDestroy();
+                $('#lr_status').empty();
+               
             },
             complete: function () {
                
@@ -975,19 +1090,52 @@ jQuery(document).on('click','.manual_updateLR',function(event){
 
             success:function(data){
                 console.log(data.fetch);
-            //     var re = jQuery.parseJSON(data)
+            //  var re = jQuery.parseJSON(data)
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
                     $.each(data.fetch, function(index, value) {
-                        // alert(value.delivery_date);
+                     console.log(value);
 
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
-                        
-                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'></td></tr>");      
+                        var drs_sign = value.signed_drs;
+                        var storage_img = base_url+'/drs/Image/'+drs_sign;
+                        if(value.signed_drs == null) {
+                            var field = "<input type='file' name='img' data-id='"+ value.id+ "' placeholder='Choose image' class='drs_image'>";
+                        }else{
+                            var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
+                        }
+                        ///////////delivery date check
+                        if(value.delivery_date == null)
+                        {
+                            var deliverydat = "<input type='date' name='delivery_date[]' data-id="+ value.id +" class='delivery_d' value='"+ value.delivery_date+ "'>";
+                        }else{
+                            var deliverydat = value.delivery_date
+                        }
+                       ///save button check//
+                       if(value.delivery_date != null && value.signed_drs != null){
+                             var buton = 'Successful';
+                       }else{
+                            var buton = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
+                       }
 
+                        
+                        $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td>" + deliverydat + "</td><td>"+ field +"</td><td>"+buton+"</td></tr>");  
+                      
+                        
+                        // if(value.delivery_status != 'Successful'){
+                        //    var statushtml = "<option value=''>Select status</option><option value='Started'>Started</option><option value='Successful'>Successful</option>";
+                        //    $('.commonconfirmclick').show();
+                          
+                        // }else{
+                        //     var statushtml = "<option value='Successful'>Successful</option>";
+                        //     document.getElementById("lrid").style.display = "block";
+                        //     $('.commonconfirmclick').hide();
+                        // }
+                        // $('#lr_status').append(statushtml);
+                        
                     });
-                     get_delivery_date();
+                    //  get_delivery_date();
                
             }
         });
@@ -1002,7 +1150,7 @@ jQuery(document).on('click','.manual_updateLR',function(event){
         jQuery('.editBranchadd').css('display','none');
     });
 
-    /*===== For create/update consigner/consignee page  =====*/
+    /* For create/update consigner/consignee page  */
     $(document).on('keyup', "#gst_number",function () {
         var gstno = $(this).val().toUpperCase();
         var gstno = gstno.replace(/[^A-Z0-9]/g, '');
@@ -1128,7 +1276,7 @@ $(document).on('blur', "#edd",function () {
 
 
 });
-/*====== End document ready function =====*/ 
+/* End document ready function */ 
 function get_delivery_date()
 {
     $('.delivery_d').blur(function () {
@@ -1151,3 +1299,49 @@ function get_delivery_date()
                     })
            });
     }
+    /*======upload drs delevery img============================== */
+    $(document).on('click', '.onelrupdate', function(){
+        
+        var lr_no = $(this).closest('tr').find("td").eq(0).text();
+        var delivery_date = $(this).closest('tr').find("td:eq(3) input[type='date']"). val();
+        var files = $(this).closest('tr').find('td').eq(4).children('.drs_image')[0].files;
+
+        var form_data = new FormData();
+        if(files.length != 0){
+        var ext = files[0]['name'].split('.').pop().toLowerCase();
+            if(jQuery.inArray(ext, ['png','jpg','jpeg','pdf']) == -1) 
+            {
+            swal("error","Invalid img file", "error"); return false;
+            }
+        }
+
+        form_data.append('file',files[0]);
+        form_data.append('lr', lr_no);
+        form_data.append('delivery_date',delivery_date);
+         $.ajax({
+          url:"upload-delivery-img",
+          method:"POST",
+          data: form_data,
+          contentType: false,
+          cache: false,
+          processData: false,
+          headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+          beforeSend:function(){
+          
+          },   
+          success:function(data)
+          {
+            // alert(data.success);
+            if(data.success == true){
+               swal("success","Status Updated successfully", 'success')
+               
+            }else{
+                swal("error","Something went wrong", 'error')
+            }
+           
+          }
+         });
+        });
+       

@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+
 <style>
     .form-seteing {
         width: 100%;
@@ -112,33 +113,36 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{$prefix.'/consignments'}}">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Consignment</a></li>
+                        <li class="breadcrumb-item"><a href="{{$prefix.'/orders'}}">Orders</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Order</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-                <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}"
-                    id="createconsignment" style="margin: auto; ">
+                <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}"
+                    id="updateorder" style="margin: auto; ">
+                    @csrf
+                    <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}" />
+
                     <div class="row cuss">
                         <div class="col-sm-4">
                             <div class="panel info-box panel-white">
                                 <div class="panel-body" style="padding: 10px;">
                                     <div class="row con1" style="background: white; padding: 0px;">
                                         <div class=" col-sm-3" style="margin-top:3px;">
-                                            <label class=" control-label" style="font-weight: bold;">Select
-                                                Consignor<span class="text-danger">*</span></label>
+                                            <label class=" control-label" style="font-weight: bold;">Select Consignor<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9" style="margin-top:3px;">
-                                            <select id="select_consigner" class="my-select2 form-seteing" type="text"
-                                                name="consigner_id">
-                                                <option value="">Select Consignor</option>
-                                                @foreach($consigners as $consigner)
-                                                <option value="{{$consigner->id}}">{{$consigner->nick_name}}
+                                        <select id="select_consigner" class="my-select2 form-seteing" type="text" name="consigner_id" disabled>
+                                                <option value="">Select</option>
+                                                @if(count($consigners) > 0)
+                                                @foreach($consigners as $k => $consigner)
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->consigner_id ? 'selected' : ''}}>{{ucwords($consigner)}}
                                                 </option>
                                                 @endforeach
+                                                @endif
                                             </select>
+                                            <input  type="hidden" name="consigner_id" value="{{$getconsignments->consigner_id}}" />
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consigner_address">
@@ -159,11 +163,15 @@
                                                 Consignee<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9">
-                                            <select class="my-select2 form-seteing" type="text" name="consignee_id"
-                                                id="select_consignee">
+                                            <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" disabled>
                                                 <option value="">Select Consignee</option>
-
+                                                @if(count($consignees) > 0)
+                                                @foreach($consignees as $k => $consignee)
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->consignee_id ? 'selected' : ''}}>{{ucwords($consignee)}}</option>
+                                                @endforeach
+                                                @endif
                                             </select>
+                                            <input  type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consignee_address">
@@ -183,11 +191,15 @@
                                                     class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9" style="margin-top:2px;">
-                                            <select class="my-select2 form-seteing" type="text" name="ship_to_id"
-                                                id="select_ship_to">
+                                            <select class="my-select2 form-seteing" type="text" name="ship_to_id" id="select_ship_to" disabled>
                                                 <option value="">Select Ship To</option>
-
+                                                @if(count($consignees) > 0)
+                                                @foreach($consignees as $k => $consignee)
+                                                <option value="{{ $k }}" {{ $k == $getconsignments->ship_to_id ? 'selected' : ''}}>{{ucwords($consignee)}}</option>
+                                                @endforeach
+                                                @endif
                                             </select>
+                                            <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:11px">
                                             <div id="ship_to_address">
@@ -423,7 +435,6 @@
                                             <td align="center"><span id="tot_gt_wt">
                                                     <?php echo "0";?>
                                                 </span> Kgs.</td>
-                                           
                                             <td></td>
 
                                         </tr>
@@ -470,9 +481,9 @@
                         </div>
 
                         <div class=" col-sm-3">
-                            <button type="submit" class="mt-2 btn btn-primary disableme">Submit</button>
+                            <button type="submit" class="mt-2 btn btn-primary disableme">Update</button>
 
-                            <a class="mt-2 btn btn-primary" href="{{url($prefix.'/consignments') }}"> Back</a>
+                            <a class="mt-2 btn btn-primary" href="{{url($prefix.'/orders') }}"> Back</a>
                         </div>
                     </div><!-- Row -->
                 </form>
@@ -488,6 +499,175 @@
     // $(function() {
     //     $('.basic').selectpicker();
     // });
+   $(document).ready(function() {
+
+    var consigner_id = $('#select_consigner').val();
+    var consignee_id = $('#select_consignee').val();
+    var shipto_id = $('#select_ship_to').val();
+   
+        $.ajax({
+            type      : 'get',
+            url       : APP_URL+'/get_consigners',
+            data      : {consigner_id:consigner_id},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(res){
+                $('#consigner_address').empty();
+                $('#consignee_address').empty();
+                $('#ship_to_address').empty();
+                
+                $('#select_consignee').append('<option value="">Select Consignee</option>');
+                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+                $.each(res.consignee,function(key,value){
+                    $('#select_consignee, #select_ship_to').append('<option value="'+value.id+'">'+value.nick_name+'</option>');
+                });
+                if(res.data){
+                    console.log(res.data);
+                    if(res.data.address_line1 == null){
+                        var address_line1 = '';
+                    }else{
+                        var address_line1 = res.data.address_line1+'<br>';
+                    }
+                    if(res.data.address_line2 == null){
+                        var address_line2 = '';
+                    }else{
+                        var address_line2 = res.data.address_line2+'<br>';
+                    }
+                    if(res.data.address_line3 == null){
+                        var address_line3 = '';
+                    }else{
+                        var address_line3 = res.data.address_line3+'<br>';
+                    }
+                    if(res.data.address_line4 == null){
+                        var address_line4 = '';
+                    }else{
+                        var address_line4 = res.data.address_line4+'<br>';
+                    }
+                    if(res.data.gst_number == null){
+                        var gst_number = '';
+                    }else{
+                        var gst_number = 'GST No: '+res.data.gst_number+'<br>';
+                    }
+                    if(res.data.phone == null){
+                        var phone = '';
+                    }else{
+                        var phone = 'Phone: '+res.data.phone;
+                    }
+
+                    $('#consigner_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
+
+                    $("#dispatch").val(res.data.city);
+
+                    if(res.data.get_reg_client.name == null){
+                        var regclient = '';
+                    }else{
+                        var regclient = res.data.get_reg_client.name;
+                    }
+                    $("#regclient").val(regclient);
+                }
+            }
+        });
+    ///////get consinee address//
+    $.ajax({
+            type      : 'get',
+            url       : APP_URL+'/get_consignees',
+            data      : {consignee_id:consignee_id},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(res){
+                $('#consignee_address').empty();
+                if(res.data){
+                    if(res.data.address_line1 == null){
+                        var address_line1 = '';
+                    }else{
+                        var address_line1 = res.data.address_line1+'<br>';
+                    }
+                    if(res.data.address_line2 == null){
+                        var address_line2 = '';
+                    }else{
+                        var address_line2 = res.data.address_line2+'<br>';
+                    }
+                    if(res.data.address_line3 == null){ 
+                        var address_line3 = '';
+                    }else{
+                        var address_line3 = res.data.address_line3+'<br>';
+                    }
+                    if(res.data.address_line4 == null){
+                        var address_line4 = '';
+                    }else{
+                        var address_line4 = res.data.address_line4+'<br>';
+                    }
+                    if(res.data.gst_number == null){
+                        var gst_number = '';
+                    }else{
+                        var gst_number = 'GST No: '+res.data.gst_number+'<br>';
+                    }
+                    if(res.data.phone == null){
+                        var phone = '';
+                    }else{
+                        var phone = 'Phone: '+res.data.phone;
+                    }
+
+                    $('#consignee_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
+                }
+            }
+        });
+//////////get ship to address///
+$.ajax({
+            type      : 'get',
+            url       : APP_URL+'/get_consignees',
+            data      : {consignee_id:shipto_id},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(res){
+                $('#ship_to_address').empty();
+                if(res.data){
+                    if(res.data.address_line1 == null){
+                        var address_line1 = '';
+                    }else{
+                        var address_line1 = res.data.address_line1+'<br>';
+                    }
+                    if(res.data.address_line2 == null){
+                        var address_line2 = '';
+                    }else{
+                        var address_line2 = res.data.address_line2+'<br>';
+                    }
+                    if(res.data.address_line3 == null){
+                        var address_line3 = '';
+                    }else{
+                        var address_line3 = res.data.address_line3+'<br>';
+                    }
+                    if(res.data.address_line4 == null){
+                        var address_line4 = '';
+                    }else{
+                        var address_line4 = res.data.address_line4+'<br>';
+                    }
+                    if(res.data.gst_number == null){
+                        var gst_number = '';
+                    }else{
+                        var gst_number = 'GST No: '+res.data.gst_number+'<br>';
+                    }
+                    if(res.data.phone == null){
+                        var phone = '';
+                    }else{
+                        var phone = 'Phone: '+res.data.phone;
+                    }
+
+                    $('#ship_to_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
+                }
+            }
+        });
+
+
+
+   });
+
     jQuery(function () {
         $('.my-select2').each(function () {
             $(this).select2({

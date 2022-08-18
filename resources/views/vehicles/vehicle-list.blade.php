@@ -48,7 +48,7 @@ div.relat {
                         </div>
                         <thead>
                             <tr>
-                                <!-- <th>S No.</th> -->
+                             
                                 <th>Vehicle Number</th>
                                 <th>Registration Date</th>
                                 <th>State(Regd)</th>
