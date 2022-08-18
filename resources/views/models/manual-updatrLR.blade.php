@@ -46,7 +46,7 @@
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
                <!-- <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a>  -->
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+               <a type="" class="btn btn-modal" data-dismiss="modal">Close</a>
            </div>
        </div>
      </div>
