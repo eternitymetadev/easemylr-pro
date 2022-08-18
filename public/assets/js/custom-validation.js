@@ -1335,10 +1335,10 @@ function get_delivery_date()
           {
             // alert(data.success);
             if(data.success == true){
-               swal("success","image upload successfully", 'success')
+               swal("success","Status Updated successfully", 'success')
                
             }else{
-                swal("error","Something went wrong uploading image", 'error')
+                swal("error","Something went wrong", 'error')
             }
            
           }
