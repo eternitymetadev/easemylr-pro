@@ -1270,11 +1270,6 @@ $(document).on('blur', "#edd",function () {
 
     
 
-
-
-
-
-
 });
 /* End document ready function */ 
 function get_delivery_date()
