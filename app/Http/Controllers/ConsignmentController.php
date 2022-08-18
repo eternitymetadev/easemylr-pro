@@ -106,6 +106,7 @@ class ConsignmentController extends Controller
                                  ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                         })
                         ->where('consignment_notes.user_id', $authuser->id)
+                        ->whereNotNull('consignment_date')
                         ->orderBy('id', 'DESC')
                         ->get(['consignees.city']);
             }elseif($authuser->role_id ==6){               //for client account (select base client)
@@ -122,6 +123,7 @@ class ConsignmentController extends Controller
                              ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                     })
                     ->whereIn('base_clients.id', $baseclient)
+                    ->whereNotNull('consignment_date')
                     ->orderBy('id', 'DESC')
                     ->get(['consignees.city']);
             }elseif($authuser->role_id ==7){               //for client user (select regional client)
@@ -136,6 +138,7 @@ class ConsignmentController extends Controller
                              ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                     })
                     ->whereIn('regional_clients.id', $regclient)
+                    ->whereNotNull('consignment_date')
                     ->orderBy('id', 'DESC')
                     ->get(['consignees.city']);
             }
@@ -150,6 +153,7 @@ class ConsignmentController extends Controller
                             ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                     })
                     ->whereIn('consignment_notes.branch_id', $cc)
+                    ->whereNotNull('consignment_date')
                     ->orderBy('id', 'DESC')
                     ->get(['consignees.city']);
             }
@@ -163,6 +167,7 @@ class ConsignmentController extends Controller
                     $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
                 })
+                ->whereNotNull('consignment_date')
                 ->orderBy('id', 'DESC')
                 ->get(['consignees.city']);
         }
