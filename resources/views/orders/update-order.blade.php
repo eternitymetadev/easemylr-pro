@@ -142,6 +142,7 @@
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input  type="hidden" name="consigner_id" value="{{$getconsignments->consigner_id}}" />
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consigner_address">
@@ -162,7 +163,7 @@
                                                 Consignee<span class="text-danger">*</span></label>
                                         </div>
                                         <div class="col-sm-9">
-                                            <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" >
+                                            <select class="my-select2 form-seteing" type="text" name="consignee_id" id="select_consignee" disabled>
                                                 <option value="">Select Consignee</option>
                                                 @if(count($consignees) > 0)
                                                 @foreach($consignees as $k => $consignee)
@@ -170,6 +171,7 @@
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input  type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:10px">
                                             <div id="consignee_address">
@@ -197,6 +199,7 @@
                                                 @endforeach
                                                 @endif
                                             </select>
+                                            <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}"/>
                                         </div>
                                         <div class="container" style="padding-top:11px">
                                             <div id="ship_to_address">
