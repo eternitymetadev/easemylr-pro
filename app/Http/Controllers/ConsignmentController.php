@@ -289,10 +289,8 @@ class ConsignmentController extends Controller
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
                 <div class="ant-timeline-item-content">
-                    <div class="css-16pld72">' . $data->con_pincode . ', ' . $data->con_city . ',' . $data->con_district . ' </div>
-                    <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
-                    <span>' . $data->consigner_id . '</span>
-                </div>
+                    <div class="css-16pld72">' . $data->consigner_id . ' </div>
+                
                 </div>
             </li>
             <li class="ant-timeline-item ant-timeline-item-last css-phvyqn">
@@ -313,6 +311,7 @@ class ConsignmentController extends Controller
                 $dates = '<div class="">
                          <div class=""><span style="color:#4361ee;">LR Date: </span>' . $data->consignment_date . '</div>
                          <div class=""><span style="color:#4361ee;">EDD: </span>' . $data->edd . '</div>
+                         <div class=""><span style="color:#4361ee;">Delivery Date: </span>' . $data->delivery_date . '</div>
                          </div>';
 
                 return $dates;
@@ -522,7 +521,7 @@ class ConsignmentController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
             if (!empty($request->vehicle_id)) {
-                $consignmentsave['delivery_status'] = "Assigned";
+                $consignmentsave['delivery_status'] = "Started";
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
@@ -1654,7 +1653,7 @@ class ConsignmentController extends Controller
         $vehicleType = $request->vehicle_type;
         $transporterName = $request->transporter_name;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'delivery_status' => 'Assigned']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'delivery_status' => 'Started']);
         //echo'hii';
 
         $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')

@@ -8,7 +8,7 @@
        </div> 
        <!-- Modal body -->
        <div class="modal-body">
-       <div class="form-row mb-0">
+       <!-- <div class="form-row mb-0">
                         <div class="form-group col-md-12">
                             <label for="location_name">Status</label>
  
@@ -17,12 +17,12 @@
 
                             </select>
                         </div>
-                        </div>
+                        </div> -->
           <div class="Delt-content text-center">
             <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
           </div>
-          <div class="table-responsive" id="lrid" style="display: none;">
+          <div class="table-responsive" id="lrid">
                         <table id="get-delvery-dateLR" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>
@@ -45,7 +45,7 @@
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
+               <!-- <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a>  -->
                <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
            </div>
        </div>
