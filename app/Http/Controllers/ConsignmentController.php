@@ -309,9 +309,9 @@ class ConsignmentController extends Controller
             ->addColumn('impdates', function ($data) {
 
                 $dates = '<div class="">
-                         <div class=""><span style="color:#4361ee;">LR Date: </span>' . $data->consignment_date . '</div>
-                         <div class=""><span style="color:#4361ee;">EDD: </span>' . $data->edd . '</div>
-                         <div class=""><span style="color:#4361ee;">Delivery Date: </span>' . $data->delivery_date . '</div>
+                         <div class=""><span style="color:#4361ee;">LR Date: </span>' . Helper::ShowDayMonthYear($data->consignment_date) . '</div>
+                         <div class=""><span style="color:#4361ee;">EDD: </span>' . Helper::ShowDayMonthYear($data->edd). '</div>
+                         <div class=""><span style="color:#4361ee;">Delivery Date: </span>' . Helper::ShowDayMonthYear($data->delivery_date) . '</div>
                          </div>';
 
                 return $dates;
@@ -1785,17 +1785,14 @@ class ConsignmentController extends Controller
     }
     public function printTransactionsheet(Request $request)
     {
-        //echo'<pre>'; print_r(); die;
         $id = $request->id;
-        //echo'<pre>'; print_r($id); die;
         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
-        //dd($transcationview);
+
         $simplyfy = json_decode(json_encode($transcationview), true);
         $no_of_deliveries =  count($simplyfy);
         $details = $simplyfy[0]; 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
-        //<img src="" alt="logo" alt="" width="80" height="70">
         $drsDate = date('d-m-Y', strtotime($details['created_at']));
         $html = '<html>
         <head>
