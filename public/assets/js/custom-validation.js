@@ -1123,16 +1123,16 @@ jQuery(document).on('click','.manual_updateLR',function(event){
                         $('#get-delvery-dateLR tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignee_nick + "</td><td>" + value.conee_city + "</td><td>" + deliverydat + "</td><td>"+ field +"</td><td>"+buton+"</td></tr>");  
                       
                         
-                        if(value.delivery_status != 'Successful'){
-                           var statushtml = "<option value=''>Select status</option><option value='Started'>Started</option><option value='Successful'>Successful</option>";
-                           $('.commonconfirmclick').show();
+                        // if(value.delivery_status != 'Successful'){
+                        //    var statushtml = "<option value=''>Select status</option><option value='Started'>Started</option><option value='Successful'>Successful</option>";
+                        //    $('.commonconfirmclick').show();
                           
-                        }else{
-                            var statushtml = "<option value='Successful'>Successful</option>";
-                            document.getElementById("lrid").style.display = "block";
-                            $('.commonconfirmclick').hide();
-                        }
-                        $('#lr_status').append(statushtml);
+                        // }else{
+                        //     var statushtml = "<option value='Successful'>Successful</option>";
+                        //     document.getElementById("lrid").style.display = "block";
+                        //     $('.commonconfirmclick').hide();
+                        // }
+                        // $('#lr_status').append(statushtml);
                         
                     });
                     //  get_delivery_date();

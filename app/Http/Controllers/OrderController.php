@@ -234,7 +234,7 @@ class OrderController extends Controller
             $consignmentsave['status'] = $status;
 
             if (!empty($request->vehicle_id)) {                
-                $consignmentsave['delivery_status'] = "Assigned";
+                $consignmentsave['delivery_status'] = "Started";
             }else{
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
