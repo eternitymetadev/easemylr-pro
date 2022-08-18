@@ -17,6 +17,68 @@
         <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{asset('landing-page/css/styles.css')}}" rel="stylesheet" />
+        <style type="text/css">
+.lds-ellipsis,
+.lds-ellipsis div {
+  box-sizing: border-box;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33.33333px;
+  width: 13.33333px;
+  height: 13.33333px;
+  border-radius: 50%;
+  background: currentColor;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+</style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -208,9 +270,49 @@
                             <!-- has successfully submitted-->
                             <div class="d-none" id="submitSuccessMessage">
                                 <div class="text-center mb-3">
-                                    <div class="fw-bolder">Form submission successful!</div>
-                                    To activate this form, sign up at
+                                    <div class="fw-bolder">Please wait while we are getting the latest status 
                                 </div>
+                                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+                                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+<div class="container padding-bottom-3x mb-1">
+        <div class="card mb-3">
+          <div class="p-4 text-center text-white text-lg bg-dark rounded-top"><span class="text-uppercase">Tracking Order No - </span><span class="text-medium">34VB5540K83</span></div>
+          <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Shipped Via:</span> UPS Ground</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Status:</span> Checking Quality</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Expected Date:</span> SEP 09, 2017</div>
+          </div>
+          <div class="card-body">
+            <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                </div>
+                <h4 class="step-title">Confirmed Order</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-car"></i></div>
+                </div>
+                <h4 class="step-title">Product Dispatched</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="pe-7s-home"></i></div>
+                </div>
+                <h4 class="step-title">Product Delivered</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
+          <div class="custom-control custom-checkbox mr-3">
+            <input class="custom-control-input" type="checkbox" id="notify_me" checked="">
+            <label class="custom-control-label" for="notify_me">Notify me when order is delivered</label>
+          </div>
+          <div class="text-left text-sm-right"><a class="btn btn-outline-primary btn-rounded btn-sm" href="orderDetails" data-toggle="modal" data-target="#orderDetails">View Order Details</a></div>
+        </div>
+      </div>
                             </div>
                             <!-- Submit error message-->
                             <!---->
@@ -227,9 +329,8 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-       
 
-        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <script src="{{asset('landing-page/js/sb-forms-latest.js')}}"></script>
         <script src="{{asset('newasset/assets/js/libs/jquery-3.1.1.min.js')}}"></script>
 
         <script>
@@ -252,7 +353,6 @@
                  success: function(data){
                     console.log(data.fetch);
                     
-                    $('.fw-bolder').html(data.fetch);
  
                     
          } 
