@@ -435,9 +435,6 @@
                                             <td align="center"><span id="tot_gt_wt">
                                                     <?php echo "0";?>
                                                 </span> Kgs.</td>
-                                            <!-- <td align="center">INR <span id="tot_frt">
-                                                    <?php// echo "0";?>
-                                                </span></td> -->
                                             <td></td>
 
                                         </tr>
