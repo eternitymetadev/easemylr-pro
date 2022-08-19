@@ -28,6 +28,6 @@ class TransactionSheet extends Model
     }
 
     public function ConsignmentItem(){
-        return $this->belongsTo('App\Models\ConsignmentItem','consignment_id','consignment_no');
+        return $this->hasMany('App\Models\ConsignmentItem','consignment_id','consignment_no');
     }
 }

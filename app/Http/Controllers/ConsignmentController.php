@@ -1918,8 +1918,7 @@ class ConsignmentController extends Controller
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
-
+        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail','ConsignmentItem')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
         $no_of_deliveries =  count($simplyfy);
         $details = $simplyfy[0]; 
@@ -1936,6 +1935,14 @@ class ConsignmentController extends Controller
           table,
           th,
           td {
+              border: 0px solid black;
+              border-collapse: collapse;
+              text-align: left;
+          }
+          .drs_t,
+          .drs_r,
+          .drs_d,
+          .drs_h {
               border: 1px solid black;
               border-collapse: collapse;
               text-align: left;
@@ -1966,6 +1973,7 @@ class ConsignmentController extends Controller
               .dd{
                 margin-left: 0px;
               }
+            
           </style>
         </head>
         <body style="font-size:13px; font-family:Arial Helvetica,sans-serif;">
@@ -1973,24 +1981,24 @@ class ConsignmentController extends Controller
                     <div class="column"  style="width: 493px;">
                         <h1 class="dd">Delivery Run Sheet</h1>
                         <div  class="dd">
-                        <table style="width:100%">
-                            <tr>
-                                <th>DRS No.</th>
-                                <th>DRS-' . $details['drs_no'] . '</th>
-                                <th>Vehicle No.</th>
-                                <th>' . $details['vehicle_no'] . '</th>
+                        <table class="drs_t" style="width:100%">
+                            <tr class="drs_r">
+                                <th class="drs_h">DRS No.</th>
+                                <th class="drs_h">DRS-' . $details['drs_no'] . '</th>
+                                <th class="drs_h">Vehicle No.</th>
+                                <th class="drs_h">' . $details['vehicle_no'] . '</th>
                             </tr>
-                            <tr>
-                                <td>DRS Date</td>
-                                <td>' . $drsDate . '</td>
-                                <td>Driver Name</td>
-                                <td>' . @$details['driver_name'] . '</td>
+                            <tr class="drs_r">
+                                <td class="drs_d">DRS Date</td>
+                                <td class="drs_d">' . $drsDate . '</td>
+                                <td class="drs_d">Driver Name</td>
+                                <td class="drs_d">' . @$details['driver_name'] . '</td>
                             </tr>
-                            <tr>
-                                <td>No. of Deliveries</td>
-                                <td>' . $no_of_deliveries . '</td>
-                                <td>Driver No.</td>
-                                <td>' . @$details['driver_no'] . '</td>
+                            <tr class="drs_r">
+                                <td class="drs_d">No. of Deliveries</td>
+                                <td class="drs_d">' . $no_of_deliveries . '</td>
+                                <td class="drs_d">Driver No.</td>
+                                <td class="drs_d">' . @$details['driver_no'] . '</td>
                             </tr>
                         </table>
                     </div>
@@ -2002,16 +2010,13 @@ class ConsignmentController extends Controller
                 </div>
                 <br>
                 <div id="content"><div class="row" style="border: 1px solid black;">
-                <div class="column" style="width:75px;">
-                    <h4 style="margin: 0px;">Order Id</h4>
+                <div class="column" style="width:95px;">
+                    <h4 style="margin: 0px;">LR Details</h4>
                 </div>
-                <div class="column" style="width:75px;">
-                    <h4 style="margin: 0px;">LR No. & Date</h4>
-                </div>
-                <div class="column" style="width:140px;">
+                <div class="column" style="width:200px;">
                     <h4 style="margin: 0px;">Consignee Name & Mobile Number</h4>
                 </div>
-                <div class="column" style="width:110px;">
+                <div class="column" style="width:125px;">
                     <h4 style="margin: 0px;">Delivery City & PIN</h4>
                     </div>
                     <div class="column">
@@ -2036,10 +2041,10 @@ class ConsignmentController extends Controller
         $total_weight = 0;
 
         foreach ($simplyfy as $dataitem) {
-            //echo'<pre>'; print_r($dataitem); die;
+        //    echo'<pre>'; print_r($dataitem); die;
 
             $i++;
-            if ($i % 7 == 0) {
+            if ($i % 6 == 0) {
                 $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
             }
 
@@ -2047,21 +2052,18 @@ class ConsignmentController extends Controller
             $total_weight += $dataitem['total_weight'];
             //echo'<pre>'; print_r($dataitem['consignment_no']); die;
             $html .= '
-                <div class="row" style="border: 1px solid black;">
-                    <div class="column" style="width:75px;">
-                      <p style="margin-top:0px; overflow-wrap: break-word;">' . $dataitem['consignment_detail']['order_id'] . '</p>
-                      <p></p>
-                    </div>
-                    <div class="column" style="width:75px;">
+                <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
+                   
+                    <div class="column" style="width:95px;">
                         <p style="margin-top:0px;">' . $dataitem['consignment_no'] . '</p>
                         <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']) . '</p>
                     </div>
-                    <div class="column" style="width:140px;">
+                    <div class="column" style="width:200px;">
                         <p style="margin-top:0px;">' . $dataitem['consignee_id'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['phone'] . '</p>
 
                     </div>
-                    <div class="column" style="width:110px;">
+                    <div class="column" style="width:125px;">
                         <p style="margin-top:0px;">' . $dataitem['city'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['pincode'] . '</p>
 
@@ -2069,15 +2071,29 @@ class ConsignmentController extends Controller
                       <div class="column" >
                         <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
                         <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_gross_weight'] . '</p>
-                        <p style="margin-top:-13px;">Inv No. ' . $dataitem['consignment_detail']['invoice_no'] . '</p>
-
                       </div>
                       <div class="column" style="width:170px;">
                         <p></p>
                       </div>
-                  </div>
+                  </div>';
+                  $html .='<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
+                  foreach(array_chunk($dataitem['consignment_item'], 2) as $chunk){
+                  //echo'<pre>'; print_r($chunk); die;
+                  $html .=' <div class="column" style="width:230px; margin-top: -10px;">';
+                  $html .='<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 120px; padding:6px;"><span style="font-weight: bold; color: grey;">Order ID</span></td><td><span style="font-weight: bold; color: grey;">Invoice No</span></td></tr></table>';
+                  $itm_no = 0;
+                  foreach($chunk as $cc){
+                   $itm_no++;
+              
+                 $html .='  <table style="border:0; margin-top: -7px;"><tr><td style="width: 120px; padding:3px;"> '.$cc['order_id'].'</td><td td style="width: 120px; padding:3px;">'.$cc['invoice_no'].'</td></tr></table>';
+                 
+               }
+               $html .= '</div> ';
+            }
+               $html .='</div>
 
                 <br>';
+        
         }
 
         $html .= '</main>
