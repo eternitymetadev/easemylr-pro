@@ -384,7 +384,7 @@
                                                         name="data[1][e_way_bill_date]">
                                                 </div>
                                             </td>
-                                            <?php// if(Auth::user()->role_id == 1){ ?>
+                                            <?php Helper::regclientInvoice($) ?>
                                             <td> <button type="button" class="btn btn-default btn-rounded insert-more">
                                                     + </button>
                                             </td>
