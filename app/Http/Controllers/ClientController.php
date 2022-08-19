@@ -90,6 +90,7 @@ class ClientController extends Controller
                 foreach ($get_data as $key => $save_data ) { 
                     $save_data['baseclient_id'] = $saveclient->id;
                     $save_data['location_id'] = $save_data['location_id'];
+                    $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                     $save_data['status'] = "1";
                     $saveregclients = RegionalClient::create($save_data);
                 }
@@ -201,6 +202,7 @@ class ClientController extends Controller
                         $insertdata['name'] = $save_data['name'];
                         $insertdata['baseclient_id'] = (int)$request->baseclient_id;
                         $insertdata['location_id'] = $save_data['location_id'];
+                        $insertdata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $insertdata['status'] = "1";
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::create($insertdata);
