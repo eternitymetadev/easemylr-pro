@@ -34,6 +34,7 @@
         	<h4 class="modal-title">Update DRS Status</h4>
        </div>
        <!-- Modal body -->
+     <form id="allsave">
        <div class="modal-body">
       
           <div class="Delt-content text-center">
@@ -50,24 +51,28 @@
                                     <th>City</th>
                                     <th>Delivery Date</th>
                                     <th>Upload Image</th>
-                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>
+                        </table> 
 
                     </div>
        </div>
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <!-- <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a><span style="margin-left: 200px;">Click 'OK' to update delivery status</span> -->
+               <!-- <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave" >Save</button> -->
+               <!-- <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a> -->
+               <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave"><span class="indicator-label">Update</span>
+                 <span class="indicator-progress" style="display: none;">Please wait...
+            	    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+</form>
            </div>
        </div>
+      
      </div>
    </div>
 </div>

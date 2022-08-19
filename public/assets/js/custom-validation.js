@@ -915,36 +915,37 @@ jQuery(document).on('click','.drs_cancel',function(event){
             //     var re = jQuery.parseJSON(data)
             //  console.log(re.fetch); return false;
                     var consignmentID = [];
-                    $.each(data.fetch, function(index, value) {
+                    var i = 1;
+                    $.each(data.fetch, function(index, value) { 
+                        
                         var drs_sign = value.signed_drs;
                         var storage_img = base_url+'/drs/Image/'+drs_sign;
                         if(value.signed_drs == null) {
-                            var field = "<input type='file' name='img' data-id='"+ value.consignment_no+ "' placeholder='Choose image' class='drs_image'>";
+                            var field = "<input type='file' name='data["+i+"][img]' data-id='"+ value.consignment_no+ "' placeholder='Choose image' class='drs_image value='"+ value.signed_drs + "'>";
                         }else{
                             var field = "<a href='"+ storage_img +"' target='_blank' class='btn btn-warning'>view</a>";
                         }
                         // delivery date//
                         if(value.dd == null){
-                            var deliverydate = "<input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'>";
+                            var deliverydate = "<input type='date' name='data["+i+"][delivery_date]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'>";
                         }else{
                             var deliverydate = value.dd ;
                         }
                         //////button status
                           ///save button check//
-                       if(value.dd != null && value.signed_drs != null){
-                        var butontext = 'Successful';
-                       }else{
-                       var butontext = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
-                       }
-                    //   alert(storage_img);
+                    //    if(value.dd != null && value.signed_drs != null){
+                    //     var butontext = 'Successful';
+                    //    }else{
+                    //    var butontext = "<button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary onelrupdate'>Save</button>";
+                    //    }
+                    //   alert(storage_img); 
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td>"+butontext+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td><input type='hidden' name='data["+i+"][lrno]' class='delivery_d' value='"+ value.consignment_no+ "'>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
 
-
+                        i++ ;
                     });
-                    // get_delivery_date();  
                
             }
         });
@@ -981,7 +982,7 @@ jQuery(document).on('click','.drs_cancel',function(event){
         jQuery.ajax({
             url         : dataaction,
             type        : 'get',
-            cache       : false,
+            cache       : false, 
             data        :  data,
             dataType    :  'json',
             headers     : {
@@ -1298,7 +1299,18 @@ function get_delivery_date()
     $(document).on('click', '.onelrupdate', function(){
         
         var lr_no = $(this).closest('tr').find("td").eq(0).text();
-        var delivery_date = $(this).closest('tr').find("td:eq(3) input[type='date']"). val();
+        var ddd = $(this).closest('tr').find("td:eq(3) input[type='date']"). val();
+
+        if(ddd ==  undefined){
+            var delivery_date = $(this).closest('tr').find('td').eq(3).text();
+        }else{
+            var delivery_date = $(this).closest('tr').find("td:eq(3) input[type='date']"). val();
+        }
+        
+        if(delivery_date == null || delivery_date == ''){
+            alert('Please select a delivery date'); return false;
+        }
+
         var files = $(this).closest('tr').find('td').eq(4).children('.drs_image')[0].files;
 
         var form_data = new FormData();
@@ -1331,6 +1343,7 @@ function get_delivery_date()
             // alert(data.success);
             if(data.success == true){
                swal("success","Status Updated successfully", 'success')
+               location.reload();
                
             }else{
                 swal("error","Something went wrong", 'error')
@@ -1339,4 +1352,36 @@ function get_delivery_date()
           }
          });
         });
+        //////////////////////////
+        $('#allsave').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+           
+          
+                $.ajax({
+                    url: "all-save-deliverydate", 
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    type: 'POST',  
+                    data:new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(){
+                        $(".indicator-progress").show(); 
+                        $(".indicator-label").hide();
+                    },
+                    success: (data) => {
+                        $(".indicator-progress").hide();
+                        $(".indicator-label").show();
+                        if(data.success == true){
+                            swal("success","Status Updated successfully", 'success')
+                            location.reload();
+                            
+                        }else{
+                            swal("error","Something went wrong", 'error')
+                        }
+                      
+                    }
+                }); 
+            });	
        
