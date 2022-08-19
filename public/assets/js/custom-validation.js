@@ -1358,7 +1358,6 @@ function get_delivery_date()
 
             var formData = new FormData(this);
            
-          
                 $.ajax({
                     url: "all-save-deliverydate", 
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
