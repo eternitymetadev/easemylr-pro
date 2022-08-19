@@ -41,6 +41,7 @@
                                     <tr>
                                         <th><label for="exampleFormControlInput2">Regional Client Name<span class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Location<span class="text-danger">*</span></label></th>
+                                        <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
                                     </tr>
                                     
                                     <?php
@@ -70,13 +71,13 @@
                                         <td>
                                             <div class="check-box d-flex">
                                                 <div class="checkbox radio">
-                                                    <label class="check-label">Yes
-                                                        <input type="radio" value="1" name="data[{{$i}}][is_muliple_invoice]" class=""  checked="">
+                                                    <label class="check-label"> Yes
+                                                        <input type="radio" class="is_multiple_invoice" value="1" name="data[{{$i}}][is_multiple_invoice]" {{ ($regclientdata->is_multiple_invoice =="1")?"checked" : "" }} checked="">
                                                     </label>
                                                 </div>
                                                 <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="data[{{$i}}][is_muliple_invoice]" value="0">
+                                                    <label class="check-label"> No
+                                                        <input type="radio" class="is_multiple_invoice" value="0" name="data[{{$i}}][is_multiple_invoice]" {{ ($regclientdata->is_multiple_invoice =="0")?"checked" : "" }} >
                                                     </label>
                                                 </div>
                                             </div>
@@ -124,7 +125,7 @@
             foreach ($locations as $key => $location) {
         ?>
             rows+= '<option value="{{ $key }}">{{ucwords($location)}}</option>';
-            <?php 
+            <?php
             }
         }
         ?>
@@ -133,13 +134,13 @@
         rows+= '<td>';
         rows+= '<div class="check-box d-flex">';
         rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label">Yes';
-        rows+= '<input type="radio" value="1" name="data['+i+'][is_muliple_invoice]" class=""  checked="">';
+        rows+= '<label class="check-label"> Yes';
+        rows+= '<input type="radio" class="is_multiple_invoice" name="data['+i+'][is_multiple_invoice]" value="1" checked="">';
         rows+= '</label>';
         rows+= '</div>';
         rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label">No';
-        rows+= '<input type="radio" name="data['+i+'][is_muliple_invoice]" value="0">';
+        rows+= '<label class="check-label"> No';
+        rows+= '<input type="radio" class="is_multiple_invoice" name="data['+i+'][is_multiple_invoice]" value="0">';
         rows+= '</label>';
         rows+= '</div>';
         rows+= '</div>';

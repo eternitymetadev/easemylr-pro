@@ -58,55 +58,63 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $this->prefix = request()->route()->getPrefix();
-        $rules = array(
-            'client_name' => 'required|unique:base_clients,client_name',
-            // 'name' => 'required|unique:regional_clients,name',
-        );
-
-        $validator = Validator::make($request->all(),$rules);
-    
-        if($validator->fails())
-        {
-            $errors                  = $validator->errors();
-            $response['success']     = false;
-            $response['validation']  = false;
-            $response['formErrors']  = true;
-            $response['errors']      = $errors;
-            return response()->json($response);
-        }
-        if(!empty($request->client_name)){
-            $client['client_name']   = $request->client_name;
-        }
-        $client['status']     = "1";
-
-        $saveclient = BaseClient::create($client); 
-        $data = $request->all();
-
-        if($saveclient)
-        {
-            if(!empty($request->data)){ 
-                $get_data = $request->data;
-                foreach ($get_data as $key => $save_data ) { 
-                    $save_data['baseclient_id'] = $saveclient->id;
-                    $save_data['location_id'] = $save_data['location_id'];
-                    $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
-                    $save_data['status'] = "1";
-                    $saveregclients = RegionalClient::create($save_data);
-                }
-            }
+        try{
+            DB::beginTransaction();
             
-            $url    =   URL::to($this->prefix.'/clients');
-            $response['success'] = true;
-            $response['success_message'] = "Clients Added successfully";
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                'client_name' => 'required|unique:base_clients,client_name',
+                // 'name' => 'required|unique:regional_clients,name',
+            );
+
+            $validator = Validator::make($request->all(),$rules);
+        
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['validation']  = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+            if(!empty($request->client_name)){
+                $client['client_name']   = $request->client_name;
+            }
+            $client['status']     = "1";
+
+            $saveclient = BaseClient::create($client); 
+            $data = $request->all();
+
+            if($saveclient)
+            {
+                if(!empty($request->data)){ 
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data ) { 
+                        $save_data['baseclient_id'] = $saveclient->id;
+                        $save_data['location_id'] = $save_data['location_id'];
+                        $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
+                        $save_data['status'] = "1";
+                        $saveregclients = RegionalClient::create($save_data);
+                    }
+                }
+                
+                $url    =   URL::to($this->prefix.'/clients');
+                $response['success'] = true;
+                $response['success_message'] = "Clients Added successfully";
+                $response['error'] = false;
+                $response['page'] = 'client-create';
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not created client please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+        } catch (Exception $e) {
             $response['error'] = false;
-            // $response['resetform'] = true;
-            $response['page'] = 'client-create';
-            $response['redirect_url'] = $url;
-        }else{
+            $response['error_message'] = $e;
             $response['success'] = false;
-            $response['error_message'] = "Can not created client please try again";
-            $response['error'] = true;
         }
         return response()->json($response);
     }
@@ -158,6 +166,8 @@ class ClientController extends Controller
     public function UpdateClient(Request $request)
     {
         try { 
+            DB::beginTransaction();
+
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 // 'name' => 'required',
@@ -194,8 +204,9 @@ class ClientController extends Controller
                     if(!empty($save_data['hidden_id'])){
                         $updatedata['name'] = $save_data['name'];
                         $updatedata['baseclient_id'] = (int)$request->baseclient_id;
+                        $updatedata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $updatedata['status'] = "1";
-                        $hidden_id=$save_data['hidden_id'];
+                        $hidden_id = (int)$save_data['hidden_id'];
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::where('id',$hidden_id)->update($updatedata);
                     }else{
@@ -207,22 +218,7 @@ class ClientController extends Controller
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::create($insertdata);
                     }
-                    
-                    // if($save_data['isRegionalClientNull']==1){
-                    //     $save_data['baseclient_id'] = $request->baseclient_id;
-                    //     unset($save_data['hidden_id']);
-                    //     unset($save_data['isRegionalClientNull']);
-                    //     $saveregclients = RegionalClient::create($save_data);
-                    // }else{
-                        // $save_data['baseclient_id'] = $request->baseclient_id;
-                        // $hidden_id=$save_data['hidden_id'];
-                        // unset($save_data['hidden_id']);
-                        // unset($save_data['isRegionalClientNull']);
-                        // $saveregclients = RegionalClient::where('id',$hidden_id)->update($save_data);
-                    // }
                 }
-                // dd($data);
-                // RegionalClient::updateOrcreate($data);
             }
             $url  =  URL::to($this->prefix.'/clients');
             $response['page'] = 'client-update';

@@ -109,23 +109,23 @@ class GlobalFunctions {
            self::generateSku();
         }
         return 'C-'.$skuId;
-     }
+    }
 
-     public static function getCountDrs($drs_number){
+    public static function getCountDrs($drs_number){
         $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->where('status','!=', 2)->count();
         return $data;
-     }
+    }
 
-     public static function getdeleveryDate($drs_number){
+    public static function getdeleveryDate($drs_number){
         $data = DB::table('transaction_sheets')->select( 'consignment_notes.delivery_date as deliverydate')
         ->join('consignment_notes','consignment_notes.id','=','transaction_sheets.consignment_no')
         ->where('transaction_sheets.drs_no',$drs_number)
         ->where('consignment_notes.delivery_date','!=', null)
         ->count();
         return $data;
-     }
+    }
 
-     public static function getdeleveryStatus($drs_number){
+    public static function getdeleveryStatus($drs_number){
        
         $total = TransactionSheet::where('drs_no',$drs_number)->count();
         $partial = TransactionSheet::where('drs_no',$drs_number)->where('delivery_status', 'Successful')->count();
@@ -140,7 +140,12 @@ class GlobalFunctions {
         }
 
         return $status;
-     }
+    }
+
+    public static function regclientInvoice($regclient_id){
+        $data = RegionalClient::where('id',$regclient_id)->first();
+        return $data;
+    }
 
 
 }
