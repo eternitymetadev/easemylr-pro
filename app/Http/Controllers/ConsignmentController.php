@@ -94,89 +94,144 @@ class ConsignmentController extends Controller
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id ==4){
-                $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
-                        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                        ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                        ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                        ->leftjoin('jobs', function($data){
-                            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-                        })
-                        ->where('consignment_notes.user_id', $authuser->id)
-                        ->orderBy('id', 'DESC')
-                        ->get(['consignees.city']);
-            }elseif($authuser->role_id ==6){               //for client account (select base client)
-                $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail','consigners.regionalclient_id as regionalclient_id','regional_clients.baseclient_id as baseclient_id')
-                
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->leftjoin('jobs', function($data){
-                        $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                             ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-                    })
-                    ->whereIn('base_clients.id', $baseclient)
-                    ->orderBy('id', 'DESC')
-                    ->get(['consignees.city']);
-            }elseif($authuser->role_id ==7){               //for client user (select regional client)
-                $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail','consigners.regionalclient_id as regionalclient_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->leftjoin('jobs', function($data){
-                        $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                             ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-                    })
-                    ->whereIn('regional_clients.id', $regclient)
-                    ->orderBy('id', 'DESC')
-                    ->get(['consignees.city']);
-            }
-           else {
-                $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->leftjoin('jobs', function ($data) {
-                        $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                            ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-                    })
-                    ->whereIn('consignment_notes.branch_id', $cc)
-                    ->orderBy('id', 'DESC')
-                    ->get(['consignees.city']);
-            }
-        } else {
-            $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3', 'consignees.district as conee_district', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->leftjoin('jobs', function ($data) {
-                    $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                        ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-                })
-                ->orderBy('id', 'DESC')
-                ->get(['consignees.city']);
-        }
+
+        $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+            ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+            ->leftjoin('jobs', function($data){
+                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+            });
+
+            if($authuser->role_id ==1){
+                $data;
+                 }
+            elseif($authuser->role_id ==4){
+               $data = $data->where('consignment_notes.user_id', $authuser->id);
+                }
+                elseif($authuser->role_id ==6){
+                $data = $data->whereIn('base_clients.id', $baseclient);
+                }
+                elseif($authuser->role_id ==7){
+                 $data = $data->whereIn('regional_clients.id', $regclient);
+                   }
+                else{
+                $data = $data->whereIn('consignment_notes.branch_id', $cc);
+                }   
+                $data = $data->orderBy('id', 'DESC');
+                $data = $data->get();
+    
 
         return Datatables::of($data)
             ->addColumn('lrdetails', function ($data) {
 
                 $trps = '<div class="">
                      <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . '</div>
-                     <div class=""><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
-                     <div class=""><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
+                     <div style="display:none"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
+                     <div style="display:none"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
                      </div>';
 
                 return $trps;
+            })
+            ->addColumn('trackinglink', function ($data) {
+
+                if(!empty($data->job_id) && $data->delivery_status != 'Successful'){
+                    $trackinglink = '<iframe id="iGmap" width="100%" height="350px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$data->tracking_link.'" ></iframe>';
+                }else{
+                    $trackinglink = '<div id="map-'.$data->id.'" style="height: 50vh; width: 100%" ></div>';
+                }
+                
+
+                return $trackinglink;
+            })
+            ->addColumn('txndetails', function ($data) {
+
+                //echo "<pre>";print_r($data);die;
+
+                if(!empty($data->job_id)){
+                    $jobid = $data->job_id;
+                }else{
+                    $jobid = "Manual";
+                }
+                
+
+                $txndetails = '<table id="" class="table table-striped">
+                <tbody>
+
+               <tr>
+                    <td>Delivery Status</td>
+                    <td><span class="badge bg-info">' . $data->delivery_status . '</span></td>
+                </tr>
+                <tr>
+
+                  <tr>
+                    <td>Shadow Job Id</td>
+                    <td>' . $jobid . '</td>
+                  </tr>
+                  <tr>
+                    <td>Tracking Link</td>
+                    <td>' . $data->tracking_link . '</td>
+                  </tr>
+                  <tr>
+                  <td>Vehicle No</td>
+                  <td>' . $data->regn_no . '</td>
+                  </tr>
+
+                  <tr>
+                  <td>Driver Name</td>
+                  <td>' . $data->driver_name . '</td>
+                  </tr/>
+                  <tr>
+
+                  <tr>
+                  <td>Driver Phone</td>
+                  <td>' . $data->driver_phone . '</td>
+                  </tr/>
+                  <tr>
+
+                  <td>No. of Boxes</td>
+                  <td>' . $data->total_quantity . '</td>
+                  </tr/>
+
+                  <tr>
+                  <td>Net Weight</td>
+                  <td>' . $data->total_weight . '</td>
+                  </tr/>
+
+                  <tr>
+                  <td>Gross Weight</td>
+                  <td>' . $data->total_gross_weight . '</td>
+                  </tr/>
+
+                  <tr>
+                  <td colspan="2"><ul class="ant-timeline mt-3" style="">
+                  <li class="ant-timeline-item  css-b03s4t">
+                      <div class="ant-timeline-item-tail"></div>
+                      <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
+                      <div class="ant-timeline-item-content">
+                          <div class="css-16pld72">' . $data->consigner_id . ' </div>
+                      
+                      </div>
+                  </li>
+                  <li class="ant-timeline-item ant-timeline-item-last css-phvyqn">
+                      <div class="ant-timeline-item-tail"></div>
+                      <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
+                      <div class="ant-timeline-item-content">
+                      <div class="css-16pld72">' . $data->consignee_id . '</div>
+                      <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
+                          <span>' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</span>
+                      </div>
+                      </div>
+                  </li>
+                  </ul></td>
+                  </tr/>
+
+                </tbody>
+              </table>';
+
+                return $txndetails;
             })
             ->addColumn('trail', function ($data) {
 
@@ -297,9 +352,9 @@ class ConsignmentController extends Controller
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                 <div class="ant-timeline-item-content">
-                <div class="css-16pld72">' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</div>
+                <div class="css-16pld72">' . $data->consignee_id . '</div>
                 <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
-                    <span>' . $data->consignee_id . '</span>
+                    <span>' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</span>
                 </div>
                 </div>
             </li>
@@ -309,9 +364,9 @@ class ConsignmentController extends Controller
             ->addColumn('impdates', function ($data) {
 
                 $dates = '<div class="">
-                         <div class=""><span style="color:#4361ee;">LR Date: </span>' . Helper::ShowDayMonthYear($data->consignment_date) . '</div>
+                         <div class=""><span style="color:#4361ee;">LRD: </span>' . Helper::ShowDayMonthYear($data->consignment_date) . '</div>
                          <div class=""><span style="color:#4361ee;">EDD: </span>' . Helper::ShowDayMonthYear($data->edd). '</div>
-                         <div class=""><span style="color:#4361ee;">Delivery Date: </span>' . Helper::ShowDayMonthYear($data->delivery_date) . '</div>
+                         <div class=""><span style="color:#4361ee;">ADD: </span>' . Helper::ShowDayMonthYear($data->delivery_date) . '</div>
                          </div>';
 
                 return $dates;
@@ -320,9 +375,9 @@ class ConsignmentController extends Controller
                 $authuser = Auth::user();
                 if($authuser->role_id !=6 && $authuser->role_id !=7){
                     if($data->invoice_no != null || $data->invoice_no != ''){
-                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-info shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-viewold/2/" target="_blank" class="badge alert bg-info shadow-sm">Print LR</a>';
+                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-viewold/2/" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>';
                     }else{
-                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-info shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-view/2/" target="_blank" class="badge alert bg-info shadow-sm">Print LR</a>';
+                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-view/2/" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>';
                     }
                 return $po;
                 }else{
@@ -339,17 +394,17 @@ class ConsignmentController extends Controller
                     $disable = '';
                 }
                 if ($data->status == 0) {
-                    $st = '<span class="badge alert bg-secondary shadow-sm">Cancel</span>';
+                    $st = '<span class="alert badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
 
-                    $st = '<a class="activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
+                    $st = '<a class="alert activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
                 }
                 elseif($data->status == 2){
-                    $st = '<span class="badge bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
+                    $st = '<span class="badge alert bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
                 }
                 elseif($data->status == 3){
-                    $st = '<span class="badge bg-gradient-bloody text-white shadow-sm">Unknown</span>';  
+                    $st = '<span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>';  
                 }
 
                 return $st;
@@ -379,7 +434,7 @@ class ConsignmentController extends Controller
                  }
                 return $dt;
             })
-            ->rawColumns(['lrdetails', 'route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail'])
+            ->rawColumns(['lrdetails','txndetails','trackinglink','route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail'])
             ->make(true);
 
     }

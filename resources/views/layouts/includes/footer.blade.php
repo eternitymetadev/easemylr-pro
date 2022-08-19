@@ -99,7 +99,7 @@
 											'<div class="d-flex align-items-center">'+
 												'<div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>'+
 												'</div>'+
-												'<div class="tab-title">Others</div>'+
+												'<div class="tab-title">Order Details</div>'+
 											'</div>'+
 										'</a>'+
 									'</li>'+
@@ -108,24 +108,9 @@
 									'<div class="tab-pane active" id="primaryhome" role="tabpanel">'+
                                     '<div class="row">'+
                                     '<div class="col-md-4">'+
-                                    '<strong class="labels">Shadow Job Id:</strong> '+d.job_id+'<br/>'+
-                                    '<strong class="labels">Driver Name:</strong> '+d.driver_name+'<br/>'+
-                                    '<strong class="labels">Driver Number:</strong> '+d.driver_phone+'<br/>'+
-                                    '<strong class="labels">Vehicle No:</strong> '+d.regn_no+'<br/>'+
-                                    '<strong class="labels">No. of Boxes:</strong> '+d.total_quantity+'<br/>'+
-                                    '<strong class="labels">Net Weight:</strong> '+d.total_weight+'<br/>'+
-                                    '<strong class="labels">Gross Weight:</strong> '+d.total_gross_weight +'<br/>'+
-                                    '<strong class="labels">Consigner:</strong> '+d.consigner_id+'<br/>'+
-                                    '<strong class="labels">Consigner Address:</strong> '+d.con_pincode +','+ d.con_city+ ','+ d.con_district+'<br/>'+
-                                    '<strong class="labels">Consignee :</strong> '+d.consignee_id+'<br/>'+
-                                    '<strong class="labels">Consignee Address:</strong>'+d.pincode +','+d.city+','+d.conee_district +'<br/>'+
-                                    '<strong class="labels">Invoice No:</strong> '+d.invoice_no+'<br/>'+
-                                    '<strong class="labels">Invoice Date :</strong> '+d.invoice_date+'<br/>'+
-                                    '<strong class="labels">Invoice Amount:</strong> '+d.invoice_amount+'<br/><br/><br/>'+
-                                    ''+d.route+'<br/>'+
+                                    '<strong class="labels">'+d.txndetails+
                                     '</div>'+
-                                    '<div class="col-md-8">'+
-                                    '<div id="map-'+d.id+'"><iframe id="iGmap" width="100%" height="400px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+d.tracking_link+'" ></iframe></div>'+
+                                    '<div class="col-md-8">'+d.trackinglink+
                                     '</div>'+
                                     '</div>'+
 									'</div>'+
@@ -135,7 +120,30 @@
 									'</div>'+
 								'</div>'+
 							'</div>'+
-						'</div>';
+						'</div>'+
+                        '<script type="text/javascript">\n' + 
+                    "var map = new google.maps.Map(document.getElementById('map-"+d.id+"'), {zoom: 8, center: 'Delhi',});\n"+
+                    "var directionsDisplay = new google.maps.DirectionsRenderer({'draggable': false});\n"+
+                    "var directionsService = new google.maps.DirectionsService();\n"+
+                    "var travel_mode = 'DRIVING';\n"+ 
+                    "var origin = '"+d.con_city+"';\n"+
+                    "var destination = '"+d.city+"';\n"+
+                    "directionsService.route({\n"+
+                                "origin: origin,\n"+
+                                "destination: destination,\n"+
+                                "travelMode: travel_mode,\n"+
+                                "avoidTolls: true\n"+
+                            "}, function (response, status) {\n"+
+                                "if (status === 'OK') {\n"+
+                                    "directionsDisplay.setMap(map);\n"+
+                                    "directionsDisplay.setDirections(response);\n"+
+                                "} else {\n"+
+                                    "directionsDisplay.setMap(null);\n"+
+                                    "directionsDisplay.setDirections(null);\n"+
+                                    "alert('Unknown lane found with error code 0, contact your manager');\n"+
+                                "}\n"+
+                    "});\n"+
+             '<\/script>';
 
     }
 
@@ -184,18 +192,22 @@
         // Add event listener for opening and closing details
         $('#lrlist tbody').on('click', 'td.dt-control', function () {
             var tr = $(this).closest('tr');
-            var row = table.row(tr);
-
-            if (row.child.isShown()) {
-                // This row is already open - close it
+            var row = table.row( tr );
+ 
+            if ( row.child.isShown() ) {
                 row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Open this row
-                row.child(format(row.data())).show();
+                tr.removeClass('shown');     
+                }
+            else
+                {
+                if ( table.row( '.shown' ).length ) {
+                        $('.dt-control', table.row( '.shown' ).node()).click();
+                }
+                row.child( format(row.data()) ).show();
                 tr.addClass('shown');
             }
-        });
+        })
+
     });
 
     $('.get-datatable').DataTable({

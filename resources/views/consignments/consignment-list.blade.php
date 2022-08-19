@@ -341,7 +341,10 @@ td.dt-control {
     position: absolute;
     width: 10px;
     height: 10px;
-    border-radius: 100px;
+}
+.bg-cust {
+    background: #01010314;
+    color: #e7515a;
 }
 .css-ccw3oz .ant-timeline-item-head {
     padding: 0px;
