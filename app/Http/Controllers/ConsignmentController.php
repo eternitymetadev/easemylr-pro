@@ -122,13 +122,22 @@ class ConsignmentController extends Controller
                 }   
                 $data = $data->orderBy('id', 'DESC');
                 $data = $data->get();
-    
 
         return Datatables::of($data)
             ->addColumn('lrdetails', function ($data) {
 
+                if(!empty( $data->regn_no)){
+                    $v = '<span class="badge bg-cust">' . $data->regn_no . '<span>';
+                }
+                else{
+                    $v = '';
+                }
+
+               
+
                 $trps = '<div class="">
                      <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . '</div>
+                     <div>' . $v . '</div>
                      <div style="display:none"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
                      <div style="display:none"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
                      </div>';
@@ -136,15 +145,41 @@ class ConsignmentController extends Controller
                 return $trps;
             })
             ->addColumn('trackinglink', function ($data) {
-
                 if(!empty($data->job_id) && $data->delivery_status != 'Successful'){
                     $trackinglink = '<iframe id="iGmap" width="100%" height="350px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$data->tracking_link.'" ></iframe>';
                 }else{
                     $trackinglink = '<div id="map-'.$data->id.'" style="height: 50vh; width: 100%" ></div>';
                 }
-                
-
                 return $trackinglink;
+            })
+            ->addColumn('orderdetails', function ($data) {
+
+                $orders = explode(',',$data->order_id);
+                
+                $ol = '';
+                foreach($orders as $order){
+                    $ol .= '<span class="badge bg-info mt-2">' . $order . '</span>&nbsp;';
+                }
+                //echo "<pre>"; print_r($ol);die;
+                $orderdetails = '<table id="" class="table table-striped">
+                <tbody>
+
+               <tr>
+                    <td>Order Number</td>
+                    <td>'.$ol.'</td>
+                </tr>
+                <tr>
+
+                  <tr>
+                    <td>Invoice Number</td>
+                    <td>' . $data->invoice_no . '</td>
+                  </tr>
+                  
+
+                </tbody>
+              </table>';
+
+                return $orderdetails;
             })
             ->addColumn('txndetails', function ($data) {
 
@@ -434,7 +469,7 @@ class ConsignmentController extends Controller
                  }
                 return $dt;
             })
-            ->rawColumns(['lrdetails','txndetails','trackinglink','route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail'])
+            ->rawColumns(['lrdetails','txndetails','trackinglink','route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail','orderdetails'])
             ->make(true);
 
     }
@@ -467,10 +502,7 @@ class ConsignmentController extends Controller
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        // $consignees = Consignee::select('id', 'nick_name')->where('user_id', $authuser->id)->get();
-        // if (empty($consignees)) {
-        //     $consignees = Consignee::select('id', 'nick_name')->get();
-        // }
+        
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
@@ -1835,7 +1867,7 @@ class ConsignmentController extends Controller
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
-        echo json_encode($response);
+        echo json_encode($response); 
 
     }
     public function printTransactionsheet(Request $request)
@@ -3050,6 +3082,41 @@ class ConsignmentController extends Controller
             return Response::json($response);
         }
 
+    }
+
+    public function allSaveDRS(Request $request)
+    {
+          
+          if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+
+                $lrno = $save_data['lrno'];
+                $deliverydate = @$save_data['delivery_date'];
+                $pic = @$save_data['img'];
+                if(!empty($pic)){
+                    $filename = $pic->getClientOriginalName();
+                    $pic->move(public_path('drs/Image'), $filename);
+                }else{
+                    $filename = NULL ;
+                }
+                         
+                if(!empty($deliverydate)){
+                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                    TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                }else{
+                    if(!empty($filename)){
+                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                    // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                }
+            }
+            }
+            $response['success'] = true;
+            $response['messages'] = 'img uploaded successfully';
+            return Response::json($response);
+        }
+
+         
     }
 
 }

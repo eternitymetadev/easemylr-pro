@@ -116,7 +116,7 @@
 									'</div>'+
                                     '<div class="tab-pane fade" id="primaryprofile" role="tabpanel">'+d.trail+
 									'</div>'+
-									'<div class="tab-pane fade" id="primarycontact" role="tabpanel">'+
+									'<div class="tab-pane fade" id="primarycontact" role="tabpanel">'+d.orderdetails+
 									'</div>'+
 								'</div>'+
 							'</div>'+
@@ -140,7 +140,7 @@
                                 "} else {\n"+
                                     "directionsDisplay.setMap(null);\n"+
                                     "directionsDisplay.setDirections(null);\n"+
-                                    "alert('Unknown lane found with error code 0, contact your manager');\n"+
+                                    "alert('Unknown route found with error code 0, contact your manager');\n"+
                                 "}\n"+
                     "});\n"+
              '<\/script>';
@@ -330,7 +330,7 @@
                     if (data.success == true) {
 
                         swal('success','Drs Created Successfully','success');
-                        location.reload();
+                        window.location.href = "transaction-sheet";
                     }
                     else {
                         swal('error','something wrong','error');
