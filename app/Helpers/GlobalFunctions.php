@@ -142,7 +142,7 @@ class GlobalFunctions {
         return $status;
      }
 
-     public function oldnewLr($drs_number)
+     public static function oldnewLr($drs_number)
      {
         $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
              $orderId = $transcationview->ConsignmentDetail->order_id;
