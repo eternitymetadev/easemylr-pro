@@ -145,6 +145,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('get-delivery-datamodel', [ConsignmentController::class, 'getdeliverydatamodel']);
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
+    Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+
 
     Route::resource('orders', OrderController::class);
 
@@ -239,6 +241,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+
 
     
     Route::resource('orders', OrderController::class);
@@ -326,6 +330,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+
 
 
 
@@ -425,6 +431,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+
 
 
     Route::resource('orders', OrderController::class);
@@ -500,6 +508,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('download-bulklr', [ConsignmentController::class, 'DownloadBulkLr']);
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+
 
 
     

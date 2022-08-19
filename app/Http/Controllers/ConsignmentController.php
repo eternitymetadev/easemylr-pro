@@ -1736,7 +1736,7 @@ class ConsignmentController extends Controller
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
-        echo json_encode($response);
+        echo json_encode($response); 
 
     }
     public function printTransactionsheet(Request $request)
@@ -2951,6 +2951,41 @@ class ConsignmentController extends Controller
             return Response::json($response);
         }
 
+    }
+
+    public function allSaveDRS(Request $request)
+    {
+          
+          if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+
+                $lrno = $save_data['lrno'];
+                $deliverydate = @$save_data['delivery_date'];
+                $pic = @$save_data['img'];
+                if(!empty($pic)){
+                    $filename = $pic->getClientOriginalName();
+                    $pic->move(public_path('drs/Image'), $filename);
+                }else{
+                    $filename = NULL ;
+                }
+                         
+                if(!empty($deliverydate)){
+                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                    TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                }else{
+                    if(!empty($filename)){
+                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                    // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                }
+            }
+            }
+            $response['success'] = true;
+            $response['messages'] = 'img uploaded successfully';
+            return Response::json($response);
+        }
+
+         
     }
 
 }

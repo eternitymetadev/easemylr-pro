@@ -318,7 +318,7 @@
                     if (data.success == true) {
 
                         swal('success','Drs Created Successfully','success');
-                        location.reload();
+                        window.location.href = "transaction-sheet";
                     }
                     else {
                         swal('error','something wrong','error');
