@@ -65,10 +65,11 @@
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
                <!-- <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave" >Save</button> -->
-               <!-- <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a> -->
+               
                <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave"><span class="indicator-label">Update</span>
                  <span class="indicator-progress" style="display: none;">Please wait...
             	    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                   <a type="" class="btn btn-modal btn-warning" data-dismiss="modal">Cancel</a> 
 </form>
            </div>
        </div>
