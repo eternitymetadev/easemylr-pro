@@ -132,6 +132,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
+    Route::any('print-transactionold/{id}', [ConsignmentController::class, 'printTransactionsheetold']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']);
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
@@ -221,6 +222,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
+    Route::any('print-transactionold/{id}', [ConsignmentController::class, 'printTransactionsheetold']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']); 
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
@@ -309,6 +311,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
+    Route::any('print-transactionold/{id}', [ConsignmentController::class, 'printTransactionsheetold']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']);
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
     Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']);
@@ -408,6 +411,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
+    Route::any('print-transactionold/{id}', [ConsignmentController::class, 'printTransactionsheetold']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']);
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
     Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']);

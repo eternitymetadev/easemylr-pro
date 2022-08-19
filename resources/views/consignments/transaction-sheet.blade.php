@@ -106,7 +106,7 @@ div.relative {
                                    <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}" style="margin-right:4px;">Save</button> 
                                    <?php } ?>
                                    <?php if(!empty($trns->vehicle_no)){?>
-                                    <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}" role="button">Print</a>
+                                    <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}" role="button">Print</a>
                                     <?php } ?>
 
                                     <?php  
