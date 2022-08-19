@@ -1333,6 +1333,7 @@ class ConsignmentController extends Controller
                 ->whereIn('transaction_sheets.status', ['1','0','3'])
                 ->where('consignment_notes.user_id', $authuser->id)
                 ->groupBy('transaction_sheets.drs_no')
+                ->orderBy('transaction_sheets.id', 'desc')
                 ->get();
             }else{
                 $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no','transaction_sheets.driver_name','transaction_sheets.vehicle_no', 'transaction_sheets.status','transaction_sheets.delivery_status','transaction_sheets.created_at','transaction_sheets.driver_no','consignment_notes.user_id','consignment_notes.user_id')
@@ -1340,6 +1341,7 @@ class ConsignmentController extends Controller
                 ->whereIn('transaction_sheets.status', ['1','0','3'])
                 ->whereIn('transaction_sheets.branch_id', [$cc])
                 ->groupBy('transaction_sheets.drs_no')
+                ->orderBy('transaction_sheets.id', 'desc')
                 ->get();
             }
         } else {
@@ -1347,6 +1349,7 @@ class ConsignmentController extends Controller
                 ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
                 ->whereIn('transaction_sheets.status', ['1','0','3'])
                 ->groupBy('transaction_sheets.drs_no')
+                ->orderBy('transaction_sheets.id', 'desc')
                 ->get();
             // $transaction = DB::table('transaction_sheets')->select('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no', DB::raw('count("drs_no") as total'))
             // ->groupBy('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no')->whereIn('status', ['1','0','3'])->get();  

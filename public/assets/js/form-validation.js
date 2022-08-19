@@ -869,10 +869,10 @@ jQuery(document).ready(function(){
                 // required: true,
             },
             e_way_bill: {
-                required: true,
+                // required: true,
             },
             e_way_bill_date: {
-                required: true,
+                // required: true,
             },
             'quantity[]': {
                 required: true,
