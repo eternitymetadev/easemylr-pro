@@ -27,9 +27,7 @@
     }
 
     .table>thead>tr>th {
-
         padding: 10px 7px 6px 8px;
-
     }
 
     label.error {
