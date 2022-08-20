@@ -127,19 +127,16 @@ class ConsignmentController extends Controller
             ->addColumn('lrdetails', function ($data) {
 
                 if(!empty( $data->regn_no)){
-                    $v = '<span class="badge bg-cust">' . $data->regn_no . '<span>';
+                    $v = '<span class="badge bg-cust">(' . $data->regn_no . ')<span>';
                 }
                 else{
                     $v = '';
                 }
 
-               
-
                 $trps = '<div class="">
-                     <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . '</div>
-                     <div>' . $v . '</div>
-                     <div style="display:none"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
-                     <div style="display:none"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
+                     <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . $v . '</div>
+                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
+                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
                      </div>';
 
                 return $trps;
@@ -379,7 +376,7 @@ class ConsignmentController extends Controller
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
                 <div class="ant-timeline-item-content">
-                    <div class="css-16pld72">' . $data->consigner_id . ' </div>
+                    <div class="css-16pld72 ellipse">' . $data->consigner_id . ' </div>
                 
                 </div>
             </li>
@@ -387,8 +384,8 @@ class ConsignmentController extends Controller
                 <div class="ant-timeline-item-tail"></div>
                 <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                 <div class="ant-timeline-item-content">
-                <div class="css-16pld72">' . $data->consignee_id . '</div>
-                <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
+                <div class="css-16pld72 ellipse">' . $data->consignee_id . '</div>
+                <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
                     <span>' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</span>
                 </div>
                 </div>

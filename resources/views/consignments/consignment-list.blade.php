@@ -298,7 +298,29 @@ td.dt-control {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize;
+    text-transform: capitalize; 
+}
+.css-16pld73 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: capitalize; 
+}
+.ellipse{
+    width:320px;
+}
+.ellipse2{
+    width:200px;
+}
+.ellipse:hover{
+    overflow: visible; 
+    white-space: normal;
+    width:100%; /* just added this line */
+}
+.ellipse2:hover{
+    overflow: visible; 
+    white-space: normal;
+    width:100%; /* just added this line */
 }
 .ant-timeline-item-tail {
     position: absolute;
