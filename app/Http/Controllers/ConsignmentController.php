@@ -25,6 +25,7 @@ use QrCode;
 use Response;
 use Storage;
 use Validator;
+use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
 {
@@ -1119,6 +1120,20 @@ class ConsignmentController extends Controller
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
+        
+        $regional = $data['consigner_detail']['regionalclient_id'];
+
+        $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
+        $sl = json_decode(json_encode($getdataregional), true);
+        @$baseclient = $sl['base_client']['client_name'];
+        
+        //$logo = url('assets/img/logo_se.jpg');
+        $barcode = url('assets/img/barcode.png');
+
+        //echo $barcode; die;
+        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
+
+    }
 
         if ($data['consigner_detail']['legal_name'] != null) {
             $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
@@ -3039,7 +3054,7 @@ class ConsignmentController extends Controller
         $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
 
         //Save jobs response
-
+        
         $jobData['job_id'] = $json['job_id'];
         $jobData['response_data'] = $data;
         $jobData['status'] = $json['job_state'];
@@ -3073,10 +3088,12 @@ class ConsignmentController extends Controller
     {
 
         $update = DB::table('jobs')->where('type', 1)->update(['type' => 0]);
-
         $response['success'] = true;
 
         return response()->json($response);
+
+        event(new \App\Events\RealTimeMessage('Status updated as '. $json['job_state']. ' for consignment no -'.$job_id));
+
 
     }
 // //////////   ACTIVE CANCEL STATUS DRS
