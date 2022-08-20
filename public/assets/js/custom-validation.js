@@ -478,6 +478,8 @@ jQuery(document).ready(function(){
                     }else{
                         var regclient = res.data.get_reg_client.name;
                     }
+                    $("#regclient").val(regclient);
+
                     if(res.data.get_reg_client.is_multiple_invoice == null){
                         var multiple_invoice = '';
                     }else{
