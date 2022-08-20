@@ -74,6 +74,10 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
     }
+    public function JobDetail()
+    {
+        return $this->belongsTo('App\Models\Job','job_id','job_id');
+    }
     
 
 }

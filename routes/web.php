@@ -20,7 +20,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\API\ReceiveAddressController;
-
+use App\Http\Controllers\TrackingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,6 +35,10 @@ Auth::routes();
 
 Route::get('/', function () {
     return view('auth.login');
+});
+
+Route::get('/landing', function () {
+    return view('landing');
 });
 
 Route::get('/', function () {
@@ -552,6 +556,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);
+Route::any('track-order', [TrackingController::class, 'trackOrder']);
+
 
 
 

@@ -4,7 +4,7 @@
     @include('layouts.includes.header')
     </head>
 
-    <body class="alt-menu sidebar-noneoverflow">
+    <body class="zoomer alt-menu sidebar-noneoverflow" style="zoom: 90%;">
        <!-- BEGIN LOADER -->
     <div id="load_screen"> <div class="loader"> <div class="loader-content">
         <div class="spinner-grow align-self-center"></div>
