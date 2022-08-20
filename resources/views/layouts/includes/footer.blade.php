@@ -161,8 +161,8 @@
                 { data: 'route' },
                 { data: 'impdates' },
                 { data: 'poptions' },
-                { data: 'status' },
                 { data: 'delivery_status' },
+                { data: 'status' },
             ],
             order: [[1, 'asc']],
             "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +

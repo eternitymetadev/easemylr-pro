@@ -356,6 +356,7 @@ td.dt-control {
 a.badge.alert.bg-secondary.shadow-sm {
     color: #fff;
 }
+
     </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -396,8 +397,9 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <?php }else {?>
                                         <th></th>
                                         <?php }?>
+                                    <th>Dlvry Status</th>
                                     <th>LR Status</th>
-                                    <th>Delivery Status</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
