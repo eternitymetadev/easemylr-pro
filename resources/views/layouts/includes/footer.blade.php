@@ -69,10 +69,10 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
 
-        //  Echo.channel('events')
-        // .listen('RealTimeMessage', (e) => console.log('RealTimeMessage: ' + e.message));
+        Echo.channel('events')
+       .listen('RealTimeMessage', (e) => console.log('RealTimeMessage: ' + e.message));
 
-        function closeMessage() {
+        /*function closeMessage() {
             message.__x.$data.showMessage = false;
         }
         
@@ -87,7 +87,7 @@
                 setTimeout(function () {
                     closeMessage()
                 }, 115000);
-            });
+            });*/
 
     </script>
 
