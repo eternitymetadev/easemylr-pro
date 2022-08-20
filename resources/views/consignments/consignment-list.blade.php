@@ -298,7 +298,29 @@ td.dt-control {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize;
+    text-transform: capitalize; 
+}
+.css-16pld73 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: capitalize; 
+}
+.ellipse{
+    width:320px;
+}
+.ellipse2{
+    width:200px;
+}
+.ellipse:hover{
+    overflow: visible; 
+    white-space: normal;
+    width:100%; /* just added this line */
+}
+.ellipse2:hover{
+    overflow: visible; 
+    white-space: normal;
+    width:100%; /* just added this line */
 }
 .ant-timeline-item-tail {
     position: absolute;
@@ -341,7 +363,10 @@ td.dt-control {
     position: absolute;
     width: 10px;
     height: 10px;
-    border-radius: 100px;
+}
+.bg-cust {
+    background: #01010314;
+    color: #e7515a;
 }
 .css-ccw3oz .ant-timeline-item-head {
     padding: 0px;
@@ -353,6 +378,7 @@ td.dt-control {
 a.badge.alert.bg-secondary.shadow-sm {
     color: #fff;
 }
+
     </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -393,8 +419,9 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     <?php }else {?>
                                         <th></th>
                                         <?php }?>
+                                    <th>Dlvry Status</th>
                                     <th>LR Status</th>
-                                    <th>Delivery Status</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
