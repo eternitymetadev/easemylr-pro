@@ -44,6 +44,7 @@
                                     <tr>
                                         <th><label for="exampleFormControlInput2">Regional Client Name<span class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Location<span class="text-danger">*</span></label></th>
+                                        <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
                                     </tr>
                                     <tr class="rowcls">
                                         <td>
@@ -62,6 +63,20 @@
                                                 }
                                                 ?>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <div class="check-box d-flex">
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">Yes
+                                                        <input type="radio" value="1" name="data[1][is_multiple_invoice]" class=""  checked="">
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">No
+                                                        <input type="radio" name="data[1][is_multiple_invoice]" value="0">
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
@@ -89,8 +104,47 @@
     function addrow(){
         var i = $('.rowcls').length;
         i  = i + 1;
+        var rows = '';
 
-        $('#myTable tbody').append('<tr class="rowcls"><td><input class="form-control name" type="text" name="data['+i+'][name]"></td><td> <select class="form-control location_id" name="data['+i+'][location_id]"> <option value="">Select</option> @if(count($locations)>0)@foreach ($locations as $key => $location)<option value="{{ $key }}">{{ucwords($location)}}</option> @endforeach @endif</select></td><td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button></td></tr>');   
+        rows+= '<tr class="rowcls">';
+        rows+= '<td>';
+        rows+= '<input type="text" class="form-control name" name="data['+i+'][name]" placeholder="">';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<select class="form-control location_id" name="data['+i+'][location_id]">';
+        rows+= '<option value="">Select</option>';
+        <?php if(count($locations)>0) {
+            foreach ($locations as $key => $location) {
+        ?>
+            rows+= '<option value="{{ $key }}">{{ucwords($location)}}</option>';
+            <?php 
+            }
+        }
+        ?>
+        rows+= '</select>';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<div class="check-box d-flex">';
+        rows+= '<div class="checkbox radio">';
+        rows+= '<label class="check-label">Yes';
+        rows+= '<input type="radio" value="1" name="data['+i+'][is_multiple_invoice]" class=""  checked="">';
+        rows+= '</label>';
+        rows+= '</div>';
+        rows+= '<div class="checkbox radio">';
+        rows+= '<label class="check-label">No';
+        rows+= '<input type="radio" name="data['+i+'][is_multiple_invoice]" value="0">';
+        rows+= '</label>';
+        rows+= '</div>';
+        rows+= '</div>';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
+        rows+= '</td>';
+        rows+= '</tr>';
+
+        $('#myTable tbody').append(rows);
+
+        // $('#myTable tbody').append('<tr class="rowcls"><td><input class="form-control name" type="text" name="data['+i+'][name]"></td><td> <select class="form-control location_id" name="data['+i+'][location_id]"> <option value="">Select</option> @if(count($locations)>0)@foreach ($locations as $key => $location)<option value="{{ $key }}">{{ucwords($location)}}</option> @endforeach @endif</select></td><td><div class="check-box d-flex"><div class="checkbox radio"><label class="check-label">Yes<input type="radio" value="1" name="data['+i+'][is_muliple_invoice]" class="" checked=""></label></div><div class="checkbox radio"><label class="check-label">No<input type="radio" name="data['+i+'][is_muliple_invoice]" value="0"></label></div></div></td><td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button></td></tr>');
     }
     
     // function removerow(){
