@@ -122,7 +122,7 @@ class ConsignmentController extends Controller
                 $data = $data->whereIn('consignment_notes.branch_id', $cc);
                 }   
                 $data = $data->orderBy('id', 'DESC');
-                $data = $data->limit(200)->get();
+                $data = $data->get();
 
         return Datatables::of($data)
             ->addColumn('lrdetails', function ($data) {
