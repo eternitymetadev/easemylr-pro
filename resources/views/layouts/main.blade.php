@@ -2,6 +2,13 @@
 <html lang="en">
     <head>
     @include('layouts.includes.header')
+    <style>
+        .dropdown-toggle svg.feather[class*="feather-chevron-"] {
+    width: 15px;
+    height: auto;
+    vertical-align: middle;
+}
+    </style>
     </head>
 
     <body class="zoomer alt-menu sidebar-noneoverflow" style="zoom: 90%;">
