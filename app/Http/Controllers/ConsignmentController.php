@@ -1120,20 +1120,6 @@ class ConsignmentController extends Controller
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        
-        $regional = $data['consigner_detail']['regionalclient_id'];
-
-        $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
-        $sl = json_decode(json_encode($getdataregional), true);
-        @$baseclient = $sl['base_client']['client_name'];
-        
-        //$logo = url('assets/img/logo_se.jpg');
-        $barcode = url('assets/img/barcode.png');
-
-        //echo $barcode; die;
-        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-
-    }
 
         if ($data['consigner_detail']['legal_name'] != null) {
             $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
