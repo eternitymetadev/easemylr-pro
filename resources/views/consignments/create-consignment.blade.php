@@ -384,11 +384,9 @@
                                                         name="data[1][e_way_bill_date]">
                                                 </div>
                                             </td>
-                                            <?php Helper::regclientInvoice($) ?>
                                             <td> <button type="button" class="btn btn-default btn-rounded insert-more">
                                                     + </button>
                                             </td>
-                                            <?php //} ?>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -490,6 +488,10 @@
     // $(function() {
     //     $('.basic').selectpicker();
     // });
+    $(document).ready(function() {
+        $('.insert-more').attr('disabled',true);
+    });
+
     jQuery(function () {
         $('.my-select2').each(function () {
             $(this).select2({

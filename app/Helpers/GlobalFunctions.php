@@ -144,6 +144,7 @@ class GlobalFunctions {
 
     public static function regclientInvoice($regclient_id){
         $data = RegionalClient::where('id',$regclient_id)->first();
+        // dd($data);
         return $data;
     }
 

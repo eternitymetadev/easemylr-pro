@@ -625,6 +625,7 @@ class ConsignmentController extends Controller
     public function getConsigners(Request $request)
     {
         $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
+        // dd($getconsigners->GetRegClient->is_multiple_invoice);
         
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {

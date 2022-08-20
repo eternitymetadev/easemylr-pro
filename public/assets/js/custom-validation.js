@@ -408,6 +408,7 @@ jQuery(document).ready(function(){
 
     /*===== get consigner address on create consignment page =====*/
     $('#select_consigner').change(function(e){
+        $('#items_table').find("tr:gt(1)").remove();
         $('#select_consignee').empty();
         $('#select_ship_to').empty();
         let consigner_id = $(this).val();
@@ -477,7 +478,18 @@ jQuery(document).ready(function(){
                     }else{
                         var regclient = res.data.get_reg_client.name;
                     }
-                    $("#regclient").val(regclient);
+                    if(res.data.get_reg_client.is_multiple_invoice == null){
+                        var multiple_invoice = '';
+                    }else{
+                        var multiple_invoice = res.data.get_reg_client.is_multiple_invoice;
+                    }
+
+                    if(multiple_invoice == 1 ){
+                        $('.insert-more').attr('disabled',false);
+                    }else{  
+                        $('.insert-more').attr('disabled',true);
+                    }
+
                 }
             }
         });
