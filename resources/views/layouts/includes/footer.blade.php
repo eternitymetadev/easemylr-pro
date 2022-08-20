@@ -15,9 +15,81 @@
 </div>
 </div>
 <!--  END CONTENT AREA  -->
+<style>
+            audio, canvas, embed, iframe, img, object, svg, video {
+                display: unset !important;
+                vertical-align: middle;
+            }
+            .sm\:p-6 {
+                padding: 1.5rem;
+                z-index: 999999;
+            }
+        </style>     
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" defer>
+        <div id="message" x-data="{ showMessage: false, message: '' }" class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
+            <div  x-show="showMessage"
+                x-transition:enter="transform ease-out duration-300 transition"
+                x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto">
+                <div class="rounded-lg shadow-xs overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                
+                                <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-3 w-0 flex-1 pt-0.5">
+                                <p class="text-sm leading-5 font-medium text-gray-900" x-text="message">
+                                </p>
+                            </div>
+                            <div class="ml-4 flex-shrink-0 flex">
+                                <button class="inline-flex text-gray-400 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150" onclick="closeMessage();">
+                                    
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 </div>
 <!-- END MAIN CONTAINER -->
+
+ <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+
+        Echo.channel('events')
+       .listen('RealTimeMessage', (e) => console.log('RealTimeMessage: ' + e.message));
+
+        /*function closeMessage() {
+            message.__x.$data.showMessage = false;
+        }
+        
+        Echo.channel('events')
+            .listen('RealTimeMessage', (e) => {
+                let message = document.getElementById('message');
+                //console.log(e.message);
+                message.__x.$data.showMessage = true;
+                message.__x.$data.message = e.message;
+        
+
+                setTimeout(function () {
+                    closeMessage()
+                }, 115000);
+            });*/
+
+    </script>
 
 <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
 <script src="{{asset('newasset/assets/js/libs/jquery-3.1.1.min.js')}}"></script>
@@ -99,7 +171,7 @@
 											'<div class="d-flex align-items-center">'+
 												'<div class="tab-icon"><i class="bx bx-microphone font-18 me-1"></i>'+
 												'</div>'+
-												'<div class="tab-title">Others</div>'+
+												'<div class="tab-title">Order Details</div>'+
 											'</div>'+
 										'</a>'+
 									'</li>'+
@@ -108,34 +180,42 @@
 									'<div class="tab-pane active" id="primaryhome" role="tabpanel">'+
                                     '<div class="row">'+
                                     '<div class="col-md-4">'+
-                                    '<strong class="labels">Shadow Job Id:</strong> '+d.job_id+'<br/>'+
-                                    '<strong class="labels">Driver Name:</strong> '+d.driver_name+'<br/>'+
-                                    '<strong class="labels">Driver Number:</strong> '+d.driver_phone+'<br/>'+
-                                    '<strong class="labels">Vehicle No:</strong> '+d.regn_no+'<br/>'+
-                                    '<strong class="labels">No. of Boxes:</strong> '+d.total_quantity+'<br/>'+
-                                    '<strong class="labels">Net Weight:</strong> '+d.total_weight+'<br/>'+
-                                    '<strong class="labels">Gross Weight:</strong> '+d.total_gross_weight +'<br/>'+
-                                    '<strong class="labels">Consigner:</strong> '+d.consigner_id+'<br/>'+
-                                    '<strong class="labels">Consigner Address:</strong> '+d.con_pincode +','+ d.con_city+ ','+ d.con_district+'<br/>'+
-                                    '<strong class="labels">Consignee :</strong> '+d.consignee_id+'<br/>'+
-                                    '<strong class="labels">Consignee Address:</strong>'+d.pincode +','+d.city+','+d.conee_district +'<br/>'+
-                                    '<strong class="labels">Invoice No:</strong> '+d.invoice_no+'<br/>'+
-                                    '<strong class="labels">Invoice Date :</strong> '+d.invoice_date+'<br/>'+
-                                    '<strong class="labels">Invoice Amount:</strong> '+d.invoice_amount+'<br/><br/><br/>'+
-                                    ''+d.route+'<br/>'+
+                                    '<strong class="labels">'+d.txndetails+
                                     '</div>'+
-                                    '<div class="col-md-8">'+
-                                    '<div id="map-'+d.id+'"><iframe id="iGmap" width="100%" height="400px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+d.tracking_link+'" ></iframe></div>'+
+                                    '<div class="col-md-8">'+d.trackinglink+
                                     '</div>'+
                                     '</div>'+
 									'</div>'+
                                     '<div class="tab-pane fade" id="primaryprofile" role="tabpanel">'+d.trail+
 									'</div>'+
-									'<div class="tab-pane fade" id="primarycontact" role="tabpanel">'+
+									'<div class="tab-pane fade" id="primarycontact" role="tabpanel">'+d.orderdetails+
 									'</div>'+
 								'</div>'+
 							'</div>'+
-						'</div>';
+						'</div>'+
+                        '<script type="text/javascript">\n' + 
+                    "var map = new google.maps.Map(document.getElementById('map-"+d.id+"'), {zoom: 8, center: 'Delhi',});\n"+
+                    "var directionsDisplay = new google.maps.DirectionsRenderer({'draggable': false});\n"+
+                    "var directionsService = new google.maps.DirectionsService();\n"+
+                    "var travel_mode = 'DRIVING';\n"+ 
+                    "var origin = '"+d.con_city+"';\n"+
+                    "var destination = '"+d.city+"';\n"+
+                    "directionsService.route({\n"+
+                                "origin: origin,\n"+
+                                "destination: destination,\n"+
+                                "travelMode: travel_mode,\n"+
+                                "avoidTolls: true\n"+
+                            "}, function (response, status) {\n"+
+                                "if (status === 'OK') {\n"+
+                                    "directionsDisplay.setMap(map);\n"+
+                                    "directionsDisplay.setDirections(response);\n"+
+                                "} else {\n"+
+                                    "directionsDisplay.setMap(null);\n"+
+                                    "directionsDisplay.setDirections(null);\n"+
+                                    "alert('Unknown route found with error code 0, contact your manager');\n"+
+                                "}\n"+
+                    "});\n"+
+             '<\/script>';
 
     }
 
@@ -153,8 +233,8 @@
                 { data: 'route' },
                 { data: 'impdates' },
                 { data: 'poptions' },
-                { data: 'status' },
                 { data: 'delivery_status' },
+                { data: 'status' },
             ],
             order: [[1, 'asc']],
             "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
@@ -184,18 +264,22 @@
         // Add event listener for opening and closing details
         $('#lrlist tbody').on('click', 'td.dt-control', function () {
             var tr = $(this).closest('tr');
-            var row = table.row(tr);
-
-            if (row.child.isShown()) {
-                // This row is already open - close it
+            var row = table.row( tr );
+ 
+            if ( row.child.isShown() ) {
                 row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Open this row
-                row.child(format(row.data())).show();
+                tr.removeClass('shown');     
+                }
+            else
+                {
+                if ( table.row( '.shown' ).length ) {
+                        $('.dt-control', table.row( '.shown' ).node()).click();
+                }
+                row.child( format(row.data()) ).show();
                 tr.addClass('shown');
             }
-        });
+        })
+
     });
 
     $('.get-datatable').DataTable({
