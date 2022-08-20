@@ -71,55 +71,78 @@ div.relative {
                                     <th>Driver Number</th>
                                     <th>Total LR</th>
                                     <th>Action</th>
+                                    <th>Delivery Status</th>
                                     <th>DRS Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($transaction as $trns)
+
                                 <?php 
                                 
-                               $date = new DateTime($trns->created_at, new DateTimeZone('UTC'));
+                               $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
                                  $date->setTimezone(new DateTimeZone('IST'));
+                                 $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
+                                 $new =  Helper::oldnewLr($trns->drs_no) ?? "" ;
+
                                 
-                                //  echo $date->format('Y-m-d'); die;
 
                             //   $creation = date('d-m-Y',strtotime($trns->created_at));  
                             //   echo'<pre>'; print_r($date); die;
                                   ?>
                               <tr>
-                                
                                 <td>DRS-{{$trns->drs_no}}</td>
                                 <td>{{$date->format('Y-m-d')}}</td>
                                 <td>{{$trns->vehicle_no}}</td>
                                 <td>{{$trns->driver_name}}</td>
                                 <td>{{$trns->driver_no}}</td>
                                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
+                              
+                            <!-- action button -->
                                 <?php 
                                 if($trns->status == 0){?>
                                  <td><label class="badge badge-dark">Cancelled</label></td>
                                  <?php }else{?>
                                 <td>
-                               
-                              <?php  if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)){ ?>
+                                <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)){ ?>
                                     <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}" style="margin-right:4px;">Draft</button> 
                                    <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}" style="margin-right:4px;">Save</button> 
                                    <?php } ?>
-                                   <?php if(!empty($trns->vehicle_no)){?>
-                                    <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}" role="button" >Print</a>
-                                    <?php } ?>
+                                   <?php if(!empty($trns->vehicle_no)){
+                                       if(!empty($new)){
+                                    ?>
+                                    <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}" role="button">Print</a>
+                                    <?php }else {?>
+                                        <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}" role="button">Print</a>
+                                    <?php } } ?>
                                     <?php  
                                     if($trns->delivery_status == 'Unassigned'){?>
                                     <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}" style="margin-right:4px;">Unassigned</button>
                                     <?php }elseif($trns->delivery_status == 'Assigned'){ ?>
                                         <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}" style="margin-right:4px;">Assigned</button>
-                                    <?php }elseif($trns->delivery_status == 'Started'){ ?>
-                                        <button type="button" class="btn btn-success" value="{{$trns->drs_no}}" style="margin-right:4px;"> Started</button>
-                                        <?php }elseif($trns->delivery_status == 'Successful'){ ?>
-                                        <button type="button" class="btn btn-success" value="{{$trns->drs_no}}" style="margin-right:4px;"> Successful</button>
-                                        <?php } ?>
+                                    <?php } ?>
                                       </td>
-                                        <td> <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
+                                      <?php } ?>
+                                      <!------- end Action ---- -->
+                                     <!-- delivery Status ---- -->
+
+                                     <td>
+                                    <?php if($trns->status == 0){?>
+                                       <label class="badge badge-dark">Cancelled</label>
+                                 <?php } else { ?>                                      <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) { ?>
+                                        <label class="badge badge-warning">No Status</label>
+                                   <?php }else{ ?>
+                                    <a class="drs_cancel btn btn-success" drs-no = "{{$trns->drs_no}}" data-text="consignment" data-status = "0" data-action = "<?php echo URL::current();?>"><span>{{$getdeldate}}</span></a>
+                                      <?php } ?>
                                 <?php } ?>
+                                      </td>
+                                    <!-- END Delivery Status  -------------  -->
+                                    <!-- DRS STATUS --------------->
+                                      <?php if($trns->status == 0){?>
+                                        <td><label class="badge badge-dark">Cancelled</label></td>
+                                      <?php }else{?>
+                                        <td><a class="active_drs btn btn-success" drs-no = "{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
+                                        <?php } ?>
                               </tr>
                               @endforeach
                             </tbody>
@@ -138,7 +161,7 @@ div.relative {
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
 <script>
-    //////////////////////////////////////////
+    
     $(document).ready(function() {
 
         jQuery(function() {

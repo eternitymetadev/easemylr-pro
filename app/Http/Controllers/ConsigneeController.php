@@ -114,7 +114,8 @@ class ConsigneeController extends Controller
         if($authuser->role_id == 2 || $authuser->role_id == 3){
             if($authuser->role_id == $role_id->id){
                 $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }}else if($authuser->role_id != 2 || $authuser->role_id != 3){
+            }
+        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
             $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
         }else{
             $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');

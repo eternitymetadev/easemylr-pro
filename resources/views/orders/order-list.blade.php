@@ -57,16 +57,14 @@ div.relative {
                                 <tr>
                                     <!-- <th> </th> -->
                                     <th>LR No</th>
-                                    <th>CN Date</th>
+                                    <th>Consigner Name</th>
                                     <th>Consignee Name</th>
                                     <th>City</th>
-                                    <th>Pin Code</th> 
+                                    <!-- <th>Pin Code</th> 
                                     <th>Boxes</th>
                                     <th>Net Weight</th>
-                                    <th>EDD</th>
-                                    <!-- <th>LR Status</th> -->
+                                    <th>EDD</th> -->
                                     <th>Action</th>
-                                    <!-- <th>Delivery Status</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,13 +74,13 @@ div.relative {
                                 <tr>
                                   <!-- <td class="dt-control">+</td> -->
                                     <td>{{ $consignment->id ?? "-" }}</td>
-                                    <td>{{ $consignment->consignment_date}}</td>
+                                    <td>{{ $consignment->consigner_id}}</td>
                                     <td>{{ $consignment->consignee_id}}</td>
                                     <td>{{ $consignment->city ?? "-" }}</td>
-                                    <td>{{ $consignment->pincode ?? "-" }}</td>
+                                    <!-- <td>{{ $consignment->pincode ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                    <td>{{ $consignment->edd ?? "-" }}</td>
+                                    <td>{{ $consignment->edd ?? "-" }}</td> -->
                                     <?php
                                     if($consignment->status==1){
                                         $status = 'Active';
@@ -95,25 +93,9 @@ div.relative {
                                         $class = "btn-danger";
                                     }
                                     ?>
-                                    <!-- <td>@if($consignment->status == 1)
-                                        <a class="inactivestatus btn {{$class}}" data-id = "{{$consignment->id}}" data-text="consignment" data-status = "0" data-action = "<?php //echo URL::current();?>"><span><i class="fa fa-check-circle-o"></i> {{ $status }}</span></a>
-                                        @else
-                                        <a class="btn {{$class}}" data-id = "{{$consignment->id}}" data-text="consignment" data-status = "1" data-action = ""><span>  {{ $status }}</span></a>
-                                        @endif
-                                    </td> -->
                                     <td>
-                                        <a class="btn btn-primary" href="{{url($prefix.'/consignments/'.$consignment->id)}}" ><span><i class="fa fa-eye"></i></span></a>
-                                         <a class="btn btn-primary" href="{{url($prefix.'/consignments/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
-                                        <!-- <a href="Javascript:void();" class="btn btn-danger delete_consignment" data-id="{{ $consignment->id }}" data-action="<?php// echo URL::to($prefix.'/consignments/delete-consignment'); ?>"><span><i class="fa fa-trash"></i></span></a> -->
+                                         <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                     </td>
-                                    <!-- <?php 
-                                   // if($consignment->delivery_status==1){ ?>
-                                        <td><button class="btn btn-danger">UnDelivered</button></td>
-                                    <?php //}elseif($consignment->delivery_status==2){ ?>
-                                        <td><button class="btn btn-warning">Out For Delivery</button></td>
-                                    <?php //}else{ ?>
-                                        <td><button class="btn btn-success">Delivered</button></td>
-                                    <?php// } ?> -->
                                 </tr>
                                 <?php 
                                     }

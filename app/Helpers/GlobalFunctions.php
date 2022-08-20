@@ -12,6 +12,7 @@ use App\Models\Location;
 use App\Models\State;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
+use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use URL;
 use Crypt;
@@ -111,8 +112,43 @@ class GlobalFunctions {
      }
 
      public static function getCountDrs($drs_number){
-        $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->count();
+        $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->where('status','!=', 2)->count();
         return $data;
      }
+
+     public static function getdeleveryDate($drs_number){
+        $data = DB::table('transaction_sheets')->select( 'consignment_notes.delivery_date as deliverydate')
+        ->join('consignment_notes','consignment_notes.id','=','transaction_sheets.consignment_no')
+        ->where('transaction_sheets.drs_no',$drs_number)
+        ->where('consignment_notes.delivery_date','!=', null)
+        ->count();
+        return $data;
+     }
+
+     public static function getdeleveryStatus($drs_number){
+       
+        $total = TransactionSheet::where('drs_no',$drs_number)->count();
+        $partial = TransactionSheet::where('drs_no',$drs_number)->where('delivery_status', 'Successful')->count();
+        $assigned = TransactionSheet::where('drs_no',$drs_number)->whereIn('delivery_status', ['Assigned','Started'])->count();
+
+        if($partial == $total){
+            $status = "Successful";
+        }elseif($assigned == $total){
+            $status = "Started";
+        }else{
+            $status = "Partial Delivered";
+        }
+
+        return $status;
+     }
+
+     public static function oldnewLr($drs_number)
+     {
+        $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
+             $orderId = $transcationview->ConsignmentDetail->order_id;
+
+             return $orderId;
+     }
+
 
 }

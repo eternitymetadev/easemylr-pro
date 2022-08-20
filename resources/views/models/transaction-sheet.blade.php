@@ -1,5 +1,32 @@
-<div class="modal fade" id="commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="drs_commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
    <div class="modal-dialog">
+     <div class="modal-content">
+       <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+       <!-- Modal Header -->
+       <div class="modal-header text-center">
+        	<h4 class="modal-title">Confirm</h4>
+       </div>
+       <!-- Modal body -->
+       <div class="modal-body">
+          <div class="Delt-content text-center">
+            <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
+             <p class="confirmtext">Are You Sure You Want To Cancel It ?</p>
+          </div>
+          
+       </div>
+       <!-- Modal footer -->
+       <div class="modal-footer">
+           <div class="btn-section w-100 P-0">
+               <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Yes</a> 
+               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+           </div>
+       </div>
+     </div>
+   </div>
+</div>
+<!-- =========================================================================== -->
+<div class="modal fade bd-example-modal-xl" id="commonconfirm" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="myExtraLargeModalLabel">
+   <div class="modal-dialog modal-xl">
      <div class="modal-content">
        <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
        <!-- Modal Header -->
@@ -7,49 +34,46 @@
         	<h4 class="modal-title">Update DRS Status</h4>
        </div>
        <!-- Modal body -->
+     <form id="allsave">
        <div class="modal-body">
-       <div class="form-row mb-0">
-                        <div class="form-group col-md-12">
-                            <label for="location_name">Status</label>
-
-                            <select class="form-control" id="drs_status" name="drs_status" onchange="catagoriesCheck(this);" tabindex="-1" >
-                                <option value="">Select status</option>
-                                <option value="0">Cancel Drs</option>
-                                <option value="Started">Started</option>
-                                <option value="Successful">Successful</option>
-
-                               
-                            </select>
-                        </div>
-                        </div>
+      
           <div class="Delt-content text-center">
             <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
           </div>
-          <div class="table-responsive" id="opi" style="display: none;">
+          <div class="table-responsive" id="opi">
                         <table id="get-delvery-date" class="table table-hover"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
                             <thead>
                                 <tr>
-                                    <th>LR No</th>
+                                    <th>LR No</th> 
+                                    <th>Consignee</th>
+                                    <th>City</th>
                                     <th>Delivery Date</th>
+                                    <th>Upload Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
 
                             </tbody>
-                        </table>
+                        </table> 
 
                     </div>
        </div>
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+               <!-- <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave" >Save</button> -->
+               
+               <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave"><span class="indicator-label">Update</span>
+                 <span class="indicator-progress" style="display: none;">Please wait...
+            	    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                   <a type="" class="btn btn-modal btn-warning" data-dismiss="modal">Cancel</a> 
+</form>
            </div>
        </div>
+      
      </div>
    </div>
 </div>
