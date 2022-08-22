@@ -10,6 +10,7 @@ use App\Models\Consigner;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ConsigneeExport;
 use App\Models\Role;
+use App\Models\Zone;
 use DB;
 use URL;
 use Auth;
@@ -321,6 +322,40 @@ class ConsigneeController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ConsigneeExport, 'consignees.csv');
+    }
+
+    // get address detail from postal code api
+    public function getPostalAddress(Request $request){
+        $postcode = $request->postcode;
+        if(!empty($postcode)){
+            $getZone = Zone::where('postal_code',$postcode)->first();
+        }else{
+            $getZone = '';
+        }
+            
+        $pin = URL::to('get-address-by-postcode');
+        $pin = file_get_contents('https://api.postalpincode.in/pincode/'.$postcode);
+        $pins = json_decode($pin);
+        foreach($pins as $key){
+            if($key->PostOffice == null){
+                $response['success'] = false;
+                $response['error_message'] = "Can not fetch postal address please try again";
+                $response['error'] = true;
+                
+            }else{
+                $arr['city'] = $key->PostOffice[0]->Block;
+                $arr['district'] = $key->PostOffice[0]->District;
+                $arr['state'] = $key->PostOffice[0]->State;
+
+                $response['success'] = true;
+                $response['success_message'] = "Postal Address fetch successfully";
+                $response['error'] = false;
+                $response['data'] = $arr;
+                $response['zone'] = $getZone;
+            }
+        }
+        // dd($response);
+        return response()->json($response);
     }
 
     

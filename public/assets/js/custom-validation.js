@@ -1249,7 +1249,8 @@ $(document).on('blur', "#edd",function () {
                     if(data.success){
                         console.log(data.zone);
                         $("#city").val(data.data.city);
-                        $("#district").val(data.data.district);
+                        $("#district").val(data.zone.district);
+
                         if(data.zone == null || data.zone == ''){
                             $("#zone_name").val('No Zone Assigned');
                             $("#zone_id").val('0');
@@ -1257,6 +1258,11 @@ $(document).on('blur', "#edd",function () {
                             $("#zone_name").val(data.zone.primary_zone);
                             $("#zone_id").val(data.zone.id);                            
                         }
+                    }else{
+                        $("#city").val('');
+                        $("#district").val('');
+                        $("#zone_name").val('');
+                        $("#zone_id").val('');
                     }  
                 }
             });
