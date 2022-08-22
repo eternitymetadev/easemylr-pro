@@ -207,7 +207,7 @@
             buttons: [
                 // { extend: 'copy', className: 'btn btn-sm' },
                 // { extend: 'csv', className: 'btn btn-sm' },
-                { extend: 'excel', className: 'btn btn-sm' },
+                { extend: 'excel', className: 'btn btn-sm', title: '', },
                 // { extend: 'print', className: 'btn btn-sm' }
             ]
         },
@@ -219,7 +219,7 @@
             "sLengthMenu": "Results :  _MENU_",
         },
 
-        "ordering": true,
+        "ordering": false,
         "paging": true,
         "pageLength": 100,
 
