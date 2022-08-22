@@ -130,4 +130,27 @@ class ReportController extends Controller
         $response['messages'] = 'Succesfully loaded';
         return Response::json($response);
     }
+
+    // =============================Admin Report ============================= //
+    public function adminReport1(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+      
+            $query = Consigner::query();
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $regclient = explode(',',$authuser->regionalclient_id); 
+            $cc = explode(',',$authuser->branch_id);
+          
+                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'states.name as state_id','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district')
+                ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
+                ->join('consignees', 'consignees.consigner_id', '=', 'consigners.id')
+                ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                ->get();
+                
+
+
+        return view('consignments.admin-report1',["prefix" => $this->prefix,'adminrepo' => $consigners]);
+    }
 }
