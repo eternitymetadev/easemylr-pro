@@ -360,6 +360,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                Numbers: true,
                 minlength: 6,
             },
         },
@@ -388,6 +389,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
+                Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
         },
@@ -425,6 +427,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                Numbers: true,
                 minlength: 6,
             },
         },
@@ -453,6 +456,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
+                Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
         },
@@ -487,6 +491,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                Numbers: true,
                 minlength: 6,
             }
         },
@@ -512,6 +517,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
+                Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
         },
@@ -545,6 +551,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                Numbers: true,
                 minlength: 6,
             },
         },
@@ -569,6 +576,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
+                Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
         },

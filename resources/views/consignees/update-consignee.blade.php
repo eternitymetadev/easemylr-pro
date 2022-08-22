@@ -84,7 +84,7 @@
                             <div class="form-row mb-0">      
                             <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pincode</label>
-                                    <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code',isset($getconsignee->postal_code)?$getconsignee->postal_code:'')}}" placeholder="Pincode">
+                                    <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code',isset($getconsignee->postal_code)?$getconsignee->postal_code:'')}}" placeholder="Pincode" maxlength="6">
                                 </div> 
                             <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Village/City</label>

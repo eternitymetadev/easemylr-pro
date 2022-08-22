@@ -119,6 +119,7 @@
             <div class="widget-content widget-content-area br-6">
                 <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}"
                     id="createconsignment" style="margin: auto; ">
+                    <input type="hidden" id="regclient_id" name="regclient_id" value="">
                     <div class="row cuss">
                         <div class="col-sm-4">
                             <div class="panel info-box panel-white">
@@ -381,7 +382,6 @@
                                                         name="data[1][e_way_bill_date]">
                                                 </div>
                                             </td>
-
                                             <td> <button type="button" class="btn btn-default btn-rounded insert-more">
                                                     + </button>
                                             </td>
@@ -484,6 +484,10 @@
     // $(function() {
     //     $('.basic').selectpicker();
     // });
+    $(document).ready(function() {
+        $('.insert-more').attr('disabled',true);
+    });
+
     jQuery(function () {
         $('.my-select2').each(function () {
             $(this).select2({

@@ -69,8 +69,8 @@ class GlobalFunctions {
     }
 
     // function for show date in frontend //
-    public static function ShowFormatDate($date){
-
+    public static function ShowFormatDate($date)
+    {
         if(!empty($date)){
         $changeformat = date('d-M-Y',strtotime($date));
         }else{
@@ -79,8 +79,8 @@ class GlobalFunctions {
         return $changeformat;
     }
     //////format 10-07-2000
-    public static function ShowDayMonthYear($date){
-
+    public static function ShowDayMonthYear($date)
+    {
         if(!empty($date)){
         $changeformat = date('d-m-Y',strtotime($date));
         }else{
@@ -101,7 +101,8 @@ class GlobalFunctions {
     }
 
     // function for generate unique number //
-    public static function generateSku(){
+    public static function generateSku()
+    {
         $str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $skuId = substr(str_shuffle($str_result), 0, 6);
         $exist = ConsignmentNote::where('consignment_no',$skuId)->count();
@@ -109,24 +110,26 @@ class GlobalFunctions {
            self::generateSku();
         }
         return 'C-'.$skuId;
-     }
+    }
 
-     public static function getCountDrs($drs_number){
+    public static function getCountDrs($drs_number)
+    {
         $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->where('status','!=', 2)->count();
         return $data;
-     }
+    }
 
-     public static function getdeleveryDate($drs_number){
+    public static function getdeleveryDate($drs_number)
+    {
         $data = DB::table('transaction_sheets')->select( 'consignment_notes.delivery_date as deliverydate')
         ->join('consignment_notes','consignment_notes.id','=','transaction_sheets.consignment_no')
         ->where('transaction_sheets.drs_no',$drs_number)
         ->where('consignment_notes.delivery_date','!=', null)
         ->count();
         return $data;
-     }
+    }
 
-     public static function getdeleveryStatus($drs_number){
-       
+    public static function getdeleveryStatus($drs_number)
+    {
         $total = TransactionSheet::where('drs_no',$drs_number)->count();
         $partial = TransactionSheet::where('drs_no',$drs_number)->where('delivery_status', 'Successful')->count();
         $assigned = TransactionSheet::where('drs_no',$drs_number)->whereIn('delivery_status', ['Assigned','Started'])->count();
@@ -140,14 +143,15 @@ class GlobalFunctions {
         }
 
         return $status;
+    }
+
+    public static function oldnewLr($drs_number)
+    {
+        $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
+        $orderId = $transcationview->ConsignmentDetail->order_id;
+        return $orderId;
      }
 
-     public static function oldnewLr($drs_number)
-     {
-        $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
-             $orderId = $transcationview->ConsignmentDetail->order_id;
-             return $orderId;
-     }
 
 
 }
