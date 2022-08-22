@@ -110,7 +110,7 @@
                                 ?>
                             <tr>
                                 <td>{{ $consignment->id ?? "-" }}</td>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
+                                <td>{{  Helper::ShowDayMonthYear($consignment->consignment_date ?? "-" )}}</td>
                                 <td>{{ $consignment->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->consigner_nickname ?? "-" }}</td>
                                 <td>{{ $consignment->consigners_city ?? "-" }}</td>
@@ -120,7 +120,7 @@
                                 <td>{{ $consignment->district ?? "-" }}</td>
                                 <td>{{ $consignment->state ?? "-" }}</td>
                                 <td>{{ $consignment->invoice_no ?? "-" }}</td>
-                                <td>{{ $consignment->invoice_date ?? "-" }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->invoice_date ?? "-" )}}</td>
                                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
                                 <td>{{ $consignment->vechile_number ?? "Pending" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
@@ -134,8 +134,8 @@
                                 <?php } elseif ($consignment->status == 2) {?>
                                 <td>Unverified</td>
                                 <?php }?>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
-                                <td>{{ $consignment->delivery_date ?? "-" }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->consignment_date ?? "-") }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->delivery_date ?? "-") }}</td>
                                 <?php
                                 if ($consignment->delivery_status == 'Assigned') {?>
                                 <td>Assigned</td>
@@ -207,9 +207,19 @@
                         var nodat = days;
                     }
 
+                    //////////////
+                     ///////////format///////
+                   var cn_date = value.consignment_date ;
+                   var arr = cn_date.split('-');
+                    var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
+                    //////
+                    var iv = value.invoice_date;
+                    var inv_date = iv.split('-');
+                    var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
 
 
-                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+
+                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + value.order_id + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + invoiceDate + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_report').DataTable({
