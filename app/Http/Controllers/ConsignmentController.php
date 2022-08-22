@@ -3307,8 +3307,87 @@ class ConsignmentController extends Controller
             $response['messages'] = 'img uploaded successfully';
             return Response::json($response);
         }
+    }
 
-         
+    public function addmoreLr(Request $request){
+
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == $role_id->id) {
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+                    ->where('consignment_notes.status', '=', '2')
+                    ->whereIn('consignment_notes.branch_id', $cc)
+                    ->get(['consignees.city']);
+                    //echo'<pre>'; print_r($consignments); die;
+            }
+        } else {
+            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+                ->where('consignment_notes.status', '=', '2')
+                ->get(['consignees.city']);
+        }
+      
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        $response['lrlist'] = $consignments;
+        $response['success'] = true;
+        $response['messages'] = 'img uploaded successfully';
+        return Response::json($response);
+        
+        
+    }
+
+    public function addunverifiedLr(Request $request)
+    {
+        $drs_no = $_POST['drs_no'];
+        $consignmentId = $_POST['consignmentID'];
+        $authuser = Auth::user();
+        $cc = $authuser->branch_id;
+
+        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+        $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->whereIn('consignment_notes.id', $consignmentId)
+            ->get(['consignees.city']);
+        $simplyfy = json_decode(json_encode($consignment), true);
+
+        $drs_order_no = DB::table('transaction_sheets')->select('order_no')->where('drs_no', $drs_no)->latest('order_no')->first();
+        $orderno = $drs_order_no->order_no; 
+
+
+        $i = $orderno;
+        foreach ($simplyfy as $value) {
+            $i++;
+            $unique_id = $value['id'];
+            $consignment_no = $value['consignment_no'];
+            $consignee_id = $value['consignee_id'];
+            $consignment_date = $value['consignment_date'];
+            $city = $value['city'];
+            $pincode = $value['pincode'];
+            $total_quantity = $value['total_quantity'];
+            $total_weight = $value['total_weight'];
+
+            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
+        }
+
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+        
     }
 
 }

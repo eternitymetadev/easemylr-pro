@@ -248,6 +248,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
     
