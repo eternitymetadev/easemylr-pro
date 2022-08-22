@@ -194,7 +194,9 @@
                     if (value.delivery_date == null || value.delivery_date == '') {
                         var ddate = '-';
                     } else {
-                        var ddate = value.delivery_date;
+                          var ddt = value.delivery_date;
+                          var dd_date = ddt.split('-');
+                          var ddate = dd_date[2]+'-'+dd_date[1]+'-'+dd_date[0];
                     }
                     ////////Tat/////
                     var start = new Date(value.consignment_date);
