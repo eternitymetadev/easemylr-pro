@@ -20,10 +20,12 @@ class ZoneImport implements ToModel,WithHeadingRow
         // $zone = DB::table('zones')->select('license_number')->where('license_number', $row['license_number'])->first();
         // if(empty($zone)){
             return new Zone([
-                'primary_zone'   => $row['primary_zone'],
-                'postal_code'    => (float)$row['postal_code'],
-                'status'         => "1",
-                'created_at'     => time(),
+                'primary_zone'  => $row['primary_zone'],
+                'postal_code'   => (float)$row['postal_code'],
+                'district'      => $row['district'],
+                'state'         => $row['state'],
+                'status'        => "1",
+                'created_at'    => time(),
             ]);
         // }
 

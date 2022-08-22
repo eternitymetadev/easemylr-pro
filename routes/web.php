@@ -550,7 +550,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/get_regclients', [UserController::class, 'regClients']);
     Route::get('/get_locations', [ConsignerController::class, 'regLocations']);
-    Route::any('/get-address-by-postcode', [ConsignerController::class, 'getPostalAddress']);
+    Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
 
 });
 
