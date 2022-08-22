@@ -360,15 +360,15 @@ $('#updt_vehicle').submit(function(e) {
               processData: false,
               contentType: false,
               beforeSend: function(){
-                $('.indicator-progress').prop('disabled', true);
-                $('.indicator-label').prop('disabled', true);
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
 
-                $(".indicator-progress").show(); 
-                $(".indicator-label").hide();
+                    $(".indicator-progress").show(); 
+                    $(".indicator-label").hide();
                },
                complete: function (response) {
-            $('.indicator-progress').prop('disabled', true);
-            $('.indicator-label').prop('disabled', true);
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
         },
               success: (data) => {
                 $(".indicator-progress").hide();
@@ -451,17 +451,16 @@ function showLibrary()
 });
 ///////////////////////////Update Delivery Status/////////////////////////////////////////////
 $('#update_delivery_status').submit(function(e) {
-        e.preventDefault();
-//alert('hello'); return false;
-       var consignmentID = [];
-        $('input[name="delivery_date[]"]').each(function() {
-          if(this.value == '') {
-           alert('Please enter Delivery Date');
-           exit;
-          }
-            consignmentID.push(this.value);
-        });
-        //alert(consignmentID);
+            e.preventDefault();
+            var consignmentID = [];
+            $('input[name="delivery_date[]"]').each(function() {
+            if(this.value == '') {
+            alert('Please enter Delivery Date');
+            exit;
+            }
+                consignmentID.push(this.value);
+            });
+            //alert(consignmentID);
         
         $.ajax({
               url: "update-delivery-status",
@@ -555,7 +554,7 @@ $(document).on('click','#addlr', function(){
                             },
                  //dataType: "json",
                  beforeSend:                      //reinitialize Datatables
-                function(){   
+                 function(){   
                     // $('#unverifiedlrlist').dataTable().fnClearTable();             
                     // $('#unverifiedlrlist').dataTable().fnDestroy();
                 

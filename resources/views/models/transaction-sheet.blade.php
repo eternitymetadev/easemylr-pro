@@ -118,7 +118,7 @@
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
                 <button type="submit" class="btn btn-primary">Update Delivery Status</button>
-</form>
+            </form>
             </div>
         </div>
     </div>
@@ -267,7 +267,7 @@
                         <div class="col-sm-12">
                             <div>
                             </div>
-                            <button type="button" class="btn btn-primary" id="addlr">Add LR</button>
+                            <button type="button" class="btn btn-primary" id="addlr" style="margin: 0px 0px 12px 12px;">Add LR</button>
                             <div class="table-responsive">
                                 <table id="sheet" class="table table-hover"
                                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
@@ -280,7 +280,6 @@
                                             <th>Pin Code</th>
                                             <th>Number Of Boxes</th>
                                             <th>Net Weight</th>
-
                                         </tr>
                                     </thead>
                                     <tbody id="suffle">
