@@ -142,14 +142,14 @@ class ReportController extends Controller
             $regclient = explode(',',$authuser->regionalclient_id); 
             $cc = explode(',',$authuser->branch_id);
           
-                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'states.name as state_id','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district')
+                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'states.name as state_id','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district','consignees.state_id as consignee_states','consigne_stat.name as consignee_state')
                 ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
                 ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
                 ->join('consignees', 'consignees.consigner_id', '=', 'consigners.id')
                 ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
+                ->leftjoin('states as consigne_stat', 'consigne_stat.id', '=', 'consignees.state_id')
                 ->get();
                 
-
 
         return view('consignments.admin-report1',["prefix" => $this->prefix,'adminrepo' => $consigners]);
     }

@@ -107,7 +107,7 @@ div.relative {
                                     <td>{{ $report->consignee_phone ?? "-" }}</td>
                                     <td>{{ $report->consignee_postal_code ?? "-" }}</td>
                                     <td>{{ $report->consignee_district ?? "-" }}</td>
-                                    <td>{{ $report->baseclient_name ?? "-" }}</td>
+                                    <td>{{ $report->consignee_state ?? "-" }}</td>
                                     
 
                                 </tr>
