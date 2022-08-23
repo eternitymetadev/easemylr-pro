@@ -161,7 +161,10 @@
                         </li>
                         <?php if($authuser->role_id == 1){ ?>
                         <li>
-                            <a href="{{$prefixurl.'admin-report1'}}"> Admin Report</a>
+                            <a href="{{$prefixurl.'admin-report1'}}"> Admin Report 1</a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'admin-report2'}}"> Admin Report 2</a>
                         </li>
                         <?php } ?>
                     </ul>

@@ -154,4 +154,19 @@ class ReportController extends Controller
         return view('consignments.admin-report1',["prefix" => $this->prefix,'adminrepo' => $consigners]);
     }
 
+    public function adminReport2(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        
+        $lr_data = DB::table('consignment_notes')->select('consignment_notes.*','consigners.nick_name as consigner_nickname','regional_clients.name as regional_client_name','base_clients.client_name as base_client_name', 'locations.name as locations_name')
+                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
+                ->join('locations', 'locations.id', '=', 'regional_clients.location_id')
+                ->get();
+                
+
+        return view('consignments.admin-report2',["prefix" => $this->prefix, 'lr_data' => $lr_data]);
+    }
+
 }
