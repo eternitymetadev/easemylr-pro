@@ -110,7 +110,7 @@
                                 ?>
                             <tr>
                                 <td>{{ $consignment->id ?? "-" }}</td>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->consignment_date ?? "-" )}}</td>
                                 <td>{{ $consignment->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->consigner_nickname ?? "-" }}</td>
                                 <td>{{ $consignment->consigners_city ?? "-" }}</td>
@@ -120,7 +120,7 @@
                                 <td>{{ $consignment->district ?? "-" }}</td>
                                 <td>{{ $consignment->state ?? "-" }}</td>
                                 <td>{{ $consignment->invoice_no ?? "-" }}</td>
-                                <td>{{ $consignment->invoice_date ?? "-" }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->invoice_date ?? "-" )}}</td>
                                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
                                 <td>{{ $consignment->vechile_number ?? "Pending" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
@@ -134,8 +134,8 @@
                                 <?php } elseif ($consignment->status == 2) {?>
                                 <td>Unverified</td>
                                 <?php }?>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
-                                <td>{{ $consignment->delivery_date ?? "-" }}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->consignment_date ?? "-" )}}</td>
+                                <td>{{ Helper::ShowDayMonthYear($consignment->delivery_date ?? "-" )}}</td>
                                 <?php
                                 if ($consignment->delivery_status == 'Assigned') {?>
                                 <td>Assigned</td>
