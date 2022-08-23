@@ -40,4 +40,8 @@ class Consignee extends Model
         return $this->hasOne('App\Models\Zone','id','zone_id');
     }
 
+    public function Zone(){
+        return $this->belongsTo('App\Models\Zone','zone_id');
+    }
+
 }
