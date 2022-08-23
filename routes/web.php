@@ -178,6 +178,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
+    Route::any('admin-report1', [ReportController::class, 'adminReport1']);
 
     
 });
