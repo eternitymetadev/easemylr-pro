@@ -209,7 +209,9 @@ div.relative {
                     if (value.delivery_date == null || value.delivery_date == '') {
                         var ddate = '-';
                     } else {
-                        var ddate = value.delivery_date;
+                        var ddt = value.delivery_date;
+                          var dd_date = ddt.split('-');
+                          var ddate = dd_date[2]+'-'+dd_date[1]+'-'+dd_date[0];
                     }
                     ////////Tat/////
                     var start = new Date(value.consignment_date);
@@ -239,9 +241,18 @@ div.relative {
                     }else{
                         var fleet = value.fleet;
                     }
-                    ///////////state id///////
+                    /////
+                    var cn_date = value.consignment_date ;
+                   var arr = cn_date.split('-');
+                    var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.ship_nick + "</td><td>" + value.ship_city + "</td><td>" + value.invoice_no + "</td><td>" + value.invoice_date + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + value.consignment_date + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    var iv = value.invoice_date;
+                    var inv_date = iv.split('-');
+                    var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+
+
+
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + value.order_id + "</td><td>" + value.baseclient_name + "</td><td>" + value.regional_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.ship_nick + "</td><td>" + value.ship_city + "</td><td>" + value.invoice_no + "</td><td>" + invoiceDate + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
