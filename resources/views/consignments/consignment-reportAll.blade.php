@@ -130,7 +130,7 @@ div.relative {
                                     <td>{{ $consignment->ship_nick ?? "-" }}</td>
                                     <td>{{ $consignment->ship_city ?? "-" }}</td>
                                     <td>{{ $consignment->invoice_no ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment->invoice_date ?? "-" )}}</td>
+                                    <td>{{ Helper::ShowDayMonthYear($consignment->invoice_date)}}</td>
                                     <td>{{ $consignment->invoice_amount ?? "-" }}</td>
                                     <td>{{ $consignment->vechile_number ?? "Pending" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
@@ -148,8 +148,8 @@ div.relative {
                                         <?php }elseif($consignment->status == 2){ ?>
                                         <td>Unverified</td>
                                         <?php } ?>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment->consignment_date ?? "-" )}}</td>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment->delivery_date ?? "-" )}}</td>
+                                    <td>{{ Helper::ShowDayMonthYear($consignment->consignment_date )}}</td>
+                                    <td>{{ Helper::ShowDayMonthYear($consignment->delivery_date )}}</td>
                                     <?php 
                                     if($consignment->delivery_status == 'Assigned'){ ?>
                                         <td>Assigned</td>
