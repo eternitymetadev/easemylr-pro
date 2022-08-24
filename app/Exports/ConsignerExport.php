@@ -50,15 +50,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
 
         if($consigners->count() > 0){
             foreach ($consigners as $key => $value){  
-                if(!empty($value->State)){
-                    if(!empty($value->State->name)){
-                      $state = $value->State->name;
-                    }else{
-                      $state = '';
-                    }
-                }else{
-                    $state = '';
-                }
+               
                 if(!empty($value->RegClient)){
                     if(!empty($value->RegClient->name)){
                       $regClient = $value->RegClient->name;
@@ -98,7 +90,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'city' => $value->city,
                     'district' => $value->district,
                     'postal_code' => $value->postal_code,
-                    'state_id' => $state,
+                    'state_id' => $value->state_id,
                 ];
             }
         }                 
