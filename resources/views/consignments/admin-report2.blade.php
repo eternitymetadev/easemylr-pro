@@ -109,20 +109,15 @@ div.relative {
                                 ?>
                                 <tr>
                                     <td>{{ $lr->id ?? "-"}}</td>
-                                    <td>{{  Helper::ShowDayMonthYear($lr->consignment_date ?? "-" )}}</td>
+                                    <td>{{  Helper::ShowDayMonthYear($lr->consignment_date)}}</td>
                                     <td>{{ $newDate ?? "-"}}</td>
                                     <td>{{ $lr->locations_name ?? "-"}}</td>
                                     <td>{{ $lr->base_client_name ?? "-"}}</td>
                                     <td>{{ $lr->regional_client_name ?? "-"}}</td>
                                     <td>{{ $lr->consigner_nickname ?? "-"}}</td> 
                                     <td>{{ $status ?? "-"}}</td>
-                                    <td>{{  Helper::ShowDayMonthYear($lr->consignment_date ?? "-" )}}</td>
-                                    <?php if(!empty($lr->delivery_date)){
-                                        $d_date= Helper::ShowDayMonthYear($lr->delivery_date);
-                                    }else{
-                                        $d_date = '-';
-                                    }?>
-                                    <td>{{  $d_date}}</td>
+                                    <td>{{  Helper::ShowDayMonthYear($lr->consignment_date)}}</td>
+                                    <td>{{  Helper::ShowDayMonthYear($lr->delivery_date)}}</td>
                                     <td>{{ $lr->delivery_status ?? "-"}}</td>
                                     <td>{{ $tat ?? "-"}}</td>
                                 
