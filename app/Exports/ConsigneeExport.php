@@ -48,11 +48,6 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
 
         if($consignee->count() > 0){
             foreach ($consignee as $key => $value){  
-                if(!empty($value->State->name)){
-                    $state = $value->State->name;
-                }else{
-                    $state = '';
-                }
 
                 if(!empty($value->Zone->name)){
                     $zone = $value->Zone->name;
@@ -75,7 +70,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                 $arr[] = [
                     'nick_name' => $value->nick_name,
                     'legal_name' => $value->legal_name,
-                    'consigner_id' => $consigner,
+                    'consigner_id' => $value->consigner_id,
                     'contact_name' => $value->contact_name,
                     'email' => $value->email,
                     'dealer_type' => $dealer_type,
@@ -84,7 +79,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     'postal_code' => $value->postal_code,
                     'city' => $value->city,
                     'district' => $value->district,
-                    'state_id' => $state,
+                    'state_id' => $value->state_id,
                     'zone_id' => $zone,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,
