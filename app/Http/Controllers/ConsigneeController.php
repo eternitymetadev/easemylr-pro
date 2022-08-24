@@ -45,13 +45,13 @@ class ConsigneeController extends Controller
                     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
                                 ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
                                 ->join('states', 'states.id', '=', 'consignees.state_id')
-                                ->where('consigners.branch_id', $cc)
+                                ->whereIn('consigners.branch_id', $cc)
                                 ->get();
                 }else{
                     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                        ->join('states', 'states.id', '=', 'consignees.state_id')
+                        ->get();
                 }
             }else if($authuser->role_id != 2 || $authuser->role_id != 3){
                 if($authuser->role_id == $role_id->id){
@@ -63,15 +63,15 @@ class ConsigneeController extends Controller
                                 ->get();
                     }else{
                         $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                            ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                            ->join('states', 'states.id', '=', 'consignees.state_id')
+                            ->get();
                     }
                 }else{
                     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                        ->join('states', 'states.id', '=', 'consignees.state_id')
+                        ->get();
                 }
             }
             else{
