@@ -74,7 +74,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         }                 
         return collect($arr);
     }
-    public function headings(): array
+    public function headings(): array  
     {
         return [
             'id',
