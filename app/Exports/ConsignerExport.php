@@ -50,28 +50,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
 
         if($consigners->count() > 0){
             foreach ($consigners as $key => $value){  
-               
-                if(!empty($value->RegClient)){
-                    if(!empty($value->RegClient->name)){
-                      $regClient = $value->RegClient->name;
-                    }else{
-                      $regClient = '';
-                    }
-                }else{
-                    $regClient = '';
-                }
-
-                if(!empty($value->Branch)){
-                    if(!empty($value->Branch->name)){
-                      $location_name = $value->Branch->name;
-                    }else{
-                      $location_name = '';
-                    }
-                }else{
-                    $location_name = '';
-                }
-                
-
+            
                 $arr[] = [
                     'id' => $value->id,
                     'nick_name' => $value->nick_name,
@@ -79,8 +58,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'gst_number' => $value->gst_number,
                     'contact_name' => $value->contact_name,
                     'phone' => $value->phone,
-                    'branch_id' => $location_name,
-                    'regionalclient_id' => @$regClient,
+                    'regionalclient_id' => @$value->regional_clientname,
                     'email' => $value->email,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,
@@ -96,7 +74,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         }                 
         return collect($arr);
     }
-    public function headings(): array
+    public function headings(): array  
     {
         return [
             'id',
@@ -104,8 +82,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
             'Consigner Legal Name',
             'GST Number',            
             'Contact Person Name',
-            'Mobile No.',
-            'Location Name',
+            'Mobile No',
             'Regional Client Name',
             'Email',
             'Address Line1',
