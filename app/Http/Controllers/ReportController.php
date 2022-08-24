@@ -73,7 +73,6 @@ class ReportController extends Controller
                     ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
                     ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
                     ->get(['consignees.city']);
-
             }
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix]);
     }
