@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use DB;
 use Session;
 use Helper;
+use Auth;
 
 class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
 {
