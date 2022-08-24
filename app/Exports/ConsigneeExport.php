@@ -24,28 +24,24 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
         set_time_limit ( 6000 );
         $arr = array();
 
-        $query = Consignee::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         
         // $consignee = $query->with('Consigner','State')->orderby('created_at','DESC')->get();
+        $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
+        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+        ->join('states', 'states.id', '=', 'consignees.state_id');
 
         if($authuser->role_id == 1){
-            $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id');
-        }else if($authuser->role_id == 2 || $authuser->role_id == 3){
-            $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                                ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                                ->join('states', 'states.id', '=', 'consignees.state_id')
-                                ->where('consigners.branch_id', $cc);
-        }else{
-            $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-            ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-            ->join('states', 'states.id', '=', 'consignees.state_id')
-            ->whereIn('consigners.regionalclient_id',$regclient);
+            $query = $query;
+        }
+        else if($authuser->role_id == 2 || $authuser->role_id == 3){
+            $query = $query->whereIn('consigners.branch_id', $cc);
+        }
+        else{
+            $query = $query->whereIn('consigners.regionalclient_id',$regclient);
         }
 
         $consignee = $query->orderby('created_at','DESC')->get();

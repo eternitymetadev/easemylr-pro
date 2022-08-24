@@ -3,10 +3,12 @@
 namespace App\Exports;
 
 use App\Models\Consigner;
+use App\Models\Role;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use DB;
 use Session;
 use Helper;
 
@@ -22,10 +24,31 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         $arr = array();
         $query = Consigner::query();
 
-        $consigner = $query->with('State','RegClient','Branch')->orderby('created_at','DESC')->get();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id); 
+        $cc = explode(',',$authuser->branch_id);
 
-        if($consigner->count() > 0){
-            foreach ($consigner as $key => $value){  
+        // $consigner = $query->with('State','RegClient','Branch')->orderby('created_at','DESC')->get();
+
+        $query = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                ->leftjoin('states', 'states.id', '=', 'consigners.state_id');
+
+        if($authuser->role_id == 1){
+            $query = $query;
+        }
+        else if($authuser->role_id == 2 || $authuser->role_id == 3){
+            $query = $query->whereIn('consigners.branch_id', $cc);
+        }
+        else{
+            $query = $query->whereIn('consigners.regionalclient_id', $regclient);
+        }
+
+        $consigners = $query->orderby('created_at','DESC')->get();
+
+        if($consigners->count() > 0){
+            foreach ($consigners as $key => $value){  
                 if(!empty($value->State)){
                     if(!empty($value->State->name)){
                       $state = $value->State->name;
