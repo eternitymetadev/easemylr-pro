@@ -142,7 +142,7 @@
                     </ul>
                 </li>
                 <?php }
-                    } ?> 
+            }} ?> 
                 <li class="menu single-menu">
                     <a href="#tables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
@@ -153,12 +153,16 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
+                        
+                    <?php if($authuser->role_id !=6){ ?>
                         <li>
-                            <a href="{{$prefixurl.'consignment-report'}}"> MIS Report Nurture</a>
+                            <a href="{{$prefixurl.'consignment-report'}}"> MIS Report 1</a>
                         </li>
+                    <?php } if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                         <li>
                             <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>
                         </li>
+                 <?php } ?>
                         <?php if($authuser->role_id == 1){ ?>
                         <li>
                             <a href="{{$prefixurl.'admin-report1'}}"> Admin Report 1</a>
@@ -169,7 +173,7 @@
                         <?php } ?>
                     </ul>
                 </li>
-                <?php } ?>  
+                  
                 <li class="menu single-menu menu-extras">
                 <?php if($authuser->role_id==1){ ?>
                     <a href="#more" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
