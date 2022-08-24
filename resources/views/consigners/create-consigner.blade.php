@@ -41,13 +41,13 @@
                                             foreach ($regclients as $key => $client) {
                                         ?>
                                         <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}">{{ucwords($client->name)}}</option>
-                                        <input type="hidden" name="branch_id" value="{{$client->location_id}}">
+                                        
                                         <?php 
                                             }
                                         }
                                         ?>
                                     </select>
-                                    
+                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}">
                                     <?php } else { ?>
                                         <select class="form-control" id="regionalclient_id" name="regionalclient_id">
                                         <option value="">Select</option>
@@ -56,13 +56,13 @@
                                             foreach ($regclients as $key => $client) {
                                         ?>
                                         <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}">{{ucwords($client->name)}}</option>
-                                        <input type="hidden" name="branch_id" id="location_id">
+                                        
                                         <?php 
                                             }
                                         }
                                         ?>
                                     </select>
-                                    
+                                    <input type="hidden" name="branch_id" id="location_id">
                                     <?php } ?>
                                 </div>
                                 <div class="form-group col-md-6">
