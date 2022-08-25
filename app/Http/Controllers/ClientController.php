@@ -36,6 +36,14 @@ class ClientController extends Controller
         return view('clients.client-list',['clients'=>$clients,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
+    public function clientList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $query = BaseClient::query();
+        $clients = $query->with('RegClients.Location')->orderby('id','DESC')->get();
+        return view('clients.client-listpro',['clients'=>$clients,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
