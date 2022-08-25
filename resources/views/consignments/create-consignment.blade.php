@@ -27,9 +27,7 @@
     }
 
     .table>thead>tr>th {
-
         padding: 10px 7px 6px 8px;
-
     }
 
     label.error {
@@ -422,10 +420,8 @@
                                                 </span> Kgs.</td>
                                             <td align="center"><span id="tot_gt_wt">
                                                     <?php echo "0";?>
-                                                </span> Kgs.</td>
-                                           
+                                                </span> Kgs.</td>         
                                             <td></td>
-
                                         </tr>
                                     </tbody>
                                 </table>

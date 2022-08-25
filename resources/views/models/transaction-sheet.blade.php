@@ -118,7 +118,7 @@
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
                 <button type="submit" class="btn btn-primary">Update Delivery Status</button>
-</form>
+            </form>
             </div>
         </div>
     </div>
@@ -265,13 +265,9 @@
                 <div id="www">
                     <div class="row">
                         <div class="col-sm-12">
-
                             <div>
-
                             </div>
-
-
-
+                            <button type="button" class="btn btn-primary" id="addlr" style="margin: 0px 0px 12px 12px;">Add LR</button>
                             <div class="table-responsive">
                                 <table id="sheet" class="table table-hover"
                                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
@@ -284,6 +280,7 @@
                                             <th>Pin Code</th>
                                             <th>Number Of Boxes</th>
                                             <th>Net Weight</th>
+                                            <th>Action</th>
 
                                         </tr>
                                     </thead>
@@ -304,18 +301,35 @@
                                     </tfoot>
 
                                 </table>
-                                <div class="row">
+                              
+                                <div class="row" style="display: none;" id="unverifiedlist">
+                                <input type="hidden" class="form-control" id="current_drs" name="" value="">
+                                <button type="button" class="btn btn-warning disableDrs" id="add_unverified_lr" style="font-size: 11px; margin: 0px 0px 10px 15px;">
+                             Create DSR
+                              </button>
                                     <div class="col-sm-12">
-                                        <!-- <table>
+                                         <table id="unverifiedlrlist" class="table table-hover"
+                                    style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                                    <thead>
                                         <tr>
-                                            <td width: 131px;>
-                                                <label>Total :</label>
-                                            </td>
-                                            <td width: 131px;>
-                                                <label id="total"></label>
-                                            </td>
+                                        <th>
+                                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
+                                    </th>
+                                            <th>LR No</th>
+                                            <th>Consignment Date</th>
+                                            <th>Consigner Name</th>
+                                            <th>Consignee</th>
+                                            <th>city</th>
+                                            <th>Pin Code</th>
+                                            <th>Zone</th>
+
                                         </tr>
-                                    </table>  -->
+                                    </thead>
+                                    <tbody>
+                                      
+
+                                    </tbody>
+                                    </table>  
                                     </div>
                                 </div>
 

@@ -151,6 +151,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+
 
 
     Route::resource('orders', OrderController::class);
@@ -233,7 +236,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']); 
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
     Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']); 
-    Route::any('view-draftSheet/{id}', [ConsignmentController::class, 'view_saveDraft']);
+    Route::any('view-draftSheet/{id}', [ConsignmentController::class, 'view_saveDraft']); 
     Route::any('update-delivery/{id}', [ConsignmentController::class, 'updateDelivery']);
     Route::any('update-delivery-status', [ConsignmentController::class, 'updateDeliveryStatus']);
     Route::any('consignment-report', [ConsignmentController::class, 'consignmentReports']);
@@ -248,6 +251,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
     
@@ -338,6 +343,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
 
@@ -440,6 +447,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
 
@@ -517,6 +526,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('drs-status', [ConsignmentController::class, 'drsStatus']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
+    Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
 
