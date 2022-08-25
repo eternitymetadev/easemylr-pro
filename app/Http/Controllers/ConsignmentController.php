@@ -2049,8 +2049,9 @@ class ConsignmentController extends Controller
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail','ConsignmentItem')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
+        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
+        //echo'<pre>'; print_r($simplyfy); die;
         $no_of_deliveries =  count($simplyfy);
         $details = $simplyfy[0]; 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
@@ -2141,14 +2142,17 @@ class ConsignmentController extends Controller
                 </div>
                 <br>
                 <div id="content"><div class="row" style="border: 1px solid black;">
-                <div class="column" style="width:95px;">
-                    <h4 style="margin: 0px;">LR Details</h4>
+                <div class="column" style="width:125px;">
+                    <h4 style="margin: 0px;"> Bill to Client</h4>
+                    <h4 style="margin: 0px;">LR Details:</h4>
                 </div>
                 <div class="column" style="width:200px;">
                     <h4 style="margin: 0px;">Consignee Name & Mobile Number</h4>
                 </div>
                 <div class="column" style="width:125px;">
-                    <h4 style="margin: 0px;">Delivery City & PIN</h4>
+                    <h4 style="margin: 0px;">Delivery City, </h4>
+                    <h4 style="margin: 0px;"> Dstt & PIN</h4>
+
                     </div>
                     <div class="column">
                     <h4 style="margin: 0px;">Shipment Details</h4>
@@ -2175,7 +2179,7 @@ class ConsignmentController extends Controller
         //    echo'<pre>'; print_r($dataitem); die;
 
             $i++;
-            if ($i % 6 == 0) {
+            if ($i % 5 == 0) {
                 $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
             }
 
@@ -2185,8 +2189,9 @@ class ConsignmentController extends Controller
             $html .= '
                 <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
                    
-                    <div class="column" style="width:95px;">
-                        <p style="margin-top:0px;">' . $dataitem['consignment_no'] . '</p>
+                    <div class="column" style="width:125px;">
+                       <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consigner_detail']['get_reg_client']['name'] . '</p>
+                        <p style="margin-top:-8px;">' . $dataitem['consignment_no'] . '</p>
                         <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']) . '</p>
                     </div>
                     <div class="column" style="width:200px;">
@@ -2196,31 +2201,32 @@ class ConsignmentController extends Controller
                     </div>
                     <div class="column" style="width:125px;">
                         <p style="margin-top:0px;">' . $dataitem['city'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['district'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['pincode'] . '</p>
 
                       </div>
                       <div class="column" >
                         <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
                         <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_gross_weight'] . '</p>
+                        <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
                       </div>
                       <div class="column" style="width:170px;">
                         <p></p>
                       </div>
                   </div>';
                   $html .='<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
-                  foreach(array_chunk($dataitem['consignment_item'], 2) as $chunk){
                   //echo'<pre>'; print_r($chunk); die;
                   $html .=' <div class="column" style="width:230px; margin-top: -10px;">';
-                  $html .='<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 120px; padding:6px;"><span style="font-weight: bold; color: grey;">Order ID</span></td><td><span style="font-weight: bold; color: grey;">Invoice No</span></td></tr></table>';
+                  $html .='<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
                   $itm_no = 0;
-                  foreach($chunk as $cc){
+                  foreach($dataitem['consignment_item'] as $cc){
                    $itm_no++;
               
-                 $html .='  <table style="border:0; margin-top: -7px;"><tr><td style="width: 120px; padding:3px;"> '.$cc['order_id'].'</td><td td style="width: 120px; padding:3px;">'.$cc['invoice_no'].'</td></tr></table>';
+                 $html .='  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">'.$itm_no.'.  '.$cc['order_id'].'</td><td style="width: 190px; padding:3px;">'.$itm_no.'.  '.$cc['invoice_no'].'</td></tr></table>';
                  
                }
                $html .= '</div> ';
-            }
+        
                $html .='</div>
 
                 <br>';
@@ -2253,13 +2259,12 @@ class ConsignmentController extends Controller
         }
     }
     //////////////////////////////////remove lr////////////////////
-    public function removeLR(Request $request)
+    public function removeLR(Request $request) 
     {
         //
         $consignmentId = $_GET['consignment_id'];
-        //echo'<pre>'; print_r($consignmentId); die;
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['status' => '2']);
-        $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->update(['status' => '2']);
+        $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->delete();
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -3309,8 +3314,87 @@ class ConsignmentController extends Controller
             $response['messages'] = 'img uploaded successfully';
             return Response::json($response);
         }
+    }
 
-         
+    public function addmoreLr(Request $request){
+
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == $role_id->id) {
+                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+                    ->where('consignment_notes.status', '=', '2')
+                    ->whereIn('consignment_notes.branch_id', $cc)
+                    ->get(['consignees.city']);
+                    //echo'<pre>'; print_r($consignments); die;
+            }
+        } else {
+            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+                ->where('consignment_notes.status', '=', '2')
+                ->get(['consignees.city']);
+        }
+      
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        $response['lrlist'] = $consignments;
+        $response['success'] = true;
+        $response['messages'] = 'img uploaded successfully';
+        return Response::json($response);
+        
+        
+    }
+
+    public function addunverifiedLr(Request $request)
+    {
+        $drs_no = $_POST['drs_no'];
+        $consignmentId = $_POST['consignmentID'];
+        $authuser = Auth::user();
+        $cc = $authuser->branch_id;
+
+        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+        $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->whereIn('consignment_notes.id', $consignmentId)
+            ->get(['consignees.city']);
+        $simplyfy = json_decode(json_encode($consignment), true);
+
+        $drs_order_no = DB::table('transaction_sheets')->select('order_no')->where('drs_no', $drs_no)->latest('order_no')->first();
+        $orderno = $drs_order_no->order_no; 
+
+
+        $i = $orderno;
+        foreach ($simplyfy as $value) {
+            $i++;
+            $unique_id = $value['id'];
+            $consignment_no = $value['consignment_no'];
+            $consignee_id = $value['consignee_id'];
+            $consignment_date = $value['consignment_date'];
+            $city = $value['city'];
+            $pincode = $value['pincode'];
+            $total_quantity = $value['total_quantity'];
+            $total_weight = $value['total_weight'];
+
+            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
+        }
+
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+        
     }
 
 }

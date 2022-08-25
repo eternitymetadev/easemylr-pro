@@ -78,6 +78,7 @@ class ConsignmentNote extends Model
     {
         return $this->belongsTo('App\Models\Job','job_id','job_id');
     }
+
     
 
 }
