@@ -996,6 +996,9 @@ class ConsignmentController extends Controller
                                     font-family: Arial, Helvetica, sans-serif;
                                     font-size: 14px;
                                 }
+                                .text{
+                                    width:130px; display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+                                }
                             </style>
                         </head>
 
@@ -1058,12 +1061,12 @@ class ConsignmentController extends Controller
                 $html .= '<p> N/A </p>';
             }
             if (@$data['order_id'] != '') {
-                $html .= '<p style="width:130px; display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">' . $data['order_id'] . '</p>';
+                $html .= '<p class="text">' . $data['order_id'] . '</p>';
             } else {
                 $html .= '<p> - </p>';
             }
             if (@$data['invoice_no'] != '') {
-                $html .= '<p style="width:130px; display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">' . $data['invoice_no'] . '</p>';
+                $html .= '<p class="text">' . $data['invoice_no'] . '</p>';
             } else {
                 $html .= '<p> N/A </p>';
             }
