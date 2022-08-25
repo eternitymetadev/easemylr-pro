@@ -222,7 +222,7 @@ div.relative {
                         totalBox += parseInt(value.total_quantity);
                         totalweight += parseInt(value.total_weight);
                         
-                        $('#sheet tbody').append("<tr id="+value.id+" class='move'><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td></tr>");
+                        $('#sheet tbody').append("<tr id="+value.id+" class='move'><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");
                                     
                     });
                     // alert(totalBox);
@@ -613,8 +613,37 @@ $(document).on('click','#addlr', function(){
 
 
                 });
-/////////////////////////////////////////////////
-
+///////////////////////////Remove Lr From The Draft//////////////////////
+// $(document).on('click','.remover_lr', function(){
+            
+//             var consignment_id = $(this).attr('data-id');
+//             //alert(consignment_id);
+           
+//              $.ajax({
+//                  type: "GET",
+//                  url: "remove-lr", 
+//                  data: {consignment_id:consignment_id},
+//                  //dataType: "json",
+//                  beforeSend:                      //reinitialize Datatables
+//                 function(){   
+                 
+//                },
+//                  success: function(data){
+//                      var re = jQuery.parseJSON(data)
+//                      if(re.success == true){
+                 
+//                  alert('LR Removed nSuccessfully');
+//                  location.reload();
+//              }
+//              else{
+//                  alert('something wrong');
+//              }
+ 
+                    
+//          } 
+         
+//      });
+//  });
 ////////////////////////////////////////////////
 function catagoriesCheck(that) {
     if (that.value == "Successful") {

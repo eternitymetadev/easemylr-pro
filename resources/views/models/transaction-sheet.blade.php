@@ -280,6 +280,8 @@
                                             <th>Pin Code</th>
                                             <th>Number Of Boxes</th>
                                             <th>Net Weight</th>
+                                            <th>Action</th>
+
                                         </tr>
                                     </thead>
                                     <tbody id="suffle">
