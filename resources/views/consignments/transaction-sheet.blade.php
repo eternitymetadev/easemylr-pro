@@ -614,36 +614,7 @@ $(document).on('click','#addlr', function(){
 
                 });
 ///////////////////////////Remove Lr From The Draft//////////////////////
-// $(document).on('click','.remover_lr', function(){
-            
-//             var consignment_id = $(this).attr('data-id');
-//             //alert(consignment_id);
-           
-//              $.ajax({
-//                  type: "GET",
-//                  url: "remove-lr", 
-//                  data: {consignment_id:consignment_id},
-//                  //dataType: "json",
-//                  beforeSend:                      //reinitialize Datatables
-//                 function(){   
-                 
-//                },
-//                  success: function(data){
-//                      var re = jQuery.parseJSON(data)
-//                      if(re.success == true){
-                 
-//                  alert('LR Removed nSuccessfully');
-//                  location.reload();
-//              }
-//              else{
-//                  alert('something wrong');
-//              }
- 
-                    
-//          } 
-         
-//      });
-//  });
+
 ////////////////////////////////////////////////
 function catagoriesCheck(that) {
     if (that.value == "Successful") {
