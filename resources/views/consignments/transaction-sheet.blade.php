@@ -332,7 +332,7 @@ $('#updt_vehicle').submit(function(e) {
         var consignmentID = [];
         $('input[name="edd[]"]').each(function() {
           if(this.value == '') {
-           alert('Please enter EDD');
+           swal('error','Please enter EDD','error');
            exit;
           }
             consignmentID.push(this.value);
@@ -344,11 +344,11 @@ $('#updt_vehicle').submit(function(e) {
         var vehicle = $('#vehicle_no').val();
         var driver = $('#driver_id').val();
         if(vehicle == ''){
-            alert('Please select vehicle');
+            swal('error','Please select vehicle','error');
             return false;
         }
         if(driver == ''){
-            alert('Please select driver');
+            swal('error','Please select driver', 'error');
             return false;
         }
         
@@ -528,11 +528,11 @@ $('#update_delivery_status').submit(function(e) {
                     var re = jQuery.parseJSON(data)
                     if(re.success == true){
                 
-                alert('LR Removed nSuccessfully');
+                swal('success','LR Removed Successfully','success');
                 location.reload();
             }
             else{
-                alert('something wrong');
+                swal('error','something wrong','error');
             }
 
                    
