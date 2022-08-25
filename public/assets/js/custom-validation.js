@@ -350,6 +350,31 @@ jQuery(document).ready(function(){
         });
     });
 
+    /*===== delete location =====*/
+    jQuery(document).on('click', '.delete_location', function(){
+        jQuery('#deletelocation').modal('show');
+        var location_id =  jQuery(this).attr('data-id');
+        var url =  jQuery(this).attr('data-action');
+        jQuery(document).off('click','.deletelocationconfirm').on('click', '.deletelocationconfirm', function(){
+           
+            jQuery.ajax({
+                type      : 'post',
+                url       : url,
+                data      : {location_id:location_id},
+                headers   : {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType : "JSON",
+                success:function(data){
+                    if(data){
+                        jQuery("#deletelocation").modal("hide");
+                        location.reload();
+                    }
+                }
+            });
+        });
+    });
+
      /*===== delete vehicle =====*/
     jQuery(document).on('click', '.delete_vehicle', function(){
         jQuery('#deletevehicle').modal('show');
