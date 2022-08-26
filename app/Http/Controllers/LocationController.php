@@ -176,14 +176,14 @@ class LocationController extends Controller
         return response()->json(['newcata' => $getlocation,'success' => true,'status' =>200]);
     }
 
-    // public function deleteLocation(Request $request)
-    // { 
-    //   $deletelocation = Location::where('id',$request->locationid)->delete();
-    //   $response['success']         = true;
-    //   $response['success_message'] = 'Location deleted successfully';
-    //   $response['error']           = false;
+    public function deleteLocation(Request $request)
+    { 
+      $deletelocation = Location::where('id',$request->location_id)->delete();
+      $response['success']         = true;
+      $response['success_message'] = 'Location deleted successfully';
+      $response['error']           = false;
 
-    //   return response()->json($response);
-    // }
+      return response()->json($response);
+    }
    
 }
