@@ -6,46 +6,50 @@
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
 <!-- END PAGE LEVEL CUSTOM STYLES -->
 <style>
-<style>
-        .dt--top-section {
-    margin:none;
-}
-div.relative {
-    position: absolute;
-    left: 110px;
-    top: 24px;
-    z-index: 1;
-    width: 83px;
-    height: 38px;
-}
-div.relat {
-    position: absolute;
-    left: 110px;
-    top: 24px;
-    z-index: 1;
-    width: 240px;
-    height: 38px;
-}
 
-
-/* .table > tbody > tr > td {
-    color: #4361ee;
-} */
-.dt-buttons .dt-button {
-    width: 83px;
-    height: 38px;
-    font-size: 13px;
-}
-.btn-group > .btn, .btn-group .btn {
-    padding: 0px 0px;
-    padding: 10px;
-}
-.btn {
-   
-    font-size: 10px;
+    .dt--top-section {
+        margin:none;
     }
-    </style>
-    </style>
+    div.relative {
+        position: absolute;
+        left: 110px;
+        top: 24px;
+        z-index: 1;
+        width: 83px;
+        height: 38px;
+    }
+    div.relat {
+        position: absolute;
+        left: 110px;
+        top: 24px;
+        z-index: 1;
+        width: 240px;
+        height: 38px;
+    }
+
+
+    /* .table > tbody > tr > td {
+        color: #4361ee;
+    } */
+    .dt-buttons .dt-button {
+        width: 83px;
+        height: 38px;
+        font-size: 13px;
+    }
+    .btn-group > .btn, .btn-group .btn {
+        padding: 0px 0px;
+        padding: 10px;
+    }
+    .btn {
+    
+        font-size: 10px;
+    }
+    
+    .ff {
+        border-bottom: 1px solid #f1e9e9;
+    }
+
+</style>
 
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -65,41 +69,43 @@ div.relat {
                     </div>
                     <div class="table-responsive mb-4 mt-4">
                         @csrf
-                        <table id="clienttable" class="table table-hover get-datatable" style="width:100%">
-                        <div class="btn-group relat">
-                        <a href="{{'clients/create'}}" class="btn btn-primary pull-right" >Create Client</a>
-                        <a href="{{'reginal-clients'}}" class="btn btn-primary pull-right" style="margin-left:7px;">Regional Client List</a>
-                        </div>
+                        <table id="clienttable" class=" table-hover get-datatable" style="width:100%;" cellspacing="0" cellpadding="0">
+                            <div class="btn-group relat">
+                                <a href="{{'clients/create'}}" class="btn btn-primary pull-right" >Create Client</a>
+                                <a href="{{'reginal-clients'}}" class="btn btn-primary pull-right" style="margin-left:7px;">Regional Client List</a>
+                            </div>
                             <thead>
-                                <tr>
+                                <tr class="ff">
                                     <th>Sr No.</th>
                                     <th>Base Client</th>
-                                    <th>Regional Client</th>
-                                    <th>Consigner</th>
-                                    <th>Consignee</th>
+                                    <th>
+                                        <table width="100%" cellspacing="0" cellpadding="0" class="dd">
+                                            <tr>
+                                                <th style="width:180px;">Location</th>
+                                                <th style="width:180px;">Regional Client</th>
+                                                <th style="width:180px;">Consigner</th>
+                                                <th style="width:180px;"> Consignee</th>
+                                            </tr>
+					                    </table>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php 
                                     foreach ($clients as $key => $value) { 
                                 ?> 
-                                <tr>
+                                <tr class="ff">
                                     <td>{{ ++$i }}</td>
                                     <td>{{ ucwords($value->client_name ?? "-")}}</td>
                                     <td>
-                                        <table>
-                                            <!-- <tr>
-                                                <td>Location</td>
-                                                <td>Regional Client</td>
-                                                <td>Consigner</td>
-                                                <td>Consignee</td>
-                                            </tr> -->
+                                        <table  width="100%" cellspacing="0" cellpadding="0" border="0" class="dd">
+
                                             @foreach ($value->RegClients as $key => $value)
                                                 <tr>
-                                                    <td>{{ $value->location->name }}</td>
-                                                    <td>{{ $value->name }}</td>
-                                                    <td>{{ Helper::regclientCoinsigner($value->id) }}</td>
-                                                    <td>{{ Helper::regclientCoinsignee($value->id) }}</td>
+                                                    <td style="width:180px;">{{ $value->location->name }}</td>
+                                                    <td style="width:180px;">{{ $value->name }}</td>
+                                                    <td style="width:180px;">{{ Helper::regclientCoinsigner($value->id) }}</td>
+                                                    <td style="width:180px;">{{ Helper::regclientCoinsignee($value->id) }}</td>
                                                 </tr>
                                             @endforeach
                                         </table>
