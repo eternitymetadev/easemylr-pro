@@ -161,7 +161,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
-    // Route::any('locations/delete-location', [LocationController::class, 'deleteLocation']);
+    Route::post('locations/delete-location', [LocationController::class, 'deleteLocation']);
 
     Route::get('bulk-import', [ImportCsvController::class, 'getBulkImport']);
     Route::post('consignees/upload_csv', [ImportCsvController::class, 'uploadCsv']); 

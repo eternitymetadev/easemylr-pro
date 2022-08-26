@@ -32,9 +32,9 @@
                                     <select class="form-control" id="regionalclient_id" name="regionalclient_id">
                                         <?php 
                                         if(count($regclients)>0) {
-                                            foreach ($regclients as $k => $client) {
+                                            foreach ($regclients as $client) {
                                         ?>
-                                        <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}" {{ $k == $getconsigner->regionalclient_id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
+                                        <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}" {{ $getconsigner->regionalclient_id == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
                                         <?php 
                                             }
                                         }
@@ -46,9 +46,9 @@
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($regclients)>0) {
-                                            foreach ($regclients as $k => $client) {
+                                            foreach ($regclients as $client) {
                                         ?>
-                                        <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}" {{ $k == $getconsigner->regionalclient_id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
+                                        <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}" {{ $getconsigner->regionalclient_id == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
                                         <?php 
                                             }
                                         }

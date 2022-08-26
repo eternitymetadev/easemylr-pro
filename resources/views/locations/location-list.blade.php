@@ -79,6 +79,11 @@ div.relative {
                                 <td>{{ $value->phone ?? '-' }}</td>
                                 <td>
                                     <a class="btn btn-primary editlocation" href="javascript:void(0)" data-action = "<?php echo URL::to($prefix.'/locations/get-location'); ?>" data-id="{{ $value->id }}" data-toggle="modal" data-target="#location-updatemodal"><span><span><i class="fa fa-edit"></i></span></span></a>
+                                    <?php $authuser = Auth::user();
+                                    if($authuser->role_id ==1) { ?>
+                                        <button type="button" class="btn btn-danger delete_location" data-id="{{ $value->id }}" data-action="<?php echo URL::to($prefix.'/locations/delete-location'); ?>">
+                                            <span><i class="fa fa-trash"></i></span></button>
+                                    <?php } ?>
                                 </td>
                             </tr>
                             <?php 
@@ -95,4 +100,5 @@ div.relative {
 
 @include('models.create-location')
 @include('models.update-location')
+@include('models.delete-location')
 @endsection
