@@ -25,8 +25,8 @@
                 z-index: 999999;
             }
         </style>     
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" defer>
-        <div id="message" x-data="{ showMessage: false, message: '' }" class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
+        <!-- <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" defer> -->
+        <!-- <div id="message" x-data="{ showMessage: false, message: '' }" class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
             <div  x-show="showMessage"
                 x-transition:enter="transform ease-out duration-300 transition"
                 x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -60,13 +60,13 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 </div>
 <!-- END MAIN CONTAINER -->
 
- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
+ <!-- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script> -->
+    <!-- <script src="{{ asset('js/app.js') }}"></script> -->
     <script>
 
         Echo.channel('events')
