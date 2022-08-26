@@ -3,12 +3,15 @@
 namespace App\Exports;
 
 use App\Models\Consigner;
+use App\Models\Role;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use DB;
 use Session;
 use Helper;
+use Auth;
 
 class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
 {
@@ -22,40 +25,32 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         $arr = array();
         $query = Consigner::query();
 
-        $consigner = $query->with('State','RegClient','Branch')->orderby('created_at','DESC')->get();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id); 
+        $cc = explode(',',$authuser->branch_id);
 
-        if($consigner->count() > 0){
-            foreach ($consigner as $key => $value){  
-                if(!empty($value->State)){
-                    if(!empty($value->State->name)){
-                      $state = $value->State->name;
-                    }else{
-                      $state = '';
-                    }
-                }else{
-                    $state = '';
-                }
-                if(!empty($value->RegClient)){
-                    if(!empty($value->RegClient->name)){
-                      $regClient = $value->RegClient->name;
-                    }else{
-                      $regClient = '';
-                    }
-                }else{
-                    $regClient = '';
-                }
+        // $consigner = $query->with('State','RegClient','Branch')->orderby('created_at','DESC')->get();
 
-                if(!empty($value->Branch)){
-                    if(!empty($value->Branch->name)){
-                      $location_name = $value->Branch->name;
-                    }else{
-                      $location_name = '';
-                    }
-                }else{
-                    $location_name = '';
-                }
-                
+        $query = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
+                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
+                ->leftjoin('states', 'states.id', '=', 'consigners.state_id');
 
+        if($authuser->role_id == 1){
+            $query = $query;
+        }
+        else if($authuser->role_id == 2 || $authuser->role_id == 3){
+            $query = $query->whereIn('consigners.branch_id', $cc);
+        }
+        else{
+            $query = $query->whereIn('consigners.regionalclient_id', $regclient);
+        }
+
+        $consigners = $query->orderby('created_at','DESC')->get();
+
+        if($consigners->count() > 0){
+            foreach ($consigners as $key => $value){  
+            
                 $arr[] = [
                     'id' => $value->id,
                     'nick_name' => $value->nick_name,
@@ -63,8 +58,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'gst_number' => $value->gst_number,
                     'contact_name' => $value->contact_name,
                     'phone' => $value->phone,
-                    'branch_id' => $location_name,
-                    'regionalclient_id' => @$regClient,
+                    'regionalclient_id' => @$value->regional_clientname,
                     'email' => $value->email,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,
@@ -74,13 +68,13 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'city' => $value->city,
                     'district' => $value->district,
                     'postal_code' => $value->postal_code,
-                    'state_id' => $state,
+                    'state_id' => $value->state_id,
                 ];
             }
         }                 
         return collect($arr);
     }
-    public function headings(): array
+    public function headings(): array  
     {
         return [
             'id',
@@ -88,8 +82,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
             'Consigner Legal Name',
             'GST Number',            
             'Contact Person Name',
-            'Mobile No.',
-            'Location Name',
+            'Mobile No',
             'Regional Client Name',
             'Email',
             'Address Line1',
