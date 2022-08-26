@@ -8,6 +8,10 @@
     height: auto;
     vertical-align: middle;
 }
+.fade {
+    transition: opacity .15s linear;
+    zoom: 110%;
+}
     </style>
     </head>
 
