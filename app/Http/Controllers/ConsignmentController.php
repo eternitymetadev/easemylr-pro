@@ -1716,49 +1716,32 @@ class ConsignmentController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
 
-        $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == 4){
-                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-                    ->where('consignment_notes.user_id', $authuser->id)
-                    ->get(['consignees.city']);
-            }else{ 
-                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-                    ->whereIn('consignment_notes.branch_id', $cc)
-                    ->get(['consignees.city']);
-                    
-            }
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
+
+        $query = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
             ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
             ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-            ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-                    ->get(['consignees.city']);
+            ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id');
 
+        if($authuser->role_id !=1){
+            if($authuser->role_id == 4){
+                $query = $query->where('consignment_notes.user_id', $authuser->id);
+            }else{ 
+                $query = $query->whereIn('consignment_notes.branch_id', $cc);
             }
-    //   echo'<pre>'; print_r($consignments); die;
+        } else {
+            $query = $query;
+        }
+
+        $consignments = $query->get();
+        //   echo'<pre>'; print_r($consignments); die;
 
         return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
 
@@ -1766,39 +1749,12 @@ class ConsignmentController extends Controller
       public function getFilterReport(Request $request)
       {
        // echo'<pre>'; print_r($_POST); die;
-        $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == 4){
-                $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-                    ->where('consignment_notes.user_id', $authuser->id)
-                    ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-                    ->get(['consignees.city']);
-            }else{
-                    $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
-                    ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-                    ->whereIn('consignment_notes.branch_id', $cc)
-                    ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-                    ->get(['consignees.city']);
-            }
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
+
+        $query = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as district', 'states.name as state', 'vehicles.regn_no as vechile_number', 'consigners.city as consigners_city', 'consigners.postal_code as consigner_postal_code', 'cnr_state.name as consigner_state', 'consigners.nick_name as consigner_nickname','vehicle_types.name as vehicle_type_name','regional_clients.name as cnr_rgnclient_name')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
             ->join('vehicle_types', 'vehicle_types.id', '=', 'consignment_notes.vehicle_type')
@@ -1806,9 +1762,20 @@ class ConsignmentController extends Controller
             ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
             ->leftjoin('states', 'states.id', '=', 'consignees.state_id')
             ->leftjoin('states as cnr_state', 'cnr_state.id', '=', 'consigners.state_id')
-            ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->get(['consignees.city']);
+            ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']]);
+
+        if($authuser->role_id !=1){
+            if($authuser->role_id == 4){
+                $query = $query->where('consignment_notes.user_id', $authuser->id);
+            }else{
+                $query = $query->whereIn('consignment_notes.branch_id', $cc);
+            }
+        } else {
+            $consignments = $query;
         }
+
+        $consignments = $query->get();
+
         $response['fetch'] = $consignments;
         $response['success'] = true;
         $response['messages'] = 'Succesfully loaded';
