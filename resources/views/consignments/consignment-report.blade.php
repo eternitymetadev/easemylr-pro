@@ -79,8 +79,11 @@
                                 <th>LR No</th>
                                 <th>LR Date</th>
                                 <th>Order No</th>
+                                <th>Regional Client</th>
                                 <th>Consigner</th>
                                 <th>Consigner City</th>
+                                <th>Consigner Postal Code</th>
+                                <th>Consigner State</th>
                                 <th>Consignee Name</th>
                                 <th>City</th>
                                 <th>Pin Code</th>
@@ -90,6 +93,7 @@
                                 <th>Invoice Date</th>
                                 <th>Invoice Amount</th>
                                 <th>Vehicle No</th>
+                                <th>Vehicle Type</th>
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
                                 <th>Gross Weight</th>
@@ -112,8 +116,11 @@
                                 <td>{{ $consignment->id ?? "-" }}</td>
                                 <td>{{  Helper::ShowDayMonthYearslash($consignment->consignment_date)}}</td>
                                 <td>{{ $consignment->order_id ?? "-" }}</td>
+                                <td>{{ $consignment->cnr_rgnclient_name ?? "-" }}</td>
                                 <td>{{ $consignment->consigner_nickname ?? "-" }}</td>
                                 <td>{{ $consignment->consigners_city ?? "-" }}</td>
+                                <td>{{ $consignment->consigner_postal_code ?? "-" }}</td>
+                                <td>{{ $consignment->consigner_state ?? "-" }}</td>
                                 <td>{{ $consignment->consignee_nickname ?? "-" }}</td>
                                 <td>{{ $consignment->city ?? "-" }}</td>
                                 <td>{{ $consignment->pincode ?? "-" }}</td>
@@ -123,6 +130,7 @@
                                 <td>{{ Helper::ShowDayMonthYearslash($consignment->invoice_date )}}</td>
                                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
                                 <td>{{ $consignment->vechile_number ?? "Pending" }}</td>
+                                <td>{{ $consignment->vehicle_type_name ?? "Pending" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
@@ -221,7 +229,7 @@
 
 
 
-                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + value.order_id + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + invoiceDate + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + value.order_id + "</td><td>" + value.cnr_rgnclient_name + "</td><td>" + value.consigner_nickname + "</td><td>" + value.consigners_city + "</td><td>" + value.consigner_postal_code + "</td><td>" + value.consigner_state + "</td><td>" + value.consignee_nickname + "</td><td>" + value.city + "</td><td>" + value.pincode + "</td><td>" + value.district + "</td><td>" + value.state + "</td><td>" + value.invoice_no + "</td><td>" + invoiceDate + "</td><td>" + value.invoice_amount + "</td><td>" + value.vechile_number + "</td><td>" + value.vehicle_type_name + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_report').DataTable({
