@@ -260,18 +260,23 @@
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>vehicle Number</p>
-                                    <select class="form-control form-small">
-                                        <option selected="selected">orange</option>
-                                        <option>white</option>
-                                        <option>purple</option>
+                                    <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                                    <option value="">Select vehicle no</option>
+                                                        @foreach($vehicles as $vehicle)
+                                                        <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                                                        </option>
+                                                        @endforeach
                                     </select>
                                 </div>
                                 <div class=" col-sm-3 ">
                                     <p>Driver Name</p>
-                                    <select class="form-control form-small">
-                                        <option selected="selected">orange</option>
-                                        <option>white</option>
-                                        <option>purple</option>
+                                    <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
+                                    <option value="">Select driver</option>
+                                                    @foreach($drivers as $driver)
+                                                    <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                                        '-'}}
+                                                    </option>
+                                                    @endforeach
                                     </select>
                                 </div>
                                 <div class=" col-sm-3 ">
@@ -373,18 +378,22 @@
 
         $('#no_of_inv').keyup(function () {
             var count = $(this).val();
-          
-            $("#items_table").each(function() {
-            
-            var tds = '<tr>';
-            // var item_no = $('tr', this).length;
-                
+
+            for (let i = 0; i < count; i++) {
+
+                var tds = '<tr>';
             
             tds += ' <td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td>';
 
              tds += '</tr>';
 
              $('tbody', this).append(tds);
+
+            }
+          
+            $("#items_table").each(function() {
+            
+           
 
             });
         });
