@@ -226,20 +226,8 @@
                                                 <td><input type="nmber" class="form-control form-small"></td>
 
                                             </tr>
-                                            <tr>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-
-                                            </tr>
-    </tbody>
-
+                                       
+                                        </tbody>
                                         </table>
                                     </div>
                                 </div>
@@ -375,27 +363,17 @@
             $('#veh').toggle();
         });
 
-
+////////////////////////////////////
         $('#no_of_inv').keyup(function () {
             var count = $(this).val();
-
-            for (let i = 0; i < count; i++) {
-
+            for (var i = 1; i < count; i++) {
                 var tds = '<tr>';
-            
-            tds += ' <td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td>';
-
+            tds += ' <td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small" value=""></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td>';
              tds += '</tr>';
-
-             $('tbody', this).append(tds);
+             $('#items_table tbody').append(tds);
 
             }
-          
-            $("#items_table").each(function() {
-            
-           
-
-            });
+        
         });
 </script>
 @endsection
