@@ -1440,204 +1440,349 @@ class ConsignmentController extends Controller
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
 
             $html = '<!DOCTYPE html>
-                    <html lang="en">
-                        <head>
-                            <title>PDF</title>
-                            <meta charset="utf-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1">
-                            <style>
-                                .aa{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
-                                }
-                                .bb{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
-                                }
-                                .cc{
-                                    border: 1px solid black;
-                                    border-collapse: collapse;
-                                }
-                                h2.l {
-                                    margin-left: 90px;
-                                    margin-top: 132px;
-                                    margin-bottom: 2px;
-                                }
-                                p.l {
-                                    margin-left: 90px;
-                                }
-                                img#set_img {
-                                    margin-left: 25px;
-                                    margin-bottom: 100px;
-                                }
-                                p {
-                                    margin-top: 2px;
-                                    margin-bottom: 2px;
-                                }
-                                h4 {
-                                    margin-top: 2px;
-                                    margin-bottom: 2px;
-                                }
-                                body {
-                                    font-family: Arial, Helvetica, sans-serif;
-                                    font-size: 14px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                        <div class="container">
-                            <div class="row">';
-
-            $html .= '<h2>' . $branch_add->name . '</h2>
-                                <table width="100%">
-                                    <tr>
-                                        <td width="50%">
-                                            <p>Plot No. ' . $branch_add->address . '</p>
-                                            <p>' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . '</p>
-                                            <p>GST No. : ' . $branch_add['gst_number'] . '</p>
-                                            <p>CIN No. : U63030PB2021PTC053388 </p>
-                                            <p>Email : ' . @$locations->email . '</p>
-                                            <p>Phone No. : ' . @$locations->phone . '' . '</p>
-                                            <br>
-                                            <span>
-                                                <hr id="s" style="width:100%;">
-                                                </hr>
-                                            </span>
-                                        </td>
-                                        <td width="50%">
-                                            <h2 class="l">CONSIGNMENT NOTE</h2>
-                                            <p class="l">' . $type . '</p>
-                                        </td>
-                                    </tr>
-                                </table></div></div>';
-            $html .= '<div class="row"><div class="col-sm-6">
-                                <table width="100%">
+            <html lang="en">
+                <head>
+                    <!-- Required meta tags -->
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+            
+                    <!-- Bootstdap CSS -->
+                   
+                    <style>
+                        * {
+                            box-sizing: border-box;
+                        }
+                        label {
+                            padding: 12px 12px 12px 0;
+                            display: inline-block;
+                        }
+                        
+                        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+                        @media screen and (max-width: 600px) {
+                        }
+                        img {
+                            width: 105px;
+                        }
+                        .a {
+                            width: 290px;
+                            font-size: 10px;
+                        }
+                        td.b {
+                            width: 292px;
+                            margin: auto;
+                        }
+                        td.C {
+                            width: 292px;
+                        }
+                        img.imgu {
+                            margin-left: 58px;
+                        }
+                        .loc {
+                                margin-bottom: 19px;
+                                margin-top: 27px;
+                            }
+                            .table3 {
+                border-collapse: collapse;
+                width: 338px;
+                height: 84px;
+                margin-left: 71px;
+            }
+                  .footer {
+               position: fixed;
+               left: 0;
+               bottom: 0;
+             
+             
+            }
+            .vl {
+                border-left: solid;
+                height: 18px;
+                margin-left: 3px;
+            }
+            .ff{
+              margin-top: 26px;
+            }
+            .relative {
+              position: relative;
+              left: 30px;
+            }
+            .mini-table1{
+              
+                border: 1px solid;
+                border-radius: 13px;
+                width: 379px;
+                height: 72px;
+                padding: 14px
+            }
+            .mini-th{
+              width:88px;
+             
+             
+            }
+            .nn{
+              border-bottom:1px solid;
+            }
+            .mm{
+            border-right:1px solid;
+            padding: 5px
+            
+            }
+            html { -webkit-print-color-adjust: exact; }
+            .td_style{
+                text-align: left;
+                padding: 8px;
+                color: #627429;
+            }
+                    </style>
+                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
+                </head>
+                <body>
+                    <div class="container-flex" style="margin-bottom: 5px;">
+                        <table>
+                            <tr>
+                               
+                                <td class="a">
+                                <b>	Email & Phone</b><br />
+                                <b>	contact@eternityforwarders.com</b><br />
+                                    contact@eternityforwarders.com<br />
+                        <b>	8745251736673</b>
+                                </td>
+                                <td class="a">
+                                <b>	Address</b><br />
+                      <b>'.$branch_add->name.' </b><br />
+                                <b>	plot no: ' . $branch_add->address . '</b><br />
+                                <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
+                                </td>
+                            </tr>
+                        
+                        </table>
+                        <hr />
+                        <table>
+                            <tr>
+                                <td class="b">
+                        <div class="ff" >
+                                      <img src="qr.jpg" alt="" class="imgu" />
+                        </div>
+                                </td>
+                                <td>
+                                    <div style="margin-top: -15px; text-align: center">
+                                        <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
+                                        <P>Original copy</P>
+                                    </div>
+                       <div class="mini-table1" style="background:#C0C0C0;"> 
+                                    <table style=" border-collapse: collapse;">
+                                        <tr>
+                                            <th class="mini-th mm nn">LR Number</th>
+                                            <th class="mini-th mm nn">LR Date</th>
+                                            <th class="mini-th mm nn">Dispatch</th>
+                                            <th class="mini-th nn">Delivery</th>
+                                        </tr>
+                                        <tr>
+                            <th class="mini-th mm" >121232</th>
+                                            <th class="mini-th mm">26-08-2022</th>
+                                            <th class="mini-th mm">Karnal</th>
+                                            <th class="mini-th">Mohali</th>
+                                            
+                                        </tr>
+                                    </table>
+                        </div>  
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="loc">
+                            <table>
                                 <tr>
-                            <td width="30%">
-                                <p><b>Consignment No.</b></p>
-                                <p><b>Consignment Date</b></p>
-                                <p><b>Dispatch From</b></p>
-                                <p><b>Order Id</b></p>
-                                <p><b>Invoice No.</b></p>
-                                <p><b>Invoice Date</b></p>
-                                <p><b>Value INR</b></p>
-                                <p><b>Vehicle No.</b></p>
-                                <p><b>Driver Name</b></p>
-                                <p><b>Driver Number</b></p>
-                            </td>
-                            <td width="30%">';
-            if (@$data['consignment_no'] != '') {
-                $html .= '<p>' . $data['id'] . '</p>';
-            } else {
-                $html .= '<p>N/A</p>';
-            }
-            if (@$data['consignment_date'] != '') {
-                $html .= '<p>' . date('d-m-Y', strtotime($data['consignment_date'])) . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['consigner_detail']['city'] != '') {
-                $html .= '<p> ' . $data['consigner_detail']['city'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['order_id'] != '') {
-                $html .= '<p>' . $data['order_id'] . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['invoice_no'] != '') {
-                $html .= '<p>' . $data['invoice_no'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['invoice_date'] != '') {
-                $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-
-            if (@$data['invoice_amount'] != '') {
-                $html .= '<p>' . $data['invoice_amount'] . '</p>';
-            } else {
-                $html .= '<p> N/A </p>';
-            }
-            if (@$data['vehicle_detail']['regn_no'] != '') {
-                $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['driver_detail']['name'] != '') {
-                $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-            if (@$data['driver_detail']['phone'] != '') {
-                $html .= '<p>' . ucwords($data['driver_detail']['phone']) . '</p>';
-            } else {
-                $html .= '<p> - </p>';
-            }
-
-            $html .= '</td>
-                            <td width="50%" colspan="3" style="text-align: center;">
-                            <img src= "' . $fullpath . '" alt="barcode">
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <span><hr id="e"></hr></span>
-            </div>
-            <div class="main">' . $adresses . '</div>
-            <span><hr id="e"></hr></span><br>';
-            $html .= '<div class="bb">
-                <table class="aa" width="100%">
-                    <tr>
-                        <th class="cc">Sr.No.</th>
-                        <th class="cc">Description</th>
-                        <th class="cc">Quantity</th>
-                        <th class="cc">Net Weight</th>
-                        <th class="cc">Gross Weight</th>
-                        <th class="cc">Freight</th>
-                        <th class="cc">Payment Terms</th>
-                    </tr>';
-            ///
-            $counter = 0;
-            foreach ($data['consignment_items'] as $k => $dataitem) {
-                $counter = $counter + 1;
-                $html .= '<tr>' .
-                    '<td class="cc">' . $counter . '</td>' .
-                    '<td class="cc">' . $dataitem['description'] . '</td>' .
-                    '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
-                    '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
-                    '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
-                    '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
-                    '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
-                    '</tr>';
-            }
-            $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
-                            <td class="cc">' . $data['total_quantity'] . '</td>
-                            <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
-                            <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
-                            <td class="cc"></td>
-                            <td class="cc"></td>
-                        </tr></table></div><br><br>
-                        <span><hr id="e"></hr></span>';
-
-            $html .= '<div class="nn">
-                                <table  width="100%">
-                                    <tr>
-                                        <td>
-                                            <h4><b>Receivers Signature</b></h4>
-                                            <p>Received the goods mentioned above in good condition.</p>
-                                        </td>
-                                        <td>
-                                        <h4><b>For Eternity Forwarders Pvt. Ltd.</b></h4>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </body>
-                    </html>';
+                                    <td class="c" >
+                                        <div style="margin-left: 20px">
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>201003 GHAZIABAD,GHAZIABAD</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;SwAL CORPORATION LIMITED-GHAZIABAD</div>
+                                        
+                                        <!-- <hr width="1" size="20" style=" margin-left: -11px;" class="relative"/> -->
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "> &nbsp; &nbsp;<b>201003 GHAZIABAD,GHAZIABAD</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp; SwAL CORPORATION LIMITED-GHAZIABAD</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <table border="1px solid" class="table3">
+                                            <tr>
+                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 ">
+                                        <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
+                                    </div>            
+                                </div>
+                            <table border="1" style=" border-collapse:collapse; width: 675px; ">
+                                <tr>
+                                    <td width="30%" >
+                                        <div class="container">
+                                        <div>
+                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        </div>
+                                        <div style="margin-top: -11px;">
+                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
+                                            <b>Agrotech DD GZB</b> <br />
+                                            plot no.#0,khasra no 1053 <br />
+                                            sadiq nagar meerut road <br />
+                                            ghaziabad -201003,up <br />
+                                            gstn:0e44345345u
+                                        </p>
+                                        </div>
+                                    </td>
+                                    <td width="30%">
+                                    <div class="container">
+                                        <div>
+                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        </div>
+                                        <div style="margin-top: -11px;">
+                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
+                                            <b>Agrotech DD GZB</b> <br />
+                                            plot no.#0,khasra no 1053 <br />
+                                            sadiq nagar meerut road <br />
+                                            ghaziabad -201003,up <br />
+                                            gstn:0e44345345u
+                                        </p>
+                                        </div>
+                                    </td>
+                                    <td width="30%">
+                                    <div class="container">
+                                        <div>
+                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        </div>
+                                        <div style="margin-top: -11px;">
+                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
+                                            <b>Agrotech DD GZB</b> <br />
+                                            plot no.#0,khasra no 1053 <br />
+                                            sadiq nagar meerut road <br />
+                                            ghaziabad -201003,up <br />
+                                            gstn:0e44345345u
+                                        </p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                                    
+                                        </div>
+                                
+                                <div>
+                                      <div class="row">
+                                                           <div class="col-sm-12 ">
+                                                <h4 style="margin-left:19px;"><b>Order Information</b></h4>
+                                                    </div>            
+                                                </div>
+                                            </div>
+                                            <table border="1" style=" border-collapse:collapse; width: 675px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
+                                                
+                                                    <tr>
+                                                        <th>Number of invoice</th>
+                                                        <th>Item Description</th>
+                                                        <th>Mode of packing</th>
+                                                        <th>Total Quantity</th>
+                                                        <th>Total Net Weight</th>
+                                                        <th>Total Gross Weight</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Number of invoice</th>
+                                                        <th>Item Description</th>
+                                                        <th>Mode of packing</th>
+                                                        <th>Total Quantity</th>
+                                                        <th>Total Net Weight</th>
+                                                        <th>Total Gross Weight</th>
+                                                        
+                                                       
+                                                    </tr>
+                                                    
+                                                    
+                                            
+                                                </table>
+                                </div>
+                                
+                                <div class="inputfiled">
+                                <table style="width: 675px;
+                                font-size: 10px; background-color:#e0dddc40;">
+                              <tr>
+                                  <th style="width: ">Order ID</th>
+                                  <th style="width: ">Inv Number</th>
+                                  <th style="width: ">Inv Date</th>
+                                  <th style="width: " >Invoice Amount</th>
+                                  <th style="width: ">E-way Number</th>
+                                  <th style="width: ">E-Way Date</th>
+                                  <th style="width: ">Quantity</th>
+                                  <th style="width: ">Net Weight</th>
+                                  <th style="width: ">Gross Weight</th>
+                              
+                              </tr>
+                            </table>
+                            <table style=" border-collapse:collapse; width: 675px;height: 45px; font-size: 8px; background-color:#e0dddc40;" border="1" >
+                               
+                                <tr>
+                                <td style="width: "></td>
+                                <td style="width: "></td>
+                                <td style="width: "> </td>
+                                <td style="width: "></td>
+                                <td style="width: "></td>
+                                <td style="width: "></td>
+                                <td style="width: "></td>
+                                <td style="width: "> </td>
+                                <td style="width: "></td>
+                                
+                                </tr>
+                                
+                            </table>
+                                <div>
+                                    <table style="margin-top:50px;">
+                                        <tr>
+                                            <td width="50%" style="font-size: 13px;"><p><b>Receivers Signatures</b><br>Received the goods mentioned above in good conditions.</p></td>
+                                            <td  width="50%"><p style="margin-left: 99px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
+                                        </tr>
+                                    </table>
+                            
+                                </div>
+                          </div>
+                        
+            
+                  <!-- <div class="footer">
+                                  <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
+                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
+                                <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
+                                <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
+                                <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
+                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
+                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
+                                <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
+                  </div> -->
+                    </div>
+                    <!-- Optional JavaScript; choose one of the two! -->
+            
+                    <!-- Option 1: Bootstdap Bundle with Popper -->
+                    <script
+                        src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
+                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                        crossorigin="anonymous"
+                    ></script>
+            
+                    <!-- Option 2: Separate Popper and Bootstdap JS -->
+                    <!--
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+                -->
+                </body>
+            </html>
+            ';
 
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);

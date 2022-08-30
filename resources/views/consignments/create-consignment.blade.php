@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget-content widget-content-area">
+                        <div class="widget-content">
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>Select Bill to Client</p>
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget-content widget-content-area">
+                        <div class="widget-content">
                             <div class="row">
                                 <div class="col-sm-4 ">
                                     <p>Select Pickup Location (Consigner)</p>
@@ -244,7 +244,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget-content widget-content-area">
+                        <div class="widget-content">
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>vehicle Number</p>
@@ -285,7 +285,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget-content widget-content-area " style="display:none;" id="veh">
+                        <div class="widget-content" style="display:none;" id="veh">
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>Vendor Name</p>
@@ -313,6 +313,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- widget-content-area -->
 
 @endsection
 @section('js')
