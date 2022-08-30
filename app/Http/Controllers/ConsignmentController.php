@@ -529,7 +529,21 @@ class ConsignmentController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
+        /////////////////////////////Bill to regional clients //////////////////////////
+
+        if($authuser->role_id == 4){
+        $reg = $authuser->regionalclient_id;
+        $regional = explode(',', $reg);
+        $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+        }else{
+
+        $branch = $authuser->branch_id;
+        $branch_loc = explode(',', $branch);
+        $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
+        }
+
+
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -771,6 +785,26 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
+////////////////////get consioner from regional client//
+        public function getConsignersonRegional(Request $request)
+        {
+            $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+           // echo'<pre>';print_r($getconsigners); die;
+            
+            if ($getconsigners) {
+                $response['success'] = true;
+                $response['success_message'] = "Consigner list fetch successfully";
+                $response['error'] = false;
+                $response['data'] = $getconsigners;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not fetch consigner list please try again";
+                $response['error'] = true;
+            }
+            return response()->json($response);
+        }
+
 
     // get consigner address on change
     public function getConsignees(Request $request)
@@ -1252,27 +1286,27 @@ class ConsignmentController extends Controller
         $data = json_decode(json_encode($getdata), true);
 
         if ($data['consigner_detail']['legal_name'] != null) {
-            $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
+            $legal_name = '' . $data['consigner_detail']['legal_name'] . '<br>';
         } else {
             $legal_name = '';
         }
         if ($data['consigner_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
+            $address_line1 = '' . $data['consigner_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
         if ($data['consigner_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
+            $address_line2 = '' . $data['consigner_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
         if ($data['consigner_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
+            $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
         if ($data['consigner_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
+            $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br>';
         } else {
             $address_line4 = '';
         }
@@ -1292,41 +1326,40 @@ class ConsignmentController extends Controller
             $postal_code = '';
         }
         if ($data['consigner_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
+            $gst_number = 'GST No: ' . $data['consigner_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
         if ($data['consigner_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
+            $phone = 'Phone No: ' . $data['consigner_detail']['phone'] . '<br>';
         } else {
             $phone = '';
         }
 
-        $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
-            ' . $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+        $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
         if ($data['consignee_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
+            $nick_name = '' . $data['consignee_detail']['nick_name'] . '<br>';
         } else {
             $nick_name = '';
         }
         if ($data['consignee_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
+            $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
         if ($data['consignee_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
+            $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
         if ($data['consignee_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
+            $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
         if ($data['consignee_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
+            $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br>';
         } else {
             $address_line4 = '';
         }
@@ -1347,41 +1380,40 @@ class ConsignmentController extends Controller
         }
 
         if ($data['consignee_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
+            $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
         if ($data['consignee_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
+            $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
         } else {
             $phone = '';
         }
 
-        $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
-        ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+        $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
         if ($data['shipto_detail']['nick_name'] != null) {
-            $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
+            $nick_name = '' . $data['shipto_detail']['nick_name'] . '<br>';
         } else {
             $nick_name = '';
         }
         if ($data['shipto_detail']['address_line1'] != null) {
-            $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
+            $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
         if ($data['shipto_detail']['address_line2'] != null) {
-            $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
+            $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
         if ($data['shipto_detail']['address_line3'] != null) {
-            $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
+            $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
         if ($data['shipto_detail']['address_line4'] != null) {
-            $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
+            $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br>';
         } else {
             $address_line4 = '';
         }
@@ -1401,18 +1433,17 @@ class ConsignmentController extends Controller
             $postal_code = '';
         }
         if ($data['shipto_detail']['gst_number'] != null) {
-            $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
+            $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
         if ($data['shipto_detail']['phone'] != null) {
-            $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
+            $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
         } else {
             $phone = '';
         }
 
-        $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
-        ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+        $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
         $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
         $output_file = '/qr-code/img-' . time() . '.svg';
@@ -1561,7 +1592,7 @@ class ConsignmentController extends Controller
                             <tr>
                                 <td class="b">
                         <div class="ff" >
-                                      <img src="qr.jpg" alt="" class="imgu" />
+                                      <img src="' . $fullpath . '" alt="" class="imgu" />
                         </div>
                                 </td>
                                 <td>
@@ -1578,9 +1609,9 @@ class ConsignmentController extends Controller
                                             <th class="mini-th nn">Delivery</th>
                                         </tr>
                                         <tr>
-                            <th class="mini-th mm" >121232</th>
-                                            <th class="mini-th mm">26-08-2022</th>
-                                            <th class="mini-th mm">Karnal</th>
+                                            <th class="mini-th mm" >' . $data['id'] . '</th>
+                                            <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
+                                            <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
                                             <th class="mini-th">Mohali</th>
                                             
                                         </tr>
@@ -1604,15 +1635,15 @@ class ConsignmentController extends Controller
                                         <table border="1px solid" class="table3">
                                             <tr>
                                                 <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                <td></td>
+                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
                                             </tr>
                                             <tr>
                                                 <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                <td></td>
+                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
                                             </tr>
                                             <tr>
                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                <td></td>
+                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                             </tr>
                                         </table>
                                     </td>
@@ -1631,46 +1662,38 @@ class ConsignmentController extends Controller
                                     <td width="30%" >
                                         <div class="container">
                                         <div>
-                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5>
                                         </div>
                                         <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
-                                            <b>Agrotech DD GZB</b> <br />
-                                            plot no.#0,khasra no 1053 <br />
-                                            sadiq nagar meerut road <br />
-                                            ghaziabad -201003,up <br />
-                                            gstn:0e44345345u
+                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                                        '.$conr_add.'
                                         </p>
                                         </div>
                                     </td>
                                     <td width="30%">
                                     <div class="container">
                                         <div>
-                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5>
                                         </div>
                                         <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
-                                            <b>Agrotech DD GZB</b> <br />
-                                            plot no.#0,khasra no 1053 <br />
-                                            sadiq nagar meerut road <br />
-                                            ghaziabad -201003,up <br />
-                                            gstn:0e44345345u
-                                        </p>
+                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                                        '.$consnee_add.'
+
+
+                                    </p>
                                         </div>
                                     </td>
                                     <td width="30%">
                                     <div class="container">
                                         <div>
-                                        <h4  style="margin-left:6px; margin-top: 0px">Consignor name & Address</h4>
+                                        <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5>
                                         </div>
                                         <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px font-size: 10px;">
-                                            <b>Agrotech DD GZB</b> <br />
-                                            plot no.#0,khasra no 1053 <br />
-                                            sadiq nagar meerut road <br />
-                                            ghaziabad -201003,up <br />
-                                            gstn:0e44345345u
-                                        </p>
+                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                                      '.$shiptoadd.'
+
+
+                                    </p>
                                         </div>
                                     </td>
                                 </tr>
@@ -3541,5 +3564,7 @@ class ConsignmentController extends Controller
         return response()->json($response);
         
     }
+
+  
 
 }

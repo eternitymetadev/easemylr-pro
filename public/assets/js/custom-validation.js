@@ -431,6 +431,36 @@ jQuery(document).ready(function(){
     }
     /*===== End get driver detail on create vehicle page =====*/
 
+    /*======get consigner on regional client =====*/
+    $('#select_regclient').change(function(e){
+        var regclient_id = $(this).val();
+        // alert(regclient_id);
+        $.ajax({
+            url         : '/get-consigner-regional',
+            type        : 'get',
+            cache       : false,
+            data        :  {regclient_id:regclient_id},
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            beforeSend : function(){
+                $('#select_consigner').empty(); 
+            },
+            success:function(res){
+                //    console.log(res.data);
+                $('#select_consigner').append('<option value="">select consigner</option>');
+                   $.each(res.data, function (index, value) {
+
+                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
+              
+                 });
+            }
+        });
+    });
+
+
+
     /*===== get consigner address on create consignment page =====*/
     $('#select_consigner').change(function(e){
         $('#items_table').find("tr:gt(1)").remove();
@@ -1413,4 +1443,8 @@ function get_delivery_date()
                     }
                 }); 
             });	
+
+
+
+       
        

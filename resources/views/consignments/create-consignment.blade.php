@@ -83,10 +83,11 @@
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>Select Bill to Client</p>
-                                    <select class="form-control form-small my-select2">
-                                        <option selected="selected">orange</option>
-                                        <option>white</option>
-                                        <option>purple</option>
+                                    <select class="form-control form-small my-select2" id="select_regclient" name="">
+                                        <option selected="selected" disabled>select client..</option>
+                                        @foreach($regionalclient as $client)
+                                        <option value="{{$client->id}}">{{$client->name}}</option>
+                                       @endforeach
                                     </select>
                                 </div>
                                 <div class=" col-sm-2 ">
@@ -122,10 +123,10 @@
                                     <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text"
                                                 name="consigner_id">
                                     <option value="">Select Consignor</option>
-                                                @foreach($consigners as $consigner)
+                                                <!-- @foreach($consigners as $consigner)
                                                 <option value="{{$consigner->id}}">{{$consigner->nick_name}}
                                                 </option>
-                                                @endforeach
+                                                @endforeach -->
                                     </select>
                                     <div id="consigner_address">
                                             </div>
@@ -376,5 +377,6 @@
             }
         
         });
+       
 </script>
 @endsection
