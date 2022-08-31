@@ -9,11 +9,15 @@ class ConsignmentNote extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'regclient_id',
         'consigner_id',
         'consignee_id',
         'ship_to_id',
         'consignment_no',
         'consignment_date',
+        'payment_type',
+        'description',
+        'packing_type',
         'dispatch',
         'invoice_no',
         'invoice_date',
