@@ -83,7 +83,7 @@
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Select Bill to Client</p>
-                            <select class="form-control form-small my-select2" id="select_regclient" name="regionalclient_id">
+                            <select class="form-control form-small my-select2" id="select_regclient" name="regclient_id">
                                 <option selected="selected" disabled>select client..</option>
                                 @foreach($regionalclient as $client)
                                 <option value="{{$client->id}}">{{$client->name}}</option>
@@ -104,6 +104,7 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" class="form-seteing date-picker" id="consignDate" name="consignment_date" placeholder="" value="<?php echo date('d-m-Y'); ?>">
 
             </div>
 
@@ -172,7 +173,6 @@
                 <table border="1" width="100%">
                     <div class="row">
                         <tr>
-                            <th>Number of invoice</th>
                             <th>Item Description</th>
                             <th>Mode of packing</th>
                             <th>Total Quantity</th>
@@ -180,16 +180,28 @@
                             <th>Total Gross Weight</th>
                         </tr>
                         <tr>
-                            <td><input type="nmber" class="form-control form-small" id="no_of_inv"></td>
-                            <td><input type="nmber" class="form-control form-small" id="description-1" name="description"><datalist id="json-datalist"></datalist></td>
-                            <td><input type="nmber" class="form-control form-small" value="Case/s" name="packing_type"></td>
-                            <td><input type="text" class="form-control form-small" name="total_quantity"></td>
-                            <td><input type="nmber" class="form-control form-small" name="total_weight"></td>
-                            <td><input type="nmber" class="form-control form-small" name="total_gross_weight"></td>
+                            <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
+                            <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                            <td align="center"><span id="tot_qty">
+                                    <?php echo "0";?>
+                                </span></td>
+                            <td align="center"><span id="tot_nt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.</td>
+                            <td align="center"><span id="tot_gt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.</td>
+
+                            <input type="hidden" name="total_quantity" id="total_quantity" value="">
+                            <input type="hidden" name="total_weight" id="total_weight" value="">
+                            <input type="hidden" name="total_gross_weight" id="total_gross_weight" value="">
+                            <input type="hidden" name="total_freight" id="total_freight" value="">
+                            <!-- <td><input type="number" class="form-control form-small" name="total_quantity"></td>
+                            <td><input type="number" class="form-control form-small" name="total_weight"></td>
+                            <td><input type="number" class="form-control form-small" name="total_gross_weight"></td> -->
                         </tr>
                     </div>
                 </table>
-
 
             </div>
             <div class="col-lg-12 layout-spacing">
@@ -212,24 +224,22 @@
                                     </tr>
                                 </table>
                                 <table style=" border-collapse: collapse;" border='1' id="items_table" >
-                                <tbody>
-                                    <tr>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][order_id]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][invoice_no]"></td>
-                                        <td><input type="date" class="form-control form-small" name="data[1][invoice_date]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][invoice_amount]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][e_way_bill]"></td>
-                                        <td><input type="date" class="form-control form-small" name="data[1][e_way_bill_date]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][quantity]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][weight]"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="data[1][gross_weight]"></td>
-                                        <td> <button type="button" class="btn btn-default btn-rounded insert-more">
-                                                    + </button>
-                                        </td>
-
-                                    </tr>
-                                
-                                </tbody>
+                                    <tbody>
+                                <tr></tr>
+                                        <tr>
+                                            <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
+                                            <td><input type="text" class="form-control form-small invc_no" name="data[1][invoice_no]"></td>
+                                            <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                            <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
+                                            <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
+                                            <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                            <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
+                                            <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
+                                            <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
+                                            <td> <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -320,9 +330,9 @@
     // $(function() {
     //     $('.basic').selectpicker();
     // });
-    $(document).ready(function() {
-        $('.insert-more').attr('disabled',true);
-    });
+    // $(document).ready(function() {
+    //     $('.insert-more').attr('disabled',true);
+    // });
 
     jQuery(function () {
         $('.my-select2').each(function () {
@@ -360,29 +370,9 @@
     }
 
     $('#chek').click(function () {
-            $('#veh').toggle();
-        });
+        $('#veh').toggle();
+    });
 
-////////////////////////////////////
-        $('#no_of_inv').keyup(function () {
-            var count = $(this).val();
-            for (var i = 1; i < count; i++) {
-                var tds = '<tr>';
-            tds += ' <td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small" value=""></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-            tds += '<td><input type="nmber" class="form-control form-small"></td>';
-             tds += '</tr>';
-             $('#items_table tbody').append(tds);
-
-            }
-        
-        });
        
 </script>
 @endsection
