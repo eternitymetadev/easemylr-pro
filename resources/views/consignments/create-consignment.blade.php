@@ -93,9 +93,9 @@
                                 <div class=" col-sm-2 ">
                                     <p>Payment Term</p>
                                     <select class="form-control form-small my-select2" style="width: 160px;">
-                                        <option selected="selected">orange</option>
-                                        <option>white</option>
-                                        <option>purple</option>
+                                        <option value="To be Billed" selected="selected">To be Billed</option>
+                                        <option value="To Pay">To Pay</option>
+                                        <option value="Paid">Paid</option>
                                     </select>
                                 </div>
                                 <div class=" col-sm-2 ">
@@ -298,10 +298,6 @@
                                 </div>
                                 <div class=" col-sm-2 ">
                                     <p>Purchase Price</p>
-                                    <Input type="number" class="form-control form-small" style="width: 160px;">
-                                </div>
-                                <div class=" col-sm-2 ">
-                                    <p>Freight</p>
                                     <Input type="number" class="form-control form-small" style="width: 160px;">
                                 </div>
                             </div>
