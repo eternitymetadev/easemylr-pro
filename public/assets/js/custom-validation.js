@@ -695,8 +695,10 @@ jQuery(document).ready(function(){
         
         $("#items_table").each(function() {
             
-            var tds = '<tr>';
             var item_no = $('tr', this).length;
+            if(item_no <=6){
+            var tds = '<tr>';
+            
             tds += ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
             tds += '<td><input type="text" class="form-control form-small invc_no" name="data['+item_no+'][invoice_no]" value=""></td>';
             tds += '<td><input type="date" class="form-control form-small invc_date" name="data['+item_no+'][invoice_date]"></td>';
@@ -708,6 +710,7 @@ jQuery(document).ready(function(){
             tds += '<td><input type="number" class="form-control form-small gross" name="data['+item_no+'][gross_weight]"></td>';
             tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
             tds += '</tr>';
+            }
                         
             if ($('tbody', this).length > 0) {
                 $('tbody', this).append(tds);
