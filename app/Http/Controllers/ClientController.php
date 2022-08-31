@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BaseClient;
 use App\Models\RegionalClient;
+use App\Models\RegionalClientDetail;
+use App\Models\ClientPriceDetail;
+use App\Models\Zone;
 use DB;
 use URL;
 use Helper;
@@ -262,4 +265,81 @@ class ClientController extends Controller
     {
         //
     }
+    public function createRegclientdetail(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $id = $request->id;
+        $id = decrypt($id);
+        $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
+        // dd($regclient_name);
+        $zonestates = Zone::all()->unique('state')->pluck('state','id');
+        
+        return view('clients.add-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name]);
+    }
+
+    public function storeRegclientdetail(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'client_name' => 'required|unique:base_clients,client_name',
+            );
+
+            $validator = Validator::make($request->all(),$rules);
+        
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['validation']  = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+            if(!empty($request->regclient_id)){
+                $client['regclient_id']   = $request->regclient_id;
+            }
+            if(!empty($request->docket_price)){
+                $client['docket_price']   = $request->docket_price;
+            }
+            $client['status']     = "1";
+
+            $saveclient = RegionalClientDetail::create($client); 
+
+            $data = $request->all();
+            // dd($data);
+            if($saveclient)
+            {
+                if(!empty($request->data)){ 
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data ) { 
+                        $save_data['regclientdetail_id'] = $saveclient->id;
+                        $save_data['status'] = "1";
+                        $saveregclients = ClientPriceDetail::create($save_data);
+                    }
+                }
+                
+                $url    =   URL::to($this->prefix.'/reginal-clients');
+                $response['success'] = true;
+                $response['success_message'] = "Clients detail added successfully";
+                $response['error'] = false;
+                $response['page'] = 'client-create';
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not created client detail please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+        }
+        return response()->json($response);
+    }
+
+
 }

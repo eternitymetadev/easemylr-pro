@@ -180,6 +180,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
     Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
     Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+    Route::get('/reginal-clients/add-regclient-detail/{id}', [ClientController::class, 'createRegclientdetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
 
