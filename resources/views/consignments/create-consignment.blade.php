@@ -75,7 +75,7 @@
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
-                            <h4 style="margin-left: 19px;"><b>Bill To Information</b></h4>
+                            <h4><b>Bill To Information</b></h4>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Freight</p>
-                            <Input type="number" class="form-control form-small" style="width: 160px;" name="freight">
+                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight">
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
-                            <h4 style="margin-left: 19px;"><b>Pickup and Drop Information</b></h4>
+                            <h4><b>Pickup and Drop Information</b></h4>
                         </div>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
-                            <h4 style="margin-left:19px;"><b>Order Information</b></h4>
+                            <h4><b>Order Information</b></h4>
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
-                            <h4 style="margin-left:19px;"><b>vehicle Information </b></h4>
+                            <h4><b>vehicle Information </b></h4>
                         </div>
                     </div>
                 </div>
@@ -281,7 +281,7 @@
                         </div>
                         <div class=" col-sm-3 ">
                             <p>EDD</p>
-                            <Input type="date" class="form-control form-small" style="width: 160px;" name="edd">
+                            <Input type="date" class="form-control form-small" style="width: 160px; height: 43px;" name="edd">
                         </div>
                     </div>
                 </div>
@@ -301,15 +301,22 @@
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Vendor Name</p>
-                            <Input type="text" class="form-control form-small" name="transporter_name">
+                            <Input type="text" class="form-control form-small" name="transporter_name" style="height: 43px;">
                         </div>
                         <div class=" col-sm-3 ">
                             <p>Vehicle Type</p>
-                            <Input type="text" class="form-control form-small" name="vehicle_type">
+                            
+                            <select class="my-select2 sete" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                            <option value="">Select vehicle type</option>
+                                @foreach($vehicletypes as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                                </select>
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Purchase Price</p>
-                            <Input type="number" class="form-control form-small" style="width: 160px;" name="purchase_price">
+                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="purchase_price">
                         </div>
                     </div>
                     

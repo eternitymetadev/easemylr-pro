@@ -898,7 +898,7 @@ class ConsignmentController extends Controller
             $district = '';
         }
         if ($data['consigner_detail']['postal_code'] != null) {
-            $postal_code = $data['consigner_detail']['postal_code'];
+            $postal_code = $data['consigner_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
@@ -951,7 +951,7 @@ class ConsignmentController extends Controller
             $district = '';
         }
         if ($data['consignee_detail']['postal_code'] != null) {
-            $postal_code = $data['consignee_detail']['postal_code'];
+            $postal_code = $data['consignee_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
@@ -1005,7 +1005,7 @@ class ConsignmentController extends Controller
             $district = '';
         }
         if ($data['shipto_detail']['postal_code'] != null) {
-            $postal_code = $data['shipto_detail']['postal_code'];
+            $postal_code = $data['shipto_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
@@ -1028,6 +1028,7 @@ class ConsignmentController extends Controller
         $fullpath = storage_path('app/public/' . $output_file);
         //echo'<pre>'; print_r($fullpath);
         //  dd($generate_qrcode);
+        $no_invoive = count($data['consignment_items']);
         if ($request->typeid == 1) {
             $adresses = '<table width="100%">
                     <tr>
@@ -1076,7 +1077,7 @@ class ConsignmentController extends Controller
                             font-size: 10px;
                         }
                         td.b {
-                            width: 292px;
+                            width: 238px;
                             margin: auto;
                         }
                         td.C {
@@ -1118,22 +1119,23 @@ class ConsignmentController extends Controller
               
                 border: 1px solid;
                 border-radius: 13px;
-                width: 379px;
+                width: 429px;
                 height: 72px;
-                padding: 14px
+                
             }
             .mini-th{
-              width:88px;
-             
-             
+              width:90px;
+            }
+            .ee{
+                margin:auto;
+                margin-top:12px;
             }
             .nn{
               border-bottom:1px solid;
             }
             .mm{
             border-right:1px solid;
-            padding: 5px
-            
+            padding:4px;
             }
             html { -webkit-print-color-adjust: exact; }
             .td_style{
@@ -1144,16 +1146,16 @@ class ConsignmentController extends Controller
                     </style>
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
-                <body>
+                <body style="font-family:Arial Helvetica,sans-serif;">
                     <div class="container-flex" style="margin-bottom: 5px;">
                         <table>
                             <tr>
                                
                                 <td class="a">
                                 <b>	Email & Phone</b><br />
-                                <b>	contact@eternityforwarders.com</b><br />
-                                    contact@eternityforwarders.com<br />
-                        <b>	8745251736673</b>
+                                <b>	' . @$locations->email . '</b><br />
+                                ' . @$locations->phone . '<br />
+                       <!-- <b>	8745251736673</b> -->
                                 </td>
                                 <td class="a">
                                 <b>	Address</b><br />
@@ -1175,10 +1177,10 @@ class ConsignmentController extends Controller
                                 <td>
                                     <div style="margin-top: -15px; text-align: center">
                                         <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
-                                        <P>Original copy</P>
+                                        <P>'.$type.'</P>
                                     </div>
                        <div class="mini-table1" style="background:#C0C0C0;"> 
-                                    <table style=" border-collapse: collapse;">
+                                    <table style=" border-collapse: collapse;" class="ee">
                                         <tr>
                                             <th class="mini-th mm nn">LR Number</th>
                                             <th class="mini-th mm nn">LR Date</th>
@@ -1189,7 +1191,7 @@ class ConsignmentController extends Controller
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
                                             <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">Mohali</th>
+                                            <th class="mini-th">'.$data['consignee_detail']['city'] . '</th>
                                             
                                         </tr>
                                     </table>
@@ -1202,10 +1204,10 @@ class ConsignmentController extends Controller
                                 <tr>
                                     <td class="c" >
                                         <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>201003 GHAZIABAD,GHAZIABAD</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;SwAL CORPORATION LIMITED-GHAZIABAD</div>
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['legal_name'] . '</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['district'] . '</div>
                                         
                                         <!-- <hr width="1" size="20" style=" margin-left: -11px;" class="relative"/> -->
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "> &nbsp; &nbsp;<b>201003 GHAZIABAD,GHAZIABAD</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp; SwAL CORPORATION LIMITED-GHAZIABAD</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "> &nbsp; &nbsp;<b>' . $data['consignee_detail']['nick_name'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['district'].'</div>
                                         </div>
                                     </td>
                                     <td>
@@ -1296,12 +1298,12 @@ class ConsignmentController extends Controller
                                                         <th>Total Gross Weight</th>
                                                     </tr>
                                                     <tr>
-                                                        <th>Number of invoice</th>
-                                                        <th>Item Description</th>
-                                                        <th>Mode of packing</th>
-                                                        <th>Total Quantity</th>
-                                                        <th>Total Net Weight</th>
-                                                        <th>Total Gross Weight</th>
+                                                        <th>'.$no_invoive .'</th>
+                                                        <th>' . $data['description'] . '</th>
+                                                        <th>' . $data['packing_type'] . '</th>
+                                                        <th>' . $data['total_quantity'] . '</th>
+                                                        <th>' . $data['total_weight'] . ' Kgs.</th>
+                                                        <th>' . $data['total_gross_weight'] . ' Kgs.</th>
                                                         
                                                        
                                                     </tr>
@@ -1327,22 +1329,27 @@ class ConsignmentController extends Controller
                               
                               </tr>
                             </table>
-                            <table style=" border-collapse:collapse; width: 675px;height: 45px; font-size: 8px; background-color:#e0dddc40;" border="1" >
+                            <table style=" border-collapse:collapse; width: 675px;height: 45px; font-size: 8px; background-color:#e0dddc40;" border="1" >';
+                            $counter = 0;
+            foreach ($data['consignment_items'] as $k => $dataitem) {
+                $counter = $counter + 1;
                                
-                                <tr>
-                                <td style="width: "></td>
-                                <td style="width: "></td>
-                                <td style="width: "> </td>
-                                <td style="width: "></td>
-                                <td style="width: "></td>
-                                <td style="width: "></td>
-                                <td style="width: "></td>
-                                <td style="width: "> </td>
-                                <td style="width: "></td>
+                         $html .=' <tr>
+                                <td style="width: ">' . $dataitem['order_id'] . '</td>
+                                <td style="width: ">' . $dataitem['invoice_no'] . '</td>
+                                <td style="width: ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                                <td style="width: ">' . $dataitem['invoice_amount'] . '</td>
+                                <td style="width: ">' . $dataitem['e_way_bill'] . '</td>
+                                <td style="width: ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                                <td style="width: "> ' . $dataitem['quantity'] . '</td>
+                                <td style="width: ">' . $dataitem['weight'] . ' Kgs. </td>
+                                <td style="width: "> '. $dataitem['gross_weight'] . ' Kgs.</td>
                                 
-                                </tr>
+                                </tr>';
+            }
+                            
                                 
-                            </table>
+                      $html .='      </table>
                                 <div>
                                     <table style="margin-top:50px;">
                                         <tr>
