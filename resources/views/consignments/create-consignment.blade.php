@@ -83,7 +83,7 @@
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Select Bill to Client</p>
-                            <select class="form-control form-small my-select2" id="select_regclient" name="regclient_id">
+                            <select class="form-control form-small my-select2" id="select_regclient" name="regionalclient_id">
                                 <option selected="selected" disabled>select client..</option>
                                 @foreach($regionalclient as $client)
                                 <option value="{{$client->id}}">{{$client->name}}</option>
@@ -100,15 +100,13 @@
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Freight</p>
-                            <Input type="number" class="form-control form-small" style="width: 160px;" name="freight">
+                            <input type="number" class="form-control form-small" style="width: 160px;" name="freight">
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="col-lg-12 layout-spacing">
-
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
@@ -120,13 +118,9 @@
                     <div class="row">
                         <div class="col-sm-4 ">
                             <p>Select Pickup Location (Consigner)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text"
-                                        name="consigner_id">
+                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text" name="consigner_id">
                             <option value="">Select Consignor</option>
-                                        <!-- @foreach($consigners as $consigner)
-                                        <option value="{{$consigner->id}}">{{$consigner->nick_name}}
-                                        </option>
-                                        @endforeach -->
+
                             </select>
                             <div id="consigner_address">
                                     </div>
@@ -135,19 +129,13 @@
                         
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id"
-                                        id="select_consignee">
-                                        <option value="">Select Consignee</option>
+                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id" id="select_consignee">
+                                <option value="">Select Consignee</option>
                             </select>
                             <div id="consignee_address">
 
-                                    </div>
+                            </div>
                         </div>
-                        <!-- <div class="col-sm-3 ">
-                                <p style="margin-left: 60px;">Different Ship To Location </p>
-                                <input type="checkbox" class="checkbox-round" />
-
-                                </div> -->
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
                             <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="ship_to_id"  id="select_ship_to">
@@ -155,11 +143,10 @@
                             </select>
                             <div id="ship_to_address">
 
-                                    </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -181,18 +168,14 @@
                         </tr>
                         <tr>
                             <td><input type="nmber" class="form-control form-small" id="no_of_inv"></td>
-                            <td><input type="nmber" class="form-control form-small" name="description"></td>
+                            <td><input type="nmber" class="form-control form-small" id="description" name="description"><datalist id="json-datalist"></datalist></td>
                             <td><input type="nmber" class="form-control form-small" value="Case/s" name="packing_type"></td>
                             <td><input type="text" class="form-control form-small" name="total_quantity"></td>
                             <td><input type="nmber" class="form-control form-small" name="total_weight"></td>
                             <td><input type="nmber" class="form-control form-small" name="total_gross_weight"></td>
                         </tr>
-
-
                     </div>
                 </table>
-
-
             </div>
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -216,15 +199,15 @@
                                 <table style=" border-collapse: collapse;" border='1' id="items_table" >
                                 <tbody>
                                     <tr>
-                                        <td><input type="nmber" class="form-control form-small" name="order_id"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="invoice_no"></td>
-                                        <td><input type="date" class="form-control form-small" name="invoice_date"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="invoice_amount"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="e_way_bill"></td>
-                                        <td><input type="date" class="form-control form-small" name="e_way_bill_date"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="quantity"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="weight"></td>
-                                        <td><input type="nmber" class="form-control form-small" name="gross_weight"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][order_id]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][invoice_no]"></td>
+                                        <td><input type="date" class="form-control form-small" name="data[1][invoice_date]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][invoice_amount]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][e_way_bill]"></td>
+                                        <td><input type="date" class="form-control form-small" name="data[1][e_way_bill_date]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][quantity]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][weight]"></td>
+                                        <td><input type="nmber" class="form-control form-small" name="data[1][gross_weight]"></td>
 
                                     </tr>
                                 
@@ -251,21 +234,21 @@
                             <p>vehicle Number</p>
                             <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
                             <option value="">Select vehicle no</option>
-                                                @foreach($vehicles as $vehicle)
-                                                <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                                                </option>
-                                                @endforeach
+                            @foreach($vehicles as $vehicle)
+                            <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                            </option>
+                            @endforeach
                             </select>
                         </div>
                         <div class=" col-sm-3 ">
                             <p>Driver Name</p>
                             <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
                             <option value="">Select driver</option>
-                                            @foreach($drivers as $driver)
-                                            <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
-                                                '-'}}
-                                            </option>
-                                            @endforeach
+                            @foreach($drivers as $driver)
+                            <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                '-'}}
+                            </option>
+                            @endforeach
                             </select>
                         </div>
                         <div class=" col-sm-3 ">
@@ -311,7 +294,7 @@
             </div>
         </div>
     </form>
-        <!-- widget-content-area -->
+    <!-- widget-content-area -->
 
 @endsection
 @section('js')
@@ -367,7 +350,15 @@
             var count = $(this).val();
             for (var i = 1; i < count; i++) {
                 var tds = '<tr>';
-            tds += ' <td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small" value=""></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td><td><input type="nmber" class="form-control form-small"></td>';
+            tds += ' <td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small" value=""></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
+            tds += '<td><input type="nmber" class="form-control form-small"></td>';
              tds += '</tr>';
              $('#items_table tbody').append(tds);
 
