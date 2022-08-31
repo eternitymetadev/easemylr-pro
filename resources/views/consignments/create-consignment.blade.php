@@ -95,7 +95,7 @@
                             <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type">
                                 <option value="To be Billed" selected="selected">To be Billed</option>
                                 <option value="To Pay">To Pay</option>
-                                <option value="Paid">Paid</option>
+                                <option value="Paid">Paid</option> 
                             </select>
                         </div>
                         <div class=" col-sm-2 ">
