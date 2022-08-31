@@ -83,7 +83,7 @@
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>Select Bill to Client</p>
-                                    <select class="form-control form-small my-select2" id="select_regclient" name="">
+                                    <select class="form-control form-small my-select2" id="select_regclient" name="regionalclient_id">
                                         <option selected="selected" disabled>select client..</option>
                                         @foreach($regionalclient as $client)
                                         <option value="{{$client->id}}">{{$client->name}}</option>
@@ -92,7 +92,7 @@
                                 </div>
                                 <div class=" col-sm-2 ">
                                     <p>Payment Term</p>
-                                    <select class="form-control form-small my-select2" style="width: 160px;">
+                                    <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type">
                                         <option value="To be Billed" selected="selected">To be Billed</option>
                                         <option value="To Pay">To Pay</option>
                                         <option value="Paid">Paid</option>
@@ -100,7 +100,7 @@
                                 </div>
                                 <div class=" col-sm-2 ">
                                     <p>Freight</p>
-                                    <Input type="number" class="form-control form-small" style="width: 160px;">
+                                    <Input type="number" class="form-control form-small" style="width: 160px;" name="freight">
                                 </div>
                             </div>
                         </div>
@@ -181,11 +181,11 @@
                                 </tr>
                                 <tr>
                                     <td><input type="nmber" class="form-control form-small" id="no_of_inv"></td>
-                                    <td><input type="nmber" class="form-control form-small"></td>
-                                    <td><input type="nmber" class="form-control form-small"></td>
-                                    <td><input type="nmber" class="form-control form-small"></td>
-                                    <td><input type="nmber" class="form-control form-small"></td>
-                                    <td><input type="nmber" class="form-control form-small"></td>
+                                    <td><input type="nmber" class="form-control form-small" name="description"></td>
+                                    <td><input type="nmber" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                                    <td><input type="text" class="form-control form-small" name="total_quantity"></td>
+                                    <td><input type="nmber" class="form-control form-small" name="total_weight"></td>
+                                    <td><input type="nmber" class="form-control form-small" name="total_gross_weight"></td>
                                 </tr>
 
 
@@ -216,15 +216,15 @@
                                         <table style=" border-collapse: collapse;" border='1' id="items_table" >
                                         <tbody>
                                             <tr>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
-                                                <td><input type="nmber" class="form-control form-small"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="order_id"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="invoice_no"></td>
+                                                <td><input type="date" class="form-control form-small" name="invoice_date"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="invoice_amount"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="e_way_bill"></td>
+                                                <td><input type="date" class="form-control form-small" name="e_way_bill_date"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="quantity"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="weight"></td>
+                                                <td><input type="nmber" class="form-control form-small" name="gross_weight"></td>
 
                                             </tr>
                                        
@@ -270,7 +270,7 @@
                                 </div>
                                 <div class=" col-sm-3 ">
                                     <p>EDD</p>
-                                    <Input type="date" class="form-control form-small" style="width: 160px;">
+                                    <Input type="date" class="form-control form-small" style="width: 160px;" name="edd">
                                 </div>
                             </div>
                         </div>
@@ -290,15 +290,15 @@
                             <div class="row">
                                 <div class=" col-sm-4 ">
                                     <p>Vendor Name</p>
-                                    <Input type="text" class="form-control form-small">
+                                    <Input type="text" class="form-control form-small" name="transporter_name">
                                 </div>
                                 <div class=" col-sm-3 ">
                                     <p>Vehicle Type</p>
-                                    <Input type="text" class="form-control form-small">
+                                    <Input type="text" class="form-control form-small" name="vehicle_type">
                                 </div>
                                 <div class=" col-sm-2 ">
                                     <p>Purchase Price</p>
-                                    <Input type="number" class="form-control form-small" style="width: 160px;">
+                                    <Input type="number" class="form-control form-small" style="width: 160px;" name="purchase_price">
                                 </div>
                             </div>
                           
