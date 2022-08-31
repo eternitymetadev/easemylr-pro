@@ -530,16 +530,19 @@ class ConsignmentController extends Controller
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
-
-        if($authuser->role_id == 4){
-        $reg = $authuser->regionalclient_id;
-        $regional = explode(',', $reg);
-        $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+       
+        if($authuser->role_id == 2 || $authuser->role_id == 3){
+            $branch = $authuser->branch_id;
+            $branch_loc = explode(',', $branch);
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
+        
+        }elseif($authuser->role_id == 4){
+            $reg = $authuser->regionalclient_id;
+            $regional = explode(',', $reg);
+            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+       
         }else{
-
-        $branch = $authuser->branch_id;
-        $branch_loc = explode(',', $branch);
-        $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
+            $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
 
@@ -3565,6 +3568,5 @@ class ConsignmentController extends Controller
         
     }
 
-  
 
 }
