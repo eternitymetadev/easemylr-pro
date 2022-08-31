@@ -181,14 +181,12 @@
                                 </tr>
                                 <tr>
                                     <td><input type="nmber" class="form-control form-small" id="no_of_inv"></td>
-                                    <td><input type="nmber" class="form-control form-small" id="description" name="description"><datalist id="json-datalist"></datalist></td>
+                                    <td><input type="nmber" class="form-control form-small" id="description-1" name="description"><datalist id="json-datalist"></datalist></td>
                                     <td><input type="nmber" class="form-control form-small" value="Case/s" name="packing_type"></td>
                                     <td><input type="text" class="form-control form-small" name="total_quantity"></td>
                                     <td><input type="nmber" class="form-control form-small" name="total_weight"></td>
                                     <td><input type="nmber" class="form-control form-small" name="total_gross_weight"></td>
                                 </tr>
-
-
                             </div>
                         </table>
 
