@@ -1125,6 +1125,7 @@ class ConsignmentController extends Controller
             }
             .mini-th{
               width:90px;
+              font-size: 12px;
             }
             .ee{
                 margin:auto;
@@ -1317,15 +1318,15 @@ class ConsignmentController extends Controller
                                 <table style="width: 675px;
                                 font-size: 10px; background-color:#e0dddc40;">
                               <tr>
-                                  <th style="width: ">Order ID</th>
-                                  <th style="width: ">Inv Number</th>
-                                  <th style="width: ">Inv Date</th>
-                                  <th style="width: " >Invoice Amount</th>
-                                  <th style="width: ">E-way Number</th>
-                                  <th style="width: ">E-Way Date</th>
-                                  <th style="width: ">Quantity</th>
-                                  <th style="width: ">Net Weight</th>
-                                  <th style="width: ">Gross Weight</th>
+                                  <th style="width:70px ">Order ID</th>
+                                  <th style="width: 70px">Inv No</th>
+                                  <th style="width: 70px">Inv Date</th>
+                                  <th style="width:70px " >Inv Amount</th>
+                                  <th style="width:70px ">E-way No</th>
+                                  <th style="width: 70px">E-Way Date</th>
+                                  <th style="width: 60px">Quantity</th>
+                                  <th style="width:70px ">Net Weight</th>
+                                  <th style="width:70px ">Gross Weight</th>
                               
                               </tr>
                             </table>
@@ -1335,15 +1336,15 @@ class ConsignmentController extends Controller
                 $counter = $counter + 1;
                                
                          $html .=' <tr>
-                                <td style="width: ">' . $dataitem['order_id'] . '</td>
-                                <td style="width: ">' . $dataitem['invoice_no'] . '</td>
-                                <td style="width: ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
-                                <td style="width: ">' . $dataitem['invoice_amount'] . '</td>
-                                <td style="width: ">' . $dataitem['e_way_bill'] . '</td>
-                                <td style="width: ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
-                                <td style="width: "> ' . $dataitem['quantity'] . '</td>
-                                <td style="width: ">' . $dataitem['weight'] . ' Kgs. </td>
-                                <td style="width: "> '. $dataitem['gross_weight'] . ' Kgs.</td>
+                                <td style="width:70px ">' . $dataitem['order_id'] . '</td>
+                                <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
+                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                                <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
+                                <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
+                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                                <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
+                                <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
+                                <td style="width:70px "> '. $dataitem['gross_weight'] . ' Kgs.</td>
                                 
                                 </tr>';
             }
