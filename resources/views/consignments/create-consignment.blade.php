@@ -285,7 +285,7 @@
                                     <label for="vehicle1">Vehical Purchase Information</label><br>
                                 </div>
                             </div>
-                        </div>
+                        </div>  
                         <div class="widget-content" style="display:none;" id="veh">
                             <div class="row">
                                 <div class=" col-sm-4 ">
