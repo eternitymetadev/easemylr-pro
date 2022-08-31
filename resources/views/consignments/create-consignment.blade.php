@@ -100,13 +100,15 @@
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Freight</p>
-                            <input type="number" class="form-control form-small" style="width: 160px;" name="freight">
+                            <Input type="number" class="form-control form-small" style="width: 160px;" name="freight">
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="col-lg-12 layout-spacing">
+
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
@@ -118,9 +120,13 @@
                     <div class="row">
                         <div class="col-sm-4 ">
                             <p>Select Pickup Location (Consigner)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text" name="consigner_id">
+                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text"
+                                        name="consigner_id">
                             <option value="">Select Consignor</option>
-
+                                        <!-- @foreach($consigners as $consigner)
+                                        <option value="{{$consigner->id}}">{{$consigner->nick_name}}
+                                        </option>
+                                        @endforeach -->
                             </select>
                             <div id="consigner_address">
                                     </div>
@@ -129,13 +135,19 @@
                         
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id" id="select_consignee">
-                                <option value="">Select Consignee</option>
+                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id"
+                                        id="select_consignee">
+                                        <option value="">Select Consignee</option>
                             </select>
                             <div id="consignee_address">
 
-                            </div>
+                                    </div>
                         </div>
+                        <!-- <div class="col-sm-3 ">
+                                <p style="margin-left: 60px;">Different Ship To Location </p>
+                                <input type="checkbox" class="checkbox-round" />
+
+                                </div> -->
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
                             <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="ship_to_id"  id="select_ship_to">
@@ -143,10 +155,11 @@
                             </select>
                             <div id="ship_to_address">
 
-                            </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -168,7 +181,7 @@
                         </tr>
                         <tr>
                             <td><input type="nmber" class="form-control form-small" id="no_of_inv"></td>
-                            <td><input type="nmber" class="form-control form-small" id="description" name="description"><datalist id="json-datalist"></datalist></td>
+                            <td><input type="nmber" class="form-control form-small" id="description-1" name="description"><datalist id="json-datalist"></datalist></td>
                             <td><input type="nmber" class="form-control form-small" value="Case/s" name="packing_type"></td>
                             <td><input type="text" class="form-control form-small" name="total_quantity"></td>
                             <td><input type="nmber" class="form-control form-small" name="total_weight"></td>
@@ -176,6 +189,8 @@
                         </tr>
                     </div>
                 </table>
+
+
             </div>
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -208,6 +223,9 @@
                                         <td><input type="nmber" class="form-control form-small" name="data[1][quantity]"></td>
                                         <td><input type="nmber" class="form-control form-small" name="data[1][weight]"></td>
                                         <td><input type="nmber" class="form-control form-small" name="data[1][gross_weight]"></td>
+                                        <td> <button type="button" class="btn btn-default btn-rounded insert-more">
+                                                    + </button>
+                                        </td>
 
                                     </tr>
                                 
