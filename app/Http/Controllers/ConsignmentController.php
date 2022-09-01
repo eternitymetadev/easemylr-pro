@@ -124,7 +124,7 @@ class ConsignmentController extends Controller
             }
             $data = $data->orderBy('id', 'DESC');
             $data = $data->get();
-
+            
         return Datatables::of($data)
             ->addColumn('lrdetails', function ($data) {
 
@@ -134,12 +134,34 @@ class ConsignmentController extends Controller
                 else{
                     $v = '';
                 }
+                
 
                 $trps = '<div class="">
-                     <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . $v . '</div>
-                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
-                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>
-                     </div>';
+                    <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . $v . '</div>';
+                    // echo'<pre>'; print_r($data->id);die;
+                     if(empty($data->order_id)){
+                        $getorders = ConsignmentItem::select('order_id','invoice_no')->where('consignment_id', $data->id)->get();
+                        if(count($getorders)>0){
+                        foreach($getorders as $order)
+                        {
+                            $sahil[] = $order->order_id;
+                            $invoices[] = $order->invoice_no;
+                        }
+                        $order_item['orders'] = implode(',', $sahil);
+                        $order_item['invoices'] = implode(',', $invoices);
+                        
+                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $order_item['orders'] . '</div>
+                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $order_item['invoices'] . '</div>';
+                    }else{
+                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span> - </div>
+                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>  -  </div>';
+                    }
+                    }else{
+                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
+                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>';
+                    }
+                        
+                     $trps .= '</div>';
 
                 return $trps;
             })
@@ -153,43 +175,72 @@ class ConsignmentController extends Controller
             })
             ->addColumn('orderdetails', function ($data) {
 
-                $orders = explode(',',$data->order_id);
                 
-                $ol = '';
-                foreach($orders as $order){
-                    $ol .= '<span class="badge bg-info mt-2">' . $order . '</span>&nbsp;';
-                }
-                //echo "<pre>"; print_r($ol);die;
                 $orderdetails = '<table id="" class="table table-striped">
-                <tbody>
+                <tbody>';
 
-               <tr>
-                    <td>Order Number</td>
-                    <td>'.$ol.'</td>
-                </tr>
-                <tr>
+                if(empty($data->order_id)){
+                    $getorders = ConsignmentItem::select('order_id','invoice_no')->where('consignment_id', $data->id)->get();
+                    if(count($getorders)>0){
+                        foreach($getorders as $order)
+                        {
+                            $sahil[] = $order->order_id;
+                            $invoices[] = $order->invoice_no;
+                        }
+                        $order_item['orders'] = implode(',', $sahil);
+                        $order_item['invoices'] = implode(',', $invoices);
 
-                  <tr>
-                    <td>Invoice Number</td>
-                    <td>' . $data->invoice_no . '</td>
-                  </tr>
-                  
+                        $orderdetails .= '<tr>
+                            <td>Order Number</td>
+                            <td><span class="badge bg-info mt-2">'.$order_item['orders'].'</span>&nbsp;</td>
+                        </tr>
 
-                </tbody>
-              </table>';
+                        <tr>
+                            <td>Invoice Number</td>
+                            <td>' . $order_item['invoices'] . '</td>
+                        </tr>';
+                    }else{
+                        $orderdetails .= '<tr>
+                            <td>Order Number</td>
+                            <td><span class="badge bg-info mt-2"> - </span>&nbsp;</td>
+                        </tr>
+
+                        <tr>
+                            <td>Invoice Number</td>
+                            <td> - </td>
+                        </tr>';
+                    }
+                }else{
+                    $orders = explode(',',$data->order_id);
+                
+                    $ol = '';
+                    foreach($orders as $order){
+                        $ol .= '<span class="badge bg-info mt-2">' . $order . '</span>&nbsp;';
+                    }
+                    
+                    $orderdetails .= '<tr>
+                        <td>Order Number</td>
+                        <td>'.$ol.'</td>
+                    </tr>
+
+                    <tr>
+                        <td>Invoice Number</td>
+                        <td>' . $data->invoice_no . '</td>
+                    </tr>';
+                }
+
+                $orderdetails .= '</tbody>
+                </table>';
 
                 return $orderdetails;
             })
             ->addColumn('txndetails', function ($data) {
-
-                //echo "<pre>";print_r($data);die;
 
                 if(!empty($data->job_id)){
                     $jobid = $data->job_id;
                 }else{
                     $jobid = "Manual";
                 }
-                
 
                 $txndetails = '<table id="" class="table table-striped">
                 <tbody>
@@ -466,8 +517,10 @@ class ConsignmentController extends Controller
                  else{
                      $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
                  }
+             
                 return $dt;
             })
+            
             ->rawColumns(['lrdetails','txndetails','trackinglink','route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail','orderdetails'])
             ->make(true);
 

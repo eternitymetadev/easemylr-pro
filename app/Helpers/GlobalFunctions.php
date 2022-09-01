@@ -12,6 +12,7 @@ use App\Models\Location;
 use App\Models\State;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use URL;
@@ -150,8 +151,6 @@ class GlobalFunctions {
         $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
         $orderId = @$transcationview->ConsignmentDetail->order_id;
         return $orderId;
-     }
-
-
+    }
 
 }
