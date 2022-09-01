@@ -73,11 +73,28 @@
                         </tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['order_id'] ?></b></td>
+                            <?php if(empty($data['order_id'])){
+                                foreach($data['consignment_items'] as $order)
+                                    {
+                                        $orders[] = $order['order_id'];
+                                        $invoices[] = $order['invoice_no'];
+                                    }
+                                        $order_item = implode(',', $orders);
+                                        $invoic_no = implode(',', $invoices);
+                                    ?>
+                                <td colspan ="2" style="text-align:center;padding:5px 0px;"><b style="font-size:18px;"><?php echo $order_item ?></b></td>
+
+                              <?php }else{ ?>
+                                <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['order_id'] ?></b></td>
+                           <?php } ?>
                         </tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['invoice_no'] ?></b></td>
+                            <?php if(empty($data['invoice_no'])){ ?>
+                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $invoic_no ?></b></td>
+                            <?php }else{ ?>
+                                <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $data['invoice_no'] ?></b></td>
+                                <?php } ?>
                         </tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
