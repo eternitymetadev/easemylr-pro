@@ -1836,6 +1836,7 @@ class ConsignmentController extends Controller
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
+        //echo'<pre>'; print_r($data);die;
         $regional = $data['consigner_detail']['regionalclient_id'];
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
