@@ -125,7 +125,7 @@
 
                                         $order[] = $orders['order_id'];
                                         $invoices[] = $orders['invoice_no'];
-                                        $inv_date[] = Helper::ShowFormatDate($orders['invoice_date']);
+                                        $inv_date[] = Helper::ShowDayMonthYear($orders['invoice_date']);
                                         $inv_amt[] = $orders['invoice_amount'];
                                     }
                                     //echo'<pre>'; print_r($order); die;
@@ -154,7 +154,7 @@
                                     <td>{{ $invoice['amt'] }}</td>
                                <?php  } else{ ?>
                                     <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowFormatDate($consignment['invoice_date'] ?? "-" )}}</td>
+                                    <td>{{ Helper::ShowDayMonthYear($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                 <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>

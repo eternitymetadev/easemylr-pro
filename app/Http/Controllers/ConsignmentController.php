@@ -849,7 +849,6 @@ class ConsignmentController extends Controller
         public function getConsignersonRegional(Request $request)
         {
             $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
-            $getRegclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
            // echo'<pre>';print_r($getconsigners); die;
             
             if ($getconsigners) {
@@ -857,7 +856,6 @@ class ConsignmentController extends Controller
                 $response['success_message'] = "Consigner list fetch successfully";
                 $response['error'] = false;
                 $response['data'] = $getconsigners;
-                $response['data_regclient'] = $getRegclients;
 
             } else {
                 $response['success'] = false;
@@ -1135,8 +1133,8 @@ class ConsignmentController extends Controller
                             width: 238px;
                             margin: auto;
                         }
-                        td.c {
-                            width: 220px;
+                        td.C {
+                            width: 292px;
                         }
                         img.imgu {
                             margin-left: 58px;
@@ -1149,7 +1147,7 @@ class ConsignmentController extends Controller
                 border-collapse: collapse;
                 width: 338px;
                 height: 84px;
-                margin-left: px;
+                margin-left: 71px;
             }
                   .footer {
                position: fixed;
@@ -1258,8 +1256,7 @@ class ConsignmentController extends Controller
                         <div class="loc">
                             <table>
                                 <tr>
-
-                                    <td style="width:90px; word-break:break-all;"">
+                                    <td class="c" >
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['district'] . '</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;</div>
                                         
@@ -1296,10 +1293,11 @@ class ConsignmentController extends Controller
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
                                     <td width="30%" >
-                                        <div class="container-flex">
-                                        <div >
+                                    <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
                                         </div>
+                                        <div class="container">
+                                        
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$conr_add.'
@@ -1307,10 +1305,11 @@ class ConsignmentController extends Controller
                                         </div>
                                     </td>
                                     <td width="30%">
-                                    <div class="container-flex">
-                                        <div>
+                                    <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
                                         </div>
+                                    <div class="container">
+                                        
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$consnee_add.'
@@ -1320,10 +1319,11 @@ class ConsignmentController extends Controller
                                         </div>
                                     </td>
                                     <td width="30%">
-                                    <div class="container-flex">
-                                        <div>
+                                    <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
                                         </div>
+                                    <div class="container">
+                                        
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                       '.$shiptoadd.'
@@ -1364,9 +1364,6 @@ class ConsignmentController extends Controller
                                                         
                                                        
                                                     </tr>
-                                                    
-                                                    
-                                            
                                                 </table>
                                 </div>
                                 
