@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
 <style>
-        .dt--top-section {
+.dt--top-section {
     margin:none;
 }
 div.relative {
@@ -27,8 +27,8 @@ div.relative {
 .btn {
    
     font-size: 10px;
-    }
-    .select2-results__options {
+}
+.select2-results__options {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -39,7 +39,7 @@ div.relative {
 .move{
     cursor : move;
 }
-    </style>
+</style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
@@ -80,19 +80,14 @@ div.relative {
                             </thead>
                             <tbody>
                                 @foreach($transaction as $trns)
-
                                 <?php 
                                 
-                               $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
-                                 $date->setTimezone(new DateTimeZone('IST'));
-                                 $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
-                                 $new =  Helper::oldnewLr($trns->drs_no) ?? "" ;
+                                $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
+                                $date->setTimezone(new DateTimeZone('IST'));
+                                $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
+                                $new =  Helper::oldnewLr($trns->drs_no) ?? "" ;
 
-                                
-
-                            //   $creation = date('d-m-Y',strtotime($trns->created_at));  
-                            //   echo'<pre>'; print_r($date); die;
-                                  ?>
+                                ?>
                               <tr>
                                 <td>DRS-{{$trns->drs_no}}</td>
                                 <td>{{$date->format('Y-m-d')}}</td>
@@ -146,7 +141,7 @@ div.relative {
                                       <?php }else{?>
                                         <td><a class="active_drs btn btn-success" drs-no = "{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
                                         <?php } ?>
-                              </tr>
+                                </tr>
                               @endforeach
                             </tbody>
                         </table>
@@ -235,49 +230,42 @@ div.relative {
 			});
 			
 		});
-        /////////////////////////////////Draft Sheet//////////////////////////////////////////////
+        /////////////Draft Sheet///////////////////
         $(document).on('click','.draft-sheet', function(){
             
-                    var draft_id = $(this).val(); 
-                    $('#save-draft').modal('show');
-                    //alert(draft_id);
-                    $.ajax({
-                        type: "GET",
-                        url: "view-draftSheet/"+draft_id, 
-                        data: {draft_id:draft_id},
-                        // dataType: "json",
-                        beforeSend:                      //reinitialize Datatables
-                       function(){   
-                        $('#save-DraftSheet').dataTable().fnClearTable();             
-                        $('#save-DraftSheet').dataTable().fnDestroy();
-                        $("#total_boxes").empty();          
-                         $("#totalweights").empty();  
-                         $("#totallr").empty();  
-                        // $("#nnn").empty();    
-                        // $("#drsdate").empty();  
-                 },
-                        success: function(data){
-                        var re = jQuery.parseJSON(data)
-                    //console.log(re.fetch); return false;
+            var draft_id = $(this).val(); 
+            $('#save-draft').modal('show');
+            //alert(draft_id);
+            $.ajax({
+                type: "GET",
+                url: "view-draftSheet/"+draft_id, 
+                data: {draft_id:draft_id},
+                // dataType: "json",
+                beforeSend:                      //reinitialize Datatables
+                function(){   
+                    $('#save-DraftSheet').dataTable().fnClearTable();             
+                    $('#save-DraftSheet').dataTable().fnDestroy();
+                    $("#total_boxes").empty();          
+                        $("#totalweights").empty();  
+                        $("#totallr").empty();  
+                    // $("#nnn").empty();    
+                    // $("#drsdate").empty();  
+                },
+                success: function(data){
+                    var re = jQuery.parseJSON(data)
                     var consignmentID = [];
                     var totalBoxes = 0;
                     var totalweights = 0;
                     $.each(re.fetch, function(index, value) {
-
                         var alldata = value;  
-                        //console.log(alldata);
-                        //alert(value.edd);
 
                         consignmentID.push(alldata.consignment_no);
                         totalBoxes += parseInt(value.total_quantity);
                         totalweights += parseInt(value.total_weight);
-                        //alert(alldata.consignment_detail.edd); return false;
-
 
                         $('#save-DraftSheet tbody').append("<tr id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.edd+ "'></td></tr>");      
                     });
-                     // alert(consignmentID);
-                      $("#transaction_id").val(consignmentID);
+                    $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
                     
                     $("#total_boxes").append("No Of Boxes: "+totalBoxes);
@@ -285,48 +273,47 @@ div.relative {
                     $("#totallr").append(rowCount);
 
                     showLibrary();
-
-				} 
+                }
 			});
 		});
 
         //////////////////////////////
-                $('#suffle').sortable({
-                placeholder : "ui-state-highlight",
-                update : function(event, ui)
-                {
+        $('#suffle').sortable({
+            placeholder : "ui-state-highlight",
+            update : function(event, ui)
+            {
                 var page_id_array = new Array();
                 $('#suffle tr').each(function(){
-                page_id_array.push($(this).attr('id'));
+                    page_id_array.push($(this).attr('id'));
                 });
                //alert(page_id_array);
                 $.ajax({
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url:"update-suffle",
-                method:"POST",
-                data:{page_id_array:page_id_array, action:'update'},
-                success:function()
-                {
-                load_data();
-                }
-            })
+                    url:"update-suffle",
+                    method:"POST",
+                    data:{page_id_array:page_id_array, action:'update'},
+                    success:function()
+                    {
+                        load_data();
+                    }
+                })
             }
-            });
+        });
 ///////////////
         function printData() {
-        var divToPrint = document.getElementById("www");
-        newWin = window.open("");
-        newWin.document.write(divToPrint.outerHTML);
-        newWin.print();
-        newWin.close();
+            var divToPrint = document.getElementById("www");
+            newWin = window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
         }
 
-   $('#print').on('click', function() {
-   printData();
- 
-})
+    $('#print').on('click', function() {
+        printData();
+    
+    })
 ////////////////////////////
-$('#updt_vehicle').submit(function(e) {
+    $('#updt_vehicle').submit(function(e) {
         e.preventDefault();
 
         var consignmentID = [];
@@ -386,245 +373,204 @@ $('#updt_vehicle').submit(function(e) {
         }); 
     });	
 ////////////////////////////
-function showLibrary()
-{
-                 $('.new_edd').blur(function () {
-                    
-                    var consignment_id = $(this).attr('data-id');
-                    
-                    var drs_edd = $(this).val();
-                    var _token = $('input[name="_token"]').val();
-                    $.ajax({
-                    url: "update-edd",
-                    method: "POST",
-                    data: { drs_edd: drs_edd,consignment_id:consignment_id, _token: _token },
-                    headers   : {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                    dataType  : 'json',
-                    success: function (result) {
-                        
-                    }
-                    })
-           });
-    }
-
-    ///////////////////////////////delivery status////////////////////////////////////////
-    $(document).on('click','.delivery_status', function(){
-            
-            var draft_id = $(this).val(); 
-            $('#delivery').modal('show');
-          //alert(draft_id);
-          
+    function showLibrary()
+    {
+        $('.new_edd').blur(function () {
+            var consignment_id = $(this).attr('data-id');
+            var drs_edd = $(this).val();
+            var _token = $('input[name="_token"]').val();
             $.ajax({
-                type: "GET",
-                url: "update-delivery/"+draft_id, 
-                data: {draft_id:draft_id},
-                //dataType: "json",
-                beforeSend:                      //reinitialize Datatables
-               function(){   
-                $('#delivery_status').dataTable().fnClearTable();             
-                $('#delivery_status').dataTable().fnDestroy();
-             
-              },
-                success: function(data){
-                    var re = jQuery.parseJSON(data)
-                    // console.log(re.fetch); return false;
-                    var consignmentID = [];
-                    $.each(re.fetch, function(index, value) {
-
-                        var alldata = value;  
-                       
-                        consignmentID.push(alldata.consignment_no);
-                        
-                        $('#delivery_status tbody').append("<tr><td>" + value.consignment_no + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
-
-
-                    });
-                      //alert(consignmentID);
-                      $("#drs_status").val(consignmentID);
-
-                      get_delivery_date();
-        } 
-        
-    });
-});
-///////////////////////////Update Delivery Status/////////////////////////////////////////////
-$('#update_delivery_status').submit(function(e) {
-            e.preventDefault();
-            var consignmentID = [];
-            $('input[name="delivery_date[]"]').each(function() {
-            if(this.value == '') {
-            alert('Please enter Delivery Date');
-            exit;
-            }
-                consignmentID.push(this.value);
-            });
-            //alert(consignmentID);
-        
-        $.ajax({
-              url: "update-delivery-status",
-              headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-              type: 'POST',  
-              data:new FormData(this),
-              processData: false,
-              contentType: false,
-              beforeSend: function(){
-              
-               },
-              success: (data) => {
-                    if(data.success == true){
-                
-                        alert('Data Updated Successfully');
-                        location.reload();
-                    }
-                    else{
-                        alert('something wrong');
-                    }
-                }
-                
-        }); 
-    });	
-
-    ////////////////////////////////////////////
-    function get_delivery_date()
-{
-    $('.delivery_d').blur(function () {
-                    //  alert('hello');
-                    var consignment_id = $(this).attr('data-id');
-                    var delivery_date = $(this).val();
-                    
-                    var _token = $('input[name="_token"]').val();
-                    $.ajax({
-                    url: "update-delivery-date",
-                    method: "POST",
-                    data: { delivery_date: delivery_date,consignment_id:consignment_id, _token: _token },
-                    headers   : {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                    dataType  : 'json',
-                    success: function (result) {
-                        
-                    }
-                    })
-           });
-    }
-//////////////////////////////////Remove Lr From DRS////////////////////
-    $(document).on('click','.remover_lr', function(){
-            
-           var consignment_id = $(this).attr('data-id');
-           //alert(consignment_id);
-          
-            $.ajax({
-                type: "GET",
-                url: "remove-lr", 
-                data: {consignment_id:consignment_id},
-                //dataType: "json",
-                beforeSend:                      //reinitialize Datatables
-               function(){   
-                
-              },
-                success: function(data){
-                    var re = jQuery.parseJSON(data)
-                    if(re.success == true){
-                
-                swal('success','LR Removed Successfully','success');
-                location.reload();
-            }
-            else{
-                swal('error','something wrong','error');
-            }
-
-                   
-        } 
-        
-    });
-});
-////////////////////////////////////////////////
-$(document).on('click','#addlr', function(){
-            
-               $('#unverifiedlist').show();
-
-             $.ajax({
-                 type: "post",
-                 url: "get-add-lr", 
-                 data: {add_drs:'add_drs'},
-                 headers   : {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                 //dataType: "json",
-                 beforeSend:                      //reinitialize Datatables
-                 function(){   
-                    // $('#unverifiedlrlist').dataTable().fnClearTable();             
-                    // $('#unverifiedlrlist').dataTable().fnDestroy();
-                
-               },
-                 success: function(data){
-                    console.log(data.lrlist);
-                  
-                    $.each(data.lrlist, function(index, value) {
-
-                        $('#unverifiedlrlist tbody').append("<tr><td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="+ value.id +" style='width: 30px; height:30px;'></td><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.consigner_id + "</td><td>" + value.consignee_id + "</td><td>"+ value.consignee_district +"</td><td>"+ value.pincode +"</td><td>"+value.zone+"</td></tr>");  
-
-                    });
-         }
-
-        
-     });
- });
- ///////////////////////////////////
-                $('#add_unverified_lr').click(function () {
-                
-                var drs_no = $('#current_drs').val();
-
-                var consignmentID = [];
-                $(':checkbox[name="checked_consign[]"]:checked').each(function () {
-                    consignmentID.push(this.value);
-                });
-                //alert(consignmentID);
-
-                $.ajax({
-                    url: "add-unverified-lr",
-                    method: "POST",
-                    data: { consignmentID: consignmentID, drs_no:drs_no },
-                    headers: {
+                url: "update-edd",
+                method: "POST",
+                data: { drs_edd: drs_edd,consignment_id:consignment_id, _token: _token },
+                headers   : {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $('.disableDrs').prop('disabled', true);
+                dataType  : 'json',
+                success: function (result) {
+                    
+                }
+            })
+        });
+    }
 
-                    },
-                    complete: function (response) {
-                        $('.disableDrs').prop('disabled', true);
-                    },
-                    success: function (data) {
-                        if (data.success == true) {
-
-                            swal('success','Drs Created Successfully','success');
-                            window.location.href = "transaction-sheet";
-                        }
-                        else {
-                            swal('error','something wrong','error');
-                        }
-
-                    }
-                })
-
+    ///////////////delivery status////////////////
+    $(document).on('click','.delivery_status', function(){
+            
+        var draft_id = $(this).val(); 
+        $('#delivery').modal('show');
+          
+        $.ajax({
+            type: "GET",
+            url: "update-delivery/"+draft_id, 
+            data: {draft_id:draft_id},
+            beforeSend:                      //reinitialize Datatables
+            function(){   
+                $('#delivery_status').dataTable().fnClearTable();             
+                $('#delivery_status').dataTable().fnDestroy();
+            },
+            success: function(data){
+                var re = jQuery.parseJSON(data)
+                var consignmentID = [];
+                $.each(re.fetch, function(index, value) {
+                    var alldata = value;  
+                    consignmentID.push(alldata.consignment_no);
+                    
+                    $('#delivery_status tbody').append("<tr><td>" + value.consignment_no + "</td><td><input type='date' name='delivery_date[]' data-id="+ value.consignment_no +" class='delivery_d' value='"+ value.dd+ "'></td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");   
 
                 });
-///////////////////////////Remove Lr From The Draft//////////////////////
+                $("#drs_status").val(consignmentID);
+                get_delivery_date();
+            } 
+        });
+    });
 
-////////////////////////////////////////////////
-function catagoriesCheck(that) {
-    if (that.value == "Successful") {
-        document.getElementById("opi").style.display = "block";
-   
-    } else{
-        document.getElementById("opi").style.display = "none";
-          
+    /////////////Update Delivery Status//////////////
+    $('#update_delivery_status').submit(function(e) {
+        e.preventDefault();
+        var consignmentID = [];
+        $('input[name="delivery_date[]"]').each(function() {
+            if(this.value == '') {
+                alert('Please enter Delivery Date');
+                exit;
+            }
+            consignmentID.push(this.value);
+        });
+        $.ajax({
+            url: "update-delivery-status",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+              
+            },
+            success: (data) => {
+                if(data.success == true){
+                
+                    alert('Data Updated Successfully');
+                    location.reload();
+                }
+                else{
+                    alert('something wrong');
+                }
+            } 
+        }); 
+    });
+
+    //////////////////////////////////////
+    function get_delivery_date()
+    {
+        $('.delivery_d').blur(function () {
+            var consignment_id = $(this).attr('data-id');
+            var delivery_date = $(this).val();
+            var _token = $('input[name="_token"]').val();
+            $.ajax({
+                url: "update-delivery-date",
+                method: "POST",
+                data: { delivery_date: delivery_date,consignment_id:consignment_id, _token: _token },
+                headers   : {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType  : 'json',
+                success: function (result) {
+                    
+                }
+            })
+        });
     }
-}
-    </script>
+
+    //////////Remove Lr From DRS///////////
+    $(document).on('click','.remover_lr', function(){
+        var consignment_id = $(this).attr('data-id');          
+        $.ajax({
+            type: "GET",
+            url: "remove-lr", 
+            data: {consignment_id:consignment_id},
+            beforeSend:                      //reinitialize Datatables
+            function(){   
+            
+            },
+            success: function(data){
+                var re = jQuery.parseJSON(data)
+                if(re.success == true){
+                    swal('success','LR Removed Successfully','success');
+                    location.reload();
+                }
+                else{
+                    swal('error','something wrong','error');
+                }
+            } 
+        });
+    });
+
+    ///////////////////////////////////////
+    $(document).on('click','#addlr', function(){
+        $('#unverifiedlist').show();
+        $.ajax({
+            type: "post",
+            url: "get-add-lr", 
+            data: {add_drs:'add_drs'},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend:                      //reinitialize Datatables
+            function(){   
+                // $('#unverifiedlrlist').dataTable().fnClearTable();             
+                // $('#unverifiedlrlist').dataTable().fnDestroy();
+            },
+            success: function(data){                
+                $.each(data.lrlist, function(index, value) {
+                    $('#unverifiedlrlist tbody').append("<tr><td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="+ value.id +" style='width: 30px; height:30px;'></td><td>" + value.id + "</td><td>" + value.consignment_date + "</td><td>" + value.consigner_id + "</td><td>" + value.consignee_id + "</td><td>"+ value.consignee_district +"</td><td>"+ value.pincode +"</td><td>"+value.zone+"</td></tr>");  
+                });
+            }
+        });
+    });
+
+    ////////////////////////
+    $('#add_unverified_lr').click(function () {
+        var drs_no = $('#current_drs').val();
+        var consignmentID = [];
+        $(':checkbox[name="checked_consign[]"]:checked').each(function () {
+            consignmentID.push(this.value);
+        });
+        $.ajax({
+            url: "add-unverified-lr",
+            method: "POST",
+            data: { consignmentID: consignmentID, drs_no:drs_no },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            beforeSend: function () {
+                $('.disableDrs').prop('disabled', true);
+
+            },
+            complete: function (response) {
+                $('.disableDrs').prop('disabled', true);
+            },
+            success: function (data) {
+                if (data.success == true) {
+                    swal('success','Drs Created Successfully','success');
+                    window.location.href = "transaction-sheet";
+                }
+                else {
+                    swal('error','something wrong','error');
+                }
+            }
+        })
+    });
+    
+    ///////Remove Lr From The Draft/////////
+
+    function catagoriesCheck(that) {
+        if (that.value == "Successful") {
+            document.getElementById("opi").style.display = "block";
+        } else{
+            document.getElementById("opi").style.display = "none";
+        }
+    }
+</script>
 
 @endsection
