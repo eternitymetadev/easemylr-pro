@@ -116,7 +116,7 @@ div.relative {
                                 ?>
                                 <tr>
                                     <td>{{ $consignment['id'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment['consignment_date'] ?? "-" )}}</td>
+                                    <td>{{ Helper::ShowFormatDate($consignment['consignment_date'] ?? "-" )}}</td>
                                     <?php if(empty($consignment['order_id'])){ 
                                      if(count($consignment['consignment_items'])>0){
                                     //    echo'<pre>'; print_r($consignment['consignment_items']); die;
@@ -130,7 +130,7 @@ div.relative {
 
                                         $order[] = $orders['order_id'];
                                         $invoices[] = $orders['invoice_no'];
-                                        $inv_date[] = Helper::ShowDayMonthYear($orders['invoice_date']);
+                                        $inv_date[] = Helper::ShowFormatDate($orders['invoice_date']);
                                         $inv_amt[] = $orders['invoice_amount'];
                                     }
                                     //echo'<pre>'; print_r($order); die;
@@ -162,8 +162,8 @@ div.relative {
                                     <td>{{ $invoice['date']}}</td>
                                     <td>{{ $invoice['amt'] }}</td>
                                <?php  } else{ ?>
-                                    <td>{{ $order_item['invoices'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment['invoice_date'] ?? "-" )}}</td>
+                                    <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
+                                    <td>{{ Helper::ShowFormatDate($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                     <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
@@ -255,14 +255,14 @@ div.relative {
                        
                       if(value.invoice_date == null || value.invoice_date == '')
                       {
-                            var itm_inv = '-';
+                            var itm_invdate = '-';
                       }else{
                             var iv = value.invoice_date;
                             var inv_date = iv.split('-');
                             var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
-                            var itm_inv = invoiceDate;
+                            var itm_invdate = invoiceDate;
                       }
-                      var itm_invdate = value.invoice_date;
+                      var itm_inv = value.invoice_no;
                       var itm_amt = value.invoice_amount;
 
                     }
@@ -314,8 +314,11 @@ div.relative {
                     }
                     /////
                     var cn_date = value.consignment_date ;
-                    var arr = cn_date.split('-');
-                    var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
+                    // var arr = cn_date.split('-');
+                    // var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
+                    var getdate = new Date(cn_date).toLocaleString('de-DE',{day:'numeric', month:'short', year:'numeric'}); 
+                    my_list = getdate.split('. ')
+                    var cndate = my_list[0]+'-'+my_list[1]+'-'+my_list[2];  
                     /////////
                     if(value.vehicle_detail == null || value.vehicle_detail == ''){
                         var vehicleno = '-';

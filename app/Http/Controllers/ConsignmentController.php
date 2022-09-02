@@ -1135,8 +1135,8 @@ class ConsignmentController extends Controller
                             width: 238px;
                             margin: auto;
                         }
-                        td.C {
-                            width: 292px;
+                        td.c {
+                            width: 220px;
                         }
                         img.imgu {
                             margin-left: 58px;
@@ -1149,7 +1149,7 @@ class ConsignmentController extends Controller
                 border-collapse: collapse;
                 width: 338px;
                 height: 84px;
-                margin-left: 171px;
+                margin-left: px;
             }
                   .footer {
                position: fixed;
@@ -1258,7 +1258,8 @@ class ConsignmentController extends Controller
                         <div class="loc">
                             <table>
                                 <tr>
-                                    <td class="c" >
+
+                                    <td style="width:90px; word-break:break-all;"">
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['district'] . '</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;</div>
                                         
@@ -1295,7 +1296,7 @@ class ConsignmentController extends Controller
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
                                     <td width="30%" >
-                                        <div class="container" style="margin-top: -11px"">
+                                        <div class="container-flex">
                                         <div >
                                         <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
                                         </div>
@@ -1306,7 +1307,7 @@ class ConsignmentController extends Controller
                                         </div>
                                     </td>
                                     <td width="30%">
-                                    <div class="container">
+                                    <div class="container-flex">
                                         <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
                                         </div>
@@ -1319,7 +1320,7 @@ class ConsignmentController extends Controller
                                         </div>
                                     </td>
                                     <td width="30%">
-                                    <div class="container">
+                                    <div class="container-flex">
                                         <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
                                         </div>
