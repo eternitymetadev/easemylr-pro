@@ -434,6 +434,9 @@ jQuery(document).ready(function(){
     /*======get consigner on regional client =====*/
     $('#select_regclient').change(function(e){
         var regclient_id = $(this).val();
+        $('#select_consigner').empty();
+        $('#select_consignee').empty();
+        $('#select_ship_to').empty();
         // alert(regclient_id);
         $.ajax({
             url         : '/get-consigner-regional',
@@ -449,12 +452,19 @@ jQuery(document).ready(function(){
             },
             success:function(res){
                 //    console.log(res.data);
+                $('#consigner_address').empty();
+                $('#consignee_address').empty();
+                $('#ship_to_address').empty();
+
                 $('#select_consigner').append('<option value="">select consigner</option>');
-                   $.each(res.data, function (index, value) {
+                $('#select_consignee').append('<option value="">Select Consignee</option>');
+                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+
+                $.each(res.data, function (index, value) {
 
                     $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
               
-                 });
+                });
             }
         });
     });
