@@ -912,8 +912,9 @@ class ConsignmentController extends Controller
         $locations = Location::whereIn('id', $cc)->first();
 
         $cn_id = $request->id;
-        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
+        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
+        // echo'<pre>'; print_r($data); die;
 
         if ($data['consigner_detail']['legal_name'] != null) {
             $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
@@ -945,8 +946,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if ($data['consigner_detail']['district'] != null) {
-            $district = $data['consigner_detail']['district'] . ',';
+        if ($data['consigner_detail']['get_state'] != null) {
+            $district = $data['consigner_detail']['get_state']['name'] . ',';
         } else {
             $district = '';
         }
@@ -998,8 +999,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['district'] != null) {
-            $district = $data['consignee_detail']['district'] . ',';
+        if ($data['consignee_detail']['get_state']['name'] != null) {
+            $district = $data['consignee_detail']['get_state']['name'] . ',';
         } else {
             $district = '';
         }
@@ -1052,8 +1053,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if ($data['shipto_detail']['district'] != null) {
-            $district = $data['shipto_detail']['district'] . ',';
+        if ($data['shipto_detail']['get_state'] != null) {
+            $district = $data['shipto_detail']['get_state']['name'] . ',';
         } else {
             $district = '';
         }
@@ -1133,8 +1134,8 @@ class ConsignmentController extends Controller
                             width: 238px;
                             margin: auto;
                         }
-                        td.C {
-                            width: 292px;
+                        .width_set{
+                            width:200px;
                         }
                         img.imgu {
                             margin-left: 58px;
@@ -1256,15 +1257,14 @@ class ConsignmentController extends Controller
                         <div class="loc">
                             <table>
                                 <tr>
-                                    <td class="c" >
+                                    <td class="width_set">
                                         <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['district'] . '</b></i>&nbsp;&nbsp;<div class="vl" style="font-size: 10px;">&nbsp; &nbsp;</div>
-                                        
-                                        <!-- <hr width="1" size="20" style=" margin-left: -11px;" class="relative"/> -->
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "> &nbsp; &nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['district'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['get_state']['name'] . '</b></i><div class="vl" ></div>
+
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "><b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="width_set">
                                         <table border="1px solid" class="table3">
                                             <tr>
                                                 <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
@@ -1292,24 +1292,22 @@ class ConsignmentController extends Controller
                                 </div>
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
-                                    <td width="30%" >
-                                    <div>
+                                    <td width="30%" style="vertical-align:top; >
+                                        <div class="container">
+                                        <div>
                                         <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
                                         </div>
-                                        <div class="container">
-                                        
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$conr_add.'
                                         </p>
                                         </div>
                                     </td>
-                                    <td width="30%">
-                                    <div>
-                                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-                                        </div>
+                                    <td width="30%" style="vertical-align:top;>
                                     <div class="container">
-                                        
+                                    <div>
+                                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+                                    </div>
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$consnee_add.'
@@ -1318,12 +1316,11 @@ class ConsignmentController extends Controller
                                     </p>
                                         </div>
                                     </td>
-                                    <td width="30%">
-                                    <div>
-                                        <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
-                                        </div>
+                                    <td width="30%" style="vertical-align:top;>
                                     <div class="container">
-                                        
+                                    <div>
+                                    <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+                                    </div>
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                       '.$shiptoadd.'
