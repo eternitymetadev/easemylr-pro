@@ -849,6 +849,7 @@ class ConsignmentController extends Controller
         public function getConsignersonRegional(Request $request)
         {
             $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+            $getRegclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
            // echo'<pre>';print_r($getconsigners); die;
             
             if ($getconsigners) {
@@ -856,6 +857,7 @@ class ConsignmentController extends Controller
                 $response['success_message'] = "Consigner list fetch successfully";
                 $response['error'] = false;
                 $response['data'] = $getconsigners;
+                $response['data_regclient'] = $getRegclients;
 
             } else {
                 $response['success'] = false;
