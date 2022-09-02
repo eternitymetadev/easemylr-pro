@@ -153,7 +153,7 @@
                                     <td>{{ $invoice['date']}}</td>
                                     <td>{{ $invoice['amt'] }}</td>
                                <?php  } else{ ?>
-                                    <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                                    <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
                                     <td>{{ Helper::ShowDayMonthYear($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
@@ -242,14 +242,14 @@
                       
                       if(value.invoice_date == null || value.invoice_date == '')
                       {
-                            var itm_inv = '-';
+                            var itm_invdate = '-';
                       }else{
                             var iv = value.invoice_date;
                             var inv_date = iv.split('-');
                             var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
-                            var itm_inv = invoiceDate;
+                            var itm_invdate = invoiceDate;
                       }
-                      var itm_invdate = value.invoice_date;
+                      var itm_inv = value.invoice_no;
                       var itm_amt = value.invoice_amount;
 
                     }
