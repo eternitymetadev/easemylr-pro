@@ -274,14 +274,14 @@
                     var cn_date = value.consignment_date ;
                    var arr = cn_date.split('-');
                     var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
-                    /////
-                    if(value.consignee_detail.get_state.name == null || value.consignee_detail.get_state.name == ''){
+                    // console.log(value.consignee_detail.get_state.name);
+                    if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
                         var cnstate = '-';
                     }else{
                         var cnstate = value.consignee_detail.get_state.name;
                     }
-                    /////
-                    if(value.vehicle_detail.regn_no == null || value.vehicle_detail.regn_no == ''){
+                //    console.log(value.vehicle_detail);
+                    if(value.vehicle_detail == null || value.vehicle_detail == ''){
                         var vechile_number = '-';
                     }else{
                         var vechile_number = value.vehicle_detail.regn_no;
