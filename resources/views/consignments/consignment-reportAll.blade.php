@@ -239,12 +239,10 @@ div.relative {
                     var invamt = [];
 
                     $.each(value.consignment_items, function (key, cnitem) {
-                         
                         orderid.push(cnitem.order_id);
                         invno.push(cnitem.invoice_no);
                         invdate.push(cnitem.invoice_date);
                         invamt.push(cnitem.invoice_amount);
-
                     });
 
                     if(value.order_id == null || value.order_id == ''){
@@ -254,7 +252,16 @@ div.relative {
                       var itm_amt = invamt.join(",");
                     }else{
                       var itm_order = value.order_id;
-                      var itm_inv = value.invoice_no;
+                       
+                      if(value.invoice_date == null || value.invoice_date == '')
+                      {
+                            var itm_inv = '-';
+                      }else{
+                            var iv = value.invoice_date;
+                            var inv_date = iv.split('-');
+                            var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+                            var itm_inv = invoiceDate;
+                      }
                       var itm_invdate = value.invoice_date;
                       var itm_amt = value.invoice_amount;
 
@@ -288,13 +295,13 @@ div.relative {
                         var nodat = days;
                     }
                     //////Driver name///////
-                    if(value.driver_detail.name == null || value.driver_detail.name == ''){
+                    if(value.driver_detail == null || value.driver_detail == ''){
                         var driverName = '-';
                     }else{
                         var driverName = value.driver_detail.name;
                     }
                     ///////////Driver Number///////
-                    if(value.driver_detail.phone == null || value.driver_detail.phone == ''){
+                    if(value.driver_detail == null || value.driver_detail == ''){
                         var driverPhon = '-';
                     }else{
                         var driverPhon = value.driver_detail.phone;
@@ -310,12 +317,17 @@ div.relative {
                     var arr = cn_date.split('-');
                     var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
                     /////////
-                    if(value.vehicle_detail.regn_no == null || value.vehicle_detail.regn_no == ''){
+                    if(value.vehicle_detail == null || value.vehicle_detail == ''){
                         var vehicleno = '-';
                     }else{
                         var vehicleno = value.vehicle_detail.regn_no;
                     }
-
+                    /////////////
+                    if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
+                         var cnstate = '-';
+                    }else{
+                        var cnstate = value.consignee_detail.get_state.name;
+                    }
 
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
@@ -323,7 +335,7 @@ div.relative {
 
 
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + value.consigner_detail.get_reg_client.base_client.client_name + "</td><td>" + value.consigner_detail.get_reg_client.name + "</td><td>" + value.consigner_detail.nick_name + "</td><td>" + value.consigner_detail.city + "</td><td>" + value.consignee_detail.nick_name + "</td><td>" + value.consignee_detail.city + "</td><td>" + value.consignee_detail.postal_code + "</td><td>" + value.consignee_detail.district + "</td><td>" + value.consignee_detail.get_state.name + "</td><td>" + value.shipto_detail.nick_name + "</td><td>" + value.shipto_detail.city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + value.consigner_detail.get_reg_client.base_client.client_name + "</td><td>" + value.consigner_detail.get_reg_client.name + "</td><td>" + value.consigner_detail.nick_name + "</td><td>" + value.consigner_detail.city + "</td><td>" + value.consignee_detail.nick_name + "</td><td>" + value.consignee_detail.city + "</td><td>" + value.consignee_detail.postal_code + "</td><td>" + value.consignee_detail.district + "</td><td>" + cnstate + "</td><td>" + value.shipto_detail.nick_name + "</td><td>" + value.shipto_detail.city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
