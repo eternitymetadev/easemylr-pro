@@ -433,6 +433,7 @@ jQuery(document).ready(function(){
 
     /*======get consigner on regional client =====*/
     $('#select_regclient').change(function(e){
+        $('#items_table').find("tr:gt(1)").remove();
         var regclient_id = $(this).val();
         $('#select_consigner').empty();
         $('#select_consignee').empty();
@@ -451,7 +452,7 @@ jQuery(document).ready(function(){
                 $('#select_consigner').empty(); 
             },
             success:function(res){
-                //    console.log(res.data);
+                   console.log(res.data_regclient.is_multiple_invoice);
                 $('#consigner_address').empty();
                 $('#consignee_address').empty();
                 $('#ship_to_address').empty();
@@ -465,6 +466,18 @@ jQuery(document).ready(function(){
                     $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
               
                 });
+
+                if(res.data_regclient.is_multiple_invoice == null){
+                    var multiple_invoice = '';
+                }else{
+                    var multiple_invoice = res.data_regclient.is_multiple_invoice;
+                }
+
+                if(multiple_invoice == 1 ){
+                    $('.insert-more').attr('disabled',false);
+                }else{  
+                    $('.insert-more').attr('disabled',true);
+                }
             }
         });
     });
@@ -473,7 +486,6 @@ jQuery(document).ready(function(){
 
     /*===== get consigner address on create consignment page =====*/
     $('#select_consigner').change(function(e){
-        $('#items_table').find("tr:gt(1)").remove();
         $('#select_consignee').empty();
         $('#select_ship_to').empty();
         let consigner_id = $(this).val();
@@ -537,25 +549,6 @@ jQuery(document).ready(function(){
                     $('#consigner_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
 
                     $("#dispatch").val(res.data.city);
-
-                    if(res.data.get_reg_client.name == null){
-                        var regclient = '';
-                    }else{
-                        var regclient = res.data.get_reg_client.name;
-                    }
-                    $("#regclient").val(regclient);
-
-                    if(res.data.get_reg_client.is_multiple_invoice == null){
-                        var multiple_invoice = '';
-                    }else{
-                        var multiple_invoice = res.data.get_reg_client.is_multiple_invoice;
-                    }
-
-                    if(multiple_invoice == 1 ){
-                        $('.insert-more').attr('disabled',false);
-                    }else{  
-                        $('.insert-more').attr('disabled',true);
-                    }
 
                 }
             }

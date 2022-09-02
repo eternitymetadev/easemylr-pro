@@ -111,7 +111,7 @@
                                 ?>
                             <tr>
                                 <td>{{ $consignment['id'] ?? "-" }}</td>
-                                <td>{{ Helper::ShowDayMonthYear($consignment['consignment_date'] ?? "-" )}}</td>
+                                <td>{{ Helper::ShowFormatDate($consignment['consignment_date'] ?? "-" )}}</td>
                                 <?php if(empty($consignment['order_id'])){ 
                                      if(count($consignment['consignment_items'])>0){
                                     //    echo'<pre>'; print_r($consignment['consignment_items']); die;
@@ -266,8 +266,8 @@
                         var ddate = '-';
                     } else {
                         var ddt = value.delivery_date;
-                          var dd_date = ddt.split('-');
-                          var ddate = dd_date[2]+'-'+dd_date[1]+'-'+dd_date[0];
+                        var dd_date = ddt.split('-');
+                        var ddate = dd_date[2]+'-'+dd_date[1]+'-'+dd_date[0];
                     }
                     ////////Tat/////
                     var start = new Date(value.consignment_date);
@@ -280,9 +280,13 @@
                         var nodat = days;
                     }
                     ///////////format///////
-                    var cn_date = value.consignment_date ;
-                   var arr = cn_date.split('-');
-                    var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
+                    var cn_date = value.consignment_date;
+                    // var arr = cn_date.split('-');
+                    // var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
+                    var getdate = new Date(cn_date).toLocaleString('de-DE',{day:'numeric', month:'short', year:'numeric'}); 
+                    my_list = getdate.split('. ')
+                    var cndate = my_list[0]+'-'+my_list[1]+'-'+my_list[2]; 
+                    
                     // console.log(value.consignee_detail.get_state.name);
                     if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
                         var cnstate = '-';
