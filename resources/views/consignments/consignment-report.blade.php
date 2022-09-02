@@ -239,7 +239,16 @@
                       var itm_amt = invamt.join(",");
                     }else{
                       var itm_order = value.order_id;
-                      var itm_inv = value.invoice_no;
+                      
+                      if(value.invoice_date == null || value.invoice_date == '')
+                      {
+                            var itm_inv = '-';
+                      }else{
+                            var iv = value.invoice_date;
+                            var inv_date = iv.split('-');
+                            var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+                            var itm_inv = invoiceDate;
+                      }
                       var itm_invdate = value.invoice_date;
                       var itm_amt = value.invoice_amount;
 
