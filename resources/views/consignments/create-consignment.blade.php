@@ -522,9 +522,9 @@ span.round-tab:hover {
     // $(function() {
     //     $('.basic').selectpicker();
     // });
-    // $(document).ready(function() {
-    //     $('.insert-more').attr('disabled',true);
-    // });
+    $(document).ready(function() {
+        $('.insert-more').attr('disabled',true);
+    });
 
     jQuery(function () {
         $('.my-select2').each(function () {
