@@ -165,6 +165,7 @@ class ClientController extends Controller
      */
     public function UpdateClient(Request $request)
     {
+        // echo'<pre>'; print_r($request->all()); die;
         try { 
             DB::beginTransaction();
 
@@ -193,26 +194,24 @@ class ClientController extends Controller
                 $response['baseclientupdateduplicate_error'] = true; 
                 return response()->json($response);
             }
-            if(!empty($request->client_name)){
-                $baseclient['client_name'] = $request->client_name;
-            }
-            $savebaseclient = BaseClient::where('id',$request->baseclient_id)->update($baseclient);
-               
-            if(!empty($request->data)){              
+            $savebaseclient = BaseClient::where('id',$request->baseclient_id)->update(['client_name' => $request->client_name]);         
+            
+            if(!empty($request->data)){
                 $get_data = $request->data;
                 foreach ($get_data as $key => $save_data ) {
                     if(!empty($save_data['hidden_id'])){
-                        $updatedata['name'] = $save_data['name'];
-                        $updatedata['baseclient_id'] = (int)$request->baseclient_id;
-                        $updatedata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
+                        $updatedata['baseclient_id'] = $request->baseclient_id;
                         $updatedata['status'] = "1";
-                        $hidden_id = (int)$save_data['hidden_id'];
-                        unset($save_data['hidden_id']);
+                        $updatedata['name'] = $save_data['name'];
+                        $updatedata['location_id'] = $save_data['location_id'];
+                        $updatedata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
+                        $hidden_id = $save_data['hidden_id'];                      
                         $saveregclients = RegionalClient::where('id',$hidden_id)->update($updatedata);
+                      
                     }else{
-                        $insertdata['name'] = $save_data['name'];
-                        $insertdata['baseclient_id'] = (int)$request->baseclient_id;
+                        $insertdata['baseclient_id'] = $request->baseclient_id;
                         $insertdata['location_id'] = $save_data['location_id'];
+                        $insertdata['name'] = $save_data['name'];
                         $insertdata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $insertdata['status'] = "1";
                         unset($save_data['hidden_id']);
@@ -231,6 +230,7 @@ class ClientController extends Controller
             $response['error_message'] = $e;
             $response['success'] = false; 
         }
+
         return response()->json($response);
     }
 
