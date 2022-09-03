@@ -1380,7 +1380,7 @@ class ConsignmentController extends Controller
                               
                               </tr>
                             </table>
-                            <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40;" border="1" >';
+                            <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
                             $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
@@ -1397,7 +1397,7 @@ class ConsignmentController extends Controller
                                 <td style="width:70px "> '. $dataitem['gross_weight'] . ' Kgs.</td>
                                 
                                 </tr>';
-            }
+                              }
                             
                                 
                       $html .='      </table>
