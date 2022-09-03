@@ -111,7 +111,7 @@
                                 ?>
                             <tr>
                                 <td>{{ $consignment['id'] ?? "-" }}</td>
-                                <td>{{ Helper::ShowFormatDate($consignment['consignment_date'] ?? "-" )}}</td>
+                                <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
                                 <?php if(empty($consignment['order_id'])){ 
                                      if(count($consignment['consignment_items'])>0){
                                     //    echo'<pre>'; print_r($consignment['consignment_items']); die;
@@ -125,7 +125,7 @@
 
                                         $order[] = $orders['order_id'];
                                         $invoices[] = $orders['invoice_no'];
-                                        $inv_date[] = Helper::ShowDayMonthYear($orders['invoice_date']);
+                                        $inv_date[] = Helper::ShowDayMonthYearslash($orders['invoice_date']);
                                         $inv_amt[] = $orders['invoice_amount'];
                                     }
                                     //echo'<pre>'; print_r($order); die;
@@ -154,7 +154,7 @@
                                     <td>{{ $invoice['amt'] }}</td>
                                <?php  } else{ ?>
                                     <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYear($consignment['invoice_date'] ?? "-" )}}</td>
+                                    <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                 <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
@@ -169,8 +169,8 @@
                                 <?php } elseif ($consignment['status'] == 2) {?>
                                 <td>Unverified</td>
                                 <?php }?>
-                                <td>{{ Helper::ShowDayMonthYear($consignment['consignment_date'])}}</td>
-                                <td>{{ Helper::ShowDayMonthYear($consignment['delivery_date'])}}</td>
+                                <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'])}}</td>
+                                <td>{{ Helper::ShowDayMonthYearslash($consignment['delivery_date'])}}</td>
                                 <?php
                                 if ($consignment['delivery_status'] == 'Assigned') {?>
                                 <td>Assigned</td>
@@ -244,7 +244,7 @@
                       }else{
                             var iv = value.invoice_date;
                             var inv_date = iv.split('-');
-                            var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+                            var invoiceDate = inv_date[2]+'/'+inv_date[1]+'/'+inv_date[0];
                             var itm_invdate = invoiceDate;
                       }
                       var itm_inv = value.invoice_no;
@@ -265,7 +265,7 @@
                     } else {
                         var ddt = value.delivery_date;
                         var dd_date = ddt.split('-');
-                        var ddate = dd_date[2]+'-'+dd_date[1]+'-'+dd_date[0];
+                        var ddate = dd_date[2]+'/'+dd_date[1]+'/'+dd_date[0];
                     }
                     ////////Tat/////
                     var start = new Date(value.consignment_date);
@@ -279,11 +279,11 @@
                     }
                     ///////////format///////
                     var cn_date = value.consignment_date;
-                    // var arr = cn_date.split('-');
-                    // var cndate = arr[2]+'-'+arr[1]+'-'+arr[0]; 
-                    var getdate = new Date(cn_date).toLocaleString('de-DE',{day:'numeric', month:'short', year:'numeric'}); 
-                    my_list = getdate.split('. ')
-                    var cndate = my_list[0]+'-'+my_list[1]+'-'+my_list[2]; 
+                     var arr = cn_date.split('-');
+                     var cndate = arr[2]+'/'+arr[1]+'/'+arr[0]; 
+                    // var getdate = new Date(cn_date).toLocaleString('de-DE',{day:'numeric', month:'short', year:'numeric'}); 
+                    // my_list = getdate.split('. ')
+                    // var cndate = my_list[0]+'-'+my_list[1]+'-'+my_list[2]; 
                     
                     // console.log(value.consignee_detail.get_state.name);
                     //console.log(value.consignee_detail);
@@ -295,11 +295,31 @@
                         var cnee_district = '-';
                         var cnee_state = '-';
                     }else{
-                        var cnee_name = value.consignee_detail.nick_name;
-                        var cnee_city = value.consignee_detail.city;
-                        var cnee_pincode = value.consignee_detail.postal_code;
-                        var cnee_district = value.consignee_detail.district;
-                        var cnee_state = value.consignee_detail.get_state;
+                        if(value.consignee_detail.nick_name == null || value.consignee_detail.nick_name == ''){
+                            var cnee_name = '-';
+                        }else{
+                            var cnee_name = value.consignee_detail.nick_name;
+                        }
+                        if(value.consignee_detail.city == null || value.consignee_detail.city == ''){
+                            var cnee_city = '-';
+                        }else{
+                            var cnee_city = value.consignee_detail.city;
+                        }
+                        if(value.consignee_detail.postal_code == null || value.consignee_detail.postal_code == ''){
+                            var cnee_pincode = '-';
+                        }else{
+                            var cnee_pincode = value.consignee_detail.postal_code;
+                        }
+                        if(value.consignee_detail.district == null || value.consignee_detail.district == ''){
+                            var cnee_district = '-';
+                        }else{
+                            var cnee_district = value.consignee_detail.district;
+                        }
+                        if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
+                            var cnee_state = '-';
+                        }else{
+                            var cnee_state = value.consignee_detail.get_state;
+                        }
                     }
                     if(cnee_state == null || cnee_state == '-'){
                         var cnstate = '-';
