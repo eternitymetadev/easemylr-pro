@@ -166,8 +166,8 @@ class ClientController extends Controller
     public function UpdateClient(Request $request)
     {
         // echo'<pre>'; print_r($request->all()); die;
-        try { 
-            DB::beginTransaction();
+        // try { 
+        //     DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -225,11 +225,11 @@ class ClientController extends Controller
             $response['success_message'] = "Client Updated Successfully";
             $response['error'] = false;
             $response['redirect_url'] = $url; 
-        }catch(Exception $e) {
-            $response['error'] = false;
-            $response['error_message'] = $e;
-            $response['success'] = false; 
-        }
+        // }catch(Exception $e) {
+        //     $response['error'] = false;
+        //     $response['error_message'] = $e;
+        //     $response['success'] = false; 
+        // }
 
         return response()->json($response);
     }
