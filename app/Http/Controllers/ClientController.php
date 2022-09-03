@@ -167,7 +167,7 @@ class ClientController extends Controller
     {
         // echo'<pre>'; print_r($request->all()); die;
         try { 
-             DB::beginTransaction();
+            DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -218,13 +218,17 @@ class ClientController extends Controller
                         $saveregclients = RegionalClient::create($insertdata);
                     }
                 }
+                $url  =  URL::to($this->prefix.'/clients');
+                $response['page'] = 'client-update';
+                $response['success'] = true;
+                $response['success_message'] = "Client Updated Successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not updated client please try again";
+                $response['error'] = true;
             }
-            $url  =  URL::to($this->prefix.'/clients');
-            $response['page'] = 'client-update';
-            $response['success'] = true;
-            $response['success_message'] = "Client Updated Successfully";
-            $response['error'] = false;
-            $response['redirect_url'] = $url; 
 
             DB::commit();
         }catch(Exception $e) {
