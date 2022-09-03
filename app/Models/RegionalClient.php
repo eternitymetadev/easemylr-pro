@@ -18,4 +18,9 @@ class RegionalClient extends Model
         return $this->hasOne('App\Models\BaseClient','id','baseclient_id');
     }
 
+    public function Location()
+    {
+        return $this->belongsTo('App\Models\Location','location_id');
+    }
+
 }

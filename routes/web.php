@@ -176,9 +176,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('/sample-zone',[ImportCsvController::class, 'zoneSampleDownload']);
 
     Route::resource('clients', ClientController::class);
+    Route::get('clients-list', [ClientController::class, 'clientList']);
     Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
     Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
     Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+    Route::get('/reginal-clients/add-regclient-detail/{id}', [ClientController::class, 'createRegclientdetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
@@ -268,6 +271,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
 
     Route::resource('clients', ClientController::class);
+    Route::get('clients-list', [ClientController::class, 'clientList']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);

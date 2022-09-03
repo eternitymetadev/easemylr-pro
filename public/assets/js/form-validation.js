@@ -1431,16 +1431,42 @@ jQuery(document).ready(function(){
     });
 
     $(".location_id").each(function()
-        {
+    {
 
-            $(this).rules('add', {
-                 required: true,
-                 // lettersonly:true,
-                  messages: {
-                    required: "Please select location",
-                  },
-             });
-        });
+        $(this).rules('add', {
+                required: true,
+                // lettersonly:true,
+                messages: {
+                required: "Please select location",
+                },
+            });
+    });
+
+    // create reg client detail
+    jQuery('#createregclientdetail').validate({
+        rules:
+        {
+            from_state_id: {
+                // required: true,
+            },
+            to_state_id: {
+                // required: true,
+            },
+        },
+        messages:
+        {
+            from_state_id: {
+                required: "Please enter login id",
+            },
+            to_state_id: {
+                required: "Email address is required",
+             },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
 
     
 

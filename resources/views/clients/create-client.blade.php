@@ -144,12 +144,8 @@
 
         $('#myTable tbody').append(rows);
 
-        // $('#myTable tbody').append('<tr class="rowcls"><td><input class="form-control name" type="text" name="data['+i+'][name]"></td><td> <select class="form-control location_id" name="data['+i+'][location_id]"> <option value="">Select</option> @if(count($locations)>0)@foreach ($locations as $key => $location)<option value="{{ $key }}">{{ucwords($location)}}</option> @endforeach @endif</select></td><td><div class="check-box d-flex"><div class="checkbox radio"><label class="check-label">Yes<input type="radio" value="1" name="data['+i+'][is_muliple_invoice]" class="" checked=""></label></div><div class="checkbox radio"><label class="check-label">No<input type="radio" name="data['+i+'][is_muliple_invoice]" value="0"></label></div></div></td><td><button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button></td></tr>');
     }
     
-    // function removerow(){
-    //     $('#myTable tr:last').remove();
-    // }
     $(document).on('click', '.removeRow', function(){
         $(this).closest('tr').remove();
     });

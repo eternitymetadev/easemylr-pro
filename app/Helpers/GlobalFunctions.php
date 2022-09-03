@@ -11,6 +11,7 @@ use App\Models\Branch;
 use App\Models\Location;
 use App\Models\State;
 use App\Models\Consigner;
+use App\Models\Consignee;
 use App\Models\ConsignmentNote;
 use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
@@ -162,5 +163,21 @@ class GlobalFunctions {
         $orderId = @$transcationview->ConsignmentDetail->order_id;
         return $orderId;
     }
+
+
+    public static function regclientCoinsigner($regclient_id)
+    {
+        $totalconsigner = Consigner::where('id', $regclient_id)->count();
+        return $totalconsigner;
+    }
+
+    public static function regclientCoinsignee($regclient_id)
+    {
+        $get_consigner = Consigner::where('regionalclient_id', $regclient_id)->first();
+        $totalconsignee = Consignee::where('consigner_id', @$get_consigner->id)->count();
+        return $totalconsignee;
+    }
+
+
 
 }
