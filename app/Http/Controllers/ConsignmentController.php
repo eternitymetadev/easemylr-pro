@@ -1146,7 +1146,7 @@ class ConsignmentController extends Controller
                             }
                             .table3 {
                 border-collapse: collapse;
-                width: 338px;
+                width: 378px;
                 height: 84px;
                 margin-left: 71px;
             }

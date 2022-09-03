@@ -217,8 +217,6 @@
             success: (data) => {
             // console.log(data.fetch); return false;
                 $.each(data.fetch, function (key, value) {
-
-                    // console.log(value.consigner_detail.nick_name); return false;
                     var orderid = [];
                     var invno = [];
                     var invdate = [];
@@ -289,6 +287,7 @@
                     
                     // console.log(value.consignee_detail.get_state.name);
                     //console.log(value.consignee_detail);
+                    // =========== consignee check ========================== //
                     if(value.consignee_detail == null || value.consignee_detail == ''){
                         var cnee_name = '-';
                         var cnee_city = '-';
@@ -301,22 +300,20 @@
                         var cnee_pincode = value.consignee_detail.postal_code;
                         var cnee_district = value.consignee_detail.district;
                         var cnee_state = value.consignee_detail.get_state;
-
                     }
-
                     if(cnee_state == null || cnee_state == '-'){
                         var cnstate = '-';
                     }else{
                         var cnstate = value.consignee_detail.get_state.name;
                     }
-                //    console.log(value.vehicle_detail);
+                   // ===============End Consignee Check ================== //
+                    //console.log(value.vehicle_detail);
                     if(value.vehicle_detail == null || value.vehicle_detail == ''){
                         var vechile_number = '-';
                     }else{
                         var vechile_number = value.vehicle_detail.regn_no;
                     }
                     //////
-                    
                     if(value.consigner_detail == null || value.consigner_detail == ''){
                         var cnr_name = '-';
                         var cnr_city = '-';
