@@ -1,101 +1,202 @@
 @extends('layouts.main')
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
+  
 <style>
-    .form-seteing {
-        width: 100%;
-        margin-top: 10px;
-        height: 40px;
-        background-color: #f5f6f7;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
+         @media only screen and (max-width: 600px) {
+		.checkbox-round {
+	margin-left: 1px;
+}
+
+}
+h4{
+    font-size: 18px;
+
+}
+.form-control {
+    height: 33px;
+    padding: 0px;
+    
+}
+
+.checkbox-round {
+    width: 2.3em;
+    height: 2.3em;
+    /* / background-color: white; / */
+    border-radius: 55%;
+    /* / vertical-align: middle;  / */
+    border: 1px solid #ddd;
+    /* / appearance: none; /
+    / -webkit-appearance: none; /
+    / outline: none;  /
+    / cursor: pointer; / */
+	margin-left: 103px; 
+}
+p {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+
+th,td {
+  text-align: left;
+  padding: 8px;
+  color: black;
+}
+.cont{
+  background:white;
+  height: 240px;
+  border-style: ridge;
+  width: 390px;
+  border-radius: 17px;
+}
+.mini_container {
+    margin-top: 8px;
+}
+
+.wizard {
+    /* / margin: 20px auto; / */
+    background: #fff;
+}
+
+    .wizard .nav-tabs {
+        position: relative;
+        margin: 40px auto;
+        margin-bottom: 0;
+        /* / border-bottom-color: #e0e0e0; / */
     }
 
-    .form-group label,
-    label {
-        font-size: 12px;
-        color: black;
-        letter-spacing: 1px;
-        font-weight: bold;
+    .wizard > div.wizard-inner {
+        position: relative;
     }
 
+.connecting-line {
+    height: 2px;
+    background: #e0e0e0;
+    position: absolute;
+    width: 80%;
+   
+    top: 42%;
+  
+}
+.nav-tabs {
+    border-bottom:none;
+}
+.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
+    color: #555555;
+    cursor: default;
+    border: none;
+    /* / border-bottom-color: transparent; / */
+}
 
-    .table>thead>tr>th {
+span.round-tab {
+    width: 50px;
+    height: 50px;
+    line-height: 51px;
+    display: inline-block;
+    border-radius: 100px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    font-size: 25px;
+}
+span.round-tab i{
+    color:#555555;
+}
+.wizard li.active span.round-tab {
+    background: #fff;
+    border: 2px solid #5bc0de;
+    
+}
+.wizard li.active span.round-tab i{
+    color: #5bc0de;
+}
 
-        background: white;
+span.round-tab:hover {
+    color: #333;
+    border: 2px solid #333;
+}
 
+.wizard .nav-tabs > li {
+    width: 25%;
+}
+
+/* .wizard li:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 0;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 5px solid transparent;
+    border-bottom-color: #5bc0de;
+    transition: 0.1s ease-in-out;
+} */
+
+/* .wizard li.active:after {
+    content: " ";
+    position: absolute;
+    left: 46%;
+    opacity: 1;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 10px solid transparent;
+    border-bottom-color: #5bc0de;
+} */
+
+.wizard .nav-tabs > li a {
+    width: 48px;
+    height: 70px;
+    /* / margin: 20px auto; / */
+    border-radius: 100%;
+    padding: 0;
+}
+
+    /* .wizard .nav-tabs > li a:hover {
+        background: transparent;
+    } */
+
+/* .wizard .tab-pane {
+    position: relative;
+    padding-top: 50px;
+}
+
+.wizard h3 {
+    margin-top: 0;
+} */
+
+@media( max-width : 585px ) {
+
+    .wizard {
+        width: 90%;
+        height: auto !important;
     }
 
-    .table>thead>tr>th {
-        padding: 10px 7px 6px 8px;
+    span.round-tab {
+        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
     }
 
-    label.error {
-        color: red;
-        font-weight: bold;
+    .wizard .nav-tabs > li a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
     }
 
-    .seteing {
-        width: 130px;
-        background: #4361ee;
-        height: 40px;
-        border: none;
-        border-radius: 5px;
-        padding: 0 10px;
-        color: #fff;
+    .wizard li.active:after {
+        content: " ";
+        position: absolute;
+        left: 35%;
     }
-
-    .sete {
-        width: 170px;
-        height: 40px;
-        border: none;
-        background: #f1f2f3 !important;
-        border-radius: 5px;
-    }
-
-    .row.cuss {
-        box-shadow: 1px 0px 9px 1px #3b3f5c;
-        width: 100%;
-        margin: 0 auto;
-    }
-
-    .cusright {
-        min-height: 203px;
-        box-shadow: -7px 0px 6px -8px #000;
-    }
-
-    .cuss span {
-        margin-bottom: 0px !important;
-    }
-
-    .row.cuss {
-        box-shadow: 1px 0px 7px 1px #3b3f5c4f;
-        width: 100%;
-        margin: 0 auto;
-    }
-
-    .select2-container .select2-selection--single .select2-selection__rendered {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        border: none;
-        color: #3b3f5c !important; 
-        font-size: 15px;
-        padding: 8px 10px;
-        letter-spacing: 1px;
-        background-color: #f1f2f3 !important;
-        height: calc(1.4em + 1.4rem + 2px);
-        / padding: 0.75rem 1.25rem;/ border-radius: 6px;
-        box-shadow: none;
-        height: 40px;
-    }
-
-    .row.cuss.fuss {
-        padding: 15px 0;
-    }
-
-    .select2-results__options {
+}
+/* / ////////////////////////////////////////////////////////////////////end wizard / */
+        .select2-results__options {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -105,378 +206,315 @@
     }
 </style>
 <div class="layout-px-spacing">
-    <div class="row layout-top-spacing">
-        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-            <div class="page-header">
-                <nav class="breadcrumb-one" aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{$prefix.'/consignments'}}">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Consignment</a></li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="widget-content widget-content-area br-6">
-                <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}"
-                    id="createconsignment" style="margin: auto; ">
-                    <input type="hidden" id="regclient_id" name="regclient_id" value="">
-                    <div class="row cuss">
-                        <div class="col-sm-4">
-                            <div class="panel info-box panel-white">
-                                <div class="panel-body" style="padding: 10px;">
-                                    <div class="row con1" style="background: white; padding: 0px;">
-                                        <div class=" col-sm-3" style="margin-top:3px;">
-                                            <label class=" control-label" style="font-weight: bold;">Select
-                                                Consignor<span class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col-sm-9" style="margin-top:3px;">
-                                            <select id="select_consigner" class="my-select2 form-seteing" type="text"
-                                                name="consigner_id">
-                                                <option value="">Select Consignor</option>
-                                                @foreach($consigners as $consigner)
-                                                <option value="{{$consigner->id}}">{{$consigner->nick_name}}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="container" style="padding-top:10px">
-                                            <div id="consigner_address">
-                                                <!-- <strong>FRONTIER AGROTECH PRIVATE LIMITED </strong><br/>KHASRA NO-390, RELIANCE ROAD <br/>GRAM BHOVAPUR <br/>HAPUR-245304 <br/><strong>GST No. : </strong>09AACCF3772B1ZU<br/><strong>Phone No. : </strong>9115115612 -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment" style="margin: auto; ">
+        <div class="row">
+            <div class="col-lg-12 layout-spacing">
+            <!-- <div class="row">
+                            <div class="col-sm-8">
+                                        
+                                            <div class="wizard" style="width: 762px; MARGIN-TOP:-25PX;">
+                                                <div class="wizard-inner">
+                                                    <div class="connecting-line"></div>
+                                                    <ul class="nav nav-tabs" role="tablist">
 
-                        </div>
-                        <div class=" col-sm-4">
-                            <div class="panel info-box panel-white">
-                                <div class="panel-body" style="padding: 10px;">
-                                    <div class="row con1 form-group" style="background: white; ">
-                                        <div class=" col-sm-3">
-                                            <label class=" control-label" style="font-weight: bold;">Select
-                                                Consignee<span class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <select class="my-select2 form-seteing" type="text" name="consignee_id"
-                                                id="select_consignee">
-                                                <option value="">Select Consignee</option>
+                                                        <li role="presentation" class="aa">
+                                                            <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1">
+                                                                <span class="round-tab">
+                                                                <i class="fa-solid fa-truck-fast"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
 
-                                            </select>
-                                        </div>
-                                        <div class="container" style="padding-top:10px">
-                                            <div id="consignee_address">
+                                                        <li role="presentation" class="bb" >
+                                                            <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2">
+                                                                <span class="round-tab">
+                                                                <i class="fa-solid fa-truck-fast"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                        <li role="presentation" class="cc">
+                                                            <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3">
+                                                                <span class="round-tab">
+                                                                <i class="fa-solid fa-truck-fast"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class=" col-sm-4">
-                            <div class="panel info-box panel-white">
-                                <div class="panel-body" style="padding: 10px;">
-                                    <div class="row con1 form-group" style="background: white; ">
-                                        <div class=" col-sm-3" style="margin-top:2px;">
-                                            <label class=" control-label" style="font-weight: bold;">Ship To<span
-                                                    class="text-danger">*</span></label>
-                                        </div>
-                                        <div class="col-sm-9" style="margin-top:2px;">
-                                            <select class="my-select2 form-seteing" type="text" name="ship_to_id"
-                                                id="select_ship_to">
-                                                <option value="">Select Ship To</option>
-
-                                            </select>
-                                        </div>
-                                        <div class="container" style="padding-top:11px">
-                                            <div id="ship_to_address">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Row -->
-                    <div class="row mb-4 cuss">
-                        <div class=" col-sm-6">
-                            <div class="panel info-box panel-white">
-                                <div class="panel-body">
-                                    <div class="row con1 form-group" style="background: white; height: 188px; ">
-                                        <div class=" col-sm-12" style="margin-top: 7px;">
-                                            <div class="row">
-                                            </div>
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:10px;">
-                                                    <label for="exampleFormControlInput2">Consignment Date</label>
+                                                        <li role="presentation" class="dd">
+                                                            <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
+                                                                <span class="round-tab">
+                                                                    <i class="glyphicon glyphicon-ok"></i>
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
                                                 </div>
-                                                <div class=" col-sm-8" style="margin-top:2px;">
-                                                    <input type="date" class="form-seteing date-picker" id="consignDate"
-                                                        name="consignment_date" placeholder=""
-                                                        value="<?php echo date('d-m-Y'); ?>">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:10px;">
-                                                    <label for="exampleFormControlInput2">Dispatch From</label>
-                                                </div>
-                                                <div class=" col-sm-8" style="margin-top:2px;">
-                                                    <input type="text" class="form-seteing" id="dispatch"
-                                                        name="dispatch" value="" placeholder="" readonly
-                                                        style="border:none;">
-                                                </div>
-                                            </div>
+                                           
+                                        </div> -->
 
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:10px;">
-                                                    <label for="exampleFormControlInput2">Regional Client</label>
-                                                </div>
-                                                <div class=" col-sm-8" style="margin-top:2px;">
-                                                    <input type="text" class="form-seteing" id="regclient"
-                                                        name="regclient" value="" placeholder="" readonly
-                                                        style="border:none;">
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- .////////////////////////////////////////////// -->
-                        <div class=" col-sm-6 cusright" style="margin-bottom:10px;">
-
-                            <div class="panel info-box panel-white">
-                                <div class="panel-body">
-
-                                    <div class="row con1 form-group" style="background: white; height: 188px;">
-                                        <div class=" col-sm-12" style="margin-top:2px;">
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:10px;">
-                                                    <label for="exampleFormControlInput2">Vehicle No.</label>
-                                                </div>
-                                                <div class=" col-sm-8" style="margin-top:10px;">
-                                                    <select class="my-select2 js-states vehicle form-seteing"
-                                                        id="vehicle_no" name="vehicle_id" tabindex="-1">
-                                                        <option value="">Select vehicle no</option>
-                                                        @foreach($vehicles as $vehicle)
-                                                        <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                                                        </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:15px;">
-                                                    <label for="exampleFormControlInput2">EDD</label>
-                                                </div>
-                                                <div class="col-sm-8" style="margin-top:2px;">
-                                                    <input type="date" class="form-seteing" id="edd" name="edd" value="" placeholder="" style="border:none;">
-                                                    <!-- <p class="edd_error text-danger" style="display: none; color: #ff0000; font-weight: 500;">Please enter edd </p> -->
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class=" col-sm-4" style="margin-top:15px;">
-                                                    <label for="exampleFormControlInput2">Driver Name</label>
-                                                </div>
-                                                <div class="col-sm-8" style="margin-top:10px;">
-                                                    <select class="my-select2 form-seteing" id="driver_id" name="driver_id" tabindex="-1">
-                                                    <option value="">Select driver</option>
-                                                    @foreach($drivers as $driver)
-                                                    <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
-                                                        '-'}}
-                                                    </option>
-                                                    @endforeach
-                                                </select>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div><!-- Row -->
+                <!-- ---------------------------- -->
+                <div class="widget-header">
                     <div class="row">
-                        <div class="col-sm-12">
-                            <div style="overflow-x:auto; background-color: white;">
-                                <table id="items_table" class="table table-striped primary-items">
-                                    <tbody>
-                                        <tr></tr>
-                                        <tr>
-                                            <td>
-                                                <div class="srno">1</div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Description</label>
-                                                    <input type="text" class="form-control seteing sel1" id="description-1" value="Pesticide" name="data[1][description]" list="json-datalist" onkeyup="showResult(this.value)">
-                                                    <datalist id="json-datalist"></datalist>
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>Order Id</label>
-                                                    <input type="text" class="form-control seteing orderid" value="" name="data[1][order_id]">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Mode of packing</label>
-                                                    <input type="text" class="form-control seteing mode" id="mode-1" value="Case/s" name="data[1][packing_type]">
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>Invoice no</label>
-                                                    <input type="text" class="form-control seteing invc_no" value="" name="data[1][invoice_no]">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Quantity</label>
-                                                    <input type="number" class="form-control seteing qnt" value="" name="data[1][quantity]">
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>Invoice Date</label>
-                                                    <input type="date" class="form-control seteing invc_date" value="" name="data[1][invoice_date]">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Net Weight</label>
-                                                    <input type="number" class="form-control seteing net" value="" name="data[1][weight]">
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>Invoice Amount</label>
-                                                    <input type="number" class="form-control seteing invc_amt" value="" name="data[1][invoice_amount]">
-                                                </div>
-                                            </td>
+                        <div class="col-sm-12 ">
+                            <h4><b>Bill To Information</b></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <div class="row">
+                        <div class=" col-sm-4 ">
+                            <p>Select Bill to Client</p>
+                            <select class="form-control form-small my-select2" id="select_regclient" name="regclient_id">
+                                <option selected="selected" disabled>select client..</option>
+                                @foreach($regionalclient as $client)
+                                <option value="{{$client->id}}">{{$client->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class=" col-sm-2 ">
+                            <p>Payment Term</p>
+                            <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type">
+                                <option value="To be Billed" selected="selected">To be Billed</option>
+                                <option value="To Pay">To Pay</option>
+                                <option value="Paid">Paid</option> 
+                            </select>
+                        </div>
+                        <div class=" col-sm-2 ">
+                            <p>Freight</p>
+                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight">
+                        </div>
+                    </div>
+                </div>
+              <!-- </div> --> 
+                <input type="hidden" class="form-seteing date-picker" id="consignDate" name="consignment_date" placeholder="" value="<?php echo date('d-m-Y'); ?>">
+                <!-- <div class="col-sm-4">
+                        <div id="googleMap"  style="width:98%; height:201px; background:#e1e1e8; margin-top: 19px;"></div>
+                    </div>
+                </div> -->
+            </div>
 
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Gross Weight</label>
-                                                    <input type="number" class="form-control seteing gross" value="" name="data[1][gross_weight]">
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>E Way Bill</label>
-                                                    <input type="number" class="form-control seteing ew_bill" value="" name="data[1][e_way_bill]">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="form-group">
-                                                    <label>Payment Terms</label>
-                                                    <select class="form-control seteing term" name="data[1][payment_type]">
-                                                        <option value="To be Billed">To be Billed</option>
-                                                        <option value="To Pay">To Pay</option>
-                                                        <option value="Paid">Paid</option>
-                                                    </select>
-                                                    <!-- <label>Freight</label>
-                                                <input type="text" class="form-control seteing frei" value=""
-                                                name="data[1][freight]"> -->
-                                                </div>
-                                                <div class="form-group mt-2">
-                                                    <label>E Way Bill Date</label>
-                                                    <input type="date" class="form-control seteing ewb_date" value=""
-                                                        name="data[1][e_way_bill_date]">
-                                                </div>
-                                            </td>
-                                            <td> <button type="button" class="btn btn-default btn-rounded insert-more">
-                                                    + </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+            <div class="col-lg-12 layout-spacing">
+
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <h4><b>Pickup and Drop Information</b></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <div class="row">
+                        <div class="col-sm-4 ">
+                            <p>Select Pickup Location (Consigner)</p>
+                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text"
+                                        name="consigner_id">
+                            <option value="">Select Consignor</option>
+                                        <!-- @foreach($consigners as $consigner)
+                                        <option value="{{$consigner->id}}">{{$consigner->nick_name}}
+                                        </option>
+                                        @endforeach -->
+                            </select>
+                            <div id="consigner_address">
+                                    </div>
+
+                        </div>
+                        
+                        <div class="col-sm-4 ">
+                            <p>Select Drop location (Bill To Consignee)</p>
+                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id"
+                                        id="select_consignee">
+                                        <option value="">Select Consignee</option>
+                            </select>
+                            <div id="consignee_address">
+
+                                    </div>
+                        </div>
+                        <!-- <div class="col-sm-3 ">
+                                <p style="margin-left: 60px;">Different Ship To Location </p>
+                                <input type="checkbox" class="checkbox-round" />
+
+                                </div> -->
+                        <div class="col-sm-4 ">
+                            <p>Select Drop Location (Ship To Consignee)</p>
+                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="ship_to_id"  id="select_ship_to">
+                            <option value="">Select Ship To</option>
+                            </select>
+                            <div id="ship_to_address">
+
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-12 layout-spacing">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <h4><b>Order Information</b></h4>
+                        </div>
+                    </div>
+                </div>
+                <table border="1" width="100%">
+                    <div class="row">
+                        <tr>
+                            <th>Item Description</th>
+                            <th>Mode of packing</th>
+                            <th>Total Quantity</th>
+                            <th>Total Net Weight</th>
+                            <th>Total Gross Weight</th>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
+                            <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                            <td align="center"><span id="tot_qty">
+                                    <?php echo "0";?>
+                                </span></td>
+                            <td align="center"><span id="tot_nt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.</td>
+                            <td align="center"><span id="tot_gt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.</td>
+
+                            <input type="hidden" name="total_quantity" id="total_quantity" value="">
+                            <input type="hidden" name="total_weight" id="total_weight" value="">
+                            <input type="hidden" name="total_gross_weight" id="total_gross_weight" value="">
+                            <input type="hidden" name="total_freight" id="total_freight" value="">
+                            <!-- <td><input type="number" class="form-control form-small" name="total_quantity"></td>
+                            <td><input type="number" class="form-control form-small" name="total_weight"></td>
+                            <td><input type="number" class="form-control form-small" name="total_gross_weight"></td> -->
+                        </tr>
+                    </div>
+                </table>
+
+            </div>
+            <div class="col-lg-12 layout-spacing">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <div style="overflow-x:auto;">
+                                <table>
+                                    <tr>
+                                        <th style="width: 160px">Order ID</th>
+                                        <th style="width: 180px">Invoice Number</th>
+                                        <th style="width: 160px">Invoice Date</th>
+                                        <th style="width: 180px">Invoice Amount</th>
+                                        <th style="width: 210px">E-way Bill Number</th>
+                                        <th style="width: 200px">E-Way Bill Date</th>
+                                        <th style="width: 160px">Quantity</th>
+                                        <th style="width: 160px">Net Weight</th>
+                                        <th style="width: 160px">Gross Weight</th>
+
+                                    </tr>
                                 </table>
-
-
-                                <table id="items_table2" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th width="5%"></th>
-                                            <th width="20%"></th>
-                                            <th width="10%"></th>
-                                            <th width="10%"></th>
-                                            <th width="10%"></th>
-                                            <th width="10%"></th>
-                                            <th width="10%"></th>
-                                            <th width="15%"></th>
-                                            <th width="10%"></th>
-                                        </tr>
-                                    </thead>
+                                <table style=" border-collapse: collapse;" border='1' id="items_table" >
                                     <tbody>
-                                        <input type="hidden" name="total_quantity" id="total_quantity" value="">
-                                        <input type="hidden" name="total_weight" id="total_weight" value="">
-                                        <input type="hidden" name="total_gross_weight" id="total_gross_weight" value="">
-                                        <input type="hidden" name="total_freight" id="total_freight" value="">
-
+                                <tr></tr>
                                         <tr>
-                                            <th scope="row" colspan="2">TOTAL</th>
-                                            <td align="center"><span id="tot_qty">
-                                                    <?php echo "0";?>
-                                                </span></td>
-                                            <td align="center"><span id="tot_nt_wt">
-                                                    <?php echo "0";?>
-                                                </span> Kgs.</td>
-                                            <td align="center"><span id="tot_gt_wt">
-                                                    <?php echo "0";?>
-                                                </span> Kgs.</td>         
-                                            <td></td>
+                                            <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
+                                            <td><input type="text" class="form-control form-small invc_no" name="data[1][invoice_no]"></td>
+                                            <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                            <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
+                                            <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
+                                            <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                            <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
+                                            <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
+                                            <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
+                                            <td> <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="row cuss fuss" style="margin-top: 15px;">
-                        <div class=" col-sm-1">
-                            <label for="exampleFormControlInput2">Vendor <br>Name<span
-                                    class="text-danger">*</span></label>
+            </div>
+            <div class="col-lg-12 layout-spacing">
+
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <h4><b>vehicle Information </b></h4>
                         </div>
-                        <div class=" col-sm-2">
-                            <input type="text" class="sete" id="Transporter" name="transporter_name" value="">
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <div class="row">
+                        <div class=" col-sm-4 ">
+                            <p>vehicle Number</p>
+                            <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                            <option value="">Select vehicle no</option>
+                            @foreach($vehicles as $vehicle)
+                            <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                            </option>
+                            @endforeach
+                            </select>
                         </div>
-                        <div class=" col-sm-1">
-                            <label for="exampleFormControlInput2">Vehicle Type<span class="text-danger">*</span></label>
+                        <div class=" col-sm-3 ">
+                            <p>Driver Name</p>
+                            <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
+                            <option value="">Select driver</option>
+                            @foreach($drivers as $driver)
+                            <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                '-'}}
+                            </option>
+                            @endforeach
+                            </select>
                         </div>
-                        <div class=" col-sm-2">
+                        <div class=" col-sm-3 ">
+                            <p>EDD</p>
+                            <Input type="date" class="form-control form-small" style="width: 160px; height: 43px;" name="edd">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-12 layout-spacing">
+
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <input type="checkbox" id="chek" style="margin-left:19px;">
+                            <label for="vehicle1">Vehical Purchase Information</label><br>
+                        </div>
+                    </div>
+                </div>  
+                <div class="widget-content" style="display:none;" id="veh">
+                    <div class="row">
+                        <div class=" col-sm-4 ">
+                            <p>Vendor Name</p>
+                            <Input type="text" class="form-control form-small" name="transporter_name" style="height: 43px;">
+                        </div>
+                        <div class=" col-sm-3 ">
+                            <p>Vehicle Type</p>
+                            
                             <select class="my-select2 sete" id="vehicle_type" name="vehicle_type" tabindex="-1">
-                                <option value="">Select vehicle type</option>
+                            <option value="">Select vehicle type</option>
                                 @foreach($vehicletypes as $vehicle)
                                 <option value="{{$vehicle->id}}">{{$vehicle->name}}
                                 </option>
                                 @endforeach
-                            </select>
+                                </select>
                         </div>
-                        
-                        <div class=" col-sm-1">
-                            <label for="exampleFormControlInput2">Purchase Price</label>
+                        <div class=" col-sm-2 ">
+                            <p>Purchase Price</p>
+                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="purchase_price">
                         </div>
-                        <div class=" col-sm-2">
-                            <input type="text" class="sete" id="purchase_price" name="purchase_price" value=""
-                                maxlength="9">
-                        </div>
+                    </div>
+                    
+                </div>
+                <div class=" col-sm-3">
+                    <button type="submit" class="mt-2 btn btn-primary disableme">Submit</button>
 
-                        <div class=" col-sm-1">
-                            <label for="exampleFormControlInput2">Freight</label>
-                        </div>
-                        <div class=" col-sm-2">
-                            <input type="text" class="sete" id="Transporter" name="transporter_name" value="">
-                        </div>
-
-                        <div class=" col-sm-3">
-                            <button type="submit" class="mt-2 btn btn-primary disableme">Submit</button>
-
-                            <a class="mt-2 btn btn-primary" href="{{url($prefix.'/consignments') }}"> Back</a>
-                        </div>
-                    </div><!-- Row -->
-                </form>
+                    <a class="mt-2 btn btn-primary" href="{{url($prefix.'/consignments') }}"> Back</a>
+                </div>
             </div>
-
         </div>
-    </div>
-</div>
+    </form>
+    <!-- widget-content-area -->
 
 @endsection
 @section('js')
@@ -523,5 +561,19 @@
         }
     }
 
+    $('#chek').click(function () {
+        $('#veh').toggle();
+    });
+
+    function myMap() {
+var mapProp= {
+  center:new google.maps.LatLng(51.508742,-0.120850),
+  zoom:5,
+};
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+
+ 
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script> 
 @endsection

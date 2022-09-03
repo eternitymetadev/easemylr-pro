@@ -13,6 +13,7 @@ use App\Models\State;
 use App\Models\Consigner;
 use App\Models\Consignee;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use URL;
@@ -89,6 +90,16 @@ class GlobalFunctions {
         }
         return $changeformat;
     }
+    //////format 10/07/2000
+    public static function ShowDayMonthYearslash($date){
+
+        if(!empty($date)){
+        $changeformat = date('d/m/Y',strtotime($date));
+        }else{
+        $changeformat = '-';
+        }
+        return $changeformat;
+    }
 
     // function for get random unique number //
     public static function random_number($length_of_number)
@@ -149,9 +160,9 @@ class GlobalFunctions {
     public static function oldnewLr($drs_number)
     {
         $transcationview = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $drs_number)->first();
-        $orderId = $transcationview->ConsignmentDetail->order_id;
+        $orderId = @$transcationview->ConsignmentDetail->order_id;
         return $orderId;
-     }
+    }
 
 
     public static function regclientCoinsigner($regclient_id)

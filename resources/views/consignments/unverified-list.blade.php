@@ -123,9 +123,8 @@ div.relative {
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
-    
 
-    ///// check box checked lead page
+    ///// check box checked unverified lr page
     jQuery(document).on('click','#ckbCheckAll',function(){
         if(this.checked){
             jQuery('#create_edd').prop('disabled', false);

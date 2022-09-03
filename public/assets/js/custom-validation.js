@@ -431,9 +431,65 @@ jQuery(document).ready(function(){
     }
     /*===== End get driver detail on create vehicle page =====*/
 
+    /*======get consigner on regional client =====*/
+    $('#select_regclient').change(function(e){
+        $('#items_table').find("tr:gt(1)").remove();
+        var regclient_id = $(this).val();
+        $('#select_consigner').empty();
+        $('#select_consignee').empty();
+        $('#select_ship_to').empty();
+        // alert(regclient_id);
+        $.ajax({
+            url         : '/get-consigner-regional',
+            type        : 'get',
+            cache       : false,
+            data        :  {regclient_id:regclient_id},
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            beforeSend : function(){
+                $('#select_consigner').empty(); 
+            },
+            success:function(res){
+                // console.log(res.data_regclient.is_multiple_invoice);
+                $('#consigner_address').empty();
+                $('#consignee_address').empty();
+                $('#ship_to_address').empty();
+
+                $('#select_consigner').append('<option value="">select consigner</option>');
+                $('#select_consignee').append('<option value="">Select Consignee</option>');
+                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+
+                $.each(res.data, function (index, value) {
+
+                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
+              
+                });
+
+                if(res.data_regclient == null){
+                    var multiple_invoice = '';
+                }else{
+                    if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
+                    var multiple_invoice = '';
+                    }else{
+                        var multiple_invoice = res.data_regclient.is_multiple_invoice;
+                    }
+                }
+
+                if(multiple_invoice == 1 ){
+                    $('.insert-more').attr('disabled',false);
+                }else{  
+                    $('.insert-more').attr('disabled',true);
+                }
+            }
+        });
+    });
+
+
+
     /*===== get consigner address on create consignment page =====*/
     $('#select_consigner').change(function(e){
-        $('#items_table').find("tr:gt(1)").remove();
         $('#select_consignee').empty();
         $('#select_ship_to').empty();
         let consigner_id = $(this).val();
@@ -497,25 +553,6 @@ jQuery(document).ready(function(){
                     $('#consigner_address').append(address_line1+' '+address_line2+''+address_line3+' '+address_line4+' '+gst_number+' '+phone+'');
 
                     $("#dispatch").val(res.data.city);
-
-                    if(res.data.get_reg_client.name == null){
-                        var regclient = '';
-                    }else{
-                        var regclient = res.data.get_reg_client.name;
-                    }
-                    $("#regclient").val(regclient);
-
-                    if(res.data.get_reg_client.is_multiple_invoice == null){
-                        var multiple_invoice = '';
-                    }else{
-                        var multiple_invoice = res.data.get_reg_client.is_multiple_invoice;
-                    }
-
-                    if(multiple_invoice == 1 ){
-                        $('.insert-more').attr('disabled',false);
-                    }else{  
-                        $('.insert-more').attr('disabled',true);
-                    }
 
                 }
             }
@@ -665,36 +702,23 @@ jQuery(document).ready(function(){
         
         $("#items_table").each(function() {
             
-            var tds = '<tr>';
             var item_no = $('tr', this).length;
-            tds += '<td><div class="srno">'+item_no+'</div></td>';
-            tds += '<td><div class="form-group"><label>Description</label><input type="text" class="form-control seteing sel1" id="description'+item_no+'" value="Pesticides" name="data['+item_no+'][description]" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></div>';
-            tds += '<div class="form-group mt-2"><label>Order Id</label>';
-            tds += '<input type="text" class="form-control seteing orderid" name="data['+item_no+'][order_id]"></div></td>';
-
-            tds += '<td><div class="form-group"><label>Mode of packing</label><input type="text" class="form-control seteing mode" id="mode'+item_no+'" value="Case/s" name="data['+item_no+'][packing_type]"></div>';
-            tds += '<div class="form-group mt-2"><label>Invoice no</label>';
-            tds += '<input type="text" class="form-control seteing invc_no" name="data['+item_no+'][invoice_no]"></div></td>';
-
-            tds += '<td><div class="form-group"><label>Quantity</label><input type="number" class="form-control seteing qnt" name="data['+item_no+'][quantity]"></div>';
-            tds += '<div class="form-group mt-2"><label>Invoice Date</label>';
-            tds += '<input type="date" class="form-control seteing invc_date" name="data['+item_no+'][invoice_date]"></div></td>';
-
-            tds += '<td><div class="form-group"><label>Net Weight</label> <input type="number" class="form-control seteing net" name="data['+item_no+'][weight]"></div>';
-            tds += '<div class="form-group mt-2"><label>Invoice Amount</label>';
-            tds += '<input type="number" class="form-control seteing invc_amt" name="data['+item_no+'][invoice_amount]"></div></td>';
-
-            tds += '<td><div class="form-group"><label>Gross Weight</label> <input type="number" class="form-control seteing gross" name="data['+item_no+'][gross_weight]"></div>';
-            tds += '<div class="form-group mt-2"><label>E Way Bill</label>';
-            tds += '<input type="number" class="form-control seteing ew_bill" name="data['+item_no+'][e_way_bill]"></div></td>';
-
-            tds += '<td><div class="form-group"><label>Payment Terms</label> <select class="form-control seteing term" name="data['+item_no+'][payment_type]"><option value="To be Billed">To be Billed</option><option value="To Pay">To Pay</option><option value="Paid">Paid</option></select></div>';
-            tds += '<div class="form-group mt-2"><label>E Way Bill Date</label>';
-            tds += ' <input type="date" class="form-control seteing ewb_date" name="data['+item_no+'][e_way_bill_date]"></div></td>';
-
+            if(item_no <=6){
+            var tds = '<tr>';
+            
+            tds += ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
+            tds += '<td><input type="text" class="form-control form-small invc_no" name="data['+item_no+'][invoice_no]" value=""></td>';
+            tds += '<td><input type="date" class="form-control form-small invc_date" name="data['+item_no+'][invoice_date]"></td>';
+            tds += '<td><input type="number" class="form-control form-small invc_amt" name="data['+item_no+'][invoice_amount]"></td>';
+            tds += '<td><input type="number" class="form-control form-small ew_bill" name="data['+item_no+'][e_way_bill]"></td>';
+            tds += '<td><input type="date" class="form-control form-small ewb_date" name="data['+item_no+'][e_way_bill_date]"></td>';
+            tds += '<td><input type="number" class="form-control form-small qnt" name="data['+item_no+'][quantity]"></td>';
+            tds += '<td><input type="number" class="form-control form-small net" name="data['+item_no+'][weight]"></td>';
+            tds += '<td><input type="number" class="form-control form-small gross" name="data['+item_no+'][gross_weight]"></td>';
             tds += '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
             tds += '</tr>';
-            
+            }
+                        
             if ($('tbody', this).length > 0) {
                 $('tbody', this).append(tds);
             } else {
@@ -1413,4 +1437,8 @@ function get_delivery_date()
                     }
                 }); 
             });	
+
+
+
+       
        
