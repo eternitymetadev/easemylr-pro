@@ -92,6 +92,7 @@ div.relative {
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
                                     <th>Vehicle No</th>
+                                    <th>Transporter Name</th>
                                     <th>Boxes</th>
                                     <th>Net Weight</th>
                                     <th>Gross Weight</th>
@@ -167,6 +168,7 @@ div.relative {
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                     <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
+                                    <td>{{ $consignment['transporter_name'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_weight'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
@@ -325,20 +327,53 @@ div.relative {
                     }else{
                         var vehicleno = value.vehicle_detail.regn_no;
                     }
+                    //////////////////////////
+                    if(value.consigner_detail == null || value.consigner_detail == ''){
+                        var cnr_base_client = '-';
+                        var cnr_reg_client = '-';
+                        var cnr_name = '-';
+                        var cnr_city = '-';
+                    }else{
+                        var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
+                        var cnr_reg_client = value.consigner_detail.get_reg_client.name;
+                        var cnr_name = value.consigner_detail.nick_name;
+                        var cnr_city = value.consigner_detail.city;
+                    }
+                    /////////////Consignee check /////////
+                    if(value.consignee_detail == null || value.consignee_detail == ''){
+                        var cnee_name = '-';
+                        var cnee_city = '-';
+                        var cnee_pincode = '-';
+                        var cnee_district = '-';
+                        var cnee_state = '-';
+                    }else{
+                        var cnee_name = value.consignee_detail.nick_name;
+                        var cnee_city = value.consignee_detail.city;
+                        var cnee_pincode = value.consignee_detail.postal_code;
+                        var cnee_district = value.consignee_detail.district;
+                        var cnee_state = value.consignee_detail.get_state;
+                    }
                     /////////////
-                    if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
+                    if(cnee_state == null || cnee_state == '-'){
                          var cnstate = '-';
                     }else{
                         var cnstate = value.consignee_detail.get_state.name;
+                    }
+                    ////////consignee check end================================
+                    ////ship to detail check
+                    if(value.shipto_detail == null || value.shipto_detail == ''){
+                        var ship_name = '-';
+                        var ship_city = '-';
+                    }else{
+                        var ship_name = value.shipto_detail.nick_name;
+                        var ship_city = value.shipto_detail.city;
                     }
 
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
                     // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
 
-
-
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + value.consigner_detail.get_reg_client.base_client.client_name + "</td><td>" + value.consigner_detail.get_reg_client.name + "</td><td>" + value.consigner_detail.nick_name + "</td><td>" + value.consigner_detail.city + "</td><td>" + value.consignee_detail.nick_name + "</td><td>" + value.consignee_detail.city + "</td><td>" + value.consignee_detail.postal_code + "</td><td>" + value.consignee_detail.district + "</td><td>" + cnstate + "</td><td>" + value.shipto_detail.nick_name + "</td><td>" + value.shipto_detail.city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + value.transporter_name + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
@@ -349,7 +384,7 @@ div.relative {
                         buttons: [
                             // { extend: 'copy', className: 'btn btn-sm' },
                             // { extend: 'csv', className: 'btn btn-sm' },
-                            { extend: 'excel', className: 'btn btn-sm' },
+                            { extend: 'excel', className: 'btn btn-sm' ,title: '', },
                             // { extend: 'print', className: 'btn btn-sm' }
                         ]
                     },

@@ -452,7 +452,7 @@ jQuery(document).ready(function(){
                 $('#select_consigner').empty(); 
             },
             success:function(res){
-                   console.log(res.data_regclient.is_multiple_invoice);
+                //console.log(res.data_regclient.is_multiple_invoice);
                 $('#consigner_address').empty();
                 $('#consignee_address').empty();
                 $('#ship_to_address').empty();
