@@ -1102,6 +1102,7 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
 
@@ -1127,11 +1128,12 @@ class ConsignmentController extends Controller
                         @media screen and (max-width: 600px) {
                         }
                         img {
-                            width: 105px;
+                            width: 120px;
+                            height: 60px;
                         }
                         .a {
                             width: 290px;
-                            font-size: 10px;
+                            font-size: 11px;
                         }
                         td.b {
                             width: 238px;
@@ -1220,6 +1222,9 @@ class ConsignmentController extends Controller
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
                                 </td>
+                                <td class="a">
+						<img src="'.$pay.'" />
+					            </td>
                             </tr>
                         
                         </table>
