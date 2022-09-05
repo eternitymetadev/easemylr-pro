@@ -1212,20 +1212,18 @@ class ConsignmentController extends Controller
                         <table style="height: 70px;">
                             <tr>
                             <td class="a" style="font-size: 10px;">
-                            <b>	Address</b><br />
                             <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
-                            <b>	plot no: ' . $branch_add->address . '</b><br />
-                            <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
+                            <b>	Plot no: ' . $branch_add->address . ',</b><br />
+                            <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b><br />
+                            <b>GST No. : 03AAGCE4639L1ZI</b><br />
                             </td>
                                
                                 <td class="a">
                                 <b>	Email & Phone</b><br />
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
+                                
                                 </td>
-                                <td class="a">
-						<img src="'.$pay.'" />
-					            </td>
                             </tr>
                         
                         </table>
