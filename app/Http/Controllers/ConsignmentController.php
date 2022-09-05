@@ -1267,7 +1267,7 @@ class ConsignmentController extends Controller
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['get_state']['name'] . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
