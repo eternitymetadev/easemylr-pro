@@ -2617,6 +2617,8 @@ class ConsignmentController extends Controller
             }
         } else {
             $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            
+
         }
         
         $consignments = json_decode(json_encode($query), true);
