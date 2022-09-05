@@ -1144,6 +1144,7 @@ class ConsignmentController extends Controller
                         }
                         img.imgu {
                             margin-left: 58px;
+                            height:100px;
                         }
                         .loc {
                                 margin-bottom: -8px;
@@ -1212,7 +1213,7 @@ class ConsignmentController extends Controller
                             <tr>
                             <td class="a" style="font-size: 10px;">
                             <b>	Address</b><br />
-                            <b>'.$branch_add->name.' </b><br />
+                            <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
                             <b>	plot no: ' . $branch_add->address . '</b><br />
                             <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
                             </td>
