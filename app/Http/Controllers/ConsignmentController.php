@@ -1205,21 +1205,20 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
-                    <div class="container-flex" style="margin-bottom: 5px;">
-                        <table>
+                    <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
+                        <table style="height: 70px;">
                             <tr>
+                            <td class="a" style="font-size: 10px;">
+                            <b>	Address</b><br />
+                            <b>'.$branch_add->name.' </b><br />
+                            <b>	plot no: ' . $branch_add->address . '</b><br />
+                            <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
+                            </td>
                                
                                 <td class="a">
                                 <b>	Email & Phone</b><br />
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
-                       <!-- <b>	8745251736673</b> -->
-                                </td>
-                                <td class="a" style="font-size: 10px;">
-                                <b>	Address</b><br />
-                                <b>'.$branch_add->name.' </b><br />
-                                <b>	plot no: ' . $branch_add->address . '</b><br />
-                                <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
                                 </td>
                             </tr>
                         
