@@ -69,8 +69,8 @@
     <!-- <script src="{{ asset('js/app.js') }}"></script> -->
     <script>
 
-        Echo.channel('events')
-       .listen('RealTimeMessage', (e) => console.log('RealTimeMessage: ' + e.message));
+    //     Echo.channel('events')
+    //    .listen('RealTimeMessage', (e) => console.log('RealTimeMessage: ' + e.message));
 
         /*function closeMessage() {
             message.__x.$data.showMessage = false;
@@ -97,7 +97,7 @@
 <script src="{{asset('newasset/bootstrap/js/bootstrap.min.js')}}"></script>
 
 <script src="{{asset('assets/js/customjquery.validate.min.js')}}"></script>
-<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
+<script src="https://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 
 
 <script src="{{asset('newasset/plugins/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
