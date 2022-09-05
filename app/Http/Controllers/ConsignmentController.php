@@ -1102,6 +1102,7 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
 
@@ -1127,11 +1128,12 @@ class ConsignmentController extends Controller
                         @media screen and (max-width: 600px) {
                         }
                         img {
-                            width: 105px;
+                            width: 120px;
+                            height: 60px;
                         }
                         .a {
                             width: 290px;
-                            font-size: 10px;
+                            font-size: 11px;
                         }
                         td.b {
                             width: 238px;
@@ -1142,6 +1144,7 @@ class ConsignmentController extends Controller
                         }
                         img.imgu {
                             margin-left: 58px;
+                            height:100px;
                         }
                         .loc {
                                 margin-bottom: -8px;
@@ -1210,7 +1213,7 @@ class ConsignmentController extends Controller
                             <tr>
                             <td class="a" style="font-size: 10px;">
                             <b>	Address</b><br />
-                            <b>'.$branch_add->name.' </b><br />
+                            <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
                             <b>	plot no: ' . $branch_add->address . '</b><br />
                             <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
                             </td>
@@ -1220,6 +1223,9 @@ class ConsignmentController extends Controller
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
                                 </td>
+                                <td class="a">
+						<img src="'.$pay.'" />
+					            </td>
                             </tr>
                         
                         </table>
