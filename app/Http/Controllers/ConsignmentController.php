@@ -1313,8 +1313,6 @@ class ConsignmentController extends Controller
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$consnee_add.'
-
-
                                     </p>
                                         </div>
                                     </td>
@@ -1326,16 +1324,12 @@ class ConsignmentController extends Controller
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                       '.$shiptoadd.'
-
-
                                     </p>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
-                                    
-                                        </div>
-                                
+                      </div>
                                 <div>
                                       <div class="row">
                                                            <div class="col-sm-12 ">
