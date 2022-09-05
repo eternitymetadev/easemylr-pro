@@ -1144,7 +1144,7 @@ class ConsignmentController extends Controller
                             margin-left: 58px;
                         }
                         .loc {
-                                margin-bottom: 19px;
+                                margin-bottom: -8px;
                                 margin-top: 27px;
                             }
                             .table3 {
@@ -1215,9 +1215,9 @@ class ConsignmentController extends Controller
                                 ' . @$locations->phone . '<br />
                        <!-- <b>	8745251736673</b> -->
                                 </td>
-                                <td class="a">
+                                <td class="a" style="font-size: 10px;">
                                 <b>	Address</b><br />
-                      <b>'.$branch_add->name.' </b><br />
+                                <b>'.$branch_add->name.' </b><br />
                                 <b>	plot no: ' . $branch_add->address . '</b><br />
                                 <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
                                 </td>
@@ -1264,7 +1264,7 @@ class ConsignmentController extends Controller
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['get_state']['name'] . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; "><b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
