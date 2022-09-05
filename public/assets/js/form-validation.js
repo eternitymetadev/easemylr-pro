@@ -360,6 +360,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                required: true,
                 Numbers: true,
                 minlength: 6,
             },
@@ -389,6 +390,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
+                required: "Enter postal code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -427,6 +429,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                required: true,
                 Numbers: true,
                 minlength: 6,
             },
@@ -456,6 +459,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
+                required: "Enter postal code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -491,6 +495,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                required: true,
                 Numbers: true,
                 minlength: 6,
             }
@@ -517,6 +522,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
+                required: "Enter postal code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -551,6 +557,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
+                required: true,
                 Numbers: true,
                 minlength: 6,
             },
@@ -576,6 +583,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
+                required: "Enter postal code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
