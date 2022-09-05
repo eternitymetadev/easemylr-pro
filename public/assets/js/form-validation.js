@@ -390,7 +390,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
-                required: "Enter postal code",
+                required: "Enter pin code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -459,7 +459,7 @@ jQuery(document).ready(function(){
                 required: "Please select location",
             },
             postal_code: {
-                required: "Enter postal code",
+                required: "Enter pin code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -522,7 +522,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
-                required: "Enter postal code",
+                required: "Enter pin code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -583,7 +583,7 @@ jQuery(document).ready(function(){
                 required: "Please select consigner",
             },
             postal_code: {
-                required: "Enter postal code",
+                required: "Enter pin code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
             },
@@ -1371,7 +1371,7 @@ jQuery(document).ready(function(){
                 required: "Enter state",
             },
             postal_code: {
-                required: "Enter postal code",
+                required: "Enter pin code",
             },
         },
         submitHandler : function(form)
