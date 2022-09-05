@@ -1002,7 +1002,7 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['get_state']['name'] != null) {
+        if ($data['consignee_detail']['get_state'] != null) {
             $district = $data['consignee_detail']['get_state']['name'] . ',';
         } else {
             $district = '';
