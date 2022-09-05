@@ -163,6 +163,11 @@
                             <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>
                         </li>
                     <?php } ?>
+                    <?php if($authuser->role_id ==5){ ?>
+                        <li>
+                            <a href="{{$prefixurl.'client-report'}}"> Nurture Client Report</a>
+                        </li>
+                    <?php } ?>
                         <?php if($authuser->role_id == 1){ ?>
                         <li>
                             <a href="{{$prefixurl.'admin-report1'}}"> Admin Report 1</a>

@@ -7,7 +7,10 @@ use App\Models\BaseClient;
 use App\Models\RegionalClient;
 use App\Models\RegionalClientDetail;
 use App\Models\ClientPriceDetail;
+use App\Models\ConsignmentNote;
 use App\Models\Zone;
+use App\Models\Role;
+use Auth;
 use DB;
 use URL;
 use Helper;
@@ -315,7 +318,6 @@ class ClientController extends Controller
             $saveclient = RegionalClientDetail::create($client); 
 
             $data = $request->all();
-            // dd($data);
             if($saveclient)
             {
                 if(!empty($request->data)){ 
@@ -344,6 +346,69 @@ class ClientController extends Controller
             $response['error_message'] = $e;
             $response['success'] = false;
         }
+        return response()->json($response);
+    }
+
+    //nurture client report
+    public function clientReport()
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $regionalclients = RegionalClient::get();
+
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+
+        $query = ConsignmentNote::query();
+
+        // if ($request->ajax()) {
+        //     if(!empty($request->search)){
+        //         $search = $request->search; 
+        //         $query->where(function ($query)use($search) {
+        //               $query->where('name', 'like', '%' . $search . '%')
+        //                     ->orWhereHas('Country', function ($countryquery) use ($search) {
+        //                       $countryquery->where('name', 'like', '%' . $search . '%');
+        //                     })
+        //                     ->orWhereHas('Region', function ($regionquery) use ($search) {
+        //                       $regionquery->where('name', 'like', '%' . $search . '%');
+        //                     })
+        //                     ->orWhere('website', 'like', '%' . $search . '%');
+        //         });
+        //     }
+        // }
+
+        // if($authuser->role_id !=1){
+        //     if($authuser->role_id == 4){
+        //         $query = $query->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();         
+        //     }else{ 
+        //         $query = $query->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        //     }
+        // } else {
+            $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        // }
+        
+        $consignments = json_decode(json_encode($query), true);
+        return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'prefix' => $this->prefix]);
+
+    }
+
+    public function getConsignmentClient(Request $request)
+    {
+        $getconsignments = ConsignmentNote::where('regclient_id',$request->regclient_id)->get();
+        if($getconsignments)
+        {
+            $response['success'] = true;
+            $response['error']   = false;
+            $response['success_message'] = "Consignment data fetch successfully";
+            $response['data_consignments'] = $getconsignments;
+            // $response['redirect_url'] = URL::to($this->prefix.'/consigners');
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch data please try again";
+            $response['error'] = true;
+        }
+
         return response()->json($response);
     }
 

@@ -547,6 +547,9 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
+    Route::any('client-report', [ClientController::class, 'clientReport']);
+    Route::get('/consignment-regclient', [ClientController::class, 'getConsignmentClient']);
+
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()

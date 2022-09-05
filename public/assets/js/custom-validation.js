@@ -1405,38 +1405,94 @@ function get_delivery_date()
            
           }
          });
-        });
-        //////////////////////////
-        $('#allsave').submit(function(e) {
-            e.preventDefault();
+    });
+    //////////////////////////
+    $('#allsave').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: "all-save-deliverydate", 
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
+            },
+            success: (data) => {
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
+                if(data.success == true){
+                    swal("success","Status Updated successfully", 'success')
+                    location.reload();
+                    
+                }else{
+                    swal("error","Something went wrong", 'error')
+                }
+                
+            }
+        }); 
+    });	
 
-            var formData = new FormData(this);
-           
-                $.ajax({
-                    url: "all-save-deliverydate", 
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    type: 'POST',  
-                    data:new FormData(this),
-                    processData: false,
-                    contentType: false,
-                    beforeSend: function(){
-                        $(".indicator-progress").show(); 
-                        $(".indicator-label").hide();
-                    },
-                    success: (data) => {
-                        $(".indicator-progress").hide();
-                        $(".indicator-label").show();
-                        if(data.success == true){
-                            swal("success","Status Updated successfully", 'success')
-                            location.reload();
-                            
-                        }else{
-                            swal("error","Something went wrong", 'error')
-                        }
-                      
+    /*======get LR's on regional client in client report =====*/
+    $('.searchclientreport').click(function(e){
+        // $('#items_table').find("tr:gt(1)").remove();
+        var regclient_id = $("#select_regclient").val();
+        var from_date = $("#select_regclient").val();
+        var to_date = $("#select_regclient").val();
+        // $('#select_consigner').empty();
+        // $('#select_consignee').empty();
+        // $('#select_ship_to').empty();
+        // alert(regclient_id);
+        $.ajax({
+            url         : '/consignment-regclient',
+            type        : 'get',
+            cache       : false,
+            data        :  {regclient_id:regclient_id},
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            beforeSend : function(){
+                $('#select_consigner').empty(); 
+            },
+            success:function(res){
+                // console.log(res.data_regclient.is_multiple_invoice);
+                $('#consigner_address').empty();
+                $('#consignee_address').empty();
+                $('#ship_to_address').empty();
+
+                $('#select_consigner').append('<option value="">select consigner</option>');
+                $('#select_consignee').append('<option value="">Select Consignee</option>');
+                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+
+                $.each(res.data, function (index, value) {
+
+                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
+              
+                });
+
+                if(res.data_regclient == null){
+                    var multiple_invoice = '';
+                }else{
+                    if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
+                    var multiple_invoice = '';
+                    }else{
+                        var multiple_invoice = res.data_regclient.is_multiple_invoice;
                     }
-                }); 
-            });	
+                }
+
+                if(multiple_invoice == 1 ){
+                    $('.insert-more').attr('disabled',false);
+                }else{  
+                    $('.insert-more').attr('disabled',true);
+                }
+            }
+        });
+    });
 
 
 
