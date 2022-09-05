@@ -212,7 +212,7 @@
                                 "} else {\n"+
                                     "directionsDisplay.setMap(null);\n"+
                                     "directionsDisplay.setDirections(null);\n"+
-                                    "alert('Unknown route found with error code 0, contact your manager');\n"+
+                                    // "alert('Unknown route found with error code 0, contact your manager');\n"+
                                 "}\n"+
                     "});\n"+
              '<\/script>';
