@@ -16,6 +16,7 @@ class ConsignmentNote extends Model
         'consignment_no',
         'consignment_date',
         'payment_type',
+        'freight',
         'description',
         'packing_type',
         'dispatch',
