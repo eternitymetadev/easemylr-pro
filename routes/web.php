@@ -120,6 +120,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('/vehicles/delete-rcimage', [VehicleController::class, 'deletercImage']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
 
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+
     Route::resource('consignments', ConsignmentController::class);
     Route::any('clist', [ConsignmentController::class, 'consignment_list']);
     //Test Routes 
@@ -184,9 +187,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
 
-    Route::resource('orders', OrderController::class);
-    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
-
 
     
 });
@@ -226,6 +226,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
 
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
@@ -260,11 +263,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
-
-
-    
-    Route::resource('orders', OrderController::class);
-    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -320,6 +318,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('/vehicles/delete-rcimage', [VehicleController::class, 'deletercImage']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
 
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
@@ -353,12 +354,6 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
-
-
-
-
-    Route::resource('orders', OrderController::class);
-    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -425,6 +420,9 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('/vehicles/delete-rcimage', [VehicleController::class, 'deletercImage']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
 
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
@@ -458,12 +456,6 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
- 
-
-
-
-    Route::resource('orders', OrderController::class);
-    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -525,6 +517,9 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
 
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
@@ -538,9 +533,6 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
-
-
-
     
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -548,9 +540,6 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
-
-    Route::resource('orders', OrderController::class);
-    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
 
 });
