@@ -122,7 +122,7 @@ class ConsignmentController extends Controller
             else{
                 $data = $data->whereIn('consignment_notes.branch_id', $cc);
             }
-            $data = $data->orderBy('id', 'DESC');
+            $data = $data->where('consignment_notes.status', '!=', 5)->orderBy('id', 'DESC');
             $data = $data->get();
             
         return Datatables::of($data)
