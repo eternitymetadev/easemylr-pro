@@ -11,6 +11,7 @@ use App\Models\ConsignmentItem;
 use App\Models\Driver;
 use App\Models\Location;
 use App\Models\TransactionSheet;
+use App\Models\RegionalClient;
 use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
@@ -165,7 +166,24 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers]);
+        /////////////////////////////Bill to regional clients //////////////////////////
+       
+        if($authuser->role_id == 2 || $authuser->role_id == 3){
+            $branch = $authuser->branch_id;
+            $branch_loc = explode(',', $branch);
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
+        
+        }elseif($authuser->role_id == 4){
+            $reg = $authuser->regionalclient_id;
+            $regional = explode(',', $reg);
+            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+       
+        }else{
+            $regionalclient = RegionalClient::select('id', 'name')->get();
+        }
+
+
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
     }
 
     /**

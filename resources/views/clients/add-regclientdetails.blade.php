@@ -4,7 +4,7 @@
     <div class="page-header">
         <nav class="breadcrumb-one" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{'clients'}}">Clients</a></li>
+                <li class="breadcrumb-item"><a href="{{url($prefix.'/reginal-clients')}}">Regional Clients</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Add Regional Client Detail</a></li>
             </ol>
         </nav>

@@ -1002,7 +1002,7 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['get_state']['name'] != null) {
+        if ($data['consignee_detail']['get_state'] != null) {
             $district = $data['consignee_detail']['get_state']['name'] . ',';
         } else {
             $district = '';
@@ -1102,6 +1102,7 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
 
@@ -1127,11 +1128,12 @@ class ConsignmentController extends Controller
                         @media screen and (max-width: 600px) {
                         }
                         img {
-                            width: 105px;
+                            width: 120px;
+                            height: 60px;
                         }
                         .a {
                             width: 290px;
-                            font-size: 10px;
+                            font-size: 11px;
                         }
                         td.b {
                             width: 238px;
@@ -1142,6 +1144,7 @@ class ConsignmentController extends Controller
                         }
                         img.imgu {
                             margin-left: 58px;
+                            height:100px;
                         }
                         .loc {
                                 margin-bottom: -8px;
@@ -1205,21 +1208,21 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
-                    <div class="container-flex" style="margin-bottom: 5px;">
-                        <table>
+                    <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
+                        <table style="height: 70px;">
                             <tr>
+                            <td class="a" style="font-size: 10px;">
+                            <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
+                            <b>	Plot no: ' . $branch_add->address . ',</b><br />
+                            <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b><br />
+                            <b>GST No. : 03AAGCE4639L1ZI</b><br />
+                            </td>
                                
                                 <td class="a">
                                 <b>	Email & Phone</b><br />
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
-                       <!-- <b>	8745251736673</b> -->
-                                </td>
-                                <td class="a" style="font-size: 10px;">
-                                <b>	Address</b><br />
-                                <b>'.$branch_add->name.' </b><br />
-                                <b>	plot no: ' . $branch_add->address . '</b><br />
-                                <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b>
+                                
                                 </td>
                             </tr>
                         
@@ -1264,7 +1267,7 @@ class ConsignmentController extends Controller
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['get_state']['name'] . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
@@ -1314,8 +1317,6 @@ class ConsignmentController extends Controller
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                         '.$consnee_add.'
-
-
                                     </p>
                                         </div>
                                     </td>
@@ -1327,16 +1328,12 @@ class ConsignmentController extends Controller
                                         <div style="margin-top: -11px;">
                                         <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
                                       '.$shiptoadd.'
-
-
                                     </p>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
-                                    
-                                        </div>
-                                
+                      </div>
                                 <div>
                                       <div class="row">
                                                            <div class="col-sm-12 ">
@@ -2041,11 +2038,11 @@ class ConsignmentController extends Controller
                 $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                     ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
                     ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                    ->whereIn('transaction_sheets.branch_id', [$cc])
+                    ->whereIn('transaction_sheets.branch_id', $cc)
                     ->groupBy('transaction_sheets.drs_no')
                     ->orderBy('transaction_sheets.id', 'desc')
                     ->get();
-                    //echo'<pre>'; print_r($transaction); die;
+                    // echo'<pre>'; print_r($transaction); die;
             }
         } else {
             $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
@@ -2620,6 +2617,8 @@ class ConsignmentController extends Controller
             }
         } else {
             $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            
+
         }
         
         $consignments = json_decode(json_encode($query), true);
