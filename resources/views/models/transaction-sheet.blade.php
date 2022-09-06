@@ -112,7 +112,7 @@
                             </tbody>
                         </table>
 
-                    </div>
+                    </div> 
                 
             </div>
             <div class="modal-footer">
@@ -155,22 +155,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Vehicle Type</label>
-                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
-                                <option value="">Select vehicle type</option>
-                                @foreach($vehicletypes as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Driver Name</label>
-
-
                             <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
                                 <option value="">Select driver</option>
                                 @foreach($drivers as $driver)
@@ -180,14 +165,28 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Transporter Name</label>
+                       
+                    </div>
 
-
-                            <input type="text" class="form-control" id="Transporter" name="transporter_name" value="">
-
+                    <div class="form-row mb-0">
+                    <div class="form-group col-md-4">
+                            <label for="exampleFormControlInput2">Vehicle Type</label>
+                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                                <option value="">Select vehicle type</option>
+                                @foreach($vehicletypes as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
-
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlInput2">Transporter Name</label>
+                            <input type="text" class="form-control" id="Transporter" name="transporter_name" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="exampleFormControlInput2">Purchase Price</label>
+                            <input type="text" class="form-control" name="purchase_price" value="">
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table id="save-DraftSheet" class="table table-hover"

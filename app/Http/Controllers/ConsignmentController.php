@@ -482,8 +482,11 @@ class ConsignmentController extends Controller
                     $st = '<span class="alert badge alert bg-secondary shadow-sm">Cancel</span>';
                 } 
                 elseif($data->status == 1){
-
+                      if($data->delivery_status == 'Successful'){
+                        $st = '<a class="alert activestatus btn btn-success disable_n"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';  
+                      }else{
                     $st = '<a class="alert activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
+                      }
                 }
                 elseif($data->status == 2){
                     $st = '<span class="badge alert bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
@@ -496,12 +499,17 @@ class ConsignmentController extends Controller
             })
             ->addColumn('delivery_status', function ($data) {
                 $authuser = Auth::user();
-                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                
+                if($authuser->role_id == 7 || $authuser->role_id == 6 ) { 
                     $disable = 'disable_n'; 
-                    
-                } else{
-                    $disable = '';
+                } elseif($authuser->role_id != 7 || $authuser->role_id != 6){
+                    if($data->status == 0){ 
+                        $disable = 'disable_n';
+                    }else{
+                        $disable = '';
+                    }
                 }
+
                 if ($data->delivery_status == "Unassigned") {
                     $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
                 } elseif ($data->delivery_status == "Assigned") {
@@ -1398,11 +1406,9 @@ class ConsignmentController extends Controller
                                 
                                 </tr>';
                               }
-                            
-                                
                       $html .='      </table>
                                 <div>
-                                    <table style="margin-top:50px;">
+                                    <table style="margin-top:0px;">
                                         <tr>
                                             <td width="50%" style="font-size: 13px;"><p><b>Receivers Signatures</b><br>Received the goods mentioned above in good conditions.</p></td>
                                             <td  width="50%"><p style="margin-left: 99px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
@@ -1411,8 +1417,7 @@ class ConsignmentController extends Controller
                             
                                 </div>
                           </div>
-                        
-            
+
                   <!-- <div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
@@ -1954,14 +1959,14 @@ class ConsignmentController extends Controller
     {
 
         $consignerId = $request->transaction_id;
-        //echo'<pre>';print_r($consignerId);die;
         $cc = explode(',', $consignerId);
         $addvechileNo = $request->vehicle_id;
         $adddriverId = $request->driver_id;
         $vehicleType = $request->vehicle_type;
         $transporterName = $request->transporter_name;
+        $purchasePrice = $request->purchase_price;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'delivery_status' => 'Started']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType,'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
         //echo'hii';
 
         $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
