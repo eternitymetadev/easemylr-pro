@@ -1406,11 +1406,9 @@ class ConsignmentController extends Controller
                                 
                                 </tr>';
                               }
-                            
-                                
                       $html .='      </table>
                                 <div>
-                                    <table style="margin-top:50px;">
+                                    <table style="margin-top:0px;">
                                         <tr>
                                             <td width="50%" style="font-size: 13px;"><p><b>Receivers Signatures</b><br>Received the goods mentioned above in good conditions.</p></td>
                                             <td  width="50%"><p style="margin-left: 99px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
@@ -1419,8 +1417,7 @@ class ConsignmentController extends Controller
                             
                                 </div>
                           </div>
-                        
-            
+
                   <!-- <div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>

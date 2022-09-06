@@ -703,7 +703,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             
             var item_no = $('tr', this).length;
-            if(item_no <=11){
+            if(item_no <=10){
             var tds = '<tr>';
             
             tds += ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
@@ -843,6 +843,7 @@ jQuery(document).ready(function(){
     // consignment status change onchange
     jQuery(document).on('click','.activestatus,.inactivestatus',function(event){
         event.stopPropagation();
+
         let user_id   = jQuery(this).attr('data-id');
 
         var dataaction = jQuery(this).attr('data-action');
