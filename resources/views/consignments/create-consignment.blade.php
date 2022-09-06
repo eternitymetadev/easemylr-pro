@@ -23,14 +23,8 @@ h4{
 .checkbox-round {
     width: 2.3em;
     height: 2.3em;
-    /* / background-color: white; / */
     border-radius: 55%;
-    /* / vertical-align: middle;  / */
     border: 1px solid #ddd;
-    /* / appearance: none; /
-    / -webkit-appearance: none; /
-    / outline: none;  /
-    / cursor: pointer; / */
 	margin-left: 103px; 
 }
 p {
@@ -56,7 +50,6 @@ th,td {
 }
 
 .wizard {
-    /* / margin: 20px auto; / */
     background: #fff;
 }
 
@@ -64,7 +57,6 @@ th,td {
         position: relative;
         margin: 40px auto;
         margin-bottom: 0;
-        /* / border-bottom-color: #e0e0e0; / */
     }
 
     .wizard > div.wizard-inner {
@@ -87,7 +79,6 @@ th,td {
     color: #555555;
     cursor: default;
     border: none;
-    /* / border-bottom-color: transparent; / */
 }
 
 span.round-tab {
@@ -125,49 +116,12 @@ span.round-tab:hover {
     width: 25%;
 }
 
-/* .wizard li:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 0;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 5px solid transparent;
-    border-bottom-color: #5bc0de;
-    transition: 0.1s ease-in-out;
-} */
-
-/* .wizard li.active:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 1;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 10px solid transparent;
-    border-bottom-color: #5bc0de;
-} */
-
 .wizard .nav-tabs > li a {
     width: 48px;
     height: 70px;
-    /* / margin: 20px auto; / */
     border-radius: 100%;
     padding: 0;
 }
-
-    /* .wizard .nav-tabs > li a:hover {
-        background: transparent;
-    } */
-
-/* .wizard .tab-pane {
-    position: relative;
-    padding-top: 50px;
-}
-
-.wizard h3 {
-    margin-top: 0;
-} */
 
 @media( max-width : 585px ) {
 
@@ -209,50 +163,6 @@ span.round-tab:hover {
     <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment" style="margin: auto; ">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
-            <!-- <div class="row">
-                            <div class="col-sm-8">
-                                        
-                                            <div class="wizard" style="width: 762px; MARGIN-TOP:-25PX;">
-                                                <div class="wizard-inner">
-                                                    <div class="connecting-line"></div>
-                                                    <ul class="nav nav-tabs" role="tablist">
-
-                                                        <li role="presentation" class="aa">
-                                                            <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1">
-                                                                <span class="round-tab">
-                                                                <i class="fa-solid fa-truck-fast"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-
-                                                        <li role="presentation" class="bb" >
-                                                            <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Step 2">
-                                                                <span class="round-tab">
-                                                                <i class="fa-solid fa-truck-fast"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                        <li role="presentation" class="cc">
-                                                            <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Step 3">
-                                                                <span class="round-tab">
-                                                                <i class="fa-solid fa-truck-fast"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-
-                                                        <li role="presentation" class="dd">
-                                                            <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
-                                                                <span class="round-tab">
-                                                                    <i class="glyphicon glyphicon-ok"></i>
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                           
-                                        </div> -->
-
-                <!-- ---------------------------- -->
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-sm-12 ">
