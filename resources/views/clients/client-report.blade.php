@@ -117,6 +117,11 @@
                                 <th>Final Chargeable Weight Check2</th>
                                 <th>Final Chargeable Weight Check1</th>
                                 <th>Final </th>
+                                <th>Per Kg Rate</th>
+                                <th>Per Kg Rate - 3.80</th>
+                                <th>Open Delivery Charges Intra & Inter State</th>
+                                <th>Docket Charges</th>
+                                <th>Final Freight Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -225,6 +230,46 @@
                                     $check_per_shipment_kgs_moq = 25;
                                   } ?>
                                 <td>{{ $check_per_shipment_kgs_moq }} </td>
+
+                                <?php
+                                if($check_per_shipment_kgs_moq > $consignment['total_gross_weight']){
+                                    $final_chargeable_weight_check2 = $check_per_shipment_kgs_moq;
+                                  } else{
+                                    $final_chargeable_weight_check2 = $consignment['total_gross_weight'];
+                                  } ?>
+                                <td>{{ $final_chargeable_weight_check2 }} </td>
+
+                                <?php
+                                if($check_per_shipment_kgs_moq > $check_cft_kgs){
+                                    $final_chargeable_weight_check1 = $check_per_shipment_kgs_moq;
+                                } else{
+                                    $final_chargeable_weight_check1 = $check_cft_kgs;
+                                } ?>
+                                <td> {{ $final_chargeable_weight_check1 }} </td>
+
+                                <?php
+                                if($final_chargeable_weight_check1 > $final_chargeable_weight_check2){
+                                    $final = $final_chargeable_weight_check1;
+                                } else{
+                                    $final = $final_chargeable_weight_check2;
+                                } ?>
+                                <td>{{ $final}} </td>
+
+                                <?php
+                                $cnr_state = $consignment['consigner_detail']['get_state']['name'];
+                                $shipto_state = $consignment['consignee_detail']['get_state']['name'];
+                                if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
+                                    $per_kg_rate = 3.80;
+                                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
+                                    $per_kg_rate = 6.20;
+                                }elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
+                                    $per_kg_rate = 6.90;
+                                }else{
+                                    $per_kg_rate = 'Delivery Rate Awaited';
+                                } ?>
+                                <td>{{ $per_kg_rate }} </td>
+
+                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
