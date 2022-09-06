@@ -2038,11 +2038,11 @@ class ConsignmentController extends Controller
                 $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                     ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
                     ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                    ->whereIn('transaction_sheets.branch_id', [$cc])
+                    ->whereIn('transaction_sheets.branch_id', $cc)
                     ->groupBy('transaction_sheets.drs_no')
                     ->orderBy('transaction_sheets.id', 'desc')
                     ->get();
-                    //echo'<pre>'; print_r($transaction); die;
+                    // echo'<pre>'; print_r($transaction); die;
             }
         } else {
             $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
