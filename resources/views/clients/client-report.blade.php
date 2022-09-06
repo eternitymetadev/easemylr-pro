@@ -113,13 +113,16 @@
                                 <th>TAT</th>
                                 <th>Average Weight Per Carton</th>
                                 <th>Check 1 - CFT 5 KGs</th>
+                                <th>Check 2 - Per Shipment 25 Kgs MOQ</th>
+                                <th>Final Chargeable Weight Check2</th>
+                                <th>Final Chargeable Weight Check1</th>
+                                <th>Final </th>
                             </tr>
                         </thead>
                         <tbody>
 
                             @foreach($consignments as $consignment)
                             <?php
-                            //
                                 $start_date = strtotime($consignment['consignment_date']);
                                 $end_date = strtotime($consignment['delivery_date']);
                                 $tat = ($end_date - $start_date) / 60 / 60 / 24;
@@ -199,15 +202,31 @@
                                 <?php if ($consignment['delivery_date'] == '') {?>
                                 <td> - </td>
                                 <?php } else {?>
-                                <td>{{ $tat }}</td>
+                                <td>{{ $tat ?? "-"}}</td>
                                 <?php }
-                                    $avg_wt_per_cotton = $consignment['total_gross_weight']/$consignment['total_quantity'];
-                                    if($avg_wt_per_cotton>0){
-                                        $avg_wt_per_cotton = $avg_wt_per_cotton;
-                                    }else{
-                                    $avg_wt_per_cotton = 0;
-                                    } ?>
-                                <td>{{ $avg_wt_per_cotton }}</td>
+                                if($consignment['total_quantity']>0){
+                                    $avg_wt_per_carton = $consignment['total_gross_weight']/$consignment['total_quantity'];
+                                }else{
+                                    $avg_wt_per_carton = 0;
+                                }
+                                 ?>
+                                <td>{{ number_format($avg_wt_per_carton,2)}}</td>
+                                <?php
+                                if($avg_wt_per_carton > 5){
+                                    $check_cft_kgs = $avg_wt_per_carton;
+                                  } else{
+                                    $check_cft_kgs = 5;
+                                  } ?>
+                                <td>{{ number_format($check_cft_kgs,2) }} </td>
+                                <?php
+                                if($consignment['total_gross_weight'] > 25){
+                                    $check_per_shipment_kgs_moq = $consignment['total_gross_weight'];
+                                  } else{
+                                    $check_per_shipment_kgs_moq = 25;
+                                  } ?>
+                                <td>{{ $check_per_shipment_kgs_moq }} </td>
+                                <td> </td>
+                                <td> </td>
                                 <td> </td>
 
                             </tr>
