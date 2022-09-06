@@ -155,9 +155,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
 
-
-    Route::resource('orders', OrderController::class);
-
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
@@ -186,6 +183,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
+
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
 
     
@@ -358,6 +358,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
 
     Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -462,6 +463,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
 
 
     Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -546,6 +548,9 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
+    Route::resource('orders', OrderController::class);
+    Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
 
 });
