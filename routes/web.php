@@ -301,11 +301,6 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('consignees/export/excel', [ConsigneeController::class, 'exportExcel']);
     Route::get('consignees/export/excel', [ConsigneeController::class, 'exportExcel']);
 
-    // Route::resource('brokers', BrokerController::class);
-    // Route::post('brokers/update-broker', [BrokerController::class, 'updateBroker']);
-    // Route::post('brokers/delete-broker', [BrokerController::class, 'deleteBroker']);
-    // Route::post('/brokers/delete-brokerimage', [BrokerController::class, 'deletebrokerImage']);
-
     Route::resource('drivers', DriverController::class);
     Route::post('drivers/update-driver', [DriverController::class, 'updateDriver']);
     Route::post('drivers/delete-driver', [DriverController::class, 'deleteDriver']);
@@ -402,11 +397,6 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('consignees/update-consignee', [ConsigneeController::class, 'updateConsignee']);
     Route::post('consignees/delete-consignee', [ConsigneeController::class, 'deleteConsignee']);
     Route::get('consignees/export/excel', [ConsigneeController::class, 'exportExcel']);
-
-    // Route::resource('brokers', BrokerController::class);
-    // Route::post('brokers/update-broker', [BrokerController::class, 'updateBroker']);
-    // Route::post('brokers/delete-broker', [BrokerController::class, 'deleteBroker']);
-    // Route::post('/brokers/delete-brokerimage', [BrokerController::class, 'deletebrokerImage']);
 
     Route::resource('drivers', DriverController::class);
     Route::post('drivers/update-driver', [DriverController::class, 'updateDriver']);
