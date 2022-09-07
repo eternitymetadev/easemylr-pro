@@ -216,8 +216,7 @@ span.round-tab:hover {
                     <div class="row">
                         <div class="col-sm-4 ">
                             <p>Select Pickup Location (Consigner)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text"
-                                        name="consigner_id">
+                            <select class="form-control form-small my-select2" style="width: 328px;" id="select_consigner"  type="text" name="consigner_id">
                             <option value="">Select Consignor</option>
                                         <!-- @foreach($consigners as $consigner)
                                         <option value="{{$consigner->id}}">{{$consigner->nick_name}}

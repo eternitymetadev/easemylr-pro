@@ -838,6 +838,7 @@ class ConsignmentController extends Controller
     {
         $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
         // dd($getconsigners->GetRegClient->is_multiple_invoice);
+        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
         
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
@@ -846,6 +847,7 @@ class ConsignmentController extends Controller
             $response['error'] = false;
             $response['data'] = $getconsigners;
             $response['consignee'] = $getConsignees;
+            $response['regclient'] = $getregclients;
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consigner list please try again";

@@ -178,7 +178,7 @@ span.round-tab:hover {
                             <option value="">Select</option>
                             @if(count($regionalclient) > 0)
                             @foreach($regionalclient as $client)
-                            <option value="{{ $client->name }}" {{ $client->id == $getconsignments->regclient_id ? 'selected' : ''}}>{{ucwords($client->name)}}
+                            <option value="{{ $client->id }}" {{ $client->id == $getconsignments->regclient_id ? 'selected' : ''}}>{{ucwords($client->name)}}
                             </option>
                             @endforeach
                             @endif
@@ -499,15 +499,15 @@ var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
 
 $(document).ready(function() {
-
-var consigner_id = $('#select_consigner').val();
-var consignee_id = $('#select_consignee').val();
-var shipto_id = $('#select_ship_to').val();
+    var regclient_id = $('#select_regclient').val();
+    var consigner_id = $('#select_consigner').val();
+    var consignee_id = $('#select_consignee').val();
+    var shipto_id = $('#select_ship_to').val();
 
     $.ajax({
         type      : 'get',
         url       : APP_URL+'/get_consigners',
-        data      : {consigner_id:consigner_id},
+        data      : {consigner_id:consigner_id, regclient_id:regclient_id},
         headers   : {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
@@ -565,11 +565,28 @@ var shipto_id = $('#select_ship_to').val();
                     var regclient = res.data.get_reg_client.name;
                 }
                 $("#regclient").val(regclient);
+
+                // multiple invoice chaeck on regclicent //
+                if(res.regclient == null){
+                    var multiple_invoice = '';
+                }else{
+                    if(res.regclient.is_multiple_invoice == null || res.regclient.is_multiple_invoice == ''){
+                        var multiple_invoice = '';
+                    }else{
+                        var multiple_invoice = res.regclient.is_multiple_invoice;
+                    }
+                }
+
+                if(multiple_invoice == 1 ){
+                    $('.insert-more').attr('disabled',false);
+                }else{  
+                    $('.insert-more').attr('disabled',true);
+                }
             }
         }
     });
-///////get consinee address//
-$.ajax({
+    ///////get consinee address//
+    $.ajax({
         type      : 'get',
         url       : APP_URL+'/get_consignees',
         data      : {consignee_id:consignee_id},

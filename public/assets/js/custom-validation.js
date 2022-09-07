@@ -471,7 +471,7 @@ jQuery(document).ready(function(){
                     var multiple_invoice = '';
                 }else{
                     if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
-                    var multiple_invoice = '';
+                        var multiple_invoice = '';
                     }else{
                         var multiple_invoice = res.data_regclient.is_multiple_invoice;
                     }
