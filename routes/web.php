@@ -467,8 +467,6 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
-
-
     
 });
 
