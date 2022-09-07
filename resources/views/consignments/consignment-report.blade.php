@@ -90,6 +90,7 @@
                                 <th>Invoice Date</th>
                                 <th>Invoice Amount</th>
                                 <th>Vehicle No</th>
+                                <th>Vehicle Type</th>
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
                                 <th>Gross Weight</th>
@@ -159,6 +160,7 @@
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                 <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
+                                <td>{{ $consignment['vehicletype']['name'] ?? "-" }}</td>
                                 <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
                                 <td>{{ $consignment['total_weight'] ?? "-" }}</td>
                                 <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
@@ -358,9 +360,14 @@
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
                     // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+                    if(value.vehicletype ==null || value.vehicletype == ''){
+                        var vechl_typ = '-';
+                    }else{
+                        var vechl_typ = value.vehicletype.name;
+                    }
 
 
-                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
+                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + vechl_typ + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_report').DataTable({
