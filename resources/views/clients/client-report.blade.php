@@ -256,18 +256,29 @@
                                 <td>{{ $final}} </td>
 
                                 <?php
-                                $cnr_state = $consignment['consigner_detail']['get_state']['name'];
-                                $shipto_state = $consignment['consignee_detail']['get_state']['name'];
+                                if($consignment['consigner_detail']['get_state'] != ''){
+                                    $cnr_state = $consignment['consigner_detail']['get_state']['name'];
+                                }else{
+                                    $cnr_state = '';
+                                }
+                                if($consignment['shipto_detail']['get_state'] != ''){
+                                    $shipto_state = $consignment['shipto_detail']['get_state']['name'];
+                                }else{
+                                    $shipto_state = '';
+                                }
+                                
                                 if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
                                     $per_kg_rate = 3.80;
                                 } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
                                     $per_kg_rate = 6.20;
                                 }elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
                                     $per_kg_rate = 6.90;
+                                }if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
+                                    $per_kg_rate = 4.50;
                                 }else{
                                     $per_kg_rate = 'Delivery Rate Awaited';
                                 } ?>
-                                <td>{{ $per_kg_rate }} </td>
+                                <td> </td>
 
                                 <td> </td>
                                 <td> </td>

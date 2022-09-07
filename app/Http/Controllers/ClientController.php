@@ -385,10 +385,11 @@ class ClientController extends Controller
         //         $query = $query->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         //     }
         // } else {
-            $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         // }
         
         $consignments = json_decode(json_encode($query), true);
+        // echo "<pre>"; print_r($consignments); die;
         return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'prefix' => $this->prefix]);
 
     }
