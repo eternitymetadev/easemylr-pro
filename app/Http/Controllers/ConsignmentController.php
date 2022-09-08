@@ -70,6 +70,7 @@ class ConsignmentController extends Controller
         }
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
+                // dd($request->status);
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
             }
