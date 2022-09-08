@@ -840,15 +840,7 @@ jQuery(document).ready(function(){
     //     // jQuery('.filetext').text(fileName);
     // });
 
-    $('#commonconfirm').on('hidden.bs.modal', function (e) {
-        $(this)
-          .find("input,textarea,select")
-             .val('')
-             .end()
-          .find("input[type=checkbox], input[type=radio]")
-             .prop("checked", "")
-             .end();
-      })
+    
 
     // consignment status change onchange
     jQuery(document).on('click','.activestatus,.inactivestatus',function(event){
