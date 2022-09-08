@@ -597,7 +597,6 @@ class ConsignmentController extends Controller
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
             $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
-        
         }elseif($authuser->role_id == 4){
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
