@@ -104,14 +104,12 @@
 <script src="{{asset('newasset/assets/js/app.js')}}"></script>
 <script src="{{asset('assets/js/custom-validation.js')}}"></script>
 
+<!-- sweet alert -->
 <script src="{{asset('plugins/sweetalerts/sweetalert2.min.js')}}"></script>
 <script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
 <!-- multi select -->
 <script src="{{asset('plugins/select2/select2.min.js')}}"></script>
 <script src="{{asset('plugins/select2/custom-select2.js')}}"></script>
-<!-- sweet alert -->
-<script src="{{asset('plugins/sweetalerts/sweetalert2.min.js')}}"></script>
-<script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
 
 
 <script>
