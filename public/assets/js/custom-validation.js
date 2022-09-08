@@ -575,7 +575,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#consignee_address').empty();
+                // $('#consignee_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
@@ -629,7 +629,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#ship_to_address').empty();
+                // $('#ship_to_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
