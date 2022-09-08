@@ -841,7 +841,6 @@ jQuery(document).ready(function(){
     // });
 
     $('#commonconfirm').on('hidden.bs.modal', function (e) {
-        // $('.activestatus,.inactivestatus').attr('data-id').val('');
         $(this)
           .find("input,textarea,select")
              .val('')
