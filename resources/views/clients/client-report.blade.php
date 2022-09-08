@@ -122,6 +122,7 @@
                                 <th>Open Delivery Charges Intra & Inter State</th>
                                 <th>Docket Charges</th>
                                 <th>Final Freight Amount</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -204,10 +205,10 @@
                                 <?php } else {?>
                                 <td>Unknown</td>
                                 <?php }?>
-                                <?php if ($consignment['delivery_date'] == '') {?>
+                                <?php if($consignment['delivery_date'] == '') {?>
                                 <td> - </td>
                                 <?php } else {?>
-                                <td>{{ $tat ?? "-"}}</td>
+                                <td>{{ $tat }}</td>
                                 <?php }
                                 if($consignment['total_quantity']>0){
                                     $avg_wt_per_carton = $consignment['total_gross_weight']/$consignment['total_quantity'];
@@ -256,14 +257,14 @@
                                 <td>{{ $final}} </td>
 
                                 <?php
-                                if($consignment['consigner_detail']['get_state'] != ''){
+                                if(isset($consignment['consigner_detail']['get_state'])){
                                     $cnr_state = $consignment['consigner_detail']['get_state']['name'];
-                                }else{
+                                } else{
                                     $cnr_state = '';
                                 }
-                                if($consignment['shipto_detail']['get_state'] != ''){
+                                if(isset($consignment['shipto_detail']['get_state'])){
                                     $shipto_state = $consignment['shipto_detail']['get_state']['name'];
-                                }else{
+                                } else{
                                     $shipto_state = '';
                                 }
                                 
@@ -271,19 +272,34 @@
                                     $per_kg_rate = 3.80;
                                 } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
                                     $per_kg_rate = 6.20;
-                                }elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
+                                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
                                     $per_kg_rate = 6.90;
-                                }if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
+                                } if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
                                     $per_kg_rate = 4.50;
-                                }else{
+                                } else{
                                     $per_kg_rate = 'Delivery Rate Awaited';
                                 } ?>
-                                <td> </td>
+                                <td>{{ $per_kg_rate ?? '-'}} </td>
+                                <?php
+                                $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$per_kg_rate;
+                                if(isset($perkg_rate3)){
+                                    $perkg_rate3 = $perkg_rate3;
+                                } else{
+                                    $perkg_rate3 = 0;
+                                }?>
+                                <td>{{ $perkg_rate3 ?? '0'}} </td>
 
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
+                                <?php
+                                 $open_del_charge = 250; ?>
+                                <td>{{ $open_del_charge }} </td>
+
+                                <?php $docket_charge = 30;?>
+                                <td>{{$docket_charge}} </td>
+
+                                <?php 
+                                $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_charge;
+                                ?>
+                                <td>{{$final_freight_amt}} </td>
 
                             </tr>
                             @endforeach
