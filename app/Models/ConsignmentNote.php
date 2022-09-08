@@ -83,7 +83,10 @@ class ConsignmentNote extends Model
     {
         return $this->belongsTo('App\Models\Job','job_id','job_id');
     }
-
+    public function vehicletype()
+    {
+        return $this->belongsTo('App\Models\VehicleType','vehicle_type');
+    }
     
 
 }
