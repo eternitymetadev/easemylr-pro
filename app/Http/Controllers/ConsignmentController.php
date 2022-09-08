@@ -70,6 +70,7 @@ class ConsignmentController extends Controller
         }
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
+                // dd($request->status);
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
             }
@@ -2027,39 +2028,35 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        
         $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        if ($authuser->role_id != 1) {
-            if ($authuser->role_id == 4) {
-                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
-                    ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                    ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                    ->where('consignment_notes.user_id', $authuser->id)
-                    ->groupBy('transaction_sheets.drs_no')
-                    ->orderBy('transaction_sheets.id', 'desc')
-                    ->get();
-            } else {
-                $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
-                    ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                    ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                    ->whereIn('transaction_sheets.branch_id', $cc)
-                    ->groupBy('transaction_sheets.drs_no')
-                    ->orderBy('transaction_sheets.id', 'desc')
-                    ->get();
-                    // echo'<pre>'; print_r($transaction); die;
-            }
-        } else {
-            $transaction = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+
+        $data = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                 ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
                 ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                ->groupBy('transaction_sheets.drs_no')
-                ->orderBy('transaction_sheets.id', 'desc')
-                ->get();
-            // $transaction = DB::table('transaction_sheets')->select('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no', DB::raw('count("drs_no") as total'))
-            // ->groupBy('drs_no','driver_name','vehicle_no', 'status','delivery_status','created_at','driver_no')->whereIn('status', ['1','0','3'])->get();
+                ->groupBy('transaction_sheets.drs_no');
+
+        if($authuser->role_id ==1){
+            $data;
         }
+        elseif($authuser->role_id ==4){
+           $data = $data->where('consignment_notes.user_id', $authuser->id);
+        }
+        elseif($authuser->role_id ==6){
+            $data = $data->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+             $data = $data->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $data = $data->whereIn('transaction_sheets.branch_id', $cc);
+        }
+        $data = $data->where('consignment_notes.status', '!=', 5)->orderBy('transaction_sheets.id', 'DESC');
+        $transaction = $data->get();
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
@@ -2554,7 +2551,11 @@ class ConsignmentController extends Controller
             $drs = DB::table('transaction_sheets')->where('id', $page_id[$count])->update(['order_no' => $count + 1]);
         }
 
+        $response['success'] = true;
+        $response['success_message'] = " Data suffle updated successfully";
+        return response()->json($response);
     }
+
     public function view_saveDraft(Request $request)
     {
         //echo'hi';
