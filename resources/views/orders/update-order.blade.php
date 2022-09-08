@@ -160,7 +160,7 @@ span.round-tab:hover {
     }
 </style>
 <div class="layout-px-spacing">
-    <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment" style="margin: auto; ">
+    <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="createconsignment" style="margin: auto; ">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
