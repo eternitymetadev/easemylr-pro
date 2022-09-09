@@ -81,19 +81,9 @@ div.relative {
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
                                     <td>{{ $consignment->edd ?? "-" }}</td> -->
-                                    <?php
-                                    if($consignment->status==1){
-                                        $status = 'Active';
-                                        $class = "btn-success";
-                                    }elseif($consignment->status==2){
-                                        $status = 'Unverified';
-                                        $class = "btn-warning";
-                                    }else{
-                                        $status = 'Cancel';
-                                        $class = "btn-danger";
-                                    }
-                                    ?>
+                                    
                                     <td>
+                                        <a class="orderstatus btn btn-danger" data-id = "{{$consignment->id}}" data-action = "<?php echo URL::current();?>"><span><i class="fa fa-ban"></i> Cancel</span></a>
                                          <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                     </td>
                                 </tr>
@@ -109,4 +99,52 @@ div.relative {
     </div>
 @include('models.delete-user')
 @include('models.common-confirm')
+@endsection
+@section('js')
+<script>
+ // Order list status change onchange
+ jQuery(document).on('click','.orderstatus',function(event){
+        event.stopPropagation();
+
+        let order_id   = jQuery(this).attr('data-id');
+        var dataaction = jQuery(this).attr('data-action');
+        var updatestatus = 'updatestatus';
+        var status = 0;
+
+       
+        jQuery('#commonconfirm').modal('show');
+        jQuery( ".commonconfirmclick").one( "click", function() {
+
+            var reason_to_cancel = jQuery('#reason_to_cancel').val();
+            var data =  {id:order_id,updatestatus:updatestatus, status:status, reason_to_cancel:reason_to_cancel};
+            
+            jQuery.ajax({
+                url         : dataaction,
+                type        : 'get',
+                cache       : false,
+                data        :  data,
+                dataType    :  'json',
+                headers     : {
+                    'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+                },
+                processData: true,
+                beforeSend  : function () {
+                    // jQuery("input[type=submit]").attr("disabled", "disabled");
+                },
+                complete: function () {
+                    //jQuery("#loader-section").css('display','none');
+                },
+
+                success:function(response){
+                    if(response.success){
+                        jQuery('#commonconfirm').modal('hide');
+                        if(response.page == 'order-statusupdate'){
+                            setTimeout(() => {window.location.href = response.redirect_url},10);
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
 @endsection
