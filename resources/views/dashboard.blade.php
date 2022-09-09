@@ -277,9 +277,9 @@
                                 </div>
                                 <div class="t-content">
                                     <div class="t-uppercontent">
-                                        <h5>{{$lastlr['consignee_detail']['nick_name']}}<a href="javscript:void(0);"><span></span></a></h5>
+                                        <h5>{{$lastlr['consignee_detail']['nick_name'] ?? '-'}}<a href="javscript:void(0);"><span></span></a></h5>
                                     </div>
-                                    <p>{{$lastlr['consignment_date']}}</p>
+                                    <p>{{$lastlr['consignment_date'] ?? '-'}}</p>
                                 </div>
                             </div>
                             @endforeach
