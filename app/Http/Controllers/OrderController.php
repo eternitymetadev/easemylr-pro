@@ -383,17 +383,19 @@ class OrderController extends Controller
             } else {
                 $consignmentno = $con_series . '-1';
             }
+            $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
-            $consignmentsave['payment_type'] = $request->payment_type;
-            $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['consignment_no'] = $consignmentno;
+            $consignmentsave['consignment_date'] = $request->consignment_date;
+            $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['description'] = $request->description;
+            $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;
             $consignmentsave['total_quantity'] = $request->total_quantity;
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            $consignmentsave['freight'] = $request->freight;
             $consignmentsave['transporter_name']  = $request->transporter_name;
             $consignmentsave['vehicle_type']      = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
@@ -404,15 +406,14 @@ class OrderController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
             if (!empty($request->vehicle_id)) {
-                $consignmentsave['delivery_status'] = "Assigned";
+                $consignmentsave['delivery_status'] = "Started";
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            $updateconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
-            $consignment_id = (int)$request->consignment_id;
-            // dd($consignment_id);
-           // ===================== Create DRS in LR ================================= //
+            $saveconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
+            $consignment_id = $request->consignment_id;
+           //===================== Create DRS in LR ================================= //
            if(!empty($request->vehicle_id)){
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -422,7 +423,7 @@ class OrderController extends Controller
                     ->where('consignment_notes.id', $consignment_id)
                     ->first(['consignees.city']);
                 $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                // echo'<pre>'; print_r($simplyfy); die;
+                //echo'<pre>'; print_r($simplyfy); die;
 
                 $no_of_digit = 5;
                 $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
@@ -436,7 +437,7 @@ class OrderController extends Controller
                 $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
             }
             //===========================End drs lr ================================= //
-            if ($updateconsignment) {
+            if ($saveconsignment) {
 
                 /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
                 $vn = $consignmentsave['vehicle_id'];
@@ -467,16 +468,16 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = $this->prefix . '/orders';
+                $url = $this->prefix . '/consignments';
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;
                 // $response['resetform'] = true;
-                $response['page'] = 'update-order';
+                $response['page'] = 'create-consignment';
                 $response['redirect_url'] = $url;
             } else {
                 $response['success'] = false;
-                $response['error_message'] = "Can not created consignment please try again";
+                $response['error_message'] = "Can not updated consignment please try again";
                 $response['error'] = true;
             }
             DB::commit();

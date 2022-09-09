@@ -575,7 +575,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#consignee_address').empty();
+                // $('#consignee_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
@@ -629,7 +629,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#ship_to_address').empty();
+                // $('#ship_to_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
@@ -840,6 +840,16 @@ jQuery(document).ready(function(){
     //     // jQuery('.filetext').text(fileName);
     // });
 
+    $('#commonconfirm').on('hidden.bs.modal', function (e) {
+        $(this)
+          .find("input,textarea,select")
+             .val('')
+             .end()
+          .find("input[type=checkbox], input[type=radio]")
+             .prop("checked", "")
+             .end();
+      })
+
     // consignment status change onchange
     jQuery(document).on('click','.activestatus,.inactivestatus',function(event){
         event.stopPropagation();
@@ -848,7 +858,6 @@ jQuery(document).ready(function(){
 
         var dataaction = jQuery(this).attr('data-action');
         var datastatus = jQuery(this).attr('data-status');
-        var datatext = jQuery(this).attr('data-text');
         var updatestatus = 'updatestatus';
 
         if(datastatus == 0){
@@ -857,7 +866,6 @@ jQuery(document).ready(function(){
             statustext = "enable";
         }
         jQuery('#commonconfirm').modal('show');
-        // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
         jQuery( ".commonconfirmclick").one( "click", function() {
             var reason_to_cancel = jQuery('#reason_to_cancel').val();
 

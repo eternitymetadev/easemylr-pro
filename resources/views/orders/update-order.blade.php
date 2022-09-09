@@ -160,7 +160,8 @@ span.round-tab:hover {
     }
 </style>
 <div class="layout-px-spacing">
-    <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment" style="margin: auto; ">
+    <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder" style="margin: auto; ">
+    <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -513,9 +514,9 @@ $(document).ready(function() {
         },
         dataType  : 'json',
         success:function(res){
-            $('#consigner_address').empty();
-            $('#consignee_address').empty();
-            $('#ship_to_address').empty();
+            // $('#consigner_address').empty();
+            // $('#consignee_address').empty();
+            // $('#ship_to_address').empty();
             
             $('#select_consignee').append('<option value="">Select Consignee</option>');
             $('#select_ship_to').append('<option value="">Select Ship To</option>');
@@ -595,8 +596,9 @@ $(document).ready(function() {
         },
         dataType  : 'json',
         success:function(res){
-            $('#consignee_address').empty();
+            // $('#consignee_address').empty();
             if(res.data){
+                console.log(res.data);
                 if(res.data.address_line1 == null){
                     var address_line1 = '';
                 }else{
@@ -642,7 +644,7 @@ $.ajax({
         },
         dataType  : 'json',
         success:function(res){
-            $('#ship_to_address').empty();
+            // $('#ship_to_address').empty();
             if(res.data){
                 if(res.data.address_line1 == null){
                     var address_line1 = '';

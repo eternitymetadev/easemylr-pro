@@ -92,7 +92,9 @@ div.relative {
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
                                     <th>Vehicle No</th>
+                                    <th>Vehicle Type</th>
                                     <th>Transporter Name</th>
+                                    <th>Purchase Price</th>
                                     <th>Boxes</th>
                                     <th>Net Weight</th>
                                     <th>Gross Weight</th>
@@ -168,7 +170,9 @@ div.relative {
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
                                 <?php  } ?>
                                     <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
+                                    <td>{{ $consignment['vehicletype']['name'] ?? "-" }}</td>
                                     <td>{{ $consignment['transporter_name'] ?? "-" }}</td>
+                                    <td>{{ $consignment['purchase_price'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_weight'] ?? "-" }}</td>
                                     <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
@@ -372,8 +376,19 @@ div.relative {
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
                     // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
+                    if(value.vehicletype ==null || value.vehicletype == ''){
+                        var vechl_typ = '-';
+                    }else{
+                        var vechl_typ = value.vehicletype.name;
+                    }
+                    ///
+                    if(value.purchase_price == null || value.purchase_price == ''){
+                        var purchasePrice = '-';
+                    }else{
+                        var purchasePrice = value.purchase_price;
+                    }
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + value.transporter_name + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
