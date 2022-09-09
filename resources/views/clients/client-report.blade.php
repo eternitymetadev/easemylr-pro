@@ -300,7 +300,6 @@
                                 $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_charge;
                                 ?>
                                 <td>{{$final_freight_amt}} </td>
-
                             </tr>
                             @endforeach
                         </tbody>
