@@ -703,7 +703,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             
             var item_no = $('tr', this).length;
-            if(item_no <=10){
+            if(item_no <=6){
             var tds = '<tr>';
             
             tds += ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
