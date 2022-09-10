@@ -5,8 +5,8 @@
     <?php header("Access-Control-Allow-Origin:*"); ?>
     <title>Eternity Forwarders | {{$title ?? ''}} </title> 
     <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon.jpg')}}"/>
-    <link href="{{asset('assets/css/loader.css')}}" rel="stylesheet" type="text/css" />
-    <script src="{{asset('assets/js/loader.js')}}"></script>
+    <!-- <link href="{{asset('assets/css/loader.css')}}" rel="stylesheet" type="text/css" />
+    <script src="{{asset('assets/js/loader.js')}}"></script> -->
      <!-- BEGIN GLOBAL MANDATORY STYLES -->
      <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet">
     <link href="{{asset('newasset/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />

@@ -162,8 +162,8 @@ div.relative {
                                     <td>{{ $consignment['shipto_detail']['city'] ?? "-" }}</td>
                                     <?php if(empty($consignment['invoice_no'])){ ?>
                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
-                                    <td>{{ $invoice['date']}}</td>
-                                    <td>{{ $invoice['amt'] }}</td>
+                                    <td>{{ $invoice['date'] ?? '-'}}</td>
+                                    <td>{{ $invoice['amt'] ?? '-' }}</td>
                                <?php  } else{ ?>
                                     <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
                                     <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>

@@ -122,7 +122,7 @@
     var imgurl = baseurl+'assets/img/upload-img.png';
       
       $(this).parent().children(".image_upload").children().attr('src', imgurl);
-      $(this).parent().children("input").val('');;
+      $(this).parent().children("input").val('');
       // $(this).parent().children('div').children('h4').text('Add Image');
       // $(this).parent().children('div').children('h4').css("display", "block");
       $(this).css("display", "none");
