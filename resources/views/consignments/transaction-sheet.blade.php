@@ -272,25 +272,25 @@ div.relative {
                         $.each(value.consignment_item, function(index, itmdata) {
                             itmlop++;
                             if(itmdata.e_way_bill == null || itmdata.e_way_bill == ''){
-                                var ewaybill = "<input type='text' name='record["+itmlop+"][ewaybill]' class='' >";
+                                var ewaybill = "<input type='text' data-id="+itmdata.id+"name='record[]' class='ewaybill' >";
                             }else{
                                 var ewaybill = itmdata.e_way_bill;
                             }
 
                             if(itmdata.e_way_bill_date == null || itmdata.e_way_bill_date == ''){
-                                var ewaybilldate = "<input type='date' name='record["+itmlop+"][ewaybilldate]' class='e_date' >";
+                                var ewaybilldate = "<input type='date' name='records[]' class='ewaybilldate' >";
                             }else{
                                 var ewaybilldate = itmdata.e_way_bill_date;
                             }
 
                         
-                            var cc = "<div class='row'><div class='col-lg-4'>"+itmdata.invoice_no+"</div><div class='col-lg-4'>"+ewaybill+"</div><div class='col-lg-4'>"+ewaybilldate+"</div></div>";
+                            var cc = "<div class='row'><div class='col-lg-4' id='ss'>"+itmdata.invoice_no+"</div><div class='col-lg-4'>"+ewaybill+"</div><div class='col-lg-4'>"+ewaybilldate+"</div></div>";
                             innertr.push(cc);
 
                         });
 
 
-                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr><tr style='display:none;' class='inner-tr'><td><div class='container' style='width:300px;'><div class='row'><div class='col-lg-4' >invoice no</div><div class='col-lg-4' >bill no</div><div class='col-lg-4'>Bill Date</div>"+innertr+"<button type='button' class='btn btn-primary ewayupdate'>save</button></div></td></tr>");      
+                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr><tr style='display:none;' class='inner-tr'><td><div class='container' style='width:300px;'><form id='invoiceupdat'><div class='row'><div class='col-lg-4' >invoice no</div><div class='col-lg-4' >bill no</div><div class='col-lg-4'>Bill Date</div>"+innertr+"<button type='button' class='btn btn-primary ewayupdate'>save</button></div></form></td></tr>");      
                     });
                     $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
@@ -309,6 +309,44 @@ div.relative {
         $(document).on('click','.outer-tr', function(){
             $(this).next('tr').toggle();
 
+        });
+
+        // $('#invoiceupdat').validate({
+        //     submitHandler: function(form){
+        //         {
+        //             jQuery.ajax({
+        //                 url : 'update_invoices',
+        //                 type : 'POST',
+        //                 data : new FormData(form),
+        //                 contentType : false,
+        //                 headers : { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        //                 processing : false,
+        //                 dataType : 'JSON',
+
+        //                 success: function(resonse){
+
+        //                 },
+        //             });
+        //         }
+        //     }
+        // });
+
+        $(document).on('click', '.ewayupdate', function(){
+
+           var de = $(this).closest('div').nextAll("#ss").find('.ewaybilldate').val();
+          alert(de);
+            // // var final = [];
+            // var itm = [];
+            // // var i = 1;
+            // $("#ss").each(function() {
+            //     if($(this).find('input').length){
+            //         console.log($(this).find('input').val());
+            //         var  usages = $(this).find('input').val();
+            //         itm.push(usages);
+            // // console.log(itm);   
+            //     }
+            // });
+            // alert(itm);
         });
 
         //////////////////////////////

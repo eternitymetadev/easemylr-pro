@@ -3612,5 +3612,9 @@ class ConsignmentController extends Controller
         
     }
 
+    public function updateInvoice(Request $request){
+        echo "<pre>"; print_r($request->all()); die;
+    }
+
 
 }
