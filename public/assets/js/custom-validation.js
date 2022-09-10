@@ -1438,6 +1438,25 @@ function get_delivery_date()
                     }
                 }); 
             });	
+    //////////////////////////////////
+    $(document).on('click', '.ewayupdate', function(){
+
+        var final = [];
+        var value = [];
+        var i = 1;
+        $("input[name='record[]']").each(function() {
+        value.push($(this).val());
+        alert(value);
+        if(i % 5 == 0) {
+            final.push(value);
+            value = [];
+        }
+        i++;
+      
+
+        });
+        alert(value);
+    });
 
 
 

@@ -1451,7 +1451,7 @@ class ConsignmentController extends Controller
 
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
-            $pdf->setPaper('A4', 'portrait');
+            $pdf->setPaper('legal', 'portrait');
             $pdf->save(public_path() . '/consignment-pdf/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
             $pdf_name[] = 'congn-' . $i . '.pdf';
         }
@@ -2559,10 +2559,17 @@ class ConsignmentController extends Controller
     {
         //echo'hi';
         $id = $_GET['draft_id'];
-        // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->orderby('order_no', 'asc')->get();
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
+         ->whereHas('ConsignmentDetail', function ($query){
+            $query->where('status', '1');
+        })
+         ->orderby('order_no', 'asc')->get();
+        // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
+        //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
+        //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
+        //     ->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
+        // echo'<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
         $response['success'] = true;

@@ -232,7 +232,8 @@ div.relative {
 		});
         /////////////Draft Sheet///////////////////
         $(document).on('click','.draft-sheet', function(){
-            
+            $('.inner-tr').hide();
+
             var draft_id = $(this).val(); 
             $('#save-draft').modal('show');
             //alert(draft_id);
@@ -253,17 +254,43 @@ div.relative {
                 },
                 success: function(data){
                     var re = jQuery.parseJSON(data)
+                    console.log(re);
                     var consignmentID = [];
                     var totalBoxes = 0;
                     var totalweights = 0;
+
+                    var i = 0;
                     $.each(re.fetch, function(index, value) {
+                        i++;
                         var alldata = value;  
 
                         consignmentID.push(alldata.consignment_no);
-                        totalBoxes += parseInt(value.total_quantity);
-                        totalweights += parseInt(value.total_weight);
+                        totalBoxes += parseInt(value.consignment_detail.total_quantity);
+                        totalweights += parseInt(value.consignment_detail.total_weight);
+                        var innertr = [];
+                        var itmlop = 0;
+                        $.each(value.consignment_item, function(index, itmdata) {
+                            itmlop++;
+                            if(itmdata.e_way_bill == null || itmdata.e_way_bill == ''){
+                                var ewaybill = "<input type='text' name='record["+itmlop+"][ewaybill]' class='' >";
+                            }else{
+                                var ewaybill = itmdata.e_way_bill;
+                            }
 
-                        $('#save-DraftSheet tbody').append("<tr id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.edd+ "'></td></tr>");      
+                            if(itmdata.e_way_bill_date == null || itmdata.e_way_bill_date == ''){
+                                var ewaybilldate = "<input type='date' name='record["+itmlop+"][ewaybilldate]' class='e_date' >";
+                            }else{
+                                var ewaybilldate = itmdata.e_way_bill_date;
+                            }
+
+                        
+                            var cc = "<div class='row'><div class='col-lg-4'>"+itmdata.invoice_no+"</div><div class='col-lg-4'>"+ewaybill+"</div><div class='col-lg-4'>"+ewaybilldate+"</div></div>";
+                            innertr.push(cc);
+
+                        });
+
+
+                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr><tr style='display:none;' class='inner-tr'><td><div class='container' style='width:300px;'><div class='row'><div class='col-lg-4' >invoice no</div><div class='col-lg-4' >bill no</div><div class='col-lg-4'>Bill Date</div>"+innertr+"<button type='button' class='btn btn-primary ewayupdate'>save</button></div></td></tr>");      
                     });
                     $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
@@ -272,10 +299,17 @@ div.relative {
                     $("#totalweights").append("Net Weight: "+totalweights);
                     $("#totallr").append(rowCount);
 
+
+
                     showLibrary();
                 }
 			});
 		});
+
+        $(document).on('click','.outer-tr', function(){
+            $(this).next('tr').toggle();
+
+        });
 
         //////////////////////////////
         $('#suffle').sortable({
