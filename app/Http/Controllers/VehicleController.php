@@ -48,6 +48,14 @@ class VehicleController extends Controller
                 }
                 return $date;
             })
+            ->addColumn('rc_image', function ($data) {
+                if($data->rc_image == null){
+                    $rc_image = '-';
+                }else{
+                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$data->rc_image).' " target="_blank">view</a>';
+                }        
+                return $rc_image;
+            })
             ->addColumn('action', function($row){
                 $actionBtn = '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>';
                 $actionBtn .= '&nbsp;&nbsp;';
@@ -56,7 +64,7 @@ class VehicleController extends Controller
                 $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
                 return $actionBtn;
             })
-          ->rawColumns(['action'])
+          ->rawColumns(['action', 'rc_image'])
                 ->make(true);
         }
 
