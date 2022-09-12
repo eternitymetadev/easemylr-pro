@@ -177,7 +177,9 @@
                                 <?php
                                 if ($consignment['delivery_status'] == 'Assigned') {?>
                                 <td>Assigned</td>
-                                <?php } elseif ($consignment['delivery_status'] == 'Started') {?>
+                                <?php } elseif ($consignment['delivery_status'] == 'Unassigned') {?>
+                                <td>Unassigned</td>
+                                <?php }elseif ($consignment['delivery_status'] == 'Started') {?>
                                 <td>Started</td>
                                 <?php } elseif ($consignment['delivery_status'] == 'Successful') {?>
                                 <td>Successful</td>

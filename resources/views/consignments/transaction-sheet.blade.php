@@ -267,30 +267,9 @@ div.relative {
                         consignmentID.push(alldata.consignment_no);
                         totalBoxes += parseInt(value.consignment_detail.total_quantity);
                         totalweights += parseInt(value.consignment_detail.total_weight);
-                        var innertr = [];
-                        var itmlop = 0;
-                        $.each(value.consignment_item, function(index, itmdata) {
-                            itmlop++;
-                            if(itmdata.e_way_bill == null || itmdata.e_way_bill == ''){
-                                var ewaybill = "<input type='text' data-id="+itmdata.id+"name='record[]' class='ewaybill' >";
-                            }else{
-                                var ewaybill = itmdata.e_way_bill;
-                            }
+                      
 
-                            if(itmdata.e_way_bill_date == null || itmdata.e_way_bill_date == ''){
-                                var ewaybilldate = "<input type='date' name='records[]' class='ewaybilldate' >";
-                            }else{
-                                var ewaybilldate = itmdata.e_way_bill_date;
-                            }
-
-                        
-                            var cc = "<div class='row'><div class='col-lg-4' id='ss'>"+itmdata.invoice_no+"</div><div class='col-lg-4'>"+ewaybill+"</div><div class='col-lg-4'>"+ewaybilldate+"</div></div>";
-                            innertr.push(cc);
-
-                        });
-
-
-                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr><tr style='display:none;' class='inner-tr'><td><div class='container' style='width:300px;'><form id='invoiceupdat'><div class='row'><div class='col-lg-4' >invoice no</div><div class='col-lg-4' >bill no</div><div class='col-lg-4'>Bill Date</div>"+innertr+"<button type='button' class='btn btn-primary ewayupdate'>save</button></div></form></td></tr>");      
+                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id="+value.consignment_no+">Next</a></td><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr>");      
                     });
                     $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
@@ -299,54 +278,52 @@ div.relative {
                     $("#totalweights").append("Net Weight: "+totalweights);
                     $("#totallr").append(rowCount);
 
-
-
                     showLibrary();
                 }
 			});
 		});
 
-        $(document).on('click','.outer-tr', function(){
-            $(this).next('tr').toggle();
-
-        });
-
-        // $('#invoiceupdat').validate({
-        //     submitHandler: function(form){
-        //         {
-        //             jQuery.ajax({
-        //                 url : 'update_invoices',
-        //                 type : 'POST',
-        //                 data : new FormData(form),
-        //                 contentType : false,
-        //                 headers : { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //                 processing : false,
-        //                 dataType : 'JSON',
-
-        //                 success: function(resonse){
-
-        //                 },
-        //             });
-        //         }
-        //     }
-        // });
-
         $(document).on('click', '.ewayupdate', function(){
 
-           var de = $(this).closest('div').nextAll("#ss").find('.ewaybilldate').val();
-          alert(de);
-            // // var final = [];
-            // var itm = [];
-            // // var i = 1;
-            // $("#ss").each(function() {
-            //     if($(this).find('input').length){
-            //         console.log($(this).find('input').val());
-            //         var  usages = $(this).find('input').val();
-            //         itm.push(usages);
-            // // console.log(itm);   
-            //     }
-            // });
-            // alert(itm);
+            var consignment_id = $(this).attr('data-id');
+            $('#modal-2').modal('show');
+            $.ajax({
+                type: "GET",
+                url: "view_invoices/"+consignment_id, 
+                data: {consignment_id:consignment_id},
+                beforeSend:                      //reinitialize Datatables
+                function(){   
+                    $('#view_invoices').dataTable().fnClearTable();             
+                $('#view_invoices').dataTable().fnDestroy();
+                },
+                success: function(data){
+
+                    var i = 1;
+                    // console.log(data.fetch[0].consignment_id );
+                    $('#cn_no').val(data.fetch[0].consignment_id)
+                    $.each(data.fetch, function(index, value) {
+
+                         if(value.e_way_bill == null || value.e_way_bill == ''){
+                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
+                         } else {
+                            var billno = value.e_way_bill;
+                         }
+
+                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
+                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
+                         }else{
+                            var billdate = value.e_way_bill_date;
+                         }
+
+                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
+                        
+                        i++ ;
+                    });
+                    
+                }
+			});
+        
+
         });
 
         //////////////////////////////

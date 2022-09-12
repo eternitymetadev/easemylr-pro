@@ -3612,8 +3612,52 @@ class ConsignmentController extends Controller
         
     }
 
-    public function updateInvoice(Request $request){
-        echo "<pre>"; print_r($request->all()); die;
+    public function viewupdateInvoice(Request $request){
+        $consignment = $_GET['consignment_id'];
+        $consignmentitm = ConsignmentItem::where('consignment_id', $consignment)->get();
+
+        $response['fetch'] = $consignmentitm;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+
+    }
+    public function allupdateInvoice(Request $request)
+    {
+        //  echo'<pre>'; print_r($request->cn_no); die;
+          
+          if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+
+                $itm_id   =         $save_data['id'];
+                $billno   =         @$save_data['e_way_bill'];
+                $billdate =         @$save_data['e_way_bill_date'];
+
+                if(!empty($save_data['e_way_bill_date'])){
+                    $billdate = $save_data['e_way_bill_date'];
+                }else{
+                    $billdate = NULL;
+                }
+
+                if(!empty($billno)){
+                ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
+                }else{
+                    if(!empty($billdate)){
+                        ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
+                    }
+
+                }
+                
+            }
+            $consignmentitm = ConsignmentItem::where('consignment_id', $request->cn_no)->get();
+
+            $response['fetch'] = $consignmentitm;
+            $response['success'] = true;
+            $response['messages'] = 'img uploaded successfully';
+            return Response::json($response);
+        }
     }
 
 

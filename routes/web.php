@@ -274,7 +274,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
-    Route::post('/update_invoices', [ConsignmentController::class, 'updateInvoice']);
+    Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
+    Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
 
 
 });
