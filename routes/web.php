@@ -185,6 +185,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
+
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
