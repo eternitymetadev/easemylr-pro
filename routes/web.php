@@ -225,6 +225,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('vehicles/update-vehicle', [VehicleController::class, 'updateVehicle']);
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
+    Route::get('vehicles/list',[VehicleController::class, 'getData']);
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
@@ -557,6 +558,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_locations', [ConsignerController::class, 'regLocations']);
     Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
+
+    Route::get('vehicles/list',[VehicleController::class, "getData"]);
 
 });
 

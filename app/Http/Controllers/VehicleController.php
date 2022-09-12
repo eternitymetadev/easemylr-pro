@@ -32,6 +32,9 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+
+        
+        
         if ($request->ajax()) {
             $data = Vehicle::orderby('id','DESC')->with('State')->get();
             return Datatables::of($data)->addIndexColumn()
@@ -69,6 +72,101 @@ class VehicleController extends Controller
         }
 
         return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
+    }
+
+    public function getData(Request $request) {
+        $this->prefix = request()->route()->getPrefix();
+        // print_r($request->all());
+        $draw 				= 		$request->get('draw'); // Internal use
+        $start 				= 		$request->get("start"); // where to start next records for pagination
+        $rowPerPage 		= 		$request->get("length"); // How many recods needed per page for pagination
+
+        $orderArray 	   = 		$request->get('order');
+        $columnNameArray 	= 		$request->get('columns'); // It will give us columns array
+                            
+        $searchArray 		= 		$request->get('search');
+        $columnIndex 		= 		$orderArray[0]['column'];  // This will let us know,
+                                                            // which column index should be sorted 
+                                                            // 0 = id, 1 = name, 2 = email , 3 = created_at
+
+        $columnName 		= 		$columnNameArray[$columnIndex]['data']; // Here we will get column name, 
+                                                                        // Base on the index we get
+
+        $columnSortOrder 	= 		$orderArray[0]['dir']; // This will get us order direction(ASC/DESC)
+        $searchValue 		= 		$searchArray['value']; // This is search value 
+
+
+        $vehicles = \DB::table('vehicles');
+        $total = $vehicles->count();
+
+        $totalFilter = \DB::table('vehicles');        
+        if (!empty($searchValue)) {
+            $totalFilter = $totalFilter->where('regn_no','like','%'.$searchValue.'%');
+            $totalFilter = $totalFilter->orWhere('make','like','%'.$searchValue.'%');
+        }
+        $totalFilter = $totalFilter->count();
+
+        $arrData = \DB::table('vehicles');
+        $arrData = $arrData->skip($start)->take($rowPerPage);
+        $arrData = $arrData->orderBy($columnName,$columnSortOrder);
+
+        if (!empty($searchValue)) {
+            $arrData = $arrData->where('regn_no','like','%'.$searchValue.'%');
+            $arrData = $arrData->orWhere('make','like','%'.$searchValue.'%');
+        }
+        if ($request->ajax()) {
+        $arrDatas = $arrData->get();
+
+        $response = array(
+            "draw" => intval($draw),
+            "recordsTotal" => $total,
+            "recordsFiltered" => $totalFilter,
+            "data" => $arrDatas,
+        );
+
+        return Datatables::of($arrData)->addIndexColumn()
+            ->addColumn('state_id', function($row)
+            {
+                return ($row->State->name ?? '-'); 
+            })
+            ->addColumn('regndate', function($row)
+            {
+                if($row->regndate){
+                    $date = date("d-m-Y", strtotime($row->regndate));
+                }else{
+                    $date = '-';
+                }
+                return $date;
+            })
+            ->addColumn('rc_image', function ($arrData) {
+                if($arrData->rc_image == null){
+                    $rc_image = '-';
+                }else{
+                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->rc_image).' " target="_blank">view</a>';
+                }
+                return $rc_image;
+            })
+            ->addColumn('action', function($row){
+                $actionBtn = '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>';
+                $actionBtn .= '&nbsp;&nbsp;';
+                $actionBtn .= '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'').'" class="view btn btn-info btn-sm"><span><i class="fa fa-eye"></i></span></a>';
+                $actionBtn .= '&nbsp;&nbsp;';
+                $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
+                return $actionBtn;
+            })
+            ->rawColumns(['action', 'rc_image'])
+                ->make(true);
+        }
+
+        $response = array(
+            "draw" => intval($draw),
+            "recordsTotal" => $total,
+            "recordsFiltered" => $totalFilter,
+            "data" => $arrData,
+        );
+
+        return response()->json($response);
+
     }
 
     /**
