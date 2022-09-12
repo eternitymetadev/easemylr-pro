@@ -76,15 +76,9 @@ div.relat {
         var table = $('#vehicletable').DataTable({
             processing: true,
             serverSide: true,
-            
-                
-
-                // "stripeClasses": [],
-                "pageLength": 50,
-                // drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered'); },
-            order: [[ 0, "desc" ]],
-            //ajax: "{{ route('vehicles.index') }}",
+            "pageLength": 100,
             ajax: "{{ url('vehicles/list') }}",
+
             columns: [
                 {data: 'regn_no', name: 'regn_no'},
                 {data: 'regndate', name: 'regndate'},
