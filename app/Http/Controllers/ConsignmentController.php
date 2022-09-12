@@ -2621,9 +2621,13 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
 
         if($authuser->role_id ==1){
-            $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }else{ 
-            $query = $query->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }
         
         
