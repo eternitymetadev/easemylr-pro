@@ -111,9 +111,9 @@ class ConsignmentController extends Controller
             if($authuser->role_id ==1){
                 $data;
             }
-            // elseif($authuser->role_id ==4){
-            //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-            // }
+            elseif($authuser->role_id ==4){
+                $data = $data->where('consignment_notes.user_id', $authuser->id);
+            }
             elseif($authuser->role_id ==6){
                 $data = $data->whereIn('base_clients.id', $baseclient);
             }
@@ -602,7 +602,6 @@ class ConsignmentController extends Controller
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
             $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
-       
         }else{
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
@@ -1935,9 +1934,9 @@ class ConsignmentController extends Controller
         if($authuser->role_id ==1){
             $data;
         }
-        // elseif($authuser->role_id ==4){
-        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
+        elseif($authuser->role_id ==4){
+           $data = $data->where('consignment_notes.user_id', $authuser->id);
+        }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -2040,9 +2039,9 @@ class ConsignmentController extends Controller
         if($authuser->role_id ==1){
             $data;
         }
-        // elseif($authuser->role_id ==4){
-        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
+        elseif($authuser->role_id ==4){
+           $data = $data->where('consignment_notes.user_id', $authuser->id);
+        }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -3535,9 +3534,9 @@ class ConsignmentController extends Controller
         if($authuser->role_id ==1){
             $data;
         }
-        // elseif($authuser->role_id ==4){
-        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
+        elseif($authuser->role_id ==4){
+           $data = $data->where('consignment_notes.user_id', $authuser->id);
+        }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
