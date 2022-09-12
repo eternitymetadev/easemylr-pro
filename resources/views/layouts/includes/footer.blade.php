@@ -252,7 +252,7 @@
 
             "ordering": false,
             "paging": true,
-            "pageLength": 100,
+            "pageLength": 50,
         });
 
         // Add event listener for opening and closing details
