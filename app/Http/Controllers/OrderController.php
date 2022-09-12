@@ -102,13 +102,13 @@ class OrderController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+        if($authuser->role_id == 2 || $authuser->role_id == 3 || $authuser->role_id == 4){
             if($authuser->role_id == $role_id->id){
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('branch_id', $cc)->get();
             }else{
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
+        }else if($authuser->role_id != 2 || $authuser->role_id != 3 || $authuser->role_id != 4){
             if($authuser->role_id !=1){
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
             }else{
@@ -147,17 +147,19 @@ class OrderController extends Controller
 
         /////////////////////////////Bill to regional clients //////////////////////////
        
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+        if($authuser->role_id == 2 || $authuser->role_id == 3 || $authuser->role_id == 4){
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
             $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
         
-        }elseif($authuser->role_id == 4){
-            $reg = $authuser->regionalclient_id;
-            $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+        }
+        // elseif($authuser->role_id == 4){
+        //     $reg = $authuser->regionalclient_id;
+        //     $regional = explode(',', $reg);
+        //     $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
        
-        }else{
+        // }
+        else{
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
