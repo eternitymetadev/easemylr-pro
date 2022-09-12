@@ -362,7 +362,7 @@
                                             <th>Consignment Date</th>
                                             <th>Consigner Name</th>
                                             <th>Consignee</th>
-                                            <th>city</th>
+                                            <th>District</th>
                                             <th>Pin Code</th>
                                             <th>Zone</th>
 
