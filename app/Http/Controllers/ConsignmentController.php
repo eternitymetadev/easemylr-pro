@@ -1452,7 +1452,7 @@ class ConsignmentController extends Controller
 
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
-            $pdf->setPaper('A4', 'portrait');
+            $pdf->setPaper('legal', 'portrait');
             $pdf->save(public_path() . '/consignment-pdf/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
             $pdf_name[] = 'congn-' . $i . '.pdf';
         }
@@ -2557,10 +2557,17 @@ class ConsignmentController extends Controller
     {
         //echo'hi';
         $id = $_GET['draft_id'];
-        // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->orderby('order_no', 'asc')->get();
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
+         ->whereHas('ConsignmentDetail', function ($query){
+            $query->where('status', '1');
+        })
+         ->orderby('order_no', 'asc')->get();
+        // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
+        //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
+        //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
+        //     ->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
+        // echo'<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
         $response['success'] = true;
@@ -2634,9 +2641,9 @@ class ConsignmentController extends Controller
         $cc = explode(',',$authuser->branch_id);
 
         $query = ConsignmentNote::query();
-
         if($authuser->role_id ==1){
             $query = $query
+            ->where('consignment_notes.status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }else{ 
@@ -3585,6 +3592,53 @@ class ConsignmentController extends Controller
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
         
+    }
+
+    public function viewupdateInvoice(Request $request){
+        $consignment = $_GET['consignment_id'];
+        $consignmentitm = ConsignmentItem::where('consignment_id', $consignment)->get();
+
+        $response['fetch'] = $consignmentitm;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+
+    }
+    public function allupdateInvoice(Request $request)
+    {
+        //  echo'<pre>'; print_r($request->cn_no); die;
+          
+          if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+
+                $itm_id   =         $save_data['id'];
+                $billno   =         @$save_data['e_way_bill'];
+                $billdate =         @$save_data['e_way_bill_date'];
+
+                if(!empty($save_data['e_way_bill_date'])){
+                    $billdate = $save_data['e_way_bill_date'];
+                }else{
+                    $billdate = NULL;
+                }
+
+                if(!empty($billno)){
+                ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
+                }else{
+                    if(!empty($billdate)){
+                        ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
+                    }
+                }
+                
+            }
+            $consignmentitm = ConsignmentItem::where('consignment_id', $request->cn_no)->get();
+
+            $response['fetch'] = $consignmentitm;
+            $response['success'] = true;
+            $response['messages'] = 'img uploaded successfully';
+            return Response::json($response);
+        }
     }
 
 
