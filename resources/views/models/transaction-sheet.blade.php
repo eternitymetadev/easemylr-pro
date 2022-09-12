@@ -1,3 +1,43 @@
+  <!-- #modal 2 -->
+  <div class="modal fade bd-example-modal-xl" id="modal-2" tabindex="-1" role="dialog"
+    aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
+        <h4 class="modal-title">Update Invoices</h4>
+      </div>
+      <div class="modal-body">
+      <form id="all_inv_save">
+        <input type="hidden" name="cn_no" id="cn_no" value="">
+      <table id="view_invoices" class="table table-hover"
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
+                            <thead>
+                                <tr>
+                                    <th>LR No</th> 
+                                    <th>Invoice no</th>
+                                    <th>e-way bill no</th>
+                                    <th>e-way bill Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table> 
+        
+        
+  <a href="#save-draft" class="btn btn-primary" data-toggle="modal" data-dismiss="modal">Back</a>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->  
+<!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="drs_commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
    <div class="modal-dialog">
      <div class="modal-content">
@@ -193,6 +233,8 @@
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>
                                 <tr>
+                                    <th>E-Way</th>
+                                    <th>EDD</th>
                                     <th>LR No</th>
                                     <th>Consignment Date</th>
                                     <th>Consignee Name</th>
@@ -200,7 +242,7 @@
                                     <th>Pin Code</th>
                                     <th>Number Of Boxes</th>
                                     <th>Net Weight</th>
-                                    <th>EDD</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -210,6 +252,8 @@
                                 <tr>
                                     <td>Total</td>
                                     <td id="totallr"></td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -318,7 +362,7 @@
                                             <th>Consignment Date</th>
                                             <th>Consigner Name</th>
                                             <th>Consignee</th>
-                                            <th>city</th>
+                                            <th>District</th>
                                             <th>Pin Code</th>
                                             <th>Zone</th>
 
