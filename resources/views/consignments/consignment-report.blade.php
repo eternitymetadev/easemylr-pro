@@ -71,7 +71,7 @@
                         </div>
                     </form>
                     @csrf
-                    <table id="consignment_report" class="table table-hover" style="width:100%">
+                    <table id="consignment_report" class="table table-hover table-responsive" style="width:100%">
                    
                         <thead>
                             <tr>
@@ -134,9 +134,13 @@
                                     $order_item['orders'] = implode(',', $order);
                                     $order_item['invoices'] = implode(',', $invoices);
                                     $invoice['date'] = implode(',', $inv_date);
-                                    $invoice['amt'] = implode(',', $inv_amt);?>
-
+                                    $invoice['amt'] = implode(',', $inv_amt);
+                                    if(!empty($order_item['orders'])){?>
+                                   
                                     <td>{{ $order_item['orders'] ?? "-" }}</td>
+                                    <?php }else{?>
+                                        <td>-</td>
+                                  <?php  } ?>
 
                                 <?php }else{ ?>
                                     <td>-</td>
@@ -150,11 +154,22 @@
                                 <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
-                                <?php if(empty($consignment['invoice_no'])){ ?>
+                                <?php if(empty($consignment['invoice_no'])){ 
+                                    if(!empty( $order_item['invoices'])){?>
                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                                <?php }else{ ?>
+                                       <td>-</td>
+                                   <?php } 
+                                   if(!empty($invoice['date'])){?>
                                     <td>{{ $invoice['date'] ?? '-'}}</td>
+                                  <?php }else{ ?>
+                                         <td>-<td>
+                                  <?php } 
+                                  if(!empty($invoice['amt'] )){?>
                                     <td>{{ $invoice['amt'] ?? '-'}}</td>
-                               <?php  } else{ ?>
+                                 <?php }else{?>
+                                 <td>-</td>
+                               <?php }  } else{ ?>
                                     <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
                                     <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>

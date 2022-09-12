@@ -2621,14 +2621,19 @@ class ConsignmentController extends Controller
 
         if($authuser->role_id !=1){
             if($authuser->role_id == 4){
-                $query = $query->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
+                $query = $query
+                ->where('consignment_notes.status', '!=', 5)
+                ->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
             }else{ 
-                $query = $query->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+                $query = $query
+                ->where('consignment_notes.status', '!=', 5)
+                ->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
             }
         } else {
-            $query = $query->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
             
-
         }
         
         $consignments = json_decode(json_encode($query), true);
@@ -2648,16 +2653,21 @@ class ConsignmentController extends Controller
 
         if($authuser->role_id !=1){
             if($authuser->role_id == 4){
-                $query = $query->where('user_id', $authuser->id)
+                $query = $query
+                ->where('consignment_notes.status', '!=', 5)
+                ->where('user_id', $authuser->id)
                 ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
                 ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
             }else{ 
-                $query = $query->whereIn('branch_id', $cc)
+                $query = $query
+                ->where('consignment_notes.status', '!=', 5)
+                ->whereIn('branch_id', $cc)
                 ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
                 ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
             }
         } else {
             $query = $query
+            ->where('consignment_notes.status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }
@@ -3647,7 +3657,6 @@ class ConsignmentController extends Controller
                     if(!empty($billdate)){
                         ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
                     }
-
                 }
                 
             }

@@ -269,7 +269,7 @@ div.relative {
                         totalweights += parseInt(value.consignment_detail.total_weight);
                       
 
-                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id="+value.consignment_no+">Next</a></td><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td></tr>");      
+                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id="+value.id+"><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id="+value.consignment_no+">Edit</a></td><td><input type='date' name='edd[]' data-id="+ value.consignment_no +" class='new_edd' value='"+ value.consignment_detail.edd+ "'></td><td>" + value.consignment_no + "</td><td>" + value.consignment_date + "</td><td>" + value.consignee_id + "</td><td>"+ value.city + "</td><td>"+ value.pincode + "</td><td>"+ value.total_quantity + "</td><td>"+ value.total_weight + "</td></tr>");      
                     });
                     $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
