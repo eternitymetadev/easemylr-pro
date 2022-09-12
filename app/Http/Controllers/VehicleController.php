@@ -32,28 +32,24 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        if ($request->ajax()) {
-            $data = Vehicle::orderby('id','DESC')->with('State')->get();
-            return Datatables::of($data)->addIndexColumn()
-            ->addColumn('state_id', function($row)
-            {
-                return ($row->State->name ?? '-'); 
-            })
-            ->addColumn('regndate', function($row)
-            {
-                if($row->regndate){
-                    $date = date("d-m-Y", strtotime($row->regndate));
-                }else{
-                    $date = '-';
-                }
-                return $date;
-            })
-            ->addColumn('rc_image', function ($data) {
-                if($data->rc_image == null){
+  
+        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
+    }
+
+    public function getData(Request $request) {
+        $this->prefix = request()->route()->getPrefix();
+
+
+        $arrData = \DB::table('vehicles');
+        $arrDatas = $arrData->get();
+
+        return Datatables::of($arrData)->addIndexColumn()
+            ->addColumn('rc_image', function ($arrData) {
+                if($arrData->rc_image == null){
                     $rc_image = '-';
                 }else{
-                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$data->rc_image).' " target="_blank">view</a>';
-                }        
+                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->rc_image).' " target="_blank">view</a>';
+                }
                 return $rc_image;
             })
             ->addColumn('action', function($row){
@@ -64,11 +60,9 @@ class VehicleController extends Controller
                 $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
                 return $actionBtn;
             })
-          ->rawColumns(['action', 'rc_image'])
+            ->rawColumns(['action', 'rc_image'])
                 ->make(true);
-        }
 
-        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
     }
 
     /**
