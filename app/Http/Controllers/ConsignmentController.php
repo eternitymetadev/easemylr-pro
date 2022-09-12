@@ -3624,7 +3624,10 @@ class ConsignmentController extends Controller
                 }
 
                 if(!empty($billno)){
-                ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
+                     ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
+                if(!empty($billdate)){
+                    ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
+                   }
                 }else{
                     if(!empty($billdate)){
                         ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
