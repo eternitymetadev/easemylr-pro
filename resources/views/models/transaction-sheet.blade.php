@@ -256,6 +256,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                     <td id="total_boxes"></td>
                                     <td id="totalweights"></td>
                                 </tr>

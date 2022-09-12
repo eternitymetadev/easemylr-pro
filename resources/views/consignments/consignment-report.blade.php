@@ -71,7 +71,7 @@
                         </div>
                     </form>
                     @csrf
-                    <table id="consignment_report" class="table table-hover table-responsive" style="width:100%">
+                    <table id="consignment_report" class="table table-hover" style="width:100%">
                    
                         <thead>
                             <tr>
