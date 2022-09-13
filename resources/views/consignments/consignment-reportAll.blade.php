@@ -63,8 +63,12 @@ div.relative {
                                 <input type="date" class="form-control" name="last_date">
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
-                                padding: 9px; width: 111px">Filter Data</button>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 130px"><span class="indicator-label">Filter Data</span>
+                               <span class="indicator-progress" style="display: none;">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                                <!-- <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 111px">Filter Data</button> -->
                             </div>
                         </div>
                     </form>
@@ -235,9 +239,12 @@ div.relative {
             beforeSend: function () {
                 $('#consignment_reportall').dataTable().fnClearTable();
                 $('#consignment_reportall').dataTable().fnDestroy();
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
             },
             success: (data) => {
-              // console.log(data.fetch); return false;
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
                 $.each(data.fetch, function (key, value) {
 
                     // console.log(value.consigner_detail.nick_name); return false;

@@ -373,7 +373,7 @@ div.relative {
           }
             consignmentID.push(this.value);
         });
-        
+         
         var ct = consignmentID.length; 
         var rowCount = $("#save-DraftSheet tbody tr").length;
 
