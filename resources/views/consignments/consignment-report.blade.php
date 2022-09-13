@@ -53,7 +53,8 @@
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-                <div class="mb-4">
+                <div class="mb-4 mt-3">
+                <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
                 <form id="filter_report">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
