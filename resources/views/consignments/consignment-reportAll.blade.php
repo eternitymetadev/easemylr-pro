@@ -49,7 +49,9 @@ div.relative {
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area br-6">
+                   
                     <div class="mb-4 mt-4">
+                    <h4> Last One Week Report</h4>
                     <form id="filter_reportall">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
@@ -338,7 +340,11 @@ div.relative {
                         var cnr_name = '-';
                         var cnr_city = '-';
                     }else{
-                        var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
+                        if(value.consigner_detail.get_reg_client == null || value.consigner_detail.get_reg_client == ''){
+                            var cnr_base_client = '-';
+                        }else{
+                           var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
+                        }
                         var cnr_reg_client = value.consigner_detail.get_reg_client.name;
                         var cnr_name = value.consigner_detail.nick_name;
                         var cnr_city = value.consigner_detail.city;
