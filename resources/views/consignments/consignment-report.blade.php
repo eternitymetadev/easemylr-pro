@@ -80,6 +80,7 @@
                                 <th>LR No</th>
                                 <th>LR Date</th>
                                 <th>Order No</th>
+                                <th>Regional Client</th>
                                 <th>Consigner</th>
                                 <th>Consigner City</th>
                                 <th>Consignee Name</th>
@@ -106,8 +107,7 @@
                         <tbody>
 
                             @foreach($consignments as $consignment)
-                            <?php
-                            //
+                             <?php 
                                 $start_date = strtotime($consignment['consignment_date']);
                                 $end_date = strtotime($consignment['delivery_date']);
                                 $tat = ($end_date - $start_date) / 60 / 60 / 24;
@@ -148,6 +148,7 @@
                                <?php } }else{ ?>
                                 <td>{{ $consignment['order_id'] ?? "-" }}</td>
                                 <?php  } ?>
+                                <td>{{ $consignment['consigner_detail']['get_reg_client']['name'] ?? "-" }}</td>
                                 <td>{{ $consignment['consigner_detail']['nick_name'] ?? "-" }}</td>
                                 <td>{{ $consignment['consigner_detail']['city'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['nick_name'] ?? "-" }}</td>
@@ -372,6 +373,12 @@
                     }else{
                         var delivery_type = 'Online';
                     }
+                    /////
+                    if(value.consigner_detail.get_reg_client == null || value.consigner_detail.get_reg_client == ''){
+                        var rgnl_clt = '-';
+                    }else{
+                        var rgnl_clt = value.consigner_detail.get_reg_client.name ;
+                    }
                     
 
                     /////
@@ -385,7 +392,7 @@
                     }
 
 
-                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + vechl_typ + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
+                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + rgnl_clt + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + vechl_typ + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_report').DataTable({
