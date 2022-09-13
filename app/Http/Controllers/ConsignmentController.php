@@ -2616,17 +2616,22 @@ class ConsignmentController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-
         $query = ConsignmentNote::query();
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
 
         if($authuser->role_id ==1){
             $query = $query
+            ->where('consignment_date', '>=', $date)
             ->where('consignment_notes.status', '!=', 5)
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
-            $query = $query->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
+            $query = $query
+            ->where('consignment_date', '>=', $date)
+            ->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query
+            ->where('consignment_date', '>=', $date)
             ->where('consignment_notes.status', '!=', 5)
             ->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         }
