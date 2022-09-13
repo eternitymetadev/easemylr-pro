@@ -2623,6 +2623,8 @@ class ConsignmentController extends Controller
             $query = $query
             ->where('consignment_notes.status', '!=', 5)
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query
             ->where('consignment_notes.status', '!=', 5)
@@ -2649,6 +2651,10 @@ class ConsignmentController extends Controller
             ->where('consignment_notes.status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query->where('user_id', $authuser->id)
+            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query->whereIn('branch_id', $cc)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
