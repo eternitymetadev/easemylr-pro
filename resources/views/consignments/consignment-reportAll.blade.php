@@ -51,7 +51,7 @@ div.relative {
                 <div class="widget-content widget-content-area br-6">
                    
                     <div class="mb-4 mt-4">
-                    <h4> Last One Week Report</h4>
+                    <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
                     <form id="filter_reportall">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
