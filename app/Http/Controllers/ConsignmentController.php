@@ -2623,6 +2623,8 @@ class ConsignmentController extends Controller
             $query = $query
             ->where('consignment_notes.status', '!=', 5)
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query
             ->where('consignment_notes.status', '!=', 5)
@@ -2649,6 +2651,10 @@ class ConsignmentController extends Controller
             ->where('consignment_notes.status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query->where('user_id', $authuser->id)
+            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query->whereIn('branch_id', $cc)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
@@ -3362,17 +3368,21 @@ class ConsignmentController extends Controller
         $data = Storage::disk('local')->get('file.json');
         $json = json_decode($data, true);
         $job_id = $json['job_id'];
-        $time = strtotime($json['job_delivery_datetime']);
+        $time = strtotime($json['completed_datetime_formatted']);
         $newformat = date('Y-m-d', $time);
         $delivery_status = $json['job_state'];
 
         //Update LR
+        if($delivery_status == 'Successful'){
+                $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+                //Update DRS
+                $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+        }else{
+                $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
+                //Update DRS
+                $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
 
-        $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
-
-        //Update DRS
-
-        $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+        }
 
         //Save jobs response
         

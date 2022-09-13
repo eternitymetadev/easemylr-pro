@@ -561,6 +561,7 @@ jQuery(document).ready(function(){
 
     /*===== get consignee address on create consignment page =====*/
     $('#select_consignee').change(function(e){
+        $('#consignee_address').empty();
         let consignee_id = $(this).val();
         getConsignees(consignee_id);
     });
@@ -615,6 +616,7 @@ jQuery(document).ready(function(){
     }
 
     $('#select_ship_to').change(function(e){
+        $('#ship_to_address').empty();
         let consignee_id = $(this).val();
         getShipto(consignee_id);
     });
