@@ -134,7 +134,7 @@ class ConsignmentController extends Controller
                 }
                 else{
                     $v = '';
-                }
+                } 
                 
 
                 $trps = '<div class="">
@@ -257,10 +257,6 @@ class ConsignmentController extends Controller
                     <td>' . $jobid . '</td>
                   </tr>
                   <tr>
-                    <td>Tracking Link</td>
-                    <td>' . $data->tracking_link . '</td>
-                  </tr>
-                  <tr>
                   <td>Vehicle No</td>
                   <td>' . $data->regn_no . '</td>
                   </tr>
@@ -327,7 +323,7 @@ class ConsignmentController extends Controller
 
                     //echo "<pre>";print_r($trcking_history);die;
 
-                    $trail = '<div class="container">
+                    $trail = '<div class="container" oncontextmenu="return false;">
                             <div class="row">
                                 <div class="col-md-10">
                                     <ul class="cbp_tmtimeline">';
@@ -384,7 +380,7 @@ class ConsignmentController extends Controller
                                   </button>
                               </div>
                               <div class="modal-body">
-                              <iframe src="' . $task->description . '" width="100%" height="298" seamless=""></iframe>
+                              <img src="' . $task->description . '" width="100%" height="298" seamless=""/>
                               </div>
                               <div class="modal-footer">
                                   <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
