@@ -15,6 +15,7 @@ use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\User;
 use Auth;
 use DataTables;
 use DB;
@@ -97,6 +98,8 @@ class ConsignmentController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
         $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
@@ -112,7 +115,7 @@ class ConsignmentController extends Controller
                 $data;
             }
             elseif($authuser->role_id ==4){
-                $data = $data->where('consignment_notes.user_id', $authuser->id);
+                $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
             }
             elseif($authuser->role_id ==6){
                 $data = $data->whereIn('base_clients.id', $baseclient);
@@ -1926,18 +1929,20 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2');
+        ->where('consignment_notes.status', '=', '2')
+        ->where('consignment_notes.status', '!=', 5);
 
         if($authuser->role_id ==1){
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
@@ -2032,6 +2037,7 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();        
 
         $data = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                 ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
@@ -2042,7 +2048,7 @@ else{
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
@@ -2621,6 +2627,7 @@ else{
         $query = ConsignmentNote::query();
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         if($authuser->role_id ==1){ 
             $query = $query
@@ -2629,9 +2636,11 @@ else{
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query
+            ->where('consignment_notes.status', '!=', 5)
             ->where('consignment_date', '>=', $date)
-            ->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
-        }else{ 
+            ->whereIn('user_id',[$authuser->id, $user->id])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+        }else{
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('consignment_notes.status', '!=', 5)
@@ -2650,6 +2659,7 @@ else{
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $query = ConsignmentNote::query();
         if($authuser->role_id ==1){
@@ -2658,11 +2668,15 @@ else{
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
-            $query = $query->where('user_id', $authuser->id)
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->whereIn('user_id',[ $authuser->id, $user->id])
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{ 
-            $query = $query->whereIn('branch_id', $cc)
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->whereIn('branch_id', $cc)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }
@@ -3540,18 +3554,20 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2');
+        ->where('consignment_notes.status', '=', '2')
+        ->where('consignment_notes.status', '!=', 5);
 
         if($authuser->role_id ==1){
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->whereIn('consignment_notes.user_id', [ $authuser->id, $user->id]);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
