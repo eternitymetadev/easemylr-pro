@@ -391,7 +391,7 @@
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
                     // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
-                    if(value.vehicletype ==null || value.vehicletype == ''){
+                    if(value.vehicletype == null || value.vehicletype == ''){
                         var vechl_typ = '-';
                     }else{
                         var vechl_typ = value.vehicletype.name;
