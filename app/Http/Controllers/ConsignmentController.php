@@ -1929,6 +1929,7 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -1940,8 +1941,11 @@ else{
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
         }
+        // elseif($authuser->role_id ==4){
+        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
+        // }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -2035,6 +2039,7 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();        
 
         $data = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
                 ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
@@ -2045,8 +2050,11 @@ else{
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
         }
+        // elseif($authuser->role_id ==4){
+        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
+        // }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -2624,6 +2632,7 @@ else{
         $query = ConsignmentNote::query();
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         if($authuser->role_id ==1){ 
             $query = $query
@@ -2633,7 +2642,9 @@ else{
         }elseif($authuser->role_id == 4){
             $query = $query
             ->where('consignment_date', '>=', $date)
-            ->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
+            ->where('user_id', $authuser->id)
+            ->orWhere('consignment_notes.user_id', $user->id)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{ 
             $query = $query
             ->where('consignment_date', '>=', $date)
@@ -2653,6 +2664,7 @@ else{
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $query = ConsignmentNote::query();
         if($authuser->role_id ==1){
@@ -2662,6 +2674,7 @@ else{
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query->where('user_id', $authuser->id)
+            ->orWhere('consignment_notes.user_id', $user->id)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{ 
@@ -3543,6 +3556,7 @@ else{
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -3554,7 +3568,7 @@ else{
             $data;
         }
         elseif($authuser->role_id ==4){
-           $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
