@@ -112,6 +112,7 @@ div.relative {
                                     <th>Delivery Date</th>
                                     <th>Delivery Status</th>
                                     <th>TAT</th>
+                                    <th>Delivery Mode</th>
                                   
                                 </tr>
                             </thead>
@@ -210,7 +211,12 @@ div.relative {
                                    <td> - </td>
                                <?php }else{?>
                                <td>{{ $tat }}</td>
-                               <?php }?>
+                               <?php } if($consignment['job_id']== ''){?>
+                                   <td>Manual</td>
+                                 <?php }else{?>
+                                    <td>Shadow</td>
+                                <?php } ?>
+                               
                            </tr>
                            @endforeach
                        </tbody>
@@ -400,8 +406,14 @@ div.relative {
                     }else{
                         var purchasePrice = value.purchase_price;
                     }
+                    //////
+                    if(value.job_id == null || value.job_id == ''){
+                        var delivery_type = 'Manual';
+                    }else{
+                        var delivery_type = 'Shadow';
+                    }
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({

@@ -210,10 +210,10 @@
                                 <?php } else {?>
                                 <td>{{ $tat }}</td>
                                 <?php } if($consignment['job_id']== ''){?>
-                                    <td>Manual</td>
-                                    <?php }else{?>
-                                        <td>Online</td>
-                                        <?php } ?>
+                                   <td>Manual</td>
+                                 <?php }else{?>
+                                    <td>Online</td>
+                                <?php } ?>
                             </tr>
                             @endforeach
                         </tbody>
