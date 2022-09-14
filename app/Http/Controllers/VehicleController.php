@@ -16,6 +16,7 @@ use Crypt;
 use Validator;
 use DataTables;
 use Storage;
+use Auth;
 
 class VehicleController extends Controller
 {
