@@ -8,7 +8,7 @@
         <h4 class="modal-title">Update Invoices</h4>
       </div>
       <div class="modal-body">
-      <form id="all_inv_save">
+      <form id="all_inv_save"> 
         <input type="hidden" name="cn_no" id="cn_no" value="">
       <table id="view_invoices" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
@@ -32,7 +32,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Save changes</button>
-        <form>
+</form>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
