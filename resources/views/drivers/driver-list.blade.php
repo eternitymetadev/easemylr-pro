@@ -71,6 +71,7 @@ div.relat {
                                 <th>Driver Name</th>
                                 <th>Driver Phone</th>
                                 <th>Driver License Number</th>
+                                <th>Image</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -111,6 +112,7 @@ var table = $('#drivertable').DataTable({
         {data: 'name', name: 'name'},
         {data: 'phone', name: 'phone'},
         {data: 'license_number', name: 'license_number'},
+        {data: 'licence', name: 'licence'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
         
     ]

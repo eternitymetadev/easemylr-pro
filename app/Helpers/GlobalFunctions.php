@@ -100,6 +100,16 @@ class GlobalFunctions {
         }
         return $changeformat;
     }
+      //////format 2022/07/01
+      public static function yearmonthdate($date){
+
+        if(!empty($date)){
+        $changeformat = date('Y-m-d',strtotime($date));
+        }else{
+        $changeformat = '-';
+        }
+        return $changeformat;
+    }
 
     // function for get random unique number //
     public static function random_number($length_of_number)

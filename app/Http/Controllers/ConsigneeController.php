@@ -44,10 +44,10 @@ class ConsigneeController extends Controller
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
                     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                                ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                                ->join('states', 'states.id', '=', 'consignees.state_id')
-                                ->where('consigners.branch_id', $cc)
-                                ->get();
+                        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                        ->join('states', 'states.id', '=', 'consignees.state_id')
+                        ->where('consigners.branch_id', $cc)
+                        ->get();
                 }else{
                     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
                     ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')

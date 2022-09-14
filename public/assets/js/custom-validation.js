@@ -561,6 +561,7 @@ jQuery(document).ready(function(){
 
     /*===== get consignee address on create consignment page =====*/
     $('#select_consignee').change(function(e){
+        $('#consignee_address').empty();
         let consignee_id = $(this).val();
         getConsignees(consignee_id);
     });
@@ -575,7 +576,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#consignee_address').empty();
+                // $('#consignee_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
@@ -615,6 +616,7 @@ jQuery(document).ready(function(){
     }
 
     $('#select_ship_to').change(function(e){
+        $('#ship_to_address').empty();
         let consignee_id = $(this).val();
         getShipto(consignee_id);
     });
@@ -629,7 +631,7 @@ jQuery(document).ready(function(){
             },
             dataType  : 'json',
             success:function(res){
-                $('#ship_to_address').empty();
+                // $('#ship_to_address').empty();
                 if(res.data){
                     if(res.data.address_line1 == null){
                         var address_line1 = '';
@@ -703,7 +705,7 @@ jQuery(document).ready(function(){
         $("#items_table").each(function() {
             
             var item_no = $('tr', this).length;
-            if(item_no <=10){
+            if(item_no <=6){
             var tds = '<tr>';
             
             tds += ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
@@ -840,6 +842,16 @@ jQuery(document).ready(function(){
     //     // jQuery('.filetext').text(fileName);
     // });
 
+    $('#commonconfirm').on('hidden.bs.modal', function (e) {
+        $(this)
+          .find("input,textarea,select")
+             .val('')
+             .end()
+          .find("input[type=checkbox], input[type=radio]")
+             .prop("checked", "")
+             .end();
+      })
+
     // consignment status change onchange
     jQuery(document).on('click','.activestatus,.inactivestatus',function(event){
         event.stopPropagation();
@@ -848,7 +860,6 @@ jQuery(document).ready(function(){
 
         var dataaction = jQuery(this).attr('data-action');
         var datastatus = jQuery(this).attr('data-status');
-        var datatext = jQuery(this).attr('data-text');
         var updatestatus = 'updatestatus';
 
         if(datastatus == 0){
@@ -857,7 +868,6 @@ jQuery(document).ready(function(){
             statustext = "enable";
         }
         jQuery('#commonconfirm').modal('show');
-        // jQuery('.confirmtext').text('Are you sure you want to '+statustext+' this '+datatext+'?');
         jQuery( ".commonconfirmclick").one( "click", function() {
             var reason_to_cancel = jQuery('#reason_to_cancel').val();
 
@@ -1438,6 +1448,59 @@ function get_delivery_date()
                     }
                 }); 
             });	
+    //////////////////////////////////
+    $('#all_inv_save').submit(function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+       
+            $.ajax({
+                url: "all-invoice-save", 
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'POST',  
+                data:new FormData(this),
+                processData: false,
+                contentType: false,
+                beforeSend: function(){
+                    $('#view_invoices').dataTable().fnClearTable();             
+                    $('#view_invoices').dataTable().fnDestroy();
+                    $(".indicator-progress").show(); 
+                    $(".indicator-label").hide();
+                },
+                success: (data) => {
+                    $(".indicator-progress").hide();
+                    $(".indicator-label").show();
+                    if(data.success == true){
+                        swal("success","Data Updated successfully", 'success')
+
+                        var i = 1;
+                     $.each(data.fetch, function(index, value) {
+
+                         if(value.e_way_bill == null || value.e_way_bill == ''){
+                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
+                         } else {
+                            var billno = value.e_way_bill;
+                         }
+
+                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
+                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
+                         }else{
+                            var billdate = value.e_way_bill_date;
+                         }
+
+                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
+                        
+                        i++ ;
+                    });
+                        // location.reload();
+                        
+                    }else{
+                        swal("error","Something went wrong", 'error')
+                    }
+                  
+                }
+            }); 
+        });	
 
 
 

@@ -73,15 +73,14 @@ class OrderController extends Controller
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
-                ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
+                ConsignmentNote::where('id', $request->id)->update(['status'=>$request->status,'reason_to_cancel' => $request->reason_to_cancel]);
             }
 
             $url = $this->prefix . '/orders';
             $response['success'] = true;
             $response['success_message'] = "Order updated successfully";
             $response['error'] = false;
-            $response['page'] = 'update-order';
+            $response['page'] = 'order-statusupdate';
             $response['redirect_url'] = $url;
 
             return response()->json($response);
@@ -148,17 +147,19 @@ class OrderController extends Controller
 
         /////////////////////////////Bill to regional clients //////////////////////////
        
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+        if($authuser->role_id == 2 || $authuser->role_id == 3 ){
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
             $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
         
-        }elseif($authuser->role_id == 4){
+        }
+        elseif($authuser->role_id == 4){
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
             $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
        
-        }else{
+        }
+        else{
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 

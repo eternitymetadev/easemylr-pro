@@ -49,7 +49,9 @@ div.relative {
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area br-6">
+                   
                     <div class="mb-4 mt-4">
+                    <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
                     <form id="filter_reportall">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
@@ -61,8 +63,12 @@ div.relative {
                                 <input type="date" class="form-control" name="last_date">
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
-                                padding: 9px; width: 111px">Filter Data</button>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 130px"><span class="indicator-label">Filter Data</span>
+                               <span class="indicator-progress" style="display: none;">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                                <!-- <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 111px">Filter Data</button> -->
                             </div>
                         </div>
                     </form>
@@ -73,7 +79,7 @@ div.relative {
                             </div>
                             <thead>
                                 <tr>
-                                    <!-- <th> </th> -->
+                                    <!-- <th> </th> --> 
                                     <th>LR No</th>
                                     <th>LR Date</th>
                                     <th>Order No</th>
@@ -106,108 +112,114 @@ div.relative {
                                     <th>Delivery Date</th>
                                     <th>Delivery Status</th>
                                     <th>TAT</th>
+                                    <th>Delivery Mode</th>
                                   
                                 </tr>
                             </thead>
                             <tbody>
                            
-                                @foreach($consignments as $consignment)
-                                <?php
-                                    $start_date = strtotime($consignment['consignment_date']);
-                                    $end_date = strtotime($consignment['delivery_date']);
-                                    $tat = ($end_date - $start_date)/60/60/24;
-                                ?>
-                                <tr>
-                                    <td>{{ $consignment['id'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
-                                    <?php if(empty($consignment['order_id'])){ 
-                                     if(count($consignment['consignment_items'])>0){
-                                    //    echo'<pre>'; print_r($consignment['consignment_items']); die;
-                                    $order = array();
-                                    $invoices = array();
-                                    $inv_date = array();
-                                    $inv_amt = array();
+                           @foreach($consignments as $consignment)
+                           <?php
+                               $start_date = strtotime($consignment['consignment_date']);
+                               $end_date = strtotime($consignment['delivery_date']);
+                               $tat = ($end_date - $start_date)/60/60/24;
+                           ?>
+                           <tr>
+                               <td>{{ $consignment['id'] ?? "-" }}</td>
+                               <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
+                               <?php if(empty($consignment['order_id'])){ 
+                                if(count($consignment['consignment_items'])>0){
+                               //    echo'<pre>'; print_r($consignment['consignment_items']); die;
+                               $order = array();
+                               $invoices = array();
+                               $inv_date = array();
+                               $inv_amt = array();
+                               foreach($consignment['consignment_items'] as $orders){ 
+                                   
+                                   $order[] = $orders['order_id'];
+                                   $invoices[] = $orders['invoice_no'];
+                                   $inv_date[] = Helper::ShowDayMonthYearslash($orders['invoice_date']);
+                                   $inv_amt[] = $orders['invoice_amount'];
+                               }
+                               //echo'<pre>'; print_r($order); die;
+                               $order_item['orders'] = implode(',', $order);
+                               $order_item['invoices'] = implode(',', $invoices);
+                               $invoice['date'] = implode(',', $inv_date);
+                               $invoice['amt'] = implode(',', $inv_amt);?>
 
-                                    foreach($consignment['consignment_items'] as $orders){ 
-                                        
+                               <td>{{ $order_item['orders'] ?? "-" }}</td>
 
-                                        $order[] = $orders['order_id'];
-                                        $invoices[] = $orders['invoice_no'];
-                                        $inv_date[] = Helper::ShowDayMonthYearslash($orders['invoice_date']);
-                                        $inv_amt[] = $orders['invoice_amount'];
-                                    }
-                                    //echo'<pre>'; print_r($order); die;
-                                    $order_item['orders'] = implode(',', $order);
-                                    $order_item['invoices'] = implode(',', $invoices);
-                                    $invoice['date'] = implode(',', $inv_date);
-                                    $invoice['amt'] = implode(',', $inv_amt);?>
+                           <?php }else{ ?>
+                               <td>-</td>
+                          <?php } }else{ ?>
+                           <td>{{ $consignment['order_id'] ?? "-" }}</td>
+                           <?php  } ?>
+                               <td>{{ $consignment['consigner_detail']['get_reg_client']['base_client']['client_name'] ?? "-" }}</td>
+                               <td>{{ $consignment['consigner_detail']['get_reg_client']['name'] ?? "-" }}</td>
+                               <td>{{ $consignment['consigner_detail']['nick_name'] ?? "-" }}</td>
+                               <td>{{ $consignment['consigner_detail']['city'] ?? "-" }}</td>
+                               <td>{{ $consignment['consignee_detail']['nick_name'] ?? "-" }}</td>
+                               <td>{{ $consignment['consignee_detail']['city'] ?? "-" }}</td>
+                               <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
+                               <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
+                               <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
+                               <td>{{ $consignment['shipto_detail']['nick_name'] ?? "-" }}</td>
+                               <td>{{ $consignment['shipto_detail']['city'] ?? "-" }}</td>
+                               <?php if(empty($consignment['invoice_no'])){ ?>
+                               <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                               <td>{{ $invoice['date'] ?? '-'}}</td>
+                               <td>{{ $invoice['amt'] ?? '-' }}</td>
+                          <?php  } else{ ?>
+                               <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
+                               <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
+                               <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
+                           <?php  } ?>
+                               <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
+                               <td>{{ $consignment['vehicletype']['name'] ?? "-" }}</td>
+                               <td>{{ $consignment['transporter_name'] ?? "-" }}</td>
+                               <td>{{ $consignment['purchase_price'] ?? "-" }}</td>
+                               <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
+                               <td>{{ $consignment['total_weight'] ?? "-" }}</td>
+                               <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
+                               <td>{{ $consignment['driver_detail']['name'] ?? "-" }}</td>
+                               <td>{{ $consignment['driver_detail']['phone'] ?? "-" }}</td>
+                               <td>{{ $consignment['fleet'] ?? "-" }}</td>
 
-                                    <td>{{ $order_item['orders'] ?? "-" }}</td>
-
-                                <?php }else{ ?>
-                                    <td>-</td>
-                               <?php } }else{ ?>
-                                <td>{{ $consignment['order_id'] ?? "-" }}</td>
-                                <?php  } ?>
-                                    <td>{{ $consignment['consigner_detail']['get_reg_client']['base_client']['client_name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consigner_detail']['get_reg_client']['name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consigner_detail']['nick_name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consigner_detail']['city'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consignee_detail']['nick_name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consignee_detail']['city'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
-                                    <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['shipto_detail']['nick_name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['shipto_detail']['city'] ?? "-" }}</td>
-                                    <?php if(empty($consignment['invoice_no'])){ ?>
-                                    <td>{{ $order_item['invoices'] ?? "-" }}</td>
-                                    <td>{{ $invoice['date']}}</td>
-                                    <td>{{ $invoice['amt'] }}</td>
-                               <?php  } else{ ?>
-                                    <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
-                                    <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
-                                    <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
-                                <?php  } ?>
-                                    <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
-                                    <td>{{ $consignment['vehicletype']['name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['transporter_name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['purchase_price'] ?? "-" }}</td>
-                                    <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
-                                    <td>{{ $consignment['total_weight'] ?? "-" }}</td>
-                                    <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
-                                    <td>{{ $consignment['driver_detail']['name'] ?? "-" }}</td>
-                                    <td>{{ $consignment['driver_detail']['phone'] ?? "-" }}</td>
-                                    <td>{{ $consignment['fleet'] ?? "-" }}</td>
-
-                                    <?php 
-                                    if($consignment['status'] == 0){ ?>
-                                        <td>Cancel</td>
-                                    <?php }elseif($consignment['status'] == 1){ ?>
-                                        <td>Active</td>
-                                        <?php }elseif($consignment['status'] == 2){ ?>
-                                        <td>Unverified</td>
-                                        <?php } ?>
-                                    <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] )}}</td>
-                                    <td>{{ Helper::ShowDayMonthYearslash($consignment['delivery_date'] )}}</td>
-                                    <?php 
-                                    if($consignment['delivery_status'] == 'Assigned'){ ?>
-                                        <td>Assigned</td>
-                                        <?php }elseif($consignment['delivery_status'] == 'Started'){ ?>
-                                        <td>Started</td>
-                                    <?php }elseif($consignment['delivery_status'] == 'Successful'){ ?>
-                                        <td>Successful</td>
-                                    <?php }else{?>
-                                        <td>Unknown</td>
-                                    <?php }?>
-                                    <?php if($consignment['delivery_date'] == ''){?>
-                                        <td> - </td>
-                                    <?php }else{?>
-                                    <td>{{ $tat }}</td>
-                                    <?php }?>
-                                </tr>
-                                @endforeach
-                            </tbody>
+                               <?php 
+                               if($consignment['status'] == 0){ ?>
+                                   <td>Cancel</td>
+                               <?php }elseif($consignment['status'] == 1){ ?>
+                                   <td>Active</td>
+                                   <?php }elseif($consignment['status'] == 2){ ?>
+                                   <td>Unverified</td>
+                                   <?php } ?>
+                               <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] )}}</td>
+                               <td>{{ Helper::ShowDayMonthYearslash($consignment['delivery_date'] )}}</td>
+                               <?php 
+                               if($consignment['delivery_status'] == 'Assigned'){ ?>
+                                   <td>Assigned</td>
+                                   <?php }elseif($consignment['delivery_status'] == 'Unassigned'){ ?>
+                                   <td>Unassigned</td>
+                                   <?php }elseif($consignment['delivery_status'] == 'Started'){ ?>
+                                   <td>Started</td>
+                               <?php }elseif($consignment['delivery_status'] == 'Successful'){ ?>
+                                   <td>Successful</td>
+                               <?php }else{?>
+                                   <td>Unknown</td>
+                               <?php }?>
+                               <?php if($consignment['delivery_date'] == ''){?>
+                                   <td> - </td>
+                               <?php }else{?>
+                               <td>{{ $tat }}</td>
+                               <?php } if($consignment['job_id']== ''){?>
+                                   <td>Manual</td>
+                                 <?php }else{?>
+                                    <td>Shadow</td>
+                                <?php } ?>
+                               
+                           </tr>
+                           @endforeach
+                       </tbody>
                         </table>
                     </div>
                 </div>
@@ -233,9 +245,12 @@ div.relative {
             beforeSend: function () {
                 $('#consignment_reportall').dataTable().fnClearTable();
                 $('#consignment_reportall').dataTable().fnDestroy();
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
             },
             success: (data) => {
-              // console.log(data.fetch); return false;
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
                 $.each(data.fetch, function (key, value) {
 
                     // console.log(value.consigner_detail.nick_name); return false;
@@ -338,7 +353,11 @@ div.relative {
                         var cnr_name = '-';
                         var cnr_city = '-';
                     }else{
-                        var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
+                        if(value.consigner_detail.get_reg_client == null || value.consigner_detail.get_reg_client == ''){
+                            var cnr_base_client = '-';
+                        }else{
+                           var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
+                        }
                         var cnr_reg_client = value.consigner_detail.get_reg_client.name;
                         var cnr_name = value.consigner_detail.nick_name;
                         var cnr_city = value.consigner_detail.city;
@@ -387,8 +406,14 @@ div.relative {
                     }else{
                         var purchasePrice = value.purchase_price;
                     }
+                    //////
+                    if(value.job_id == null || value.job_id == ''){
+                        var delivery_type = 'Manual';
+                    }else{
+                        var delivery_type = 'Shadow';
+                    }
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
