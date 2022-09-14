@@ -453,12 +453,17 @@ class OrderController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
-                if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
-                    $createTask = $this->createTookanTasks($simplyfy);
-                    $json = json_decode($createTask[0], true);
-                    $job_id = $json['data']['job_id'];
-                    $tracking_link = $json['data']['tracking_link'];
-                    $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                $get_data = ConsignmentNote::where('id',$request->consignment_id)->first();
+
+
+                if(empty($get_data->job_id)){
+                    if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
+                        $createTask = $this->createTookanTasks($simplyfy);
+                        $json = json_decode($createTask[0], true);
+                        $job_id = $json['data']['job_id'];
+                        $tracking_link = $json['data']['tracking_link'];
+                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    }
                 }
                 // insert consignment items
                 if (!empty($request->data)) {
