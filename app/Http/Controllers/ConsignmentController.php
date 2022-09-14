@@ -3633,7 +3633,7 @@ else{
     }
     public function allupdateInvoice(Request $request)
     {
-        //  echo'<pre>'; print_r($request->cn_no); die;
+         //echo'<pre>'; print_r($request->cn_no); die;
           
           if (!empty($request->data)) {
             $get_data = $request->data;
