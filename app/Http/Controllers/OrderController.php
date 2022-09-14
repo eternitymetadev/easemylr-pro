@@ -31,6 +31,7 @@ class OrderController extends Controller
     {
         $this->title = "Order Booking";
         $this->segment = \Request::segment(2);
+        $this->apikey = \Config::get('keys.api');
     }
     /**
      * Display a listing of the resource.
