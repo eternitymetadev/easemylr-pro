@@ -38,7 +38,7 @@ div.relat {
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
                     @csrf
-                    <table id="vehicletable" class="table table-hover vehicle-datatable" style="width:100%">
+                    <table id="vehicletable" class="table table-hover vehicle-datatable table-responsive" style="width:100%">
                         <div class="btn-group relative">
                             <a href="{{'vehicles/create'}}" class="btn btn-primary pull-right" style="font-size: 12px; padding: 8px 0px;"><span><i class="fa fa-plus" ></i> Add New</span></a>
                         </div>
