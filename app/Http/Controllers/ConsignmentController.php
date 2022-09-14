@@ -227,7 +227,7 @@ class ConsignmentController extends Controller
                     <tr>
                         <td>Invoice Number</td>
                         <td>' . $data->invoice_no . '</td>
-                    </tr>';
+                    </tr>'; 
                 }
 
                 $orderdetails .= '</tbody>
