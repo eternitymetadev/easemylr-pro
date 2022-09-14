@@ -1111,6 +1111,12 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
+if(!empty($data['consigner_detail']['get_state'])){
+    $cnr_state = $data['consigner_detail']['get_state']['name'];
+}
+else{
+    $cnr_state = '';
+}
 
             $html = '<!DOCTYPE html>
             <html lang="en">
@@ -1271,7 +1277,7 @@ class ConsignmentController extends Controller
                                 <tr>
                                     <td class="width_set">
                                         <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $data['consigner_detail']['get_state']['name'] . '</b></i><div class="vl" ></div>
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
 
                                         <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
