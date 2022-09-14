@@ -94,6 +94,9 @@ div.relative {
                                     <th>State</th>
                                     <th>Ship To Name</th>
                                     <th>Ship To City</th>
+                                    <th>Ship To pin code</th>
+                                    <th>Ship To District</th>
+                                    <th>Ship To State</th>
                                     <th>Invoice No</th>
                                     <th>Invoice Date</th>
                                     <th>Invoice Amount</th>
@@ -165,6 +168,9 @@ div.relative {
                                <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
                                <td>{{ $consignment['shipto_detail']['nick_name'] ?? "-" }}</td>
                                <td>{{ $consignment['shipto_detail']['city'] ?? "-" }}</td>
+                               <td>{{ $consignment['shipto_detail']['postal_code'] ?? "-" }}</td>
+                               <td>{{ $consignment['shipto_detail']['district'] ?? "-" }}</td>
+                               <td>{{ $consignment['shipto_detail']['get_state']['name'] ?? "-" }}</td>
                                <?php if(empty($consignment['invoice_no'])){ ?>
                                <td>{{ $order_item['invoices'] ?? "-" }}</td>
                                <td>{{ $invoice['date'] ?? '-'}}</td>
@@ -387,10 +393,24 @@ div.relative {
                     if(value.shipto_detail == null || value.shipto_detail == ''){
                         var ship_name = '-';
                         var ship_city = '-';
+                        var ship_pin = '-';
+                        var ship_district = '-';
+                        var ship_state = '-';
+
                     }else{
                         var ship_name = value.shipto_detail.nick_name;
                         var ship_city = value.shipto_detail.city;
+                        var ship_pin = value.shipto_detail.postal_code;
+                        var ship_district = value.shipto_detail.district;
+                        var ship_state = value.shipto_detail.get_state;
                     }
+                    //////
+                    if(ship_state == null || ship_state == '-'){
+                         var shipstate = '-';
+                    }else{
+                        var shipstate = value.shipto_detail.get_state.name;
+                    }
+
 
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
@@ -413,7 +433,7 @@ div.relative {
                         var delivery_type = 'Shadow';
                     }
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
+                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + ship_pin + "</td><td>" + ship_district + "</td><td>" + shipstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_reportall').DataTable({
