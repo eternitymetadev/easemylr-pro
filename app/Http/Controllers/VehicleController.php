@@ -16,6 +16,7 @@ use Crypt;
 use Validator;
 use DataTables;
 use Storage;
+use Auth;
 
 class VehicleController extends Controller
 {
@@ -37,8 +38,17 @@ class VehicleController extends Controller
     }
 
     public function getData(Request $request) {
-        $this->prefix = request()->route()->getPrefix();
+        // $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
 
+        if($authuser->role_id == 1 ){
+            $this->prefix = 'admin';
+        }
+        elseif($authuser->role_id == 2 ){
+            $this->prefix = 'branch-manager';
+        }else{
+            $this->prefix ='';
+        }
 
         $arrData = \DB::table('vehicles');
         $arrDatas = $arrData->get();
