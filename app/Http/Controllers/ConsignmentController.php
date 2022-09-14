@@ -115,7 +115,7 @@ class ConsignmentController extends Controller
                 $data;
             }
             elseif($authuser->role_id ==4){
-                $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
+                $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
             }
             elseif($authuser->role_id ==6){
                 $data = $data->whereIn('base_clients.id', $baseclient);
@@ -1935,17 +1935,15 @@ else{
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2');
+        ->where('consignment_notes.status', '=', '2')
+        ->where('consignment_notes.status', '!=', 5);
 
         if($authuser->role_id ==1){
             $data;
         }
         elseif($authuser->role_id ==4){
-            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
+            $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
         }
-        // elseif($authuser->role_id ==4){
-        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -2050,11 +2048,8 @@ else{
             $data;
         }
         elseif($authuser->role_id ==4){
-            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
+            $data = $data->whereIn('consignment_notes.user_id', [$authuser->id, $user->id]);
         }
-        // elseif($authuser->role_id ==4){
-        //    $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
         }
@@ -2641,11 +2636,11 @@ else{
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query
+            ->where('consignment_notes.status', '!=', 5)
             ->where('consignment_date', '>=', $date)
-            ->where('user_id', $authuser->id)
-            ->orWhere('consignment_notes.user_id', $user->id)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
-        }else{ 
+            ->whereIn('user_id',[$authuser->id, $user->id])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+        }else{
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('consignment_notes.status', '!=', 5)
@@ -2673,12 +2668,15 @@ else{
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
-            $query = $query->where('user_id', $authuser->id)
-            ->orWhere('consignment_notes.user_id', $user->id)
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->whereIn('user_id',[ $authuser->id, $user->id])
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{ 
-            $query = $query->whereIn('branch_id', $cc)
+            $query = $query
+            ->where('consignment_notes.status', '!=', 5)
+            ->whereIn('branch_id', $cc)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }
@@ -3562,13 +3560,14 @@ else{
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2');
+        ->where('consignment_notes.status', '=', '2')
+        ->where('consignment_notes.status', '!=', 5);
 
         if($authuser->role_id ==1){
             $data;
         }
         elseif($authuser->role_id ==4){
-            $data = $data->where('consignment_notes.user_id', $authuser->id)->orWhere('consignment_notes.user_id', $user->id);
+            $data = $data->whereIn('consignment_notes.user_id', [ $authuser->id, $user->id]);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);

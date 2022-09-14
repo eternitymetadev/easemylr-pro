@@ -50,8 +50,7 @@ class ReportController extends Controller
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
-            ->where('user_id', $authuser->id)
-            ->orWhere('user_id', $user->id)
+            ->whereIn('user_id', [$authuser->id, $user->id])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{
             $query = $query->where('status', '!=', 5)
@@ -77,8 +76,7 @@ class ReportController extends Controller
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
-            $query = $query->where('user_id', $authuser->id)
-            ->orWhere('user_id', $user->id)
+            $query = $query->whereIn('user_id', [$authuser->id, $user->id])
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();  
