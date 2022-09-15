@@ -152,13 +152,17 @@ class GlobalFunctions {
 
     public static function getdeleveryStatus($drs_number)
     {
-        $total = TransactionSheet::where('drs_no',$drs_number)->count();
-        $partial = TransactionSheet::where('drs_no',$drs_number)->where('delivery_status', 'Successful')->count();
-        $assigned = TransactionSheet::where('drs_no',$drs_number)->whereIn('delivery_status', ['Assigned','Started'])->count();
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
 
-        if($partial == $total){
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->whereIn('id',$get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '!=', NULL)->count();
+        $total_empty = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '=', NULL)->count();
+
+        $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->count();
+
+        if($total_deldate == $total_lr){
             $status = "Successful";
-        }elseif($assigned == $total){
+        }elseif($total_lr == $total_empty){
             $status = "Started";
         }else{
             $status = "Partial Delivered";
@@ -186,6 +190,22 @@ class GlobalFunctions {
         $get_consigner = Consigner::where('regionalclient_id', $regclient_id)->first();
         $totalconsignee = Consignee::where('consigner_id', @$get_consigner->id)->count();
         return $totalconsignee;
+    }
+
+    public static function deliveryDate($drs_number)
+    {
+        $drs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
+        $drscount = TransactionSheet::where('drs_no', $drs_number)->count();
+
+        $lr = ConsignmentNote::select('delivery_date')->whereIn('id', $drs)->get();
+        $lrcount = ConsignmentNote::whereIn('id', $drs)->where('delivery_date', '!=', NULL)->count();
+
+            if($lrcount > 0){
+                $datecount = 1;
+            }else{
+                $datecount = 0;
+            }
+          return $datecount;
     }
 
 
