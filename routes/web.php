@@ -21,6 +21,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\API\ReceiveAddressController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\VendorController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -283,6 +285,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
+
+    Route::any('vendor/create', [VendorController::class, 'create']);
+
 
 
 });
