@@ -188,6 +188,22 @@ class GlobalFunctions {
         return $totalconsignee;
     }
 
+    public static function deliveryDate($drs_number)
+    {
+        $drs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
+        $drscount = TransactionSheet::where('drs_no', $drs_number)->count();
+
+        $lr = ConsignmentNote::select('delivery_date')->whereIn('id', $drs)->get();
+        $lrcount = ConsignmentNote::whereIn('id', $drs)->where('delivery_date', '!=', NULL)->count();
+
+            if($lrcount > 0){
+                $datecount = 1;
+            }else{
+                $datecount = 0;
+            }
+          return $datecount;
+    }
+
 
 
 }
