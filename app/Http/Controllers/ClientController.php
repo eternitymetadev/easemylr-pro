@@ -354,7 +354,7 @@ class ClientController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $regionalclients = RegionalClient::get();
+        $regionalclients = RegionalClient::select('id','name','location_id')->get();
 
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -385,7 +385,9 @@ class ClientController extends Controller
         //         $query = $query->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
         //     }
         // } else {
-            $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->orderBy('id','DESC')->get();
+            $query = $query->where('status', '!=', 5)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')
+            ->orderBy('id','DESC')->get();
         // }
         
         $consignments = json_decode(json_encode($query), true);

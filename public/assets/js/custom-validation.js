@@ -1450,14 +1450,10 @@ function get_delivery_date()
 
     /*======get LR's on regional client in client report =====*/
     $('.searchclientreport').click(function(e){
-        // $('#items_table').find("tr:gt(1)").remove();
         var regclient_id = $("#select_regclient").val();
         var from_date = $("#select_regclient").val();
         var to_date = $("#select_regclient").val();
-        // $('#select_consigner').empty();
-        // $('#select_consignee').empty();
-        // $('#select_ship_to').empty();
-        // alert(regclient_id);
+
         $.ajax({
             url         : '/consignment-regclient',
             type        : 'get',
