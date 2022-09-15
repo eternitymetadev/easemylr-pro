@@ -86,6 +86,7 @@ div.relative {
                                 $date->setTimezone(new DateTimeZone('IST'));
                                 $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
                                 $new =  Helper::oldnewLr($trns->drs_no) ?? "" ;
+                                $lr = Helper::deliveryDate($trns->drs_no);
 
                                 ?>
                               <tr>
@@ -116,7 +117,7 @@ div.relative {
                                     <?php  
                                     if($trns->delivery_status == 'Unassigned'){?>
                                     <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}" style="margin-right:4px;">Unassigned</button>
-                                    <?php }elseif($trns->delivery_status == 'Assigned'){ ?>
+                                    <?php }elseif($lr == 0){ ?>
                                         <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}" style="margin-right:4px;">Assigned</button>
                                     <?php } ?>
                                       </td>
