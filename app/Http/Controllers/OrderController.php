@@ -31,6 +31,7 @@ class OrderController extends Controller
     {
         $this->title = "Order Booking";
         $this->segment = \Request::segment(2);
+        $this->apikey = \Config::get('keys.api');
     }
     /**
      * Display a listing of the resource.
@@ -453,6 +454,8 @@ class OrderController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
+                $get_data = ConsignmentNote::where('id',$request->consignment_id)->first();
+
                 if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                     $createTask = $this->createTookanTasks($simplyfy);
                     $json = json_decode($createTask[0], true);
@@ -501,4 +504,81 @@ class OrderController extends Controller
     {
         //
     }
+
+    //++++++++++++++++++++++ Tookan API Push +++++++++++++++++++++++++++++++++++//
+
+    public function createTookanTasks($taskDetails)
+    {
+
+        //echo "<pre>";print_r($taskDetails);die;
+
+        foreach ($taskDetails as $task) {
+
+            $td = '{
+                "api_key": "' . $this->apikey . '",
+                "order_id": "' . $task['consignment_no'] . '",
+                "job_description": "DRS-' . $task['id'] . '",
+                "customer_email": "' . $task['email'] . '",
+                "customer_username": "' . $task['consignee_name'] . '",
+                "customer_phone": "' . $task['phone'] . '",
+                "customer_address": "' . $task['pincode'] . ',' . $task['city'] . ',India",
+                "latitude": "",
+                "longitude": "",
+                "job_delivery_datetime": "' . $task['edd'] . ' 21:00:00",
+                "custom_field_template": "Template_1",
+                "meta_data": [
+                    {
+                        "label": "Invoice Amount",
+                        "data": "' . $task['invoice_amount'] . '"
+                    },
+                    {
+                        "label": "Quantity",
+                        "data": "' . $task['total_weight'] . '"
+                    }
+                ],
+                "team_id": "' . $task['team_id'] . '",
+                "auto_assignment": "1",
+                "has_pickup": "0",
+                "has_delivery": "1",
+                "layout_type": "0",
+                "tracking_link": 1,
+                "timezone": "-330",
+                "fleet_id": "' . $task['fleet_id'] . '",
+                "notify": 1,
+                "tags": "",
+                "geofence": 0
+            }';
+
+            //echo "<pre>";print_r($td);echo "</pre>";die;
+
+            //die;
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.tookanapp.com/v2/create_task',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $td,
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                ),
+            ));
+
+            $response[] = curl_exec($curl);
+
+            curl_close($curl);
+
+        }
+        //echo "<pre>";print_r($response);echo "</pre>";die;
+        return $response;
+
+    }
+
+    
 }
