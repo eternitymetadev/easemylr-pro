@@ -231,9 +231,8 @@ span.round-tab:hover {
                         
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id"
-                                        id="select_consignee">
-                                        <option value="">Select Consignee</option>
+                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id" id="select_consignee">
+                                <option value="">Select Consignee</option>
                             </select>
                             <div id="consignee_address">
 

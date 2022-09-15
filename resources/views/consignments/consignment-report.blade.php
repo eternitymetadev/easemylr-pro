@@ -53,7 +53,8 @@
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-                <div class="mb-4">
+                <div class="mb-4 mt-3">
+                <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
                 <form id="filter_report">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
@@ -65,13 +66,15 @@
                                 <input type="date" class="form-control" name="last_date">
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
-                                padding: 9px; width: 111px">Filter Data</button>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
+                                padding: 9px; width: 130px"><span class="indicator-label">Filter Data</span>
+                               <span class="indicator-progress" style="display: none;">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
                             </div>
                         </div>
                     </form>
                     @csrf
-                    <table id="consignment_report" class="table table-hover" style="width:100%">
+                    <table id="consignment_report" class="table table-hover table-responsive" style="width:100%">
                    
                         <thead>
                             <tr>
@@ -79,6 +82,7 @@
                                 <th>LR No</th>
                                 <th>LR Date</th>
                                 <th>Order No</th>
+                                <th>Regional Client</th>
                                 <th>Consigner</th>
                                 <th>Consigner City</th>
                                 <th>Consignee Name</th>
@@ -105,8 +109,7 @@
                         <tbody>
 
                             @foreach($consignments as $consignment)
-                            <?php
-                            //
+                             <?php 
                                 $start_date = strtotime($consignment['consignment_date']);
                                 $end_date = strtotime($consignment['delivery_date']);
                                 $tat = ($end_date - $start_date) / 60 / 60 / 24;
@@ -134,15 +137,20 @@
                                     $order_item['orders'] = implode(',', $order);
                                     $order_item['invoices'] = implode(',', $invoices);
                                     $invoice['date'] = implode(',', $inv_date);
-                                    $invoice['amt'] = implode(',', $inv_amt);?>
-
+                                    $invoice['amt'] = implode(',', $inv_amt);
+                                    if(!empty($order_item['orders'])){?>
+                                   
                                     <td>{{ $order_item['orders'] ?? "-" }}</td>
+                                    <?php }else{?>
+                                        <td>-</td>
+                                  <?php  } ?>
 
                                 <?php }else{ ?>
                                     <td>-</td>
                                <?php } }else{ ?>
                                 <td>{{ $consignment['order_id'] ?? "-" }}</td>
                                 <?php  } ?>
+                                <td>{{ $consignment['consigner_detail']['get_reg_client']['name'] ?? "-" }}</td>
                                 <td>{{ $consignment['consigner_detail']['nick_name'] ?? "-" }}</td>
                                 <td>{{ $consignment['consigner_detail']['city'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['nick_name'] ?? "-" }}</td>
@@ -150,11 +158,22 @@
                                 <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
-                                <?php if(empty($consignment['invoice_no'])){ ?>
+                                <?php if(empty($consignment['invoice_no'])){ 
+                                    if(!empty( $order_item['invoices'])){?>
                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                                <?php }else{ ?>
+                                       <td>-</td>
+                                   <?php } 
+                                   if(!empty($invoice['date'])){?>
                                     <td>{{ $invoice['date'] ?? '-'}}</td>
+                                  <?php }else{ ?>
+                                         <td>-<td>
+                                  <?php } 
+                                  if(!empty($invoice['amt'] )){?>
                                     <td>{{ $invoice['amt'] ?? '-'}}</td>
-                               <?php  } else{ ?>
+                                 <?php }else{?>
+                                 <td>-</td>
+                               <?php }  } else{ ?>
                                     <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
                                     <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
                                     <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
@@ -177,7 +196,9 @@
                                 <?php
                                 if ($consignment['delivery_status'] == 'Assigned') {?>
                                 <td>Assigned</td>
-                                <?php } elseif ($consignment['delivery_status'] == 'Started') {?>
+                                <?php } elseif ($consignment['delivery_status'] == 'Unassigned') {?>
+                                <td>Unassigned</td>
+                                <?php }elseif ($consignment['delivery_status'] == 'Started') {?>
                                 <td>Started</td>
                                 <?php } elseif ($consignment['delivery_status'] == 'Successful') {?>
                                 <td>Successful</td>
@@ -189,10 +210,10 @@
                                 <?php } else {?>
                                 <td>{{ $tat }}</td>
                                 <?php } if($consignment['job_id']== ''){?>
-                                    <td>Manual</td>
-                                    <?php }else{?>
-                                        <td>Online</td>
-                                        <?php } ?>
+                                   <td>Manual</td>
+                                 <?php }else{?>
+                                    <td>Online</td>
+                                <?php } ?>
                             </tr>
                             @endforeach
                         </tbody>
@@ -220,9 +241,13 @@
             beforeSend: function () {
                 $('#consignment_report').dataTable().fnClearTable();
                 $('#consignment_report').dataTable().fnDestroy();
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
             },
             success: (data) => {
-            // console.log(data.fetch); return false;
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
+            
                 $.each(data.fetch, function (key, value) {
                     var orderid = [];
                     var invno = [];
@@ -354,20 +379,26 @@
                     }else{
                         var delivery_type = 'Online';
                     }
+                    /////
+                    if(value.consigner_detail.get_reg_client == null || value.consigner_detail.get_reg_client == ''){
+                        var rgnl_clt = '-';
+                    }else{
+                        var rgnl_clt = value.consigner_detail.get_reg_client.name ;
+                    }
                     
 
                     /////
                     // var iv = value.invoice_date;
                     // var inv_date = iv.split('-');
                     // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
-                    if(value.vehicletype ==null || value.vehicletype == ''){
+                    if(value.vehicletype == null || value.vehicletype == ''){
                         var vechl_typ = '-';
                     }else{
                         var vechl_typ = value.vehicletype.name;
                     }
 
 
-                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + vechl_typ + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
+                    $('#consignment_report tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + rgnl_clt + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vechile_number + "</td><td>" + vechl_typ + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
 
                 });
                 $('#consignment_report').DataTable({

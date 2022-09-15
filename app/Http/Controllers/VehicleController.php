@@ -16,6 +16,7 @@ use Crypt;
 use Validator;
 use DataTables;
 use Storage;
+use Auth;
 
 class VehicleController extends Controller
 {
@@ -32,21 +33,34 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        if ($request->ajax()) {
-            $data = Vehicle::orderby('id','DESC')->with('State')->get();
-            return Datatables::of($data)->addIndexColumn()
-            ->addColumn('state_id', function($row)
-            {
-                return ($row->State->name ?? '-'); 
-            })
-            ->addColumn('regndate', function($row)
-            {
-                if($row->regndate){
-                    $date = date("d-m-Y", strtotime($row->regndate));
+  
+        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
+    }
+
+    public function getData(Request $request) {
+        // $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+
+        if($authuser->role_id == 1 ){
+            $this->prefix = 'admin';
+        }
+        elseif($authuser->role_id == 2 ){
+            $this->prefix = 'branch-manager';
+        }else{
+            $this->prefix ='';
+        }
+
+        $arrData = \DB::table('vehicles');
+        $arrDatas = $arrData->get();
+
+        return Datatables::of($arrData)->addIndexColumn()
+            ->addColumn('rc_image', function ($arrData) {
+                if($arrData->rc_image == null){
+                    $rc_image = '-';
                 }else{
-                    $date = '-';
+                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->rc_image).' " target="_blank">view</a>';
                 }
-                return $date;
+                return $rc_image;
             })
             ->addColumn('action', function($row){
                 $actionBtn = '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>';
@@ -56,11 +70,9 @@ class VehicleController extends Controller
                 $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
                 return $actionBtn;
             })
-          ->rawColumns(['action'])
+            ->rawColumns(['action', 'rc_image'])
                 ->make(true);
-        }
 
-        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
     }
 
     /**

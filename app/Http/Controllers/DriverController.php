@@ -33,6 +33,7 @@ class DriverController extends Controller
         $this->prefix = request()->route()->getPrefix();
         if ($request->ajax()) {
             $data = Driver::orderBy('id','DESC')->get();
+            
             return datatables()->of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -43,7 +44,15 @@ class DriverController extends Controller
                         $btn .= '<a class="delete btn btn-sm btn-danger delete_driver" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-driver').'"><i class="fa fa-trash"></i></a>';
                         return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->addColumn('licence', function ($data) {
+                        if($data->license_image == null){
+                            $licence = '-';
+                        }else{
+                            $licence = '<a href="'.URL::to('/storage/images/driverlicense_images/'.$data->license_image).' " target="_blank">view</a>';
+                        }        
+                        return $licence;
+                    })
+                    ->rawColumns(['action', 'licence'])
                     ->make(true);
         }
         return view('drivers.driver-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);

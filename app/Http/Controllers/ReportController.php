@@ -14,8 +14,9 @@ use App\Models\TransactionSheet;
 use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
+use App\Models\User;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
-use Auth;
+use Auth; 
 use DB;
 use QrCode;
 use Storage;
@@ -35,18 +36,30 @@ class ReportController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == 4){
-                $query = $query->where('consignment_notes.status', '!=', 5)->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
-            }else{
-                $query = $query->where('consignment_notes.status', '!=', 5)->where('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();    
-               
-            }
-        } else {
-            $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();  
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-            }
-            $consignments = json_decode(json_encode($query), true);
+        if($authuser->role_id ==1)
+        {
+            $query = $query
+            ->where('consignment_date', '>=', $date)
+            ->where('status', '!=', 5)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query
+            ->where('consignment_date', '>=', $date)
+            ->where('status', '!=', 5)
+            ->whereIn('user_id', [$authuser->id, $user->id])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
+
+        }else{
+            $query = $query->where('status', '!=', 5)
+            ->where('branch_id', $cc)
+            ->where('consignment_date', '>=', $date)
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+        } 
+        $consignments = json_decode(json_encode($query), true);
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix]);
     }
     public function getFilterReportall(Request $request)
@@ -56,25 +69,24 @@ class ReportController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id !=1){
-            if($authuser->role_id == 4){
-                $query = $query->where('user_id', $authuser->id)
-                ->where('consignment_notes.status', '!=', 5)
-                ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-                ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();  
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-            }else{
-                $query = $query->whereIn('branch_id', $cc)
-                ->where('consignment_notes.status', '!=', 5)
-                ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-                ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
-            }
-        } else {
+        if($authuser->role_id ==1){
             $query = $query
-            ->where('consignment_notes.status', '!=', 5)
-            ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
-      
+            ->where('status', '!=', 5)
+            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('user_id', [$authuser->id, $user->id])
+            ->where('status', '!=', 5)
+            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();  
+
+        }else{
+            $query = $query->whereIn('branch_id', $cc)
+            ->where('status', '!=', 5)
+            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }
         $consignments = json_decode(json_encode($query), true);
 
