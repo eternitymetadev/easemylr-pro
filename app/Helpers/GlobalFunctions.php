@@ -201,7 +201,7 @@ class GlobalFunctions {
             }else{
                 $datecount = 0;
             }
-        return $datecount;
+          return $datecount;
     }
 
 
