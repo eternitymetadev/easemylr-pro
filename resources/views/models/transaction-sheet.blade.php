@@ -89,6 +89,7 @@
                                     <th>LR No</th> 
                                     <th>Consignee</th>
                                     <th>City</th>
+                                    <th>EDD</th>
                                     <th>Delivery Date</th>
                                     <th>Upload Image</th>
                                     <th>Action</th>
