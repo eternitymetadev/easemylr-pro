@@ -92,8 +92,8 @@ class MisReportExport implements FromCollection, WithHeadings,ShouldQueue
                   $invamt = $invoice['amt']  ?? '-';
                }else{
                 $invno =  $value->invoice_no ?? '-';
-                $invdate = $invoice->invoice_date  ?? '-';
-                $invamt = $invoice->invoice_amount  ?? '-';
+                $invdate = $value->invoice_date  ?? '-';
+                $invamt = $value->invoice_amount  ?? '-';
                }
 
                if($value->status == 1){
