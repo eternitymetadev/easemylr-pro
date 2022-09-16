@@ -51,182 +51,38 @@ div.relative {
                 <div class="widget-content widget-content-area br-6">
                    
                     <div class="mb-4 mt-4">
+                    
                     <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
-                    <form id="filter_reportall">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php echo URL::to($prefix.'/secondary_reports'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>">
+                        <div class="input-group-btn">
+                           <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                     </div>
+                    <form id="">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
                                 <label>from</label>
-                                <input type="date" class="form-control" name="first_date">
+                                <input type="date" id="startdate" class="form-control" name="startdate">
                             </div>
                             <div class="col-sm-4">
                                 <label>To</label>
-                                <input type="date" class="form-control" name="last_date">
+                                <input type="date" id="enddate" class="form-control" name="enddate">
                             </div>
                             <div class="col-4">
-                            <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
-                                padding: 9px; width: 130px"><span class="indicator-label">Filter Data</span>
-                               <span class="indicator-progress" style="display: none;">Please wait...
-                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
-                                <!-- <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;
-                                padding: 9px; width: 111px">Filter Data</button> -->
+                            <button type="button" id="filter_reportall" class="btn btn-primary" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
+                                <span class="indicator-label">Filter Data</span>
+                                <span class="indicator-progress" style="display: none;">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button> 
                             </div>
                         </div>
                     </form>
                         @csrf
-                        <table id="consignment_reportall" class="table table-hover" style="width:100%">
-                            <div class="btn-group relative">
-                                <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
-                            </div>
-                            <thead>
-                                <tr>
-                                    <!-- <th> </th> --> 
-                                    <th>LR No</th>
-                                    <th>LR Date</th>
-                                    <th>Order No</th>
-                                    <th>Base Client</th>
-                                    <th>Regional Client</th>
-                                    <th>Consigner</th>
-                                    <th>Consigner City</th>
-                                    <th>Consignee Name</th>
-                                    <th>City</th>
-                                    <th>Pin Code</th> 
-                                    <th>District</th>
-                                    <th>State</th>
-                                    <th>Ship To Name</th>
-                                    <th>Ship To City</th>
-                                    <th>Ship To pin code</th>
-                                    <th>Ship To District</th>
-                                    <th>Ship To State</th>
-                                    <th>Invoice No</th>
-                                    <th>Invoice Date</th>
-                                    <th>Invoice Amount</th>
-                                    <th>Vehicle No</th>
-                                    <th>Vehicle Type</th>
-                                    <th>Transporter Name</th>
-                                    <th>Purchase Price</th>
-                                    <th>Boxes</th>
-                                    <th>Net Weight</th>
-                                    <th>Gross Weight</th>
-                                    <th>Driver Name</th>
-                                    <th>Driver Number</th>
-                                    <th>Driver Fleet</th>
-                                    <th>LR Status</th>
-                                    <th>Dispatch Date</th>
-                                    <th>Delivery Date</th>
-                                    <th>Delivery Status</th>
-                                    <th>TAT</th>
-                                    <th>Delivery Mode</th>
-                                  
-                                </tr>
-                            </thead>
-                            <tbody>
-                           
-                           @foreach($consignments as $consignment)
-                           <?php
-                               $start_date = strtotime($consignment['consignment_date']);
-                               $end_date = strtotime($consignment['delivery_date']);
-                               $tat = ($end_date - $start_date)/60/60/24;
-                           ?>
-                           <tr>
-                               <td>{{ $consignment['id'] ?? "-" }}</td>
-                               <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
-                               <?php if(empty($consignment['order_id'])){ 
-                                if(count($consignment['consignment_items'])>0){
-                               //    echo'<pre>'; print_r($consignment['consignment_items']); die;
-                               $order = array();
-                               $invoices = array();
-                               $inv_date = array();
-                               $inv_amt = array();
-                               foreach($consignment['consignment_items'] as $orders){ 
-                                   
-                                   $order[] = $orders['order_id'];
-                                   $invoices[] = $orders['invoice_no'];
-                                   $inv_date[] = Helper::ShowDayMonthYearslash($orders['invoice_date']);
-                                   $inv_amt[] = $orders['invoice_amount'];
-                               }
-                               //echo'<pre>'; print_r($order); die;
-                               $order_item['orders'] = implode(',', $order);
-                               $order_item['invoices'] = implode(',', $invoices);
-                               $invoice['date'] = implode(',', $inv_date);
-                               $invoice['amt'] = implode(',', $inv_amt);?>
-
-                               <td>{{ $order_item['orders'] ?? "-" }}</td>
-
-                           <?php }else{ ?>
-                               <td>-</td>
-                          <?php } }else{ ?>
-                           <td>{{ $consignment['order_id'] ?? "-" }}</td>
-                           <?php  } ?>
-                               <td>{{ $consignment['consigner_detail']['get_reg_client']['base_client']['client_name'] ?? "-" }}</td>
-                               <td>{{ $consignment['consigner_detail']['get_reg_client']['name'] ?? "-" }}</td>
-                               <td>{{ $consignment['consigner_detail']['nick_name'] ?? "-" }}</td>
-                               <td>{{ $consignment['consigner_detail']['city'] ?? "-" }}</td>
-                               <td>{{ $consignment['consignee_detail']['nick_name'] ?? "-" }}</td>
-                               <td>{{ $consignment['consignee_detail']['city'] ?? "-" }}</td>
-                               <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
-                               <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
-                               <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
-                               <td>{{ $consignment['shipto_detail']['nick_name'] ?? "-" }}</td>
-                               <td>{{ $consignment['shipto_detail']['city'] ?? "-" }}</td>
-                               <td>{{ $consignment['shipto_detail']['postal_code'] ?? "-" }}</td>
-                               <td>{{ $consignment['shipto_detail']['district'] ?? "-" }}</td>
-                               <td>{{ $consignment['shipto_detail']['get_state']['name'] ?? "-" }}</td>
-                               <?php if(empty($consignment['invoice_no'])){ ?>
-                               <td>{{ $order_item['invoices'] ?? "-" }}</td>
-                               <td>{{ $invoice['date'] ?? '-'}}</td>
-                               <td>{{ $invoice['amt'] ?? '-' }}</td>
-                          <?php  } else{ ?>
-                               <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
-                               <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
-                               <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
-                           <?php  } ?>
-                               <td>{{ $consignment['vehicle_detail']['regn_no'] ?? "Pending" }}</td>
-                               <td>{{ $consignment['vehicletype']['name'] ?? "-" }}</td>
-                               <td>{{ $consignment['transporter_name'] ?? "-" }}</td>
-                               <td>{{ $consignment['purchase_price'] ?? "-" }}</td>
-                               <td>{{ $consignment['total_quantity'] ?? "-" }}</td>
-                               <td>{{ $consignment['total_weight'] ?? "-" }}</td>
-                               <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
-                               <td>{{ $consignment['driver_detail']['name'] ?? "-" }}</td>
-                               <td>{{ $consignment['driver_detail']['phone'] ?? "-" }}</td>
-                               <td>{{ $consignment['fleet'] ?? "-" }}</td>
-
-                               <?php 
-                               if($consignment['status'] == 0){ ?>
-                                   <td>Cancel</td>
-                               <?php }elseif($consignment['status'] == 1){ ?>
-                                   <td>Active</td>
-                                   <?php }elseif($consignment['status'] == 2){ ?>
-                                   <td>Unverified</td>
-                                   <?php } ?>
-                               <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] )}}</td>
-                               <td>{{ Helper::ShowDayMonthYearslash($consignment['delivery_date'] )}}</td>
-                               <?php 
-                               if($consignment['delivery_status'] == 'Assigned'){ ?>
-                                   <td>Assigned</td>
-                                   <?php }elseif($consignment['delivery_status'] == 'Unassigned'){ ?>
-                                   <td>Unassigned</td>
-                                   <?php }elseif($consignment['delivery_status'] == 'Started'){ ?>
-                                   <td>Started</td>
-                               <?php }elseif($consignment['delivery_status'] == 'Successful'){ ?>
-                                   <td>Successful</td>
-                               <?php }else{?>
-                                   <td>Unknown</td>
-                               <?php }?>
-                               <?php if($consignment['delivery_date'] == ''){?>
-                                   <td> - </td>
-                               <?php }else{?>
-                               <td>{{ $tat }}</td>
-                               <?php } if($consignment['job_id']== ''){?>
-                                   <td>Manual</td>
-                                 <?php }else{?>
-                                    <td>Shadow</td>
-                                <?php } ?>
-                               
-                           </tr>
-                           @endforeach
-                       </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            @include('consignments.consignment-reportAll-ajax')
+                        </div>
                     </div>
                 </div>
             </div>
@@ -237,234 +93,124 @@ div.relative {
 @endsection
 @section('js')
 <script>
-    $('#filter_reportall').submit(function (e) {
-        // alert('k');
-        e.preventDefault();
-        var formData = new FormData(this);
-        $.ajax({
-            url: "get-filter-reportall",
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            type: 'POST',
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            beforeSend: function () {
-                $('#consignment_reportall').dataTable().fnClearTable();
-                $('#consignment_reportall').dataTable().fnDestroy();
-                $(".indicator-progress").show(); 
-                $(".indicator-label").hide();
-            },
-            success: (data) => {
-                $(".indicator-progress").hide();
-                $(".indicator-label").show();
-                $.each(data.fetch, function (key, value) {
-
-                    // console.log(value.consigner_detail.nick_name); return false;
-                    var orderid = [];
-                    var invno = [];
-                    var invdate = [];
-                    var invamt = [];
-
-                    $.each(value.consignment_items, function (key, cnitem) {
-                        orderid.push(cnitem.order_id);
-                        invno.push(cnitem.invoice_no);
-                        invdate.push(cnitem.invoice_date);
-                        invamt.push(cnitem.invoice_amount);
-                    });
-
-                    if(value.order_id == null || value.order_id == ''){
-                      var itm_order = orderid.join(",");
-                      var itm_inv = invno.join(",");
-                      var itm_invdate = invdate.join(",");
-                      var itm_amt = invamt.join(",");
-                    }else{
-                      var itm_order = value.order_id;
-                       
-                      if(value.invoice_date == null || value.invoice_date == '')
-                      {
-                            var itm_invdate = '-';
-                      }else{
-                            var iv = value.invoice_date;
-                            var inv_date = iv.split('-');
-                            var invoiceDate = inv_date[2]+'/'+inv_date[1]+'/'+inv_date[0];
-                            var itm_invdate = invoiceDate;
-                      }
-                      var itm_inv = value.invoice_no;
-                      var itm_amt = value.invoice_amount;
-
-                    }
-
-                    //////////////////////////
-                    if (value.status == 0) {
-                        var lrstatus = 'Cancel';
-                    } else if (value.status == 1) {
-                        var lrstatus = 'Active';
-                    } else if (value.status == 2) {
-                        var lrstatus = 'Unverified';
-                    }
-
-                    ///////////
-                    if (value.delivery_date == null || value.delivery_date == '') {
-                        var ddate = '-';
-                    } else {
-                        var ddt = value.delivery_date;
-                          var dd_date = ddt.split('-');
-                          var ddate = dd_date[2]+'/'+dd_date[1]+'/'+dd_date[0];
-                    }
-                    ////////Tat/////
-                    var start = new Date(value.consignment_date);
-                    var end = new Date(value.delivery_date);
-                    var diff = new Date(end - start);
-                    var days = diff / 1000 / 60 / 60 / 24;
-                    if (value.delivery_date == null || value.delivery_date == '') {
-                        var nodat = '-';
-                    } else {
-                        var nodat = days;
-                    }
-                    //////Driver name///////
-                    if(value.driver_detail == null || value.driver_detail == ''){
-                        var driverName = '-';
-                    }else{
-                        var driverName = value.driver_detail.name;
-                    }
-                    ///////////Driver Number///////
-                    if(value.driver_detail == null || value.driver_detail == ''){
-                        var driverPhon = '-';
-                    }else{
-                        var driverPhon = value.driver_detail.phone;
-                    }
-                    ///////////Driver Fleet///////
-                    if(value.fleet == null || value.fleet == ''){
-                        var fleet = '-';
-                    }else{
-                        var fleet = value.fleet;
-                    }
-                    /////
-                    var cn_date = value.consignment_date ;
-                     var arr = cn_date.split('-');
-                     var cndate = arr[2]+'/'+arr[1]+'/'+arr[0]; 
-                    // var getdate = new Date(cn_date).toLocaleString('de-DE',{day:'numeric', month:'short', year:'numeric'}); 
-                    // my_list = getdate.split('. ')
-                    // var cndate = my_list[0]+'-'+my_list[1]+'-'+my_list[2];  
-                    /////////
-                    if(value.vehicle_detail == null || value.vehicle_detail == ''){
-                        var vehicleno = '-';
-                    }else{
-                        var vehicleno = value.vehicle_detail.regn_no;
-                    }
-                    //////////////////////////
-                    if(value.consigner_detail == null || value.consigner_detail == ''){
-                        var cnr_base_client = '-';
-                        var cnr_reg_client = '-';
-                        var cnr_name = '-';
-                        var cnr_city = '-';
-                    }else{
-                        if(value.consigner_detail.get_reg_client == null || value.consigner_detail.get_reg_client == ''){
-                            var cnr_base_client = '-';
-                        }else{
-                           var cnr_base_client = value.consigner_detail.get_reg_client.base_client.client_name;
-                        }
-                        var cnr_reg_client = value.consigner_detail.get_reg_client.name;
-                        var cnr_name = value.consigner_detail.nick_name;
-                        var cnr_city = value.consigner_detail.city;
-                    }
-                    /////////////Consignee check /////////
-                    if(value.consignee_detail == null || value.consignee_detail == ''){
-                        var cnee_name = '-';
-                        var cnee_city = '-';
-                        var cnee_pincode = '-';
-                        var cnee_district = '-';
-                        var cnee_state = '-';
-                    }else{
-                        var cnee_name = value.consignee_detail.nick_name;
-                        var cnee_city = value.consignee_detail.city;
-                        var cnee_pincode = value.consignee_detail.postal_code;
-                        var cnee_district = value.consignee_detail.district;
-                        var cnee_state = value.consignee_detail.get_state;
-                    }
-                    /////////////
-                    if(cnee_state == null || cnee_state == '-'){
-                         var cnstate = '-';
-                    }else{
-                        var cnstate = value.consignee_detail.get_state.name;
-                    }
-                    ////////consignee check end================================
-                    ////ship to detail check
-                    if(value.shipto_detail == null || value.shipto_detail == ''){
-                        var ship_name = '-';
-                        var ship_city = '-';
-                        var ship_pin = '-';
-                        var ship_district = '-';
-                        var ship_state = '-';
-
-                    }else{
-                        var ship_name = value.shipto_detail.nick_name;
-                        var ship_city = value.shipto_detail.city;
-                        var ship_pin = value.shipto_detail.postal_code;
-                        var ship_district = value.shipto_detail.district;
-                        var ship_state = value.shipto_detail.get_state;
-                    }
-                    //////
-                    if(ship_state == null || ship_state == '-'){
-                         var shipstate = '-';
-                    }else{
-                        var shipstate = value.shipto_detail.get_state.name;
-                    }
+   jQuery(document).on('click','#filter_reportall',function(){
+    var startdate = $("#startdate").val();
+    var enddate = $("#enddate").val();
+    var search = jQuery('#search').val();
+    var url =  jQuery('#search').attr('data-action');
+    jQuery.ajax({
+       type      : 'get',
+       url       : 'consignment-report2',
+       data      : {startdate:startdate,enddate:enddate,search:search},
+       headers   : {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+       },
+       dataType  : 'json',
+       success:function(response){
+         if(response.html){
+           jQuery('.table-responsive').html(response.html);
+         }
+       }
+     });
+     return false;
+   });
 
 
-                    // var iv = value.invoice_date;
-                    // var inv_date = iv.split('-');
-                    // var invoiceDate = inv_date[2]+'-'+inv_date[1]+'-'+inv_date[0];
-                    if(value.vehicletype ==null || value.vehicletype == ''){
-                        var vechl_typ = '-';
-                    }else{
-                        var vechl_typ = value.vehicletype.name;
-                    }
-                    ///
-                    if(value.purchase_price == null || value.purchase_price == ''){
-                        var purchasePrice = '-';
-                    }else{
-                        var purchasePrice = value.purchase_price;
-                    }
-                    //////
-                    if(value.job_id == null || value.job_id == ''){
-                        var delivery_type = 'Manual';
-                    }else{
-                        var delivery_type = 'Shadow';
-                    }
+   jQuery(document).on('change', '.report_perpage', function(){
+   var startdate = jQuery('.exp_daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+   var enddate = jQuery('.exp_daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+   if(startdate == enddate)
+   {
+     startdate = "";
+     enddate = "";
+   }
+    var url     = jQuery(this).attr('data-action');
+    var peritem = jQuery(this).val();
+    var search  = jQuery('#search').val();
+      //var getpagetext =  jQuery('.page-item.active span').text();
+      var wineactivestock =  jQuery('#winestocktypetabs li a.active').attr('id');
+      //console.log(activestock);
+      //return false;
+      jQuery.ajax({
+        type      : 'get',
+        url       : url,
+        data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate,wineactivestock:wineactivestock},
+        headers   : {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType  : 'json',
+        success:function(response){
+          if(response.html){
+            if(wineactivestock == 'winesecstock-tab'){
+             // jQuery('#winesecstock-tab .table-responsive').html(response.html);
+               jQuery('#wineprimarystock-tab .table-responsive').html(response.html);
+            }else if(wineactivestock == 'wineprimarystock-tab'){
+              jQuery('#wineprimarystock-tab .table-responsive').html(response.html);
+            } else if(response.page == 'lead_note'){
+             jQuery('#Note .table-responsive').html(response.html);
+           }
+           else if(response.page == 'wine'){
+             jQuery('.table-responsive').html(response.html);
+             setTimeout(function(){
+               if(totalFuturePrice)
+              $('.totalFuturecount').html('£'+totalFuturePrice);
+             },200);
+           }
+           else{
+            jQuery('.table-responsive').html(response.html);
+          }
 
-                    $('#consignment_reportall tbody').append("<tr><td>" + value.id + "</td><td>" + cndate + "</td><td>" + itm_order + "</td><td>" + cnr_base_client + "</td><td>" + cnr_reg_client + "</td><td>" + cnr_name + "</td><td>" + cnr_city + "</td><td>" + cnee_name + "</td><td>" + cnee_city + "</td><td>" + cnee_pincode + "</td><td>" + cnee_district + "</td><td>" + cnstate + "</td><td>" + ship_name + "</td><td>" + ship_city + "</td><td>" + ship_pin + "</td><td>" + ship_district + "</td><td>" + shipstate + "</td><td>" + itm_inv + "</td><td>" + itm_invdate + "</td><td>" + itm_amt + "</td><td>" + vehicleno + "</td><td>" + vechl_typ + "</td><td>" + value.transporter_name + "</td><td>" + purchasePrice + "</td><td>" + value.total_quantity + "</td><td>" + value.total_weight + "</td><td>" + value.total_gross_weight + "</td><td>" + driverName + "</td><td>" + driverPhon + "</td><td>" + fleet + "</td><td>" + lrstatus + "</td><td>" + cndate + "</td><td>" + ddate + "</td><td>" + value.delivery_status + "</td><td>" + nodat + "</td><td>" + delivery_type + "</td></tr>");
-
-                });
-                $('#consignment_reportall').DataTable({
-                    "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-                        "<'table-responsive'tr>" +
-                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-                    buttons: {
-                        buttons: [
-                            // { extend: 'copy', className: 'btn btn-sm' },
-                            // { extend: 'csv', className: 'btn btn-sm' },
-                            { extend: 'excel', className: 'btn btn-sm' ,title: '', },
-                            // { extend: 'print', className: 'btn btn-sm' }
-                        ]
-                    },
-                    "oLanguage": {
-                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                        "sInfo": "Showing page _PAGE_ of _PAGES_",
-                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                        "sSearchPlaceholder": "Search...",
-                        "sLengthMenu": "Results :  _MENU_",
-                    },
-
-                    "ordering": true,
-                    "paging": true,
-                    "pageLength": 80,
-
-                });
-
-            }
-        });
+        }
+      }
     });
+      return false;
+    });
+
+
+   //// on change per page
+   jQuery(document).on('change', '.perpage', function(){
+    var url     = jQuery(this).attr('data-action');
+    var peritem = jQuery(this).val();
+    var search  = jQuery('#search').val();
+      //var getpagetext =  jQuery('.page-item.active span').text();
+      var wineactivestock =  jQuery('#winestocktypetabs li a.active').attr('id');
+      //console.log(activestock);
+      //return false;
+      jQuery.ajax({
+        type      : 'get',
+        url       : url,
+        data      : {peritem:peritem,search:search,wineactivestock:wineactivestock},
+        headers   : {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType  : 'json',
+        success:function(response){
+          if(response.html){
+            if(wineactivestock == 'winesecstock-tab'){
+             // jQuery('#winesecstock-tab .table-responsive').html(response.html);
+               jQuery('#wineprimarystock-tab .table-responsive').html(response.html);
+            }else if(wineactivestock == 'wineprimarystock-tab'){
+              jQuery('#wineprimarystock-tab .table-responsive').html(response.html);
+            } else if(response.page == 'lead_note'){
+             jQuery('#Note .table-responsive').html(response.html);
+           }
+           else if(response.page == 'wine'){
+             jQuery('.table-responsive').html(response.html);
+             setTimeout(function(){
+               if(totalFuturePrice)
+              $('.totalFuturecount').html('£'+totalFuturePrice);
+             },200);
+           }
+           else{
+            jQuery('.table-responsive').html(response.html);
+          }
+
+        }
+      }
+    });
+      return false;
+    });
+
 </script>
 
 

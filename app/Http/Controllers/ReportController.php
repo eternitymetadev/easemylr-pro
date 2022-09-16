@@ -16,6 +16,8 @@ use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
+use Session;
+use Config;
 use Auth; 
 use DB;
 use QrCode;
@@ -27,9 +29,16 @@ use Response;
 
 class ReportController extends Controller
 {
-    public function consignmentReportsAll()
+    public function consignmentReportsAll(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if(!empty($sessionperitem)){
+          $perpage = $sessionperitem;
+        }else{
+          $perpage = Config::get('variable.PER_PAGE');
+        }
 
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
@@ -40,8 +49,46 @@ class ReportController extends Controller
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
+        $query = $query
+            // ->where('consignment_date', '>=', $date)
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'VehicleType:id,name');
+
         if($authuser->role_id ==1)
         {
+            $query = $query;            
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('user_id', [$authuser->id, $user->id]);   
+        }else{
+            $query = $query->where('branch_id', $cc);
+        }
+
+        if($request->ajax()){
+
+            if(isset($request->peritem)){
+                Session::put('peritem',$request->peritem);
+            }
+  
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $perpage = $peritem;
+            }else{
+                $perpage = Config::get('variable.PER_PAGE');
+            }
+  
+
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
@@ -57,24 +104,39 @@ class ReportController extends Controller
                 'DriverDetail:id,name,fleet_id,phone', 
                 'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
                 'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'vehicletype:id,name')
-            ->orderBy('id','DESC')->get();
-        }elseif($authuser->role_id == 4){
-            $query = $query
-            ->where('consignment_date', '>=', $date)
-            ->where('status', '!=', 5)
-            ->whereIn('user_id', [$authuser->id, $user->id])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
+                'VehicleType:id,name');
 
-        }else{
-            $query = $query->where('status', '!=', 5)
-            ->where('branch_id', $cc)
-            ->where('consignment_date', '>=', $date)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
-        } 
-        $consignments = json_decode(json_encode($query), true);
-        // echo "<pre>", print_r($consignments); die;
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix]);
+            if($authuser->role_id ==1)
+            {
+                $query = $query;            
+            }elseif($authuser->role_id == 4){
+                $query = $query->whereIn('user_id', [$authuser->id, $user->id]);   
+            }else{
+                $query = $query->where('branch_id', $cc);
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($perpage);
+                // $consignments = $consignments->appends($request->query());
+            }else {
+                $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+            }
+
+            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        // $consignments = json_decode(json_encode($query->orderBy('id','DESC')->paginate(100)), true);
+        
+        $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+        // echo "<pre>"; print_r($consignments); die;
+    
+        
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'perpage'=>$perpage]);
     }
     public function getFilterReportall(Request $request)
     {
@@ -89,7 +151,7 @@ class ReportController extends Controller
             // $query = $query
             // ->where('status', '!=', 5)
             // ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            // ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            // ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
 
             $query = $query
             ->where('status', '!=', 5)
@@ -106,20 +168,21 @@ class ReportController extends Controller
                 'DriverDetail:id,name,fleet_id,phone', 
                 'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
                 'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'vehicletype:id,name')
+                'VehicleType:id,name')
             ->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('user_id', [$authuser->id, $user->id])
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();  
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();  
 
         }else{
             $query = $query->whereIn('branch_id', $cc)
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
         }
+
         $consignments = json_decode(json_encode($query), true);
 
         $response['fetch'] = $consignments;
