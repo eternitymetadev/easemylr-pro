@@ -39,6 +39,7 @@ class ReportController extends Controller
         }else{
           $perpage = Config::get('variable.PER_PAGE');
         }
+        // dd($peritem);
 
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
@@ -77,10 +78,10 @@ class ReportController extends Controller
 
         if($request->ajax()){
 
-            if(isset($request->peritem)){
+            if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
-  
+      
             $peritem = Session::get('peritem');
             if(!empty($peritem)){
                 $perpage = $peritem;
@@ -125,7 +126,7 @@ class ReportController extends Controller
                 $consignments = $query->orderBy('id','DESC')->paginate($perpage);
             }
 
-            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments])->render();
+            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'perpage'=>$perpage])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -134,10 +135,10 @@ class ReportController extends Controller
         
         $consignments = $query->orderBy('id','DESC')->paginate($perpage);
         // echo "<pre>"; print_r($consignments); die;
-    
         
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'perpage'=>$perpage]);
     }
+    
     public function getFilterReportall(Request $request)
     {
         $query = ConsignmentNote::query();

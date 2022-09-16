@@ -173,5 +173,24 @@ class DashboardController extends Controller
     {
         return view('forbidden');
     }
+
+    public function ForgotSession(){
+        // Session::forget('lead-search');
+        Session::forget('peritem');
+        Session::forget('startdate'); 
+        Session::forget('endate');
+
+         /***** reservation reset  ***/
+         Session::forget('searchbrokerids');
+         Session::forget('searchstatusids');
+
+   
+         /***** OenoHouse Reset ***/
+         Session::forget('oenohousesearch');
+         Session::forget('internalperitem');
+         
+         $response['success'] = true;
+         return response()->json($response);
+    }
     
 }

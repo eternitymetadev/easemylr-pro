@@ -78,6 +78,12 @@ div.relative {
                             </button> 
                             </div>
                         </div>
+                        <div class="exportExcel ml-2">
+                            <a href="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports'); ?>" class="downloadSecEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                        </div>
+                        <div class="exportExcel ml-2">
+                            <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm secreport_reset_button" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
+                        </div>
                     </form>
                         @csrf
                         <div class="table-responsive">
@@ -209,6 +215,47 @@ div.relative {
       }
     });
       return false;
+    });
+
+    jQuery('body').on('click', '.pagination a', function(){
+        jQuery('.pagination li.active').removeClass('active');
+        jQuery(this).parent('li').addClass('active');
+        var page = jQuery(this).attr('href').split('page=')[1];
+        var pageUrl = jQuery(this).attr('href');
+        var emails = localStorage.getItem('importids');
+        var activeattribute =  jQuery('#myTab li a.active').attr('href');
+        history.pushState({page: page}, "title "+page, "?page="+page)
+        var pagination = "pagination";
+        var currency = $('.currency_change :selected').val();
+
+        $.ajax({
+            type      : 'GET',
+            cache     : false,
+            url       : pageUrl,
+            data      : {page:page,importids:emails,currency:currency},
+            headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType:   'json',
+            success:function(response){
+                if(response.html){
+                    if(response.page == 'lead_note'){
+                        jQuery('#Note .table-responsive').html(response.html);
+                    }
+                    else if(response.page == 'wine'){
+                        jQuery('.table-responsive').html(response.html);
+                        setTimeout(function(){
+                            if(totalFuturePrice)
+                            $('.totalFuturecount').html('£'+totalFuturePrice);
+                        },200);
+                    }
+                    else{
+                        jQuery('.table-responsive').html(response.html);
+                    }
+                }
+            }
+        });
+        return false;
     });
 
 </script>

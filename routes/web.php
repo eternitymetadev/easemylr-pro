@@ -578,6 +578,8 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+Route::get('/forgot-session', [DashboardController::class, 'ForgotSession']);
+
 Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);
 Route::any('track-order', [TrackingController::class, 'trackOrder']);
