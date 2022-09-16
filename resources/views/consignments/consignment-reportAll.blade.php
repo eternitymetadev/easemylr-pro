@@ -222,7 +222,6 @@ div.relative {
                                  <?php }else{?>
                                     <td>Shadow</td>
                                 <?php } ?>
-                               
                            </tr>
                            @endforeach
                        </tbody>
