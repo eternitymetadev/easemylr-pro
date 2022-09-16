@@ -15,6 +15,7 @@ use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
+use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Auth; 
 use DB;
@@ -24,6 +25,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use Excel;
 
 class ReportController extends Controller
 {
@@ -45,7 +47,20 @@ class ReportController extends Controller
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'vehicletype:id,name')
+            ->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query
             ->where('consignment_date', '>=', $date)
@@ -60,6 +75,7 @@ class ReportController extends Controller
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         } 
         $consignments = json_decode(json_encode($query), true);
+        // echo "<pre>", print_r($consignments); die;
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix]);
     }
     public function getFilterReportall(Request $request)
@@ -72,10 +88,28 @@ class ReportController extends Controller
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         if($authuser->role_id ==1){
+            // $query = $query
+            // ->where('status', '!=', 5)
+            // ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
+            // ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+
             $query = $query
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'vehicletype:id,name')
+            ->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('user_id', [$authuser->id, $user->id])
             ->where('status', '!=', 5)
@@ -134,4 +168,33 @@ class ReportController extends Controller
         return view('consignments.admin-report2',["prefix" => $this->prefix, 'lr_data' => $lr_data]);
     }
 
+    // =============================================================================//
+    // ==========================Custom Mis Reports ================================//
+
+    public function misreport()
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $query = ConsignmentNote::query();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        if($authuser->role_id ==1)
+        {
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);
+        }elseif($authuser->role_id == 4){
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);                
+        }else{
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->where('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);
+        } 
+        // $consignments = json_decode(json_encode($query), true);
+        return view('consignments.custom-mis2', ['consignments' => $consignments, 'prefix' => $this->prefix]);
+    }
+
+    public function exportExcelmisreport2()
+    {
+       
+        return Excel::download(new MisReportExport, 'mis report.csv');
+    }
 }
