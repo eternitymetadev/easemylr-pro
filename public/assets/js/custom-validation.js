@@ -990,6 +990,12 @@ jQuery(document).on('click','.drs_cancel',function(event){
                         }else{
                             var deliverydate = value.dd ;
                         }
+
+                        if(value.edd == null || value.edd == ""){
+                            var edd_date = '-';
+                        }else{
+                            var edd_date = value.edd;
+                        }
                         //////button status
                           ///save button check//
                     //    if(value.dd != null && value.signed_drs != null){
@@ -1001,7 +1007,7 @@ jQuery(document).on('click','.drs_cancel',function(event){
                         var alldata = value;  
                         consignmentID.push(alldata.consignment_no);
                         
-                        $('#get-delvery-date tbody').append("<tr><td><input type='hidden' name='data["+i+"][lrno]' class='delivery_d' value='"+ value.consignment_no+ "'>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
+                        $('#get-delvery-date tbody').append("<tr><td><input type='hidden' name='data["+i+"][lrno]' class='delivery_d' value='"+ value.consignment_no+ "'>" + value.consignment_no + "</td><td>" + value.consignee_id + "</td><td>" + value.city + "</td><td>" + edd_date + "</td><td>" + deliverydate + "</td><td>"+field+"</td><td><button type='button'  data-id="+ value.consignment_no +" class='btn btn-primary remover_lr'>remove</button></td></tr>");      
 
                         i++ ;
                     });
