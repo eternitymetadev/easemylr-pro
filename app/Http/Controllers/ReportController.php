@@ -15,6 +15,7 @@ use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
+use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Auth; 
 use DB;
@@ -24,6 +25,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use Excel;
 
 class ReportController extends Controller
 {
@@ -166,4 +168,33 @@ class ReportController extends Controller
         return view('consignments.admin-report2',["prefix" => $this->prefix, 'lr_data' => $lr_data]);
     }
 
+    // =============================================================================//
+    // ==========================Custom Mis Reports ================================//
+
+    public function misreport()
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $query = ConsignmentNote::query();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        if($authuser->role_id ==1)
+        {
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);
+        }elseif($authuser->role_id == 4){
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->where('user_id', $authuser->id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);                
+        }else{
+            $consignments = $query->where('consignment_notes.status', '!=', 5)->where('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->paginate(20);
+        } 
+        // $consignments = json_decode(json_encode($query), true);
+        return view('consignments.custom-mis2', ['consignments' => $consignments, 'prefix' => $this->prefix]);
+    }
+
+    public function exportExcelmisreport2()
+    {
+       
+        return Excel::download(new MisReportExport, 'mis report.csv');
+    }
 }
