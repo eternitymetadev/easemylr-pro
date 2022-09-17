@@ -174,20 +174,69 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $cnee_district = '-';
                 }
 
+                if(empty($consignment->invoice_no)){
+                    $invno =  $order_item['invoices'] ?? '-';
+                    $invdate = $invoice['date']  ?? '-';
+                    $invamt = $invoice['amt']  ?? '-';
+                 }else{
+                  $invno =  $consignment->invoice_no ?? '-';
+                  $invdate = $consignment->invoice_date  ?? '-';
+                  $invamt = $consignment->invoice_amount  ?? '-';
+                 }
+  
+                 if($consignment->status == 1){
+                    $status = 'Active';
+                 }elseif($consignment->status == 2){
+                   $status = 'Unverified';
+                 }elseif($consignment->status == 0){
+                  $status = 'Cancle';
+                 }else{
+                  $status = 'Unknown';
+                 }
+
+                if(!empty($consignment->job_id)){
+                    $deliverymode = 'Shadow';
+                  }else{
+                   $deliverymode = 'Manual';
+                  }
 
                 $arr[] = [
                     'consignment_id'        => $consignment_id,
                     'consignment_date'      => Helper::ShowDayMonthYearslash($consignment_date),
                     'order_id'              => $order_id,
-                    'client_name'           => $baseclient_name,
-                    'name'                  => $regclient_name,
-                    'nick_name'             => $cnr_nickname,
-                    'city'                  => $cnr_city ,
-                    'nick_name'             => $cnee_nickname,
-                    'city'                  => $cnee_city,
-                    'postal_code'           => $cnee_postal_code,
-                    'district'              => $cnee_district,
-                    'state_id'              => @$consignment->ConsigneeDetail->state_id,
+                    'base_client'           => $baseclient_name,
+                    'regional_client'       => $regclient_name,
+                    'consigner_nick_name'   => $cnr_nickname,
+                    'consigner_city'        => $cnr_city ,
+                    'consignee_nick_name'   => $cnee_nickname,
+                    'consignee_city'        => $cnee_city,
+                    'consignee_postal'      => $cnee_postal_code,
+                    'consignee_district'    => $cnee_district,
+                    'consignee_state'       => @$consignment->ConsigneeDetail->GetState->name,
+                    'Ship_to_name'          => @$consignment->ShiptoDetail->nick_name,
+                    'Ship_to_city'          => @$consignment->ShiptoDetail->city,
+                    'Ship_to_pin'           => @$consignment->ShiptoDetail->postal_code,
+                    'Ship_to_district'      => @$consignment->ShiptoDetail->district,
+                    'Ship_to_state'         => @$consignment->ShiptoDetail->GetState->name,
+                    'invoice_no'            => $invno,
+                    'invoice_date'          => $invdate,
+                    'invoice_amt'           => $invamt,
+                    'vehicle_no'            => @$consignment->VehicleDetail->regn_no,
+                    'vehicle_type'          => @$consignment->vehicletype->name,
+                    'transporter_name'      => @$consignment->transporter_name,
+                    'purchase_price'        => @$consignment->purchase_price,
+                    'total_quantity'        => $consignment->total_quantity,
+                    'total_weight'          => $consignment->total_weight,
+                    'total_gross_weight'    => $consignment->total_gross_weight,
+                    'driver_name'           => @$consignment->DriverDetail->name,
+                    'driver_phone'          => @$consignment->DriverDetail->phone,
+                    'driver_fleet'          => @$consignment->DriverDetail->fleet_id,
+                    'lr_status'             => $status,
+                    'dispatch_date'         => @$consignment->consignment_date,
+                    'delivery_date'         => @$consignment->delivery_date,
+                    'delivery_status'       => @$consignment->delivery_status,
+                    'tat'                   => $tat,
+                    'delivery_mode'         => $deliverymode,
 
                 ];
             }
@@ -198,18 +247,42 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     public function headings(): array
     {
         return [
-        'LR No',
-        'LR Date',
-        'Order No',
-        'Base Client',
-        'Regional Client',
-        'Consigner',
-        'Consigner City',
-        'Consignee Name',
-        'City',
-        'Pin Code',
-        'District',
-        'State',
+            'LR No',
+            'LR Date',
+            'Order No',
+            'Base Client',
+            'Regional Client',
+            'Consigner',
+            'Consigner City',
+            'Consignee Name',
+            'Consignee city',
+            'Consignee Pin Code',
+            'Consignee District',
+            'Consignee State',
+            'ShipTo Name',
+            'ShipTo City', 
+            'ShipTo pin',            
+            'ShipTo District',            
+            'ShipTo State',           
+            'Invoice No',
+            'Invoice Date',
+            'Invoice Amount',
+            'Vehicle No',
+            'Vehicle Type',
+            'Transporter Name',
+            'Purchase Price',
+            'Boxes',
+            'Net Weight',
+            'Gross Weight',
+            'Driver Name',
+            'Driver Phone',
+            'Driver Fleet',
+            'Lr Status',
+            'Dispatch Date',
+            'Delivery Date',
+            'Delivery Status',
+            'Tat',
+            'Delivery Mode'
         ];
     }
 }

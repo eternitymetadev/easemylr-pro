@@ -92,22 +92,22 @@ class ReportController extends Controller
             }
   
 
-            // $query = $query
-            // ->where('consignment_date', '>=', $date)
-            // ->where('status', '!=', 5)
-            // ->with(
-            //     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            //     'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-            //     'ConsignerDetail.GetState:id,name',
-            //     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-            //     'ConsigneeDetail.GetState:id,name', 
-            //     'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-            //     'ShiptoDetail.GetState:id,name',
-            //     'VehicleDetail:id,regn_no', 
-            //     'DriverDetail:id,name,fleet_id,phone', 
-            //     'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-            //     'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-            //     'VehicleType:id,name');
+            $query = $query
+            ->where('consignment_date', '>=', $date)
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'VehicleType:id,name');
 
             if($authuser->role_id ==1)
             {
