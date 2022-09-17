@@ -16,6 +16,8 @@ use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\Report2Export;
 use Session;
 use Config;
 use Auth; 
@@ -51,7 +53,6 @@ class ReportController extends Controller
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $query = $query
-            // ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
@@ -77,6 +78,7 @@ class ReportController extends Controller
         }
 
         if($request->ajax()){
+            $query = ConsignmentNote::query();
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -90,22 +92,22 @@ class ReportController extends Controller
             }
   
 
-            $query = $query
-            ->where('consignment_date', '>=', $date)
-            ->where('status', '!=', 5)
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name');
+            // $query = $query
+            // ->where('consignment_date', '>=', $date)
+            // ->where('status', '!=', 5)
+            // ->with(
+            //     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+            //     'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+            //     'ConsignerDetail.GetState:id,name',
+            //     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            //     'ConsigneeDetail.GetState:id,name', 
+            //     'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            //     'ShiptoDetail.GetState:id,name',
+            //     'VehicleDetail:id,regn_no', 
+            //     'DriverDetail:id,name,fleet_id,phone', 
+            //     'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+            //     'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+            //     'VehicleType:id,name');
 
             if($authuser->role_id ==1)
             {
@@ -119,9 +121,31 @@ class ReportController extends Controller
             $startdate = $request->startdate;
             $enddate = $request->enddate;
 
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                            $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($cneequery)use($search,$searchT) {
+                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    });
+                    
+
+                });
+            }
+
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($perpage);
-                // $consignments = $consignments->appends($request->query());
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($perpage);
             }
@@ -228,6 +252,11 @@ class ReportController extends Controller
                 
 
         return view('consignments.admin-report2',["prefix" => $this->prefix, 'lr_data' => $lr_data]);
+    }
+
+    public function exportExcelReport2(Request $request)
+    {
+      return Excel::download(new Report2Export($request->startdate,$request->enddate,$request->search), 'sec_reports.csv');
     }
 
 }

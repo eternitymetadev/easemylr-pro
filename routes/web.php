@@ -190,6 +190,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
 

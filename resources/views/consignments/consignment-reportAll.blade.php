@@ -53,14 +53,15 @@ div.relative {
                     <div class="mb-4 mt-4">
                     
                     <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php echo URL::to($prefix.'/secondary_reports'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>">
-                        <div class="input-group-btn">
-                           <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                        </div>
-                     </div>
+                    
                     <form id="">
                         <div class="row mt-4" style="margin-left: 193px;">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
                             <div class="col-sm-4">
                                 <label>from</label>
                                 <input type="date" id="startdate" class="form-control" name="startdate">
@@ -79,7 +80,7 @@ div.relative {
                             </div>
                         </div>
                         <div class="exportExcel ml-2">
-                            <a href="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports'); ?>" class="downloadSecEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                            <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>" data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>" class="downloadSecEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
                         </div>
                         <div class="exportExcel ml-2">
                             <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm secreport_reset_button" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
@@ -123,8 +124,8 @@ div.relative {
 
 
    jQuery(document).on('change', '.report_perpage', function(){
-   var startdate = jQuery('.exp_daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
-   var enddate = jQuery('.exp_daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+   var startdate = jQuery('#startdate').val();
+   var enddate = jQuery('#enddate').val();
    if(startdate == enddate)
    {
      startdate = "";
