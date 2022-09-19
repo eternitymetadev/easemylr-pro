@@ -182,6 +182,8 @@
         </div>
     </div>
     <div class="ml-auto mr-auto">
-        <nav class="navigation2 text-center" aria-label="Page navigation">{{$consignments->links()}}</nav>
+        <nav class="navigation2 text-center" aria-label="Page navigation">
+            {{$consignments->appends(['startdate'=>$startdate,'enddate'=>$enddate])->render()}}
+        </nav>
     </div>
 </div>

@@ -55,36 +55,36 @@ div.relative {
                     <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
                     
                     <form id="">
-                        <div class="row mt-4" style="margin-left: 193px;">
+                        <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                             <!-- <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php //echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php// echo URL::to($prefix.'/reports/export2'); ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </div>
                             </div> -->
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label>from</label>
                                 <input type="date" id="startdate" class="form-control" name="startdate">
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label>To</label>
                                 <input type="date" id="enddate" class="form-control" name="enddate">
                             </div>
-                            <div class="col-4">
-                            <button type="button" id="filter_reportall" class="btn btn-primary" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
-                                <span class="indicator-label">Filter Data</span>
-                                <span class="indicator-progress" style="display: none;">Please wait...
-                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                </span>
-                            </button> 
+                            <div class="col-6">
+                                <button type="button" id="filter_reportall" class="btn btn-primary" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
+                                    <span class="indicator-label">Filter Data</span>
+                                </button> 
+                                <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>" data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>" class="consignmentReportEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                             </div>
+                            <!-- <div class="exportExcel ml-2 col-3">
+                               
+                            </div>
+                            <div class="exportExcel ml-2">
+                             
+                            </div> -->
                         </div>
-                        <div class="exportExcel ml-2">
-                            <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>" data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>" class="consignmentReportEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
-                        </div>
-                        <div class="exportExcel ml-2">
-                            <a href="javascript:void();" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
-                        </div>
+                        
                     </form>
                         @csrf
                         <div class="table-responsive">
@@ -200,46 +200,39 @@ div.relative {
         return false;
     });
 
-    // jQuery('body').on('click', '.pagination a', function(){
-    //     jQuery('.pagination li.active').removeClass('active');
-    //     jQuery(this).parent('li').addClass('active');
-    //     var page = jQuery(this).attr('href').split('page=')[1];
-    //     var pageUrl = jQuery(this).attr('href');
-    //     // var emails = localStorage.getItem('importids');
-    //     var activeattribute =  jQuery('#myTab li a.active').attr('href');
-    //     history.pushState({page: page}, "title "+page, "?page="+page)
-    //     var pagination = "pagination";
-    //     // var currency = $('.currency_change :selected').val();
+    jQuery('body').on('click', '.pagination a', function(){
+        jQuery('.pagination li.active').removeClass('active');
+        jQuery(this).parent('li').addClass('active');
+        var page = jQuery(this).attr('href').split('page=')[1];
+        var pageUrl = jQuery(this).attr('href');
+        history.pushState({page: page}, "title "+page, "?page="+page)
+        var pagination = "pagination";
+        // var startdate = jQuery('#startdate').val();
+        // var enddate = jQuery('#enddate').val();
+        // if(startdate == enddate)
+        // {
+        //     startdate = "";
+        //     enddate = "";
+        // }
 
-    //     $.ajax({
-    //         type      : 'GET',
-    //         cache     : false,
-    //         url       : pageUrl,
-    //         data      : {page:page},
-    //         headers   : {
-    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         dataType:   'json',
-    //         success:function(response){
-    //             if(response.html){
-    //                 if(response.page == 'lead_note'){
-    //                     jQuery('#Note .table-responsive').html(response.html);
-    //                 }
-    //                 else if(response.page == 'wine'){
-    //                     jQuery('.table-responsive').html(response.html);
-    //                     setTimeout(function(){
-    //                         if(totalFuturePrice)
-    //                         $('.totalFuturecount').html('£'+totalFuturePrice);
-    //                     },200);
-    //                 }
-    //                 else{
-    //                     jQuery('.table-responsive').html(response.html);
-    //                 }
-    //             }
-    //         }
-    //     });
-    //     return false;
-    // });
+        $.ajax({
+            type      : 'GET',
+            cache     : false,
+            url       : pageUrl,
+            data      : {page:page},
+            headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType:   'json',
+            success:function(response){
+                if(response.html){
+                    jQuery('.table-responsive').html(response.html);
+                }
+            }
+        });
+        return false;
+    });
+
 
     jQuery(document).on('click','.consignmentReportEx',function(event){
         event.preventDefault();

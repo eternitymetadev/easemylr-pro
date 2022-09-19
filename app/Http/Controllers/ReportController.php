@@ -48,9 +48,9 @@ class ReportController extends Controller
 
         $sessionperitem = Session::get('peritem');
         if(!empty($sessionperitem)){
-          $peritem = $sessionperitem;
+            $peritem = $sessionperitem;
         }else{
-          $peritem = Config::get('variable.PER_PAGE');
+            $peritem = Config::get('variable.PER_PAGE');
         }
 
         $query = ConsignmentNote::query();
@@ -95,17 +95,7 @@ class ReportController extends Controller
             }
 
             $query = ConsignmentNote::query();
-
-            if($request->peritem){
-                Session::put('peritem',$request->peritem);
-            }
-    
-            $peritem = Session::get('peritem');
-            if(!empty($peritem)){
-                $peritem = $peritem;
-            }else{
-                $peritem = Config::get('variable.PER_PAGE');
-            }
+            
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
@@ -158,13 +148,24 @@ class ReportController extends Controller
                 });
             }
 
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($peritem);
             }
 
-            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem,'startdate'=>$request->startdate,'enddate'=>$request->enddate])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -174,7 +175,7 @@ class ReportController extends Controller
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         // echo "<pre>"; print_r($consignments); die;
         
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem,'startdate'=>'','enddate'=>'']);
     }
     
     public function getFilterReportall(Request $request)
