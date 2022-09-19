@@ -549,6 +549,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
 
     Route::any('client-report', [ClientController::class, 'clientReport']);
     Route::get('/consignment-regclient', [ClientController::class, 'getConsignmentClient']);
+    Route::get('clients/export', [ClientController::class, 'clientReportExport']);
 
 
 });
