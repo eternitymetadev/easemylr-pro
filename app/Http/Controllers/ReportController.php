@@ -28,20 +28,30 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use URL;
 
 class ReportController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
+
+    public function __construct()
+    {
+      $this->title =  "Secondary Reports";
+      $this->segment = \Request::segment(2);
+    }
+
     public function consignmentReportsAll(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
         if(!empty($sessionperitem)){
-          $perpage = $sessionperitem;
+          $peritem = $sessionperitem;
         }else{
-          $perpage = Config::get('variable.PER_PAGE');
+          $peritem = Config::get('variable.PER_PAGE');
         }
-        // dd($peritem);
 
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
@@ -78,20 +88,24 @@ class ReportController extends Controller
         }
 
         if($request->ajax()){
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
             $query = ConsignmentNote::query();
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
-      
+    
             $peritem = Session::get('peritem');
             if(!empty($peritem)){
-                $perpage = $peritem;
+                $peritem = $peritem;
             }else{
-                $perpage = Config::get('variable.PER_PAGE');
+                $peritem = Config::get('variable.PER_PAGE');
             }
-  
-
             $query = $query
             ->where('consignment_date', '>=', $date)
             ->where('status', '!=', 5)
@@ -145,22 +159,22 @@ class ReportController extends Controller
             }
 
             if(isset($startdate) && isset($enddate)){
-                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($perpage);
+                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
             }else {
-                $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+                $consignments = $query->orderBy('id','DESC')->paginate($peritem);
             }
 
-            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'perpage'=>$perpage])->render();
+            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
 
             return response()->json(['html' => $html]);
         }
 
         // $consignments = json_decode(json_encode($query->orderBy('id','DESC')->paginate(100)), true);
         
-        $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         // echo "<pre>"; print_r($consignments); die;
         
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'perpage'=>$perpage]);
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
     
     public function getFilterReportall(Request $request)
@@ -249,14 +263,12 @@ class ReportController extends Controller
                 ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
                 ->join('locations', 'locations.id', '=', 'regional_clients.location_id')
                 ->get();
-                
-
         return view('consignments.admin-report2',["prefix" => $this->prefix, 'lr_data' => $lr_data]);
     }
 
     public function exportExcelReport2(Request $request)
     {
-      return Excel::download(new Report2Export($request->startdate,$request->enddate,$request->search), 'sec_reports.csv');
+      return Excel::download(new Report2Export($request->startdate,$request->enddate), 'sec_reports.csv');
     }
 
 }

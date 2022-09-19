@@ -171,9 +171,9 @@
                         </div>
                         <div class="col-md-6">
                             <select class="form-control report_perpage" data-action="<?php echo url()->current(); ?>">
-                                <option value="10" {{$perpage == '10' ? 'selected' : ''}}>10</option>
-                                <option value="50" {{$perpage == '50' ? 'selected' : ''}}>50</option>
-                                <option value="100" {{$perpage == '100'? 'selected' : ''}}>100</option>
+                                <option value="10" {{$peritem == '10' ? 'selected' : ''}}>10</option>
+                                <option value="50" {{$peritem == '50' ? 'selected' : ''}}>50</option>
+                                <option value="100" {{$peritem == '100'? 'selected' : ''}}>100</option>
                             </select>
                         </div>
                     </div>

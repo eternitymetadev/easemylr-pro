@@ -26,12 +26,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
     protected $startdate;
     protected $enddate;
-    protected $search;
+    // protected $search;
 
-    function __construct($startdate,$enddate,$search) {
+    function __construct($startdate,$enddate) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        $this->search = $search;
+        // $this->search = $search;
     }
 
     public function collection()
@@ -63,8 +63,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $cneequery->where('nick_name', 'like', '%' . $search . '%');
                     });
                 });
-                
-
             });
         }
 
