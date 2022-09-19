@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form">
+                        <form class="general_form" id="vendor-master">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span class="text-danger">*</span></label>
@@ -72,7 +72,13 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan Upload</label>
-                                    <input type="text" class="form-control" name="pan_upload" placeholder="">
+                                    <input type="file" class="form-control" name="pan_upload" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Cancle Cheaque</label>
+                                    <input type="file" class="form-control" name="pan_upload" placeholder="">
                                 </div>
                             </div>
                             
