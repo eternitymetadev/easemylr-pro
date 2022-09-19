@@ -344,7 +344,7 @@ div.relative {
                     data:{page_id_array:page_id_array, action:'update'},
                     success:function()
                     {
-                        load_data();
+                         load_data();
                     }
                 })
             }
