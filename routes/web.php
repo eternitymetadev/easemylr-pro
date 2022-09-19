@@ -190,6 +190,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
+    Route::any('mis-report2', [ReportController::class, 'misreport']);
+    Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
 
@@ -283,6 +285,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
+    Route::any('mis-report2', [ReportController::class, 'misreport']);
+    Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
 
 
 });
@@ -382,6 +386,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
+    Route::any('mis-report2', [ReportController::class, 'misreport']);
+    Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
 
 
     
@@ -481,6 +487,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
+    Route::any('mis-report2', [ReportController::class, 'misreport']);
+    Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
 
 
     

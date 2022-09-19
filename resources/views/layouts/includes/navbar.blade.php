@@ -175,6 +175,9 @@
                         <li>
                             <a href="{{$prefixurl.'admin-report2'}}"> Admin Report 2</a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'mis-report2'}}"> Test Mis2</a>
+                        </li>
                         <?php } ?>
                     </ul>
                 </li>

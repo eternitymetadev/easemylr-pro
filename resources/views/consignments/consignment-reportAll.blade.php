@@ -189,7 +189,7 @@ div.relative {
                                <td>{{ $consignment['total_gross_weight'] ?? "-" }}</td>
                                <td>{{ $consignment['driver_detail']['name'] ?? "-" }}</td>
                                <td>{{ $consignment['driver_detail']['phone'] ?? "-" }}</td>
-                               <td>{{ $consignment['fleet'] ?? "-" }}</td>
+                               <td>{{ $consignment['driver_detail']['fleet_id'] ?? "-" }}</td>
 
                                <?php 
                                if($consignment['status'] == 0){ ?>
@@ -222,7 +222,6 @@ div.relative {
                                  <?php }else{?>
                                     <td>Shadow</td>
                                 <?php } ?>
-                               
                            </tr>
                            @endforeach
                        </tbody>
