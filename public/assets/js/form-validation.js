@@ -937,6 +937,39 @@ jQuery(document).ready(function(){
         }
     });
 
+    //consignment multiple rows field validation
+
+    $(".qnt").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                // lettersonly:true,
+                messages: {
+                    required: "Enter quantity."
+                },
+            });
+    });
+    $(".net").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                // lettersonly:true,
+                messages: {
+                    required: "Enter net weight."
+                },
+            });
+    });
+    $(".gross").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                // lettersonly:true,
+                messages: {
+                    required: "Enter gross weight."
+                },
+            });
+    });
+
     /*===== create order =====*/
     $('#createorder').validate({ 
         rules: {

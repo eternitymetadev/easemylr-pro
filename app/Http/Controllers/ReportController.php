@@ -15,6 +15,7 @@ use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
+use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Report2Export;
@@ -29,6 +30,7 @@ use DataTables;
 use Helper;
 use Response;
 use URL;
+
 
 class ReportController extends Controller
 {
@@ -194,7 +196,7 @@ class ReportController extends Controller
                 'VehicleType:id,name')
             ->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('user_id', [$authuser->id, $user->id])
+            $query =  $query->whereIn('consignment_notes.regclient_id', $regclient)
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();  
@@ -254,5 +256,6 @@ class ReportController extends Controller
     {
       return Excel::download(new Report2Export($request->startdate,$request->enddate), 'sec_reports.csv');
     }
+
 
 }
