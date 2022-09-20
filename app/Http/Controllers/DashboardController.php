@@ -173,5 +173,18 @@ class DashboardController extends Controller
     {
         return view('forbidden');
     }
+
+    public function ForgotSession(){
+        // Session::forget('lead-search');
+        Session::forget('peritem');
+        Session::forget('startdate'); 
+        Session::forget('endate');
+        
+         Session::forget('internalperitem');
+         
+         $response['success'] = true;
+         return response()->json($response);
+    }
+    
     
 }
