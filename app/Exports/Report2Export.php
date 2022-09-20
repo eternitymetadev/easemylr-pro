@@ -79,6 +79,11 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
+                if(empty($consignment->delivery_date)){
+                    $tatday = '-';
+                  }else{
+                   $tatday = $tat;
+                  }
 
                 
                 
@@ -124,54 +129,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $order_id = $consignment->order_id;
                 }
 
-                if(!empty($consignment->ConsignerDetail->GetRegClient->BaseClient->client_name )){
-                    $baseclient_name = ucfirst($consignment->ConsignerDetail->GetRegClient->BaseClient->client_name);
-                }else{
-                    $baseclient_name = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->GetRegClient->name )){
-                    $regclient_name = ucfirst($consignment->ConsignerDetail->GetRegClient->name);
-                }else{
-                    $regclient_name = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->nick_name )){
-                    $cnr_nickname = ucfirst($consignment->ConsignerDetail->nick_name);
-                }else{
-                    $cnr_nickname = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->city )){
-                    $cnr_city = ucfirst($consignment->ConsignerDetail->city);
-                }else{
-                    $cnr_city = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->nick_name )){
-                    $cnee_nickname = ucfirst($consignment->ConsigneeDetail->nick_name);
-                }else{
-                    $cnee_nickname = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->city )){
-                    $cnee_city = ucfirst($consignment->ConsigneeDetail->city);
-                }else{
-                    $cnee_city = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->postal_code )){
-                    $cnee_postal_code = ucfirst($consignment->ConsigneeDetail->postal_code);
-                }else{
-                    $cnee_postal_code = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->district )){
-                    $cnee_district = ucfirst($consignment->ConsigneeDetail->district);
-                }else{
-                    $cnee_district = '-';
-                }
-
                 if(empty($consignment->invoice_no)){
                     $invno =  $order_item['invoices'] ?? '-';
                     $invdate = $invoice['date']  ?? '-';
@@ -202,14 +159,14 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignment_id'        => $consignment_id,
                     'consignment_date'      => Helper::ShowDayMonthYearslash($consignment_date),
                     'order_id'              => $order_id,
-                    'base_client'           => $baseclient_name,
-                    'regional_client'       => $regclient_name,
-                    'consigner_nick_name'   => $cnr_nickname,
-                    'consigner_city'        => $cnr_city ,
-                    'consignee_nick_name'   => $cnee_nickname,
-                    'consignee_city'        => $cnee_city,
-                    'consignee_postal'      => $cnee_postal_code,
-                    'consignee_district'    => $cnee_district,
+                    'base_client'           => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
+                    'regional_client'       => @$consignment->ConsignerDetail->GetRegClient->name,
+                    'consigner_nick_name'   => @$consignment->ConsignerDetail->nickname,
+                    'consigner_city'        => @$consignment->ConsignerDetail->city ,
+                    'consignee_nick_name'   => @$consignment->ConsigneeDetail->nickname,
+                    'consignee_city'        => @$consignment->ConsigneeDetail->city,
+                    'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,
+                    'consignee_district'    => @$consignment->ConsigneeDetail->district,
                     'consignee_state'       => @$consignment->ConsigneeDetail->GetState->name,
                     'Ship_to_name'          => @$consignment->ShiptoDetail->nick_name,
                     'Ship_to_city'          => @$consignment->ShiptoDetail->city,
@@ -233,7 +190,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'dispatch_date'         => @$consignment->consignment_date,
                     'delivery_date'         => @$consignment->delivery_date,
                     'delivery_status'       => @$consignment->delivery_status,
-                    'tat'                   => $tat,
+                    'tat'                   => $tatday,
                     'delivery_mode'         => $deliverymode,
 
                 ];
