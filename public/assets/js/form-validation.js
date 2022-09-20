@@ -886,12 +886,7 @@ jQuery(document).ready(function(){
            'gross_weight[]': {
                   required: true
                 },
-           'freight[]': {
-                  required: true
-                },
-            'payment_type[]': {
-                required: true
-                },
+           
         },
         messages: {
             consigner_id: {
@@ -943,7 +938,6 @@ jQuery(document).ready(function(){
     {
         $(this).rules('add', {
                 required: true,
-                // lettersonly:true,
                 messages: {
                     required: "Enter quantity."
                 },
@@ -953,7 +947,6 @@ jQuery(document).ready(function(){
     {
         $(this).rules('add', {
                 required: true,
-                // lettersonly:true,
                 messages: {
                     required: "Enter net weight."
                 },
@@ -963,7 +956,6 @@ jQuery(document).ready(function(){
     {
         $(this).rules('add', {
                 required: true,
-                // lettersonly:true,
                 messages: {
                     required: "Enter gross weight."
                 },
@@ -1114,12 +1106,7 @@ jQuery(document).ready(function(){
            'gross_weight[]': {
                   required: true
                 },
-           'freight[]': {
-                  required: true
-                },
-            'payment_type[]': {
-                required: true
-                },
+            
         },
         messages: {
             consigner_id: {
@@ -1592,7 +1579,7 @@ function formSubmit(form)
 /*======= submit redirect fuction =======*/
 function formSubmitRedirect(form)
 {
-   
+   alert('test');
     jQuery.ajax({
         url         : form.action,
         type        : form.method,
@@ -1634,7 +1621,7 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            
+            //alert(response);
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){
@@ -1677,6 +1664,7 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-order' || response.page == 'update-order'){
+               // alert('et');
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);

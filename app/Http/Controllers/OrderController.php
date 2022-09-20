@@ -475,6 +475,7 @@ class OrderController extends Controller
                 }
                 
                 $url = URL::to($this->prefix.'/consignments');
+                //dd($url);
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;
