@@ -45,28 +45,41 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $startdate = $this->startdate;
         $enddate = $this->enddate;
 
-        if(!empty($request->search)){
-            $search = $request->search;
-            $searchT = str_replace("'","",$search);
-            $query->where(function ($query)use($search,$searchT) {
-                $query->where('id', 'like', '%' . $search . '%')
-                ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                    $regclientquery->where('name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                    $query->where(function ($cnrquery)use($search,$searchT) {
-                        $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                    });
-                })
-                ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                    $query->where(function ($cneequery)use($search,$searchT) {
-                        $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                    });
-                });
-            });
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        
+        // if(isset($startdate) && isset($enddate)){
+            // $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->get();
+        $query = $query->where('status', '!=', 5)
+        ->with(
+            'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+            'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+            'ConsignerDetail.GetState:id,name',
+            'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            'ConsigneeDetail.GetState:id,name', 
+            'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            'ShiptoDetail.GetState:id,name',
+            'VehicleDetail:id,regn_no', 
+            'DriverDetail:id,name,fleet_id,phone', 
+            'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+            'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+            'VehicleType:id,name');
+
+        if($authuser->role_id ==1)
+        {
+            $query = $query;            
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('regclient_id', $regclient);   
+        }else{
+            $query = $query->where('branch_id', $cc);
         }
 
-    
         if(isset($startdate) && isset($enddate)){
             $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->get();
         }else {
@@ -81,11 +94,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $tat = ($end_date - $start_date)/60/60/24;
                 if(empty($consignment->delivery_date)){
                     $tatday = '-';
-                  }else{
-                   $tatday = $tat;
-                  }
-
-                
+                }else{
+                    if($tat == 0){
+                        $tatday = '0';
+                    }else{
+                        $tatday = $tat;
+                    }
+                }
                 
                 if(!empty($consignment->id )){
                     $consignment_id = ucfirst($consignment->id);
@@ -161,9 +176,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'order_id'              => $order_id,
                     'base_client'           => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'       => @$consignment->ConsignerDetail->GetRegClient->name,
-                    'consigner_nick_name'   => @$consignment->ConsignerDetail->nickname,
+                    'consigner_nick_name'   => @$consignment->ConsignerDetail->nick_name,
                     'consigner_city'        => @$consignment->ConsignerDetail->city ,
-                    'consignee_nick_name'   => @$consignment->ConsigneeDetail->nickname,
+                    'consignee_nick_name'   => @$consignment->ConsigneeDetail->nick_name,
                     'consignee_city'        => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,
                     'consignee_district'    => @$consignment->ConsigneeDetail->district,

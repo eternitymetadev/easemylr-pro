@@ -50,6 +50,7 @@ div.relative {
                 </div>
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
+                        <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000 records. Please select Filters.</h5>
                         <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                             <!-- <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php //echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php// echo URL::to($prefix.'/reports/export2'); ?>">
@@ -74,6 +75,7 @@ div.relative {
                             </div>
                         </div>
                         @csrf
+                        <p class="totalcount">Total Count:<span class = "reportcount">{{$consignments->total()}}</span></p>
                         <div class="table-responsive">
                             @include('consignments.consignment-reportAll-ajax')
                         </div>
@@ -215,6 +217,16 @@ div.relative {
 
     jQuery(document).on('click','.consignmentReportEx',function(event){
         event.preventDefault();
+
+        var totalcount = jQuery('.totalcount').text();
+        if(totalcount > 30000){
+        jQuery('.limitmessage').show();
+        setTimeout(function(){
+            jQuery('.limitmessage').fadeOut();
+        },5000);
+        return false;
+        }
+
         var geturl = jQuery(this).attr('data-action');
         var startdate = jQuery('#startdate').val();
         var enddate = jQuery('#enddate').val();
