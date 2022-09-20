@@ -75,7 +75,6 @@ div.relative {
                             </div>
                         </div>
                         @csrf
-                        <p class="totalcount">Total Count:<span class = "reportcount">{{$consignments->total()}}</span></p>
                         <div class="table-responsive">
                             @include('consignments.consignment-reportAll-ajax')
                         </div>

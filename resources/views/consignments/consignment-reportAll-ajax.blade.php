@@ -1,3 +1,4 @@
+<p class="totalcount">Total Count:<span class = "reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
     <!-- <table id="consignment_reportall" class="table table-hover" style="width:100%"> -->
     <table id="" class="table table-hover" style="width:100%">
