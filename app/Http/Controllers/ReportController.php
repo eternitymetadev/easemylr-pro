@@ -161,11 +161,13 @@ class ReportController extends Controller
 
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
+                $consignments = $consignments->appends($request->query());
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+                $consignments = $consignments->appends($request->query());
             }
 
-            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem,'startdate'=>$request->startdate,'enddate'=>$request->enddate])->render();
+            $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -175,7 +177,7 @@ class ReportController extends Controller
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         // echo "<pre>"; print_r($consignments); die;
         
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem,'startdate'=>'','enddate'=>'']);
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
     
     public function getFilterReportall(Request $request)

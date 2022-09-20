@@ -179,14 +179,7 @@ class DashboardController extends Controller
         Session::forget('peritem');
         Session::forget('startdate'); 
         Session::forget('endate');
-
-         /***** reservation reset  ***/
-         Session::forget('searchbrokerids');
-         Session::forget('searchstatusids');
-
-   
-         /***** OenoHouse Reset ***/
-         Session::forget('oenohousesearch');
+        
          Session::forget('internalperitem');
          
          $response['success'] = true;

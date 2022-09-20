@@ -49,12 +49,7 @@ div.relative {
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area br-6">
-                   
                     <div class="mb-4 mt-4">
-                    
-                    <h4 style="text-align: center"> <b>Last One Week Report </b></h4>
-                    
-                    <form id="">
                         <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                             <!-- <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php //echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php// echo URL::to($prefix.'/reports/export2'); ?>">
@@ -77,15 +72,7 @@ div.relative {
                                 <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>" data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>" class="consignmentReportEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
                                 <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                             </div>
-                            <!-- <div class="exportExcel ml-2 col-3">
-                               
-                            </div>
-                            <div class="exportExcel ml-2">
-                             
-                            </div> -->
                         </div>
-                        
-                    </form>
                         @csrf
                         <div class="table-responsive">
                             @include('consignments.consignment-reportAll-ajax')
@@ -207,13 +194,6 @@ div.relative {
         var pageUrl = jQuery(this).attr('href');
         history.pushState({page: page}, "title "+page, "?page="+page)
         var pagination = "pagination";
-        // var startdate = jQuery('#startdate').val();
-        // var enddate = jQuery('#enddate').val();
-        // if(startdate == enddate)
-        // {
-        //     startdate = "";
-        //     enddate = "";
-        // }
 
         $.ajax({
             type      : 'GET',
@@ -232,7 +212,6 @@ div.relative {
         });
         return false;
     });
-
 
     jQuery(document).on('click','.consignmentReportEx',function(event){
         event.preventDefault();
