@@ -94,25 +94,6 @@ class ReportController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
 
-            $query = ConsignmentNote::query();
-            
-            $query = $query
-            ->where('consignment_date', '>=', $date)
-            ->where('status', '!=', 5)
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name');
-
             if($authuser->role_id ==1)
             {
                 $query = $query;            
@@ -161,10 +142,10 @@ class ReportController extends Controller
 
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
-                $consignments = $consignments->appends($request->query());
+                // $consignments = $consignments->appends($request->query());
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($peritem);
-                $consignments = $consignments->appends($request->query());
+                // $consignments = $consignments->appends($request->query());
             }
 
             $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();

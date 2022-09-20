@@ -215,12 +215,7 @@ div.relative {
 
     jQuery(document).on('click','.consignmentReportEx',function(event){
         event.preventDefault();
-        // jQuery(".load-main").show();
         var geturl = jQuery(this).attr('data-action');
-
-        // var startdate = jQuery('.exp_daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
-        // var enddate = jQuery('.exp_daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
         var startdate = jQuery('#startdate').val();
         var enddate = jQuery('#enddate').val();
 
