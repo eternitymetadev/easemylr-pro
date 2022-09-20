@@ -3938,7 +3938,7 @@ else{
         $data = Storage::disk('local')->get('file.json');
         $json = json_decode($data, true);
         $job_id = $json['job_id'];
-        $time = strtotime($json['completed_datetime_formatted']);
+        $time = strtotime($json['job_delivery_datetime']);
         $newformat = date('Y-m-d', $time);
         $delivery_status = $json['job_state'];
 
