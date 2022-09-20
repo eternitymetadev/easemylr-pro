@@ -341,7 +341,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-
+            
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'consigner_id' => 'required',
@@ -473,9 +473,7 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                
                 $url = URL::to($this->prefix.'/consignments');
-                //dd($url);
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;
