@@ -851,12 +851,12 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
         rules: {
             consigner_id: {
-                required: true,
+                required: true
             },
             consignee_id: {
                 required: true
@@ -864,20 +864,9 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            driver_id : {
-                // required: true,
-            },
-            transporter_name : {
-                // required: true,
-            },
-            vehicle_type : {
-                // required: true,
-            },
-            vehicle_id : {
-                // required: true,
-            },
+           
             'quantity[]': {
-                required: true,
+                required: true
                 //   lettersonly:true
                 },
            'weight[]': {
@@ -931,36 +920,7 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
     //consignment multiple rows field validation
-
-    $(".qnt").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter quantity."
-                },
-            });
-    });
-    $(".net").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter net weight."
-                },
-            });
-    });
-    $(".gross").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter gross weight."
-                },
-            });
-    });
 
     /*===== create order =====*/
     $('#createorder').validate({ 
@@ -1072,11 +1032,11 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     $('#updateorder').validate({ 
         rules: {
             consigner_id: {
-                required: true,
+                required: true
             },
             consignee_id: {
                 required: true
@@ -1084,20 +1044,8 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            driver_id : {
-                // required: true,
-            },
-            transporter_name : {
-                // required: true,
-            },
-            vehicle_type : {
-                // required: true,
-            },
-            vehicle_id : {
-                // required: true,
-            },
             'quantity[]': {
-                required: true,
+                required: true
                 //   lettersonly:true
                 },
            'weight[]': {
@@ -1105,53 +1053,80 @@ jQuery(document).ready(function(){
                 },
            'gross_weight[]': {
                   required: true
-                },
+                }
             
         },
         messages: {
             consigner_id: {
-                required: "Select consigner address",
+                required: "Select consigner address"
             },
             consignee_id: {
-                required: "Select consignee address",
+                required: "Select consignee address"
             },
             ship_to_id: {
-                required: "Select ship to address",
+                required: "Select ship to address"
             },
             driver_id : {
-                required: "Select driver",
+                required: "Select driver"
             },
             transporter_name : {
-                required: "Enter transporter name",
+                required: "Enter transporter name"
             },
             vehicle_type : {
-                required: "Select vehicle type",
+                required: "Select vehicle type"
             },
             vehicle_id : {
-                required: "Select vehicle no.",
+                required: "Select vehicle no."
             },
             'quantity[]': {
-                required: "Enter quantity",
+                required: "Enter quantity"
             },
             'weight[]': {
-                required: "Enter weight",
+                required: "Enter weight"
             },
             'gross_weight[]': {
-                required: "Enter gross weight",
+                required: "Enter gross weight"
             },
             'freight[]': {
-                required: "Enter freight",
+                required: "Enter freight"
             },
             'payment_type[]': {
-                required: "Select payment type",
-            },
+                required: "Select payment type"
+            }
         },
         submitHandler : function(form)
         {
             formSubmitRedirect(form);
         }
     });
-
+    $(".qnt").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter quantity."
+                },
+            });
+    });
+    $(".net").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter net weight."
+                },
+            });
+    });
+    $(".gross").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter gross weight."
+                },
+            });
+    });
+  
     /*===== Create payment =====*/
     $('#createpayment').validate({ 
         rules: {
@@ -1579,7 +1554,6 @@ function formSubmit(form)
 /*======= submit redirect fuction =======*/
 function formSubmitRedirect(form)
 {
-   alert('test');
     jQuery.ajax({
         url         : form.action,
         type        : form.method,
@@ -1664,7 +1638,6 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-order' || response.page == 'update-order'){
-               // alert('et');
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);
