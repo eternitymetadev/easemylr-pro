@@ -92,6 +92,17 @@
                                     <input type="text" class="form-control" name="fleet_id" placeholder="">
                                 </div> 
                             </div>
+                            <h5 class="form-row mb-2">Login Details</h5>
+                            <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Login Id</label> 
+                                    <input type="text" class="form-control" name="login_id" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Password</label>
+                                    <input type="password" class="form-control" name="password" placeholder="">
+                                </div> 
+                            </div>
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
                         </form>

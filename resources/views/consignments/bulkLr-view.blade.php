@@ -283,7 +283,7 @@ a.badge.alert.bg-secondary.shadow-sm {
 
             "ordering": true,
             "paging": true,
-            "pageLength": 80,
+            "pageLength": 120,
             
         } );
 
