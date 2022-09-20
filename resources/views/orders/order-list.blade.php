@@ -51,7 +51,7 @@ div.relative {
                         @csrf
                         <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                             <div class="btn-group relative">
-                                <a href="{{'orders/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Order</a>
+                                <a href="{{'create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Order</a>
                             </div>
                             <thead>
                                 <tr>

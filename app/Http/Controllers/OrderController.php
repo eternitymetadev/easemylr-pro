@@ -24,6 +24,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Crypt;
+use URL;
 
 class OrderController extends Controller
 {
@@ -472,12 +473,12 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = $this->prefix . '/consignments';
+                
+                $url = URL::to($this->prefix.'/consignments');
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;
-                // $response['resetform'] = true;
-                $response['page'] = 'create-consignment';
+                $response['page'] = 'update-order';
                 $response['redirect_url'] = $url;
             } else {
                 $response['success'] = false;
