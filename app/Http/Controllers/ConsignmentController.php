@@ -45,30 +45,9 @@ class ConsignmentController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        // $peritem = 20;
+        
         $query = ConsignmentNote::query();
-        $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
-        if ($authuser->role_id == 2) {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->whereIn('consignment_notes.branch_id', $cc)
-                ->get(['consignees.city']);
-
-            // $consignments = $query->whereIn('branch_id',$cc)->orderby('id','DESC')->get();
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->get(['consignees.city']);
-
-            // $consignments = $query->orderby('id','DESC')->get();
-        }
+        
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
                 // dd($request->status);
@@ -85,8 +64,35 @@ class ConsignmentController extends Controller
 
             return response()->json($response);
         }
-        return view('consignments.consignment-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title])
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+
+        $query = $query->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+
+        if($authuser->role_id ==1){
+            $query;
+        }
+        elseif($authuser->role_id ==4){
+            $query = $query->whereIn('regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==6){
+            $query = $query->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $query = $query->whereIn('consignment_notes.branch_id', $cc);
+        }
+        $query = $query->where('consignment_notes.status', '!=', 5)->orderBy('id', 'DESC');
+
+        $consignments = $query->orderby('id','DESC')->get();
+
+        return view('consignments.consignment-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
 
     public function consignment_list()

@@ -217,64 +217,64 @@
 
     }
 
-    $(document).ready(function () {
-        var table = $('#lrlist').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('admin/clist') }}",
-            columns: [
-                {
-                    className: 'dt-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: '',
-                },
-                { data: 'lrdetails' },
-                { data: 'route' },
-                { data: 'impdates' },
-                { data: 'poptions' },
-                { data: 'delivery_status' },
-                { data: 'status' },
-            ],
-            order: [[1, 'asc']],
-            "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-                "<'table-responsive'tr>" +
-                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-            buttons: {
-                buttons: [
-                    // { extend: 'copy', className: 'btn btn-sm' },
-                    // { extend: 'csv', className: 'btn btn-sm' },
-                    // { extend: 'excel', className: 'btn btn-sm' },
-                    // { extend: 'print', className: 'btn btn-sm' }
-                ]
-            },
+    // $(document).ready(function () {
+    //     var table = $('#lrlist').DataTable({
+    //         processing: true,
+    //         serverSide: true,
+    //        ajax: "{{ url('admin/clist') }}",
+    //         columns: [
+    //             {
+    //                 className: 'dt-control',
+    //                 orderable: false,
+    //                 data: null,
+    //                 defaultContent: '',
+    //             },
+    //             { data: 'lrdetails' },
+    //             { data: 'route' },
+    //             { data: 'impdates' },
+    //             { data: 'poptions' },
+    //             { data: 'delivery_status' },
+    //             { data: 'status' },
+    //         ],
+    //         order: [[1, 'asc']],
+    //         "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+    //             "<'table-responsive'tr>" +
+    //             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+    //         buttons: {
+    //             buttons: [
+    //                 // { extend: 'copy', className: 'btn btn-sm' },
+    //                 // { extend: 'csv', className: 'btn btn-sm' },
+    //                 // { extend: 'excel', className: 'btn btn-sm' },
+    //                 // { extend: 'print', className: 'btn btn-sm' }
+    //             ]
+    //         },
             
 
-            "ordering": false,
-            "paging": true,
-            "pageLength": 50,
-        });
+    //         "ordering": false,
+    //         "paging": true,
+    //         "pageLength": 50,
+    //     });
 
-        // Add event listener for opening and closing details
-        $('#lrlist tbody').on('click', 'td.dt-control', function () {
-            var tr = $(this).closest('tr');
-            var row = table.row( tr );
+    //     // Add event listener for opening and closing details
+    //     $('#lrlist tbody').on('click', 'td.dt-control', function () {
+    //         var tr = $(this).closest('tr');
+    //         var row = table.row( tr );
  
-            if ( row.child.isShown() ) {
-                row.child.hide();
-                tr.removeClass('shown');     
-                }
-            else
-                {
-                if ( table.row( '.shown' ).length ) {
-                        $('.dt-control', table.row( '.shown' ).node()).click();
-                }
-                row.child( format(row.data()) ).show();
-                tr.addClass('shown');
-            }
-        })
+    //         if ( row.child.isShown() ) {
+    //             row.child.hide();
+    //             tr.removeClass('shown');     
+    //             }
+    //         else
+    //             {
+    //             if ( table.row( '.shown' ).length ) {
+    //                     $('.dt-control', table.row( '.shown' ).node()).click();
+    //             }
+    //             row.child( format(row.data()) ).show();
+    //             tr.addClass('shown');
+    //         }
+    //     })
 
-    });
+    // });
 
     $('.get-datatable').DataTable({
 
