@@ -120,8 +120,6 @@ class MisReportExport implements FromCollection, WithHeadings,ShouldQueue
                }else{
                 $deliverymode = 'Manual';
                }
-
-
             
                 $arr[] = [
                     'id'                    => $value->id,

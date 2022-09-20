@@ -84,7 +84,7 @@ class ReportController extends Controller
         {
             $query = $query;            
         }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('user_id', [$authuser->id, $user->id]);   
+            $query = $query->whereIn('regclient_id', $regclient);   
         }else{
             $query = $query->where('branch_id', $cc);
         }
@@ -100,7 +100,7 @@ class ReportController extends Controller
             {
                 $query = $query;            
             }elseif($authuser->role_id == 4){
-                $query = $query->whereIn('user_id', [$authuser->id, $user->id]);   
+                $query = $query->whereIn('regclient_id', $regclient);   
             }else{
                 $query = $query->where('branch_id', $cc);
             }
@@ -126,7 +126,6 @@ class ReportController extends Controller
                             $cneequery->where('nick_name', 'like', '%' . $search . '%');
                         });
                     });
-                    
 
                 });
             }
@@ -144,21 +143,16 @@ class ReportController extends Controller
 
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
-                // $consignments = $consignments->appends($request->query());
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($peritem);
-                // $consignments = $consignments->appends($request->query());
             }
 
             $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
 
             return response()->json(['html' => $html]);
         }
-
-        // $consignments = json_decode(json_encode($query->orderBy('id','DESC')->paginate(100)), true);
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
-        // echo "<pre>"; print_r($consignments); die;
         
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
@@ -173,11 +167,6 @@ class ReportController extends Controller
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         if($authuser->role_id ==1){
-            // $query = $query
-            // ->where('status', '!=', 5)
-            // ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            // ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
-
             $query = $query
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
@@ -254,7 +243,7 @@ class ReportController extends Controller
 
     public function exportExcelReport2(Request $request)
     {
-      return Excel::download(new Report2Export($request->startdate,$request->enddate), 'sec_reports.csv');
+        return Excel::download(new Report2Export($request->startdate,$request->enddate), 'mis_report2.csv');
     }
 
 
