@@ -56,45 +56,38 @@ class ReportController extends Controller
         }
 
         $query = ConsignmentNote::query();
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        $date = Helper::yearmonthdate($lastsevendays);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
-
-        $query = $query
-            ->where('status', '!=', 5)
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name');
-
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
-            $query = $query->where('branch_id', $cc);
-        }
-
+        
         if($request->ajax()){
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
+
+            $query = ConsignmentNote::query();
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+            $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+            $date = Helper::yearmonthdate($lastsevendays);
+            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                    'ConsignerDetail.GetState:id,name',
+                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    'ConsigneeDetail.GetState:id,name', 
+                    'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    'ShiptoDetail.GetState:id,name',
+                    'VehicleDetail:id,regn_no', 
+                    'DriverDetail:id,name,fleet_id,phone', 
+                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                    'VehicleType:id,name');
 
             if($authuser->role_id ==1)
             {
@@ -148,11 +141,46 @@ class ReportController extends Controller
             }
 
             $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            $consignments = $consignments->appends($request->query());
 
             return response()->json(['html' => $html]);
         }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'VehicleType:id,name');
+
+        if($authuser->role_id ==1)
+        {
+            $query = $query;            
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('regclient_id', $regclient);   
+        }else{
+            $query = $query->where('branch_id', $cc);
+        }
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
         
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }

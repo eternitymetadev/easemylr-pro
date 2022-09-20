@@ -90,12 +90,11 @@ div.relative {
     jQuery(document).on('click','#filter_reportall',function(){
         var startdate = $("#startdate").val();
         var enddate = $("#enddate").val();
-        var search = jQuery('#search').val();
         var url =  jQuery('#search').attr('data-action');
         jQuery.ajax({
             type      : 'get',
             url       : 'consignment-report2',
-            data      : {startdate:startdate,enddate:enddate,search:search},
+            data      : {startdate:startdate,enddate:enddate},
             headers   : {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
