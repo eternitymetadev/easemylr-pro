@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 use App\Models\ConsignmentNote;
+use App\Models\TransactionSheet;
+
 
 
 class DriversController extends Controller
@@ -14,9 +16,20 @@ class DriversController extends Controller
     {
         try {
         
-            $drivers = ConsignmentNote::with('ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail','DriverDetail')
-            ->where('driver_id', 2)
+            $drivers = TransactionSheet::with('ConsignmentNote')
             ->get();
+            // echo "<pre>"; print_r($drivers->consignment_note); die;
+            // $drivers = $drivers->ConsignmentNote::where('driver_id', 2)->get();
+            foreach($drivers as $value) {
+                   $data[] =[
+                       'lr_no' => $value->id,
+                       'lr_date'=> $value->consignment_date,
+                       'drs_no' => $value->drs_no,
+
+                   ];
+
+            }
+            // echo'<pre>'; print_r($data); die;
             if ($drivers) {
                 return response([
                     'status' => 'success',
