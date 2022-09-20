@@ -247,9 +247,6 @@ div.relative {
             }
         });
     });
-
-
+    
 </script>
-
-
 @endsection
