@@ -982,8 +982,8 @@ class ConsignmentController extends Controller
 
         $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['nick_name'] != null) {
-            $nick_name = '<b>' . $data['consignee_detail']['nick_name'] . '</b><br>';
+        if ($data['consignee_detail']['legal_name'] != null) {
+            $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
@@ -1036,8 +1036,8 @@ class ConsignmentController extends Controller
 
         $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['nick_name'] != null) {
-            $nick_name = '<b>' . $data['shipto_detail']['nick_name'] . '</b><br>';
+        if ($data['shipto_detail']['legal_name'] != null) {
+            $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
@@ -2816,8 +2816,8 @@ else{
         
                 $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
         
-                if ($data['consignee_detail']['nick_name'] != null) {
-                    $nick_name = '<b>' . $data['consignee_detail']['nick_name'] . '</b><br>';
+                if ($data['consignee_detail']['legal_name'] != null) {
+                    $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
@@ -2870,8 +2870,8 @@ else{
         
                 $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
         
-                if ($data['shipto_detail']['nick_name'] != null) {
-                    $nick_name = '<b>' . $data['shipto_detail']['nick_name'] . '</b><br>';
+                if ($data['shipto_detail']['legal_name'] != null) {
+                    $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
