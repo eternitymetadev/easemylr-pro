@@ -192,8 +192,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
-    Route::any('mis-report2', [ReportController::class, 'misreport']);
-    Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
 
@@ -289,6 +289,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
     Route::any('vendor/create', [VendorController::class, 'create']);
 
@@ -393,7 +394,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
-
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
     
 });
@@ -494,6 +495,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
     
 });
@@ -558,7 +560,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
-
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
@@ -589,6 +591,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
 
 });
+
+Route::get('/forgot-session', [DashboardController::class, 'ForgotSession']);
 
 Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);

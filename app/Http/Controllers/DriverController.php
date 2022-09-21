@@ -101,6 +101,9 @@ class DriverController extends Controller
         $driversave['license_number']  = $request->license_number;
         $driversave['team_id']         = $request->team_id;
         $driversave['fleet_id']        = $request->fleet_id;
+        $driversave['login_id']        = $request->login_id;
+        $driversave['driver_password']   = $request->password;
+        $driversave['password']        = bcrypt($request->password);
         $driversave['status']          = '1';
 
         // upload license image
@@ -203,6 +206,9 @@ class DriverController extends Controller
             $driversave['license_number'] = $request->license_number;
             $driversave['team_id']        = $request->team_id;
             $driversave['fleet_id']       = $request->fleet_id;
+            $driversave['login_id']       = $request->login_id;
+            $driversave['driver_password']       = $request->password;
+            $driversave['password']       = bcrypt($request->password);
 
             // upload driver_license image 
             if($request->license_image){
