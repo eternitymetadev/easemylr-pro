@@ -14,34 +14,17 @@
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-                    @csrf
-                    <table id="lrlist" class="table table-hover" style="width:100%">
-                        <div class="btn-group relative">
+                    <div class="btn-group relative">
                         <?php  $authuser = Auth::user(); 
                         if($authuser->role_id != 6 && $authuser->role_id != 7){ ?>
                             <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
                         <?php } ?>
-                        </div>
-                        <thead>
-                            <tr>
-                                <th> </th>
-                                <th>LR Details</th>
-                                <th>Route</th>
-                                <th>Dates</th>
-                                <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
-                                <th>Printing options</th>
-                                <?php }else {?>
-                                    <th></th>
-                                    <?php }?>
-                                <th>Dlvry Status</th>
-                                <th>LR Status</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
+                    </div>
+
+                    @csrf
+                    <div class="table-responsive">
+                    @include('consignments.consignment-list-ajax')
+                    </div>
                 </div>
             </div>
         </div>

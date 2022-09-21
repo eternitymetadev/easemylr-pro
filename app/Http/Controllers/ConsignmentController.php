@@ -26,6 +26,7 @@ use QrCode;
 use Response;
 use Storage;
 use Validator;
+use Config;
 use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
@@ -45,24 +46,54 @@ class ConsignmentController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        
+        $peritem = Config::get('variable.PER_PAGE');
         $query = ConsignmentNote::query();
         
         if ($request->ajax()) {
-            if (isset($request->updatestatus)) {
-                // dd($request->status);
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
-                ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $baseclient = explode(',',$authuser->baseclient_id);
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+
+            $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+
+            if($authuser->role_id ==1){
+                $query;
+            }
+            elseif($authuser->role_id ==4){
+                $query = $query->whereIn('regclient_id', $regclient);
+            }
+            elseif($authuser->role_id ==6){
+                $query = $query->whereIn('base_clients.id', $baseclient);
+            }
+            elseif($authuser->role_id ==7){
+                $query = $query->whereIn('regional_clients.id', $regclient);
+            }
+            else{
+                $query = $query->whereIn('consignment_notes.branch_id', $cc);
             }
 
-            $url = $this->prefix . '/consignments';
-            $response['success'] = true;
-            $response['success_message'] = "Consignment updated successfully";
-            $response['error'] = false;
-            $response['page'] = 'consignment-updateupdate';
-            $response['redirect_url'] = $url;
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
 
-            return response()->json($response);
+
+
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+
+            $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            $consignments = $consignments->appends($request->query());
+
+            return response()->json(['html' => $html]);
         }
 
         $authuser = Auth::user();
@@ -71,7 +102,7 @@ class ConsignmentController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
-        $query = $query->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+        $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
 
         if($authuser->role_id ==1){
             $query;
@@ -88,11 +119,11 @@ class ConsignmentController extends Controller
         else{
             $query = $query->whereIn('consignment_notes.branch_id', $cc);
         }
-        $query = $query->where('consignment_notes.status', '!=', 5)->orderBy('id', 'DESC');
+        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        // echo "<pre>"; print_r($consignments); die;
 
-        $consignments = $query->orderby('id','DESC')->get();
-
-        return view('consignments.consignment-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
+        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix]);
     }
 
     public function consignment_list()

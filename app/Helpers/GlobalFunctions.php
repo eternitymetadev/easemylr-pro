@@ -208,6 +208,12 @@ class GlobalFunctions {
           return $datecount;
     }
 
+    public static function getOrders(){
+        $getorders = ConsignmentItem::select('order_id','invoice_no')->where('consignment_id', $data->id)->get();
+
+        return $getorders;
+    }
+
 
 
 }
