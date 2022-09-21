@@ -292,6 +292,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
     Route::any('vendor/create', [VendorController::class, 'create']);
+    Route::post('vendor/add-vendor', [VendorController::class, 'store']);
+    Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
 
 
 
@@ -589,6 +591,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
+    Route::any('add-vendor', [VendorController::class, 'store']);
 
 });
 
