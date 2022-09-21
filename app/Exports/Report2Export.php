@@ -52,10 +52,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
-
         
-        // if(isset($startdate) && isset($enddate)){
-            // $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->get();
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
@@ -81,9 +78,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->get();
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','ASC')->get();
         }else {
-            $consignments = $query->orderBy('id','DESC')->get();
+            $consignments = $query->orderBy('id','ASC')->get();
         }
 
         if($consignments->count() > 0){
