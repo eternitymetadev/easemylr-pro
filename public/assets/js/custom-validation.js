@@ -1524,7 +1524,7 @@ function get_delivery_date()
                 
                 },
                 success: (data) => {
-                   
+                   alert('success');
                   
                 }
             }); 

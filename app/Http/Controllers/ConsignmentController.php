@@ -4045,7 +4045,7 @@ else{
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 $response['success'] = true;
-                $response['messages'] = 'img uploaded successfully';
+                $response['messages'] = 'Image uploaded successfully';
                 return Response::json($response);
             } else {
                 $response['success'] = false;

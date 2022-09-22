@@ -83,7 +83,7 @@ div.relative {
                                 <td>DRS-{{$list->drs_no}}</td>
                                 <td></td>
                                 <td></td>
-                                <td> <button type="button" class="btn btn-danger payment" value="{{$list->drs_no}}" style="margin-right:4px;">Create Payment</button> </td>
+                                <td> <button type="button" class="btn btn-success payment" value="{{$list->drs_no}}" style="margin-right:4px;">Create Payment</button> </td>
                                 <td></td>
                                 <td></td>
                                 </tr>

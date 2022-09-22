@@ -18,19 +18,32 @@
                <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vendor</label>
-
-                            <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
-                                <option value="">Select vehicle no</option>
-                            
+                            <select class="form-control my-select2" id="vendor" name="vendor_name" tabindex="-1">
+                                <option value="">Select Vendor</option>
+                                @foreach($vendors as $vendor)
+                                <option value="{{$vendor->name}}">{{$vendor->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
                             <input type="text" class="form-control" id="Transporter" name="transporter_name" value="">
                         </div>
-                       
                     </div>
-               
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Type</label>
+                            <select class="form-control my-select2" id="vendor" name="type" tabindex="-1">
+                                <option value="">Select</option>
+                                <option value="">Balance</option>
+                                <option value="">Advance</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Amount</label>
+                            <input type="text" class="form-control" id="" name="amount" value="">
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

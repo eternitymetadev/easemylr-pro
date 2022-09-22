@@ -102,7 +102,10 @@ class VendorController extends Controller
         ->orderBy('id', 'DESC')
         ->groupBy('drs_no')
         ->paginate(50);
-        return view('vendors.drs-paymentlist',['prefix' => $this->prefix, 'drslist' => $drslist]);
+
+        $vendors = Vendor::all();
+
+        return view('vendors.drs-paymentlist',['prefix' => $this->prefix, 'drslist' => $drslist,'vendors' => $vendors]);
 
     }
 }
