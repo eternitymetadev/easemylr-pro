@@ -16,12 +16,12 @@
                 <th>LR Status</th>
             </tr>
         </thead>
-        <tbody id="accordion" class="accordion">
+        <tbody>
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
-            <tr >
-                <td class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$consignment->id}}">
-                    
+            <tr class="parent" id="{{$consignment->id}}" onClick="getid_click(this.id)">
+                <td class="">
+                    <span class="btn btn-default"><i class="fa fa-plus orange-text"></i></span>
                 </td>
                 <td>
                     <div class="">
@@ -137,7 +137,7 @@
                     
                 </td>
             </tr>
-            <tr id="collapse-{{$consignment->id}}" class="card-body collapse" data-parent="#accordion">
+            <tr class="child-{{$consignment->id}}">
                 <td colspan="7">
                     <?php if(!empty($consignment->job_id)){
                         $jobid = $consignment->job_id;

@@ -30,14 +30,13 @@ label.error {
 } 
 .disable_n { pointer-events: none; cursor: default;}
 
-/* ////////// */
-.collapse_pdgremove > td{ padding:0px !important; }
-/* .collapse_pdgremove table td:nth-last-child(2), */
-/* .collapse_pdgremove table th:nth-last-chilsd(2){ border-left: 0px !important; } */
-
-/* .collapse_pdgremove tr:hover{ box-shadow: none !important;  } */
-/* .collapse_pdgremove tr{ border-bottom: 0px !important; } */
-/* .collapse_pdgremove table th,
-.collapse_pdgremove table td{ border-bottom: 0px !important; border-top: none !important;
-	border-collapse: inherit; }
-.collapse_pdgremove table{ border-spacing: 0px !important; border-collapse: revert !important; } */
+/* //// */
+.accordion .card-header:after {
+  font-family: 'FontAwesome';  
+  content: "\f068";
+  float: left; 
+}
+.accordion .card-header.collapsed:after {
+  /* symbol for "collapsed" panels */
+  content: "\f067"; 
+}

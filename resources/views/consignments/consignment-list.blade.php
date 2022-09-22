@@ -58,19 +58,16 @@
 
 @section('js')
 <script>
-    function getid_click(clicked_id)
-    {
-        // alert(clicked_id);
-    }
+    //https://www.codeply.com/go/Ep9T1ItZrb/bootstrap-4-collapse-card-plus-minus-icons
+    // $(function() {
+    //     $('tr.parent td span.btn').on('click', function() {
+    //         var next= $(this).closest('tr').next();   //this is the row to toggle
+    //         $('tr[class^=child-]').not(next).hide();  //hide all others
+    //         next.toggle('slow');                      //toggle it
+    //     });
 
-    $(function() {
-        $('tr.parent td span.btn').on('click', function() {
-            var next= $(this).closest('tr').next();   //this is the row to toggle
-            $('tr[class^=child-]').not(next).hide();  //hide all others
-            next.toggle('slow');                      //toggle it
-        });
-
-        $('tr[class^=child-]').hide();
-    });
+    //     $('tr[class^=child-]').hide();
+    // });
+    
 </script>
 @endsection
