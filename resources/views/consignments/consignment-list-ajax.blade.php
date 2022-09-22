@@ -1,3 +1,4 @@
+<?php  $authuser = Auth::user(); ?>
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
         <thead>
@@ -13,17 +14,18 @@
                     <?php }?>
                 <th>Dlvry Status</th>
                 <th>LR Status</th>
-                
             </tr>
         </thead>
         <tbody>
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <tr>
-                <td class=" dt-control"></td>
+                <td class="">
+                <span class="d-flex align-items-center"><i class="fa fa-plus orange-text mr-1 list-collapse collapsed" data-toggle="collapse" data-target="#{{$consignment->id}}"></i></span>
+                </td>
                 <td>
                     <div class="">
-                        <div class=""><span style="color:#4361ee;">LR No: </span>{{ $consignment->id ?? "-" }}<span class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}<span></span></span></div>
+                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}<span></span></span></div>
                         
                         <?php
                             if(empty($consignment->order_id)){ 
@@ -81,8 +83,90 @@
                         <div class=""><span style="color:#4361ee;">ADD: </span>{{ Helper::ShowDayMonthYear($consignment->delivery_date) ?? '-' }}</div>
                     </div>
                 </td>
-                <td></td>
-                <td></td>
+                <td>
+                    <?php if($authuser->role_id !=6 && $authuser->role_id !=7){
+                    if($consignment->invoice_no != null || $consignment->invoice_no != ''){ ?>
+                        <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>
+                    <?php }else{ ?>
+                        <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>
+                    <?php }} ?>
+                </td>
+                <?php if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                    $disable = 'disable_n'; 
+                } else{
+                    $disable = '';
+                } ?>
+                <td>
+                    <?php if ($consignment->status == 0) { ?>
+                        <span class="alert badge alert bg-secondary shadow-sm">Cancel</span>
+                        <?php } elseif($consignment->status == 1){
+                            if($consignment->delivery_status == 'Successful'){ ?>
+                                <a class="alert activestatus btn btn-success disable_n"  data-id = "'.$consignment->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>
+                            <?php }else{ ?>
+                                <a class="alert activestatus btn btn-success '.$disable.'"  data-id = "'.$consignment->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>
+                            <?php }
+                        } elseif($consignment->status == 2){ ?>
+                                <span class="badge alert bg-success activestatus '.$disable.'" data-id = "'.$consignment->id.'">Unverified</span>
+                        <?php } elseif($consignment->status == 3){ ?>
+                            <span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>
+                        <?php } ?>
+                </td>
+                <?php if($authuser->role_id == 7 || $authuser->role_id == 6 ) { 
+                    $disable = 'disable_n'; 
+                } elseif($authuser->role_id != 7 || $authuser->role_id != 6){
+                    if($consignment->status == 0){ 
+                        $disable = 'disable_n';
+                    }else{
+                        $disable = '';
+                    }
+                } ?>
+                <td>
+                    <?php if ($consignment->delivery_status == "Unassigned") { ?>
+                        <span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'" lr-no = "{{$consignment->id}}">{{ $consignment->delivery_status ?? ''}}</span>
+                        <?php } elseif ($consignment->delivery_status == "Assigned") { ?>
+                            <span class="badge alert bg-secondary shadow-sm manual_updateLR '.$disable.'" lr-no = "{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
+                            <?php } elseif ($consignment->delivery_status == "Started") { ?>
+                                <span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'" lr-no = "{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
+                                <?php } elseif ($consignment->delivery_status == "Successful") { ?>
+                                    <span class="badge alert bg-success shadow-sm manual_updateLR" lr-no = "{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
+                                    <?php } elseif ($consignment->delivery_status == "Accepted") { ?>
+                                        <span class="badge alert bg-info shadow-sm" lr-no = "{{$consignment->id}}">Acknowledged</span>
+                                        <?php } else{ ?>
+                                            <span class="badge alert bg-success shadow-sm" lr-no = "{{$consignment->id}}">need to update</span>
+                                            <?php } ?>
+                    
+                </td>
+            </tr>
+            <tr class="collapse_pdgremove">
+                <td colspan="7">
+                    <div id="{{$consignment->id}}" class="collapse reservationid_table" aria-expanded="false">
+                        <table class="table w-100">
+                            <tbody>
+                                <tr>
+                                    <th class="text-left" style="max-width:100px; width:130px;">Wine Name</th>
+                                    <th class="text-center">Vintage</th>
+                                    <th class="text-center">Bottle Size</th>
+                                    <th class="text-center">Seller</th>
+                                    <th class="text-center">Selling Broker</th>
+                                    <th class="text-center">Buyer</th>
+                                    <th class="text-center">Buying Broker</th>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td class="text-left">Errazuriz-Mondavi Sena</td>
+                                    <td class="text-center">2016</td>
+                                    <td class="text-center">750 ML</td>
+                                    <td class="text-center">Marco Bianchi</td>
+
+                                    <td class="text-center">Nicola Merighi</td>
+                                    <td class="text-center">Uno Holding Company Limited</td>
+                                    <td class="text-center">Jack Toghli</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
             </tr>
             @endforeach
             @else

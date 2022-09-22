@@ -1460,53 +1460,119 @@ function get_delivery_date()
 
         var formData = new FormData(this);
        
-            $.ajax({
-                url: "all-invoice-save", 
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'POST',  
-                data:new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function(){
-                    $('#view_invoices').dataTable().fnClearTable();             
-                    $('#view_invoices').dataTable().fnDestroy();
-                    $(".indicator-progress").show(); 
-                    $(".indicator-label").hide();
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if(data.success == true){
-                        swal("success","Data Updated successfully", 'success')
+        $.ajax({
+            url: "all-invoice-save", 
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+                $('#view_invoices').dataTable().fnClearTable();             
+                $('#view_invoices').dataTable().fnDestroy();
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
+            },
+            success: (data) => {
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
+                if(data.success == true){
+                    swal("success","Data Updated successfully", 'success')
 
-                        var i = 1;
-                     $.each(data.fetch, function(index, value) {
+                    var i = 1;
+                    $.each(data.fetch, function(index, value) {
 
-                         if(value.e_way_bill == null || value.e_way_bill == ''){
-                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
-                         } else {
-                            var billno = value.e_way_bill;
-                         }
+                        if(value.e_way_bill == null || value.e_way_bill == ''){
+                        var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
+                        } else {
+                        var billno = value.e_way_bill;
+                        }
 
-                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
-                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
-                         }else{
-                            var billdate = value.e_way_bill_date;
-                         }
+                        if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
+                        var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
+                        }else{
+                        var billdate = value.e_way_bill_date;
+                        }
 
-                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
-                        
-                        i++ ;
-                    });
-                        // location.reload();
-                        
-                    }else{
-                        swal("error","Something went wrong", 'error')
-                    }
-                  
+                    $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
+                    
+                    i++ ;
+                });
+                    // location.reload();
+                    
+                }else{
+                    swal("error","Something went wrong", 'error')
                 }
-            }); 
-        });	
+                
+            }
+        }); 
+    });	
+
+    $.fn.searchtyping = function(callback){
+        var _this = $(this);
+        var x_timer;
+        _this.keyup(function (){
+          clearTimeout(x_timer);
+          x_timer = setTimeout(clear_timer, 300);
+        });
+    
+        function clear_timer(){
+          clearTimeout(x_timer);
+          callback.call(_this);
+        }
+    }
+    //search function feature for all
+    
+    jQuery('#search').searchtyping(function(callback){
+        let search = $.trim(jQuery(this).val());
+        let url = jQuery(this).attr('data-action');
+        jQuery.ajax({
+            url         : url,
+            type        : 'get',
+            data        :  {search:search},
+            headers     : {
+            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+            },
+            dataType:   'json',
+            beforeSend  : function () {
+                jQuery(".load-main").show();
+            },
+            complete: function () {
+                jQuery(".load-main").hide();
+            },
+            success:function(response){
+                if(response.html){
+                    if((response.page) && response.page == 'proposal' || response.page == 'order'){
+                        jQuery('.wines_stock').html(response.html);
+                    }else{
+                        jQuery('.table-responsive').html(response.html);
+                    }
+                }
+            }
+    
+        });
+    });    
+
+    //// reset report filter
+    jQuery(document).on('click', '.reset_filter', function(){
+        var url     = jQuery(this).attr('data-action');
+        var resetfilter = "resetfilter"
+        jQuery.ajax({
+            type      : 'get',
+            url       : url,
+            data      : {resetfilter:resetfilter},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(response){
+                if(response.success){
+                    setTimeout(() => {window.location.href = response.redirect_url},10);
+                }
+            }
+        });
+        return false;
+    });
 
 
 

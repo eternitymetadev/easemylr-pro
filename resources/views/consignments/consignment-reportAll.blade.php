@@ -110,28 +110,6 @@ div.relative {
         return false;
     });
 
-    //// reset report filter
-
-    jQuery(document).on('click', '.reset_filter', function(){
-        var url     = jQuery(this).attr('data-action');
-        var resetfilter = "resetfilter"
-        jQuery.ajax({
-            type      : 'get',
-            url       : url,
-            data      : {resetfilter:resetfilter},
-            headers   : {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType  : 'json',
-            success:function(response){
-                if(response.success){
-                    setTimeout(() => {window.location.href = response.redirect_url},10);
-                }
-            }
-        });
-        return false;
-    });
-
     jQuery(document).on('change', '.report_perpage', function(){
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();

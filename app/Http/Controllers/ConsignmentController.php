@@ -27,10 +27,15 @@ use Response;
 use Storage;
 use Validator;
 use Config;
+use Session;
+use URL;
 use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
 
     public function __construct()
     {
@@ -50,6 +55,24 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
         
         if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+            if (isset($request->updatestatus)) {
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
+                ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
+
+                $url = $this->prefix . '/consignments';
+                $response['success'] = true;
+                $response['success_message'] = "Consignment updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'consignment-updateupdate';
+                $response['redirect_url'] = $url;
+
+                return response()->json($response);
+            }
 
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
@@ -75,6 +98,28 @@ class ConsignmentController extends Controller
                 $query = $query->whereIn('consignment_notes.branch_id', $cc);
             }
 
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                            $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($cneequery)use($search,$searchT) {
+                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    });
+
+                });
+            }
+
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
@@ -88,10 +133,11 @@ class ConsignmentController extends Controller
 
 
 
-        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $consignments = $consignments->appends($request->query());
 
             $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
-            $consignments = $consignments->appends($request->query());
+            
 
             return response()->json(['html' => $html]);
         }
@@ -123,7 +169,7 @@ class ConsignmentController extends Controller
         $consignments = $consignments->appends($request->query());
         // echo "<pre>"; print_r($consignments); die;
 
-        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix]);
+        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function consignment_list()
