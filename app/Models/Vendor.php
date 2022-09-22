@@ -10,6 +10,7 @@ class Vendor extends Model
     use HasFactory;
     protected $fillable = [
         'type',
+        'vendor_no',
         'name',
         'bank_details',
         'pan',

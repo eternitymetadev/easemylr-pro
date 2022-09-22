@@ -294,6 +294,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vendor/create', [VendorController::class, 'create']);
     Route::post('vendor/add-vendor', [VendorController::class, 'store']);
     Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
+    Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
+    Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
 
 
 

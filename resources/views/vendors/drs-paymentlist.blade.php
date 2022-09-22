@@ -101,22 +101,51 @@ div.relative {
 @section('js')
 <script>
 $(document).on('click','.payment', function(){
-            var drsno = $(this).val();
+              $('#payment_form')[0].reset();
+            var drsno = $(this).val(); 
             $('#pymt_modal').modal('show');
             $.ajax({
-                type: "GET",
-                url: "view-transactionSheet/"+cat_id,
-                data: {drsno:drsno},
+                type  : "GET",
+                url   : "get-drs-details",
+                data  : {drsno:drsno},
                 beforeSend:                      //reinitialize Datatables
                 function(){   
                 
                 },
                 success: function(data){
+                    console.log(data.get_data[0].drs_no);
+                    $('#drs_no').val(data.get_data[0].drs_no);
+
                 
 				}
                 
 			});
 			
 		});
+
+        $('#vendor').change(function() {
+            var vendor_id = $(this).val();
+       
+            $.ajax({
+                type      : 'get',
+                url       : 'vendor-details',
+                data      : {vendor_id:vendor_id},
+                headers   : {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType  : 'json',
+                success:function(res){
+                  
+                   var simp = jQuery.parseJSON(res.vendor_details.bank_details);
+                   console.log(res.vendor_details.vendor_no);
+                   $('#bank_acc').val(simp.account_no);
+                   $('#ifsc_code').val(simp.ifsc_code);
+                   $('#bank_name').val(simp.bank_name);
+                   $('#vendor_no').val(res.vendor_details.vendor_no);
+                   
+                }
+            });
+    
+    });
 </script>
 @endsection

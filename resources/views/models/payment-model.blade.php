@@ -15,19 +15,48 @@
                  </button>
             </div>
                <div class="modal-body">
+                <form id="payment_form">
                <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control" id="vendor_no" name="vendor_no" value="">
+                        </div>
+                        </div>
+                 <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vendor</label>
                             <select class="form-control my-select2" id="vendor" name="vendor_name" tabindex="-1">
                                 <option value="">Select Vendor</option>
                                 @foreach($vendors as $vendor)
-                                <option value="{{$vendor->name}}">{{$vendor->name}}</option>
+                                <option value="{{$vendor->id}}">{{$vendor->name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="Transporter" name="transporter_name" value="">
+                            <input type="text" class="form-control" id="Transporter" name="claimed_amount" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                            <label for="location_name">Account No</label>
+                            <input type="text" class="form-control" id="bank_acc" name="acc_no" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Ifsc Code</label>
+                            <input type="text" class="form-control" id="ifsc_code" name="ifsc" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                            <label for="location_name">Bank Name</label>
+                            <input type="text" class="form-control" id="bank_name" name="bank_name" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Ifsc Code</label>
+                            <input type="text" class="form-control" id="ifsc_code" name="ifsc" value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
@@ -41,9 +70,14 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Amount</label>
-                            <input type="text" class="form-control" id="" name="amount" value="">
+                            <input type="text" class="form-control" id="" name="payable_amount" value="">
                         </div>
                     </div>
+                    <div class="modal-footer">
+                <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                <button type="submit" class="btn btn-warning">Create Payment</button>
+            </form>
+            </div>
                     </div>
                 </div>
             </div>

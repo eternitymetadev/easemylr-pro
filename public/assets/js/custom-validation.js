@@ -1529,6 +1529,28 @@ function get_delivery_date()
                 }
             }); 
         });	
+        //////////////////
+        $('#payment_form').submit(function(e) {
+            e.preventDefault();
+          
+            var formData = new FormData(this);
+           
+                $.ajax({
+                    url: "create-payment", 
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    type: 'POST',  
+                    data:new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(){
+                    
+                    },
+                    success: (data) => {
+                       alert('success');
+                      
+                    }
+                }); 
+            });	
 
 
 
