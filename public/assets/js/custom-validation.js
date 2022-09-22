@@ -1521,7 +1521,7 @@ function get_delivery_date()
           callback.call(_this);
         }
     }
-    //search function feature for all
+    //common search function feature for all
     
     jQuery('#search').searchtyping(function(callback){
         let search = $.trim(jQuery(this).val());
@@ -1553,7 +1553,7 @@ function get_delivery_date()
         });
     });    
 
-    //// reset report filter
+    ////common reset filter function
     jQuery(document).on('click', '.reset_filter', function(){
         var url     = jQuery(this).attr('data-action');
         var resetfilter = "resetfilter"
@@ -1568,6 +1568,55 @@ function get_delivery_date()
             success:function(response){
                 if(response.success){
                     setTimeout(() => {window.location.href = response.redirect_url},10);
+                }
+            }
+        });
+        return false;
+    });
+
+    //common search for listing page
+    jQuery('body').on('click', '.pagination a', function(){
+        jQuery('.pagination li.active').removeClass('active');
+        jQuery(this).parent('li').addClass('active');
+        var page = jQuery(this).attr('href').split('page=')[1];
+        var pageUrl = jQuery(this).attr('href');
+        history.pushState({page: page}, "title "+page, "?page="+page)
+        var pagination = "pagination";
+
+        $.ajax({
+            type      : 'GET',
+            cache     : false,
+            url       : pageUrl,
+            data      : {page:page},
+            headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType:   'json',
+            success:function(response){
+                if(response.html){
+                    jQuery('.table-responsive').html(response.html);
+                }
+            }
+        });
+        return false;
+    });
+
+    ////common function for change per page 50
+    jQuery(document).on('change', '.perpage', function(){
+        var url     = jQuery(this).attr('data-action');
+        var peritem = jQuery(this).val();
+        var search  = jQuery('#search').val();
+        jQuery.ajax({
+            type      : 'get',
+            url       : url,
+            data      : {peritem:peritem,search:search},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(response){
+                if(response.html){
+                    jQuery('.table-responsive').html(response.html);
                 }
             }
         });

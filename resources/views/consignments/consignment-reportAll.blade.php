@@ -143,55 +143,6 @@ div.relative {
         return false;
     });
 
-
-   //// on change per page
-    jQuery(document).on('change', '.perpage', function(){
-        var url     = jQuery(this).attr('data-action');
-        var peritem = jQuery(this).val();
-        var search  = jQuery('#search').val();
-        jQuery.ajax({
-            type      : 'get',
-            url       : url,
-            data      : {peritem:peritem,search:search},
-            headers   : {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType  : 'json',
-            success:function(response){
-                if(response.html){
-                    jQuery('.table-responsive').html(response.html);
-                }
-            }
-        });
-        return false;
-    });
-
-    jQuery('body').on('click', '.pagination a', function(){
-        jQuery('.pagination li.active').removeClass('active');
-        jQuery(this).parent('li').addClass('active');
-        var page = jQuery(this).attr('href').split('page=')[1];
-        var pageUrl = jQuery(this).attr('href');
-        history.pushState({page: page}, "title "+page, "?page="+page)
-        var pagination = "pagination";
-
-        $.ajax({
-            type      : 'GET',
-            cache     : false,
-            url       : pageUrl,
-            data      : {page:page},
-            headers   : {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType:   'json',
-            success:function(response){
-                if(response.html){
-                    jQuery('.table-responsive').html(response.html);
-                }
-            }
-        });
-        return false;
-    });
-
     jQuery(document).on('click','.consignmentReportEx',function(event){
         event.preventDefault();
 

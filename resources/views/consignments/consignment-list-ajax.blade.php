@@ -1,6 +1,6 @@
 <?php  $authuser = Auth::user(); ?>
 <div class="custom-table">
-    <table id="" class="table table-hover" style="width:100%">
+    <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
                 <th> </th>
@@ -19,9 +19,9 @@
         <tbody>
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
-            <tr>
+            <tr class="parent" id="{{$consignment->id}}" onClick="getid_click(this.id)">
                 <td class="">
-                <span class="d-flex align-items-center"><i class="fa fa-plus orange-text mr-1 list-collapse collapsed" data-toggle="collapse" data-target="#{{$consignment->id}}"></i></span>
+                    <span class="btn btn-default"><i class="fa fa-plus orange-text"></i></span>
                 </td>
                 <td>
                     <div class="">
@@ -137,34 +137,127 @@
                     
                 </td>
             </tr>
-            <tr class="collapse_pdgremove">
+            <tr class="child-{{$consignment->id}}">
                 <td colspan="7">
-                    <div id="{{$consignment->id}}" class="collapse reservationid_table" aria-expanded="false">
-                        <table class="table w-100">
-                            <tbody>
-                                <tr>
-                                    <th class="text-left" style="max-width:100px; width:130px;">Wine Name</th>
-                                    <th class="text-center">Vintage</th>
-                                    <th class="text-center">Bottle Size</th>
-                                    <th class="text-center">Seller</th>
-                                    <th class="text-center">Selling Broker</th>
-                                    <th class="text-center">Buyer</th>
-                                    <th class="text-center">Buying Broker</th>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                <tr>
-                                    <td class="text-left">Errazuriz-Mondavi Sena</td>
-                                    <td class="text-center">2016</td>
-                                    <td class="text-center">750 ML</td>
-                                    <td class="text-center">Marco Bianchi</td>
+                    <?php if(!empty($consignment->job_id)){
+                        $jobid = $consignment->job_id;
+                    }else{
+                        $jobid = "Manual";
+                    } ?>
+                    <div id="tabsIcons" class="col-lg-12 col-12 layout-spacing">
+                        <div class="statbox widget box box-shadow">
+                            <div class="widget-content widget-content-area icon-tab" style="padding: 0px;">
+                                
+                                <ul class="nav nav-tabs  mb-3 mt-3" id="iconTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active show" id="icon-txndetail-tab" data-toggle="tab" href="#icon-txndetail-{{$consignment->id}}" role="tab" aria-controls="icon-txndetail" aria-selected="true"> TXN Details</a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="icon-timeline-tab" data-toggle="tab" href="#icon-timeline-{{$consignment->id}}" role="tab" aria-controls="icon-timeline" aria-selected="false"> Timeline</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="icon-otherdetail-tab" data-toggle="tab" href="#icon-otherdetail-{{$consignment->id}}" role="tab" aria-controls="icon-otherdetail" aria-selected="false"> Other Details</a>
+                                    </li>
+                                    
+                                </ul>
+                                <div class="tab-content" id="iconTabContent-1">
+                                    <div class="tab-pane fade show active" id="icon-txndetail-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-txndetail-tab">
+                                    <div class="row">
+                                        <div class="col-md-4">
 
-                                    <td class="text-center">Nicola Merighi</td>
-                                    <td class="text-center">Uno Holding Company Limited</td>
-                                    <td class="text-center">Jack Toghli</td>
+                                    <table id="" class="table table-striped">
+                                <tbody>
+                                <tr>
+                                    <td>Delivery Status</td>
+                                    <td><span class="badge bg-info">{{$consignment->delivery_status}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Shadow Job Id</td>
+                                    <td>{{$jobid}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Vehicle No</td>
+                                    <td>{{$consignment->regn_no}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Driver Name</td>
+                                    <td>{{$consignment->driver_name}}</td>
+                                </tr>
+                                    
+                                <tr>
+                                    <td>Driver Phone</td>
+                                    <td>{{$consignment->driver_phone}}</td>
+                                </tr>
+                                <tr>
+                                    <td>No. of Boxes</td>
+                                    <td>{{$consignment->total_quantity}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Net Weight</td>
+                                    <td>{{$consignment->total_weight}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Gross Weight</td>
+                                    <td>{{$consignment->total_gross_weight}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">
+                                        <ul class="ant-timeline mt-3" style="">
+                                            <li class="ant-timeline-item  css-b03s4t">
+                                                <div class="ant-timeline-item-tail"></div>
+                                                <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
+                                                <div class="ant-timeline-item-content">
+                                                    <div class="css-16pld72">{{$consignment->ConsignerDetail->nick_name}} </div>
+                                                
+                                                </div>
+                                            </li>
+                                            <li class="ant-timeline-item ant-timeline-item-last css-phvyqn">
+                                                <div class="ant-timeline-item-tail"></div>
+                                                <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
+                                                <div class="ant-timeline-item-content">
+                                                    <div class="css-16pld72">{{$consignment->ConsignerDetail->nick_name}}</div>
+                                                    <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
+                                                        <span>{{$consignment->ConsignerDetail->postal_code}}, {{$consignment->ConsignerDetail->city}}, {{$consignment->ConsignerDetail->district}}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        </div><div class="col-md-8"></div>
+                    </div>     
+                </div>
+                                    
+                                    <div class="tab-pane fade" id="icon-timeline-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-timeline-tab">
+                                            timeline
+                                    </div>
+
+                                    <div class="tab-pane fade" id="icon-otherdetail-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-otherdetail-tab">
+                                        <table id="" class="table table-striped">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Order Number</td>
+                                                    <td><span class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Invoice Number</td>
+                                                    <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -176,7 +269,7 @@
             @endif
         </tbody>
     </table>
-    <div class="perpage container-fluid">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
@@ -187,7 +280,7 @@
                             <label class=" mb-0">items per page</label>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control report_perpage" data-action="<?php echo url()->current(); ?>">
+                            <select class="form-control perpage" data-action="<?php echo url()->current(); ?>">
                                 <option value="10" {{$peritem == '10' ? 'selected' : ''}}>10</option>
                                 <option value="50" {{$peritem == '50' ? 'selected' : ''}}>50</option>
                                 <option value="100" {{$peritem == '100'? 'selected' : ''}}>100</option>
