@@ -56,6 +56,12 @@
                                     <input type="text" class="form-control" name="contact_person_number" placeholder="">
                                 </div>
                             </div>
+                            <div class="form-row mb-0">                          
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Email<span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="">
+                                </div>
+                            </div>
                             <div class="form-row mb-0">     
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.</label>

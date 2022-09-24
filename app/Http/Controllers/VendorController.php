@@ -67,11 +67,11 @@ class VendorController extends Controller
             $bankdetails = array('acc_holder_name'=> $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 
             $otherdetail = array('transporter_name'=> $request->transporter_name, 'driver_name' => $request->driver_name, 'contact_person_name' => $request->contact_person_name, 'contact_person_number' => $request->contact_person_number);
-            // dd($vendor_no);
           
             $vendorsave['type']               = 'Vendor';
             $vendorsave['vendor_no']          = $vendor_no;
             $vendorsave['name']               = $request->name;
+            $vendorsave['email']               = $request->email;
             $vendorsave['bank_details']       = json_encode($bankdetails);
             $vendorsave['pan']                = $request->pan;;
             $vendorsave['upload_pan']         = $panfile;
@@ -173,6 +173,7 @@ class VendorController extends Controller
                 \"pfu\": \"$pfu\",
                 \"ax_voucher_code\": \"\",
                 \"txn_route\": \"DRS\"
+                \"email\": \"$request->email\"
                 }]",
         CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json'
@@ -182,9 +183,6 @@ class VendorController extends Controller
             $response = curl_exec($curl);
             curl_close($curl);
             echo $response;
-
-
-
 
     }
 }

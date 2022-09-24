@@ -178,6 +178,7 @@ $('#vendor').change(function() {
                 $('#vendor_no').val(res.vendor_details.vendor_no);
                 $('#name').val(res.vendor_details.name);
                 $('#beneficiary_name').val(res.vendor_details.name);
+                $('#email').val(res.vendor_details.email);
             } else {
                 $('#bank_acc').val('');
                 $('#ifsc_code').val('');
@@ -185,6 +186,7 @@ $('#vendor').change(function() {
                 $('#vendor_no').val('');
                 $('#name').val('');
                 $('#beneficiary_name').val('');
+                $('#email').val('');
                 jQuery('#crt_pytm').prop('disabled', true);
                 swal('error', 'account not verified', 'error');
             }

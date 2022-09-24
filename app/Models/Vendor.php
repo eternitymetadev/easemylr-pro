@@ -12,6 +12,7 @@ class Vendor extends Model
         'type',
         'vendor_no',
         'name',
+        'email',
         'bank_details',
         'pan',
         'upload_pan',
