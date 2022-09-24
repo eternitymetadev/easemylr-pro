@@ -1,5 +1,34 @@
 @extends('layouts.main')
 @section('content')
+<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
+<!-- END PAGE LEVEL CUSTOM STYLES -->  
+<style>
+    .select2-results__options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 160px;
+    /* scroll-margin: 38px; */
+    overflow: auto;
+}
+.move{
+    cursor : move;
+}
+.table > tbody > tr > td {
+    vertical-align: middle;
+    color: #515365;
+    padding: 3px 21px;
+    font-size: 13px;
+    letter-spacing: normal;
+    font-weight: 600;
+}
+.btn {
+    font-size: 10px;
+}
+</style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -47,7 +76,7 @@
                     </div>
 
                     @csrf
-                    <div class="table-responsive">
+                    <div class="main-table table-responsive">
                         @include('consignments.download-drs-list-ajax')
                     </div>
                 </div>

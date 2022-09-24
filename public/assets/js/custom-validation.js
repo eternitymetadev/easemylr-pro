@@ -1544,7 +1544,7 @@ jQuery("#search").searchtyping(function (callback) {
                 ) {
                     jQuery(".wines_stock").html(response.html);
                 } else {
-                    jQuery(".table-responsive").html(response.html);
+                    jQuery(".main-table").html(response.html);
                 }
             }
         },
@@ -1594,7 +1594,7 @@ jQuery("body").on("click", ".pagination a", function () {
         dataType: "json",
         success: function (response) {
             if (response.html) {
-                jQuery(".table-responsive").html(response.html);
+                jQuery(".main-table").html(response.html);
             }
         },
     });
@@ -1616,7 +1616,7 @@ jQuery(document).on("change", ".perpage", function () {
         dataType: "json",
         success: function (response) {
             if (response.html) {
-                jQuery(".table-responsive").html(response.html);
+                jQuery(".main-table").html(response.html);
             }
         },
     });
