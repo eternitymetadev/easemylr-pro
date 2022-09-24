@@ -26,10 +26,16 @@ use QrCode;
 use Response;
 use Storage;
 use Validator;
+use Config;
+use Session;
+Use URL;
 use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
 
     public function __construct()
     {
@@ -2029,60 +2035,128 @@ else{
     public function transactionSheet(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = TransactionSheet::query();
+
+        $this->prefix = request()->route()->getPrefix();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();        
-
-        $data = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
-                ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                ->groupBy('transaction_sheets.drs_no');
-
-        if($authuser->role_id ==1){
-            $data;
-        }
-        elseif($authuser->role_id ==4){
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
-            $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-             $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
-            $data = $data->whereIn('transaction_sheets.branch_id', $cc);
-        }
-        $data = $data->where('consignment_notes.status', '!=', 5)->orderBy('transaction_sheets.id', 'DESC');
-        $transaction = $data->get();
-
         if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
             if (isset($request->updatestatus)) {
                 if ($request->drs_status == 'Started') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
                 } elseif ($request->drs_status == 'Successful') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
                 }
+                $url = $this->prefix . '/transaction-sheet';
+                $response['success'] = true;
+                $response['success_message'] = "Dsr cancel status updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'dsr-cancel-update';
+                $response['redirect_url'] = $url;
+    
+                return response()->json($response);
             }
 
-            $url = $this->prefix . '/transaction-sheet';
-            $response['success'] = true;
-            $response['success_message'] = "Dsr cancel status updated successfully";
-            $response['error'] = false;
-            $response['page'] = 'dsr-cancel-update';
-            $response['redirect_url'] = $url;
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $baseclient = explode(',',$authuser->baseclient_id);
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-            return response()->json($response);
+            $query = $query->with('ConsignmentDetail')
+                    ->whereIn('status', ['1', '0', '3'])
+                    ->groupBy('drs_no');
+
+            if($authuser->role_id ==1){
+                $query;
+            }
+            elseif($authuser->role_id ==4){
+                $query = $query->whereIn('consignment_notes.regclient_id', $regclient);
+            }
+            elseif($authuser->role_id ==6){
+                $query = $query->whereIn('base_clients.id', $baseclient);
+            }
+            elseif($authuser->role_id ==7){
+                $query = $query->whereIn('regional_clients.id', $regclient);
+            }
+            else{
+                $query = $query->whereIn('transaction_sheets.branch_id', $cc);
+            }
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('drs_no', 'like', '%' . $search . '%')
+                    ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                    ->orWhere('driver_name', 'like', '%' . $search . '%')
+                    ->orWhere('driver_no', 'like', '%' . $search . '%');
+                });
+            }
+
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+            $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+            $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+            $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+            $transaction = $transaction->appends($request->query());
+
+            $html =  view('consignments.download-drs-list-ajax',['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            
+            return response()->json(['html' => $html]);
         }
 
-        return view('consignments.transaction-sheet', ['prefix' => $this->prefix, 'title' => $this->title, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query->with('ConsignmentDetail')
+                ->whereIn('status', ['1', '0', '3'])
+                ->groupBy('drs_no');
+
+        if($authuser->role_id ==1){
+            $query;
+        }
+        elseif($authuser->role_id ==4){
+            $query = $query->whereIn('consignment_notes.regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==6){
+            $query = $query->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $query = $query->whereIn('transaction_sheets.branch_id', $cc);
+        }
+        $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+        $transaction = $transaction->appends($request->query());
+       
+        return view('consignments.download-drs-list', ['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
 
     public function getTransactionDetails(Request $request)
@@ -4196,9 +4270,7 @@ else{
     }
     public function allupdateInvoice(Request $request)
     {
-         //echo'<pre>'; print_r($request->cn_no); die;
-          
-          if (!empty($request->data)) {
+        if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
 
@@ -4222,7 +4294,6 @@ else{
                         ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
                     }
                 }
-                
             }
             $consignmentitm = ConsignmentItem::where('consignment_id', $request->cn_no)->get();
 
