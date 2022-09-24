@@ -22,7 +22,7 @@
             <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
           </div>
-          <div class="table-responsive" id="lrid">
+          <div class="" id="lrid">
                         <table id="get-delvery-dateLR" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>

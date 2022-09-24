@@ -166,8 +166,9 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('consignment_notes.branch_id', $cc);
         }
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        // echo "<pre>"; print_r($consignments->JobDetail); die;
         $consignments = $consignments->appends($request->query());
-        // echo "<pre>"; print_r($consignments); die;
+        
 
         return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
@@ -191,17 +192,17 @@ class ConsignmentController extends Controller
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                      ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             });
-            if($authuser->role_id ==1){
+            if($authuser->role_id== 1){
                 $data;
             }
-            elseif($authuser->role_id ==4){
+            elseif($authuser->role_id== 4){
                 $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
             }
-            elseif($authuser->role_id ==6){
+            elseif($authuser->role_id== 6){
                 $data = $data->whereIn('base_clients.id', $baseclient);
             }
-            elseif($authuser->role_id ==7){
-                 $data = $data->whereIn('regional_clients.id', $regclient);
+            elseif($authuser->role_id== 7){
+                $data = $data->whereIn('regional_clients.id', $regclient);
             }
             else{
                 $data = $data->whereIn('consignment_notes.branch_id', $cc);

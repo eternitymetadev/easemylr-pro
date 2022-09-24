@@ -8,13 +8,14 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment
+                                List</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-                    
+
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
                             <!-- <div class="col-xl-5 col-lg-3 col-md-4">
@@ -24,7 +25,8 @@
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search" id="search" data-action="<?php echo url()->current(); ?>">
+                                            <input type="text" class="form-control" placeholder="Search" id="search"
+                                                data-action="<?php echo url()->current(); ?>">
                                             <!-- <div class="input-group-btn">
                                                 <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                             </div> -->
@@ -34,16 +36,22 @@
                             </div>
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
-                                    <a class="btn-primary btn-cstm btn ml-2" style="font-size: 15px; padding: 9px; width: 130px" href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add New</span></a>
-                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px; width: 130px" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a> 
+                                    <a class="btn-primary btn-cstm btn ml-2"
+                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                        href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
+                                            New</span></a>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                        data-action="<?php echo url()->current(); ?>"><span><i
+                                                class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                     </div>
 
                     @csrf
                     <div class="table-responsive">
-                    @include('consignments.consignment-list-ajax')
+                        @include('consignments.consignment-list-ajax')
                     </div>
                 </div>
             </div>
@@ -58,16 +66,15 @@
 
 @section('js')
 <script>
-    //https://www.codeply.com/go/Ep9T1ItZrb/bootstrap-4-collapse-card-plus-minus-icons
-    // $(function() {
-    //     $('tr.parent td span.btn').on('click', function() {
-    //         var next= $(this).closest('tr').next();   //this is the row to toggle
-    //         $('tr[class^=child-]').not(next).hide();  //hide all others
-    //         next.toggle('slow');                      //toggle it
-    //     });
+//https://www.codeply.com/go/Ep9T1ItZrb/bootstrap-4-collapse-card-plus-minus-icons
+// $(function() {
+//     $('tr.parent td span.btn').on('click', function() {
+//         var next= $(this).closest('tr').next();   //this is the row to toggle
+//         $('tr[class^=child-]').not(next).hide();  //hide all others
+//         next.toggle('slow');                      //toggle it
+//     });
 
-    //     $('tr[class^=child-]').hide();
-    // });
-    
+//     $('tr[class^=child-]').hide();
+// });
 </script>
 @endsection
