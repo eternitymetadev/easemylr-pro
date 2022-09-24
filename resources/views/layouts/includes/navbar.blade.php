@@ -139,6 +139,12 @@
                         <li>
                             <a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'vendor/create'}}"> Vendor  </a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'drs-paymentlist'}}"> payment list </a>
+                        </li>
                     </ul>
                 </li>
                 <?php }

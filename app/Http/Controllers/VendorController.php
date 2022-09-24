@@ -135,20 +135,25 @@ class VendorController extends Controller
         // dd($request->vendor_id);
         $vendors = Vendor::where('id',$request->vendor_id)->first();
 
-        $response['vendor_details'] = $vendors;
-        $response['success'] = true;
-        $response['error_message'] = "Can not created Vendor please try again";
+        if($vendors->is_acc_verified == 1){
+            $response['vendor_details'] = $vendors;
+            $response['success'] = true;
+            $response['message'] = "verified account";
+        }else{
+            $response['success'] = false;
+            $response['message'] = "Account not verified";
+        }
+
         return response()->json($response);
     }
 
     public function createPaymentRequest(Request $request)
     {
-        dd($request->all());
-
+        
+            $pfu = 'ETF';
             $curl = curl_init();
-
             curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://127.0.0.1:8000/api/create',
+            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -156,23 +161,29 @@ class VendorController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => array('unique_code' => 'sahil',
-            'name' => '32132114534',
-            'acc_no' => 'SBIN13708',
-            'beneficiary_name' => 'SBI',
-            'ifsc' => 'Baldwara',
-            'bank_name' => 'eternity',
-            'payable_amount' => 'vipan',
-            'claimed_amount' => 'vipan',
-            'pfu' => '144242454',
-            'ax_voucher_code' => '54534',
-            'txn_route'=> new CURLFILE('8tDgKdrAK/bg-image-cake-and-coffee.png')),
-            ));
-
+            CURLOPT_POSTFIELDS => "[{
+                \"unique_code\": \"$request->vendor_no\",
+                \"name\": \"$request->name\",
+                \"acc_no\": \"$request->acc_no\",
+                \"beneficiary_name\": \"$request->beneficiary_name\",
+                \"ifsc\": \"$request->ifsc\",
+                \"bank_name\": \"$request->bank_name\",
+                \"payable_amount\": \"$request->payable_amount\",
+                \"claimed_amount\": \"$request->claimed_amount\", 
+                \"pfu\": \"$pfu\",
+                \"ax_voucher_code\": \"\",
+                \"txn_route\": \"DRS\"
+                }]",
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json'
+        ),
+    ));
+    
             $response = curl_exec($curl);
-
             curl_close($curl);
             echo $response;
+
+
 
 
     }
