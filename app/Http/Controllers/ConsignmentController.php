@@ -2073,24 +2073,29 @@ else{
             $cc = explode(',',$authuser->branch_id);
             $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-            $query = $query->with('ConsignmentDetail')
-                    ->whereIn('status', ['1', '0', '3'])
+            $query = $query->whereIn('status', ['1', '0', '3'])
                     ->groupBy('drs_no');
 
             if($authuser->role_id ==1){
-                $query;
+                $query->with('ConsignmentDetail');
             }
             elseif($authuser->role_id ==4){
-                $query = $query->whereIn('consignment_notes.regclient_id', $regclient);
+                $query = $query
+                ->whereHas('ConsignmentDetail', function($query) use($regclient){
+                    $query->whereIn('regclient_id', $regclient);
+                });
             }
             elseif($authuser->role_id ==6){
-                $query = $query->whereIn('base_clients.id', $baseclient);
+                $query = $query
+                ->whereHas('ConsignmentDetail', function($query) use($baseclient){
+                    $query->whereIn('base_clients.id', $baseclient);
+                });
             }
             elseif($authuser->role_id ==7){
-                $query = $query->whereIn('regional_clients.id', $regclient);
+                $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
             }
             else{
-                $query = $query->whereIn('transaction_sheets.branch_id', $cc);
+                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
             }
 
             if(!empty($request->search)){
@@ -2131,6 +2136,7 @@ else{
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
+      
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
@@ -2139,19 +2145,25 @@ else{
                 ->groupBy('drs_no');
 
         if($authuser->role_id ==1){
-            $query;
+            $query->with('ConsignmentDetail');
         }
         elseif($authuser->role_id ==4){
-            $query = $query->whereIn('consignment_notes.regclient_id', $regclient);
+            $query = $query
+            ->whereHas('ConsignmentDetail', function($query) use($regclient){
+                $query->whereIn('regclient_id', $regclient);
+            });
         }
         elseif($authuser->role_id ==6){
-            $query = $query->whereIn('base_clients.id', $baseclient);
+            $query = $query
+            ->whereHas('ConsignmentDetail', function($query) use($baseclient){
+                $query->whereIn('base_clients.id', $baseclient);
+            });
         }
         elseif($authuser->role_id ==7){
-            $query = $query->whereIn('regional_clients.id', $regclient);
+            $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
         }
         else{
-            $query = $query->whereIn('transaction_sheets.branch_id', $cc);
+            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
         $transaction = $query->orderBy('id','DESC')->paginate($peritem);
         $transaction = $transaction->appends($request->query());
