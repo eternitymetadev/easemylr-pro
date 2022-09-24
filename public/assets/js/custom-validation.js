@@ -1524,7 +1524,12 @@ function get_delivery_date()
                 
                 },
                 success: (data) => {
-                   alert('success');
+                    if(data.success === true){
+                        swal("success", data.success_message ,"success");
+                        $('#vendor-master')[0].reset();
+                    }else{
+                      swal('error',data.error_message,'error');
+                    }
                   
                 }
             }); 
