@@ -707,7 +707,6 @@ jQuery(document).ready(function () {
             },
             dataType: "json",
             success: function (res) {
-                // $('#ship_to_address').empty();
                 if (res.data) {
                     if (res.data.address_line1 == null) {
                         var address_line1 = "";
@@ -913,6 +912,7 @@ jQuery(document).ready(function () {
                     .find(".ewb_date")
                     .attr("name", "data[" + i + "][e_way_bill_date]");
 
+
                 i++;
             }
         });
@@ -940,6 +940,7 @@ jQuery(document).ready(function () {
             var grweight = !$('[name="data[' + w + '][gross_weight]"]').val()
                 ? 0
                 : parseInt($('[name="data[' + w + '][gross_weight]"]').val());
+
             total_quantity += qty;
             total_net_weight += ntweight;
             total_gross_weight += grweight;
@@ -1256,6 +1257,8 @@ jQuery(document).ready(function () {
                 },
             });
         });
+
+
     });
     //    Manual LR status update+++++++++++++++++++++++++++++++++++++
     jQuery(document).on("click", ".manual_updateLR", function (event) {
@@ -1313,7 +1316,6 @@ jQuery(document).ready(function () {
         event.stopPropagation();
 
         let lr_no = jQuery(this).attr("lr-no");
-
         var data = { lr_no: lr_no };
         var base_url = window.location.origin;
         jQuery.ajax({
@@ -1682,7 +1684,6 @@ $("#all_inv_save").submit(function (e) {
                     } else {
                         var billno = value.e_way_bill;
                     }
-
                     if (
                         value.e_way_bill_date == null ||
                         value.e_way_bill_date == ""
@@ -1694,7 +1695,6 @@ $("#all_inv_save").submit(function (e) {
                     } else {
                         var billdate = value.e_way_bill_date;
                     }
-
                     $("#view_invoices tbody").append(
                         "<tr><input type='hidden' name='data[" +
                         i +
@@ -1761,7 +1761,7 @@ jQuery("#search").searchtyping(function (callback) {
                 ) {
                     jQuery(".wines_stock").html(response.html);
                 } else {
-                    jQuery(".table-responsive").html(response.html);
+                    jQuery(".main-table").html(response.html);
                 }
             }
         },
@@ -1811,7 +1811,7 @@ jQuery("body").on("click", ".pagination a", function () {
         dataType: "json",
         success: function (response) {
             if (response.html) {
-                jQuery(".table-responsive").html(response.html);
+                jQuery(".main-table").html(response.html);
             }
         },
     });
@@ -1833,7 +1833,7 @@ jQuery(document).on("change", ".perpage", function () {
         dataType: "json",
         success: function (response) {
             if (response.html) {
-                jQuery(".table-responsive").html(response.html);
+                jQuery(".main-table").html(response.html);
             }
         },
     });
