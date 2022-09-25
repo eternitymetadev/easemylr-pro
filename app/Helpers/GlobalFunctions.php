@@ -154,11 +154,11 @@ class GlobalFunctions {
     {
         $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
 
-        $getlr_deldate = ConsignmentNote::select('delivery_date')->whereIn('id',$get_lrs)->get();
-        $total_deldate = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '!=', NULL)->count();
-        $total_empty = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '=', NULL)->count();
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status','!=',0)->whereIn('id',$get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->where('delivery_date', '!=', NULL)->count();
+        $total_empty = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->where('delivery_date', '=', NULL)->count();
 
-        $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->count();
+        $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->count();
 
         if($total_deldate == $total_lr){
             $status = "Successful";
