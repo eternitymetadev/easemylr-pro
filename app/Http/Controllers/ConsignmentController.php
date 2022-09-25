@@ -2367,7 +2367,14 @@ else{
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
+        $transcationview = TransactionSheet::select('*')
+        ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('drs_no', $id)
+        ->whereIn('status', ['1', '3'])
+        ->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
         //echo'<pre>'; print_r($simplyfy); die;
         $no_of_deliveries =  count($simplyfy);
