@@ -1721,6 +1721,8 @@ $("#all_inv_save").submit(function (e) {
     });
 });
 
+
+// search function on keypress
 $.fn.searchtyping = function (callback) {
     var _this = $(this);
     var x_timer;
@@ -1734,8 +1736,8 @@ $.fn.searchtyping = function (callback) {
         callback.call(_this);
     }
 };
-//common search function feature for all
 
+// common search function feature for all
 jQuery("#search").searchtyping(function (callback) {
     let search = $.trim(jQuery(this).val());
     let url = jQuery(this).attr("data-action");
@@ -1768,7 +1770,7 @@ jQuery("#search").searchtyping(function (callback) {
     });
 });
 
-////common reset filter function
+// common reset filter function
 jQuery(document).on("click", ".reset_filter", function () {
     var url = jQuery(this).attr("data-action");
     var resetfilter = "resetfilter";
@@ -1791,14 +1793,13 @@ jQuery(document).on("click", ".reset_filter", function () {
     return false;
 });
 
-//common search for listing page
+// common search for listing page
 jQuery("body").on("click", ".pagination a", function () {
     jQuery(".pagination li.active").removeClass("active");
     jQuery(this).parent("li").addClass("active");
     var page = jQuery(this).attr("href").split("page=")[1];
     var pageUrl = jQuery(this).attr("href");
     history.pushState({ page: page }, "title " + page, "?page=" + page);
-    var pagination = "pagination";
 
     $.ajax({
         type: "GET",
@@ -1818,7 +1819,7 @@ jQuery("body").on("click", ".pagination a", function () {
     return false;
 });
 
-////common function for change per page 50
+// common function for change per page 50
 jQuery(document).on("change", ".perpage", function () {
     var url = jQuery(this).attr("data-action");
     var peritem = jQuery(this).val();

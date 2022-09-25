@@ -50,7 +50,7 @@
                     </div>
 
                     @csrf
-                    <div class="table-responsive">
+                    <div class="main-table table-responsive">
                         @include('consignments.consignment-list-ajax')
                     </div>
                 </div>
