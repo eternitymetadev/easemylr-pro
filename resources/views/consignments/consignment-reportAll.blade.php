@@ -75,7 +75,7 @@ div.relative {
                             </div>
                         </div>
                         @csrf
-                        <div class="table-responsive">
+                        <div class="main-table table-responsive">
                             @include('consignments.consignment-reportAll-ajax')
                         </div>
                     </div>
@@ -103,7 +103,7 @@ div.relative {
             dataType  : 'json',
             success:function(response){
                 if(response.html){
-                    jQuery('.table-responsive').html(response.html);
+                    jQuery('.main-table').html(response.html);
                 }
             }
         });
@@ -154,10 +154,10 @@ div.relative {
             success:function(response){
                 if(response.html){
                     if(response.page == 'lead_note'){
-                        jQuery('#Note .table-responsive').html(response.html);
+                        jQuery('#Note .main-table').html(response.html);
                     }
                     else{
-                        jQuery('.table-responsive').html(response.html);
+                        jQuery('.main-table').html(response.html);
                     }
                 }
             }
@@ -181,7 +181,7 @@ div.relative {
             dataType  : 'json',
             success:function(response){
                 if(response.html){
-                    jQuery('.table-responsive').html(response.html);
+                    jQuery('.main-table').html(response.html);
                 }
             }
         });
@@ -207,7 +207,7 @@ div.relative {
             dataType:   'json',
             success:function(response){
                 if(response.html){
-                    jQuery('.table-responsive').html(response.html);
+                    jQuery('.main-table').html(response.html);
                 }
             }
         });
