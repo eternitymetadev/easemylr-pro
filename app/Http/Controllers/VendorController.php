@@ -12,6 +12,13 @@ use Validator;
 
 class VendorController extends Controller
 {
+    public function index()
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $vendors = Vendor::all();
+        return view('vendors.vendor-list',['prefix' => $this->prefix,'vendors' => $vendors]);
+    }
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
@@ -112,7 +119,7 @@ class VendorController extends Controller
         $drslist = TransactionSheet::with('ConsignmentDetail')
         ->orderBy('id', 'DESC')
         ->groupBy('drs_no')
-        ->paginate(50);
+        ->paginate(80);
 
         $vendors = Vendor::all();
         return view('vendors.drs-paymentlist',['prefix' => $this->prefix, 'drslist' => $drslist,'vendors' => $vendors]);
@@ -132,7 +139,7 @@ class VendorController extends Controller
 
     public function vendorbankdetails(Request $request)
     {
-        // dd($request->vendor_id);
+
         $vendors = Vendor::where('id',$request->vendor_id)->first();
 
         if($vendors->is_acc_verified == 1){
@@ -175,7 +182,7 @@ class VendorController extends Controller
                 \"txn_route\": \"DRS\"
                 \"email\": \"$request->email\"
                 }]",
-        CURLOPT_HTTPHEADER => array(
+                CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json'
         ),
     ));

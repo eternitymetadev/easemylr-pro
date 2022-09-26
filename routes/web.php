@@ -291,6 +291,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
+    Route::any('vendor-list', [VendorController::class, 'index']);
     Route::any('vendor/create', [VendorController::class, 'create']);
     Route::post('vendor/add-vendor', [VendorController::class, 'store']);
     Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);

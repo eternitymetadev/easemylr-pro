@@ -105,7 +105,7 @@ div.relative {
                                     <?php } ?>
                                 </td>
                                 <!-- END Delivery Status  -------------  -->
-                                <td></td>
+                                <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                                 <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
                                         style="margin-right:4px;">Create Payment</button> </td>
                                 <td></td>

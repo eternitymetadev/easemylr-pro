@@ -1532,6 +1532,7 @@ jQuery("#search").searchtyping(function (callback) {
         dataType: "json",
         beforeSend: function () {
             jQuery(".load-main").show();
+            
         },
         complete: function () {
             jQuery(".load-main").hide();
@@ -1545,6 +1546,7 @@ jQuery("#search").searchtyping(function (callback) {
                     jQuery(".wines_stock").html(response.html);
                 } else {
                     jQuery(".main-table").html(response.html);
+                    alert("Please select");
                 }
             }
         },
@@ -1626,7 +1628,6 @@ jQuery(document).on("change", ".perpage", function () {
     ///////////////////// vendor //////////
     $('#vendor-master').submit(function(e) {
         e.preventDefault();
-      
         var formData = new FormData(this);
        
             $.ajax({
@@ -1650,10 +1651,9 @@ jQuery(document).on("change", ".perpage", function () {
                 }
             }); 
         });	
-        //////////////////
+        //////////////////Drs Payment Transaction////////////
         $('#payment_form').submit(function(e) {
             e.preventDefault();
-          
             var formData = new FormData(this);
            
                 $.ajax({
@@ -1670,8 +1670,8 @@ jQuery(document).on("change", ".perpage", function () {
                        alert('success');
                       
                     }
-                }); 
-            });	
+        }); 
+    });	
 
 
 

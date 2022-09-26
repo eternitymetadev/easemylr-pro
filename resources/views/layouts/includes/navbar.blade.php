@@ -143,6 +143,9 @@
                             <a href="{{$prefixurl.'vendor/create'}}"> Vendor  </a>
                         </li>
                         <li>
+                            <a href="{{$prefixurl.'vendor-list'}}">Vendor list </a>
+                        </li>
+                        <li>
                             <a href="{{$prefixurl.'drs-paymentlist'}}"> payment list </a>
                         </li>
                     </ul>
