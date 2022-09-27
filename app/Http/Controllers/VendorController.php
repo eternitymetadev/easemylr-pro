@@ -156,7 +156,7 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
-        echo'<pre>'; print_r('h'); die;
+        echo'<pre>'; print_r('h'); die; 
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(
