@@ -33,8 +33,4 @@ return [
         'map_key' => env('GOOGLE_MAP_KEY'),
     ]
 
-    'googleMap_key' => [
-        'map_key' => env('GOOGLE_MAP_KEY'),
-    ]
-
 ];
