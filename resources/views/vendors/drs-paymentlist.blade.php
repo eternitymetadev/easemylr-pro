@@ -149,8 +149,6 @@ $(document).on('click', '.payment', function() {
 });
 // ============================================================== //
 $('#vendor').change(function() {
-
-
     var vendor_id = $(this).val();
 
     $.ajax({

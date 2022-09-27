@@ -142,21 +142,21 @@ class VendorController extends Controller
 
         $vendors = Vendor::where('id',$request->vendor_id)->first();
 
-        if($vendors->is_acc_verified == 1){
+        // if($vendors->is_acc_verified == 1){
             $response['vendor_details'] = $vendors;
             $response['success'] = true;
             $response['message'] = "verified account";
-        }else{
-            $response['success'] = false;
-            $response['message'] = "Account not verified";
-        }
+        // }else{
+        //     $response['success'] = false;
+        //     $response['message'] = "Account not verified";
+        // }
 
         return response()->json($response);
     }
 
     public function createPaymentRequest(Request $request)
     {
-        
+        echo'<pre>'; print_r('h'); die;
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(

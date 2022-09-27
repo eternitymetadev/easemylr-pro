@@ -1667,7 +1667,7 @@ jQuery(document).on("change", ".perpage", function () {
                     
                     },
                     success: (data) => {
-                       alert('success');
+                       swal('error','error','error');
                       
                     }
         }); 
