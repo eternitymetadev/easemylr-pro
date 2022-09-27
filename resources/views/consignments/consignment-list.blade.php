@@ -66,15 +66,34 @@
 
 @section('js')
 <script>
-//https://www.codeply.com/go/Ep9T1ItZrb/bootstrap-4-collapse-card-plus-minus-icons
-// $(function() {
-//     $('tr.parent td span.btn').on('click', function() {
-//         var next= $(this).closest('tr').next();   //this is the row to toggle
-//         $('tr[class^=child-]').not(next).hide();  //hide all others
-//         next.toggle('slow');                      //toggle it
-//     });
-
-//     $('tr[class^=child-]').hide();
+    
+// jQuery(document).on("click", ".card-header", function () {
+function row_click(row_id, job_id, url)
+{   
+    var job_id = job_id;  
+    var url =url;
+    jQuery.ajax({
+        url: url,
+        type: "get",
+        cache: false,
+        data: { job_id: job_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                "content"
+            ),
+        },
+        success: function (response) {
+            if (response.success) {
+                console.log(response.job_data);die;
+                $.each(response.job_data, function (index, value) {
+                    
+                });
+            }
+        },
+    });
+    // return false;
+}
 // });
 </script>
 @endsection

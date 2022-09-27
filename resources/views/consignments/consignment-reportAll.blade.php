@@ -14,9 +14,6 @@ div.relative {
     height: 38px;
 }
 
-/* .table > tbody > tr > td {
-    color: #4361ee;
-} */
 .dt-buttons .dt-button {
     width: 83px;
     height: 38px;

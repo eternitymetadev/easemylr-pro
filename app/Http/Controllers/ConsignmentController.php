@@ -4396,5 +4396,38 @@ else{
         }
     }
 
+    public function getJob(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        if(!empty($request->job_id)){
+            $job = DB::table('consignment_notes')->select('jobs.status as job_status', 'jobs.response_data as trail')
+            ->where('consignment_notes.job_id',$request->job_id )
+            ->leftjoin('jobs', function($data){
+                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+            })->first();
+
+            if(!empty($job)){
+                $job_data= json_decode($job->trail);
+                $tracking_history = array_reverse($job_data->task_history);
+
+                $url    =   URL::to($this->prefix.'/consignments');
+                $response['success'] = true;
+                $response['success_message'] = "Jobs fetch successfully";
+                $response['error'] = false;
+                $response['job_data'] = $tracking_history;
+            }
+        }else{
+            $job_data= '';
+
+            $url    =   URL::to($this->prefix.'/consignments');
+            $response['success'] = false;
+            $response['error_message'] = "Job data not found";
+            $response['job_data'] = '';
+        }
+        
+        return response()->json($response);
+    }
+
 
 }

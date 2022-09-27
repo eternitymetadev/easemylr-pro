@@ -211,8 +211,18 @@ class GlobalFunctions {
 
     public static function getJobs($job_id)
     {
-        $job = Job::whereRaw('job_id = (select max(`job_id`) from jobs)')->first();
-        $job_data= json_decode($job->response_data);
+        $job = DB::table('consignment_notes')->select('jobs.status as job_status', 'jobs.response_data as trail')
+        ->where('consignment_notes.job_id',$job_id )
+        ->leftjoin('jobs', function($data){
+            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+        })->first();
+
+        if(!empty($job)){
+            $job_data= json_decode($job->trail);
+        }else{
+            $job_data= '';
+        }
         return $job_data;
     }
 

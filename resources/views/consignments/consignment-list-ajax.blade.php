@@ -20,7 +20,7 @@
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <tr>
-                <td class="card-header collapsed" data-toggle="collapse" href="#collapse-{{$consignment->id}}">
+                <td class="card-header collapsed" id="{{$consignment->id}}" data-toggle="collapse" href="#collapse-{{$consignment->id}}" data-jobid="{{$consignment->job_id}}" data-action="<?php echo URL::to($prefix.'/get-jobs'); ?>" onClick="row_click(this.id,this.getAttribute('data-jobid'),this.getAttribute('data-action'))">
 
                 </td>
                 <td>
@@ -287,8 +287,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane fade" id="icon-timeline-{{$consignment->id}}" role="tabpanel"
-                                        aria-labelledby="icon-timeline-tab">
+                                    <div class="tab-pane fade" id="icon-timeline-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-timeline-tab">
                                         <?php 
                                         $json = Helper::getJobs($consignment->job_id);
                                         if (!empty($json)) {
@@ -304,23 +303,32 @@
                                                         $task_date = $date->format('d-m-Y h:i');
                                                         $type = $task->type;
                                                         $des_data = '';
-                                                        
-                                                        if ($type == 'image_added') { ?>
-                                                        Attachment uploaded by {{ $task->fleet_name}}<br /> <button
+
+                                                        if ($type == 'image_added') {
+                                                            $uploaded_by = 'Attachment uploaded by';
+                                                            $view_text = 'View Attachment';
+                                                            $title = 'Attachment';
+                                                            $image = '<img src="'.$task->description.'" width="100%" seamless="">';
+                                                        }elseif ($type == 'signature_image_added') {
+                                                            $uploaded_by = 'Signature Added by';
+                                                            $view_text = 'View Signatures';
+                                                            $title = 'Signature';
+                                                            $image = '<img src="'.$task->description.'" width="100%" height="298" seamless="" />';
+                                                        } 
+                                                        if($type == 'image_added' || $type == 'signature_image_added'){ ?>
+                                                            {{$uploaded_by}} {{ $task->fleet_name}} <br /> <button
                                                             type="button" class="btn btn-primary mb-2 mr-2"
                                                             data-toggle="modal" data-target="#mod_{{$task->id }}">
-                                                            View Attachment
+                                                            {{$view_text}}
                                                         </button>
 
-                                                        <!-- Modal -->
-                                                        <div class="modal fade" id="mod_{{$task->id}}" tabindex="-1"
-                                                            role="dialog" aria-labelledby="exampleModalLabel"
-                                                            aria-hidden="true">
+                                                    <!-- Modal -->
+                                                        <div class="modal fade" id="mod_{{$task->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                             <div class="modal-dialog" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
-                                                                            Attachment</h5>
+                                                                            {{$title}}</h5>
                                                                         <button type="button" class="close"
                                                                             data-dismiss="modal" aria-label="Close">
                                                                             <svg aria-hidden="true"
@@ -339,65 +347,17 @@
                                                                         </button>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        <img src="{{$task->description}}" width="100%"
-                                                                            seamless="">
+                                                                        {{$image}}
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <button class="btn" data-dismiss="modal"><i
-                                                                                class="flaticon-cancel-12"></i>
-                                                                            Close</button>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <?php     } elseif ($type == 'signature_image_added') { ?>
-                                                        Signature Added by {{$task->fleet_name}}<br /><img
-                                                            src="{{$task->description}}" width="10%"><br /><br /><button
-                                                            type="button" class="btn btn-primary mb-2 mr-2"
-                                                            data-toggle="modal" data-target="#mod_{{$task->id}}">
-                                                            View Signatures
-                                                        </button>
-
-                                                        <!-- Modal -->
-                                                        <div class="modal fade" id="mod_{{$task->id}}" tabindex="-1"
-                                                            role="dialog" aria-labelledby="exampleModalLabel"
-                                                            aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            Signatures</h5>
-                                                                        <button type="button" class="close"
-                                                                            data-dismiss="modal" aria-label="Close">
-                                                                            <svg aria-hidden="true"
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                                width="24" height="24"
-                                                                                viewBox="0 0 24 24" fill="none"
-                                                                                stroke="currentColor" stroke-width="2"
-                                                                                stroke-linecap="round"
-                                                                                stroke-linejoin="round"
-                                                                                class="feather feather-x">
-                                                                                <line x1="18" y1="6" x2="6" y2="18">
-                                                                                </line>
-                                                                                <line x1="6" y1="6" x2="18" y2="18">
-                                                                                </line>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <img src="{{$task->description}}" width="100%"
-                                                                            height="298" seamless="" />
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn" data-dismiss="modal"><i
-                                                                                class="flaticon-cancel-12"></i>
+                                                                        <button class="btn" data-dismiss="modal">
+                                                                            <i class="flaticon-cancel-12"></i>
                                                                             Close</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <?php } else {
+                                                        </div> -->
+                                                        <?php }else{
                                                             $str = trim($task->label_description, 'at') . ' by ' . $task->fleet_name;
                                                             if (str_contains($str, 'CREATED')) {
                                                                 $des_data .= "LR Created";
@@ -406,8 +366,7 @@
                                                             }
                                                         } ?>
                                                         <li>
-                                                            <time class="cbp_tmtime" datetime="{{$task_date}}"><span
-                                                                    class="hidden">{{$task_date}}</span></time>
+                                                            <time class="cbp_tmtime" datetime="{{$task_date}}"><span class="hidden">{{$task_date}}.l</span></time>
                                                             <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i>
                                                             </div>
                                                             <div class="cbp_tmlabel empty"> <span>{{$des_data}}</span>
@@ -429,8 +388,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Order Number</td>
-                                                    <td><span
-                                                            class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
+                                                    <td><span class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
                                                     </td>
                                                 </tr>
 
