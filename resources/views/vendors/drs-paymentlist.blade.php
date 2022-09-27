@@ -82,15 +82,14 @@ div.relative {
                                 <th>Payment Type</th>
                                 <th>Amount</th>
                                 <th>Status</th>
-
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($drslist as $list)
                             <tr>
                                 <td>DRS-{{$list->drs_no}}</td>
-                                <!-- delivery Status ---- -->
 
+                                <!-- delivery Status ---- -->
                                 <td>
                                     <?php if($list->status == 0){?>
                                     <label class="badge badge-dark">Cancelled</label>
@@ -104,7 +103,7 @@ div.relative {
                                     <?php } ?>
                                     <?php } ?>
                                 </td>
-                                <!-- END Delivery Status  -------------  -->
+                                <!-- END Delivery Status  --------------->
                                 <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                                 <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
                                         style="margin-right:4px;">Create Payment</button> </td>
