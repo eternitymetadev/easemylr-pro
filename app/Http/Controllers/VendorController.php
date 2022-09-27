@@ -73,7 +73,7 @@ class VendorController extends Controller
              
             $bankdetails = array('acc_holder_name'=> $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 
-            $otherdetail = array('transporter_name'=> $request->transporter_name, 'driver_name' => $request->driver_name, 'contact_person_name' => $request->contact_person_name, 'contact_person_number' => $request->contact_person_number);
+            $otherdetail = array('transporter_name'=> $request->transporter_name, 'driver_name' => $request->driver_name, 'contact_person_number' => $request->contact_person_number);
           
             $vendorsave['type']               = 'Vendor';
             $vendorsave['vendor_no']          = $vendor_no;

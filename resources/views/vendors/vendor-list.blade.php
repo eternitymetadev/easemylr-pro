@@ -66,20 +66,24 @@ div.relative {
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
+            <a href="{{'vendor/create'}}" class="btn btn-primary " style="font-size: 13px; padding: 6px 0px;">Add Vendor</a>
                 <div class="table-responsive mb-4 mt-4">
                     @csrf
-                    <table id="" class="table table-hover" style="width:100%">
-                        <div class="btn-group relative">
-                            <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
-                        </div>
+                    <table id="" class="table table-hover get-datatable" style="width:100%">
+                       
                         <thead>
                             <tr>
                                 <th>Vendor Name</th>
                                 <th>Transporter Name</th>
-                                <th>Contact Person Name</th>
-                                <th>Contact Person Number</th>
-                                <th>Email</th>
+                                <th>Driver Name <th>
+                                <th>Contact Email</th>
+                                <th>Contact Number</th>
+                                <th>Acc Holder Name</th>
                                 <th>Account No.</th>
+                                <th>IFSC </th>
+                                <th>Bank Name</th>
+                                <th>Branch Name</th>
+                                <th>Cancel Cheaque</th>
                                 <th>Pan</th>
                                 <th>Upload Pan</th>
 
@@ -98,6 +102,11 @@ div.relative {
                                 <td>{{$vendor->email ?? '-'}}</td>
                                 <td>{{$bank_details->account_no ?? '-'}}</td>
                                 <td>{{$vendor->pan ?? '-'}}</td>
+                                <td>{{$vendor->upload_pan ?? '-'}}</td>
+                                <td>{{$vendor->email ?? '-'}}</td>
+                                <td>{{$bank_details->account_no ?? '-'}}</td>
+                                <td>{{$vendor->pan ?? '-'}}</td>
+                                <td>{{$vendor->upload_pan ?? '-'}}</td>
                                 <td>{{$vendor->upload_pan ?? '-'}}</td>
                             </tr>
                           @endforeach

@@ -26,6 +26,7 @@
                     <div class="statbox widget box box-shadow">
                         <form id="vendor-master">
                             @csrf
+                            <h3>Vendoer Contact Details</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span class="text-danger">*</span></label>
@@ -42,46 +43,50 @@
                                     <input type="text" class="form-control" name="driver_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name </label>
-                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">                          
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Contact Person Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="contact_person_name" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Contact Person Number<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlSelect1">Contact Number<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="contact_person_number" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">                          
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Email<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlSelect1">Contact Email<span class="text-danger">*</span></label>
                                     <input type="email" class="form-control" id="email" name="email" placeholder="">
                                 </div>
                             </div>
-                            <div class="form-row mb-0">     
+                            <h3>Vendor NEFT details</h3>
+                            <div class="form-row mb-0">   
+                            <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Account Holder Name </label>
+                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="">
+                                </div>                       
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.</label>
                                     <input type="text" class="form-control" name="account_no" placeholder="">
                                 </div>
+                            </div>
+                            
+                            <div class="form-row mb-0">     
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code</label>
                                     <input type="text" class="form-control" id="" name="ifsc_code" placeholder="">
                                 </div>
-                            </div>
-                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
                                     <input type="text" class="form-control" name="bank_name" placeholder="">
-                                </div>    
+                                </div> 
+                            </div>
+                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Branch Name</label>
                                     <input type="text" class="form-control" name="branch_name" placeholder="">
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Cancel Cheaque</label>
+                                    <input type="file" class="form-control" name="cancel_cheaque" placeholder="">
+                                </div>
                             </div>
+
+                            <h3>Vendor Documents</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan</label>
@@ -93,10 +98,7 @@
                                 </div>
                             </div>
                             <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Cancel Cheaque</label>
-                                    <input type="file" class="form-control" name="cancel_cheaque" placeholder="">
-                                </div>
+                               
                             </div>
                             
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
