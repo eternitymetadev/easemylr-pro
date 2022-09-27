@@ -138,9 +138,9 @@ $(document).on('click', '.payment', function() {
 
             },
         success: function(data) {
-            console.log(data.get_data[0].drs_no);
-            $('#drs_no').val(data.get_data[0].drs_no);
-
+            // console.log(data.get_data.consignment_detail.purchase_price);
+            $('#drs_no').val(data.get_data.drs_no);
+            $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
 
         }
 

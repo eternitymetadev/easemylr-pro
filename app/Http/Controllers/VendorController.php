@@ -129,7 +129,7 @@ class VendorController extends Controller
     public function getdrsdetails(Request $request) 
         {
 
-            $drs = TransactionSheet::where('drs_no',$request->drsno)->get();
+            $drs = TransactionSheet::with('ConsignmentDetail')->where('drs_no',$request->drsno)->first();
 
             $response['get_data'] = $drs;
             $response['success'] = true;
