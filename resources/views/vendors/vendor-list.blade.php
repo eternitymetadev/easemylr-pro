@@ -1,52 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<style>
-.dt--top-section {
-    margin: none;
-}
 
-div.relative {
-    position: absolute;
-    left: 110px;
-    top: 24px;
-    z-index: 1;
-    width: 145px;
-    height: 38px;
-}
-
-/* .table > tbody > tr > td {
-    color: #4361ee;
-} */
-.dt-buttons .dt-button {
-    width: 83px;
-    height: 38px;
-    font-size: 13px;
-}
-
-.btn-group>.btn,
-.btn-group .btn {
-    padding: 0px 0px;
-    padding: 10px;
-}
-
-.btn {
-
-    font-size: 10px;
-}
-
-.select2-results__options {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    height: 160px;
-    /* scroll-margin: 38px; */
-    overflow: auto;
-}
-
-.move {
-    cursor: move;
-}
-</style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
@@ -60,53 +14,48 @@ div.relative {
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Payments</a></li>
                         <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Vendor List</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-            <a href="{{'vendor/create'}}" class="btn btn-primary " style="font-size: 13px; padding: 6px 0px;">Add Vendor</a>
-                <div class="table-responsive mb-4 mt-4">
+            <a href="{{'vendor/create'}}" class="btn btn-primary mt-3" style="margin-left:4px; font-size: 13px; padding: 6px 0px;">Add Vendor</a>
+                <div class="mb-4 mt-4">
                     @csrf
-                    <table id="" class="table table-hover get-datatable" style="width:100%">
+                    <table id="vendor_list" class="table table-hover">
                        
                         <thead>
                             <tr>
-                                <th>Vendor Name</th>
+                                <th>Vendor </th>
                                 <th>Transporter Name</th>
-                                <th>Driver Name <th>
-                                <th>Contact Email</th>
-                                <th>Contact Number</th>
-                                <th>Acc Holder Name</th>
-                                <th>Account No.</th>
-                                <th>IFSC </th>
-                                <th>Bank Name</th>
-                                <th>Branch Name</th>
-                                <th>Cancel Cheaque</th>
-                                <th>Pan</th>
-                                <th>Upload Pan</th>
+                                <th> Driver Name</th>
+                                <th>Account HoldeR Name</th>
+                                <th>Document View</th>
+                                <th>Action</th>
+                               
+                              
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($vendors as $vendor)
                             <?php $bank_details = json_decode($vendor->bank_details);
                                   $other_details = json_decode($vendor->other_details);
+                                  $img = URL::to('/drs/uploadpan/'.$vendor->upload_pan.'');
+                                //   echo'<pre>'; print_r($img);die;
                             ?>
                             <tr>
-                                <td>{{$vendor->name ?? '-'}}</td>
-                                <td>{{$other_details->transporter_name ?? '-'}}</td>
-                                <td>{{$other_details->contact_person_name ?? '-'}}</td>
-                                <td>{{$other_details->contact_person_number ?? '-'}}</td>
-                                <td>{{$vendor->email ?? '-'}}</td>
-                                <td>{{$bank_details->account_no ?? '-'}}</td>
-                                <td>{{$vendor->pan ?? '-'}}</td>
-                                <td>{{$vendor->upload_pan ?? '-'}}</td>
-                                <td>{{$vendor->email ?? '-'}}</td>
-                                <td>{{$bank_details->account_no ?? '-'}}</td>
-                                <td>{{$vendor->pan ?? '-'}}</td>
-                                <td>{{$vendor->upload_pan ?? '-'}}</td>
-                                <td>{{$vendor->upload_pan ?? '-'}}</td>
+                                <td>{{$vendor->name}}</td>
+                                <td>{{$other_details->transporter_name}}</td>
+                                <td>{{$vendor->DriverDetail->name ?? '-'}}</td>
+                                <td>{{$bank_details->acc_holder_name ?? '-'}}</td>
+                                <?php if(!empty($vendor->upload_pan)){?>
+                                <td><a class="btn btn-sm btn-primary" target='_blank' href="{{$img}}" role="button">pan</a></td>
+                                <?php }else{ ?>
+                                 <td>-</td>
+                                <?php } ?>
+                                <td><button type="button" class="btn btn-sm btn-primary view" value="{{$vendor->id}}">View</button></td>
+                           
                             </tr>
                           @endforeach
                         </tbody>
@@ -116,8 +65,87 @@ div.relative {
         </div>
     </div>
 </div>
+@include('models.view-vendor')
 @endsection
 @section('js')
 <script>
+    $(document).on('click', '.view', function() {
+
+        var vendor_id = $(this).val();
+        $('#view_vendor').modal('show');
+        $.ajax({
+            type: "GET",
+            url: "view-vendor-details",
+            data: {
+                vendor_id: vendor_id
+            },
+            beforeSend: //reinitialize Datatables
+                function() {
+
+                  $('#name').empty()
+                   $('#trans_name').empty()
+                   $('#driver_nm').empty()
+                   $('#cont_num').empty()
+                   $('#cont_email').empty()
+                   $('#acc_holder').empty()
+                   $('#acc_no').empty()
+                   $('#ifsc_code').empty()
+                   $('#bank_name').empty()
+                   $('#branch_name').empty()
+                   $('#pan').empty()
+                },
+            success: function(data) {
+              
+                var other_details = jQuery.parseJSON(data.view_details.other_details);
+                var bank_details = jQuery.parseJSON(data.view_details.bank_details);
+
+                   $('#name').html(data.view_details.name)
+                   $('#trans_name').html(other_details.transporter_name)
+                   $('#driver_nm').html(data.view_details.driver_detail.name)
+                   $('#cont_num').html(other_details.contact_person_number)
+                   $('#cont_email').html(data.view_details.email)
+                   $('#acc_holder').html(bank_details.acc_holder_name)
+                   $('#acc_no').html(bank_details.account_no)
+                   $('#ifsc_code').html(bank_details.ifsc_code)
+                   $('#bank_name').html(bank_details.bank_name)
+                   $('#branch_name').html(bank_details.branch_name)
+                   $('#pan').html(data.view_details.pan)
+
+          
+               
+
+            }
+
+        });
+
+    });
+
+
+      $('#vendor_list').DataTable({
+        "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+            "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+        buttons: {
+            buttons: [
+                // { extend: 'copy', className: 'btn btn-sm' },
+                // { extend: 'csv', className: 'btn btn-sm' },
+                // { extend: 'excel', className: 'btn btn-sm', title: '', },
+                // { extend: 'print', className: 'btn btn-sm' }
+            ]
+        },
+        "oLanguage": {
+            "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+            "sInfo": "Showing page _PAGE_ of _PAGES_",
+            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+            "sSearchPlaceholder": "Search...",
+            "sLengthMenu": "Results :  _MENU_",
+        },
+
+        "ordering": true,
+        "paging": true,
+        "pageLength": 80,
+
+    });
+
 </script>
 @endsection

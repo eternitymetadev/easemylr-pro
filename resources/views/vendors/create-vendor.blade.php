@@ -34,7 +34,7 @@
                     <div class="statbox widget box box-shadow">
                         <form id="vendor-master">
                             @csrf
-                            <h3>Vendoer Contact Details</h3>
+                            <h3>Vendor Contact Details</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span class="text-danger">*</span></label>

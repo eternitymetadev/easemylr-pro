@@ -13,6 +13,7 @@ class Vendor extends Model
         'vendor_no',
         'name',
         'email',
+        'driver_id',
         'bank_details',
         'pan',
         'upload_pan',
@@ -23,4 +24,9 @@ class Vendor extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function DriverDetail()
+    {
+        return $this->hasOne('App\Models\Driver','id','driver_id');
+    }
 }

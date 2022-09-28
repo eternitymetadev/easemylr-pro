@@ -17,7 +17,7 @@ class VendorController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
 
-        $vendors = Vendor::all();
+        $vendors = Vendor::with('DriverDetail')->get();
         return view('vendors.vendor-list',['prefix' => $this->prefix,'vendors' => $vendors]);
     }
     public function create()
@@ -193,6 +193,17 @@ class VendorController extends Controller
             $response = curl_exec($curl);
             curl_close($curl);
             echo $response;
+
+    }
+
+    public function view_vendor_details(Request $request)
+    {
+        $vendors = Vendor::with('DriverDetail')->where('id', $request->vendor_id)->first();
+
+        $response['view_details'] = $vendors;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
 
     }
 }
