@@ -74,7 +74,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('regclient_id', $regclient);   
         }else{
-            $query = $query->where('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
 
         if(isset($startdate) && isset($enddate)){
