@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Vendor;
 use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
+use App\Models\Driver;
 use DB;
 use Validator;
 
@@ -22,7 +23,8 @@ class VendorController extends Controller
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
-        return view('vendors.create-vendor',['prefix' => $this->prefix]);
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        return view('vendors.create-vendor',['prefix' => $this->prefix, 'drivers' => $drivers]);
     }
 
     public function store(Request $request)
@@ -73,12 +75,13 @@ class VendorController extends Controller
              
             $bankdetails = array('acc_holder_name'=> $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 
-            $otherdetail = array('transporter_name'=> $request->transporter_name, 'driver_name' => $request->driver_name, 'contact_person_number' => $request->contact_person_number);
+            $otherdetail = array('transporter_name'=> $request->transporter_name,'contact_person_number' => $request->contact_person_number);
           
             $vendorsave['type']               = 'Vendor';
             $vendorsave['vendor_no']          = $vendor_no;
             $vendorsave['name']               = $request->name;
-            $vendorsave['email']               = $request->email;
+            $vendorsave['email']              = $request->email;
+            $vendorsave['driver_id']          = $request->driver_id;
             $vendorsave['bank_details']       = json_encode($bankdetails);
             $vendorsave['pan']                = $request->pan;;
             $vendorsave['upload_pan']         = $panfile;

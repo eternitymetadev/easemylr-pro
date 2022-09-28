@@ -86,7 +86,6 @@ div.relative {
                                 <th>Cancel Cheaque</th>
                                 <th>Pan</th>
                                 <th>Upload Pan</th>
-
                             </tr>
                         </thead>
                         <tbody>

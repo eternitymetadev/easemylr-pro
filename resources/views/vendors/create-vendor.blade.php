@@ -5,6 +5,14 @@
     width: 80%;
     margin: auto;
 }
+.select2-results__options {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 160px;
+        /* scroll-margin: 38px; */
+        overflow: auto;
+    }
     </style>
 
 <div class="layout-px-spacing">
@@ -40,7 +48,14 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Driver </label>
-                                    <input type="text" class="form-control" name="driver_name" placeholder="">
+                                    <select class="form-control  my-select2" id="driver_id" name="driver_id" tabindex="-1">
+                                        <option value="">Select driver</option>
+                                        @foreach($drivers as $driver)
+                                        <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                            '-'}}
+                                        </option>
+                                        @endforeach
+                                        </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Contact Number<span class="text-danger">*</span></label>
