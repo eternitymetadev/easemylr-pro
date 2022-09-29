@@ -86,13 +86,18 @@ $(document).on('click', '.payment', function() {
      $('#payment_form')[0].reset();
 
          var drs_no = [];
+         var tdval = [];
             $(':checkbox[name="checked_drs[]"]:checked').each(function () {
                 drs_no.push(this.value);
+                var cc = $(this).attr('data-price');
+                tdval.push(cc);             
             });
             $('#drs_no').val(drs_no);
-    
-    $('#pymt_modal').modal('show');
-    return false;
+            var toNumbers = tdval.map(Number);
+            var sum = toNumbers.reduce((x, y) => x + y);
+            $('#purchase_amount').val(sum);
+           
+       $('#pymt_modal').modal('show');
     $.ajax({
         type: "GET",
         url: "get-drs-details",
@@ -160,33 +165,80 @@ $('#vendor').change(function() {
     });
 
 });
+// ====================================================== //
+            $('#p_type').change(function() {
+                var p_typ = $(this).val();
+                var purchs_amt = $('#purchase_amount').val();
+                if(p_typ == 'Balance') {
+                    $('#amt').val(purchs_amt);
+                }else{
+                    $('#amt').val('');
+                }
 
+            });
 ///
 
 $("#amt").keyup(function() {
 
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
+        var firstInput = document.getElementById("purchase_amount").value;
+        var secondInput = document.getElementById("amt").value;
 
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-        swal('error', 'amount must be greater than purchase price', 'error')
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        jQuery('#amt').prop('disabled', true);
-    }
+        if (parseInt(firstInput) < parseInt(secondInput)) {
+            $('#amt').val('');
+            swal('error', 'amount must be greater than purchase price', 'error')
+        } else if (parseInt(firstInput) == '') {
+            $('#amt').val('');
+            jQuery('#amt').prop('disabled', true);
+        }
 });
-$("#purchase_amount").keyup(function() {
+        $("#purchase_amount").keyup(function() {
+            var firstInput = document.getElementById("purchase_amount").value;
+            var secondInput = document.getElementById("amt").value;
 
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
+            if (parseInt(firstInput) < parseInt(secondInput)) {
+                $('#amt').val('');
+            } else if (parseInt(firstInput) == '') {
+                $('#amt').val('');
+                $('#amt').attr('disabled', 'disabled');
+            }
+        });
+/////////////
+///// check box checked unverified lr page
+jQuery(document).on('click','#ckbCheckAll',function(){
+        if(this.checked){
+            jQuery('.payment').prop('disabled', false);
+            jQuery('.chkBoxClass').each(function(){
+                this.checked = true;
+            });
+        } 
+        else{
+            jQuery('.chkBoxClass').each(function(){
+                this.checked = false;
+            });
+            jQuery('.payment').prop('disabled', true);
+        }
+    });
 
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        $('#amt').attr('disabled', 'disabled');
-    }
-});
+    jQuery(document).on('click','.chkBoxClass',function(){
+        if($('.chkBoxClass:checked').length == $('.chkBoxClass').length){
+            $('#ckbCheckAll').prop('checked',true);
+        }else{
+            var checklength = $('.chkBoxClass:checked').length;
+            if(checklength < 1){
+                jQuery('.payment').prop('disabled', true);
+            }else{
+                jQuery('.payment').prop('disabled', false);
+            }
+
+            $('#ckbCheckAll').prop('checked',false);
+        }
+    });
+    // ====================================================== //
+    $(document).on('click', '.add_purchase_price', function() {
+        var drs_no = $(this).val();
+    $('#add_amt').modal('show');
+      $('#drs_num').val(drs_no);
+    });
+    
 </script>
 @endsection

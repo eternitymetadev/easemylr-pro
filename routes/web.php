@@ -299,6 +299,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
     Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
     Route::any('view-vendor-details', [VendorController::class, 'view_vendor_details']);
+    Route::any('update-purchas-price', [VendorController::class, 'update_purchase_price']);
+
 
 
 

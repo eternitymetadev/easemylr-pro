@@ -238,7 +238,7 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
-        echo'<pre>'; print_r($request->all()); die; 
+       
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -263,9 +263,9 @@ class VendorController extends Controller
                 \"ax_id\": \"DRS\",
                 \"pfu\": \"$pfu\",
                 \"ax_voucher_code\": \"DRS\",
-                \"txn_route\": \"DRS\"
-                \"ptype\": \"$request->p_type\"
-                \"email\": \"$request->email\"
+                \"txn_route\": \"DRS\",
+                \"ptype\": \"$request->p_type\",
+                \"email\": \"$request->email\",
                 \"terid\": \"$request->drs_no\"
                 }]",
                 CURLOPT_HTTPHEADER => array(
@@ -289,5 +289,30 @@ class VendorController extends Controller
         $response['message'] = "verified account";
         return response()->json($response);
 
+    }
+    public function update_purchase_price(Request $request)
+    {
+        try{
+            $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
+            $simpl = json_decode(json_encode($getlr), true);
+            
+        foreach($simpl as $lr){
+                
+                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price]);
+
+       }
+                $response['success'] = true;
+                $response['success_message'] = "Price Added successfully";
+                $response['error'] = false;
+
+       DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+        
     }
 }

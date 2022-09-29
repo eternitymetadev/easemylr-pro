@@ -14,14 +14,14 @@
                                 <th>Vehicle No</th>
                                 <th>Purchase Amount</th>
                                 <!-- <th>Payment</th> -->
-                                <th>Status</th>
+                                <th>Payment Status</th>
                             </tr>
                         </thead>
                         <tbody>
                         @if(count($paymentlist)>0)
                             @foreach($paymentlist as $list)
                             <tr>
-                            <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                            <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}" data-price="{{$list->ConsignmentDetail->purchase_price}}"  style="width: 30px; height:30px;"></td>
                                 <td>DRS-{{$list->drs_no}}</td>
                                 <!-- delivery Status ---- -->
                                 <td>
@@ -43,18 +43,18 @@
                                 <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
                                 <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                                 <?php } else { ?>
-                                    <td><button type="button" class="btn btn-warning" value="{{$list->drs_no}}"
+                                    <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
                                         style="margin-right:4px;">Add amount</button> </td>
                                         <?php } ?>
-                                <!-- <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
-                                        style="margin-right:4px;">Create Payment</button> </td> -->
+                                <td> <button type="button" class="btn btn-danger "
+                                        style="margin-right:4px;">Unpaid</button> </td>
                                 
                             </tr>
                             
                             @endforeach
                             @else
                             <tr>
-                                <td colspan="4" class="text-center">No Record Found </td>
+                                <td colspan="7" class="text-center">No Record Found </td>
                             </tr>
                             @endif
                         </tbody>

@@ -1672,6 +1672,31 @@ jQuery(document).on("change", ".perpage", function () {
                     }
         }); 
     });	
-
+ //////////////////Add Purchase Price////////////
+ $('#purchase_amt_form').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+   
+        $.ajax({
+            url: "update-purchas-price", 
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+            
+            },
+            success: (data) => {
+                 if(data.success == true){
+                    swal('success', data.success_message ,'success');
+                    window.location.reload();
+                 }else{
+                    swal('error', data.error_message, 'error');
+                 }
+              
+            }
+}); 
+});	
 
 
