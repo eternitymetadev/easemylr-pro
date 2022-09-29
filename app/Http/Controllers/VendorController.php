@@ -85,7 +85,7 @@ class VendorController extends Controller
             $otherdetail = array('transporter_name'=> $request->transporter_name,'contact_person_number' => $request->contact_person_number);
           
             $vendorsave['type']               = 'Vendor';
-            $vendorsave['vendor_no']          = $vendor_no;
+            $vendorsave['vendor_no']          =  $vendor_no;
             $vendorsave['name']               = $request->name;
             $vendorsave['email']              = $request->email;
             $vendorsave['driver_id']          = $request->driver_id;
@@ -238,7 +238,7 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
-        echo'<pre>'; print_r('h'); die; 
+        echo'<pre>'; print_r($request->all()); die; 
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -257,12 +257,16 @@ class VendorController extends Controller
                 \"beneficiary_name\": \"$request->beneficiary_name\",
                 \"ifsc\": \"$request->ifsc\",
                 \"bank_name\": \"$request->bank_name\",
+                \"baddress\": \"$request->branch_name\",
                 \"payable_amount\": \"$request->payable_amount\",
                 \"claimed_amount\": \"$request->claimed_amount\", 
+                \"ax_id\": \"DRS\",
                 \"pfu\": \"$pfu\",
-                \"ax_voucher_code\": \"\",
+                \"ax_voucher_code\": \"DRS\",
                 \"txn_route\": \"DRS\"
+                \"ptype\": \"$request->p_type\"
                 \"email\": \"$request->email\"
+                \"terid\": \"$request->drs_no\"
                 }]",
                 CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json'

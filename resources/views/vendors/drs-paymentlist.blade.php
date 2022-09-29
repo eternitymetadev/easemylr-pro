@@ -83,9 +83,16 @@ div.relative {
 @section('js')
 <script>
 $(document).on('click', '.payment', function() {
-    $('#payment_form')[0].reset();
-    var drsno = $(this).val();
+     $('#payment_form')[0].reset();
+
+         var drs_no = [];
+            $(':checkbox[name="checked_drs[]"]:checked').each(function () {
+                drs_no.push(this.value);
+            });
+            $('#drs_no').val(drs_no);
+    
     $('#pymt_modal').modal('show');
+    return false;
     $.ajax({
         type: "GET",
         url: "get-drs-details",
@@ -131,6 +138,7 @@ $('#vendor').change(function() {
                 $('#bank_acc').val(simp.account_no);
                 $('#ifsc_code').val(simp.ifsc_code);
                 $('#bank_name').val(simp.bank_name);
+                $('#branch_name').val(simp.branch_name);
                 $('#vendor_no').val(res.vendor_details.vendor_no);
                 $('#name').val(res.vendor_details.name);
                 $('#beneficiary_name').val(res.vendor_details.name);
@@ -139,6 +147,7 @@ $('#vendor').change(function() {
                 $('#bank_acc').val('');
                 $('#ifsc_code').val('');
                 $('#bank_name').val('');
+                $('#branch_name').val('');
                 $('#vendor_no').val('');
                 $('#name').val('');
                 $('#beneficiary_name').val('');
@@ -151,6 +160,8 @@ $('#vendor').change(function() {
     });
 
 });
+
+///
 
 $("#amt").keyup(function() {
 

@@ -10,6 +10,7 @@
                                 </th>
                                 <th>DRS NO</th>
                                 <th>Status</th>
+                                <th>Total Lr</th>
                                 <th>Vehicle No</th>
                                 <th>Purchase Amount</th>
                                 <!-- <th>Payment</th> -->
@@ -20,7 +21,7 @@
                         @if(count($paymentlist)>0)
                             @foreach($paymentlist as $list)
                             <tr>
-                            <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$list->drs}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                            <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                 <td>DRS-{{$list->drs_no}}</td>
                                 <!-- delivery Status ---- -->
                                 <td>
@@ -37,7 +38,7 @@
                                     <?php } ?>
                                 </td>
                                 <!-- END Delivery Status  --------------->
-
+                                <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
                                 <td>{{$list->vehicle_no ?? '-'}}</td>
                                 <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
                                 <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>

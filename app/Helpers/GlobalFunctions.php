@@ -139,6 +139,19 @@ class GlobalFunctions {
         $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->where('status','!=', 2)->count();
         return $data;
     }
+    //////////
+    public static function countdrslr($drs_number)
+    {
+        $data = TransactionSheet::
+        with('ConsignmentDetai')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('drs_no', $drs_number)
+        ->where('status','!=', 2)
+        ->count();
+        return $data;
+    }
 
     public static function getdeleveryDate($drs_number)
     {

@@ -17,10 +17,10 @@
                 <form id="payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="vendor_no" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
@@ -38,7 +38,7 @@
                             <input type="text" class="form-control" id="purchase_amount" name="claimed_amount" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0">
+                    <div class="form-row mb-0" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="location_name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="">
@@ -49,7 +49,7 @@
                                 value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0">
+                    <div class="form-row mb-0" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="location_name">Account No</label>
                             <input type="text" class="form-control" id="bank_acc" name="acc_no" value="">
@@ -59,7 +59,7 @@
                             <input type="text" class="form-control" id="ifsc_code" name="ifsc" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0">
+                    <div class="form-row mb-0" style="display: none;">
                         <div class="form-group col-md-6">
                             <label for="location_name">Bank Name</label>
                             <input type="text" class="form-control" id="bank_name" name="bank_name" value="">
@@ -69,10 +69,16 @@
                             <input type="text" class="form-control" id="email" name="email" value="">
                         </div>
                     </div>
+                    <div class="form-row mb-0" style="display: none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Branch Name</label>
+                            <input type="text" class="form-control" id="branch_name" name="branch_name" value="">
+                        </div>
+                    </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
-                            <select class="form-control my-select2" id="p_type" name="type" tabindex="-1">
+                            <select class="form-control my-select2" id="p_type" name="p_type" tabindex="-1">
                                 <option value="">Select</option>
                                 <option value="Balance">Balance</option>
                                 <option value="Advance">Advance</option>
