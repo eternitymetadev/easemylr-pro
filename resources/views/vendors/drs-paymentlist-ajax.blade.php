@@ -12,7 +12,7 @@
                                 <th>Status</th>
                                 <th>Vehicle No</th>
                                 <th>Purchase Amount</th>
-                                <th>Payment</th>
+                                <!-- <th>Payment</th> -->
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -37,6 +37,7 @@
                                     <?php } ?>
                                 </td>
                                 <!-- END Delivery Status  --------------->
+
                                 <td>{{$list->vehicle_no ?? '-'}}</td>
                                 <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
                                 <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
@@ -44,8 +45,8 @@
                                     <td><button type="button" class="btn btn-warning" value="{{$list->drs_no}}"
                                         style="margin-right:4px;">Add amount</button> </td>
                                         <?php } ?>
-                                <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
-                                        style="margin-right:4px;">Create Payment</button> </td>
+                                <!-- <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
+                                        style="margin-right:4px;">Create Payment</button> </td> -->
                                 
                             </tr>
                             

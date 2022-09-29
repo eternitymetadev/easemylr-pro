@@ -67,7 +67,7 @@ div.relative {
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-            <button type="button" class="btn btn-warning">Warning</button>
+            <button type="button" class="btn btn-warning mt-4 ml-4 payment" >Create Payment</button>
                 <div class="table-responsive mb-4 mt-4">
                     @csrf
                     <div class="main-table table-responsive">
