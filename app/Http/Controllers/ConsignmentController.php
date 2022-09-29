@@ -2819,23 +2819,37 @@ else{
     //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
+
         $this->prefix = request()->route()->getPrefix();
-        // $peritem = 20;
-        $query = ConsignmentNote::query();
         $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
-        if ($authuser->role_id == 2) {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->whereIn('consignment_notes.branch_id', $cc)
-                ->get(['consignees.city']);
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->get(['consignees.city']);
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as consignee_city', 'consignees.postal_code as consignee_pincode', 'consignees.district as consignee_district')
+        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+        ->where('consignment_notes.status', '!=', 5);
+
+        if($authuser->role_id ==1){
+            $data;
         }
+        elseif($authuser->role_id ==4){
+            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==6){
+            $data = $data->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+             $data = $data->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $data = $data->whereIn('consignment_notes.branch_id', $cc);
+        }
+        $data = $data->orderBy('id', 'DESC');
+        $consignments = $data->get();
 
         return view('consignments.bulkLr-view', ['prefix' => $this->prefix, 'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
