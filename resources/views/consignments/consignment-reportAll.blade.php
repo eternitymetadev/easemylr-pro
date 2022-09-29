@@ -144,7 +144,7 @@ div.relative {
     var peritem = jQuery(this).val();
     var search  = jQuery('#search').val();
         jQuery.ajax({
-            type      : 'get',
+            type      : 'get', 
             url       : url,
             data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate},
             headers   : {

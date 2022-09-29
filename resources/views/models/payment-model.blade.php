@@ -72,19 +72,11 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
-                            <?php
-                            if( Helper::getdeleveryStatus($list->drs_no) == 'Successful'){ 
-                                ?>
-                            <select class="form-control my-select2" id="p_type" name="type" tabindex="-1">
-                                <option value="Balance">Balance</option>
-                            </select>
-                          <?php  }else{ ?>
                             <select class="form-control my-select2" id="p_type" name="type" tabindex="-1">
                                 <option value="">Select</option>
                                 <option value="Balance">Balance</option>
                                 <option value="Advance">Advance</option>
                             </select>
-                           <?php } ?>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Amount</label>

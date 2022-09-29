@@ -7,8 +7,15 @@ use App\Models\Vendor;
 use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
+use App\Models\RegionalClient;
+use App\Models\Role;
+use App\Models\User;
+use Helper;
 use DB;
 use Validator;
+use Session;
+use Config;
+use Auth;
 
 
 class VendorController extends Controller
@@ -116,16 +123,88 @@ class VendorController extends Controller
         return response()->json($response);
     }
      
-    public function paymentList()
+    public function paymentList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $drslist = TransactionSheet::with('ConsignmentDetail')
-        ->orderBy('id', 'DESC')
-        ->groupBy('drs_no')
-        ->paginate(80);
+
+        $sessionperitem = Session::get('peritem');
+        if(!empty($sessionperitem)){
+            $peritem = $sessionperitem;
+        }else{
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        $query = TransactionSheet::query();
+        
+        if($request->ajax()){
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
+            $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query
+        ->with('ConsignmentDetail')
+        ->groupBy('drs_no');
+      
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    });
+
+                });
+            }
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $paymentlist = $query->orderby('id','DESC')->paginate($peritem);
+            
+
+            $html =  view('vendors.drs-paymentlist-ajax',['prefix'=>$this->prefix,'paymentlist' => $paymentlist,'peritem'=>$peritem])->render();
+            $paymentlist = $paymentlist->appends($request->query());
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query
+        ->with('ConsignmentDetail')
+        ->groupBy('drs_no');
+        
+        $paymentlist = $query->orderBy('id','DESC')->paginate($peritem);
+        $paymentlist = $paymentlist->appends($request->query());
 
         $vendors = Vendor::all();
-        return view('vendors.drs-paymentlist',['prefix' => $this->prefix, 'drslist' => $drslist,'vendors' => $vendors]);
+        return view('vendors.drs-paymentlist',['prefix' => $this->prefix, 'paymentlist' => $paymentlist,'vendors' => $vendors,'peritem'=>$peritem]);
 
     }
 
@@ -192,6 +271,7 @@ class VendorController extends Controller
     
             $response = curl_exec($curl);
             curl_close($curl);
+            
             echo $response;
 
     }

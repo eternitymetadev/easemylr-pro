@@ -67,53 +67,12 @@ div.relative {
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
+            <button type="button" class="btn btn-warning">Warning</button>
                 <div class="table-responsive mb-4 mt-4">
                     @csrf
-                    <table id="" class="table table-hover" style="width:100%">
-                        <div class="btn-group relative">
-                            <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
+                    <div class="main-table table-responsive">
+                            @include('vendors.drs-paymentlist-ajax')
                         </div>
-                        <thead>
-                            <tr>
-                                <th>DRS NO</th>
-                                <th>Status</th>
-                                <th>Purchase Amount</th>
-                                <th>Payment</th>
-                                <th>Payment Type</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($drslist as $list)
-                            <tr>
-                                <td>DRS-{{$list->drs_no}}</td>
-
-                                <!-- delivery Status ---- -->
-                                <td>
-                                    <?php if($list->status == 0){?>
-                                    <label class="badge badge-dark">Cancelled</label>
-                                    <?php } else { ?>
-                                    <?php if(empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no)) { ?>
-                                    <label class="badge badge-warning">No Status</label>
-                                    <?php }else{ ?>
-                                    <a class="drs_cancel btn btn-success" drs-no="{{$list->drs_no}}"
-                                        data-text="consignment" data-status="0"
-                                        data-action="<?php echo URL::current();?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
-                                    <?php } ?>
-                                    <?php } ?>
-                                </td>
-                                <!-- END Delivery Status  --------------->
-                                <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
-                                <td> <button type="button" class="btn btn-warning payment" value="{{$list->drs_no}}"
-                                        style="margin-right:4px;">Create Payment</button> </td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    {!! $drslist->links() !!}
                 </div>
             </div>
         </div>
