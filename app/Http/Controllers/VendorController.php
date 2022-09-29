@@ -293,6 +293,7 @@ class VendorController extends Controller
     public function update_purchase_price(Request $request)
     {
         try{
+            DB::beginTransaction();
             $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
             $simpl = json_decode(json_encode($getlr), true);
             

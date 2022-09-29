@@ -10,7 +10,7 @@
        <!-- Modal body -->
        <div class="modal-body">
         <form id="purchase_amt_form">
-        <input type="text" class="form-control" id="drs_num" name="drs_no" value="">
+        <input type="hidden" class="form-control" id="drs_num" name="drs_no" value="">
        <div class="form-row mb-0">
                         <div class="form-group col-md-8">
                             <label for="location_name">Purchase Price</label>
