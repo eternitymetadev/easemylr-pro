@@ -50,7 +50,7 @@
                 <form id="payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
