@@ -4029,9 +4029,6 @@ else{
         $response = curl_exec($curl);
 
         curl_close($curl);
-
-        // echo "<pre>";print_r($response);echo "</pre>";die;
-
         return $response;
 
     }

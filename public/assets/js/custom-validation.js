@@ -1667,7 +1667,9 @@ jQuery(document).on("change", ".perpage", function () {
                     
                     },
                     success: (data) => {
-                       swal('error','error','error');
+
+                            swal('success','Request Sent Successfully','success')
+                          $('#payment_form')[0].reset();
                       
                     }
         }); 

@@ -260,9 +260,9 @@ class VendorController extends Controller
                 \"baddress\": \"$request->branch_name\",
                 \"payable_amount\": \"$request->payable_amount\",
                 \"claimed_amount\": \"$request->claimed_amount\", 
-                \"ax_id\": \"DRS\",
+                \"ax_id\": \"$request->drs_no\",
                 \"pfu\": \"$pfu\",
-                \"ax_voucher_code\": \"DRS\",
+                \"ax_voucher_code\": \"$request->drs_no\",
                 \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
@@ -275,8 +275,9 @@ class VendorController extends Controller
     
             $response = curl_exec($curl);
             curl_close($curl);
-            
+            // $res_data = json_decode($response);
             echo $response;
+
 
     }
 
