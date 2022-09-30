@@ -1704,6 +1704,11 @@ jQuery(document).on("change", ".perpage", function () {
 $('#vendor_import').submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
+    var file = $('#vendor_file').val();
+    if (!file) {
+        swal("Error!", "Please Select File", "error");
+        return false;
+    }
    
         $.ajax({
             url: "import-vendor", 

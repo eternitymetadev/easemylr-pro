@@ -94,21 +94,23 @@
                                     <label for="exampleFormControlSelect1">Declaration Available<span
                                             class="text-danger">*</span></label>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input no_decl" type="radio" name="decalaration_available"
-                                            id="cds" value="1">
+                                        <input class="form-check-input no_decl" type="radio"
+                                            name="decalaration_available" id="cds" value="1">
                                         <label class="form-check-label" for="inlineRadio1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input no_decl" type="radio" name="decalaration_available"
-                                            id="" value="2" checked>
+                                        <input class="form-check-input no_decl" type="radio"
+                                            name="decalaration_available" id="" value="2" checked>
                                         <label class="form-check-label" for="inlineRadio2">No</label>
                                     </div>
-                                    <input type="file" class="form-control" id="declaration_file" name="declaration_file" placeholder="">
+                                    <input type="file" class="form-control" id="declaration_file"
+                                        name="declaration_file" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">TDS Rate applicacle<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="tds_rate" name="tds_rate" placeholder="" readonly>
+                                    <input type="text" class="form-control" id="tds_rate" name="tds_rate" placeholder=""
+                                        readonly>
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -116,9 +118,9 @@
                                     <label for="exampleFormControlSelect1">Branch Location</label>
                                     <select class="form-control  my-select2" id="branch_id" name="branch_id"
                                         tabindex="-1">
-                                       @foreach($branchs as $branch)
+                                        @foreach($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                                       @endforeach
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -173,12 +175,13 @@
                                         tabindex="-1">
                                         <option value="Unregistered">Unregistered </option>
                                         <option value="Registered">Registered </option>
-                                    
+
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
-                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="" disabled>
+                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder=""
+                                        disabled>
                                 </div>
                             </div>
 
@@ -195,47 +198,48 @@
 @endsection
 @section('js')
 <script>
-        $('#vendor_type').change(function() {
-                var v_typ = $(this).val();
-                var declaration = ($('input[name=decalaration_available]:checked').val());
-                  if(declaration == '2'){
-                if(v_typ == 'Individual') {
-                    $('#tds_rate').val('1');
-                }else if(v_typ == 'Proprietorship'){
-                    $('#tds_rate').val('1');
-                }else if(v_typ == 'Company'){
-                    $('#tds_rate').val('2');
-                }else if(v_typ == 'Firm'){
-                    $('#tds_rate').val('2');
-                }else if(v_typ == 'HUF'){
-                    $('#tds_rate').val('2');
-                }
-            }else{
-                $('#tds_rate').val('0');
-            }
+$('#vendor_type').change(function() {
+    var v_typ = $(this).val();
+    var declaration = ($('input[name=decalaration_available]:checked').val());
+    if (declaration == '2') {
+        if (v_typ == 'Individual') {
+            $('#tds_rate').val('1');
+        } else if (v_typ == 'Proprietorship') {
+            $('#tds_rate').val('1');
+        } else if (v_typ == 'Company') {
+            $('#tds_rate').val('2');
+        } else if (v_typ == 'Firm') {
+            $('#tds_rate').val('2');
+        } else if (v_typ == 'HUF') {
+            $('#tds_rate').val('2');
+        }
+    } else {
+        $('#tds_rate').val('0');
+    }
 
-            });
+});
+
 ////////////////////////
-        $('.no_decl').on('change', function() {
-            var declaration = ($('input[name=decalaration_available]:checked').val());
-            if(declaration == 1){
-                $('#tds_rate').val('0');
-            }else if(declaration == 2){
-                $('#vendor_type').val('');
-                $('#tds_rate').val('');
-            }
-        });
-        ////////////////////////
-        
-        $('#gst_register').on('change', function() {
+$('.no_decl').on('change', function() {
+    var declaration = ($('input[name=decalaration_available]:checked').val());
+    if (declaration == 1) {
+        $('#tds_rate').val('0');
+    } else if (declaration == 2) {
+        $('#vendor_type').val('');
+        $('#tds_rate').val('');
+    }
+});
+////////////////////////
 
-            var g_typ = $(this).val();
-            if(g_typ == 'Registered'){
-                $("#gst_no").prop('disabled', false);
-            }else{
-                $("#gst_no").prop('disabled', true);
-            }
-        });
+$('#gst_register').on('change', function() {
+
+    var g_typ = $(this).val();
+    if (g_typ == 'Registered') {
+        $("#gst_no").prop('disabled', false);
+    } else {
+        $("#gst_no").prop('disabled', true);
+    }
+});
 </script>
 
 
