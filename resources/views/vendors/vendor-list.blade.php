@@ -20,8 +20,9 @@
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-            <a href="{{'vendor/create'}}" class="btn btn-primary mt-3" style="margin-left:4px; font-size: 13px; padding: 6px 0px;">Add Vendor</a>
+            <a href="{{'vendor/create'}}" class="btn btn-primary mt-3" style="margin-left:4px; font-size: 13px; padding: 6px 0px;">Add Vendor</a><a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-vendor') }}">Export data</a>
                 <div class="mb-4 mt-4">
+                <!-- <button type="button" class="btn btn-primary ml-2 mt-3 dsd" >Import Vendor</button> -->
                     @csrf
                     <table id="vendor_list" class="table table-hover">
                        
@@ -50,12 +51,12 @@
                                 <td>{{$vendor->DriverDetail->name ?? '-'}}</td>
                                 <td>{{$bank_details->acc_holder_name ?? '-'}}</td>
                                 <?php if(!empty($vendor->upload_pan)){?>
-                                <td><a class="btn btn-sm btn-primary" target='_blank' href="{{$img}}" role="button">pan</a></td>
+                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$img}}" role="button">pan</a></td>
                                 <?php }else{ ?>
                                  <td>-</td>
                                 <?php } ?>
                                 <td><button type="button" class="btn btn-sm btn-primary view" value="{{$vendor->id}}">View</button></td>
-                           
+                                <!-- <a href="{{ url($prefix.'/edit-vendor/'.$vendor->id) }}" class="edit btn btn-sm btn-primary ml-2"><i class="fa fa-edit"></i></a> -->
                             </tr>
                           @endforeach
                         </tbody>
@@ -93,6 +94,12 @@
                    $('#bank_name').empty()
                    $('#branch_name').empty()
                    $('#pan').empty()
+                   $('#vendor_type').empty()
+                   $('#decl_avl').empty()
+                   $('#tds_rate').empty()
+                   $('#branch_id').empty()
+                   $('#gst').empty()
+                   $('#gst_no').empty()
                 },
             success: function(data) {
               
@@ -110,14 +117,21 @@
                    $('#bank_name').html(bank_details.bank_name)
                    $('#branch_name').html(bank_details.branch_name)
                    $('#pan').html(data.view_details.pan)
-
-          
-               
-
+                   $('#vendor_type').html(data.view_details.vendor_type)
+                   $('#decl_avl').html(data.view_details.declaration_available)
+                   $('#tds_rate').html(data.view_details.tds_rate)
+                   $('#branch_id').html(data.view_details.branch_id)
+                   $('#gst').html(data.view_details.gst_register)
+                   $('#gst_no').html(data.view_details.gst_no)
             }
 
         });
 
+    });
+
+    $(document).on('click', '.dsd', function() {
+
+        $('#imp_vendor_modal').modal('show');
     });
 
 

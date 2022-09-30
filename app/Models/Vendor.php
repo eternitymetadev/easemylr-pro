@@ -19,6 +19,13 @@ class Vendor extends Model
         'upload_pan',
         'cancel_cheaque',
         'other_details',
+        'vendor_type',
+        'declaration_available',
+        'declaration_file',
+        'tds_rate',
+        'branch_id',
+        'gst_register',
+        'gst_no',
         'is_acc_verified',
         'is_active',
         'created_at',
@@ -28,5 +35,8 @@ class Vendor extends Model
     public function DriverDetail()
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
+    }
+    public function Branch(){
+        return $this->belongsTo('App\Models\Location','branch_id');
     }
 }

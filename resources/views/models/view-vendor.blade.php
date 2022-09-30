@@ -1,4 +1,36 @@
-<!-- Modal -->
+<!-- -------------------Import Vendor Model---------------- -->
+<div class="modal fade" id="imp_vendor_modal" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+       <!-- Modal Header -->
+       <div class="modal-header text-center">
+        	<h4 class="modal-title">Add Purchase Price</h4>
+       </div>
+       <!-- Modal body -->
+       <div class="modal-body">
+        <form id="vendor_import">
+        <input type="hidden" class="form-control" id="drs_num" name="drs_no" value="">
+       <div class="form-row mb-0">
+                        <div class="form-group col-md-8">
+                            <label for="location_name">Upload File</label>
+                            <input type="file" class="form-control" id="vendor_file" name="vendor_file" value="">
+                        </div>
+                    </div>
+          
+       </div>
+       <!-- Modal footer -->
+       <div class="modal-footer">
+           <div class="btn-section w-100 P-0">
+            <button type="submit" class="btn btn-warning">Update</button>
+               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+           </div>
+       </div>
+</form>
+     </div>
+   </div>
+</div>
+<!---------- View Vendor Modal -------------------------->
 <div class="modal fade bd-example-modal-xl" id="view_vendor" tabindex="-1" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -56,6 +88,31 @@
                             <tr>
                                 <th scope="row">Pan</th>
                                 <td id="pan">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Vendor Type</th>
+                                <td id="vendor_type">
+                                </td>
+                                <th scope="row">Declaration Available</th>
+                                <td id="decl_avl">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TDS Rate applicacle</th>
+                                <td id="tds_rate">
+                                </td>
+                                <th scope="row">Branch Location</th>
+                                <td id="branch_id">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">GST</th>
+                                <td id="gst">
+                                </td>
+                                <th scope="row">Gst No</th>
+                                <td id="gst_no">
                                 </td>
                             </tr>
                         </tbody>

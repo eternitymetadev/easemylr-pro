@@ -10,12 +10,14 @@ use App\Models\Driver;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
+use App\Exports\VendorExport;
 use Helper;
 use DB;
 use Validator;
 use Session;
 use Config;
 use Auth;
+use Excel;
 
 
 class VendorController extends Controller
@@ -31,12 +33,15 @@ class VendorController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        return view('vendors.create-vendor',['prefix' => $this->prefix, 'drivers' => $drivers]);
+        $branchs = Helper::getLocations();
+        // echo'<pre>'; print_r($branchs); die;
+        return view('vendors.create-vendor',['prefix' => $this->prefix, 'drivers' => $drivers,'branchs' => $branchs]);
     }
 
     public function store(Request $request)
     {
         try {
+            // echo'<pre>';print_r($request->all()); die;
             DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
@@ -71,6 +76,14 @@ class VendorController extends Controller
                 $cheaquefile = NULL;
             }
 
+            $dec_file = $request->file('declaration_file');
+            if(!empty($dec_file)){
+                $decl_file = $dec_file->getClientOriginalName();
+                $dec_file->move(public_path('drs/declaration'), $decl_file);
+            }else{
+                $decl_file = NULL;
+            }
+
             $no_of_digit = 5;
             $vendor = DB::table('vendors')->select('vendor_no')->latest('vendor_no')->first();
             $vendor_no = json_decode(json_encode($vendor), true);
@@ -94,8 +107,15 @@ class VendorController extends Controller
             $vendorsave['upload_pan']         = $panfile;
             $vendorsave['cancel_cheaque']     = $cheaquefile;
             $vendorsave['other_details']      = json_encode($otherdetail);
-            $vendorsave['is_acc_verified']    = 0;
-            $vendorsave['is_active']          = 1;
+            $vendorsave['vendor_type']         = $request->vendor_type;
+            $vendorsave['declaration_available']     = $request->decalaration_available;
+            $vendorsave['declaration_file']      = $decl_file;
+            $vendorsave['tds_rate']              = $request->tds_rate;
+            $vendorsave['branch_id']            = $request->branch_id;
+            $vendorsave['gst_register']              = $request->gst_register;
+            $vendorsave['gst_no']            = $request->gst_no;
+            $vendorsave['is_acc_verified']      = 0;
+            $vendorsave['is_active']            = 1;
 
            
             $savevendor = Vendor::create($vendorsave);
@@ -316,5 +336,19 @@ class VendorController extends Controller
         }
         return response()->json($response);
         
+    }
+
+    public function exportVendor(Request $request)
+    {
+        return Excel::download(new VendorExport, 'vendordata.csv');
+    }
+
+    // Edit Vendor======================//
+    public function editViewVendor(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $getvendor = Vendor::where('id', $request->id)->first();
+
+        return view('vendors.edit-vendor',['prefix' => $this->prefix, 'getvendor' => $getvendor,]);
     }
 }

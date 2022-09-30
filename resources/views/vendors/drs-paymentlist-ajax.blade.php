@@ -13,7 +13,8 @@
                                 <th>Total Lr</th>
                                 <th>Vehicle No</th>
                                 <th>Purchase Amount</th>
-                                <!-- <th>Payment</th> -->
+                                <th>Advance</th>
+                                <th>Balance</th>
                                 <th>Payment Status</th>
                             </tr>
                         </thead>
@@ -46,6 +47,8 @@
                                     <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
                                         style="margin-right:4px;">Add amount</button> </td>
                                         <?php } ?>
+                                        <td></td>
+                                        <td></td>
                                 <td> <button type="button" class="btn btn-danger "
                                         style="margin-right:4px;">Unpaid</button> </td>
                                 
@@ -54,7 +57,7 @@
                             @endforeach
                             @else
                             <tr>
-                                <td colspan="7" class="text-center">No Record Found </td>
+                                <td colspan="9" class="text-center">No Record Found </td>
                             </tr>
                             @endif
                         </tbody>
