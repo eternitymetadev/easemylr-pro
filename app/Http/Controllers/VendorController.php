@@ -360,7 +360,7 @@ class VendorController extends Controller
         $this->prefix = request()->route()->getPrefix();
        
             $data = Excel::import(new VendorImport,request()->file('vendor_file'));
-            $message = 'Consignees Imported Successfully';
+            $message = 'Vendors Imported Successfully';
 
         if($data){            
             $response['success']    = true;

@@ -178,7 +178,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
-                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="">
+                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="" disabled>
                                 </div>
                             </div>
 
@@ -215,16 +215,27 @@
             }
 
             });
+////////////////////////
+        $('.no_decl').on('change', function() {
+            var declaration = ($('input[name=decalaration_available]:checked').val());
+            if(declaration == 1){
+                $('#tds_rate').val('0');
+            }else if(declaration == 2){
+                $('#vendor_type').val('');
+                $('#tds_rate').val('');
+            }
+        });
+        ////////////////////////
+        
+        $('#gst_register').on('change', function() {
 
-$('.no_decl').on('change', function() {
-    var declaration = ($('input[name=decalaration_available]:checked').val());
-    if(declaration == 1){
-        $('#tds_rate').val('0');
-    }else if(declaration == 2){
-        $('#vendor_type').val('');
-        $('#tds_rate').val('');
-    }
-});
+            var g_typ = $(this).val();
+            if(g_typ == 'Registered'){
+                $("#gst_no").prop('disabled', false);
+            }else{
+                $("#gst_no").prop('disabled', true);
+            }
+        });
 </script>
 
 
