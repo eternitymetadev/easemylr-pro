@@ -20,9 +20,9 @@
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-            <a href="{{'vendor/create'}}" class="btn btn-primary mt-3" style="margin-left:4px; font-size: 13px; padding: 6px 0px;">Add Vendor</a><a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-vendor') }}">Export data</a>
+            <a href="{{'vendor/create'}}" class="btn btn-primary mt-3" style="margin-left:4px; font-size: 13px; padding: 6px 0px;">Add Vendor</a> <button type="button" class="btn btn-primary ml-2 mt-3 dsd" >Import Vendor</button><a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-vendor') }}">Export data</a>
                 <div class="mb-4 mt-4">
-                <!-- <button type="button" class="btn btn-primary ml-2 mt-3 dsd" >Import Vendor</button> -->
+               
                     @csrf
                     <table id="vendor_list" class="table table-hover">
                        

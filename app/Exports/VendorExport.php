@@ -22,7 +22,8 @@ class VendorExport implements FromCollection, WithHeadings,ShouldQueue
 
         $query = Vendor::query();
         $vendordata = $query
-            ->with('DriverDetail')->orderBy('id','DESC')->get();
+            ->with('DriverDetail','Branch')->orderBy('id','DESC')->get();
+
             if($vendordata->count() > 0){
                 foreach ($vendordata as $key => $value){  
                     $bank_detail = json_decode($value->bank_details);
@@ -51,7 +52,8 @@ class VendorExport implements FromCollection, WithHeadings,ShouldQueue
                         'declaration_available'   => @$declaration,
                         'tds_rate'                => @$value->tds_rate,
                         'gst_no'                  => @$value->gst_no,
-                        'gst_register'            => @$value->gst_register
+                        'gst_register'            => @$value->gst_register,
+                        'branch_id'               => @$value->Branch->name
     
                     ];
                 }
@@ -78,7 +80,8 @@ class VendorExport implements FromCollection, WithHeadings,ShouldQueue
             'Declaration Available',
             'Tds Rate',
             'Gst No',
-            'Gst Register'
+            'Gst Register',
+            'Branch Location'
           
         ];
     }

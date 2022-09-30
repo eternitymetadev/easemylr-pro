@@ -95,7 +95,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input no_decl" type="radio" name="decalaration_available"
-                                            id="inlineRadio1" value="1">
+                                            id="cds" value="1">
                                         <label class="form-check-label" for="inlineRadio1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -116,16 +116,9 @@
                                     <label for="exampleFormControlSelect1">Branch Location</label>
                                     <select class="form-control  my-select2" id="branch_id" name="branch_id"
                                         tabindex="-1">
-                                        <option selected disabled>Select</option>
-                                        <?php 
-                                        if(count($branchs)>0) {
-                                            foreach ($branchs as $key => $branch) {
-                                        ?>
-                                        <option value="{{ $key }}">{{ucwords($branch)}}</option>
-                                        <?php 
-                                            }
-                                        }
-                                        ?>
+                                       @foreach($branchs as $branch)
+                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                       @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -204,6 +197,8 @@
 <script>
         $('#vendor_type').change(function() {
                 var v_typ = $(this).val();
+                var declaration = ($('input[name=decalaration_available]:checked').val());
+                  if(declaration == '2'){
                 if(v_typ == 'Individual') {
                     $('#tds_rate').val('1');
                 }else if(v_typ == 'Proprietorship'){
@@ -215,6 +210,9 @@
                 }else if(v_typ == 'HUF'){
                     $('#tds_rate').val('2');
                 }
+            }else{
+                $('#tds_rate').val('0');
+            }
 
             });
 

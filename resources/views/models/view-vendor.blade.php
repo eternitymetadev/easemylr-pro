@@ -22,7 +22,7 @@
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-            <button type="submit" class="btn btn-warning">Update</button>
+            <button type="submit" class="btn btn-warning">Import</button>
                <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
            </div>
        </div>

@@ -10,7 +10,9 @@ use App\Models\Driver;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Location;
 use App\Exports\VendorExport;
+use App\Imports\VendorImport;
 use Helper;
 use DB;
 use Validator;
@@ -32,9 +34,24 @@ class VendorController extends Controller
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $cc = explode(',',$authuser->branch_id);
+
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        $branchs = Helper::getLocations();
-        // echo'<pre>'; print_r($branchs); die;
+
+        if($authuser->role_id ==1){
+            $branchs = Location::select('id','name')->get();
+        } elseif($authuser->role_id ==2){
+            $branchs = Location::select('id','name')->where('id', $cc)->get();
+        }
+        elseif($authuser->role_id ==5){
+            $branchs = Location::select('id','name')->whereIn('id', $cc)->get();
+        }
+        else{
+            $branchs = Location::select('id','name')->get();
+        }
+       
         return view('vendors.create-vendor',['prefix' => $this->prefix, 'drivers' => $drivers,'branchs' => $branchs]);
     }
 
@@ -336,6 +353,26 @@ class VendorController extends Controller
         }
         return response()->json($response);
         
+    }
+
+    public function importVendor(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+       
+            $data = Excel::import(new VendorImport,request()->file('vendor_file'));
+            $message = 'Consignees Imported Successfully';
+
+        if($data){            
+            $response['success']    = true;
+            $response['page']       = 'bulk-imports';
+            $response['error']      = false;
+            $response['success_message'] = $message;
+        }else{
+            $response['success']       = false;
+            $response['error']         = true;
+            $response['error_message'] = "Can not import consignees please try again";
+        }
+        return response()->json($response);
     }
 
     public function exportVendor(Request $request)
