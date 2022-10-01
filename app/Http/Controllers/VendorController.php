@@ -450,6 +450,24 @@ class VendorController extends Controller
 
     }
 
+    public function viewdrsLr(Request $request)
+    {
+
+         $id = $_GET['drs_lr'];
+         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
+         ->whereHas('ConsignmentDetail', function ($query){
+            $query->where('status', '1');
+        })
+         ->orderby('order_no', 'asc')->get();
+        $result = json_decode(json_encode($transcationview), true);
+
+        $response['fetch'] = $result;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        echo json_encode($response);
+
+    }
+
     // Edit Vendor====================== //
     public function editViewVendor(Request $request)
     {

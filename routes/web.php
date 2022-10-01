@@ -304,8 +304,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
     Route::any('import-vendor', [VendorController::class, 'importVendor']);
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
-
-
+    Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
