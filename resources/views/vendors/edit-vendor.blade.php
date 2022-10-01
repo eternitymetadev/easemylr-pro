@@ -40,7 +40,7 @@
                         <form id="update_vendor" method="POST" action="{{url($prefix.'/vendor/update-vendor')}}">
                             @csrf
                             <h3>Vendor Contact Details</h3>
-                            <input type="text" class="form-control" name="vendor_id" placeholder="" value="{{$getvendor->id}}">
+                            <input type="hidden" class="form-control" name="vendor_id" placeholder="" value="{{$getvendor->id}}">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span

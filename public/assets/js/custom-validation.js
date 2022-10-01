@@ -1752,7 +1752,7 @@ $('#update_vendor').validate({
     },
     messages: {
         name: {
-            required: "Enter client name",
+            required: "Enter Vendor name",
         },
     },
     submitHandler : function(form)
@@ -1771,10 +1771,9 @@ $('#update_vendor').validate({
             
             success: function (response)
             {
-                // console.log(response);
                 if(response.success === true){
                     swal("success", response.success_message ,"success");
-                    // $('#vendor-master')[0].reset();
+                  
                 }else{
                     swal('error',data.error_message,'error');
                 }
