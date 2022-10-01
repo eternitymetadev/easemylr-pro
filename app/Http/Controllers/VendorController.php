@@ -197,7 +197,9 @@ class VendorController extends Controller
                     ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                         $query->whereIn('regclient_id', $regclient);
                     });
-            } elseif ($authuser->role_id == 6) {
+            } elseif ($authuser->role_id == 5) {
+                $query = $query->with('ConsignmentDetail');
+            }elseif ($authuser->role_id == 6) {
                 $query = $query
                     ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
                         $query->whereIn('base_clients.id', $baseclient);
@@ -265,6 +267,8 @@ class VendorController extends Controller
                 ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                     $query->whereIn('regclient_id', $regclient);
                 });
+        } elseif ($authuser->role_id == 5) {
+            $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 6) {
             $query = $query
                 ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {

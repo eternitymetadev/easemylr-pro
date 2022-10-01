@@ -574,6 +574,21 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
+    // vendor paymant
+    Route::any('vendor-list', [VendorController::class, 'index']);
+    Route::any('vendor/create', [VendorController::class, 'create']);
+    Route::post('vendor/add-vendor', [VendorController::class, 'store']);
+    Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
+    Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
+    Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
+    Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
+    Route::any('view-vendor-details', [VendorController::class, 'view_vendor_details']);
+    Route::any('update-purchas-price', [VendorController::class, 'update_purchase_price']);
+    Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
+    Route::any('import-vendor', [VendorController::class, 'importVendor']);
+    Route::any('export-vendor', [VendorController::class, 'exportVendor']);
+
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
 {
