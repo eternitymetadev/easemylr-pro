@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Branch;
 use App\Models\Location;
 use App\Models\State;
+use App\Models\Job;
 use App\Models\Consigner;
 use App\Models\Consignee;
 use App\Models\ConsignmentNote;
@@ -213,12 +214,29 @@ class GlobalFunctions {
         $lr = ConsignmentNote::select('delivery_date')->whereIn('id', $drs)->get();
         $lrcount = ConsignmentNote::whereIn('id', $drs)->where('delivery_date', '!=', NULL)->count();
 
-            if($lrcount > 0){
-                $datecount = 1;
-            }else{
-                $datecount = 0;
-            }
-          return $datecount;
+        if($lrcount > 0){
+            $datecount = 1;
+        }else{
+            $datecount = 0;
+        }
+        return $datecount;
+    }
+
+    public static function getJobs($job_id)
+    {
+        $job = DB::table('consignment_notes')->select('jobs.status as job_status', 'jobs.response_data as trail')
+        ->where('consignment_notes.job_id',$job_id )
+        ->leftjoin('jobs', function($data){
+            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+        })->first();
+
+        if(!empty($job)){
+            $job_data= json_decode($job->trail);
+        }else{
+            $job_data= '';
+        }
+        return $job_data;
     }
 
 

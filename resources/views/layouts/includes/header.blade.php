@@ -27,6 +27,7 @@
     <!-- gmap script -->
     <script defer src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key={{config('services.googleMap_key.map_key')}}"
             type="text/javascript"></script>
+            
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
            

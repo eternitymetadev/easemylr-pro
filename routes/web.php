@@ -196,7 +196,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
-
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     
 });
@@ -290,6 +290,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::any('vendor-list', [VendorController::class, 'index']);
     Route::any('vendor/create', [VendorController::class, 'create']);
@@ -304,9 +305,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
     Route::any('import-vendor', [VendorController::class, 'importVendor']);
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
-
-
-
+    
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
 {
@@ -508,6 +507,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     
 });
