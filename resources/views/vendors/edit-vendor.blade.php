@@ -1,5 +1,8 @@
 @extends('layouts.main')
 @section('content')
+<?php
+// echo'<pre>'; print_r($getvendor->declaration_available); die;
+?>
 <style>
 .row.layout-top-spacing {
     width: 80%;
@@ -34,22 +37,24 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form id="vendor-master">
+                        <form id="update_vendor" method="POST" action="{{url($prefix.'/vendor/update-vendor')}}">
                             @csrf
                             <h3>Vendor Contact Details</h3>
+                            <input type="text" class="form-control" name="vendor_id" placeholder="" value="{{$getvendor->id}}">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="vendor_name" name="name" placeholder=""
-                                    value="{{$getvendor->name}}" >
+                                    value="{{old('name',isset($getvendor->name)?$getvendor->name:'')}}" >
                                 </div>
-                                <?php $otherdetails = json_decode($getvendor->other_details);
+                                <?php $otherdetails = json_decode(old('other_details',isset($getvendor->other_details)?$getvendor->other_details:''));
+                                // 
                                 ?>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Transporter Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="transporter_name" placeholder="" value="{{$otherdetails->transporter_name}}">
+                                    <input type="text" class="form-control" name="transporter_name" placeholder="" value="{{old('$otherdetails->transporter_name',isset($otherdetails->transporter_name)?$otherdetails->transporter_name:'')}}">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -57,20 +62,22 @@
                                     <label for="exampleFormControlInput2">Driver </label>
                                     <select class="form-control  my-select2" id="driver_id" name="driver_id"
                                         tabindex="-1">
-                                        <option value="">Select driver</option>
-                                        
+                                        <option selected disabled>Select</option>
+                                        @foreach($drivers as $driver)
+                                        <option value="{{$driver->id}}" {{ $driver->id == $getvendor->driver_id ? 'selected' : ''}}>{{$driver->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Contact Number<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="contact_person_number" placeholder="" value="{{$otherdetails->contact_person_number}}">
+                                    <input type="text" class="form-control" name="contact_person_number" placeholder="" value="{{old('$otherdetails->contact_person_number',isset($otherdetails->contact_person_number)?$otherdetails->contact_person_number:'')}}">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Contact Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="" value="{{$getvendor->email}}">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="" value="{{old('email',isset($getvendor->email)?$getvendor->email:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Vendor Type<span
@@ -78,11 +85,11 @@
                                     <select class="form-control  my-select2" id="vendor_type" name="vendor_type"
                                         tabindex="-1">
                                         <option selected disabled>Select</option>
-                                        <option value="Individual">Individual </option>
-                                        <option value="Proprietorship">Proprietorship</option>
-                                        <option value="Company">Company</option>
-                                        <option value="Firm">Firm</option>
-                                        <option value="HUF">HUF</option>
+                                        <option value="Individual" {{$getvendor->vendor_type == 'Individual' ? 'selected' : ''}}>Individual </option>
+                                        <option value="Proprietorship" {{$getvendor->vendor_type == 'Proprietorship' ? 'selected' : ''}}>Proprietorship</option>
+                                        <option value="Company" {{$getvendor->vendor_type == 'Company' ? 'selected' : ''}}>Company</option>
+                                        <option value="Firm" {{$getvendor->vendor_type == 'Firm' ? 'selected' : ''}}>Firm</option>
+                                        <option value="HUF" {{$getvendor->vendor_type == 'HUF' ? 'selected' : ''}}>HUF</option>
                                     </select>
                                 </div>
                             </div>
@@ -92,12 +99,12 @@
                                             class="text-danger">*</span></label>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input no_decl" type="radio"
-                                            name="decalaration_available" id="cds" value="1">
+                                            name="decalaration_available" id="cds" value="1" {{$getvendor->declaration_available == '1' ? 'checked' : ''}}>
                                         <label class="form-check-label" for="inlineRadio1">Yes</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input no_decl" type="radio"
-                                            name="decalaration_available" id="" value="2" checked>
+                                            name="decalaration_available" id="" value="2" {{$getvendor->declaration_available == '2' ? 'checked' : ''}}>
                                         <label class="form-check-label" for="inlineRadio2">No</label>
                                     </div>
                                     <input type="file" class="form-control" id="declaration_file"
@@ -105,7 +112,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">TDS Rate applicacle</label>
-                                    <input type="text" class="form-control" id="tds_rate" name="tds_rate" placeholder=""
+                                    <input type="text" class="form-control" id="tds_rate" name="tds_rate" placeholder="" value="{{old('tds_rate',isset($getvendor->tds_rate)?$getvendor->tds_rate:'')}}"
                                         readonly>
                                 </div>
                             </div>
@@ -114,36 +121,41 @@
                                     <label for="exampleFormControlSelect1">Branch Location</label>
                                     <select class="form-control  my-select2" id="branch_id" name="branch_id"
                                         tabindex="-1">
-                                       
+                                        <option selected disabled>Select</option>
+                                        @foreach($branchs as $branch)
+                                        <option value="{{$branch->id}}"{{ $branch->id == $getvendor->branch_id ? 'selected' : ''}}>{{$branch->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <h3>Vendor NEFT details</h3>
+                            <?php $bankdetails = json_decode(old('bank_details',isset($getvendor->bank_details)?$getvendor->bank_details:''));
+                                ?>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Account Holder Name </label>
-                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="">
+                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="" value="{{old('$bankdetails->acc_holder_name',isset($bankdetails->acc_holder_name)?$bankdetails->acc_holder_name:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.</label>
-                                    <input type="text" class="form-control" id="account_no" name="account_no" placeholder="">
+                                    <input type="text" class="form-control" id="account_no" name="account_no" placeholder="" value="{{old('$bankdetails->account_no',isset($bankdetails->account_no)?$bankdetails->account_no:'')}}">
                                 </div>
                             </div>
 
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code</label>
-                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="">
+                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="" value="{{old('$bankdetails->ifsc_code',isset($bankdetails->ifsc_code)?$bankdetails->ifsc_code:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
-                                    <input type="text" class="form-control" name="bank_name" placeholder="">
+                                    <input type="text" class="form-control" name="bank_name" placeholder="" value="{{old('$bankdetails->bank_name',isset($bankdetails->bank_name)?$bankdetails->bank_name:'')}}">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Branch Name</label>
-                                    <input type="text" class="form-control" name="branch_name" placeholder="">
+                                    <input type="text" class="form-control" name="branch_name" placeholder="" value="{{old('$bankdetails->branch_name',isset($bankdetails->branch_name)?$bankdetails->branch_name:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Cancel Cheaque</label>
@@ -155,7 +167,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan</label>
-                                    <input type="text" class="form-control" name="pan" placeholder="" value="{{$getvendor->pan}}">
+                                    <input type="text" class="form-control" name="pan" placeholder="" value="{{old('pan',isset($getvendor->pan)?$getvendor->pan:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan Upload</label>
@@ -167,20 +179,20 @@
                                     <label for="exampleFormControlInput2">GST</label>
                                     <select class="form-control  my-select2" id="gst_register" name="gst_register"
                                         tabindex="-1">
-                                        <option value="Unregistered">Unregistered </option>
-                                        <option value="Registered">Registered </option>
+                                        <option value="Unregistered" {{$getvendor->gst_register == 'Unregistered' ? 'selected' : ''}}>Unregistered </option>
+                                        <option value="Registered" {{$getvendor->gst_register == 'Registered' ? 'selected' : ''}}>Registered </option>
 
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
                                     <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder=""
-                                        disabled>
+                                    value="{{old('gst_no',isset($getvendor->gst_no)?$getvendor->gst_no:'')}}" disabled>
                                 </div>
                             </div>
 
-                            <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
-                            <!-- <a class="btn btn-primary" href="{{url($prefix.'/vehicles')}}"> Back</a> -->
+                            <button type="submit" class="mt-4 mb-4 btn btn-primary">Update</button>
+                         
                         </form>
                     </div>
                 </div>

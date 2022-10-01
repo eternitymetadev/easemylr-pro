@@ -1741,5 +1741,47 @@ $('#vendor_import').submit(function(e) {
             }
 }); 
 });	
+//////////////////update vendor////////////////
+
+$('#update_vendor').validate({ 
+    rules: {
+        name: {
+            required: true
+        },
+
+    },
+    messages: {
+        name: {
+            required: "Enter client name",
+        },
+    },
+    submitHandler : function(form)
+    {
+        jQuery.ajax({
+            url         : form.action,
+            type        : form.method,
+            data        : new FormData(form),
+            contentType : false,
+            cache       : false,
+            headers     : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            processData : false,
+            dataType    : "json",
+            
+            success: function (response)
+            {
+                // console.log(response);
+                if(response.success === true){
+                    swal("success", response.success_message ,"success");
+                    // $('#vendor-master')[0].reset();
+                }else{
+                    swal('error',data.error_message,'error');
+                }
+                  
+            }
+        });
+    }
+});
 
 

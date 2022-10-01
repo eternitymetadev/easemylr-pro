@@ -472,8 +472,78 @@ class VendorController extends Controller
     public function editViewVendor(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $getvendor = Vendor::where('id', $request->id)->first();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
 
-        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor]);
+        $getvendor = Vendor::where('id', $request->id)->first();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        if ($authuser->role_id == 1) {
+            $branchs = Location::select('id', 'name')->get();
+        } elseif ($authuser->role_id == 2) {
+            $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+        } elseif ($authuser->role_id == 5) {
+            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        } else {
+            $branchs = Location::select('id', 'name')->get();
+        }
+
+        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor, 'drivers' => $drivers,'branchs' => $branchs]);
+    }
+
+    public function updateVendor(Request $request)
+    {
+        try { 
+
+            $this->prefix = request()->route()->getPrefix();
+             $rules = array(
+              'name' => 'required',
+            );
+
+            $validator = Validator::make($request->all(),$rules);
+
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+
+            $bankdetails = array('acc_holder_name' => $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
+
+            $otherdetail = array('transporter_name' => $request->transporter_name, 'contact_person_number' => $request->contact_person_number);
+
+            $vendorsave['type'] = 'Vendor';
+            // $vendorsave['vendor_no'] = $vendor_no;
+            $vendorsave['name'] = $request->name;
+            $vendorsave['email'] = $request->email;
+            $vendorsave['driver_id'] = $request->driver_id;
+            $vendorsave['bank_details'] = json_encode($bankdetails);
+            $vendorsave['pan'] = $request->pan;
+            // $vendorsave['upload_pan'] = $panfile;
+            // $vendorsave['cancel_cheaque'] = $cheaquefile;
+            $vendorsave['other_details'] = json_encode($otherdetail);
+            $vendorsave['vendor_type'] = $request->vendor_type;
+            $vendorsave['declaration_available'] = $request->decalaration_available;
+            // $vendorsave['declaration_file'] = $decl_file;
+            $vendorsave['tds_rate'] = $request->tds_rate;
+            $vendorsave['branch_id'] = $request->branch_id;
+            $vendorsave['gst_register'] = $request->gst_register;
+            $vendorsave['gst_no'] = $request->gst_no;
+            
+            Vendor::where('id',$request->vendor_id)->update($vendorsave);
+
+            $response['success'] = true;
+            $response['success_message'] = "Vendor Updated Successfully";
+            $response['error'] = false;
+        }catch(Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+        }
+        return response()->json($response);
+      
     }
 }

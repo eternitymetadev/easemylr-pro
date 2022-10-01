@@ -2656,7 +2656,7 @@ else{
         return response()->json($response);
     }
 
-    public function view_saveDraft(Request $request)
+    public function view_saveDraft(Request $request) 
     {
         //echo'hi';
         $id = $_GET['draft_id'];
