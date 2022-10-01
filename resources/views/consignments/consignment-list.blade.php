@@ -1,7 +1,10 @@
 @extends('layouts.main')
 @section('content')
 <style>
-
+.accordion {
+    overflow-anchor: none;
+    font-weight: bold;
+}
 .accepted {
     color: #ffffff !important;
     background: #007bff;
@@ -240,7 +243,7 @@
 .bg-info {
     background-color: #2CA8FF !important;
 }    
-        .dt--top-section {
+.dt--top-section {
     margin:none;
 }
 div.relative {
@@ -264,9 +267,8 @@ div.relative {
     padding: 10px;
 }
 .btn {
-   
     font-size: 10px;
-    }
+}
 
 tr.shown td.dt-control {
     background: url('/assets/img/details_close.png') no-repeat center center !important;
@@ -378,62 +380,219 @@ td.dt-control {
 a.badge.alert.bg-secondary.shadow-sm {
     color: #fff;
 }
+#map {
+    height: 400px;
+    width: 600px;
+}
 
-    </style>
-<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
-    
-<!-- END PAGE LEVEL CUSTOM STYLES -->  
+</style>
+<div class="layout-px-spacing">
+    <div class="row layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="page-header">
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment
+                                List</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="widget-content widget-content-area br-6">
+                <div class="mb-4 mt-4">
 
-    <div class="layout-px-spacing">
-        <div class="row layout-top-spacing">
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="page-header">
-                    <nav class="breadcrumb-one" aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment List</a></li>
-                        </ol>
-                    </nav>
-                </div>
-                <div class="widget-content widget-content-area br-6">
-                    <div class="mb-4 mt-4">
-                        @csrf
-                        <table id="lrlist" class="table table-hover" style="width:100%">
-                            <div class="btn-group relative">
-                            <?php  $authuser = Auth::user(); 
-                            if($authuser->role_id != 6 && $authuser->role_id != 7){ ?>
-                                <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a>
-                                <?php } ?>
+                    <div class="container-fluid">
+                        <div class="row winery_row_n spaceing_2n mb-3">
+                            <!-- <div class="col-xl-5 col-lg-3 col-md-4">
+                                <h4 class="win-h4">List</h4>
+                            </div> -->
+                            <div class="col d-flex pr-0">
+                                <div class="search-inp w-100">
+                                    <form class="navbar-form" role="search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Search" id="search"
+                                                data-action="<?php echo url()->current(); ?>">
+                                            <!-- <div class="input-group-btn">
+                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            <thead>
-                                <tr>
-                                    <th> </th>
-                                    <th>LR Details</th>
-                                    <th>Route</th>
-                                    <th>Dates</th>
-                                    <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
-                                    <th>Printing options</th>
-                                    <?php }else {?>
-                                        <th></th>
-                                        <?php }?>
-                                    <th>Dlvry Status</th>
-                                    <th>LR Status</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
+                            <div class="col-lg lead_bladebtop1_n pl-0">
+                                <div class="winery_btn_n btn-section px-0 text-right">
+                                    <a class="btn-primary btn-cstm btn ml-2"
+                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                        href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
+                                            New</span></a>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                        data-action="<?php echo url()->current(); ?>"><span><i
+                                                class="fa fa-refresh"></i> Reset Filters</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                            </tbody>
-                        </table>
+                    @csrf
+                    <div class="main-table table-responsive">
+                        @include('consignments.consignment-list-ajax')
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 @include('models.delete-user')
 @include('models.common-confirm')
 @include('models.manual-updatrLR')
+@endsection
+
+@section('js')
+<script>
+    
+// jQuery(document).on("click", ".card-header", function () {
+function row_click(row_id, job_id, url)
+{   
+    $('.append-modal').empty(); 
+    $('.cbp_tmtimeline').empty();
+
+    var modal_container = '';
+    var modal_html = '';
+    var modal_html1 = '';
+
+    var job_id = job_id;  
+    var url =url;
+    jQuery.ajax({
+        url: url,
+        type: "get",
+        cache: false,
+        data: { job_id: job_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                "content"
+            ),
+        },
+        success: function (response) {
+            if (response.success) {
+
+                var modal_html = '';
+                var trackinglink = '';
+
+                console.log(response);
+                // return false;
+                if(response.job_data){
+                    var modal_container = '<div class="container" oncontextmenu="return true;"><div class="row"><div class="col-md-10"><ul class="cbp_tmtimeline">';
+                    $.each(response.job_data, function (index, task) {
+                        var timestamp = task.creation_datetime;
+                        var type = task.type;
+                        var des_data = '';
+                        var result = '';
+
+                        if (type == 'image_added') {
+                            var uploaded_by = 'Attachment uploaded by';
+                            var view_text = 'View Attachment';
+                            var title = 'Attachment';
+                            var image = '<img src="'+ task.description +'" width="100%" seamless="">';
+                        }else if (type == 'signature_image_added') {
+                            var uploaded_by = 'Signature Added by';
+                            var view_text = 'View Signatures';
+                            var title = 'Signature';
+                            var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
+                        }
+
+                        if(type == 'image_added' || type == 'signature_image_added'){
+                            modal_html += '<span style="padding-left:245px; font-size: 12px;">'+uploaded_by+' '+task.fleet_name +'</span><br />'; 
+                            modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
+
+                            //  Modal start //
+                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+                            modal_html += '<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header">';
+                            modal_html += '<h5 class="modal-title" id="exampleModalLabel">'+ title +'</h5>';
+                            modal_html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+                            modal_html += '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"> <line x1="18" y1="6" x2="6" y2="18"> </line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+                            modal_html += '</button></div>';
+                            modal_html += '<div class="modal-body">'+ image +'</div>';
+                            modal_html += '<div class="modal-footer"><button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button></div></div></div></div>';
+                        }else{
+                            var text = task.label_description;
+                            var label_text = text.replace("at", " by");
+                            var result = label_text +' '+task.fleet_name;
+                            // var result = task.label_description.replace(/^\s+|\s+$/gm,'at');+ ' by ' + task.fleet_name;
+                            // var str = trim(task.label_description, 'at') + ' by ' + task.fleet_name;
+                            // if (str_contains(str, 'CREATED')) {
+                            //     var deresults_data += "LR Created";
+                            // } else {
+                                // var des_data += str;
+                            // }
+                        }
+                        var text_date = task.creation_datetime;
+                        var creation_datetime = text_date.replace("T", " ");
+                        var creation_datetime = creation_datetime.replace("Z", "");
+                        var creation_datetime = creation_datetime.split('.')[0];
+
+                        modal_html += '<li><time class="cbp_tmtime" datetime="'+ creation_datetime +'"><span class="hidden">'+creation_datetime+'</span></time>';
+                        if(result){
+                        modal_html += '<div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span>'+ result +'</span></div>';
+                        }
+                        
+                    });
+                    
+                    modal_container += '</li></ul></div></div></div>';
+                    
+                    $('.append-modal').append(modal_container); 
+                    $('.cbp_tmtimeline').append(modal_html);
+                    
+                } else{
+                    var modal_html1 = 'No data available';
+                    $('.append-modal').html(modal_html1);
+                }
+                if(( response.job_id != '') && (response.delivery_status != 'Successful')){
+                    var trackinglink = '<iframe id="iGmap-'+row_id+'" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+response.tracking_link+'" ></iframe>';
+                    $("#mapdiv-"+row_id).html(trackinglink);
+                }
+                else{
+                    var trackinglink = '<div id="map-'+row_id+'" style="height: 100%; width: 100%"> </div>';
+                    $("#mapdiv-"+row_id).html(trackinglink);
+                    initMap(response, row_id);
+                }
+                
+            } 
+        }
+                    
+    });
+    
+}
+
+
+var map;
+function initMap(response, row_id)
+{
+    var map = new google.maps.Map(document.getElementById('map-'+row_id), {zoom: 8, center: 'Changigarh',});
+    var directionsDisplay = new google.maps.DirectionsRenderer({'draggable': false});
+    var directionsService = new google.maps.DirectionsService();
+    var travel_mode = 'DRIVING';
+    var origin = response.cnr_pincode;  
+    var destination = response.cne_pincode;
+    directionsService.route({
+        "origin": origin,
+        "destination": destination,
+        "travelMode": travel_mode,
+        "avoidTolls": true,
+    }, function (response, status) {
+        if (status === 'OK') {
+            directionsDisplay.setMap(map);
+            directionsDisplay.setDirections(response);
+            console.log(response);
+        } else {
+            directionsDisplay.setMap(null);
+            directionsDisplay.setDirections(null);
+            // alert('Unknown route found with error code 0, contact your manager');
+        }
+    });
+}
+</script>
+
 @endsection

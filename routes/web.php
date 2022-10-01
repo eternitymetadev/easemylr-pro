@@ -21,6 +21,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\API\ReceiveAddressController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\VendorController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -194,7 +196,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
-
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     
 });
@@ -288,7 +290,23 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
+    Route::any('vendor-list', [VendorController::class, 'index']);
+    Route::any('vendor/create', [VendorController::class, 'create']);
+    Route::post('vendor/add-vendor', [VendorController::class, 'store']);
+    Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
+    Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
+    Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
+    Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
+    Route::any('view-vendor-details', [VendorController::class, 'view_vendor_details']);
+    Route::any('update-purchas-price', [VendorController::class, 'update_purchase_price']);
+    Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
+    Route::post('vendor/update-vendor', [VendorController::class, 'updateVendor']);
+    Route::any('import-vendor', [VendorController::class, 'importVendor']);
+    Route::any('export-vendor', [VendorController::class, 'exportVendor']);
+    Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -491,6 +509,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     
 });
@@ -561,6 +580,24 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('clients/export', [ClientController::class, 'clientReportExport']);
 
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+
+    // vendor paymant
+    Route::any('vendor-list', [VendorController::class, 'index']);
+    Route::any('vendor/create', [VendorController::class, 'create']);
+    Route::post('vendor/add-vendor', [VendorController::class, 'store']);
+    Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
+    Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
+    Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
+    Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
+    Route::any('view-vendor-details', [VendorController::class, 'view_vendor_details']);
+    Route::any('update-purchas-price', [VendorController::class, 'update_purchase_price']);
+    Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
+    Route::post('vendor/update-vendor', [VendorController::class, 'updateVendor']);
+    Route::any('import-vendor', [VendorController::class, 'importVendor']);
+    Route::any('export-vendor', [VendorController::class, 'exportVendor']);
+    Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
@@ -568,6 +605,7 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::resource('consignments', ConsignmentController::class);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 });
 Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']], function()
 {
@@ -576,6 +614,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('consignment-report', [ConsignmentController::class, 'consignmentReports']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -589,6 +628,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
+    Route::any('add-vendor', [VendorController::class, 'store']);
 
 });
 

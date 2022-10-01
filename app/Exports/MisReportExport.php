@@ -33,7 +33,7 @@ class MisReportExport implements FromCollection, WithHeadings,ShouldQueue
     {
         // echo'<pre>'; print_r($_POST); die;
         ini_set('memory_limit', '2048M');
-        set_time_limit ( 6000 );
+        set_time_limit ( 6000 ); 
         $arr = array();
 
         $query = ConsignmentNote::query();

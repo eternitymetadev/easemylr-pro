@@ -851,12 +851,12 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
         rules: {
             consigner_id: {
-                required: true,
+                required: true
             },
             consignee_id: {
                 required: true
@@ -864,20 +864,9 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            driver_id : {
-                // required: true,
-            },
-            transporter_name : {
-                // required: true,
-            },
-            vehicle_type : {
-                // required: true,
-            },
-            vehicle_id : {
-                // required: true,
-            },
+           
             'quantity[]': {
-                required: true,
+                required: true
                 //   lettersonly:true
                 },
            'weight[]': {
@@ -886,12 +875,7 @@ jQuery(document).ready(function(){
            'gross_weight[]': {
                   required: true
                 },
-           'freight[]': {
-                  required: true
-                },
-            'payment_type[]': {
-                required: true
-                },
+           
         },
         messages: {
             consigner_id: {
@@ -936,39 +920,7 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
     //consignment multiple rows field validation
-
-    $(".qnt").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                // lettersonly:true,
-                messages: {
-                    required: "Enter quantity."
-                },
-            });
-    });
-    $(".net").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                // lettersonly:true,
-                messages: {
-                    required: "Enter net weight."
-                },
-            });
-    });
-    $(".gross").each(function()
-    {
-        $(this).rules('add', {
-                required: true,
-                // lettersonly:true,
-                messages: {
-                    required: "Enter gross weight."
-                },
-            });
-    });
 
     /*===== create order =====*/
     $('#createorder').validate({ 
@@ -1080,11 +1032,11 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
+    
     $('#updateorder').validate({ 
         rules: {
             consigner_id: {
-                required: true,
+                required: true
             },
             consignee_id: {
                 required: true
@@ -1092,20 +1044,8 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            driver_id : {
-                // required: true,
-            },
-            transporter_name : {
-                // required: true,
-            },
-            vehicle_type : {
-                // required: true,
-            },
-            vehicle_id : {
-                // required: true,
-            },
             'quantity[]': {
-                required: true,
+                required: true
                 //   lettersonly:true
                 },
            'weight[]': {
@@ -1113,58 +1053,80 @@ jQuery(document).ready(function(){
                 },
            'gross_weight[]': {
                   required: true
-                },
-           'freight[]': {
-                  required: true
-                },
-            'payment_type[]': {
-                required: true
-                },
+                }
+            
         },
         messages: {
             consigner_id: {
-                required: "Select consigner address",
+                required: "Select consigner address"
             },
             consignee_id: {
-                required: "Select consignee address",
+                required: "Select consignee address"
             },
             ship_to_id: {
-                required: "Select ship to address",
+                required: "Select ship to address"
             },
             driver_id : {
-                required: "Select driver",
+                required: "Select driver"
             },
             transporter_name : {
-                required: "Enter transporter name",
+                required: "Enter transporter name"
             },
             vehicle_type : {
-                required: "Select vehicle type",
+                required: "Select vehicle type"
             },
             vehicle_id : {
-                required: "Select vehicle no.",
+                required: "Select vehicle no."
             },
             'quantity[]': {
-                required: "Enter quantity",
+                required: "Enter quantity"
             },
             'weight[]': {
-                required: "Enter weight",
+                required: "Enter weight"
             },
             'gross_weight[]': {
-                required: "Enter gross weight",
+                required: "Enter gross weight"
             },
             'freight[]': {
-                required: "Enter freight",
+                required: "Enter freight"
             },
             'payment_type[]': {
-                required: "Select payment type",
-            },
+                required: "Select payment type"
+            }
         },
         submitHandler : function(form)
         {
             formSubmitRedirect(form);
         }
     });
-
+    $(".qnt").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter quantity."
+                },
+            });
+    });
+    $(".net").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter net weight."
+                },
+            });
+    });
+    $(".gross").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Enter gross weight."
+                },
+            });
+    });
+  
     /*===== Create payment =====*/
     $('#createpayment').validate({ 
         rules: {
@@ -1508,7 +1470,6 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
     
 
 
@@ -1592,7 +1553,6 @@ function formSubmit(form)
 /*======= submit redirect fuction =======*/
 function formSubmitRedirect(form)
 {
-   
     jQuery.ajax({
         url         : form.action,
         type        : form.method,
@@ -1613,17 +1573,7 @@ function formSubmitRedirect(form)
             }else{
                 $('.gstno_error').hide();
             }
-            if($('.edd_error').css('display') == 'block'){
-                //alert('Please select a valid alert message');
-                // return false;
-           }
            $('.disableme').prop('disabled', true);
-            // if ($('#vehicle_no').val() != '' && $("#edd").val() == null) {
-            //     $('.edd_error').show();
-            //     return false;
-            // }else{
-            //     $('.edd_error').hide();
-            // }
         },
         complete: function (response) {
             $('.disableme').prop('disabled', true);
@@ -1634,7 +1584,7 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            
+            //alert(response);
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){

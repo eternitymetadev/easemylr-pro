@@ -27,5 +27,19 @@ label.error {
   top: 22px;
   left: 98px;
   z-index: 99999;
-} 
+}
+
+/* .pagination{justify-content: center;} */
+
 .disable_n { pointer-events: none; cursor: default;}
+
+/* //// */
+.accordion .card-header:after {
+  font-family: 'FontAwesome';  
+  content: "\f068";
+  float: left; 
+}
+.accordion .card-header.collapsed:after {
+  /* symbol for "collapsed" panels */
+  content: "\f067"; 
+}

@@ -26,10 +26,16 @@ use QrCode;
 use Response;
 use Storage;
 use Validator;
+use Config;
+use Session;
+Use URL;
 use App\Events\RealtimeMessage;
 
 class ConsignmentController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
 
     public function __construct()
     {
@@ -45,48 +51,125 @@ class ConsignmentController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        // $peritem = 20;
+        $peritem = Config::get('variable.PER_PAGE');
         $query = ConsignmentNote::query();
-        $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
-        if ($authuser->role_id == 2) {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->whereIn('consignment_notes.branch_id', $cc)
-                ->get(['consignees.city']);
-
-            // $consignments = $query->whereIn('branch_id',$cc)->orderby('id','DESC')->get();
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            // ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            // ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                ->get(['consignees.city']);
-
-            // $consignments = $query->orderby('id','DESC')->get();
-        }
+        
         if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
             if (isset($request->updatestatus)) {
-                // dd($request->status);
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
+
+                $url = $this->prefix . '/consignments';
+                $response['success'] = true;
+                $response['success_message'] = "Consignment updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'consignment-updateupdate';
+                $response['redirect_url'] = $url;
+
+                return response()->json($response);
             }
 
-            $url = $this->prefix . '/consignments';
-            $response['success'] = true;
-            $response['success_message'] = "Consignment updated successfully";
-            $response['error'] = false;
-            $response['page'] = 'consignment-updateupdate';
-            $response['redirect_url'] = $url;
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $baseclient = explode(',',$authuser->baseclient_id);
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
 
-            return response()->json($response);
+            $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+
+            if($authuser->role_id ==1){
+                $query;
+            }
+            elseif($authuser->role_id ==4){
+                $query = $query->whereIn('regclient_id', $regclient);
+            }
+            elseif($authuser->role_id ==6){
+                $query = $query->whereIn('base_clients.id', $baseclient);
+            }
+            elseif($authuser->role_id ==7){
+                $query = $query->whereIn('regional_clients.id', $regclient);
+            }
+            else{
+                $query = $query->whereIn('consignment_notes.branch_id', $cc);
+            }
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                            $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($cneequery)use($search,$searchT) {
+                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    });
+
+                });
+            }
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+
+            $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $consignments = $consignments->appends($request->query());
+
+            $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            
+
+            return response()->json(['html' => $html]);
         }
-        return view('consignments.consignment-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title])
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+
+        $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+
+        if($authuser->role_id ==1){
+            $query;
+        }
+        elseif($authuser->role_id ==4){
+            $query = $query->whereIn('regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==6){
+            $query = $query->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $query = $query->whereIn('consignment_notes.branch_id', $cc);
+        }
+        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        // echo "<pre>"; print_r($consignments->JobDetail); die;
+        $consignments = $consignments->appends($request->query());
+        
+
+        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function consignment_list()
@@ -108,17 +191,17 @@ class ConsignmentController extends Controller
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                      ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             });
-            if($authuser->role_id ==1){
+            if($authuser->role_id== 1){
                 $data;
             }
-            elseif($authuser->role_id ==4){
+            elseif($authuser->role_id== 4){
                 $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
             }
-            elseif($authuser->role_id ==6){
+            elseif($authuser->role_id== 6){
                 $data = $data->whereIn('base_clients.id', $baseclient);
             }
-            elseif($authuser->role_id ==7){
-                 $data = $data->whereIn('regional_clients.id', $regclient);
+            elseif($authuser->role_id== 7){
+                $data = $data->whereIn('regional_clients.id', $regclient);
             }
             else{
                 $data = $data->whereIn('consignment_notes.branch_id', $cc);
@@ -982,8 +1065,8 @@ class ConsignmentController extends Controller
 
         $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['nick_name'] != null) {
-            $nick_name = '<b>' . $data['consignee_detail']['nick_name'] . '</b><br>';
+        if ($data['consignee_detail']['legal_name'] != null) {
+            $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
@@ -1036,8 +1119,8 @@ class ConsignmentController extends Controller
 
         $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['nick_name'] != null) {
-            $nick_name = '<b>' . $data['shipto_detail']['nick_name'] . '</b><br>';
+        if ($data['shipto_detail']['legal_name'] != null) {
+            $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
@@ -1976,7 +2059,6 @@ else{
         $purchasePrice = $request->purchase_price;
 
         $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType,'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
-        //echo'hii';
 
         $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -2029,60 +2111,143 @@ else{
     public function transactionSheet(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = TransactionSheet::query();
+
+        $this->prefix = request()->route()->getPrefix();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();        
-
-        $data = DB::table('transaction_sheets')->select('transaction_sheets.drs_no', 'transaction_sheets.driver_name', 'transaction_sheets.vehicle_no', 'transaction_sheets.status', 'transaction_sheets.delivery_status', 'transaction_sheets.created_at', 'transaction_sheets.driver_no', 'consignment_notes.user_id', 'consignment_notes.user_id')
-                ->leftJoin('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
-                ->whereIn('transaction_sheets.status', ['1', '0', '3'])
-                ->groupBy('transaction_sheets.drs_no');
-
-        if($authuser->role_id ==1){
-            $data;
-        }
-        elseif($authuser->role_id ==4){
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
-            $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-             $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
-            $data = $data->whereIn('transaction_sheets.branch_id', $cc);
-        }
-        $data = $data->where('consignment_notes.status', '!=', 5)->orderBy('transaction_sheets.id', 'DESC');
-        $transaction = $data->get();
-
         if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
             if (isset($request->updatestatus)) {
                 if ($request->drs_status == 'Started') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
                 } elseif ($request->drs_status == 'Successful') {
                     TransactionSheet::where('drs_no', $request->drs_no)->update(['delivery_status' => $request->drs_status]);
                 }
+                $url = $this->prefix . '/transaction-sheet';
+                $response['success'] = true;
+                $response['success_message'] = "Dsr cancel status updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'dsr-cancel-update';
+                $response['redirect_url'] = $url;
+    
+                return response()->json($response);
             }
 
-            $url = $this->prefix . '/transaction-sheet';
-            $response['success'] = true;
-            $response['success_message'] = "Dsr cancel status updated successfully";
-            $response['error'] = false;
-            $response['page'] = 'dsr-cancel-update';
-            $response['redirect_url'] = $url;
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $baseclient = explode(',',$authuser->baseclient_id);
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-            return response()->json($response);
+            $query = $query->whereIn('status', ['1', '0', '3'])
+                    ->groupBy('drs_no'); 
+
+            if($authuser->role_id ==1){
+                $query = $query->with('ConsignmentDetail');
+            }
+            elseif($authuser->role_id ==4){
+                $query = $query
+                ->whereHas('ConsignmentDetail', function($query) use($regclient){
+                    $query->whereIn('regclient_id', $regclient);
+                });
+            }
+            elseif($authuser->role_id ==6){
+                $query = $query
+                ->whereHas('ConsignmentDetail', function($query) use($baseclient){
+                    $query->whereIn('base_clients.id', $baseclient);
+                });
+            }
+            elseif($authuser->role_id ==7){
+                $query = $query
+                ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function($query) use($baseclient){
+                    $query->whereIn('id', $regclient);
+                });
+            }
+            else{
+                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+            }
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('drs_no', 'like', '%' . $search . '%')
+                    ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                    ->orWhere('driver_name', 'like', '%' . $search . '%')
+                    ->orWhere('driver_no', 'like', '%' . $search . '%');
+                });
+            }
+
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+            $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+            $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+            $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+            $transaction = $transaction->appends($request->query());
+
+            $html =  view('consignments.download-drs-list-ajax',['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            
+            return response()->json(['html' => $html]);
         }
 
-        return view('consignments.transaction-sheet', ['prefix' => $this->prefix, 'title' => $this->title, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+      
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query->with('ConsignmentDetail')
+                ->whereIn('status', ['1', '0', '3'])
+                ->groupBy('drs_no');
+
+        if($authuser->role_id ==1){
+            $query = $query->with('ConsignmentDetail');
+        }
+        elseif($authuser->role_id ==4){
+            $query = $query
+            ->whereHas('ConsignmentDetail', function($query) use($regclient){
+                $query->whereIn('regclient_id', $regclient);
+            });
+        }
+        elseif($authuser->role_id ==6){
+            $query = $query
+            ->whereHas('ConsignmentDetail', function($query) use($baseclient){
+                $query->whereIn('base_clients.id', $baseclient);
+            });
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+        }
+        $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+        $transaction = $transaction->appends($request->query());
+       
+        return view('consignments.download-drs-list', ['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
 
     public function getTransactionDetails(Request $request)
@@ -2278,7 +2443,14 @@ else{
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
+        $transcationview = TransactionSheet::select('*')
+        ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('drs_no', $id)
+        ->whereIn('status', ['1', '3'])
+        ->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
         //echo'<pre>'; print_r($simplyfy); die;
         $no_of_deliveries =  count($simplyfy);
@@ -2561,7 +2733,7 @@ else{
         return response()->json($response);
     }
 
-    public function view_saveDraft(Request $request)
+    public function view_saveDraft(Request $request) 
     {
         //echo'hi';
         $id = $_GET['draft_id'];
@@ -2723,23 +2895,37 @@ else{
     //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
+
         $this->prefix = request()->route()->getPrefix();
-        // $peritem = 20;
-        $query = ConsignmentNote::query();
         $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
-        if ($authuser->role_id == 2) {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->whereIn('consignment_notes.branch_id', $cc)
-                ->get(['consignees.city']);
-        } else {
-            $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                ->get(['consignees.city']);
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as consignee_city', 'consignees.postal_code as consignee_pincode', 'consignees.district as consignee_district')
+        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+        ->where('consignment_notes.status', '!=', 5);
+
+        if($authuser->role_id ==1){
+            $data;
         }
+        elseif($authuser->role_id ==4){
+            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==6){
+            $data = $data->whereIn('base_clients.id', $baseclient);
+        }
+        elseif($authuser->role_id ==7){
+             $data = $data->whereIn('regional_clients.id', $regclient);
+        }
+        else{
+            $data = $data->whereIn('consignment_notes.branch_id', $cc);
+        }
+        $data = $data->orderBy('id', 'DESC');
+        $consignments = $data->get();
 
         return view('consignments.bulkLr-view', ['prefix' => $this->prefix, 'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
@@ -2816,8 +3002,8 @@ else{
         
                 $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
         
-                if ($data['consignee_detail']['nick_name'] != null) {
-                    $nick_name = '<b>' . $data['consignee_detail']['nick_name'] . '</b><br>';
+                if ($data['consignee_detail']['legal_name'] != null) {
+                    $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
@@ -2870,8 +3056,8 @@ else{
         
                 $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
         
-                if ($data['shipto_detail']['nick_name'] != null) {
-                    $nick_name = '<b>' . $data['shipto_detail']['nick_name'] . '</b><br>';
+                if ($data['shipto_detail']['legal_name'] != null) {
+                    $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
@@ -3920,9 +4106,6 @@ else{
         $response = curl_exec($curl);
 
         curl_close($curl);
-
-        // echo "<pre>";print_r($response);echo "</pre>";die;
-
         return $response;
 
     }
@@ -3938,7 +4121,7 @@ else{
         $data = Storage::disk('local')->get('file.json');
         $json = json_decode($data, true);
         $job_id = $json['job_id'];
-        $time = strtotime($json['completed_datetime_formatted']);
+        $time = strtotime($json['job_delivery_datetime']);
         $newformat = date('Y-m-d', $time);
         $delivery_status = $json['job_state'];
 
@@ -4045,7 +4228,7 @@ else{
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 $response['success'] = true;
-                $response['messages'] = 'img uploaded successfully';
+                $response['messages'] = 'Image uploaded successfully';
                 return Response::json($response);
             } else {
                 $response['success'] = false;
@@ -4196,9 +4379,7 @@ else{
     }
     public function allupdateInvoice(Request $request)
     {
-         //echo'<pre>'; print_r($request->cn_no); die;
-          
-          if (!empty($request->data)) {
+        if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
 
@@ -4222,7 +4403,6 @@ else{
                         ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
                     }
                 }
-                
             }
             $consignmentitm = ConsignmentItem::where('consignment_id', $request->cn_no)->get();
 
@@ -4231,6 +4411,49 @@ else{
             $response['messages'] = 'img uploaded successfully';
             return Response::json($response);
         }
+    }
+
+    public function getJob(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','consignment_notes.tracking_link as tracking_link','consignment_notes.delivery_status as delivery_status','jobs.status as job_status', 'jobs.response_data as trail','consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
+            ->where('consignment_notes.job_id',$request->job_id )
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('jobs', function($data){
+                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+            })->first();
+            
+        if(!empty($job->trail)){
+            $job_data= json_decode($job->trail);
+            $tracking_history = array_reverse($job_data->task_history);
+            // array_push($tracking_history,$job->job_id,$job->delivery_status);
+            
+            $url    =   URL::to($this->prefix.'/consignments');
+            $response['success'] = true;
+            $response['success_message'] = "Jobs fetch successfully";
+            $response['error'] = false;
+            $response['job_data'] = $tracking_history;
+            $response['job_id'] = $job->job_id;
+            $response['delivery_status'] = $job->delivery_status;
+            $response['cnr_pincode'] = $job->cnr_pincode;
+            $response['cne_pincode'] = $job->cne_pincode;
+            $response['tracking_link'] = $job->tracking_link;
+        }else{
+            $url    =   URL::to($this->prefix.'/consignments');
+            $response['success'] = true;
+            $response['success_message'] = "Job data not found";
+            $response['error'] = false;
+            $response['job_data'] = '';
+            $response['job_id'] = '';
+            $response['delivery_status'] = $job->delivery_status;
+            $response['cnr_pincode'] = $job->cnr_pincode;
+            $response['cne_pincode'] = $job->cne_pincode;
+            $response['tracking_link'] = $job->tracking_link;
+        }
+        
+        return response()->json($response);
     }
 
 

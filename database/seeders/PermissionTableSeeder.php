@@ -51,6 +51,11 @@ class PermissionTableSeeder extends Seeder
                 'status' => 1,
                 'created_at' => time()
             ],    
+            [
+                'name' => 'payments',
+                'status' => 1,
+                'created_at' => time()
+            ], 
             
 
         ];

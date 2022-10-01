@@ -63,8 +63,7 @@ class ReportController extends Controller
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
-
-            $query = ConsignmentNote::query();
+            
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
@@ -95,7 +94,7 @@ class ReportController extends Controller
             }elseif($authuser->role_id == 4){
                 $query = $query->whereIn('regclient_id', $regclient);   
             }else{
-                $query = $query->where('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc);
             }
 
             $startdate = $request->startdate;
@@ -176,7 +175,7 @@ class ReportController extends Controller
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('regclient_id', $regclient);   
         }else{
-            $query = $query->where('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);

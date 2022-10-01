@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Branch;
 use App\Models\Location;
 use App\Models\State;
+use App\Models\Job;
 use App\Models\Consigner;
 use App\Models\Consignee;
 use App\Models\ConsignmentNote;
@@ -139,6 +140,19 @@ class GlobalFunctions {
         $data = DB::table('transaction_sheets')->where('drs_no',$drs_number)->where('status','!=', 2)->count();
         return $data;
     }
+    //////////
+    public static function countdrslr($drs_number)
+    {
+        $data = TransactionSheet::
+        with('ConsignmentDetai')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('drs_no', $drs_number)
+        ->where('status','!=', 2)
+        ->count();
+        return $data;
+    }
 
     public static function getdeleveryDate($drs_number)
     {
@@ -154,11 +168,11 @@ class GlobalFunctions {
     {
         $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
 
-        $getlr_deldate = ConsignmentNote::select('delivery_date')->whereIn('id',$get_lrs)->get();
-        $total_deldate = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '!=', NULL)->count();
-        $total_empty = ConsignmentNote::whereIn('id',$get_lrs)->where('delivery_date', '=', NULL)->count();
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status','!=',0)->whereIn('id',$get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->where('delivery_date', '!=', NULL)->count();
+        $total_empty = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->where('delivery_date', '=', NULL)->count();
 
-        $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->count();
+        $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->count();
 
         if($total_deldate == $total_lr){
             $status = "Successful";
@@ -200,12 +214,29 @@ class GlobalFunctions {
         $lr = ConsignmentNote::select('delivery_date')->whereIn('id', $drs)->get();
         $lrcount = ConsignmentNote::whereIn('id', $drs)->where('delivery_date', '!=', NULL)->count();
 
-            if($lrcount > 0){
-                $datecount = 1;
-            }else{
-                $datecount = 0;
-            }
-          return $datecount;
+        if($lrcount > 0){
+            $datecount = 1;
+        }else{
+            $datecount = 0;
+        }
+        return $datecount;
+    }
+
+    public static function getJobs($job_id)
+    {
+        $job = DB::table('consignment_notes')->select('jobs.status as job_status', 'jobs.response_data as trail')
+        ->where('consignment_notes.job_id',$job_id )
+        ->leftjoin('jobs', function($data){
+            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+        })->first();
+
+        if(!empty($job)){
+            $job_data= json_decode($job->trail);
+        }else{
+            $job_data= '';
+        }
+        return $job_data;
     }
 
 
