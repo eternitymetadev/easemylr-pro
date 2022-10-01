@@ -160,7 +160,7 @@
         </tbody>
     </table>
     <div class="perpage container-fluid">
-        <div class="row">
+        <div class="row"> 
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
             <div class="col-md-12 col-lg-4 col-xl-3">

@@ -1751,6 +1751,7 @@ jQuery("#search").searchtyping(function (callback) {
         dataType: "json",
         beforeSend: function () {
             jQuery(".load-main").show();
+            
         },
         complete: function () {
             jQuery(".load-main").hide();
@@ -1764,6 +1765,7 @@ jQuery("#search").searchtyping(function (callback) {
                     jQuery(".wines_stock").html(response.html);
                 } else {
                     jQuery(".main-table").html(response.html);
+                    alert("Please select");
                 }
             }
         },
@@ -1840,3 +1842,120 @@ jQuery(document).on("change", ".perpage", function () {
     });
     return false;
 });
+
+    ///////////////////// vendor //////////
+    $('#vendor-master').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var v_name = $('#vendor_name').val();
+        var acc_no = $('#account_no').val();
+        if (!v_name) {
+            swal("Error!", "Please Enter Vendor Name", "error");
+            return false;
+        }
+        if (!acc_no) {
+            swal("Error!", "Please Enter Account Number", "error");
+            return false;
+        }
+       
+            $.ajax({
+                url: "add-vendor", 
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'POST',  
+                data:new FormData(this),
+                processData: false,
+                contentType: false,
+                beforeSend: function(){
+                
+                },
+                success: (data) => {
+                    if(data.success === true){
+                        swal("success", data.success_message ,"success");
+                        $('#vendor-master')[0].reset();
+                    }else{
+                      swal('error',data.error_message,'error');
+                    }
+                  
+                }
+            }); 
+        });	
+        //////////////////Drs Payment Transaction////////////
+        $('#payment_form').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+           
+                $.ajax({
+                    url: "create-payment", 
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    type: 'POST',  
+                    data:new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(){
+                    
+                    },
+                    success: (data) => {
+
+                            swal('success','Request Sent Successfully','success')
+                          $('#payment_form')[0].reset();
+                      
+                    }
+        }); 
+    });	
+ //////////////////Add Purchase Price////////////
+ $('#purchase_amt_form').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+   
+        $.ajax({
+            url: "update-purchas-price", 
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+            
+            },
+            success: (data) => {
+                 if(data.success == true){
+                    swal('success', data.success_message ,'success');
+                    window.location.reload();
+                 }else{
+                    swal('error', data.error_message, 'error');
+                 }
+              
+            }
+}); 
+});	
+////////////////// Import Vendor File   ////////////
+$('#vendor_import').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var file = $('#vendor_file').val();
+    if (!file) {
+        swal("Error!", "Please Select File", "error");
+        return false;
+    }
+   
+        $.ajax({
+            url             : "import-vendor", 
+            headers         : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type            : 'POST',  
+            data            : new FormData(this),
+            processData     : false,
+            contentType     : false,
+            beforeSend      : function(){
+            
+            },
+            success: (data) => {
+                 if(data.success == true){
+                    swal('success', data.success_message ,'success');
+                    window.location.reload();
+                 }else{
+                    swal('error', data.error_message, 'error');
+                 }
+              
+            }
+}); 
+});	

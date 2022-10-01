@@ -88,14 +88,14 @@ class ReportController extends Controller
                     'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
                     'VehicleType:id,name');
 
-            if($authuser->role_id ==1)
-            {
-                $query = $query;            
-            }elseif($authuser->role_id == 4){
-                $query = $query->whereIn('regclient_id', $regclient);   
-            }else{
-                $query = $query->where('branch_id', $cc);
-            }
+          if($authuser->role_id ==1)
+          {
+              $query = $query;            
+          }elseif($authuser->role_id == 4){
+              $query = $query->whereIn('regclient_id', $regclient);   
+          }else{
+              $query = $query->whereIn('branch_id', $cc);
+          }
 
             $startdate = $request->startdate;
             $enddate = $request->enddate;
@@ -175,7 +175,7 @@ class ReportController extends Controller
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('regclient_id', $regclient);   
         }else{
-            $query = $query->where('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);

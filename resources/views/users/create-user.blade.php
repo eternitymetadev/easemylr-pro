@@ -228,6 +228,16 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+    }else if(role_id == 5) {
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
+        $('.chkBoxClass[value="1"]').prop('checked', false)
+        $('.chkBoxClass[value="2"]').prop('checked', false)
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
