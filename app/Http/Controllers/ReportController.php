@@ -63,7 +63,7 @@ class ReportController extends Controller
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
-
+            
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
@@ -88,14 +88,14 @@ class ReportController extends Controller
                     'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
                     'VehicleType:id,name');
 
-          if($authuser->role_id ==1)
-          {
-              $query = $query;            
-          }elseif($authuser->role_id == 4){
-              $query = $query->whereIn('regclient_id', $regclient);   
-          }else{
-              $query = $query->whereIn('branch_id', $cc);
-          }
+            if($authuser->role_id ==1)
+            {
+                $query = $query;            
+            }elseif($authuser->role_id == 4){
+                $query = $query->whereIn('regclient_id', $regclient);   
+            }else{
+                $query = $query->whereIn('branch_id', $cc);
+            }
 
             $startdate = $request->startdate;
             $enddate = $request->enddate;

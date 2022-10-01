@@ -574,6 +574,11 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
+
+    Route::any('client-report', [ClientController::class, 'clientReport']);
+    Route::get('/consignment-regclient', [ClientController::class, 'getConsignmentClient']);
+    Route::get('clients/export', [ClientController::class, 'clientReportExport']);
+
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 

@@ -7,7 +7,15 @@ use App\Models\BaseClient;
 use App\Models\RegionalClient;
 use App\Models\RegionalClientDetail;
 use App\Models\ClientPriceDetail;
+use App\Models\ConsignmentNote;
 use App\Models\Zone;
+use App\Models\Role;
+use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClientReportExport;
+use Session;
+use Config;
+use Auth;
 use DB;
 use URL;
 use Helper;
@@ -315,7 +323,6 @@ class ClientController extends Controller
             $saveclient = RegionalClientDetail::create($client); 
 
             $data = $request->all();
-            // dd($data);
             if($saveclient)
             {
                 if(!empty($request->data)){ 
@@ -345,6 +352,145 @@ class ClientController extends Controller
             $response['success'] = false;
         }
         return response()->json($response);
+    }
+
+    //nurture client report
+    public function clientReport(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        // $lastsevendays = \Carbon\Carbon::today()->subDays(7);
+        // $date = Helper::yearmonthdate($lastsevendays);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $sessionperitem = Session::get('peritem');
+        if(!empty($sessionperitem)){
+            $perpage = $sessionperitem;
+        }else{
+            $perpage = Config::get('variable.PER_PAGE');
+        }
+
+        $query = ConsignmentNote::query();
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'VehicleType:id,name');
+
+        if($request->ajax()){
+            $query = ConsignmentNote::query();
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                    'ConsignerDetail.GetState:id,name',
+                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    'ConsigneeDetail.GetState:id,name', 
+                    'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    'ShiptoDetail.GetState:id,name',
+                    'VehicleDetail:id,regn_no', 
+                    'DriverDetail:id,name,fleet_id,phone', 
+                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                    'VehicleType:id,name');
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+        
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $perpage = $peritem;
+            }else{
+                $perpage = Config::get('variable.PER_PAGE');
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                            $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($cneequery)use($search,$searchT) {
+                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    });
+                    
+
+                });
+            }
+
+            if(!empty($request->regclient)){
+                $search = $request->regclient;
+                $query = $query->where('regclient_id',$search);
+            }
+            
+            if(isset($startdate) && isset($enddate)){
+                // DB::enableQueryLog();
+                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($perpage);
+                // dd(DB::getQueryLog());
+            }else {
+                $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+            }
+            
+            $html =  view('clients.client-report-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'perpage'=>$perpage])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $regionalclients = RegionalClient::select('id','name','location_id')->get();
+        $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+        
+        return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'perpage'=>$perpage, 'prefix' => $this->prefix]);
+
+    }
+
+    public function getConsignmentClient(Request $request)
+    {
+        $getconsignments = ConsignmentNote::where('regclient_id',$request->regclient_id)->get();
+        if($getconsignments)
+        {
+            $response['success'] = true;
+            $response['error']   = false;
+            $response['success_message'] = "Consignment data fetch successfully";
+            $response['data_consignments'] = $getconsignments;
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch data please try again";
+            $response['error'] = true;
+        }
+
+        return response()->json($response);
+    }
+
+    public function clientReportExport(Request $request)
+    {
+        return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate,$request->search), 'client_reports.csv');
     }
 
 

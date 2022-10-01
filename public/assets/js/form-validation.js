@@ -1386,7 +1386,7 @@ jQuery(document).ready(function(){
             },
             'location_id[]' : {
                 required: true,
-            },      
+            },
         },
         messages: {
             client_name: {
