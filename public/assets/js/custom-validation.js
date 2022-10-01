@@ -1629,6 +1629,16 @@ jQuery(document).on("change", ".perpage", function () {
     $('#vendor-master').submit(function(e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var v_name = $('#vendor_name').val();
+        var acc_no = $('#account_no').val();
+        if (!v_name) {
+            swal("Error!", "Please Enter Vendor Name", "error");
+            return false;
+        }
+        if (!acc_no) {
+            swal("Error!", "Please Enter Account Number", "error");
+            return false;
+        }
        
             $.ajax({
                 url: "add-vendor", 

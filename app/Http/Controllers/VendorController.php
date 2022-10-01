@@ -183,9 +183,34 @@ class VendorController extends Controller
             $date = Helper::yearmonthdate($lastsevendays);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query
-                ->with('ConsignmentDetail')
+            // $query = $query
+            //     ->with('ConsignmentDetail')
+            //     ->groupBy('drs_no');
+
+            $query = $query->whereIn('status', ['1', '0', '3'])
                 ->groupBy('drs_no');
+
+            if ($authuser->role_id == 1) {
+                $query = $query->with('ConsignmentDetail');
+            } elseif ($authuser->role_id == 4) {
+                $query = $query
+                    ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                        $query->whereIn('regclient_id', $regclient);
+                    });
+            } elseif ($authuser->role_id == 6) {
+                $query = $query
+                    ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                        $query->whereIn('base_clients.id', $baseclient);
+                    });
+            } elseif ($authuser->role_id == 7) {
+                $query = $query
+                    ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
+                        $query->whereIn('id', $regclient);
+                    });
+            } else {
+
+                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+            }
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -226,9 +251,34 @@ class VendorController extends Controller
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query
-            ->with('ConsignmentDetail')
+        // $query = $query
+        //     ->with('ConsignmentDetail')
+        //     ->groupBy('drs_no');
+
+        $query = $query->whereIn('status', ['1', '0', '3'])
             ->groupBy('drs_no');
+
+        if ($authuser->role_id == 1) {
+            $query = $query->with('ConsignmentDetail');
+        } elseif ($authuser->role_id == 4) {
+            $query = $query
+                ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                    $query->whereIn('regclient_id', $regclient);
+                });
+        } elseif ($authuser->role_id == 6) {
+            $query = $query
+                ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                    $query->whereIn('base_clients.id', $baseclient);
+                });
+        } elseif ($authuser->role_id == 7) {
+            $query = $query
+                ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
+                    $query->whereIn('id', $regclient);
+                });
+        } else {
+
+            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+        }
 
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());

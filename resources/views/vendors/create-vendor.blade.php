@@ -41,8 +41,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="" name="name" placeholder=""
-                                        maxlength="12">
+                                    <input type="text" class="form-control" id="vendor_name" name="name" placeholder=""
+                                        >
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Transporter Name<span
@@ -71,8 +71,7 @@
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Contact Email<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlSelect1">Contact Email</label>
                                     <input type="email" class="form-control" id="email" name="email" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
@@ -107,8 +106,7 @@
                                         name="declaration_file" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">TDS Rate applicacle<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">TDS Rate applicacle</label>
                                     <input type="text" class="form-control" id="tds_rate" name="tds_rate" placeholder=""
                                         readonly>
                                 </div>
@@ -258,8 +256,8 @@ $('#account_no').blur(function() {
         dataType: 'json',
         success: function(result) {
             if(result.success == false){
-
                 swal('Error',result.success_message,'error')
+                $('#account_no').val('');
             }
 
         }
