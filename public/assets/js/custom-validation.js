@@ -1765,7 +1765,6 @@ jQuery("#search").searchtyping(function (callback) {
                     jQuery(".wines_stock").html(response.html);
                 } else {
                     jQuery(".main-table").html(response.html);
-                    alert("Please select");
                 }
             }
         },
