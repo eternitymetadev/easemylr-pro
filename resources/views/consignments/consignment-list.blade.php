@@ -550,7 +550,7 @@ function row_click(row_id, job_id, url)
                     $('.append-modal').html(modal_html1);
                 }
                 if(( response.job_id != '') && (response.delivery_status != 'Successful')){
-                    var trackinglink = '<iframe id="iGmap-'+row_id+'" width="100%" height="350px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+response.tracking_link+'" ></iframe>';
+                    var trackinglink = '<iframe id="iGmap-'+row_id+'" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+response.tracking_link+'" ></iframe>';
                     $("#mapdiv-"+row_id).html(trackinglink);
                 }
                 else{
