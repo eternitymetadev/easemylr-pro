@@ -29,6 +29,7 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    
     'googleMap_key' => [
         'map_key' => env('GOOGLE_MAP_KEY'),
     ]

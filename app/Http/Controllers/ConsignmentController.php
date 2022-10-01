@@ -1982,7 +1982,6 @@ else{
         $purchasePrice = $request->purchase_price;
 
         $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType,'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
-        //echo'hii';
 
         $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -2074,7 +2073,7 @@ else{
             $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
             $query = $query->whereIn('status', ['1', '0', '3'])
-                    ->groupBy('drs_no');
+                    ->groupBy('drs_no'); 
 
             if($authuser->role_id ==1){
                 $query = $query->with('ConsignmentDetail');
@@ -4030,9 +4029,6 @@ else{
         $response = curl_exec($curl);
 
         curl_close($curl);
-
-        // echo "<pre>";print_r($response);echo "</pre>";die;
-
         return $response;
 
     }
@@ -4155,7 +4151,7 @@ else{
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 $response['success'] = true;
-                $response['messages'] = 'img uploaded successfully';
+                $response['messages'] = 'Image uploaded successfully';
                 return Response::json($response);
             } else {
                 $response['success'] = false;
