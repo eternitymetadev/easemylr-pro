@@ -1711,13 +1711,13 @@ $('#vendor_import').submit(function(e) {
     }
    
         $.ajax({
-            url: "import-vendor", 
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type: 'POST',  
-            data:new FormData(this),
-            processData: false,
-            contentType: false,
-            beforeSend: function(){
+            url             : "import-vendor", 
+            headers         : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type            : 'POST',  
+            data            : new FormData(this),
+            processData     : false,
+            contentType     : false,
+            beforeSend      : function(){
             
             },
             success: (data) => {

@@ -372,6 +372,30 @@ class VendorController extends Controller
         return Excel::download(new VendorExport, 'vendordata.csv');
     }
 
+    public function checkAccValid(Request $request)
+    {
+        $checkacc = Vendor::select('bank_details')->get();
+        foreach ($checkacc as $check) {
+
+            $acc = json_decode($check->bank_details);
+            if (!empty($request->acc_no)) {
+                if ($acc->account_no == $request->acc_no) {
+
+                    $response['success'] = false;
+                    $response['error'] = false;
+                    $response['success_message'] = 'Account already exists';
+                    return response()->json($response);
+                }
+            }
+
+        }
+        $response['success'] = true;
+        $response['error'] = false;
+        $response['success_message'] = 'done';
+        return response()->json($response);
+
+    }
+
     // Edit Vendor====================== //
     public function editViewVendor(Request $request)
     {

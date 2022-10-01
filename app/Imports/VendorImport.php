@@ -17,7 +17,7 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
      */
     public function model(array $row)
     {
-        // echo'<pre>'; print_r($row); die;
+        
         $driver = Driver::select('id')->where('name', $row['driver_name'])->where('phone', $row['driver_number'])->first();
 
         $other_details = array('transporter_name' => $row['transporter_name'], 'contact_person_number' => $row['transporter_name']);
@@ -34,23 +34,23 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
         $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
         return new Vendor([
-            'type' => 'Vendor',
-            'vendor_no' => $vendor_no,
-            'name' => $row['vendor_name'],
-            'email' => $row['email'],
-            'other_details' => json_encode($other_details),
-            'bank_details' => json_encode($bankdetails),
-            'driver_id' => $driver->id,
-            'pan' => $row['pan'],
-            'vendor_type' => $row['vendor_type'],
-            'declaration_available' => $row['declaration_available'],
-            'tds_rate' => $row['tds_rate'],
-            'branch_id' => $row['branch_id'],
-            'gst_register' => $row['gst_register'],
-            'gst_no' => $row['gst_number'],
-            'is_acc_verified' => 0,
-            'is_active' => 1,
-            'created_at' => time(),
+            'type'                   => 'Vendor',
+            'vendor_no'              => $vendor_no,
+            'name'                   => $row['vendor_name'],
+            'email'                  => $row['email'],
+            'other_details'          => json_encode($other_details),
+            'bank_details'           => json_encode($bankdetails),
+            'driver_id'              => $driver->id,
+            'pan'                    => $row['pan'],
+            'vendor_type'            => $row['vendor_type'],
+            'declaration_available'  => $row['declaration_available'],
+            'tds_rate'               => $row['tds_rate'],
+            'branch_id'              => $row['branch_id'],
+            'gst_register'           => $row['gst_register'],
+            'gst_no'                 => $row['gst_number'],
+            'is_acc_verified'        => 0,
+            'is_active'              => 1,
+            'created_at'             => time(),
         ]);
 
     }

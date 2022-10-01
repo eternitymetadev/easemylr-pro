@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.</label>
-                                    <input type="text" class="form-control" name="account_no" placeholder="">
+                                    <input type="text" class="form-control" id="account_no" name="account_no" placeholder="">
                                 </div>
                             </div>
 
@@ -239,6 +239,31 @@ $('#gst_register').on('change', function() {
     } else {
         $("#gst_no").prop('disabled', true);
     }
+});
+//////////
+$('#account_no').blur(function() {
+
+    var acc_no = $(this).val();
+    var _token = $('input[name="_token"]').val();
+    $.ajax({
+        url: "check-account-no",
+        method: "POST",
+        data: {
+            acc_no: acc_no,
+            _token: _token
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(result) {
+            if(result.success == false){
+
+                swal('Error',result.success_message,'error')
+            }
+
+        }
+    })
 });
 </script>
 
