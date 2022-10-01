@@ -6,7 +6,7 @@
                         <thead>
                             <tr>
                                 <?php $authuser = Auth::user(); 
-                                if($authuser->role == 2){?>
+                                if($authuser->role_id == 2){?>
                                 <th>
                                      <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
                                 </th>
@@ -25,7 +25,7 @@
                         @if(count($paymentlist)>0)
                             @foreach($paymentlist as $list)
                             <tr>
-                                <?php if($authuser->role == 2){?>
+                                <?php if($authuser->role_id == 2){?>
                             <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}" data-price="{{$list->ConsignmentDetail->purchase_price}}"  style="width: 30px; height:30px;"></td>
                             <?php } ?>
                                 <td>DRS-{{$list->drs_no}}</td>
