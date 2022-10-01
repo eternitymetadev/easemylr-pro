@@ -283,119 +283,57 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class="col-md-8"></div>
+                                            <div class="col-md-8" id="mapdiv-{{$consignment->id}}">
+                                                                                       
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane fade" id="icon-timeline-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-timeline-tab">
-                                        <?php 
-                                        $json = Helper::getJobs($consignment->job_id);
-                                        if (!empty($json)) {
-                                            $trcking_history = array_reverse($json->task_history);
-                                            ?>
-                                        <div class="container" oncontextmenu="return false;">
-                                            <div class="row">
-                                                <div class="col-md-10">
-                                                    <ul class="cbp_tmtimeline">
-                                                        <?php foreach ($trcking_history as $task) {
-                                                        $timestamp = $task->creation_datetime;
-                                                        $date = new \DateTime($timestamp);
-                                                        $task_date = $date->format('d-m-Y h:i');
-                                                        $type = $task->type;
-                                                        $des_data = '';
-
-                                                        if ($type == 'image_added') {
-                                                            $uploaded_by = 'Attachment uploaded by';
-                                                            $view_text = 'View Attachment';
-                                                            $title = 'Attachment';
-                                                            $image = '<img src="'.$task->description.'" width="100%" seamless="">';
-                                                        }elseif ($type == 'signature_image_added') {
-                                                            $uploaded_by = 'Signature Added by';
-                                                            $view_text = 'View Signatures';
-                                                            $title = 'Signature';
-                                                            $image = '<img src="'.$task->description.'" width="100%" height="298" seamless="" />';
-                                                        } 
-                                                        if($type == 'image_added' || $type == 'signature_image_added'){ ?>
-                                                            {{$uploaded_by}} {{ $task->fleet_name}} <br /> <button
-                                                            type="button" class="btn btn-primary mb-2 mr-2"
-                                                            data-toggle="modal" data-target="#mod_{{$task->id }}">
-                                                            {{$view_text}}
-                                                        </button>
-
-                                                    <!-- Modal -->
-                                                        <div class="modal fade" id="mod_{{$task->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            {{$title}}</h5>
-                                                                        <button type="button" class="close"
-                                                                            data-dismiss="modal" aria-label="Close">
-                                                                            <svg aria-hidden="true"
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                                width="24" height="24"
-                                                                                viewBox="0 0 24 24" fill="none"
-                                                                                stroke="currentColor" stroke-width="2"
-                                                                                stroke-linecap="round"
-                                                                                stroke-linejoin="round"
-                                                                                class="feather feather-x">
-                                                                                <line x1="18" y1="6" x2="6" y2="18">
-                                                                                </line>
-                                                                                <line x1="6" y1="6" x2="18" y2="18">
-                                                                                </line>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        {{$image}}
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn" data-dismiss="modal">
-                                                                            <i class="flaticon-cancel-12"></i>
-                                                                            Close</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> -->
-                                                        <?php }else{
-                                                            $str = trim($task->label_description, 'at') . ' by ' . $task->fleet_name;
-                                                            if (str_contains($str, 'CREATED')) {
-                                                                $des_data .= "LR Created";
-                                                            } else {
-                                                                $des_data .= $str;
-                                                            }
-                                                        } ?>
-                                                        <li>
-                                                            <time class="cbp_tmtime" datetime="{{$task_date}}"><span class="hidden">{{$task_date}}.l</span></time>
-                                                            <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i>
-                                                            </div>
-                                                            <div class="cbp_tmlabel empty"> <span>{{$des_data}}</span>
-                                                            </div>
-                                                        </li>
-                                                        <?php } ?>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php } else { ?>
-                                        No data available
-                                        <?php } ?>
+                                    <div class="tab-pane fade append-modal" id="icon-timeline-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-timeline-tab">
+                                        <!-- modal code here -->
 
                                     </div>
                                     <div class="tab-pane fade" id="icon-otherdetail-{{$consignment->id}}"
                                         role="tabpanel" aria-labelledby="icon-otherdetail-tab">
-                                        <table id="" class="table table-striped">
+                                        <table class="table table-striped">
                                             <tbody>
+
+                                            <?php
+                                                if(empty($consignment->order_id)){ 
+                                                    if(!empty($consignment->ConsignmentItems)){
+                                                        $order = array();
+                                                        $invoices = array();
+                                                        foreach($consignment->ConsignmentItems as $orders){ 
+                                                            $order[] = $orders->order_id;
+                                                            $invoices[] = $orders->invoice_no;
+                                                        }
+                                                        $order_item['orders'] = implode(',', $order);
+                                                        $order_item['invoices'] = implode(',', $invoices);
+                                                    ?>
+                                            <tr>
+                                                <td>Order Number</td>
+                                                <td><span class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
+                                                </td>
+                                            </tr>
+                                            <?php }}else{ ?>
                                                 <tr>
                                                     <td>Order Number</td>
-                                                    <td><span class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
+                                                    <td><span class="badge bg-info mt-2">{{ $consignment->orders_id ?? "-" }}</span>
                                                     </td>
                                                 </tr>
-
+                                            <?php } ?>
+                                            <?php if(empty($consignment->invoice_no)){ ?>
                                                 <tr>
                                                     <td>Invoice Number</td>
                                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
                                                 </tr>
+                                            <?php }else{ ?>
+                                                <tr>
+                                                    <td>Invoice Number</td>
+                                                    <td>{{ $consignment->invoice_no ?? "-" }}</td>
+                                                </tr>
+                                            <?php } ?>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -408,7 +346,7 @@
             @endforeach
             @else
             <tr>
-                <td colspan="15" class="text-center">No Record Found </td>
+                <td colspan="6" class="text-center">No Record Found </td>
             </tr>
             @endif
         </tbody>

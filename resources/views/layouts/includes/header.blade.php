@@ -25,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('plugins/select2/select2.min.css')}}">
     <link href="{{asset('newasset/assets/css/components/tabs-accordian/custom-tabs.css')}}" rel="stylesheet" type="text/css" />
     <!-- gmap script -->
-    <script defer src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM"
+    <script defer src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key=AIzaSyCEzojx1_dyy0ACDIF5zP5dt7hk4RggtOg"
             type="text/javascript"></script>
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 

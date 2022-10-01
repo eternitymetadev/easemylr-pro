@@ -4399,31 +4399,41 @@ else{
     public function getJob(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        if(!empty($request->job_id)){
-            $job = DB::table('consignment_notes')->select('jobs.status as job_status', 'jobs.response_data as trail')
+        $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','consignment_notes.tracking_link as tracking_link','consignment_notes.delivery_status as delivery_status','jobs.status as job_status', 'jobs.response_data as trail','consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
             ->where('consignment_notes.job_id',$request->job_id )
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('jobs', function($data){
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
-
-            if(!empty($job)){
-                $job_data= json_decode($job->trail);
-                $tracking_history = array_reverse($job_data->task_history);
-
-                $url    =   URL::to($this->prefix.'/consignments');
-                $response['success'] = true;
-                $response['success_message'] = "Jobs fetch successfully";
-                $response['error'] = false;
-                $response['job_data'] = $tracking_history;
-            }
-        }else{
-            $job_data= '';
-
+            
+        if(!empty($job->trail)){
+            $job_data= json_decode($job->trail);
+            $tracking_history = array_reverse($job_data->task_history);
+            // array_push($tracking_history,$job->job_id,$job->delivery_status);
+            
             $url    =   URL::to($this->prefix.'/consignments');
-            $response['success'] = false;
-            $response['error_message'] = "Job data not found";
+            $response['success'] = true;
+            $response['success_message'] = "Jobs fetch successfully";
+            $response['error'] = false;
+            $response['job_data'] = $tracking_history;
+            $response['job_id'] = $job->job_id;
+            $response['delivery_status'] = $job->delivery_status;
+            $response['cnr_pincode'] = $job->cnr_pincode;
+            $response['cne_pincode'] = $job->cne_pincode;
+            $response['tracking_link'] = $job->tracking_link;
+        }else{
+            $url    =   URL::to($this->prefix.'/consignments');
+            $response['success'] = true;
+            $response['success_message'] = "Job data not found";
+            $response['error'] = false;
             $response['job_data'] = '';
+            $response['job_id'] = '';
+            $response['delivery_status'] = $job->delivery_status;
+            $response['cnr_pincode'] = $job->cnr_pincode;
+            $response['cne_pincode'] = $job->cne_pincode;
+            $response['tracking_link'] = $job->tracking_link;
         }
         
         return response()->json($response);

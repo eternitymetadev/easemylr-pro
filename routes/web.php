@@ -288,7 +288,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
-
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -491,6 +491,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     
 });
