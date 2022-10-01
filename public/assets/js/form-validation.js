@@ -1573,17 +1573,7 @@ function formSubmitRedirect(form)
             }else{
                 $('.gstno_error').hide();
             }
-            if($('.edd_error').css('display') == 'block'){
-                //alert('Please select a valid alert message');
-                // return false;
-           }
            $('.disableme').prop('disabled', true);
-            // if ($('#vehicle_no').val() != '' && $("#edd").val() == null) {
-            //     $('.edd_error').show();
-            //     return false;
-            // }else{
-            //     $('.edd_error').hide();
-            // }
         },
         complete: function (response) {
             $('.disableme').prop('disabled', true);

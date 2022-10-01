@@ -44,7 +44,6 @@
                 <th>Delivery Status</th>
                 <th>TAT</th>
                 <th>Delivery Mode</th>
-            
             </tr>
         </thead>
         <tbody>
