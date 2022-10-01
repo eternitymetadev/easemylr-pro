@@ -583,14 +583,13 @@ function initMap(response, row_id)
         "avoidTolls": true,
     }, function (response, status) {
         if (status === 'OK') {
-            alert("jjj");
             directionsDisplay.setMap(map);
             directionsDisplay.setDirections(response);
             console.log(response);
         } else {
             directionsDisplay.setMap(null);
             directionsDisplay.setDirections(null);
-            alert('Unknown route found with error code 0, contact your manager');
+            // alert('Unknown route found with error code 0, contact your manager');
         }
     });
 }
