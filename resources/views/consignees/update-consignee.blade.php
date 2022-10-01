@@ -54,7 +54,7 @@
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($consigners)>0) {
-                                            foreach ($consigners as $k => $consigner) {
+                                            foreach ($consigners as $k => $consigner) { 
                                         ?>
                                             <option value="{{ $k }}" {{ $k == $getconsignee->consigner_id ? 'selected' : ''}}>{{ucwords($consigner)}}</option>
                                             <?php 

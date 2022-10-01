@@ -1470,7 +1470,6 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
     
 
 

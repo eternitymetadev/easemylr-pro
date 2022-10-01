@@ -168,6 +168,65 @@ $('#vendor').change(function() {
     });
 
 });
+// ===========================================================//
+///////////// view drs lr model///////////////////
+$(document).on('click', '.drs_lr', function() {
+
+    var drs_lr = $(this).attr('drs-no');
+    $('#view_drs_lrmodel').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "view-drslr/" + drs_lr,
+        data: {
+            drs_lr: drs_lr
+        },
+        beforeSend: 
+            function() {
+                $('#save-DraftSheet').dataTable().fnClearTable();
+                $('#save-DraftSheet').dataTable().fnDestroy();
+                $("#total_boxes").empty();
+                $("#totalweights").empty();
+                $("#totallr").empty();
+               
+            },
+        success: function(data) {
+            var re = jQuery.parseJSON(data)
+            console.log(re);
+            var consignmentID = [];
+            var totalBoxes = 0;
+            var totalweights = 0;
+
+            var i = 0;
+            $.each(re.fetch, function(index, value) {
+                i++;
+                var alldata = value;
+
+                consignmentID.push(alldata.consignment_no);
+                totalBoxes += parseInt(value.consignment_detail.total_quantity);
+                totalweights += parseInt(value.consignment_detail.total_weight);
+
+
+                $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value.id +
+                    "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
+                    value.consignment_no +
+                    ">Edit</a></td><td><input type='date' name='edd[]' data-id=" + value
+                    .consignment_no + " class='new_edd' value='" + value
+                    .consignment_detail.edd + "'></td><td>" + value.consignment_no +
+                    "</td><td>" + value.consignment_date + "</td><td>" + value
+                    .consignee_id + "</td><td>" + value.city + "</td><td>" + value
+                    .pincode + "</td><td>" + value.total_quantity + "</td><td>" + value
+                    .total_weight + "</td></tr>");
+            });
+            $("#transaction_id").val(consignmentID);
+            var rowCount = $("#save-DraftSheet tbody tr").length;
+
+            $("#total_boxes").append("No Of Boxes: " + totalBoxes);
+            $("#totalweights").append("Net Weight: " + totalweights);
+            $("#totallr").append(rowCount);
+
+        }
+    });
+});
 // ====================================================== //
 $('#p_type').change(function() {
     var p_typ = $(this).val();
