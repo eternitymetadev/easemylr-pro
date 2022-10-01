@@ -573,6 +573,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     // vendor paymant
     Route::any('vendor-list', [VendorController::class, 'index']);
@@ -595,6 +596,7 @@ Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck
     Route::resource('consignments', ConsignmentController::class);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 });
 Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']], function()
 {
@@ -603,6 +605,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('consignment-report', [ConsignmentController::class, 'consignmentReports']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 });
 
 Route::middleware(['auth'])->group(function () {
