@@ -30,14 +30,14 @@
                             <?php } ?>
                                 <td>DRS-{{$list->drs_no}}</td>
                                 <!-- delivery Status ---- -->
-                                <td>
+                                <td> 
                                     <?php if($list->status == 0){?>
                                     <label class="badge badge-dark">Cancelled</label>
                                     <?php } else { ?>
                                     <?php if(empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no)) { ?>
                                     <label class="badge badge-warning">No Status</label>
                                     <?php }else{ ?>
-                                    <a class="drs_cancel btn btn-success " drs-no="{{$list->drs_no}}"
+                                    <a class="drs_cancel btn btn-success drs_lr" drs-no="{{$list->drs_no}}"
                                         data-text="consignment" data-status="0"
                                         data-action="<?php echo URL::current();?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
                                     <?php } ?>
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
     </div>
     <div class="ml-auto mr-auto">

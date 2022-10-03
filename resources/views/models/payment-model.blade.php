@@ -11,12 +11,10 @@
             <div class="modal-body">
 
                 <div class="table-responsive">
-                    <table id="view_drs_lrtable" class="table table-hover"
+                    <table id="view_drs_lrtable" class="table"
                         style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                        <thead>
+                        <thead> 
                             <tr>
-                                <th>E-Way</th>
-                                <th>EDD</th>
                                 <th>LR No</th>
                                 <th>Consignment Date</th>
                                 <th>Consignee Name</th>
@@ -37,8 +35,6 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
                                 <td id="total_boxes"></td>
                                 <td id="totalweights"></td>
                             </tr>
@@ -56,11 +52,8 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-                <!-- <button type="submit" class="btn btn-primary">Save</button> -->
-                <button type="submit" class="btn btn-primary"><span class="indicator-label">Save</span>
-                    <span class="indicator-progress" style="display: none;">Please wait...
-                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+                <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                
                 </form>
             </div>
         </div>

@@ -182,8 +182,8 @@ $(document).on('click', '.drs_lr', function() {
         },
         beforeSend: 
             function() {
-                $('#save-DraftSheet').dataTable().fnClearTable();
-                $('#save-DraftSheet').dataTable().fnDestroy();
+                $('#view_drs_lrtable').dataTable().fnClearTable();
+                $('#view_drs_lrtable').dataTable().fnDestroy();
                 $("#total_boxes").empty();
                 $("#totalweights").empty();
                 $("#totallr").empty();
@@ -206,19 +206,14 @@ $(document).on('click', '.drs_lr', function() {
                 totalweights += parseInt(value.consignment_detail.total_weight);
 
 
-                $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value.id +
-                    "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
-                    value.consignment_no +
-                    ">Edit</a></td><td><input type='date' name='edd[]' data-id=" + value
-                    .consignment_no + " class='new_edd' value='" + value
-                    .consignment_detail.edd + "'></td><td>" + value.consignment_no +
+                $('#view_drs_lrtable tbody').append("<tr id=" + value.id +
+                    "><td>" + value.consignment_no +
                     "</td><td>" + value.consignment_date + "</td><td>" + value
                     .consignee_id + "</td><td>" + value.city + "</td><td>" + value
                     .pincode + "</td><td>" + value.total_quantity + "</td><td>" + value
                     .total_weight + "</td></tr>");
             });
-            $("#transaction_id").val(consignmentID);
-            var rowCount = $("#save-DraftSheet tbody tr").length;
+            var rowCount = $("#view_drs_lrtable tbody tr").length;
 
             $("#total_boxes").append("No Of Boxes: " + totalBoxes);
             $("#totalweights").append("Net Weight: " + totalweights);
