@@ -1954,7 +1954,6 @@ $('#vendor_import').submit(function (e) {
             } else {
                 swal('error', data.error_message, 'error');
             }
-
         }
     });
 });
@@ -1993,9 +1992,143 @@ $('#update_vendor').validate({
                 } else {
                     swal('error', data.error_message, 'error');
                 }
-
             }
         });
     }
 });
 
+    //////////////////////////
+    $('#allsave').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        
+        $.ajax({
+            url: "all-save-deliverydate", 
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'POST',  
+            data:new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend: function(){
+                $(".indicator-progress").show(); 
+                $(".indicator-label").hide();
+            },
+            success: (data) => {
+                $(".indicator-progress").hide();
+                $(".indicator-label").show();
+                if(data.success == true){
+                    swal("success","Status Updated successfully", 'success')
+                    location.reload();
+                    
+                }else{
+                    swal("error","Something went wrong", 'error')
+                }        
+            }
+        }); 
+    });	
+
+    /*======get LR's on regional client in client report =====*/
+    $('.searchclientreport').click(function(e){
+        var regclient_id = $("#select_regclient").val();
+        var from_date = $("#select_regclient").val();
+        var to_date = $("#select_regclient").val();
+
+        $.ajax({
+            url         : '/consignment-regclient',
+            type        : 'get',
+            cache       : false,
+            data        :  {regclient_id:regclient_id},
+            dataType    :  'json',
+            headers     : {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            beforeSend : function(){
+                $('#select_consigner').empty(); 
+            },
+            success:function(res){
+                // console.log(res.data_regclient.is_multiple_invoice);
+                $('#consigner_address').empty();
+                $('#consignee_address').empty();
+                $('#ship_to_address').empty();
+
+                $('#select_consigner').append('<option value="">select consigner</option>');
+                $('#select_consignee').append('<option value="">Select Consignee</option>');
+                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+
+                $.each(res.data, function (index, value) {
+
+                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
+              
+                });
+
+                if(res.data_regclient == null){
+                    var multiple_invoice = '';
+                }else{
+                    if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
+                    var multiple_invoice = '';
+                    }else{
+                        var multiple_invoice = res.data_regclient.is_multiple_invoice;
+                    }
+                }
+
+                if(multiple_invoice == 1 ){
+                    $('.insert-more').attr('disabled',false);
+                }else{  
+                    $('.insert-more').attr('disabled',true);
+                }
+            }
+        });
+    });
+
+    //////////////////////////////////
+    $('#all_inv_save').submit(function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+       
+            $.ajax({
+                url: "all-invoice-save", 
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'POST',  
+                data:new FormData(this),
+                processData: false,
+                contentType: false,
+                beforeSend: function(){
+                    $('#view_invoices').dataTable().fnClearTable();             
+                    $('#view_invoices').dataTable().fnDestroy();
+                    $(".indicator-progress").show(); 
+                    $(".indicator-label").hide();
+                },
+                success: (data) => {
+                    $(".indicator-progress").hide();
+                    $(".indicator-label").show();
+                    if(data.success == true){
+                        swal("success","Data Updated successfully", 'success')
+
+                        var i = 1;
+                     $.each(data.fetch, function(index, value) {
+
+                         if(value.e_way_bill == null || value.e_way_bill == ''){
+                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
+                         } else {
+                            var billno = value.e_way_bill;
+                         }
+
+                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
+                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
+                         }else{
+                            var billdate = value.e_way_bill_date;
+                         }
+
+                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
+                        
+                        i++ ;
+                    });
+                        // location.reload();
+                        
+                    }else{
+                        swal("error","Something went wrong", 'error')
+                    }
+                }
+            }); 
+        });

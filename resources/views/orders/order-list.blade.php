@@ -84,7 +84,7 @@ div.relative {
                                     
                                     <td>
                                         <a class="orderstatus btn btn-danger" data-id = "{{$consignment->id}}" data-action = "<?php echo URL::current();?>"><span><i class="fa fa-ban"></i> Cancel</span></a>
-                                         <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
+                                        <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                     </td>
                                 </tr>
                                 <?php 
