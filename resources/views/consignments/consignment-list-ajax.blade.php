@@ -121,13 +121,13 @@
                 } ?>
                 <td>
                     <?php if ($consignment->delivery_status == "Unassigned") { ?>
-                    <span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'"
+                    <span class="badge alert bg-primary shadow-sm manual_updateLR {{$disable}}"
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? ''}}</span>
                     <?php } elseif ($consignment->delivery_status == "Assigned") { ?>
-                    <span class="badge alert bg-secondary shadow-sm manual_updateLR '.$disable.'"
+                    <span class="badge alert bg-secondary shadow-sm manual_updateLR {{$disable}}"
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
                     <?php } elseif ($consignment->delivery_status == "Started") { ?>
-                    <span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'"
+                    <span class="badge alert bg-warning shadow-sm manual_updateLR {{$disable}}"
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
                     <?php } elseif ($consignment->delivery_status == "Successful") { ?>
                     <span class="badge alert bg-success shadow-sm manual_updateLR"
@@ -150,16 +150,16 @@
                     <span class="alert badge alert bg-secondary shadow-sm">Cancel</span>
                     <?php } elseif($consignment->status == 1){
                             if($consignment->delivery_status == 'Successful'){ ?>
-                    <a class="alert activestatus btn btn-success disable_n" data-id="'.$consignment->id.'"
+                    <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
                         data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
                             Active</span></a>
                     <?php }else{ ?>
-                    <a class="alert activestatus btn btn-success '.$disable.'" data-id="'.$consignment->id.'"
+                    <a class="alert activestatus btn btn-success {{$disable}}" data-id="{{$consignment->id}}"
                         data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
                             Active</span></a>
                     <?php }
                         } elseif($consignment->status == 2){ ?>
-                    <span class="badge alert bg-success activestatus '.$disable.'"
+                    <span class="badge alert bg-success activestatus {{$disable}}"
                         data-id="{{$consignment->id}}">Unverified</span>
                     <?php } elseif($consignment->status == 3){ ?>
                     <span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>
