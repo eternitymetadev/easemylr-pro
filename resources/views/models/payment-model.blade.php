@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Save Draft</h5>
+                <h5 class="modal-title" id="exampleModalLabel">View LR</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             </div>
             <div class="modal-body">
@@ -13,7 +13,7 @@
                 <div class="table-responsive">
                     <table id="view_drs_lrtable" class="table"
                         style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                        <thead> 
+                        <thead>
                             <tr>
                                 <th>LR No</th>
                                 <th>Consignment Date</th>
@@ -22,7 +22,6 @@
                                 <th>Pin Code</th>
                                 <th>Number Of Boxes</th>
                                 <th>Net Weight</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +52,7 @@
 
             <div class="modal-footer">
                 <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
-                
+
                 </form>
             </div>
         </div>
@@ -175,14 +174,24 @@
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
                             <select class="form-control my-select2" id="p_type" name="p_type" tabindex="-1">
-                                <option selected disabled>Select</option>
+                                <!-- <option selected disabled>Select</option>
                                 <option value="Balance">Balance</option>
-                                <option value="Advance">Advance</option>
+                                <option value="Advance">Advance</option> -->
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Amount</label>
                             <input type="text" class="form-control" id="amt" name="payable_amount" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Tds rate</label>
+                            <input type="text" class="form-control" id="tds_rate" name="tds_rate" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">tds deduct amount</label>
+                            <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value="">
                         </div>
                     </div>
                     <div class="modal-footer">

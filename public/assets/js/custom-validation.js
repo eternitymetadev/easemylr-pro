@@ -1882,6 +1882,16 @@ $('#vendor-master').submit(function (e) {
 $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
+     var vendor = $('#vendor').val();
+     var p_type = $('#p_type').val();
+     if(! vendor){
+        swal('Error!', 'Please select a vendor', 'error');
+        return false;
+     }
+     if(! p_type){
+        swal('Error!', 'Please select a Payment Type', 'error');
+        return false;
+     }
 
     $.ajax({
         url: "create-payment",
@@ -1894,9 +1904,13 @@ $('#payment_form').submit(function (e) {
 
         },
         success: (data) => {
+            if(data.success == true){
 
-            swal('success', 'Request Sent Successfully', 'success')
+            swal('success', data.message, 'success')
             $('#payment_form')[0].reset();
+            }else{
+                swal('error', data.message ,'error');
+            }
 
         }
     });
