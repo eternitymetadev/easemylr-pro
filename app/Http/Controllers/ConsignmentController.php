@@ -61,6 +61,7 @@ class ConsignmentController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
             if (isset($request->updatestatus)) {
+                dd($request->id);
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
 

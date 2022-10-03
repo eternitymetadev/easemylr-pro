@@ -285,7 +285,6 @@ class ClientController extends Controller
         $id = $request->id;
         $id = decrypt($id);
         $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
-        // dd($regclient_name);
         $zonestates = Zone::all()->unique('state')->pluck('state','id');
         
         return view('clients.add-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name]);
@@ -352,6 +351,26 @@ class ClientController extends Controller
             $response['success'] = false;
         }
         return response()->json($response);
+    }
+
+    public function viewRegclientdetail($id)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $id = decrypt($id);   
+        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails')->first();
+        
+        return view('clients.view-regclient',['prefix'=>$this->prefix,'getClientDetail'=>$getClientDetail]);
+    }
+
+    public function editRegClientDetail($id){
+        $this->prefix = request()->route()->getPrefix();
+        $id = decrypt($id);
+
+        $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
+        $zonestates = Zone::all()->unique('state')->pluck('state','id');
+        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails')->first();
+        
+        return view('clients.update-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name, 'getClientDetail'=>$getClientDetail]);
     }
 
     //nurture client report

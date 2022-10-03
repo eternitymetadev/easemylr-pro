@@ -61,6 +61,7 @@ div.relative {
                                     <th>Id</th>
                                     <th>Name</th>
                                     <th>Location Id</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,6 +75,10 @@ div.relative {
                                         <a href="{{url($prefix.'/'.$segment.'/add-regclient-detail/'.Crypt::encrypt($value->id))}}">{{ ucwords($value->name ?? "-")}}</a>
                                     </td>
                                     <td>{{$value->location_id ?? "-"}}</td>
+                                    <td>
+                                        <a class="btn btn-primary" href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i class="fa fa-edit" aria-hidden="true"></i> Edit<span></a>
+                                        <a class="btn btn-primary" href="{{url($prefix.'/'.$segment.'/view-regclient-detail/'.Crypt::encrypt($value->id))}}"><span><i class="fa fa-eye" aria-hidden="true"></i> View</span></a>
+                                    </td>
                                 </tr>
                                 <?php 
                                     }
