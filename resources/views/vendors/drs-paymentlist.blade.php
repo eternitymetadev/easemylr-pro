@@ -107,12 +107,14 @@ $(document).on('click', '.payment', function() {
         var cc = $(this).attr('data-price');
         tdval.push(cc);
     });
+    // alert(drs_no); 
     $('#drs_no').val(drs_no);
     var toNumbers = tdval.map(Number);
     var sum = toNumbers.reduce((x, y) => x + y);
     $('#purchase_amount').val(sum);
 
     $('#pymt_modal').modal('show');
+    return false;
     $.ajax({
         type: "GET",
         url: "get-drs-details",
@@ -129,12 +131,18 @@ $(document).on('click', '.payment', function() {
             $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
             if(data.get_status == 'Successful'){
                 $('#p_type').append('<option value="Balance">Balance</option>');
+                //check balance if null or delevery successful
+                if(data.get_data.balance == '' || data.get_data.balance == null){
+                    // alert(data.get_data.consignment_detail.purchase_price);
+                    var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
+                }else{
                var amt = $('#amt').val(data.get_data.balance);
                   //calculate
                 var tds_rate = $('#tds_rate').val();
                 var cal = (tds_rate / 100) * amt ;
                 var final_amt = amt - cal;
                 $('#tds_dedut').val(final_amt); 
+                }
             }else{
                 $('#p_type').append('<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>');
             }

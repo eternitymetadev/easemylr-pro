@@ -373,7 +373,7 @@ class VendorController extends Controller
                 \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
-                \"terid\": \"234\"
+                \"terid\": \"23434\"
                 }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',

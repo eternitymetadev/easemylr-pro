@@ -112,7 +112,7 @@
                 <form id="payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
+                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
@@ -130,7 +130,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount" name="claimed_amount" value="">
+                            <input type="text" class="form-control" id="purchase_amount" name="claimed_amount" value="" readonly>
                         </div>
                     </div>
                     <div class="form-row mb-0" style="display: none;">
