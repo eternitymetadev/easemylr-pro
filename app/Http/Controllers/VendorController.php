@@ -21,9 +21,20 @@ use Helper;
 use Illuminate\Http\Request;
 use Session;
 use Validator;
+use URL;
 
 class VendorController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
+
+    public function __construct()
+    {
+      $this->title =  "Secondary Reports";
+      $this->segment = \Request::segment(2);
+    }
+
     public function index()
     {
         $this->prefix = request()->route()->getPrefix();
@@ -373,7 +384,7 @@ class VendorController extends Controller
                 \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
-                \"terid\": \"23434\"
+                \"terid\": \"83874we\"
                 }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
@@ -389,7 +400,11 @@ class VendorController extends Controller
             if($request->p_type == 'Balance'){
 
                 $getadvanced = TransactionSheet::select('advanced','balance')->whereIn('drs_no', $drs)->first();
+                if(!empty($getadvanced->balance)){
                 $balance = $getadvanced->balance - $request->payable_amount;
+                }else{
+                    $balance = 0;
+                }
                 $advance = $getadvanced->advanced + $request->payable_amount;
 
                 TransactionSheet::whereIn('drs_no', $drs)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
@@ -401,7 +416,8 @@ class VendorController extends Controller
                 $paymentresponse['bank_details']            = json_encode($bankdetails);
                 $paymentresponse['purchase_amount']         = $request->claimed_amount;
                 $paymentresponse['payment_type']            = $request->p_type;
-                $paymentresponse['balance']                 = $request->payable_amount;
+                $paymentresponse['advance']                 = $advance;
+                $paymentresponse['balance']                 = $balance;
                 $paymentresponse['tds_deduct_balance']      = $request->final_payable_amount;
                 $paymentresponse['payment_status']          = 2;
 

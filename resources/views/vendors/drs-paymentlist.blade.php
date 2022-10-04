@@ -46,6 +46,28 @@ div.relative {
 .move {
     cursor: move;
 }
+.has-details {
+  position: relative;
+}
+
+.details {
+  position: absolute;
+  top: 0;
+  transform: translateY(70%) scale(0);
+  transition: transform 0.1s ease-in;
+  transform-origin: left;
+  display: inline;
+  background: white;
+  z-index: 20;
+  min-width: 100%;
+  padding: 1rem;
+  border: 1px solid black;
+}
+
+.has-details:hover span {
+  transform: translateY(70%) scale(1);
+}
+
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -67,26 +89,36 @@ div.relative {
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
+               
+                <div class="form-row mb-0">
+                <div class="form-group col-md-4">
                 <?php $authuser = Auth::user();
                 if ($authuser->role_id == 2) {?>
                 <button type="button" class="btn btn-warning mt-4 ml-4 payment">Create Payment</button>
                 <?php }?>
-                <!-- <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Type</label>
-                            <select class="form-control my-select2" id="v_id" name="vehicle_id" tabindex="-1">
-                                <option selected disabled>Select</option>
-                                @foreach($vehicles as $vehicle)
-                                <option value="{{$vehicle->regn_no}}">{{$vehicle->regn_no}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div> -->
-                <div class="table-responsive mb-4 mt-4">
-                    @csrf
-                    <div class="main-table table-responsive">
-                        @include('vendors.drs-paymentlist-ajax')
+                </div>
+                    <div class="form-group col-md-4">
+                        <label for="location_name">Vehicle</label>
+                        <select class="form-control my-select2" id="v_id" name="vehicle_id" tabindex="-1">
+                            <option selected disabled>Select</option>
+                            @foreach($vehicles as $vehicle)
+                            <option value="{{$vehicle->regn_no}}">{{$vehicle->regn_no}}</option>
+                            @endforeach
+                        </select>
                     </div>
+                    <div class="form-group col-md-4">
+                    <div class="winery_btn_n btn-section px-0 text-right">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                            style="font-size: 15px; padding: 9px; width: 130px"
+                            data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset
+                                Filters</span></a>
+                    </div>
+                </div>
+                </div>
+
+                @csrf
+                <div class="main-table table-responsive">
+                    @include('vendors.drs-paymentlist-ajax')
                 </div>
             </div>
         </div>
@@ -96,10 +128,25 @@ div.relative {
 @endsection
 @section('js')
 <script>
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
 $(document).on('click', '.payment', function() {
     $('#payment_form')[0].reset();
     $('#p_type').empty();
-
+    $('#pymt_modal').modal('show');
     var drs_no = [];
     var tdval = [];
     $(':checkbox[name="checked_drs[]"]:checked').each(function() {
@@ -107,14 +154,12 @@ $(document).on('click', '.payment', function() {
         var cc = $(this).attr('data-price');
         tdval.push(cc);
     });
-    // alert(drs_no); 
     $('#drs_no').val(drs_no);
+
     var toNumbers = tdval.map(Number);
     var sum = toNumbers.reduce((x, y) => x + y);
     $('#purchase_amount').val(sum);
 
-    $('#pymt_modal').modal('show');
-    return false;
     $.ajax({
         type: "GET",
         url: "get-drs-details",
@@ -126,25 +171,27 @@ $(document).on('click', '.payment', function() {
 
             },
         success: function(data) {
-            // console.log(data.get_data.consignment_detail.purchase_price);
-            $('#drs_no').val(data.get_data.drs_no);
-            $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
-            if(data.get_status == 'Successful'){
+            console.log(data.get_status);
+            // $('#drs_no').val(data.get_data.drs_no);
+            // $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
+            if (data.get_status == 'Successful') {
                 $('#p_type').append('<option value="Balance">Balance</option>');
                 //check balance if null or delevery successful
-                if(data.get_data.balance == '' || data.get_data.balance == null){
+                if (data.get_data.balance == '' || data.get_data.balance == null) {
                     // alert(data.get_data.consignment_detail.purchase_price);
                     var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
-                }else{
-               var amt = $('#amt').val(data.get_data.balance);
-                  //calculate
-                var tds_rate = $('#tds_rate').val();
-                var cal = (tds_rate / 100) * amt ;
-                var final_amt = amt - cal;
-                $('#tds_dedut').val(final_amt); 
+                } else {
+                    var amt = $('#amt').val(data.get_data.balance);
+                    //calculate
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
                 }
-            }else{
-                $('#p_type').append('<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>');
+            } else {
+                $('#p_type').append(
+                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
+                    );
             }
 
         }
@@ -184,14 +231,14 @@ $('#vendor').change(function() {
                 $('#beneficiary_name').val(res.vendor_details.name);
                 $('#email').val(res.vendor_details.email);
                 $('#tds_rate').val(res.vendor_details.tds_rate);
-                
+
                 //calculate
                 var amt = $('#amt').val();
 
                 var tds_rate = $('#tds_rate').val();
-                var cal = (tds_rate / 100) * amt ;
+                var cal = (tds_rate / 100) * amt;
                 var final_amt = amt - cal;
-                $('#tds_dedut').val(final_amt); 
+                $('#tds_dedut').val(final_amt);
 
             } else {
                 $('#bank_acc').val('');
@@ -223,15 +270,14 @@ $(document).on('click', '.drs_lr', function() {
         data: {
             drs_lr: drs_lr
         },
-        beforeSend: 
-            function() {
-                $('#view_drs_lrtable').dataTable().fnClearTable();
-                $('#view_drs_lrtable').dataTable().fnDestroy();
-                $("#total_boxes").empty();
-                $("#totalweights").empty();
-                $("#totallr").empty();
-               
-            },
+        beforeSend: function() {
+            $('#view_drs_lrtable').dataTable().fnClearTable();
+            $('#view_drs_lrtable').dataTable().fnDestroy();
+            $("#total_boxes").empty();
+            $("#totalweights").empty();
+            $("#totallr").empty();
+
+        },
         success: function(data) {
             var re = jQuery.parseJSON(data)
             console.log(re);
@@ -274,12 +320,12 @@ $('#p_type').change(function() {
 
         //calculate
         var tds_rate = $('#tds_rate').val();
-        var cal = (tds_rate / 100) * purchs_amt ;
+        var cal = (tds_rate / 100) * purchs_amt;
         var final_amt = purchs_amt - cal;
-        $('#tds_dedut').val(final_amt); 
+        $('#tds_dedut').val(final_amt);
     } else {
         $('#amt').val('');
-        $('#tds_dedut').val(''); 
+        $('#tds_dedut').val('');
     }
 
 });
@@ -298,13 +344,13 @@ $("#amt").keyup(function() {
         $('#amt').val('');
         jQuery('#amt').prop('disabled', true);
     }
-     // Calculate tds
-     var tds_rate = $('#tds_rate').val();
+    // Calculate tds
+    var tds_rate = $('#tds_rate').val();
 
-        var cal = (tds_rate / 100) * secondInput ;
-        var final_amt = secondInput - cal;
-        $('#tds_dedut').val(final_amt);
- 
+    var cal = (tds_rate / 100) * secondInput;
+    var final_amt = secondInput - cal;
+    $('#tds_dedut').val(final_amt);
+
 });
 $("#purchase_amount").keyup(function() {
     var firstInput = document.getElementById("purchase_amount").value;
@@ -316,7 +362,7 @@ $("#purchase_amount").keyup(function() {
         $('#amt').val('');
         $('#amt').attr('disabled', 'disabled');
     }
-   
+
 });
 /////////////
 ///// check box checked unverified lr page
@@ -369,11 +415,12 @@ $('#v_id').change(function() {
         },
         dataType: 'json',
         beforeSend: function() {
-           
+
         },
-        success: function(res) {
-
-
+        success: function(response) {
+            if (response.html) {
+                jQuery('.main-table').html(response.html);
+            }
         }
     });
 

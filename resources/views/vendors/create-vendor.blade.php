@@ -196,6 +196,22 @@
 @endsection
 @section('js')
 <script>
+ jQuery(function () {
+        $('.my-select2').each(function () {
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+            })
+        })
+
+        // fix select2 bootstrap modal scroll bug
+        $(document).on('select2:close', '.my-select2', function (e) {
+            var evt = "scroll.select2"
+            $(e.target).parents().off(evt)
+            $(window).off(evt)
+        })
+    })
+
 $('#vendor_type').change(function() {
     var v_typ = $(this).val();
     var declaration = ($('input[name=decalaration_available]:checked').val());

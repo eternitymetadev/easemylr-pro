@@ -57,8 +57,19 @@
                         style="margin-right:4px;">Add amount</button> </td>
                 <?php } ?>
                 <!-- end purchase price -->
-                <td>{{$list->advanced}}</td>
+                <!-- ----Advanced Amount -->
+                <?php if (!empty($list->advanced)) { ?>
+                <td class='has-details'>
+                    club
+                    <span class="details">{{$list->advanced}}</span>
+                </td>
+                <?php } else { ?>
+                <td></td>
+                <?php } ?>
+                <!-- ----end advanced -->
+                <!-- Balance amount -->
                 <td>{{$list->balance}}</td>
+                <!--  end balance -->
                 <!-- --------- payment status------- -->
                 <?php if($list->payment_status == 0){ ?>
                 <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unpaid</button> </td>
