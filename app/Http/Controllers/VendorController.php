@@ -356,7 +356,7 @@ class VendorController extends Controller
     public function createPaymentRequest(Request $request)
     {
         $drs = explode(',',$request->drs_no);
-
+        $randm = rand();
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -384,7 +384,7 @@ class VendorController extends Controller
                 \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
-                \"terid\": \"83874we\"
+                \"terid\": \"$randm\"
                 }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
