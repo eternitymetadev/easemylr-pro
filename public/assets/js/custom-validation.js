@@ -2011,36 +2011,6 @@ $('#update_vendor').validate({
     }
 });
 
-    //////////////////////////
-    $('#allsave').submit(function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        
-        $.ajax({
-            url: "all-save-deliverydate", 
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type: 'POST',  
-            data:new FormData(this),
-            processData: false,
-            contentType: false,
-            beforeSend: function(){
-                $(".indicator-progress").show(); 
-                $(".indicator-label").hide();
-            },
-            success: (data) => {
-                $(".indicator-progress").hide();
-                $(".indicator-label").show();
-                if(data.success == true){
-                    swal("success","Status Updated successfully", 'success')
-                    location.reload();
-                    
-                }else{
-                    swal("error","Something went wrong", 'error')
-                }        
-            }
-        }); 
-    });	
-
     /*======get LR's on regional client in client report =====*/
     $('.searchclientreport').click(function(e){
         var regclient_id = $("#select_regclient").val();
