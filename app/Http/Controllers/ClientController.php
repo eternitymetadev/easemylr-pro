@@ -368,7 +368,9 @@ class ClientController extends Controller
 
         $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
         $zonestates = Zone::all()->unique('state')->pluck('state','id');
-        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails')->first();
+        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails.ZoneFromState')->first();
+
+        // dd($getClientDetail->ClientPriceDetails);
         
         return view('clients.update-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name, 'getClientDetail'=>$getClientDetail]);
     }

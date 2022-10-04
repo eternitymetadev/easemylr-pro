@@ -33,29 +33,34 @@
                                     <th>Open Delivery Charge</th>                                        
                                     <th>Action</th>
                                 </tr>
+                                <?php
+                                $i=0;
+                                foreach($getClientDetail->ClientPriceDetails as $key=>$clientpricedata){ 
+                                ?>
                                 <tr class="rowcls">
                                     <td>
                                     <select class="form-control" name="data[1][from_state]">
                                         <option value="">Select</option>
                                         @foreach($zonestates as $key => $state)
-                                        <option value='{{$key}}' {{$getClientDetail->ClientPriceDetails->ZoneFromState->id == $key ? 'selected' : ''}} >{{ucfirst($state)}}</option>
+                                        <option value="{{ $key }}" {{$clientpricedata->from_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
                                         @endforeach
                                     </select>
                                     </td>
                                     <td>
-                                        <select class="form-control" name="data[1][to_state]">
-                                            <option value="">Select</option>
-                                            @foreach($zonestates as $key => $state)
-                                            <option value="{{ $state }}">{{ucwords($state)}}</option>
-                                            @endforeach
-                                        </select>
+                                    <select class="form-control" name="data[1][to_state]">
+                                        <option value="">Select</option>
+                                        @foreach($zonestates as $key => $state)
+                                        <option value="{{ $key }}" {{$clientpricedata->to_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
+                                        @endforeach
+                                    </select>
                                     </td>
-                                    <td><input class="form-control" type="text" name="data[1][price_per_kg]" value=""></td>
-                                    <td><input class="form-control" type="text" name="data[1][open_delivery_price]" value=""></td>
+                                    <td><input class="form-control" type="text" name="data[1][price_per_kg]" value="{{old('price_per_kg',isset($clientpricedata->price_per_kg)?$clientpricedata->price_per_kg:'')}}"></td>
+                                    <td><input class="form-control" type="text" name="data[1][open_delivery_price]" value="{{old('open_delivery_price',isset($clientpricedata->open_delivery_price)?$clientpricedata->open_delivery_price:'')}}"></td>
                                     <td>
                                         <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
                                     </td>
                                 </tr>
+                                <?php } ?>
                             </table>
                         </div>
                         <div class="btn-section mt-60">
@@ -71,4 +76,43 @@
     </div>
 </div>
 
+@endsection
+@section('js')
+<script>
+    // $("a").click(function(){
+    function addrow(){
+        var i = $('.rowcls').length;
+        i  = i + 1;
+        var rows = '';
+
+        rows+= '<tr class="rowcls">';
+        rows+= '<td>';
+        rows+= '<select class="form-control" name="data['+i+'][from_state]">';
+        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $key }}">{{ucwords($state)}}</option>@endforeach';
+        rows+= '</select>';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<select class="form-control" name="data['+i+'][to_state]">';
+        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $key }}">{{ucwords($state)}}</option>@endforeach';
+        rows+= '</select>';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<input class="form-control" type="text" name="data['+i+'][price_per_kg]" value="">';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<input class="form-control" type="text" name="data['+i+'][open_delivery_price]" value="">';
+        rows+= '</td>';
+        rows+= '<td>';
+        rows+= '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
+        rows+= '</td>';
+        rows+= '</tr>';
+
+        $('#myTable tbody').append(rows);
+
+    }
+
+    $(document).on('click', '.removeRow', function(){
+        $(this).closest('tr').remove();
+    });
+</script>
 @endsection
