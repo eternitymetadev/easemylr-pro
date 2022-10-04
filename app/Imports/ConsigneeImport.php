@@ -70,6 +70,24 @@ class ConsigneeImport implements ToModel,WithHeadingRow
                 'created_at'        => time(),
 
             ]);
+        }else{
+            $consignee = Consignee::where('nick_name', $row['nick_name'])->where('consigner_id',$consigner)->update([
+                'legal_name'        => $row['legal_name'],
+                'user_id'           => $getuser->id,
+                'dealer_type'       => $dealer_type,
+                'gst_number'        => $row['gst_number'],
+                'contact_name'      => $row['contact_name'],
+                'phone'             => (float)$row['phone'],
+                'email'             => $row['email'],
+                'address_line1'     => $row['address_line1'],
+                'address_line2'     => $row['address_line2'],
+                'address_line3'     => $row['address_line3'],
+                'address_line4'     => $row['address_line4'],
+                'city'              => $row['city'],
+                'district'          => $row['district'],
+                'postal_code'       => $row['postal_code'],
+                'state_id'          => $state,
+            ]);
         }
     }
 }
