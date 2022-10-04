@@ -98,6 +98,7 @@ div.relative {
 <script>
 $(document).on('click', '.payment', function() {
     $('#payment_form')[0].reset();
+    $('#p_type').empty();
 
     var drs_no = [];
     var tdval = [];
@@ -128,6 +129,12 @@ $(document).on('click', '.payment', function() {
             $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
             if(data.get_status == 'Successful'){
                 $('#p_type').append('<option value="Balance">Balance</option>');
+               var amt = $('#amt').val(data.get_data.balance);
+                  //calculate
+                var tds_rate = $('#tds_rate').val();
+                var cal = (tds_rate / 100) * amt ;
+                var final_amt = amt - cal;
+                $('#tds_dedut').val(final_amt); 
             }else{
                 $('#p_type').append('<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>');
             }
@@ -152,7 +159,7 @@ $('#vendor').change(function() {
         },
         dataType: 'json',
         beforeSend: function() {
-            $('#amt').val('');
+            // $('#amt').val('');
             $('#tds_dedut').val('');
             // $('#p_type').val('');
         },
@@ -169,6 +176,15 @@ $('#vendor').change(function() {
                 $('#beneficiary_name').val(res.vendor_details.name);
                 $('#email').val(res.vendor_details.email);
                 $('#tds_rate').val(res.vendor_details.tds_rate);
+                
+                //calculate
+                var amt = $('#amt').val();
+
+                var tds_rate = $('#tds_rate').val();
+                var cal = (tds_rate / 100) * amt ;
+                var final_amt = amt - cal;
+                $('#tds_dedut').val(final_amt); 
+
             } else {
                 $('#bank_acc').val('');
                 $('#ifsc_code').val('');

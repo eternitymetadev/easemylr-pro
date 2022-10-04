@@ -321,7 +321,7 @@ class VendorController extends Controller
         $response['get_data'] = $drs;
         $response['get_status'] = $status;
         $response['success'] = true;
-        $response['error_message'] = "Can not find data";
+        $response['error_message'] = "find data";
         return response()->json($response);
     }
 
@@ -373,7 +373,7 @@ class VendorController extends Controller
                 \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
-                \"terid\": \"$request->drs_no\"
+                \"terid\": \"234\"
                 }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
@@ -383,11 +383,33 @@ class VendorController extends Controller
         $response = curl_exec($curl);
         curl_close($curl);
         $res_data = json_decode($response);
-        $cc = 'success' ;
         // ========= Success Response
         if($res_data->message == 'success'){
 
-             $balance_amt = $request->claimed_amount - $request->payable_amount ;
+            if($request->p_type == 'Balance'){
+
+                $getadvanced = TransactionSheet::select('advanced','balance')->whereIn('drs_no', $drs)->first();
+                $balance = $getadvanced->balance - $request->payable_amount;
+                $advance = $getadvanced->advanced + $request->payable_amount;
+
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+
+                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['drs_no']                  = $request->drs_no;
+                $paymentresponse['bank_details']            = json_encode($bankdetails);
+                $paymentresponse['purchase_amount']         = $request->claimed_amount;
+                $paymentresponse['payment_type']            = $request->p_type;
+                $paymentresponse['balance']                 = $request->payable_amount;
+                $paymentresponse['tds_deduct_balance']      = $request->final_payable_amount;
+                $paymentresponse['payment_status']          = 2;
+
+            $paymentresponse = PaymentHistory::create($paymentresponse);
+
+            }else{
+
+            $balance_amt = $request->claimed_amount - $request->payable_amount;
             //======== Payment History save =========//
             $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
@@ -397,13 +419,14 @@ class VendorController extends Controller
             $paymentresponse['purchase_amount']         = $request->claimed_amount;
             $paymentresponse['payment_type']            = $request->p_type;
             $paymentresponse['advance']                 = $request->payable_amount;
-            $paymentresponse['balance']                 = 0;
+            $paymentresponse['balance']                 = $balance_amt;
             $paymentresponse['tds_deduct_balance']      = $request->final_payable_amount;
             $paymentresponse['payment_status']          = 2;
 
             $paymentresponse = PaymentHistory::create($paymentresponse);
              
              TransactionSheet::whereIn('drs_no', $drs)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
+            }
 
              $new_response['success'] = true;
              $new_response['message'] = $res_data->message;
