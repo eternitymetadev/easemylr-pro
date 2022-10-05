@@ -60,7 +60,7 @@
                 <!-- ----Advanced Amount -->
                 <?php if (!empty($list->advanced)) { ?>
                 <td class='has-details'>
-                    club
+                    clubed
                     <span class="details">{{$list->advanced}}</span>
                 </td>
                 <?php } else { ?>
@@ -68,7 +68,14 @@
                 <?php } ?>
                 <!-- ----end advanced -->
                 <!-- Balance amount -->
-                <td>{{$list->balance}}</td>
+                <?php if (is_null($list->balance)) { ?>
+                    <td></td>
+                <?php } else { ?>
+                    <td class='has-details'>
+                    clubed
+                    <span class="details">{{$list->balance}}</span>
+                </td>
+                <?php } ?>
                 <!--  end balance -->
                 <!-- --------- payment status------- -->
                 <?php if($list->payment_status == 0){ ?>

@@ -178,8 +178,18 @@ $(document).on('click', '.payment', function() {
                 $('#p_type').append('<option value="Balance">Balance</option>');
                 //check balance if null or delevery successful
                 if (data.get_data.balance == '' || data.get_data.balance == null) {
-                    // alert(data.get_data.consignment_detail.purchase_price);
-                    var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
+                    var tdval = [];
+                    $(':checkbox[name="checked_drs[]"]:checked').each(function() {
+                        drs_no.push(this.value);
+                        var cc = $(this).attr('data-price');
+                        tdval.push(cc);
+                    });
+
+                    var toNumbers = tdval.map(Number);
+                    var sum = toNumbers.reduce((x, y) => x + y);
+                    $('#amt').val(sum);
+                    ////
+                    // var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
                 } else {
                     var amt = $('#amt').val(data.get_data.balance);
                     //calculate
