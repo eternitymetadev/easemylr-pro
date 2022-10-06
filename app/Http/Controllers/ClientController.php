@@ -184,7 +184,6 @@ class ClientController extends Controller
      */
     public function UpdateClient(Request $request)
     {
-        // echo'<pre>'; print_r($request->all()); die;
         try { 
             DB::beginTransaction();
 
@@ -337,7 +336,7 @@ class ClientController extends Controller
                 $response['success'] = true;
                 $response['success_message'] = "Clients detail added successfully";
                 $response['error'] = false;
-                $response['page'] = 'client-create';
+                $response['page'] = 'clientdetail-create';
                 $response['redirect_url'] = $url;
             }else{
                 $response['success'] = false;
@@ -369,10 +368,78 @@ class ClientController extends Controller
         $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
         $zonestates = Zone::all()->unique('state')->pluck('state','id');
         $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails.ZoneFromState')->first();
-
         // dd($getClientDetail->ClientPriceDetails);
         
         return view('clients.update-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name, 'getClientDetail'=>$getClientDetail]);
+    }
+
+    public function upateRegclientdetail(Request $request)
+    {
+        try { 
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+             $rules = array(
+            //   'client_name' => 'required',      
+            );
+            $validator = Validator::make($request->all(),$rules);
+    
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+
+            $saveClientDetail = RegionalClientDetail::where('id',$request->regclientdetail_id)->update(['docket_price' => $request->docket_price]);  
+
+            if(!empty($request->data)){
+                $get_data = $request->data;
+                
+                foreach ($get_data as $key => $save_data ) {
+                    if(!empty($save_data['hidden_id'])){
+                        $updatedata['regclientdetail_id'] = $request->regclientdetail_id;
+                        $updatedata['status'] = "1";
+                        $updatedata['from_state'] = $save_data['from_state'];
+                        $updatedata['to_state'] = $save_data['to_state'];
+                        $updatedata['price_per_kg'] = $save_data['price_per_kg'];
+                        $updatedata['open_delivery_price'] = $save_data['open_delivery_price'];
+                        $hidden_id = $save_data['hidden_id'];                      
+                        $saveregclients = ClientPriceDetail::where('id',$hidden_id)->update($updatedata);
+                    }else{
+                        $insertdata['regclientdetail_id'] = $request->regclientdetail_id;
+                        $insertdata['status'] = "1";
+                        $insertdata['from_state'] = $save_data['from_state'];
+                        $insertdata['to_state'] = $save_data['to_state'];
+                        $insertdata['price_per_kg'] = $save_data['price_per_kg'];
+                        $insertdata['open_delivery_price'] = $save_data['open_delivery_price'];
+                        unset($save_data['hidden_id']);
+                        $saveclientPriceDeatil = ClientPriceDetail::create($insertdata);
+                    }
+                }
+                $url  =  URL::to($this->prefix.'/reginal-clients');
+                $response['page'] = 'clientdetail-update';
+                $response['success'] = true;
+                $response['success_message'] = "Client detail Updated Successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not updated client detial please try again";
+                $response['error'] = true;
+            }
+    
+            DB::commit();
+        }catch(Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;   
+        }
+
+        return response()->json($response);
     }
 
     //nurture client report
@@ -383,8 +450,7 @@ class ClientController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        // $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        // $date = Helper::yearmonthdate($lastsevendays);
+        
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $sessionperitem = Session::get('peritem');

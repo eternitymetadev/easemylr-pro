@@ -8,19 +8,20 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{url($prefix.'/clients')}}">Clients</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Regional Client Details</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update Details</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
-                <form class="contact-info" method="POST" action="{{url($prefix.'/save-regclient-detail')}}" id="createregclientdetail">
+                <form class="contact-info" method="POST" action="{{url($prefix.'/regclient-detail/update-detail')}}" id="updateregclientdetail">
+                <input type="hidden" name="regclientdetail_id" value="{{$getClientDetail->id}}">
                     <div class="row">
                         <div class="col-md-4">
-                            <p><b>Regional Client Name:</b> <input class="form-control" name="regclient_name" value="{{old('name',isset($getClientDetail->RegClient->name)?$getClientDetail->RegClient->name:'')}}{{ucfirst($getClientDetail->RegClient->name ?? '-')}}" readonly></p>
+                            <p><b>Regional Client Name:</b> <input class="form-control" name="regclient_name" value="{{old('name',isset($getClientDetail->RegClient->name)?$getClientDetail->RegClient->name:'')}}" readonly></p>
                             <input type="hidden" name="regclient_id" value="{{$getClientDetail->RegClient->id ?? ''}}">
                         </div>
                         <div class="col-md-4">
-                            <p><b>Docket Charge:</b> <input class="form-control" name="docket_price" value="{{old('docket_price',isset($getClientDetail->docket_price)?$getClientDetail->docket_price:'')}}{{ucfirst($getClientDetail->docket_price ?? '-')}}"></p>
+                            <p><b>Docket Charge:</b> <input class="form-control" name="docket_price" value="{{old('docket_price',isset($getClientDetail->docket_price)?$getClientDetail->docket_price:'')}}"></p>
                         </div>
                     </div>
                     <div class="mt-3 proposal_detail_box">
@@ -37,9 +38,10 @@
                                 $i=0;
                                 foreach($getClientDetail->ClientPriceDetails as $key=>$clientpricedata){ 
                                 ?>
+                                <input type="hidden" name="data[{{$i}}][hidden_id]" value="{!! $clientpricedata->id !!}">
                                 <tr class="rowcls">
                                     <td>
-                                    <select class="form-control" name="data[1][from_state]">
+                                    <select class="form-control" name="data[{{$i}}][from_state]">
                                         <option value="">Select</option>
                                         @foreach($zonestates as $key => $state)
                                         <option value="{{ $key }}" {{$clientpricedata->from_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
@@ -47,20 +49,20 @@
                                     </select>
                                     </td>
                                     <td>
-                                    <select class="form-control" name="data[1][to_state]">
+                                    <select class="form-control" name="data[{{$i}}][to_state]">
                                         <option value="">Select</option>
                                         @foreach($zonestates as $key => $state)
                                         <option value="{{ $key }}" {{$clientpricedata->to_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
                                         @endforeach
                                     </select>
                                     </td>
-                                    <td><input class="form-control" type="text" name="data[1][price_per_kg]" value="{{old('price_per_kg',isset($clientpricedata->price_per_kg)?$clientpricedata->price_per_kg:'')}}"></td>
-                                    <td><input class="form-control" type="text" name="data[1][open_delivery_price]" value="{{old('open_delivery_price',isset($clientpricedata->open_delivery_price)?$clientpricedata->open_delivery_price:'')}}"></td>
+                                    <td><input class="form-control" type="text" name="data[{{$i}}][price_per_kg]" value="{{old('price_per_kg',isset($clientpricedata->price_per_kg)?$clientpricedata->price_per_kg:'')}}"></td>
+                                    <td><input class="form-control" type="text" name="data[{{$i}}][open_delivery_price]" value="{{old('open_delivery_price',isset($clientpricedata->open_delivery_price)?$clientpricedata->open_delivery_price:'')}}"></td>
                                     <td>
                                         <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
                                     </td>
                                 </tr>
-                                <?php } ?>
+                                <?php $i++; } ?>
                             </table>
                         </div>
                         <div class="btn-section mt-60">
@@ -82,7 +84,7 @@
     // $("a").click(function(){
     function addrow(){
         var i = $('.rowcls').length;
-        i  = i + 1;
+        // i  = i + 1;
         var rows = '';
 
         rows+= '<tr class="rowcls">';
