@@ -2116,3 +2116,35 @@ $('#update_vendor').validate({
                 }
             }); 
         });
+
+        ////////////////// reate Drs Payment Request////////////
+$('#create_request_form').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+ 
+     if(! vendor){
+        swal('Error!', 'Please select a vendor', 'error');
+        return false;
+     }
+    $.ajax({
+        url: "create-payment_request",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+            if(data.success == true){
+
+            swal('success', data.message, 'success')
+            
+            }else{
+                swal('error', data.message ,'error');
+            }
+
+        }
+    });
+});

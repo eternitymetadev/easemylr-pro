@@ -10,6 +10,7 @@ use App\Models\Location;
 use App\Models\PaymentHistory;
 use App\Models\Role;
 use App\Models\TransactionSheet;
+use App\Models\PaymentRequest;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\Vendor;
@@ -636,5 +637,55 @@ class VendorController extends Controller
         }
         return response()->json($response);
 
+    }
+    // ==================CreatePayment Request =================
+    public function createPaymentRequestVendor(Request $request)
+    {
+        $drsno = explode(',', $request->drs_no);
+
+        
+         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
+         ->groupby('drs_no')
+         ->get();
+
+        $simplyfy = json_decode(json_encode($consignment), true);
+        // echo'<pre>'; print_r($simplyfy); die;
+
+        $no_of_digit = 7;
+        $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
+        $transaction_id = json_decode(json_encode($transactionId), true);
+        if (empty($transaction_id) || $transaction_id == null) {
+            $transaction_id['transaction_id'] = 0;
+        }
+        $number = $transaction_id['transaction_id'] + 1;
+    
+        $i =0;
+        foreach ($simplyfy as $value) {
+            $i++;
+            $transaction = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+            $drs_no = $value['drs_no'];
+            $vendor_id = $request->vendor_name;
+            $vehicle_no = $value['vehicle_no'];
+
+            $transaction = PaymentRequest::insert(['transaction_id' => $transaction, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'total_amount' => $request->claimed_amount, 'payment_status' => 0, 'status' => '1']);
+        }
+        TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
+
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+    }
+
+    public function requestList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $requestlists = PaymentRequest::with('VendorDetails')
+        ->groupBy('transaction_id')
+        ->get();
+        $vendors = Vendor::all();
+
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists,'vendors' => $vendors]);
     }
 }

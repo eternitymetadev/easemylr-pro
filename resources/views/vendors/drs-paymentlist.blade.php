@@ -127,7 +127,7 @@ div.relative {
 @include('models.payment-model')
 @endsection
 @section('js')
-<script>
+<script> 
 jQuery(function() {
     $('.my-select2').each(function() {
         $(this).select2({
@@ -144,7 +144,7 @@ jQuery(function() {
     })
 })
 $(document).on('click', '.payment', function() {
-    $('#payment_form')[0].reset();
+    $('#create_request_form')[0].reset();
     $('#p_type').empty();
     $('#pymt_modal').modal('show');
     var drs_no = [];
@@ -435,5 +435,6 @@ $('#v_id').change(function() {
     });
 
 });
+
 </script>
 @endsection

@@ -162,6 +162,8 @@
                         </li>
                         <li>
                             <a href="{{$prefixurl.'drs-paymentlist'}}"> payment list </a>
+                        </li> <li>
+                            <a href="{{$prefixurl.'request-list'}}"> Request list </a>
                         </li>
                     </ul>
                 </li>
