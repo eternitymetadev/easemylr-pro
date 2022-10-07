@@ -75,6 +75,7 @@ div.relative {
                 <thead>
                     <tr>
                         <th>Transaction Id</th>
+                        <th>Total Drs</th>
                         <th>Vendor</th>
                         <th>Total Amount</th>
                         <th>Adavanced</th>
@@ -89,6 +90,7 @@ div.relative {
                     <tr>
 
                         <td>{{ $requestlist->transaction_id ?? "-" }}</td>
+                        <td>{{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
@@ -145,8 +147,9 @@ $(document).on('click', '.payment_button', function() {
             },
         success: function(data) {
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
-            //  console.log(data.req_data[0]);
 
+
+            $('#drs_no_request').val(data.drs_no);
             $('#transaction_id').val(data.req_data[0].transaction_id);
             $('#name').val(data.req_data[0].vendor_details.name);
             $('#email').val(data.req_data[0].vendor_details.email);
@@ -157,6 +160,28 @@ $(document).on('click', '.payment_button', function() {
             $('#branch_name').val(bank_details.branch_name);
             $('#total_clam_amt').val(data.req_data[0].total_amount);
             $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
+
+            if (data.status == 'Successful') {
+                $('#p_type').append('<option value="Balance">Balance</option>');
+                //check balance if null or delevery successful
+                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
+                   
+                    $('#amt').val(data.req_data[0].advanced);
+                    ////
+                    // var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
+                } else {
+                    var amt = $('#amt').val(data.req_data[0].balance);
+                    //calculate
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
+                }
+            } else {
+                $('#p_type').append(
+                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
+                    );
+            }
         }
 
     });

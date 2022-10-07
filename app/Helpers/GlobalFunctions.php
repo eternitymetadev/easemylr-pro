@@ -239,6 +239,10 @@ class GlobalFunctions {
         return $job_data;
     }
 
-
+    public static function countDrsInTransaction($trans_id)
+    {
+        $data = DB::table('payment_requests')->where('transaction_id',$trans_id)->count();
+        return $data;
+    }
 
 }

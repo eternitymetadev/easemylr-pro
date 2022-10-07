@@ -409,7 +409,8 @@ class VendorController extends Controller
                 }
                 $advance = $getadvanced->advanced + $request->payable_amount;
 
-                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+                // TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+
                 PaymentRequest::whereIn('transaction_id', $request->transaction_id)->update(['advanced' => $advance, 'balance' => $balance ,'payment_status' => 2]);
 
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
@@ -428,6 +429,7 @@ class VendorController extends Controller
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
             } else {
+    
 
                 $balance_amt = $request->claimed_amount - $request->payable_amount;
                 //======== Payment History save =========//
@@ -446,7 +448,9 @@ class VendorController extends Controller
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
-                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['advanced' => $request->payable_amount, 'balance' => $balance_amt ,'payment_status' => 2]);
+
+                // TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
             }
 
             $new_response['success'] = true;
@@ -697,7 +701,34 @@ class VendorController extends Controller
         $req_data = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)
         ->groupBy('transaction_id')->get();
 
+        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)
+        ->get();
+        $simply = json_decode(json_encode($getdrs), true);
+        foreach($simply as $value)
+        {
+            $store[] = $value['drs_no'];
+        }
+        $drs_no = implode(',',$store);
+// ==================================
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $store)->get();
+
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
+        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
+
+        $total_lr = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->count();
+
+        if ($total_deldate == $total_lr) {
+            $status = "Successful";
+        } elseif ($total_lr == $total_empty) {
+            $status = "Started";
+        } else {
+            $status = "Partial Delivered";
+        }
+        
+        $response['status'] = $status;
         $response['req_data'] = $req_data;
+        $response['drs_no'] = $drs_no;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);

@@ -75,9 +75,7 @@
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
                             <select class="form-control" id="p_type" name="p_type" tabindex="-1">
-                                <!-- <option selected disabled>Select</option>
-                                <option value="Balance">Balance</option>
-                                <option value="Advance">Advance</option> -->
+    
                             </select>
                         </div>
                         <div class="form-group col-md-6">
