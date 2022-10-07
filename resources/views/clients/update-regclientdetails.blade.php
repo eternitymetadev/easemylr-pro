@@ -60,6 +60,8 @@
                                     <td><input class="form-control" type="text" name="data[{{$i}}][open_delivery_price]" value="{{old('open_delivery_price',isset($clientpricedata->open_delivery_price)?$clientpricedata->open_delivery_price:'')}}"></td>
                                     <td>
                                         <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
+
+                                        <button type="button" class="btn btn-danger delete_client" data-id="{{ $clientpricedata->id }}" data-action="<?php echo URL::to($prefix.'/clientdetails/delete-client'); ?>"><i class="fa fa-minus-circle"></i></button>
                                     </td>
                                 </tr>
                                 <?php $i++; } ?>
@@ -77,7 +79,7 @@
         </div>
     </div>
 </div>
-
+@include('models.delete-client')
 @endsection
 @section('js')
 <script>
