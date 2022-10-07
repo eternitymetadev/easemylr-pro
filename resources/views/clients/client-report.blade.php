@@ -169,6 +169,39 @@
             }
         });
     });
+
+    jQuery(document).on('change', '.report_perpage', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var regclient = jQuery('#select_regclient').val();
+
+        if (startdate == enddate) {
+            startdate = "";
+            enddate = "";
+        }
+        var url = jQuery(this).attr('data-action');
+        var peritem = jQuery(this).val();
+        // var search  = jQuery('#search').val();
+            jQuery.ajax({
+                type      : 'get', 
+                url       : url,
+                data      : {peritem:peritem,startdate:startdate,enddate:enddate,regclient:regclient},
+                headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    if (response.page == 'lead_note') {
+                        jQuery('#Note .main-table').html(response.html);
+                    } else {
+                        jQuery('.main-table').html(response.html);
+                    }
+                }
+            }
+        });
+        return false;
+    });
 </script>
 
 @endsection

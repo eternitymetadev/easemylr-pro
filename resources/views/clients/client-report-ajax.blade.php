@@ -264,7 +264,7 @@
             @endif
         </tbody>
     </table>
-    <div class="container-fluid">
+    <div class="container-fluid perpage">
         <div class="row">
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
@@ -275,7 +275,7 @@
                             <label class=" mb-0">items per page</label>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control perpage" data-action="<?php echo url()->current(); ?>">
+                            <select class="form-control report_perpage" data-action="<?php echo url()->current(); ?>">
                                 <option value="10" {{$peritem == '10' ? 'selected' : ''}}>10</option>
                                 <option value="50" {{$peritem == '50' ? 'selected' : ''}}>50</option>
                                 <option value="100" {{$peritem == '100'? 'selected' : ''}}>100</option>
