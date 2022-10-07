@@ -20,6 +20,10 @@ use Auth;
 
 class VehicleController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
+
     public function __construct()
     {
       $this->title =  "Vehicles";
@@ -38,14 +42,19 @@ class VehicleController extends Controller
     }
 
     public function getData(Request $request) {
-        // $this->prefix = request()->route()->getPrefix();
+        $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-
         if($authuser->role_id == 1 ){
             $this->prefix = 'admin';
         }
         elseif($authuser->role_id == 2 ){
             $this->prefix = 'branch-manager';
+        }elseif($authuser->role_id == 3 ){
+            $this->prefix = 'regional-manager';
+        }elseif($authuser->role_id == 4 ){
+            $this->prefix = 'branch-user';
+        }elseif($authuser->role_id == 5 ){
+            $this->prefix = 'account-manager';
         }else{
             $this->prefix ='';
         }
