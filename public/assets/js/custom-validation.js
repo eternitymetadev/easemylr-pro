@@ -1882,16 +1882,6 @@ $('#vendor-master').submit(function (e) {
 $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-     var vendor = $('#vendor').val();
-     var p_type = $('#p_type').val();
-     if(! vendor){
-        swal('Error!', 'Please select a vendor', 'error');
-        return false;
-     }
-     if(! p_type){
-        swal('Error!', 'Please select a Payment Type', 'error');
-        return false;
-     }
 
     $.ajax({
         url: "create-payment",
@@ -2122,10 +2112,7 @@ $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
  
-     if(! vendor){
-        swal('Error!', 'Please select a vendor', 'error');
-        return false;
-     }
+    
     $.ajax({
         url: "create-payment_request",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

@@ -200,6 +200,7 @@ class VendorController extends Controller
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
             $query = $query->whereIn('status', ['1', '0', '3'])
+            ->where('request_status', 0)
                 ->groupBy('drs_no');
 
             if ($authuser->role_id == 1) {
@@ -273,6 +274,7 @@ class VendorController extends Controller
         //     ->groupBy('drs_no');
 
         $query = $query->whereIn('status', ['1', '0', '3'])
+        ->where('request_status', 0)
             ->groupBy('drs_no');
 
         if ($authuser->role_id == 1) {
@@ -399,7 +401,7 @@ class VendorController extends Controller
 
             if ($request->p_type == 'Balance') {
 
-                $getadvanced = TransactionSheet::select('advanced', 'balance')->whereIn('drs_no', $drs)->first();
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->whereIn('transaction_id', $request->transaction_id)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->payable_amount;
                 } else {
@@ -407,11 +409,13 @@ class VendorController extends Controller
                 }
                 $advance = $getadvanced->advanced + $request->payable_amount;
 
-                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+                PaymentRequest::whereIn('transaction_id', $request->transaction_id)->update(['advanced' => $advance, 'balance' => $balance ,'payment_status' => 2]);
 
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
@@ -430,6 +434,7 @@ class VendorController extends Controller
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
@@ -441,7 +446,7 @@ class VendorController extends Controller
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
-                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
             }
 
             $new_response['success'] = true;
@@ -649,8 +654,6 @@ class VendorController extends Controller
          ->get();
 
         $simplyfy = json_decode(json_encode($consignment), true);
-        // echo'<pre>'; print_r($simplyfy); die;
-
         $no_of_digit = 7;
         $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
         $transaction_id = json_decode(json_encode($transactionId), true);
@@ -667,7 +670,7 @@ class VendorController extends Controller
             $vendor_id = $request->vendor_name;
             $vehicle_no = $value['vehicle_no'];
 
-            $transaction = PaymentRequest::insert(['transaction_id' => $transaction, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'total_amount' => $request->claimed_amount, 'payment_status' => 0, 'status' => '1']);
+            $transaction = PaymentRequest::create(['transaction_id' => $transaction, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'total_amount' => $request->claimed_amount, 'payment_status' => 0, 'status' => '1']);
         }
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
 
@@ -687,5 +690,17 @@ class VendorController extends Controller
         $vendors = Vendor::all();
 
         return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists,'vendors' => $vendors]);
+    }
+
+    public function getVendorReqDetails(Request $request)
+    {
+        $req_data = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)
+        ->groupBy('transaction_id')->get();
+
+        $response['req_data'] = $req_data;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
     }
 }

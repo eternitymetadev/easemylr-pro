@@ -154,11 +154,12 @@ $(document).on('click', '.payment', function() {
         var cc = $(this).attr('data-price');
         tdval.push(cc);
     });
-    $('#drs_no').val(drs_no);
 
+    $('#drs_no').val(drs_no);
+  
     var toNumbers = tdval.map(Number);
     var sum = toNumbers.reduce((x, y) => x + y);
-    $('#purchase_amount').val(sum);
+    $('#purchase_amount_total').val(sum);
 
     $.ajax({
         type: "GET",
@@ -171,38 +172,7 @@ $(document).on('click', '.payment', function() {
 
             },
         success: function(data) {
-            console.log(data.get_status);
-            // $('#drs_no').val(data.get_data.drs_no);
-            // $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
-            if (data.get_status == 'Successful') {
-                $('#p_type').append('<option value="Balance">Balance</option>');
-                //check balance if null or delevery successful
-                if (data.get_data.balance == '' || data.get_data.balance == null) {
-                    var tdval = [];
-                    $(':checkbox[name="checked_drs[]"]:checked').each(function() {
-                        drs_no.push(this.value);
-                        var cc = $(this).attr('data-price');
-                        tdval.push(cc);
-                    });
-
-                    var toNumbers = tdval.map(Number);
-                    var sum = toNumbers.reduce((x, y) => x + y);
-                    $('#amt').val(sum);
-                    ////
-                    // var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
-                } else {
-                    var amt = $('#amt').val(data.get_data.balance);
-                    //calculate
-                    var tds_rate = $('#tds_rate').val();
-                    var cal = (tds_rate / 100) * amt;
-                    var final_amt = amt - cal;
-                    $('#tds_dedut').val(final_amt);
-                }
-            } else {
-                $('#p_type').append(
-                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
-                    );
-            }
+            
 
         }
 
@@ -210,64 +180,64 @@ $(document).on('click', '.payment', function() {
 
 });
 // ============================================================== //
-$('#vendor').change(function() {
-    var vendor_id = $(this).val();
+// $('#vendor').change(function() {
+//     var vendor_id = $(this).val();
 
-    $.ajax({
-        type: 'get',
-        url: 'vendor-details',
-        data: {
-            vendor_id: vendor_id
-        },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        dataType: 'json',
-        beforeSend: function() {
-            // $('#amt').val('');
-            $('#tds_dedut').val('');
-            // $('#p_type').val('');
-        },
-        success: function(res) {
-            if (res.success === true) {
-                jQuery('#crt_pytm').prop('disabled', false);
-                var simp = jQuery.parseJSON(res.vendor_details.bank_details);
-                $('#bank_acc').val(simp.account_no);
-                $('#ifsc_code').val(simp.ifsc_code);
-                $('#bank_name').val(simp.bank_name);
-                $('#branch_name').val(simp.branch_name);
-                $('#vendor_no').val(res.vendor_details.vendor_no);
-                $('#name').val(res.vendor_details.name);
-                $('#beneficiary_name').val(res.vendor_details.name);
-                $('#email').val(res.vendor_details.email);
-                $('#tds_rate').val(res.vendor_details.tds_rate);
+//     $.ajax({
+//         type: 'get',
+//         url: 'vendor-details',
+//         data: {
+//             vendor_id: vendor_id
+//         },
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         },
+//         dataType: 'json',
+//         beforeSend: function() {
+//             // $('#amt').val('');
+//             $('#tds_dedut').val('');
+//             // $('#p_type').val('');
+//         },
+//         success: function(res) {
+//             if (res.success === true) {
+//                 jQuery('#crt_pytm').prop('disabled', false);
+//                 var simp = jQuery.parseJSON(res.vendor_details.bank_details);
+//                 $('#bank_acc').val(simp.account_no);
+//                 $('#ifsc_code').val(simp.ifsc_code);
+//                 $('#bank_name').val(simp.bank_name);
+//                 $('#branch_name').val(simp.branch_name);
+//                 $('#vendor_no').val(res.vendor_details.vendor_no);
+//                 $('#name').val(res.vendor_details.name);
+//                 $('#beneficiary_name').val(res.vendor_details.name);
+//                 $('#email').val(res.vendor_details.email);
+//                 $('#tds_rate').val(res.vendor_details.tds_rate);
 
-                //calculate
-                var amt = $('#amt').val();
+//                 //calculate
+//                 var amt = $('#amt').val();
 
-                var tds_rate = $('#tds_rate').val();
-                var cal = (tds_rate / 100) * amt;
-                var final_amt = amt - cal;
-                $('#tds_dedut').val(final_amt);
+//                 var tds_rate = $('#tds_rate').val();
+//                 var cal = (tds_rate / 100) * amt;
+//                 var final_amt = amt - cal;
+//                 $('#tds_dedut').val(final_amt);
 
-            } else {
-                $('#bank_acc').val('');
-                $('#ifsc_code').val('');
-                $('#bank_name').val('');
-                $('#branch_name').val('');
-                $('#vendor_no').val('');
-                $('#name').val('');
-                $('#beneficiary_name').val('');
-                $('#email').val('');
-                $('#tds_rate').val('');
-                jQuery('#crt_pytm').prop('disabled', true);
-                swal('error', 'account not verified', 'error');
-            }
+//             } else {
+//                 $('#bank_acc').val('');
+//                 $('#ifsc_code').val('');
+//                 $('#bank_name').val('');
+//                 $('#branch_name').val('');
+//                 $('#vendor_no').val('');
+//                 $('#name').val('');
+//                 $('#beneficiary_name').val('');
+//                 $('#email').val('');
+//                 $('#tds_rate').val('');
+//                 jQuery('#crt_pytm').prop('disabled', true);
+//                 swal('error', 'account not verified', 'error');
+//             }
 
-        }
-    });
+//         }
+//     });
 
-});
+// });
 // ===========================================================//
 ///////////// view drs lr model///////////////////
 $(document).on('click', '.drs_lr', function() {
@@ -321,59 +291,7 @@ $(document).on('click', '.drs_lr', function() {
         }
     });
 });
-// ====================================================== //
-$('#p_type').change(function() {
-    var p_typ = $(this).val();
-    var purchs_amt = $('#purchase_amount').val();
-    if (p_typ == 'Balance') {
-        $('#amt').val(purchs_amt);
 
-        //calculate
-        var tds_rate = $('#tds_rate').val();
-        var cal = (tds_rate / 100) * purchs_amt;
-        var final_amt = purchs_amt - cal;
-        $('#tds_dedut').val(final_amt);
-    } else {
-        $('#amt').val('');
-        $('#tds_dedut').val('');
-    }
-
-});
-///
-
-$("#amt").keyup(function() {
-
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
-
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-        $('#tds_dedut').val('');
-        swal('error', 'amount must be greater than purchase price', 'error')
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        jQuery('#amt').prop('disabled', true);
-    }
-    // Calculate tds
-    var tds_rate = $('#tds_rate').val();
-
-    var cal = (tds_rate / 100) * secondInput;
-    var final_amt = secondInput - cal;
-    $('#tds_dedut').val(final_amt);
-
-});
-$("#purchase_amount").keyup(function() {
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
-
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        $('#amt').attr('disabled', 'disabled');
-    }
-
-});
 /////////////
 ///// check box checked unverified lr page
 jQuery(document).on('click', '#ckbCheckAll', function() {

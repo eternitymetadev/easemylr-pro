@@ -17,40 +17,38 @@
             <div class="modal-body">
                 <form id="payment_form">
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="drs_no_request" name="drs_no" value="">
                         </div>
-                        <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                        </div> <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Vendor</label>
-                            <select class="form-control my-select2" id="vendor" name="vendor_name" tabindex="-1">
-                                <option value="" selected disabled>Select Vendor</option>
-                                @foreach($vendors as $vendor)
-                                <option value="{{$vendor->id}}">{{$vendor->name}}</option>
-                                @endforeach
-                            </select>
+                    <div class="form-group col-md-6">
+                            <label for="location_name">Vendor Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount" name="claimed_amount" value="" readonly>
+                            <input type="text" class="form-control" id="total_clam_amt" name="claimed_amount" value="" readonly>
                         </div>
                     </div>
-                    <div class="form-row mb-0" style="display: none;">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" value="">
-                        </div>
+                    <div class="form-row mb-0" style="display:none">
+                        
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Beneficiary Name</label>
                             <input type="text" class="form-control" id="beneficiary_name" name="beneficiary_name"
                                 value="">
                         </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Branch Name</label>
+                            <input type="text" class="form-control" id="branch_name" name="branch_name" value="">
+                        </div>
                     </div>
-                    <div class="form-row mb-0" style="display: none;">
+                    <div class="form-row mb-0" style="display: none">
                         <div class="form-group col-md-6">
                             <label for="location_name">Account No</label>
                             <input type="text" class="form-control" id="bank_acc" name="acc_no" value="">
@@ -60,7 +58,7 @@
                             <input type="text" class="form-control" id="ifsc_code" name="ifsc" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0" style="display: none;">
+                    <div class="form-row mb-0" style="display: none">
                         <div class="form-group col-md-6">
                             <label for="location_name">Bank Name</label>
                             <input type="text" class="form-control" id="bank_name" name="bank_name" value="">
@@ -70,11 +68,8 @@
                             <input type="text" class="form-control" id="email" name="email" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0" style="display: none;">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Branch Name</label>
-                            <input type="text" class="form-control" id="branch_name" name="branch_name" value="">
-                        </div>
+                    <div class="form-row mb-0">
+                       
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
@@ -225,7 +220,7 @@
                 <form id="create_request_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
+                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-6">
                             <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
@@ -234,7 +229,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vendor</label>
-                            <select class="form-control my-select2" id="vendor" name="vendor_name" tabindex="-1">
+                            <select class="form-control my-select2" id="vendor_id" name="vendor_name" tabindex="-1">
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
                                 <option value="{{$vendor->id}}">{{$vendor->name}}</option>
@@ -243,7 +238,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount" name="claimed_amount" value="" readonly>
+                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount" value="" readonly>
                         </div>
                     </div>
                     

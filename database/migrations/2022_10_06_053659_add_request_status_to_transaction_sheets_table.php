@@ -17,7 +17,7 @@ class AddRequestStatusToTransactionSheetsTable extends Migration
             $table->string('request_status')->after('payment_status')->default(0)->comment('0=>no request 1=>payment request create')->nullable();
              $table->dropColumn(['payment_type']);
              $table->dropColumn(['advanced']);
-            $table->dropColumn(['balance']);
+             $table->dropColumn(['balance']);
              $table->dropColumn(['tds_deduct_amt']);
         });
     }

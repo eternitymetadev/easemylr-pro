@@ -10,6 +10,7 @@ class PaymentHistory extends Model
     use HasFactory;
     protected $fillable = [
         'refrence_transaction_id',
+        'transaction_id',
         'drs_no',
         'bank_details',
         'purchase_amount',
