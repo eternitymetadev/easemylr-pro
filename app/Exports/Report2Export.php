@@ -49,8 +49,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         
         $query = $query->where('status', '!=', 5)
@@ -174,7 +172,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'base_client'           => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'       => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name'   => @$consignment->ConsignerDetail->nick_name,
-                    'consigner_city'        => @$consignment->ConsignerDetail->city ,
+                    'consigner_city'        => @$consignment->ConsignerDetail->city,
                     'consignee_nick_name'   => @$consignment->ConsigneeDetail->nick_name,
                     'consignee_city'        => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,

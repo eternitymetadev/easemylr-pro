@@ -54,14 +54,14 @@
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4">
                     <form id="filter_report">
-                        <div class="row mt-4" style="margin-left: 8px; margin-bottom: 15px">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>">
+                        <div class="row mt-2" style="margin-left: 8px; margin-bottom: 15px">
+                            <!-- <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php// echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php// echo URL::to($prefix.'/secondary_reports/exports'); ?>">
                                 <div class="input-group-btn">
                                     <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                 </div>
-                            </div>
-                            <div class="col-sm-3">
+                            </div> -->
+                            <div class="col-sm-2">
                                 <label>Regional Client</label>
                                 <select class="form-control" id="select_regclient" name="regionalclient_id">
                                     <option value="">Select Client</option>
@@ -76,23 +76,23 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <label>from</label>
                                 <input type="date" class="form-control" id="startdate" name="startdate">
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <label>To</label>
                                 <input type="date" class="form-control" id="enddate" name="enddate">
                             </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-primary" id="search_clientreport" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px">Search</button>
+                            <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary" id="search_clientreport" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px">Search</button>
                             </div>
-                            <div class="exportExcel ml-2">
-                                <a href="<?php echo URL::to($prefix.'/clients/export'); ?>" data-url="<?php echo URL::to($prefix.'/client-report'); ?>" class="downloadClientEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/clients/export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                            <div class="col-4" style="text-align: right;padding-right: 30px;">
+                                <a href="<?php echo URL::to($prefix.'/clients/export'); ?>" data-url="<?php echo URL::to($prefix.'/client-report'); ?>" class="downloadClientEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px;margin-right: 12px;" data-action="<?php echo URL::to($prefix.'/clients/export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+
+                                <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm secreport_reset_button" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px;" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
                             </div>
-                            <div class="exportExcel ml-2">
-                                <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm secreport_reset_button" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
-                            </div>
+                            
                         </div>
                     </form>
                     @csrf

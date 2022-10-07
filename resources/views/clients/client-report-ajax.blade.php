@@ -180,6 +180,32 @@
                         <td>{{ $final}} </td>
 
                         <?php
+                        // echo "<pre>"; print_r($consignment->RegClientdetail);die;
+                        if(isset($consignment->RegClientdetail->ClientPriceDetails)){
+                            $from_state = array();
+                            $to_state = array();
+                            $price_per_kg = array();
+                            $open_del_charge = array();
+        
+                            foreach($consignment->RegClientdetail->ClientPriceDetails as $value){ 
+                                $from_state[]      = $value->from_state;
+                                $to_state[]        = $value->to_state;
+                                $price_per_kg[]    = $value->price_per_kg;
+                                $open_del_charge[] = $value->open_del_charge;
+                                
+                            }
+                            // dd($from_state);
+                            $client['from_state'] = implode(',', $from_state);
+                            $client['to_state'] = implode(',', $to_state);
+                            $client['price_per_kg'] = implode(',', $price_per_kg);
+                            $client['open_del_charge'] = implode(',', $open_del_charge);
+                        }else{
+                            $client['from_state'] = '';
+                            $client['to_state'] = '';
+                            $client['price_per_kg'] = 0;
+                            $client['open_del_charge'] = 0;
+                        }
+
                         if(isset($consignment->consigner_detail->get_state)){
                             $cnr_state = $consignment->consigner_detail->get_state->name;
                         } else{
@@ -215,11 +241,18 @@
                         <?php $open_del_charge = 250; ?>
                         <td>{{ $open_del_charge }} </td>
 
-                        <?php $docket_charge = 30;?>
-                        <td>{{$docket_charge}} </td>
+                        <?php 
+                        // $docket_charge = 30;
+                        if(isset($consignment->RegClientdetail)){
+                            $docket_price = (int)$consignment->RegClientdetail->docket_price;
+                        }else{
+                            $docket_price = 0;
+                        }
+                        ?>
+                        <td>{{$docket_price}} </td>
 
                         <?php 
-                            $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_charge;
+                            $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_price;
                         ?>
                         <td>{{$final_freight_amt}} </td>
                     </tr>
@@ -231,7 +264,7 @@
             @endif
         </tbody>
     </table>
-    <div class="perpage container-fluid">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
@@ -242,10 +275,10 @@
                             <label class=" mb-0">items per page</label>
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control report_perpage" data-action="<?php echo url()->current(); ?>">
-                                <option value="10" {{$perpage == '10' ? 'selected' : ''}}>10</option>
-                                <option value="50" {{$perpage == '50' ? 'selected' : ''}}>50</option>
-                                <option value="100" {{$perpage == '100'? 'selected' : ''}}>100</option>
+                            <select class="form-control perpage" data-action="<?php echo url()->current(); ?>">
+                                <option value="10" {{$peritem == '10' ? 'selected' : ''}}>10</option>
+                                <option value="50" {{$peritem == '50' ? 'selected' : ''}}>50</option>
+                                <option value="100" {{$peritem == '100'? 'selected' : ''}}>100</option>
                             </select>
                         </div>
                     </div>
@@ -254,6 +287,8 @@
         </div>
     </div>
     <div class="ml-auto mr-auto">
-        <nav class="navigation2 text-center" aria-label="Page navigation">{{$consignments->links()}}</nav>
+        <nav class="navigation2 text-center" aria-label="Page navigation">
+            {{$consignments->appends(request()->query())->links()}}
+        </nav>
     </div>
 </div>

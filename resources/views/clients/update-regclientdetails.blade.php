@@ -44,7 +44,7 @@
                                     <select class="form-control" name="data[{{$i}}][from_state]">
                                         <option value="">Select</option>
                                         @foreach($zonestates as $key => $state)
-                                        <option value="{{ $key }}" {{$clientpricedata->from_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
+                                        <option value="{{ $state }}" {{$clientpricedata->from_state == $state ? 'selected' : ''}}>{{ucwords($state)}}</option>
                                         @endforeach
                                     </select>
                                     </td>
@@ -52,7 +52,7 @@
                                     <select class="form-control" name="data[{{$i}}][to_state]">
                                         <option value="">Select</option>
                                         @foreach($zonestates as $key => $state)
-                                        <option value="{{ $key }}" {{$clientpricedata->to_state == $key ? 'selected' : ''}}>{{ucwords($state)}}</option>
+                                        <option value="{{ $state }}" {{$clientpricedata->to_state == $state ? 'selected' : ''}}>{{ucwords($state)}}</option>
                                         @endforeach
                                     </select>
                                     </td>
@@ -90,12 +90,12 @@
         rows+= '<tr class="rowcls">';
         rows+= '<td>';
         rows+= '<select class="form-control" name="data['+i+'][from_state]">';
-        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $key }}">{{ucwords($state)}}</option>@endforeach';
+        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $state }}">{{ucwords($state)}}</option>@endforeach';
         rows+= '</select>';
         rows+= '</td>';
         rows+= '<td>';
         rows+= '<select class="form-control" name="data['+i+'][to_state]">';
-        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $key }}">{{ucwords($state)}}</option>@endforeach';
+        rows+= '<option value="">Select</option>@foreach($zonestates as $key => $state)<option value="{{ $state }}">{{ucwords($state)}}</option>@endforeach';
         rows+= '</select>';
         rows+= '</td>';
         rows+= '<td>';
