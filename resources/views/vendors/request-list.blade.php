@@ -190,6 +190,11 @@ $(document).on('click', '.payment_button', function() {
                     '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option>'
                     );
                     var amt = $('#amt').val(data.req_data[0].balance);
+                    var amt = $('#amt').val();
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
 
                 }
             }

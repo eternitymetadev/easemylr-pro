@@ -401,7 +401,7 @@ class VendorController extends Controller
 
             if ($request->p_type == 'Balance') {
 
-                $getadvanced = PaymentRequest::select('advanced', 'balance')->whereIn('transaction_id', $request->transaction_id)->first();
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->payable_amount;
                 } else {
@@ -411,7 +411,7 @@ class VendorController extends Controller
 
                 // TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
 
-                PaymentRequest::whereIn('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type,'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type,'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
