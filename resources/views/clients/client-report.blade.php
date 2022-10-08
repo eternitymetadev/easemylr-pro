@@ -143,6 +143,7 @@
             type: 'get',
             cache: false,
             data: {
+                regclient: regclient,
                 startdate: startdate,
                 enddate: enddate
             },

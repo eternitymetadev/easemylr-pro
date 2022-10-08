@@ -58,9 +58,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
                     'ConsignerDetail.GetState:id,name',
                     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail.GetState:id,name', 
-                    // 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    // 'ShiptoDetail.GetState:id,name',
+                    'ConsigneeDetail.GetState:id,name',
                     'VehicleDetail:id,regn_no', 
                     'DriverDetail:id,name,fleet_id,phone', 
                     'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
@@ -74,16 +72,21 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
         $startdate = $this->startdate;
         $enddate = $this->enddate;
         $regclient = $this->regclient;
-        // dd($startdate);
+        
         if(isset($regclient)){
             $query = $query->where('regclient_id',$regclient);
         }
-
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->where('regclient_id',$regclient)->orderby('created_at','ASC')->get();
-        } else {
-            $consignments = $query->orderBy('id','ASC')->get();
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);
+        } 
+        if(isset($startdate) && isset($enddate) && isset($regclient)){
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate])->where('regclient_id',$regclient);
+        } 
+        else {
+            $query = $query;
         }
+
+        $consignments = $query->orderBy('id','ASC')->get();
 
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
