@@ -149,6 +149,7 @@ $(document).on('click', '.payment_button', function() {
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
             
             $('#drs_no_request').val(data.drs_no);
+            $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
             $('#transaction_id').val(data.req_data[0].transaction_id);
             $('#name').val(data.req_data[0].vendor_details.name);
             $('#email').val(data.req_data[0].vendor_details.email);

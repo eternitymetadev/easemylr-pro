@@ -118,7 +118,6 @@ class VendorController extends Controller
             }else{
                 $vendor_no = $vendor_no['vendor_no'] + 1;
             }
-            // $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
             $bankdetails = array('acc_holder_name' => $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 

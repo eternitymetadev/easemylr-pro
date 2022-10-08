@@ -16,19 +16,20 @@
                 <th>Total Lr</th>
                 <th>Vehicle No</th>
                 <th>Purchase Amount</th>
-                <th>Advance</th>
-                <th>Balance</th>
-                <th>Payment Status</th>
             </tr>
         </thead>
         <tbody>
             @if(count($paymentlist)>0)
             @foreach($paymentlist as $list)
             <tr>
-                <?php if($authuser->role_id == 2){?>
+                <?php if($authuser->role_id == 2){
+                    if(!empty($list->ConsignmentDetail->purchase_price)){?>
                 <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}"
-                        data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
+                    data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
                 </td>
+                <?php    }else{ ?>
+                <td>-</td>
+                <?php  } ?>
                 <?php } ?>
                 <td>DRS-{{$list->drs_no}}</td>
                 <!-- delivery Status ---- -->
@@ -57,39 +58,6 @@
                         style="margin-right:4px;">Add amount</button> </td>
                 <?php } ?>
                 <!-- end purchase price -->
-                <!-- ----Advanced Amount -->
-                <?php if (!empty($list->advanced)) { ?>
-                <td class='has-details'>
-                    clubed
-                    <span class="details">{{$list->advanced}}</span>
-                </td>
-                <?php } else { ?>
-                <td></td>
-                <?php } ?>
-                <!-- ----end advanced -->
-                <!-- Balance amount -->
-                <?php if (is_null($list->balance)) { ?>
-                    <td></td>
-                <?php } else { ?>
-                    <td class='has-details'>
-                    clubed
-                    <span class="details">{{$list->balance}}</span>
-                </td>
-                <?php } ?>
-                <!--  end balance -->
-                <!-- --------- payment status------- -->
-                <?php if($list->payment_status == 0){ ?>
-                <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unpaid</button> </td>
-                <?php } elseif($list->payment_status == 1) { ?>
-                <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Paid</button> </td>
-                <?php } elseif($list->payment_status == 2) { ?>
-                <td> <button type="button" class="btn btn-warning " style="margin-right:4px;">Sent</button> </td>
-                <?php } elseif($list->payment_status == 3) { ?>
-                <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Partial Paid</button> </td>
-                <?php } else{?>
-                <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button> </td>
-                <?php } ?>
-                <!-- --------- End Payment Status---- -->
 
             </tr>
 
