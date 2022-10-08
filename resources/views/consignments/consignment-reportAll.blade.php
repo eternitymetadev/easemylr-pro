@@ -54,12 +54,6 @@ div.relative {
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000
                         records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <!-- <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php //echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php// echo URL::to($prefix.'/reports/export2'); ?>">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                </div>
-                            </div> -->
                         <div class="col-sm-3">
                             <label>from</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
@@ -82,8 +76,7 @@ div.relative {
                             <a href="javascript:void();"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
                                 class="btn btn-primary btn-cstm ml-2 reset_filter"
-                                data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset
-                                    Filters</span></a>
+                                data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
                     @csrf
@@ -104,7 +97,7 @@ jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
     var search = jQuery('#search').val();
-    var url = jQuery('#search').attr('data-action');
+    
     jQuery.ajax({
         type: 'get',
         url: 'consignment-report2',

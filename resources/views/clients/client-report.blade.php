@@ -54,14 +54,8 @@
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4">
                     <form id="filter_report">
-                        <div class="row mt-4" style="margin-left: 8px; margin-bottom: 15px">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search" name="search" id="search" data-action="<?php echo URL::to($prefix.'/consignment-report2'); ?>" data-url="<?php echo URL::to($prefix.'/secondary_reports/exports'); ?>">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
+                        <div class="row mt-2" style="margin-left: 8px; margin-bottom: 15px">
+                            <div class="col-sm-2">
                                 <label>Regional Client</label>
                                 <select class="form-control" id="select_regclient" name="regionalclient_id">
                                     <option value="">Select Client</option>
@@ -76,27 +70,27 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <label>from</label>
                                 <input type="date" class="form-control" id="startdate" name="startdate">
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <label>To</label>
                                 <input type="date" class="form-control" id="enddate" name="enddate">
                             </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-primary" id="search_clientreport" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px">Search</button>
+                            <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary" id="search_clientreport" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px">Search</button>
                             </div>
-                            <div class="exportExcel ml-2">
-                                <a href="<?php echo URL::to($prefix.'/clients/export'); ?>" data-url="<?php echo URL::to($prefix.'/client-report'); ?>" class="downloadClientEx btn btn-white btn-cstm" data-action="<?php echo URL::to($prefix.'/clients/export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                            <div class="col-4" style="text-align: right;padding-right: 30px;">
+                                <a class="downloadClientEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px;margin-right: 12px;" data-url="<?php echo URL::to($prefix.'/client-report'); ?>" data-action="<?php echo URL::to($prefix.'/clients/export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+
+                                <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm reset_filter" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px;" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
                             </div>
-                            <div class="exportExcel ml-2">
-                                <a href="<?php echo url()->current(); ?>" class="btn btn-primary btn-cstm secreport_reset_button" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span> </a>
-                            </div>
+                            
                         </div>
                     </form>
                     @csrf
-                    <div class="table-responsive">
+                    <div class="main-table table-responsive">
                         @include('clients.client-report-ajax')
                     </div>
                 </div>
@@ -112,7 +106,7 @@
         var enddate = $("#enddate").val();
         var search = jQuery('#search').val();
         var regclient = jQuery('#select_regclient').val();
-        var url =  jQuery('#search').attr('data-action');
+        
         jQuery.ajax({
             type      : 'get',
             url       : 'client-report',
@@ -123,51 +117,85 @@
             dataType  : 'json',
             success:function(response){
                 if(response.html){
-                jQuery('.table-responsive').html(response.html);
+                jQuery('.main-table').html(response.html);
                 }
             }
         });
         return false;
     });
 
-    jQuery(document).on('click','.downloadClientEx',function(event){
-        event.preventDefault();
-        jQuery(".load-main").show();
+    jQuery(document).on('click', '.downloadClientEx', function(event) {
+    event.preventDefault();
         var geturl = jQuery(this).attr('data-action');
-
-        var startdate = $("#startdate").val();
-        var enddate = $("#enddate").val();
-
         var regclient = jQuery('#select_regclient').val();
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+
         var search = jQuery('#search').val();
-        var url =  jQuery('#search').attr('data-url');
-        if(startdate)
-            geturl = geturl+'?startdate='+startdate+'&enddate='+enddate+'&regclient='+regclient;
-        else if(search)
-            geturl = geturl+'?search='+search;
-        else if(regclient)
-            geturl = geturl+'?regclient='+regclient;
+        var url = jQuery('#search').attr('data-url');
+        if (startdate)
+            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&regclient=' + regclient;
+        else if (search)
+            geturl = geturl + '?search=' + search;
 
         jQuery.ajax({
-            url         : url,
-            type        : 'get',
-            cache       : false,
-            data      : {startdate:startdate,enddate:enddate,search:search,regclient:regclient},
-            headers     : {
+            url: geturl,
+            type: 'get',
+            cache: false,
+            data: {
+                regclient: regclient,
+                startdate: startdate,
+                enddate: enddate
+            },
+            headers: {
                 'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
             },
             processData: true,
-            beforeSend  : function () {
+            beforeSend: function() {
                 //jQuery(".load-main").show();
             },
-            complete: function () {
+            complete: function() {
                 //jQuery(".load-main").hide();
             },
-            success:function(response){
-                jQuery(".load-main").hide();
-                setTimeout(() => {window.location.href = geturl},10);
+            success: function(response) {
+                // jQuery(".load-main").hide();
+                setTimeout(() => {
+                    window.location.href = geturl
+                }, 10);
             }
         });
+    });
+
+    jQuery(document).on('change', '.report_perpage', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var regclient = jQuery('#select_regclient').val();
+
+        if (startdate == enddate) {
+            startdate = "";
+            enddate = "";
+        }
+        var url = jQuery(this).attr('data-action');
+        var peritem = jQuery(this).val();
+        jQuery.ajax({
+            type      : 'get', 
+            url       : url,
+            data      : {peritem:peritem,startdate:startdate,enddate:enddate,regclient:regclient},
+            headers   : {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    if (response.page == 'lead_note') {
+                        jQuery('#Note .main-table').html(response.html);
+                    } else {
+                        jQuery('.main-table').html(response.html);
+                    }
+                }
+            }
+        });
+        return false;
     });
 </script>
 

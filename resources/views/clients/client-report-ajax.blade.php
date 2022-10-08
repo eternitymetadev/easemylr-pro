@@ -1,3 +1,4 @@
+<p class="totalcount">Total Count: <span class = "reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
     <table class="table table-hover" style="width:100%">
         <thead>
@@ -47,6 +48,9 @@
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
+                $cnr_state = $consignment->ConsignerDetail->state_id;
+                $cnee_state = $consignment->ConsigneeDetail->state_id;
+                //echo $cstate;die;
             ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
@@ -180,31 +184,17 @@
                         <td>{{ $final}} </td>
 
                         <?php
-                        if(isset($consignment->consigner_detail->get_state)){
-                            $cnr_state = $consignment->consigner_detail->get_state->name;
-                        } else{
-                            $cnr_state = '';
+                        $data = DB::table('client_price_details')->select('from_state','to_state','price_per_kg','open_delivery_price')->where('from_state',$cnr_state)->where('to_state',$cnee_state)->first();
+                        if(isset($data->price_per_kg)){
+                            $price_per_kg = $data->price_per_kg;
+                        }else{
+                            $price_per_kg = 0;
                         }
-                        if(isset($consignment->shipto_detail->get_state)){
-                            $shipto_state = $consignment->shipto_detail->get_state->name;
-                        } else{
-                            $shipto_state = '';
-                        }
-                            
-                        if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
-                            $per_kg_rate = 3.80;
-                        } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
-                            $per_kg_rate = 6.20;
-                        } elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
-                            $per_kg_rate = 6.90;
-                        } if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
-                            $per_kg_rate = 4.50;
-                        } else{
-                            $per_kg_rate = 'Delivery Rate Awaited';
-                        } ?>
-                        <td>{{ $per_kg_rate ?? '-'}} </td>
+                        ?>
+
+                        <td>{{ $price_per_kg }} </td>
                         <?php
-                        $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$per_kg_rate;
+                        $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$price_per_kg;
                         if(isset($perkg_rate3)){
                             $perkg_rate3 = $perkg_rate3;
                         } else{
@@ -212,14 +202,26 @@
                         }?>
                         <td>{{ $perkg_rate3 ?? '0'}} </td>
 
-                        <?php $open_del_charge = 250; ?>
-                        <td>{{ $open_del_charge }} </td>
+                        <?php 
+                        if(isset($data->open_delivery_price)){
+                            $open_del_charge = $data->open_delivery_price;
+                        }else{
+                            $open_del_charge = 0; 
+                        }
+                        ?>
+                        <td>{{  $open_del_charge }} </td>
 
-                        <?php $docket_charge = 30;?>
-                        <td>{{$docket_charge}} </td>
+                        <?php
+                        if(isset($consignment->RegClientdetail)){
+                            $docket_price = (int)$consignment->RegClientdetail->docket_price;
+                        }else{
+                            $docket_price = 0;
+                        }
+                        ?>
+                        <td>{{$docket_price}} </td>
 
                         <?php 
-                            $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_charge;
+                            $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_price;
                         ?>
                         <td>{{$final_freight_amt}} </td>
                     </tr>
@@ -231,7 +233,7 @@
             @endif
         </tbody>
     </table>
-    <div class="perpage container-fluid">
+    <div class="container-fluid perpage">
         <div class="row">
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
@@ -243,9 +245,9 @@
                         </div>
                         <div class="col-md-6">
                             <select class="form-control report_perpage" data-action="<?php echo url()->current(); ?>">
-                                <option value="10" {{$perpage == '10' ? 'selected' : ''}}>10</option>
-                                <option value="50" {{$perpage == '50' ? 'selected' : ''}}>50</option>
-                                <option value="100" {{$perpage == '100'? 'selected' : ''}}>100</option>
+                                <option value="10" {{$peritem == '10' ? 'selected' : ''}}>10</option>
+                                <option value="50" {{$peritem == '50' ? 'selected' : ''}}>50</option>
+                                <option value="100" {{$peritem == '100'? 'selected' : ''}}>100</option>
                             </select>
                         </div>
                     </div>
@@ -254,6 +256,8 @@
         </div>
     </div>
     <div class="ml-auto mr-auto">
-        <nav class="navigation2 text-center" aria-label="Page navigation">{{$consignments->links()}}</nav>
+        <nav class="navigation2 text-center" aria-label="Page navigation">
+            {{$consignments->appends(request()->query())->links()}}
+        </nav>
     </div>
 </div>

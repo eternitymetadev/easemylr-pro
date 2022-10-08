@@ -20,19 +20,20 @@ use App\Models\User;
 use Session;
 use Helper;
 use Auth;
+use DB;
 
 class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
 {
 
     protected $startdate;
     protected $enddate;
-    protected $search;
+    // protected $search;
     protected $regclient;
 
-    function __construct($startdate,$enddate,$search,$regclient) {
+    function __construct($regclient,$startdate,$enddate) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        $this->search = $search;
+        // $this->search = $search;
         $this->regclient = $regclient;
     }
 
@@ -43,45 +44,52 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
         $arr = array();
 
         $query = ConsignmentNote::query();
+        
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        // $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
+        $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                    'ConsignerDetail.GetState:id,name',
+                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    'ConsigneeDetail.GetState:id,name',
+                    'VehicleDetail:id,regn_no', 
+                    'DriverDetail:id,name,fleet_id,phone', 
+                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                    'VehicleType:id,name',
+                    'RegClientdetail:id,regclient_id,docket_price',
+                    'RegClientdetail.ClientPriceDetails'
+                );
+        
+    
         $startdate = $this->startdate;
         $enddate = $this->enddate;
-
-        if(!empty($request->search)){
-            $search = $request->search;
-            $searchT = str_replace("'","",$search);
-            $query->where(function ($query)use($search,$searchT) {
-                $query->where('id', 'like', '%' . $search . '%')
-                ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                    $regclientquery->where('name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                    $query->where(function ($cnrquery)use($search,$searchT) {
-                        $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                    });
-                })
-                ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                    $query->where(function ($cneequery)use($search,$searchT) {
-                        $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                    });
-                });
-            });
+        $regclient = $this->regclient;
+        
+        if(isset($regclient)){
+            $query = $query->where('regclient_id',$regclient);
         }
-
-        if(!empty($request->regclient)){
-            $search = $request->regclient;
-            $query = $query->where('regclient_id',$search);
-        }
-    
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->get();
-        }else {
-            $consignments = $query->orderBy('id','DESC')->get();
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);
+        } 
+        if(isset($startdate) && isset($enddate) && isset($regclient)){
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate])->where('regclient_id',$regclient);
+        } 
+        else {
+            $query = $query;
         }
+
+        $consignments = $query->orderBy('id','ASC')->get();
 
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
-            
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
@@ -127,55 +135,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $order_id = $consignment->order_id;
                 }
-
-                if(!empty($consignment->ConsignerDetail->GetRegClient->BaseClient->client_name )){
-                    $baseclient_name = ucfirst($consignment->ConsignerDetail->GetRegClient->BaseClient->client_name);
-                }else{
-                    $baseclient_name = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->GetRegClient->name )){
-                    $regclient_name = ucfirst($consignment->ConsignerDetail->GetRegClient->name);
-                }else{
-                    $regclient_name = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->nick_name )){
-                    $cnr_nickname = ucfirst($consignment->ConsignerDetail->nick_name);
-                }else{
-                    $cnr_nickname = '-';
-                }
-
-                if(!empty($consignment->ConsignerDetail->city )){
-                    $cnr_city = ucfirst($consignment->ConsignerDetail->city);
-                }else{
-                    $cnr_city = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->nick_name )){
-                    $cnee_nickname = ucfirst($consignment->ConsigneeDetail->nick_name);
-                }else{
-                    $cnee_nickname = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->city )){
-                    $cnee_city = ucfirst($consignment->ConsigneeDetail->city);
-                }else{
-                    $cnee_city = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->postal_code )){
-                    $cnee_postal_code = ucfirst($consignment->ConsigneeDetail->postal_code);
-                }else{
-                    $cnee_postal_code = '-';
-                }
-
-                if(!empty($consignment->ConsigneeDetail->district )){
-                    $cnee_district = ucfirst($consignment->ConsigneeDetail->district);
-                }else{
-                    $cnee_district = '-';
-                }
-
+                
                 if(empty($consignment->invoice_no)){
                     $invno =  $order_item['invoices'] ?? '-';
                     $invdate = $invoice['date']  ?? '-';
@@ -195,29 +155,29 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $status = 'Unknown';
                 }
-
-                if($consignment->total_quantity>0){
-                    $avg_wt_per_carton = $consignment->total_gross_weight/$consignment->total_quantity;
+                
+                if((int)$consignment->total_quantity>0){
+                    $avg_wt_per_carton = (int)$consignment->total_gross_weight/(int)$consignment->total_quantity;
                 }else{
                     $avg_wt_per_carton = 0;
                 }
-
+                
                 if($avg_wt_per_carton > 5){
                     $check_cft_kgs = $avg_wt_per_carton;
                 } else{
                     $check_cft_kgs = 5;
                 }
-
-                if($consignment->total_gross_weight > 25){
-                    $check_per_shipment_kgs_moq = $consignment->total_gross_weight;
+                
+                if((int)$consignment->total_gross_weight > 25){
+                    $check_per_shipment_kgs_moq = (int)$consignment->total_gross_weight;
                 } else{
                     $check_per_shipment_kgs_moq = 25;
                 }
-
-                if($check_per_shipment_kgs_moq > $consignment->total_gross_weight){
+                
+                if($check_per_shipment_kgs_moq > (int)$consignment->total_gross_weight){
                     $final_chargeable_weight_check2 = $check_per_shipment_kgs_moq;
                 } else{
-                    $final_chargeable_weight_check2 = $consignment->total_gross_weight;
+                    $final_chargeable_weight_check2 = (int)$consignment->total_gross_weight;
                 }
 
                 if($check_per_shipment_kgs_moq > $check_cft_kgs){
@@ -242,42 +202,51 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                 } else{
                     $shipto_state = '';
                 }
-                    
-                if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
-                    $per_kg_rate = 3.80;
-                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
-                    $per_kg_rate = 6.20;
-                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
-                    $per_kg_rate = 6.90;
-                } if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
-                    $per_kg_rate = 4.50;
-                } else{
-                    $per_kg_rate = 'Delivery Rate Awaited';
-                }
+                
+                $cnr_state = @$consignment->ConsignerDetail->state_id;
+                $cnee_state = @$consignment->ConsigneeDetail->state_id;
 
-                $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$per_kg_rate;
+                $data = DB::table('client_price_details')->select('from_state','to_state','price_per_kg','open_delivery_price')->where('from_state',$cnr_state)->where('to_state',$cnee_state)->first();
+                if(isset($data->price_per_kg)){
+                    $price_per_kg = $data->price_per_kg;
+                }else{
+                    $price_per_kg = 0;
+                }
+                        
+                $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$price_per_kg;
                 if(isset($perkg_rate3)){
                     $perkg_rate3 = $perkg_rate3;
                 } else{
                     $perkg_rate3 = 0;
                 }
+                
+                if(isset($data->open_delivery_price)){
+                    $open_del_charge = $data->open_delivery_price;
+                }else{
+                    $open_del_charge = 0; 
+                }
 
-                $open_del_charge = 250;
-                $docket_charge = 30;
-                $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_charge;
+
+                if(isset($consignment->RegClientdetail)){
+                    $docket_price = (int)$consignment->RegClientdetail->docket_price;
+                }else{
+                    $docket_price = 0;
+                }
+
+                $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_price;
 
                 $arr[] = [
                     'consignment_id'        => $consignment_id,
                     'consignment_date'      => Helper::ShowDayMonthYearslash($consignment_date),
                     'order_id'              => $order_id,
-                    'base_client'           => $baseclient_name,
-                    'regional_client'       => $regclient_name,
-                    'consigner_nick_name'   => $cnr_nickname,
-                    'consigner_city'        => $cnr_city ,
-                    'consignee_nick_name'   => $cnee_nickname,
-                    'consignee_city'        => $cnee_city,
-                    'consignee_postal'      => $cnee_postal_code,
-                    'consignee_district'    => $cnee_district,
+                    'base_client'           => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
+                    'regional_client'       => @$consignment->ConsignerDetail->GetRegClient->name,
+                    'consigner_nick_name'   => @$consignment->ConsignerDetail->nick_name,
+                    'consigner_city'        => @$consignment->ConsignerDetail->city,
+                    'consignee_nick_name'   => @$consignment->ConsigneeDetail->nick_name,
+                    'consignee_city'        => @$consignment->ConsigneeDetail->city,
+                    'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,
+                    'consignee_district'    => @$consignment->ConsigneeDetail->district,
                     'consignee_state'       => @$consignment->ConsigneeDetail->GetState->name,
                     'invoice_no'            => $invno,
                     'invoice_date'          => $invdate,
@@ -297,10 +266,10 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'final_chargeable_weight_check2' => $final_chargeable_weight_check2,
                     'final_chargeable_weight_check1' => $final_chargeable_weight_check1,
                     'final'                 => $final,
-                    'per_kg_rate'           => $per_kg_rate,
+                    'per_kg_rate'           => $price_per_kg,
                     'perkg_rate3'           => $perkg_rate3,
                     'open_del_charge'       => $open_del_charge,
-                    'docket_charge'         => $docket_charge,
+                    'docket_price'         => $docket_price,
                     'final_freight_amt'     => $final_freight_amt,
                 ];
             }

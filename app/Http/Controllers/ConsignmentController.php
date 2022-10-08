@@ -165,7 +165,6 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('consignment_notes.branch_id', $cc);
         }
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
-        // echo "<pre>"; print_r($consignments->JobDetail); die;
         $consignments = $consignments->appends($request->query());
         
 

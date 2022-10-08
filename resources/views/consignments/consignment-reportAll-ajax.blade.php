@@ -1,13 +1,8 @@
-<p class="totalcount">Total Count:<span class = "reportcount">{{$consignments->total()}}</span></p>
+<p class="totalcount">Total Count: <span class = "reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
-    <!-- <table id="consignment_reportall" class="table table-hover" style="width:100%"> -->
     <table id="" class="table table-hover" style="width:100%">
-        <div class="btn-group relative">
-            <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
-        </div>
         <thead>
             <tr>
-                <!-- <th> </th> --> 
                 <th>LR No</th>
                 <th>LR Date</th>
                 <th>Order No</th>
@@ -59,27 +54,26 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
-                //    echo'<pre>'; print_r($consignment->consignment_items); die;
-                $order = array();
-                $invoices = array();
-                $inv_date = array();
-                $inv_amt = array();
-                foreach($consignment->ConsignmentItems as $orders){ 
-                    
-                    $order[] = $orders->order_id;
-                    $invoices[] = $orders->invoice_no;
-                    $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                    $inv_amt[] = $orders->invoice_amount;
-                }
-                //echo'<pre>'; print_r($order); die;
-                $order_item['orders'] = implode(',', $order);
-                $order_item['invoices'] = implode(',', $invoices);
-                $invoice['date'] = implode(',', $inv_date);
-                $invoice['amt'] = implode(',', $inv_amt);?>
+                    $order = array();
+                    $invoices = array();
+                    $inv_date = array();
+                    $inv_amt = array();
+                    foreach($consignment->ConsignmentItems as $orders){ 
+                        
+                        $order[] = $orders->order_id;
+                        $invoices[] = $orders->invoice_no;
+                        $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+                        $inv_amt[] = $orders->invoice_amount;
+                    }
+                    //echo'<pre>'; print_r($order); die;
+                    $order_item['orders'] = implode(',', $order);
+                    $order_item['invoices'] = implode(',', $invoices);
+                    $invoice['date'] = implode(',', $inv_date);
+                    $invoice['amt'] = implode(',', $inv_amt);?>
 
-                <td>{{ $orders->order_id ?? "-" }}</td>
+                    <td>{{ $orders->order_id ?? "-" }}</td>
 
-            <?php }else{ ?>
+                <?php }else{ ?>
                 <td>-</td>
             <?php } }else{ ?>
             <td>{{ $consignment->order_id ?? "-" }}</td>
