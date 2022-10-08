@@ -111,14 +111,14 @@ class VendorController extends Controller
                 $decl_file = null;
             }
 
-            $no_of_digit = 5;
             $vendor = DB::table('vendors')->select('vendor_no')->latest('vendor_no')->first();
             $vendor_no = json_decode(json_encode($vendor), true);
             if (empty($vendor_no) || $vendor_no == null) {
-                $vendor_no['vendor_no'] = 0;
+                $vendor_no = 10101;
+            }else{
+                $vendor_no = $vendor_no['vendor_no'] + 1;
             }
-            $number = $vendor_no['vendor_no'] + 1;
-            $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+            // $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
             $bankdetails = array('acc_holder_name' => $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 

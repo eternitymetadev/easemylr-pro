@@ -37,6 +37,7 @@ class VendorExport implements FromCollection, WithHeadings,ShouldQueue
                
                 
                     $arr[] = [
+                        'vendor_no'               => $value->vendor_no,
                         'name'                    => $value->name,
                         'email'                   => @$value->email,
                         'driver'                  => @$value->DriverDetail->name,    
@@ -65,6 +66,7 @@ class VendorExport implements FromCollection, WithHeadings,ShouldQueue
     public function headings(): array  
     {
         return [
+            'Vendor No',
             'Name',
             'Email',
             'Driver',
