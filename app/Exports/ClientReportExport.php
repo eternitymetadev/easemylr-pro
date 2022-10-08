@@ -20,6 +20,7 @@ use App\Models\User;
 use Session;
 use Helper;
 use Auth;
+use DB;
 
 class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
 {
@@ -29,7 +30,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
     // protected $search;
     protected $regclient;
 
-    function __construct($startdate,$enddate,$regclient) {
+    function __construct($regclient,$startdate,$enddate) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         // $this->search = $search;
@@ -43,13 +44,10 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
         $arr = array();
 
         $query = ConsignmentNote::query();
-
-        $startdate = $this->startdate;
-        $enddate = $this->enddate;
-
+        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
+        // $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
@@ -71,21 +69,24 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'RegClientdetail:id,regclient_id,docket_price',
                     'RegClientdetail.ClientPriceDetails'
                 );
-
-        if(isset($request->regclient)){
-            $search = $request->regclient;
-            $query = $query->where('regclient_id',$search);
+        
+    
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+        $regclient = $this->regclient;
+        // dd($startdate);
+        if(isset($regclient)){
+            $query = $query->where('regclient_id',$regclient);
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','ASC')->get();
-        }else {
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->where('regclient_id',$regclient)->orderby('created_at','ASC')->get();
+        } else {
             $consignments = $query->orderBy('id','ASC')->get();
         }
 
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
-            echo "<pre>"; print_r($consignment->RegClientdetail->ClientPriceDetails); die;
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
@@ -198,53 +199,30 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                 } else{
                     $shipto_state = '';
                 }
-
-                if(!empty($consignment->ConsignmentItems)){
-                    $from_state = array();
-                    $to_state = array();
-                    $inv_date = array();
-                    $inv_amt = array();
-
-                    foreach($consignment->RegClientdetail->ClientPriceDetails as $value){ 
-                        $from_state[] = $value->from_state;
-                        $to_state[]   = $value->to_state;
-                        $price_per_kg[]   = $value->price_per_kg;
-                        $open_del_charge[]   = $value->open_del_charge;                      
-                        
-                    }
                 
-                    $client['from_state'] = implode(',', $from_state);
-                    $client['to_state'] = implode(',', $to_state);
-                    $client['price_per_kg'] = implode(',', $inv_date);
-                    $client['open_del_charge'] = implode(',', $inv_amt);
-                    dd($client['from_state']);
-                }else{
-                    $client['from_state'] = '';
-                    $client['to_state'] = '';
-                    $client['price_per_kg'] = 0;
-                    $client['open_del_charge'] = 0;
-                }
-                    
-                if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
-                    $per_kg_rate = 3.80;
-                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
-                    $per_kg_rate = 6.20;
-                } elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
-                    $per_kg_rate = 6.90;
-                } if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
-                    $per_kg_rate = 4.50;
-                } else{
-                    $per_kg_rate = 'Delivery Rate Awaited';
-                }
+                $cnr_state = @$consignment->ConsignerDetail->state_id;
+                $cnee_state = @$consignment->ConsigneeDetail->state_id;
 
-                $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$per_kg_rate;
+                $data = DB::table('client_price_details')->select('from_state','to_state','price_per_kg','open_delivery_price')->where('from_state',$cnr_state)->where('to_state',$cnee_state)->first();
+                if(isset($data->price_per_kg)){
+                    $price_per_kg = $data->price_per_kg;
+                }else{
+                    $price_per_kg = 0;
+                }
+                        
+                $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$price_per_kg;
                 if(isset($perkg_rate3)){
                     $perkg_rate3 = $perkg_rate3;
                 } else{
                     $perkg_rate3 = 0;
                 }
+                
+                if(isset($data->open_delivery_price)){
+                    $open_del_charge = $data->open_delivery_price;
+                }else{
+                    $open_del_charge = 0; 
+                }
 
-                $open_del_charge = 250;
 
                 if(isset($consignment->RegClientdetail)){
                     $docket_price = (int)$consignment->RegClientdetail->docket_price;
@@ -252,11 +230,6 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     $docket_price = 0;
                 }
 
-                // if(isset($consignment->RegClientdetail->ClientPriceDetails)){
-                //     $open_del_charge = ;
-                // }else{
-                //     $open_del_charge = 0;
-                // }
                 $final_freight_amt = $perkg_rate3+$open_del_charge+$docket_price;
 
                 $arr[] = [
@@ -290,7 +263,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'final_chargeable_weight_check2' => $final_chargeable_weight_check2,
                     'final_chargeable_weight_check1' => $final_chargeable_weight_check1,
                     'final'                 => $final,
-                    'per_kg_rate'           => $per_kg_rate,
+                    'per_kg_rate'           => $price_per_kg,
                     'perkg_rate3'           => $perkg_rate3,
                     'open_del_charge'       => $open_del_charge,
                     'docket_price'         => $docket_price,

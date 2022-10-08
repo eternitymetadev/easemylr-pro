@@ -1,3 +1,4 @@
+<p class="totalcount">Total Count: <span class = "reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
     <table class="table table-hover" style="width:100%">
         <thead>
@@ -47,6 +48,9 @@
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
+                $cnr_state = $consignment->ConsignerDetail->state_id;
+                $cnee_state = $consignment->ConsigneeDetail->state_id;
+                //echo $cstate;die;
             ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
@@ -180,57 +184,17 @@
                         <td>{{ $final}} </td>
 
                         <?php
-                        // echo "<pre>"; print_r($consignment->RegClientdetail);die;
-                        if(isset($consignment->RegClientdetail->ClientPriceDetails)){
-                            $from_state = array();
-                            $to_state = array();
-                            $price_per_kg = array();
-                            $open_del_charge = array();
-        
-                            foreach($consignment->RegClientdetail->ClientPriceDetails as $value){ 
-                                $from_state[]      = $value->from_state;
-                                $to_state[]        = $value->to_state;
-                                $price_per_kg[]    = $value->price_per_kg;
-                                $open_del_charge[] = $value->open_del_charge;
-                                
-                            }
-                            // dd($from_state);
-                            $client['from_state'] = implode(',', $from_state);
-                            $client['to_state'] = implode(',', $to_state);
-                            $client['price_per_kg'] = implode(',', $price_per_kg);
-                            $client['open_del_charge'] = implode(',', $open_del_charge);
+                        $data = DB::table('client_price_details')->select('from_state','to_state','price_per_kg','open_delivery_price')->where('from_state',$cnr_state)->where('to_state',$cnee_state)->first();
+                        if(isset($data->price_per_kg)){
+                            $price_per_kg = $data->price_per_kg;
                         }else{
-                            $client['from_state'] = '';
-                            $client['to_state'] = '';
-                            $client['price_per_kg'] = 0;
-                            $client['open_del_charge'] = 0;
+                            $price_per_kg = 0;
                         }
+                        ?>
 
-                        if(isset($consignment->consigner_detail->get_state)){
-                            $cnr_state = $consignment->consigner_detail->get_state->name;
-                        } else{
-                            $cnr_state = '';
-                        }
-                        if(isset($consignment->shipto_detail->get_state)){
-                            $shipto_state = $consignment->shipto_detail->get_state->name;
-                        } else{
-                            $shipto_state = '';
-                        }
-                            
-                        if($cnr_state == 'Punjab' && $shipto_state == 'Punjab'){
-                            $per_kg_rate = 3.80;
-                        } elseif($cnr_state == 'Punjab' && $shipto_state == 'Jammu and Kashmir'){
-                            $per_kg_rate = 6.20;
-                        } elseif($cnr_state == 'Punjab' && $shipto_state == 'Himachal Pradesh'){
-                            $per_kg_rate = 6.90;
-                        } if($cnr_state == 'Haryana' && $shipto_state == 'Haryana'){
-                            $per_kg_rate = 4.50;
-                        } else{
-                            $per_kg_rate = 'Delivery Rate Awaited';
-                        } ?>
-                        <td>{{ $per_kg_rate ?? '-'}} </td>
+                        <td>{{ $price_per_kg }} </td>
                         <?php
-                        $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$per_kg_rate;
+                        $perkg_rate3 = (int)$final_chargeable_weight_check2 * (int)$price_per_kg;
                         if(isset($perkg_rate3)){
                             $perkg_rate3 = $perkg_rate3;
                         } else{
@@ -238,11 +202,16 @@
                         }?>
                         <td>{{ $perkg_rate3 ?? '0'}} </td>
 
-                        <?php $open_del_charge = 250; ?>
-                        <td>{{ $open_del_charge }} </td>
-
                         <?php 
-                        // $docket_charge = 30;
+                        if(isset($data->open_delivery_price)){
+                            $open_del_charge = $data->open_delivery_price;
+                        }else{
+                            $open_del_charge = 0; 
+                        }
+                        ?>
+                        <td>{{  $open_del_charge }} </td>
+
+                        <?php
                         if(isset($consignment->RegClientdetail)){
                             $docket_price = (int)$consignment->RegClientdetail->docket_price;
                         }else{

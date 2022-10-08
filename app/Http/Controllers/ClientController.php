@@ -368,7 +368,6 @@ class ClientController extends Controller
         $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
         $zonestates = Zone::all()->unique('state')->pluck('state','id');
         $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails.ZoneFromState')->first();
-        // dd($getClientDetail->ClientPriceDetails);
         
         return view('clients.update-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name, 'getClientDetail'=>$getClientDetail]);
     }
@@ -491,30 +490,7 @@ class ClientController extends Controller
                     'VehicleType:id,name',
                     'RegClientdetail:id,regclient_id,docket_price',
                     'RegClientdetail.ClientPriceDetails'
-                );            
-
-            if(!empty($request->search)){
-                $search = $request->search;
-                $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    });
-                    
-
-                });
-            }
+                );
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -540,9 +516,10 @@ class ClientController extends Controller
             }else {
                 $consignments = $query->orderBy('id','DESC')->paginate($peritem);
             }
-            
-            $html =  view('clients.client-report-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             $consignments = $consignments->appends($request->query());
+
+            $html =  view('clients.client-report-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            
 
             return response()->json(['html' => $html]);
         }
@@ -567,11 +544,11 @@ class ClientController extends Controller
             );
 
         $regionalclients = RegionalClient::select('id','name','location_id')->get();
+
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
         
         return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'peritem'=>$peritem, 'prefix' => $this->prefix]);
-
     }
 
     public function getConsignmentClient(Request $request)
@@ -594,7 +571,7 @@ class ClientController extends Controller
 
     public function clientReportExport(Request $request)
     {
-        return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate,$request->search), 'client_reports.csv');
+        return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate), 'nurtureclient_reports.csv');
     }
 
 
