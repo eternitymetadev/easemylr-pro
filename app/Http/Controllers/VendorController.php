@@ -356,6 +356,7 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+
         $drs = explode(',', $request->drs_no);
         $randm = rand();
         $pfu = 'ETF';
@@ -408,7 +409,7 @@ class VendorController extends Controller
                 }
                 $advance = $getadvanced->advanced + $request->payable_amount;
 
-                // TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
 
                 PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type,'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
@@ -448,7 +449,7 @@ class VendorController extends Controller
 
                 PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type ,'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
 
-                // TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
             }
 
             $new_response['success'] = true;

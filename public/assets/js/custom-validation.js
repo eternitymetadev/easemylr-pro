@@ -1903,9 +1903,12 @@ $('#payment_form').submit(function (e) {
         processData: false,
         contentType: false,
         beforeSend: function () {
-
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
         },
         success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
             if(data.success == true){
 
             swal('success', data.message, 'success')

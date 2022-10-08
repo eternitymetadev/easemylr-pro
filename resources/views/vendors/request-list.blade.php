@@ -174,7 +174,7 @@ $(document).on('click', '.payment_button', function() {
 
                 } else {
                     var amt = $('#amt').val(data.req_data[0].balance);
-                    alert(amt);
+                   
                     //calculate
                     var tds_rate = $('#tds_rate').val();
                     var cal = (tds_rate / 100) * amt;

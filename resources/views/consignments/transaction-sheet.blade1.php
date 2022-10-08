@@ -451,7 +451,7 @@ $('#updt_vehicle').submit(function(e) {
             $('.indicator-label').prop('disabled', true);
 
             $(".indicator-progress").show();
-            $(".indicator-label").hide();
+            $(".indicator-label").hide(); 
         },
         complete: function(response) {
             $('.indicator-progress').prop('disabled', true);

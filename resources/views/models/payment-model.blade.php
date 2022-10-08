@@ -134,7 +134,10 @@
                     <div class="modal-footer">
                         <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
                             Discard</button>
-                        <button type="submit" id="crt_pytm" class="btn btn-warning">Create Payment</button>
+                        <!-- <button type="submit" id="crt_pytm" class="btn btn-warning">Create Payment</button> -->
+                        <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Create Payment</span>
+                        <span class="indicator-progress" style="display: none;">Please wait...
+            	        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
                 </form>
             </div>
         </div>
