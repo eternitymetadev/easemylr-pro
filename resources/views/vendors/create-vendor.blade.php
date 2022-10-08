@@ -77,7 +77,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Vendor Type<span
                                             class="text-danger">*</span></label>
-                                    <select class="form-control  my-select2" id="vendor_type" name="vendor_type"
+                                    <select class="form-control" id="vendor_type" name="vendor_type"
                                         tabindex="-1">
                                         <option selected disabled>Select</option>
                                         <option value="Individual">Individual </option>

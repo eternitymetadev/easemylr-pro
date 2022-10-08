@@ -1848,8 +1848,14 @@ $('#vendor-master').submit(function (e) {
     var formData = new FormData(this);
     var v_name = $('#vendor_name').val();
     var acc_no = $('#account_no').val();
+    var vendor_type = $('#vendor_type').val();
+    
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
+        return false;
+    }
+    if (!vendor_type) {
+        swal("Error!", "Please Select Vendor Type", "error");
         return false;
     }
     if (!acc_no) {
@@ -1882,6 +1888,12 @@ $('#vendor-master').submit(function (e) {
 $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
+    var tds_rate = $('#tds_rate').val();
+
+    if(!tds_rate){
+        swal('Error','please add tds rate in vendor','error');
+        return false;
+    }
 
     $.ajax({
         url: "create-payment",
