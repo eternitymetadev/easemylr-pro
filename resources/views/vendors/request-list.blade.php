@@ -57,8 +57,7 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified
-                                Lr</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Request List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -90,7 +89,7 @@ div.relative {
                     <tr>
 
                         <td>{{ $requestlist->transaction_id ?? "-" }}</td>
-                        <td>{{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
+                        <td class="show-drs" data-id="{{$requestlist->transaction_id}}">{{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
@@ -143,12 +142,12 @@ $(document).on('click', '.payment_button', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
+                $('#p_type').empty();
 
             },
         success: function(data) {
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
-
-
+            
             $('#drs_no_request').val(data.drs_no);
             $('#transaction_id').val(data.req_data[0].transaction_id);
             $('#name').val(data.req_data[0].vendor_details.name);
@@ -165,12 +164,16 @@ $(document).on('click', '.payment_button', function() {
                 $('#p_type').append('<option value="Balance">Balance</option>');
                 //check balance if null or delevery successful
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                   
-                    $('#amt').val(data.req_data[0].advanced);
-                    ////
-                    // var amt = $('#amt').val(data.get_data.consignment_detail.purchase_price);
+                     $('#amt').val(data.req_data[0].total_amount);
+                     var amt = $('#amt').val();
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
+
                 } else {
                     var amt = $('#amt').val(data.req_data[0].balance);
+                    alert(amt);
                     //calculate
                     var tds_rate = $('#tds_rate').val();
                     var cal = (tds_rate / 100) * amt;
@@ -178,9 +181,17 @@ $(document).on('click', '.payment_button', function() {
                     $('#tds_dedut').val(final_amt);
                 }
             } else {
+                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                 $('#p_type').append(
                     '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
                     );
+                }else{
+                    $('#p_type').append(
+                    '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option>'
+                    );
+                    var amt = $('#amt').val(data.req_data[0].balance);
+
+                }
             }
         }
 
@@ -224,7 +235,7 @@ $("#purchase_amount").keyup(function() {
 // ====================================================== //
 $('#p_type').change(function() {
     var p_typ = $(this).val();
-    var purchs_amt = $('#purchase_amount').val();
+    var purchs_amt = $('#total_clam_amt').val();
     if (p_typ == 'Balance') {
         $('#amt').val(purchs_amt);
 
@@ -238,6 +249,35 @@ $('#p_type').change(function() {
         $('#tds_dedut').val('');
     }
 
+});
+///////////////////////////////////////////////
+$(document).on('click', '.show-drs', function() {
+  
+    var trans_id = $(this).attr('data-id');
+    // alert(show);
+    $('#show_drs').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "show-drs",
+        data: {
+            trans_id: trans_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#show_drs_table').dataTable().fnClearTable();             
+                $('#show_drs_table').dataTable().fnDestroy();
+
+            },
+        success: function(data) {
+            // console.log(data.)
+            $.each(data.getdrs, function(index, value) {
+
+                $('#show_drs_table tbody').append("<tr><td>" + value.drs_no + "</td></tr>");   
+
+            });
+        }
+
+    });
 });
 /////////////////////////////////////////////////////////////////
 $('#unverified-table').DataTable({

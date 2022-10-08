@@ -2111,8 +2111,13 @@ $('#update_vendor').validate({
 $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
- 
-    
+    var vendor = $('#vendor_id').val();
+    if(!vendor)
+    {
+        swal('Error!', 'Please select a vendor','error');
+        return false;
+    }
+    var base_url = window.location.origin;
     $.ajax({
         url: "create-payment_request",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -2127,6 +2132,7 @@ $('#create_request_form').submit(function (e) {
             if(data.success == true){
 
             swal('success', data.message, 'success')
+            window.location.href = data.redirect_url;
             
             }else{
                 swal('error', data.message ,'error');

@@ -310,6 +310,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
+    Route::any('show-drs', [VendorController::class, 'showDrs']);
 
 
 });

@@ -1,3 +1,38 @@
+<!-- /////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="show_drs" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+            <!-- Modal Header -->
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+           
+            <table id="show_drs_table" class="table table-hover"
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
+                            <thead>
+                                <tr>
+                                    <th>LR No</th> 
+                                 
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table> 
+        
+
+
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- =========================================================================== -->
 <!-- ----------------------------------------------------------------------  -->
 <div class="modal fade bd-example-modal-xl" id="pymt_request_modal" tabindex="-1" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
@@ -18,26 +53,29 @@
                 <form id="payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="drs_no_request" name="drs_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no_request" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
-                        </div> <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="hidden" class="form-control" id="transaction_id" name="transaction_id"
+                                value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                    <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label for="location_name">Vendor Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="total_clam_amt" name="claimed_amount" value="" readonly>
+                            <input type="text" class="form-control" id="total_clam_amt" name="claimed_amount" value=""
+                                readonly>
                         </div>
                     </div>
                     <div class="form-row mb-0" style="display:none">
-                        
+
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Beneficiary Name</label>
                             <input type="text" class="form-control" id="beneficiary_name" name="beneficiary_name"
@@ -69,13 +107,13 @@
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                       
+
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
                             <select class="form-control" id="p_type" name="p_type" tabindex="-1">
-    
+
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -218,10 +256,7 @@
                 <form id="create_request_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="drs_no" name="drs_no" value="">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="vendor_no" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
@@ -236,10 +271,11 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount" value="" readonly>
+                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount"
+                                value="" readonly>
                         </div>
                     </div>
-                    
+
                     <div class="modal-footer">
                         <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
                             Discard</button>
