@@ -1849,6 +1849,7 @@ $('#vendor-master').submit(function (e) {
     var v_name = $('#vendor_name').val();
     var acc_no = $('#account_no').val();
     var vendor_type = $('#vendor_type').val();
+    var ifsc = $('#ifsc').val();
     
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
@@ -1860,6 +1861,10 @@ $('#vendor-master').submit(function (e) {
     }
     if (!acc_no) {
         swal("Error!", "Please Enter Account Number", "error");
+        return false;
+    }
+    if (!ifsc) {
+        swal("Error!", "Please Enter Ifsc Code", "error");
         return false;
     }
 
@@ -2122,7 +2127,7 @@ $('#update_vendor').validate({
             }); 
         });
 
-        ////////////////// reate Drs Payment Request////////////
+        ////////////////// reate Drs Payment Request ////////////
 $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);

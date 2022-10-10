@@ -359,7 +359,6 @@ class VendorController extends Controller
          
         echo'<pre>'; print_r($request->all()); die;
         $drs = explode(',', $request->drs_no);
-        $randm = rand();
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(

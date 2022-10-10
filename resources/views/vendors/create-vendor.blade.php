@@ -137,7 +137,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code</label>
-                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="">
+                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
