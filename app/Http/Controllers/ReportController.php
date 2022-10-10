@@ -40,7 +40,7 @@ class ReportController extends Controller
 
     public function __construct()
     {
-      $this->title =  "Secondary Reports";
+      $this->title =  "MIS Reports";
       $this->segment = \Request::segment(2);
     }
 
@@ -68,8 +68,6 @@ class ReportController extends Controller
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
-            $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-            $date = Helper::yearmonthdate($lastsevendays);
             $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
             $query = $query
@@ -96,9 +94,6 @@ class ReportController extends Controller
             }else{
                 $query = $query->whereIn('branch_id', $cc);
             }
-
-            $startdate = $request->startdate;
-            $enddate = $request->enddate;
 
             if(!empty($request->search)){
                 $search = $request->search;
@@ -132,6 +127,9 @@ class ReportController extends Controller
             }else{
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
 
             if(isset($startdate) && isset($enddate)){
                 $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
@@ -149,8 +147,6 @@ class ReportController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $query = $query

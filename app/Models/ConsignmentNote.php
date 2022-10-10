@@ -87,6 +87,9 @@ class ConsignmentNote extends Model
     {
         return $this->belongsTo('App\Models\VehicleType','vehicle_type');
     }
-    
+    public function RegClientdetail()
+    {
+        return $this->hasOne('App\Models\RegionalClientDetail','regclient_id','regclient_id');
+    }
 
 }

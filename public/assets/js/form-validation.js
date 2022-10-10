@@ -1471,6 +1471,32 @@ jQuery(document).ready(function(){
         }
     });
     
+    // create reg client detail
+    jQuery('#updateregclientdetail').validate({
+        rules:
+        {
+            from_state_id: {
+                // required: true,
+            },
+            to_state_id: {
+                // required: true,
+            },
+        },
+        messages:
+        {
+            from_state_id: {
+                required: "Please enter login id",
+            },
+            to_state_id: {
+                required: "Email address is required",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+    
 
 
 
@@ -1630,7 +1656,7 @@ function formSubmitRedirect(form)
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);
-            }else if(response.page == 'client-create' || response.page == 'client-update'){
+            }else if(response.page == 'clientdetail-create' || response.page == 'clientdetail-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

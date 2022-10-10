@@ -184,7 +184,6 @@ class ClientController extends Controller
      */
     public function UpdateClient(Request $request)
     {
-        // echo'<pre>'; print_r($request->all()); die;
         try { 
             DB::beginTransaction();
 
@@ -285,7 +284,6 @@ class ClientController extends Controller
         $id = $request->id;
         $id = decrypt($id);
         $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
-        // dd($regclient_name);
         $zonestates = Zone::all()->unique('state')->pluck('state','id');
         
         return view('clients.add-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name]);
@@ -338,7 +336,7 @@ class ClientController extends Controller
                 $response['success'] = true;
                 $response['success_message'] = "Clients detail added successfully";
                 $response['error'] = false;
-                $response['page'] = 'client-create';
+                $response['page'] = 'clientdetail-create';
                 $response['redirect_url'] = $url;
             }else{
                 $response['success'] = false;
@@ -354,6 +352,95 @@ class ClientController extends Controller
         return response()->json($response);
     }
 
+    public function viewRegclientdetail($id)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $id = decrypt($id);   
+        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails')->first();
+        
+        return view('clients.view-regclient',['prefix'=>$this->prefix,'getClientDetail'=>$getClientDetail]);
+    }
+
+    public function editRegClientDetail($id){
+        $this->prefix = request()->route()->getPrefix();
+        $id = decrypt($id);
+
+        $regclient_name = RegionalClient::where('id',$id)->select('id','name')->first();
+        $zonestates = Zone::all()->unique('state')->pluck('state','id');
+        $getClientDetail = RegionalClientDetail::where('regclient_id',$id)->with('RegClient','ClientPriceDetails.ZoneFromState')->first();
+        
+        return view('clients.update-regclientdetails',['prefix'=>$this->prefix,'zonestates'=>$zonestates,'regclient_name'=>$regclient_name, 'getClientDetail'=>$getClientDetail]);
+    }
+
+    public function updateRegclientdetail(Request $request)
+    {
+        try { 
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+             $rules = array(
+            //   'client_name' => 'required',      
+            );
+            $validator = Validator::make($request->all(),$rules);
+    
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+
+            $saveClientDetail = RegionalClientDetail::where('id',$request->regclientdetail_id)->update(['docket_price' => $request->docket_price]);  
+
+            if(!empty($request->data)){
+                $get_data = $request->data;
+                
+                foreach ($get_data as $key => $save_data ) {
+                    if(!empty($save_data['hidden_id'])){
+                        $updatedata['regclientdetail_id'] = $request->regclientdetail_id;
+                        $updatedata['status'] = "1";
+                        $updatedata['from_state'] = $save_data['from_state'];
+                        $updatedata['to_state'] = $save_data['to_state'];
+                        $updatedata['price_per_kg'] = $save_data['price_per_kg'];
+                        $updatedata['open_delivery_price'] = $save_data['open_delivery_price'];
+                        $hidden_id = $save_data['hidden_id'];                      
+                        $saveregclients = ClientPriceDetail::where('id',$hidden_id)->update($updatedata);
+                    }else{
+                        $insertdata['regclientdetail_id'] = $request->regclientdetail_id;
+                        $insertdata['status'] = "1";
+                        $insertdata['from_state'] = $save_data['from_state'];
+                        $insertdata['to_state'] = $save_data['to_state'];
+                        $insertdata['price_per_kg'] = $save_data['price_per_kg'];
+                        $insertdata['open_delivery_price'] = $save_data['open_delivery_price'];
+                        unset($save_data['hidden_id']);
+                        $saveclientPriceDeatil = ClientPriceDetail::create($insertdata);
+                    }
+                }
+                $url  =  URL::to($this->prefix.'/reginal-clients');
+                $response['page'] = 'clientdetail-update';
+                $response['success'] = true;
+                $response['success_message'] = "Client detail Updated Successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not updated client detial please try again";
+                $response['error'] = true;
+            }
+    
+            DB::commit();
+        }catch(Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;   
+        }
+
+        return response()->json($response);
+    }
+
     //nurture client report
     public function clientReport(Request $request)
     {
@@ -362,36 +449,30 @@ class ClientController extends Controller
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        // $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        // $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $sessionperitem = Session::get('peritem');
         if(!empty($sessionperitem)){
-            $perpage = $sessionperitem;
+            $peritem = $sessionperitem;
         }else{
-            $perpage = Config::get('variable.PER_PAGE');
+            $peritem = Config::get('variable.PER_PAGE');
         }
 
         $query = ConsignmentNote::query();
-        $query = $query
-            ->where('status', '!=', 5)
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name');
-
+        
         if($request->ajax()){
-            $query = ConsignmentNote::query();
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
             $query = $query
                 ->where('status', '!=', 5)
                 ->with(
@@ -400,13 +481,16 @@ class ClientController extends Controller
                     'ConsignerDetail.GetState:id,name',
                     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
                     'ConsigneeDetail.GetState:id,name', 
-                    'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ShiptoDetail.GetState:id,name',
+                    // 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                    // 'ShiptoDetail.GetState:id,name',
                     'VehicleDetail:id,regn_no', 
                     'DriverDetail:id,name,fleet_id,phone', 
-                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                    'ConsignerDetail.GetRegClient:id,name,baseclient_id',
                     'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                    'VehicleType:id,name');
+                    'VehicleType:id,name',
+                    'RegClientdetail:id,regclient_id,docket_price',
+                    'RegClientdetail.ClientPriceDetails'
+                );
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -414,60 +498,57 @@ class ClientController extends Controller
         
             $peritem = Session::get('peritem');
             if(!empty($peritem)){
-                $perpage = $peritem;
+                $peritem = $peritem;
             }else{
-                $perpage = Config::get('variable.PER_PAGE');
-            }
-
-            $startdate = $request->startdate;
-            $enddate = $request->enddate;
-
-            if(!empty($request->search)){
-                $search = $request->search;
-                $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    });
-                    
-
-                });
+                $peritem = Config::get('variable.PER_PAGE');
             }
 
             if(!empty($request->regclient)){
                 $search = $request->regclient;
                 $query = $query->where('regclient_id',$search);
             }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
             
             if(isset($startdate) && isset($enddate)){
-                // DB::enableQueryLog();
-                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($perpage);
-                // dd(DB::getQueryLog());
+                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
             }else {
-                $consignments = $query->orderBy('id','DESC')->paginate($perpage);
+                $consignments = $query->orderBy('id','DESC')->paginate($peritem);
             }
+            $consignments = $consignments->appends($request->query());
+
+            $html =  view('clients.client-report-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             
-            $html =  view('clients.client-report-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'perpage'=>$perpage])->render();
 
             return response()->json(['html' => $html]);
         }
 
-        $regionalclients = RegionalClient::select('id','name','location_id')->get();
-        $consignments = $query->orderBy('id','DESC')->paginate($perpage);
-        
-        return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'perpage'=>$perpage, 'prefix' => $this->prefix]);
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+                'ConsignerDetail.GetState:id,name',
+                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                'ConsigneeDetail.GetState:id,name', 
+                // 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+                // 'ShiptoDetail.GetState:id,name',
+                'VehicleDetail:id,regn_no', 
+                'DriverDetail:id,name,fleet_id,phone', 
+                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+                'VehicleType:id,name',
+                'RegClientdetail:id,regclient_id,docket_price',
+                'RegClientdetail.ClientPriceDetails'
+            );
 
+        $regionalclients = RegionalClient::select('id','name','location_id')->get();
+
+        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        
+        return view('clients.client-report', ['consignments' => $consignments, 'regionalclients'=>$regionalclients, 'peritem'=>$peritem, 'prefix' => $this->prefix]);
     }
 
     public function getConsignmentClient(Request $request)
@@ -490,7 +571,7 @@ class ClientController extends Controller
 
     public function clientReportExport(Request $request)
     {
-        return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate,$request->search), 'client_reports.csv');
+        return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate), 'nurtureclient_reports.csv');
     }
 
 
