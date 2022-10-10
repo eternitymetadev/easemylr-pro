@@ -21,8 +21,7 @@ class ConsignerImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        $getState = State::where('name',$row['state'])->first();
-        // $getLocation = Location::where('name',$row['location'])->first();
+        // $getState = State::where('name',$row['state'])->first();
         $getregClient = RegionalClient::where('id',$row['regional_client_id'])->first();
 
         if(!empty($getregClient)){
@@ -38,20 +37,13 @@ class ConsignerImport implements ToModel,WithHeadingRow
         else{
             $location = 'N/A';
         }
-
-        // if(!empty($getLocation)){
-        //     $location = $getLocation->id;
+        
+        // if(!empty($getState)){
+        //     $state = $getState->id;
         // }
         // else{
-        //     $location = 'N/A';
+        //     $state = 'N/A';
         // }
-        
-        if(!empty($getState)){
-            $state = $getState->id;
-        }
-        else{
-            $state = 'N/A';
-        }
 
         $consigner = Consigner::where('nick_name', $row['nick_name'])->where('branch_id', $location)->first();
         if(empty($consigner)){
@@ -72,7 +64,7 @@ class ConsignerImport implements ToModel,WithHeadingRow
                 'city'         => $row['city'],
                 'district'     => $row['district'],
                 'postal_code'  => $row['postal_code'],
-                'state_id'     => $state,
+                'state_id'     => $row['state'],
                 'status'       => 1,
                 'created_at'   => time(),
             ]);

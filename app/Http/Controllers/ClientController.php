@@ -478,11 +478,7 @@ class ClientController extends Controller
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                     'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                    'ConsignerDetail.GetState:id,name',
                     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail.GetState:id,name', 
-                    // 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    // 'ShiptoDetail.GetState:id,name',
                     'VehicleDetail:id,regn_no', 
                     'DriverDetail:id,name,fleet_id,phone', 
                     'ConsignerDetail.GetRegClient:id,name,baseclient_id',
@@ -529,11 +525,7 @@ class ClientController extends Controller
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                 'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
                 'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                // 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                // 'ShiptoDetail.GetState:id,name',
                 'VehicleDetail:id,regn_no', 
                 'DriverDetail:id,name,fleet_id,phone', 
                 'ConsignerDetail.GetRegClient:id,name,baseclient_id', 

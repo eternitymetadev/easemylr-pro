@@ -75,11 +75,8 @@ class ReportController extends Controller
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                     'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                    'ConsignerDetail.GetState:id,name',
                     'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail.GetState:id,name', 
                     'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ShiptoDetail.GetState:id,name',
                     'VehicleDetail:id,regn_no', 
                     'DriverDetail:id,name,fleet_id,phone', 
                     'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
@@ -154,11 +151,8 @@ class ReportController extends Controller
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                 'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
                 'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
                 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
                 'VehicleDetail:id,regn_no', 
                 'DriverDetail:id,name,fleet_id,phone', 
                 'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
@@ -196,11 +190,8 @@ class ReportController extends Controller
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                 'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
                 'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
                 'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
                 'VehicleDetail:id,regn_no', 
                 'DriverDetail:id,name,fleet_id,phone', 
                 'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
@@ -211,13 +202,13 @@ class ReportController extends Controller
             $query =  $query->whereIn('consignment_notes.regclient_id', $regclient)
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();  
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();  
 
         }else{
             $query = $query->whereIn('branch_id', $cc)
             ->where('status', '!=', 5)
             ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
         }
 
         $consignments = json_decode(json_encode($query), true);

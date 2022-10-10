@@ -46,19 +46,19 @@ class MisReportExport implements FromCollection, WithHeadings,ShouldQueue
         {
             $consignments = $query->where('consignment_notes.status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         }elseif($authuser->role_id == 4){
             $consignments = $query
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->where('consignment_notes.status', '!=', 5)
             ->whereIn('user_id', [$authuser->id, $user->id])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
         }else{
             $consignments = $query
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
             ->where('consignment_notes.status', '!=', 5)
             ->where('branch_id', $cc)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
         } 
         // dd($consignments);
         if($consignments->count() > 0){
@@ -133,12 +133,12 @@ class MisReportExport implements FromCollection, WithHeadings,ShouldQueue
                     'consignee_city'        => @$value->ConsigneeDetail->city,
                     'consignee_postal'      => @$value->ConsigneeDetail->postal_code, 
                     'consignee_district'    => @$value->ConsigneeDetail->district,      
-                    'consignee_state'       => @$value->ConsigneeDetail->GetState->name,
+                    'consignee_state'       => @$value->ConsigneeDetail->state_id,
                     'Ship_to_name'          => @$value->ShiptoDetail->nick_name,
                     'Ship_to_city'          => @$value->ShiptoDetail->city,
                     'Ship_to_pin'           => @$value->ShiptoDetail->postal_code,
                     'Ship_to_district'      => @$value->ShiptoDetail->district,
-                    'Ship_to_state'         => @$value->ShiptoDetail->GetState->name,
+                    'Ship_to_state'         => @$value->ShiptoDetail->state_id,
                     'invoice_no'            => $invno,
                     'invoice_date'          => $invdate,
                     'invoice_amt'           => $invamt,
