@@ -1678,6 +1678,27 @@ function formSubmitRedirect(form)
                   i++;
               });
 	        }
+
+            if(response.cnr_nickname_duplicate_error){
+                jQuery("input[name='nick_name']").focus();
+                jQuery("input[name='nick_name']").parents('.form-group').addClass('has-error');
+                jQuery("input[name='nick_name']").after('<label id="nick_name-error" class="error" for="nick_name">'+response.error_message+'</label>');
+                $("select[name='nick_name']").after('<label id="nick_name-error" class="has-error" for="nick_name">'+response.error_message+'</label>');
+            }
+
+            if(response.cnee_nickname_duplicate_error){
+                jQuery("input[name='nick_name']").focus();
+                jQuery("input[name='nick_name']").parents('.form-group').addClass('has-error');
+                jQuery("input[name='nick_name']").after('<label id="nick_name-error" class="error" for="nick_name">'+response.error_message+'</label>');
+                $("select[name='nick_name']").after('<label id="nick_name-error" class="has-error" for="nick_name">'+response.error_message+'</label>');
+            }
+            if(response.invoiceno_duplicate_error){
+                jQuery("input[class='invc_no']").focus(); //.invc_no
+                jQuery("input[class='invc_no']").parents().parents('#items_table').addClass('has-error');
+                jQuery("input[class='invc_no']").after('<label class="invoice_no-error" class="error" for="invoice_no">'+response.error_message+'</label>');
+                $("select[class='invc_no']").after('<label class="invoice_no-error" class="has-error" for="invoice_no">'+response.error_message+'</label>');
+            }
+
             if(response.email_error){
                 jQuery("#login_id-error").remove();
                 jQuery("input[name='login_id']").focus();

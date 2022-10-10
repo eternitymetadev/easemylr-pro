@@ -82,30 +82,14 @@
                            
                          
                             <div class="form-row mb-0">      
-                            <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pincode</label>
                                     <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code',isset($getconsignee->postal_code)?$getconsignee->postal_code:'')}}" placeholder="Pincode" maxlength="6">
                                 </div> 
-                            <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Village/City</label>
                                     <input type="text" class="form-control" id="city" name="city" value="{{old('city',isset($getconsignee->city)?$getconsignee->city:'')}}" placeholder="City">
-                                </div>                   
-                                <!-- <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Location</label>
-                                    <select class="form-control" name="branch_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($branches)>0) {
-                                            foreach ($branches as $k => $branch) {
-                                        ?>
-                                            <option value="{{ $k }}" {{ $k == $getconsignee->branch_id ? 'selected' : ''}}>{{ucwords($branch)}}</option>
-                                            <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>-->
-                                
+                                </div>                                  
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
@@ -114,18 +98,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Select State</label>
-                                    <select class="form-control" id="state" name="state_id">
-                                       <option value="">Select</option>
-                                       <?php 
-                                       if(count($states)>0) {
-                                           foreach ($states as $k => $state) {
-                                       ?>
-                                           <option value="{{ $k }}" {{ $k == $getconsignee->state_id ? 'selected' : ''}}>{{ucwords($state)}}</option> 
-                                           <?php 
-                                           }
-                                       }
-                                       ?>                            
-                                    </select>
+                                    <input type="text" class="form-control" id="state" name="state_id" value="{{old('state_id',isset($getconsignee->state_id)?$getconsignee->state_id:'')}}" placeholder="" readonly>
+                                
                                 </div>
                             </div>
                             <div class="form-row mb-0">

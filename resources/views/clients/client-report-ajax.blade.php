@@ -90,7 +90,7 @@
                     <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                     <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
                     <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
-                    <td>{{ $consignment->ConsigneeDetail->GetState->name ?? "-" }}</td>
+                    <td>{{ $consignment->ConsigneeDetail->state_id ?? "-" }}</td>
                     
                     <?php if(empty($consignment->invoice_no)){ ?>
                         <td>{{ $order_item['invoices'] ?? "-" }}</td>

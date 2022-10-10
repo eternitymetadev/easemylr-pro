@@ -76,22 +76,7 @@
                                     <p class="gstno_error text-danger" style="display: none; color: #ff0000; font-weight: 500;">Please enter GST no.</p>
                                 </div>
                             </div>
-                            <div class="form-row mb-0">                          
-                                <!-- <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Location</label>
-                                    <select class="form-control" name="branch_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($branches)>0) {
-                                            foreach ($branches as $key => $branch) {
-                                        ?>
-                                            <option value="{{ $key }}">{{ucwords($branch)}}</option>
-                                            <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div> -->
+                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pincode</label>
                                     <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="Pincode" maxlength="6">
@@ -105,18 +90,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Select State</label>
-                                    <select class="form-control" id="state" name="state_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($states)>0) {
-                                            foreach ($states as $key => $state) {
-                                        ?>
-                                            <option value="{{ $key }}">{{ucwords($state)}}</option>
-                                            <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
+                                    <input type="text" class="form-control" id="state" name="state_id" placeholder="" readonly>
                                 </div>               
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">District</label>

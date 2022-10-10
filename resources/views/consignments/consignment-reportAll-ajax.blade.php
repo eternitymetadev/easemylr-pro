@@ -86,12 +86,12 @@
                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->GetState->name ?? "-" }}</td>
+                <td>{{ $consignment->ConsigneeDetail->state_id ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->postal_code ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->GetState->name ?? "-" }}</td>
+                <td>{{ $consignment->ShiptoDetail->state_id ?? "-" }}</td>
                 <?php if(empty($consignment->invoice_no)){ ?>
                 <td>{{ $order_item['invoices'] ?? "-" }}</td>
                 <td>{{ $invoice['date'] ?? '-'}}</td>

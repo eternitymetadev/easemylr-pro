@@ -131,18 +131,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">State</label>
-                                    <select class="form-control" name="state_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($states)>0) {
-                                            foreach ($states as $k => $state) {
-                                        ?>
-                                            <option value="{{ $k }}" {{ $k == $getconsigner->state_id ? 'selected' : ''}}>{{ucwords($state)}}</option> 
-                                            <?php 
-                                            }
-                                        }
-                                        ?>                            
-                                    </select>
+                                    <input type="text" class="form-control" id="state" name="state_id" value="{{old('state_id',isset($getconsigner->state_id)?$getconsigner->state_id:'')}}" placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 1</label>

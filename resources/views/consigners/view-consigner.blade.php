@@ -68,7 +68,7 @@
                               
                                 <tr>
                                     <th scope="row">State</th>
-                                    <td>{{isset($getconsigner->GetState->name) ? ucfirst($getconsigner->GetState->name) : "-" }}</td>
+                                    <td>{{isset($getconsigner->state_id)?ucfirst($getconsigner->state_id):'-'}}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Address Line 1</th>

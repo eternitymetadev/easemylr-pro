@@ -80,7 +80,7 @@ div.relat {
                                 <th>PIN Code</th>
                                 <th>City</th>
                                 <th>District</th>
-                                <!-- <th>State</th> -->
+                                <th>State</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -126,7 +126,7 @@ var table = $('#consigneetable').DataTable({
         {data: 'postal_code', name: 'postal_code', defaultContent: '-'},
         {data: 'city', name: 'city', defaultContent: '-'},
         {data: 'district', name: 'district', defaultContent: '-'},
-        // {data: 'state_id', name: 'State.name', defaultContent: '-'},
+        {data: 'state_id', name: 'state_id', defaultContent: '-'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
         
     ]

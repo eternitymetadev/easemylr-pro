@@ -718,6 +718,16 @@ class ConsignmentController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+
+            // $check_invoiceno_exist = ConsignmentItem::where(['invoice_no'=>$request['invoice_no']])->get();
+
+            // if(!$check_invoiceno_exist->isEmpty()){
+            //     $response['success'] = false;
+            //     $response['error_message'] = "Invoice no. already exists.";
+            //     $response['invoiceno_duplicate_error'] = true;
+            //     return response()->json($response);
+            // }
+
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
@@ -918,9 +928,8 @@ class ConsignmentController extends Controller
     public function getConsigners(Request $request)
     {
         $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
-        // dd($getconsigners->GetRegClient->is_multiple_invoice);
-        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
         
+        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
             $response['success'] = true;
@@ -1006,57 +1015,55 @@ class ConsignmentController extends Controller
         $locations = Location::whereIn('id', $cc)->first();
 
         $cn_id = $request->id;
-        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->first();
+        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        // echo'<pre>'; print_r($data); die; 
 
-
-        if ($data['consigner_detail']['legal_name'] != null) {
+        if (isset($data['consigner_detail']['legal_name'])) {
             $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
         } else {
             $legal_name = '';
         }
-        if ($data['consigner_detail']['address_line1'] != null) {
+        if (isset($data['consigner_detail']['address_line1'])) {
             $address_line1 = '' . $data['consigner_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consigner_detail']['address_line2'] != null) {
+        if (isset($data['consigner_detail']['address_line2'])) {
             $address_line2 = '' . $data['consigner_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consigner_detail']['address_line3'] != null) {
+        if (isset($data['consigner_detail']['address_line3'] )) {
             $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consigner_detail']['address_line4'] != null) {
+        if (isset($data['consigner_detail']['address_line4'] )) {
             $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['consigner_detail']['city'] != null) {
+        if (isset($data['consigner_detail']['city'] )) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consigner_detail']['get_state'] != null) {
-            $district = $data['consigner_detail']['get_state']['name'] . ',';
+        if (isset($data['consigner_detail']['state_id'] )) {
+            $district = $data['consigner_detail']['state_id'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consigner_detail']['postal_code'] != null) {
+        if (isset($data['consigner_detail']['postal_code'] )) {
             $postal_code = $data['consigner_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
-        if ($data['consigner_detail']['gst_number'] != null) {
+        if (isset($data['consigner_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['consigner_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['consigner_detail']['phone'] != null) {
+        if (isset($data['consigner_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['consigner_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1064,53 +1071,53 @@ class ConsignmentController extends Controller
 
         $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['legal_name'] != null) {
+        if (isset($data['consignee_detail']['legal_name'] )) {
             $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if ($data['consignee_detail']['address_line1'] != null) {
+        if (isset($data['consignee_detail']['address_line1'] )) {
             $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consignee_detail']['address_line2'] != null) {
+        if (isset($data['consignee_detail']['address_line2'] )) {
             $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consignee_detail']['address_line3'] != null) {
+        if (isset($data['consignee_detail']['address_line3'] )) {
             $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consignee_detail']['address_line4'] != null) {
+        if (isset($data['consignee_detail']['address_line4'] )) {
             $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['consignee_detail']['city'] != null) {
+        if (isset($data['consignee_detail']['city'] )) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['get_state'] != null) {
-            $district = $data['consignee_detail']['get_state']['name'] . ',';
+        if (isset($data['consignee_detail']['state_id'] )) {
+            $district = $data['consignee_detail']['state_id'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consignee_detail']['postal_code'] != null) {
+        if (isset($data['consignee_detail']['postal_code'] )) {
             $postal_code = $data['consignee_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
 
-        if ($data['consignee_detail']['gst_number'] != null) {
+        if (isset($data['consignee_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['consignee_detail']['phone'] != null) {
+        if (isset($data['consignee_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1118,52 +1125,52 @@ class ConsignmentController extends Controller
 
         $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['legal_name'] != null) {
+        if (isset($data['shipto_detail']['legal_name'] )) {
             $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if ($data['shipto_detail']['address_line1'] != null) {
+        if (isset($data['shipto_detail']['address_line1'] )) {
             $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['shipto_detail']['address_line2'] != null) {
+        if (isset($data['shipto_detail']['address_line2'] )) {
             $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['shipto_detail']['address_line3'] != null) {
+        if (isset($data['shipto_detail']['address_line3'] )) {
             $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['shipto_detail']['address_line4'] != null) {
+        if (isset($data['shipto_detail']['address_line4'] )) {
             $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['shipto_detail']['city'] != null) {
+        if (isset($data['shipto_detail']['city'] )) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['shipto_detail']['get_state'] != null) {
-            $district = $data['shipto_detail']['get_state']['name'] . ',';
+        if (isset($data['shipto_detail']['state_id'] )) {
+            $district = $data['shipto_detail']['state_id'] . ',';
         } else {
             $district = '';
         }
-        if ($data['shipto_detail']['postal_code'] != null) {
+        if (isset($data['shipto_detail']['postal_code'] )) {
             $postal_code = $data['shipto_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
-        if ($data['shipto_detail']['gst_number'] != null) {
+        if (isset($data['shipto_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['shipto_detail']['phone'] != null) {
+        if (isset($data['shipto_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1197,12 +1204,12 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
-if(!empty($data['consigner_detail']['get_state'])){
-    $cnr_state = $data['consigner_detail']['get_state']['name'];
-}
-else{
-    $cnr_state = '';
-}
+        if(!empty($data['consigner_detail']['state_id'])){
+            $cnr_state = $data['consigner_detail']['state_id'];
+        }
+        else{
+            $cnr_state = '';
+        }
 
             $html = '<!DOCTYPE html>
             <html lang="en">
@@ -1349,8 +1356,8 @@ else{
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
-                                            <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">'.$data['consignee_detail']['city'] . '</th>
+                                            <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                            <th class="mini-th">'.@$data['consignee_detail']['city'] . '</th>
                                             
                                         </tr>
                                     </table>
@@ -1363,9 +1370,9 @@ else{
                                 <tr>
                                     <td class="width_set">
                                         <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.@$data['consignee_detail']['postal_code'].','.@$data['consignee_detail']['city'].','.@$data['consignee_detail']['state_id'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
@@ -1566,52 +1573,52 @@ else{
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
 
-        if ($data['consigner_detail']['legal_name'] != null) {
+        if (isset($data['consigner_detail']['legal_name'] )) {
             $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
         } else {
             $legal_name = '';
         }
-        if ($data['consigner_detail']['address_line1'] != null) {
+        if (isset($data['consigner_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consigner_detail']['address_line2'] != null) {
+        if (isset($data['consigner_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consigner_detail']['address_line3'] != null) {
+        if (isset($data['consigner_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consigner_detail']['address_line4'] != null) {
+        if (isset($data['consigner_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['consigner_detail']['city'] != null) {
+        if (isset($data['consigner_detail']['city'] )) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consigner_detail']['district'] != null) {
+        if (isset($data['consigner_detail']['district'] )) {
             $district = $data['consigner_detail']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consigner_detail']['postal_code'] != null) {
+        if (isset($data['consigner_detail']['postal_code'] )) {
             $postal_code = $data['consigner_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if ($data['consigner_detail']['gst_number'] != null) {
+        if (isset($data['consigner_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['consigner_detail']['phone'] != null) {
+        if (isset($data['consigner_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1620,53 +1627,53 @@ else{
         $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
             ' . $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['nick_name'] != null) {
+        if (isset($data['consignee_detail']['nick_name'] )) {
             $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if ($data['consignee_detail']['address_line1'] != null) {
+        if (isset($data['consignee_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consignee_detail']['address_line2'] != null) {
+        if (isset($data['consignee_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consignee_detail']['address_line3'] != null) {
+        if (isset($data['consignee_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consignee_detail']['address_line4'] != null) {
+        if (isset($data['consignee_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['consignee_detail']['city'] != null) {
+        if (isset($data['consignee_detail']['city'] )) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['district'] != null) {
+        if (isset($data['consignee_detail']['district'] )) {
             $district = $data['consignee_detail']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consignee_detail']['postal_code'] != null) {
+        if (isset($data['consignee_detail']['postal_code'] )) {
             $postal_code = $data['consignee_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
 
-        if ($data['consignee_detail']['gst_number'] != null) {
+        if (isset($data['consignee_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['consignee_detail']['phone'] != null) {
+        if (isset($data['consignee_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1675,52 +1682,52 @@ else{
         $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['nick_name'] != null) {
+        if (isset($data['shipto_detail']['nick_name'] )) {
             $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if ($data['shipto_detail']['address_line1'] != null) {
+        if (isset($data['shipto_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['shipto_detail']['address_line2'] != null) {
+        if (isset($data['shipto_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['shipto_detail']['address_line3'] != null) {
+        if (isset($data['shipto_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['shipto_detail']['address_line4'] != null) {
+        if (isset($data['shipto_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['shipto_detail']['city'] != null) {
+        if (isset($data['shipto_detail']['city'] )) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['shipto_detail']['district'] != null) {
+        if (isset($data['shipto_detail']['district'] )) {
             $district = $data['shipto_detail']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['shipto_detail']['postal_code'] != null) {
+        if (isset($data['shipto_detail']['postal_code'] )) {
             $postal_code = $data['shipto_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if ($data['shipto_detail']['gst_number'] != null) {
+        if (isset($data['shipto_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['shipto_detail']['phone'] != null) {
+        if (isset($data['shipto_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -2978,8 +2985,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['consigner_detail']['get_state'] != null) {
-                    $district = $data['consigner_detail']['get_state']['name'] . ',';
+                if ($data['consigner_detail']['state_id'] != null) {
+                    $district = $data['consigner_detail']['state_id'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3031,8 +3038,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['consignee_detail']['get_state'] != null) {
-                    $district = $data['consignee_detail']['get_state']['name'] . ',';
+                if ($data['consignee_detail']['state_id'] != null) {
+                    $district = $data['consignee_detail']['state_id'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3085,8 +3092,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['shipto_detail']['get_state'] != null) {
-                    $district = $data['shipto_detail']['get_state']['name'] . ',';
+                if ($data['shipto_detail']['state_id'] != null) {
+                    $district = $data['shipto_detail']['state_id'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3143,8 +3150,8 @@ else{
                     } elseif ($pdf == 4) {
                         $type = 'QUADRUPLE';
                     }
-        if(!empty($data['consigner_detail']['get_state'])){
-            $cnr_state = $data['consigner_detail']['get_state']['name'];
+        if(!empty($data['consigner_detail']['state_id'])){
+            $cnr_state = $data['consigner_detail']['state_id'];
         }
         else{
             $cnr_state = '';
@@ -3311,7 +3318,7 @@ else{
                                                 <div style="margin-left: 20px">
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
         
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['state_id'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 </div>
                                             </td>
                                             <td class="width_set">
