@@ -126,7 +126,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Account Holder Name </label>
-                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="">
+                                    <input type="text" class="form-control" id="acc_holder_name" name="acc_holder_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.</label>
