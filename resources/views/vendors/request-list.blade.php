@@ -151,7 +151,7 @@ $(document).on('click', '.payment_button', function() {
             $('#drs_no_request').val(data.drs_no);
             $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
             $('#transaction_id').val(data.req_data[0].transaction_id);
-            $('#name').val(data.req_data[0].vendor_details.name);
+            $('#name').val(bank_details.acc_holder_name);
             $('#email').val(data.req_data[0].vendor_details.email);
             $('#beneficiary_name').val(bank_details.acc_holder_name);
             $('#bank_acc').val(bank_details.account_no);

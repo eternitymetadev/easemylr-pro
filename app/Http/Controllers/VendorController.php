@@ -356,7 +356,8 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
-
+         
+        echo'<pre>'; print_r($request->all()); die;
         $drs = explode(',', $request->drs_no);
         $randm = rand();
         $pfu = 'ETF';
@@ -380,13 +381,10 @@ class VendorController extends Controller
                 \"baddress\": \"$request->branch_name\",
                 \"payable_amount\": \"$request->final_payable_amount\",
                 \"claimed_amount\": \"$request->claimed_amount\",
-                \"ax_id\": \"$request->drs_no\",
                 \"pfu\": \"$pfu\",
-                \"ax_voucher_code\": \"$request->drs_no\",
-                \"txn_route\": \"DRS\",
                 \"ptype\": \"$request->p_type\",
                 \"email\": \"$request->email\",
-                \"terid\": \"$randm\"
+                \"transaction_id\": \"$request->transaction_id\"
                 }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
