@@ -296,6 +296,7 @@ class ClientController extends Controller
             
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
+                // 'data.*.from_state.to_state' => 'distinct',
                 // 'client_name' => 'required|unique:base_clients,client_name',
             );
 
@@ -310,6 +311,17 @@ class ClientController extends Controller
                 $response['errors']      = $errors;
                 return response()->json($response);
             }
+
+            // echo "<pre>"; print_r($request->all());die;
+            // $check_fromtostate = ClientPriceDetail::where('regclientdetail_id'=>$request->regclient_id)->whereIn('id','!=',$request->consigner_id)->get();
+
+            // if(!$check_fromtostate->isEmpty()){
+            //     $response['success'] = false;
+            //     $response['error_message'] = "From and To state already exists.";
+            //     $response['fromto_state_error'] = true;
+            //     return response()->json($response);
+            // }
+
             if(!empty($request->regclient_id)){
                 $client['regclient_id']   = $request->regclient_id;
             }

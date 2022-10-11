@@ -42,7 +42,7 @@
                                 <label for="exampleFormControlInput2">Phone</label>
                                 <input type="text" class="form-control mbCheckNm" name="phone" id="phone" placeholder="" value="{{old('phone',isset($getuser->phone)?$getuser->phone:'')}}"  maxlength="10">
                             </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-4" style="pointer-events:none;">
                                 <label for="exampleFormControlSelect1">Select Role</label>
                                 <select name="role_id" class="form-control" id="role_id">
                                     <?php
@@ -54,17 +54,52 @@
                                     } ?>                           
                                 </select>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlSelect1">Select Location<span class="text-danger">*</span></label>
-                                <select class="form-control" name="branch_id[]">
-                                    <option value="">Select Location</option>
+                            
+                            <div class="form-group mb-4 singleLocation">
+                                <label for="exampleFormControlSelect1">Select Location</label>
+                                <select class="form-control" id="branch_id" name="branch_id[]">
+                                    <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
                                         $cc = explode(',',$getuser->branch_id);
-                                        foreach ($branches as $k => $branch) {
-                                            $selected = in_array($k,$cc) ? 'selected' : '';
+                                        foreach ($branches as $key => $branch) {
+                                            $selected = in_array($key,$cc) ? 'selected' : '';
                                     ?>
-                                        <option value="{{ $k }}" {{ $selected}}>{{ucwords($branch)}}</option>
+                                        <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option>
+                                        <?php 
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group mb-4 multiLocation" style="display: none;">
+                                <label for="exampleFormControlSelect1">Select Location</label>
+                                <select class="form-control tagging" multiple="multiple" name="branch_id[]">
+                                    <option value="" disabled>Select</option>
+                                    <?php 
+                                    if(count($branches)>0) {
+                                        $cc = explode(',',$getuser->branch_id);
+                                        foreach ($branches as $key => $branch) {
+                                            $selected = in_array($key,$cc) ? 'selected' : '';
+                                    ?>
+                                        <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option>
+                                        <?php 
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group mb-4 selectClient" style="display: none;">
+                                <label for="exampleFormControlSelect1">Select Regional Clients</label>
+                                <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
+                                    <option value="">Select</option>
+                                    <?php 
+                                    if(count($getclients)>0) {
+                                        $cc = explode(',',$getuser->regionalclient_id);
+                                        foreach ($getclients as $key => $branch) {
+                                            $selected = in_array($key,$cc) ? 'selected' : '';
+                                    ?>
+                                        <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option>
                                         <?php 
                                         }
                                     }
@@ -119,16 +154,112 @@
 $('#role_id').change(function() {
     var role_id = $(this).val();
     var checkbox = $('.chkBoxClass').val();
-    if(role_id == 2) {
+    if(role_id == 1) {            //role_id = 1 for Admin
+        $('.multiLocation').hide();
+        $('.singleLocation').show();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+
+        $('#ckbCheckAll').attr('checked',true);
+        $('.chkBoxClass[value="1"]').prop('checked', true)
+        $('.chkBoxClass[value="2"]').prop('checked', true)
+        $('.chkBoxClass').prop('checked', true);
+    }
+    else if(role_id == 2) {     //role_id = 2 for Branch Manager
         $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
+        $('.chkBoxClass[value="1"]').prop('checked', false)
+        $('.chkBoxClass[value="2"]').prop('checked', false)
+
+        $('.multiLocation').hide();
+        $('.singleLocation').show();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+    }else if(role_id == '') {
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false)
+    }else if(role_id == 3) {            //role_id = 3 for regional manager
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
+        $('.chkBoxClass[value="1"]').prop('checked', false)
+        $('.chkBoxClass[value="2"]').prop('checked', false)
+
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+    }else if(role_id == 4) {            //role_id = 4 for branch User
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
+        $('.chkBoxClass[value="1"]').prop('checked', false)
+        $('.chkBoxClass[value="2"]').prop('checked', false)
+        
+        $('.selectClient').show();
+        $('.singleLocation').show();
+        $('.multiLocation').hide();
+        $('.baseclient').hide();
+    }else if(role_id == 6) {            //role_id = 6 for client account
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false)
+        $('.chkBoxClass[value="7"]').prop('checked', true)
+        
+        $('.baseclient').show();
+        $('.selectClient').hide();
+        $('.singleLocation').hide();
+        $('.multiLocation').hide();
+    }else if(role_id == 7) {            //role_id = 7 for client user
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false)
+        $('.chkBoxClass[value="7"]').prop('checked', true)
+        
+        $('.selectClient').show();
+        $('.singleLocation').show();
+        $('.multiLocation').hide();
+        $('.baseclient').hide();
+    }else if(role_id == 5) {
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
     }else{
-        $('#ckbCheckAll').attr('checked',true);
-        $('.chkBoxClass').attr('checked','true');
-        $('.chkBoxClass[value="1"]').prop('checked', true)
-        $('.chkBoxClass[value="2"]').prop('checked', true)
+        $('.multiLocation').hide();
+        $('.singleLocation').show();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', true)
+        $('.chkBoxClass[value="1"]').prop('checked', false)
+        $('.chkBoxClass[value="2"]').prop('checked', false)
     }
+});
+
+$('#branch_id').change(function() {
+    $('#select_regclient').empty();
+    let branch_id = $(this).val();
+    $.ajax({
+        type      : 'get',
+        url       : APP_URL+'/get_regclients',
+        data      : {branch_id:branch_id},
+        headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType  : 'json',
+        success:function(res){
+            console.log(res);
+            if(res.data){
+                $('#select_regclient').append('<option value="">Select regional client</option>');
+                $.each(res.data,function(key,value){
+                    $('#select_regclient').append('<option value="'+value.id+'">'+value.name+'</option>');
+                });
+            }
+        }
+    });
 });
 </script>
 @endsection

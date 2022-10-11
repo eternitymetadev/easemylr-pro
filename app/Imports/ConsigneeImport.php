@@ -86,7 +86,7 @@ class ConsigneeImport implements ToModel,WithHeadingRow
                 'city'              => $row['city'],
                 'district'          => $row['district'],
                 'postal_code'       => $row['postal_code'],
-                'state_id'          => $state,
+                'state_id'          => $row['state'],
             ]);
         }
     }

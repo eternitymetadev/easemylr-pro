@@ -187,6 +187,7 @@ class UserController extends Controller
         $allpermissioncount = Permission::all()->count();
         $getuserpermissions = UserPermission::where('user_id',$id)->get();
         $branches = Helper::getLocations();
+        $getclients = Helper::getRegionalClients();
         
         $u = array();
         if(count($getuserpermissions) > 0)
@@ -197,7 +198,7 @@ class UserController extends Controller
             }
         }
         $getuser = User::where('id',$id)->first();
-        return view('users.update-user')->with(['prefix'=>$this->prefix,'title'=>$this->title, 'pagetitle'=>$this->pagetitle, 'getuser'=>$getuser,'getroles'=>$getroles,'getpermissions'=>$getpermissions,'getuserpermissions'=>$u,'allpermissioncount'=>$allpermissioncount,'branches'=>$branches]);
+        return view('users.update-user')->with(['prefix'=>$this->prefix,'title'=>$this->title, 'pagetitle'=>$this->pagetitle, 'getuser'=>$getuser,'getroles'=>$getroles,'getpermissions'=>$getpermissions,'getuserpermissions'=>$u,'allpermissioncount'=>$allpermissioncount,'branches'=>$branches,'getclients'=>$getclients]);
     }
     
     /**

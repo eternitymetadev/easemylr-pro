@@ -36,8 +36,8 @@
                         @if(!empty($getClientDetail->ClientPriceDetails))
                         @foreach($getClientDetail->ClientPriceDetails as $key => $value)
                         <tr class="rowcls">
-                            <td>{{ $value->ZoneFromState->state ?? '-'}}</td>
-                            <td>{{ $value->ZoneToState->state ?? '-'}}</td>
+                            <td>{{ $value->from_state ?? '-'}}</td>
+                            <td>{{ $value->to_state ?? '-'}}</td>
                             <td>{{ $value->price_per_kg ?? '-'}}</td>
                             <td>{{ $value->open_delivery_price ?? '-'}}</td>
                         </tr>

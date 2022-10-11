@@ -718,7 +718,9 @@ class ConsignmentController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
-
+            
+        //    $invc_no = self::invoiceCheck();
+           
             // $check_invoiceno_exist = ConsignmentItem::where(['invoice_no'=>$request['invoice_no']])->get();
 
             // if(!$check_invoiceno_exist->isEmpty()){
@@ -4459,6 +4461,26 @@ class ConsignmentController extends Controller
             $response['tracking_link'] = $job->tracking_link;
         }
         
+        return response()->json($response);
+    }
+
+    public function invoiceCheck(Request $request)
+    {
+        $invoice_check = Consignmentitem::where('invoice_no', $request->invc_no)->first();
+        
+        if(isset($request->invc_no)){
+            if (isset($invoice_check)) {
+                $response['success'] = true;
+                $response['invc_check'] = true;
+                $response['errors'] = "Invoice no already exist";
+                return response()->json($response);
+            }
+            $response['success'] = false;
+            $response['invc_check'] = false;
+            return response()->json($response);
+        }
+        $response['success'] = false;
+        $response['invc_check'] = false;
         return response()->json($response);
     }
 

@@ -158,7 +158,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
-
+    Route::any('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -632,6 +632,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);
+    Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
+
 
 });
 

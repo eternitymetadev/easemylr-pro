@@ -31,12 +31,12 @@ class ConsignerImport implements ToModel,WithHeadingRow
             $regclient = 'N/A';
         }
 
-        if(!empty($row['location_id'])){
-            $location = $row['location_id'];
-        }
-        else{
-            $location = 'N/A';
-        }
+        // if(!empty($row['location_id'])){
+        //     $location = $row['location_id'];
+        // }
+        // else{
+        //     $location = 'N/A';
+        // }
         
         // if(!empty($getState)){
         //     $state = $getState->id;
@@ -45,7 +45,7 @@ class ConsignerImport implements ToModel,WithHeadingRow
         //     $state = 'N/A';
         // }
 
-        $consigner = Consigner::where('nick_name', $row['nick_name'])->where('branch_id', $location)->first();
+        $consigner = Consigner::where('nick_name', $row['nick_name'])->where('regionalclient_id', $row['regional_client_id'])->first();
         if(empty($consigner)){
             
             return new Consigner([
@@ -67,6 +67,25 @@ class ConsignerImport implements ToModel,WithHeadingRow
                 'state_id'     => $row['state'],
                 'status'       => 1,
                 'created_at'   => time(),
+            ]);
+        }else{
+            $consigner = Consigner::where('nick_name', $row['nick_name'])->where('regionalclient_id', $row['regional_client_id'])->update([
+                'nick_name'    => $row['nick_name'],
+                'legal_name'   => $row['legal_name'],
+                'gst_number'   => $row['gst_number'],
+                'contact_name' => $row['contact_name'],
+                'phone'        => (float)$row['phone'],
+                'regionalclient_id' => $regclient,
+                'branch_id'    => $location,
+                'email'        => $row['email'],
+                'address_line1'=> $row['address_line1'],
+                'address_line2'=> $row['address_line2'],
+                'address_line3'=> $row['address_line3'],
+                'address_line4'=> $row['address_line4'], 
+                'city'         => $row['city'],
+                'district'     => $row['district'],
+                'postal_code'  => $row['postal_code'],
+                'state_id'     => $row['state'],
             ]);
         }
     }
