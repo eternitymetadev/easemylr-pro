@@ -98,13 +98,8 @@ div.relative {
                 <?php }?>
                 </div>
                     <div class="form-group col-md-4">
-                        <label for="location_name">Vehicle</label>
-                        <select class="form-control my-select2" id="v_id" name="vehicle_id" tabindex="-1">
-                            <option selected disabled>Select</option>
-                            @foreach($vehicles as $vehicle)
-                            <option value="{{$vehicle->regn_no}}">{{$vehicle->regn_no}}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" class="form-control" placeholder="Vehicle Number Search" id="search"
+                                                data-action="<?php echo url()->current(); ?>">
                     </div>
                     <div class="form-group col-md-4">
                     <div class="winery_btn_n btn-section px-0 text-right">

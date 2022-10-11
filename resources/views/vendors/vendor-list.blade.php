@@ -97,7 +97,6 @@ $(document).on('click', '.view', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
-
                 $('#name').empty()
                 $('#trans_name').empty()
                 $('#driver_nm').empty()
@@ -123,7 +122,11 @@ $(document).on('click', '.view', function() {
 
             $('#name').html(data.view_details.name)
             $('#trans_name').html(other_details.transporter_name)
+            if(data.view_details.driver_detail == '' || data.view_details.driver_detail == null){
+            $('#driver_nm').html('-')
+            }else{
             $('#driver_nm').html(data.view_details.driver_detail.name)
+            }
             $('#cont_num').html(other_details.contact_person_number)
             $('#cont_email').html(data.view_details.email)
             $('#acc_holder').html(bank_details.acc_holder_name)
