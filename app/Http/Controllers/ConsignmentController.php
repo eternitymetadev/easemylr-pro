@@ -718,17 +718,6 @@ class ConsignmentController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
-            
-        //    $invc_no = self::invoiceCheck();
-           
-            // $check_invoiceno_exist = ConsignmentItem::where(['invoice_no'=>$request['invoice_no']])->get();
-
-            // if(!$check_invoiceno_exist->isEmpty()){
-            //     $response['success'] = false;
-            //     $response['error_message'] = "Invoice no. already exists.";
-            //     $response['invoiceno_duplicate_error'] = true;
-            //     return response()->json($response);
-            // }
 
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
