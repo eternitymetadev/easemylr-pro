@@ -322,7 +322,7 @@ span.round-tab:hover {
                                 <tr></tr>
                                         <tr>
                                             <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
-                                            <td><input type="text" class="form-control form-small invc_no" name="data[1][invoice_no]"></td>
+                                            <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
                                             <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
                                             <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
                                             <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
@@ -481,6 +481,30 @@ var mapProp= {
 };
 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
+
+// invoice no duplicate validate
+$('.invc_no').blur(function() {
+    var invc_no = $(this).val();
+    var row_id = jQuery(this).attr('id');
+    $.ajax({
+        url: "/invoice-check",
+        method: "get",
+        data: {
+            invc_no: invc_no
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+            if(response.success == true){
+                swal('error', response.errors, 'error');
+                $("#"+row_id).val('');
+            }
+        }
+    })
+});
 
  
 </script>

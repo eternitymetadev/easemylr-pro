@@ -632,6 +632,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);
+    Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
 
 });
 
