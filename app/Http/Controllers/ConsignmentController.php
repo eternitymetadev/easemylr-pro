@@ -4453,5 +4453,25 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
+    public function invoiceCheck(Request $request)
+    {
+        $invoice_check = Consignmentitem::where('invoice_no', $request->invc_no)->first();
+        
+        if(isset($request->invc_no)){
+            if (isset($invoice_check)) {
+                $response['success'] = true;
+                $response['invc_check'] = true;
+                $response['errors'] = "Invoice no already exist";
+                return response()->json($response);
+            }
+            $response['success'] = false;
+            $response['invc_check'] = false;
+            return response()->json($response);
+        }
+        $response['success'] = false;
+        $response['invc_check'] = false;
+        return response()->json($response);
+    }
+
 
 }
