@@ -35,7 +35,7 @@
                         <thead>
                             <tr>
                                 <th>Vendor Code</th>
-                                <th>Location</th>
+                                <!-- <th>Location</th> -->
                                 <th>Vendor Name </th>
                                 <th>Transporter Name</th>
                                 <th>Pan No</th>
@@ -56,7 +56,7 @@
                             ?>
                             <tr>
                                 <td>{{$vendor->vendor_no}}</td>
-                                <td>{{$vendor->Branch->name}}</td>
+                                
                                 <td>{{$vendor->name}}</td>
                                 <td>{{$other_details->transporter_name ?? '-'}}</td>
                                 <td>{{$vendor->pan ?? '-'}}</td>
