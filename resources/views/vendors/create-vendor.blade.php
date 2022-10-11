@@ -47,7 +47,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Transporter Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="transporter_name" placeholder="">
+                                    <input type="text" class="form-control" id="transporter_name" name="transporter_name" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -64,8 +64,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Contact Number<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlSelect1">Contact Number</label>
                                     <input type="text" class="form-control" name="contact_person_number" placeholder=""  maxlength="10">
                                 </div>
                             </div>
@@ -125,18 +124,21 @@
                             <h3>Vendor NEFT details</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name </label>
+                                    <label for="exampleFormControlInput2">Account Holder Name <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="acc_holder_name" name="acc_holder_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Account No.</label>
+                                    <label for="exampleFormControlSelect1">Account No.<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="account_no" name="account_no" placeholder="">
                                 </div>
                             </div>
 
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Ifsc Code</label>
+                                    <label for="exampleFormControlInput2">Ifsc Code<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
                                 </div>
                                 <div class="form-group col-md-6">
@@ -158,8 +160,9 @@
                             <h3>Vendor Documents</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan</label>
-                                    <input type="text" class="form-control" name="pan" placeholder="" maxlength="10">
+                                    <label for="exampleFormControlInput2">Pan<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="pan_no" name="pan" placeholder="" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan Upload</label>

@@ -94,7 +94,7 @@ div.relative {
                 <div class="form-group col-md-4">
                 <?php $authuser = Auth::user();
                 if ($authuser->role_id == 2) {?>
-                <button type="button" class="btn btn-warning mt-4 ml-4 payment">Create Payment</button>
+                <button type="button" class="btn btn-warning mt-4 ml-4 payment" style="font-size: 12px;">Create Payment</button>
                 <?php }?>
                 </div>
                     <div class="form-group col-md-4">

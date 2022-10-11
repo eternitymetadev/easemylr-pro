@@ -11,11 +11,16 @@
                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
                 </th>
                 <?php } ?>
+                <th>Purchase Amount</th>
+                <th>Vehicle Type</th>
                 <th>DRS NO</th>
-                <th>Status</th>
+                <th>DRS Status</th>
                 <th>Total Lr</th>
                 <th>Vehicle No</th>
-                <th>Purchase Amount</th>
+                <th>Gross Wt.</th>
+                <th>Quantity</th>
+                <th>Driver Name</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -31,6 +36,15 @@
                 <td>-</td>
                 <?php  } ?>
                 <?php } ?>
+                <!------- Purchase Price --------------->
+                <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
+                <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
+                <?php } else { ?>
+                <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
+                        style="margin-right:4px;">Add amount</button> </td>
+                <?php } ?>
+                <!-- end purchase price -->
+                <td>{{$list->ConsignmentDetail->vehicle_type ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
                 <!-- delivery Status ---- -->
                 <td>
@@ -47,17 +61,11 @@
                     <?php } ?>
                 </td>
                 <!-- END Delivery Status  --------------->
-
                 <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
                 <td>{{$list->vehicle_no ?? '-'}}</td>
-                <!------- Purchase Price --------------->
-                <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
-                <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
-                <?php } else { ?>
-                <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
-                        style="margin-right:4px;">Add amount</button> </td>
-                <?php } ?>
-                <!-- end purchase price -->
+                <td>{{$list->ConsignmentDetail->total_gross_weight ?? '-'}}</td>
+                <td>{{$list->ConsignmentDetail->total_quantity ?? '-'}}</td>
+                <td>{{$list->driver_name ?? '-'}}</td>
 
             </tr>
 

@@ -73,8 +73,7 @@ class VendorController extends Controller
 
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
-                'name' => 'required',
-                'transporter_name' => 'required',
+                'name' => 'required|unique:vendors',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -83,7 +82,7 @@ class VendorController extends Controller
                 $response['success'] = false;
                 $response['validation'] = false;
                 $response['formErrors'] = true;
-                $response['errors'] = $errors;
+                $response['error_message'] = $errors;
                 return response()->json($response);
             }
 

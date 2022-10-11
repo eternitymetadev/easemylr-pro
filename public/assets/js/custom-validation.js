@@ -1847,16 +1847,27 @@ $('#vendor-master').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var v_name = $('#vendor_name').val();
-    var acc_no = $('#account_no').val();
+    var trans_name = $('#transporter_name').val();
     var vendor_type = $('#vendor_type').val();
+    var acc_holder_name = $('#acc_holder_name').val();
+    var acc_no = $('#account_no').val();
     var ifsc = $('#ifsc').val();
+    var pan_no = $('#pan_no').val();
     
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
         return false;
     }
+    if (!trans_name) {
+        swal("Error!", "Please Enter Transporter Name", "error");
+        return false;
+    }
     if (!vendor_type) {
         swal("Error!", "Please Select Vendor Type", "error");
+        return false;
+    }
+    if (!acc_holder_name) {
+        swal("Error!", "Please Enter Account holder Number", "error");
         return false;
     }
     if (!acc_no) {
@@ -1867,7 +1878,10 @@ $('#vendor-master').submit(function (e) {
         swal("Error!", "Please Enter Ifsc Code", "error");
         return false;
     }
-
+    if (!pan_no) {
+        swal("Error!", "Please Enter Ifsc Code", "error");
+        return false;
+    }
     $.ajax({
         url: "add-vendor",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1882,6 +1896,8 @@ $('#vendor-master').submit(function (e) {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
                 $('#vendor-master')[0].reset();
+            }else if(data.validation === false){
+                swal('error', data.error_message.name[0], 'error');
             } else {
                 swal('error', data.error_message, 'error');
             }
