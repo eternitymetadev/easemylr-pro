@@ -68,7 +68,6 @@ class VendorController extends Controller
     public function store(Request $request)
     {
         try {
-            // echo'<pre>';print_r($request->all()); die;
             DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
@@ -83,6 +82,15 @@ class VendorController extends Controller
                 $response['validation'] = false;
                 $response['formErrors'] = true;
                 $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+
+            $pancheck = Vendor::where('vendor_type',$request->vendor_type)->where('pan',$request->pan)->first();
+            if($pancheck){
+                
+                $response['success'] = false;
+                $response['pan_check'] = true;
+                $response['errors'] = "Pan no. and vendor type already exists";
                 return response()->json($response);
             }
 
@@ -145,7 +153,7 @@ class VendorController extends Controller
             $savevendor = Vendor::create($vendorsave);
 
             if ($savevendor) {
-                $url = $this->prefix . '/consignments';
+                $url = $this->prefix . '/vendor-list';
                 $response['success'] = true;
                 $response['success_message'] = "Vendor Added successfully";
                 $response['error'] = false;

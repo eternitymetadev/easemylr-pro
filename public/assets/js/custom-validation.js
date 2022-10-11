@@ -1896,8 +1896,11 @@ $('#vendor-master').submit(function (e) {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
                 $('#vendor-master')[0].reset();
+                window.location.href = data.redirect_url;
             }else if(data.validation === false){
                 swal('error', data.error_message.name[0], 'error');
+            }else if(data.pan_check === true){
+                swal('error', data.errors, 'error');
             } else {
                 swal('error', data.error_message, 'error');
             }
