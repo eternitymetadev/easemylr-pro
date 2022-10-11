@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\VehicleType;
 use App\Models\Vendor;
 use Auth;
 use Config;
@@ -213,6 +214,7 @@ class VendorController extends Controller
                 $query = $query->with('ConsignmentDetail');
             } elseif ($authuser->role_id == 4) {
                 $query = $query
+                    ->with('ConsignmentDetail.vehicletype')
                     ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                         $query->whereIn('regclient_id', $regclient);
                     });
@@ -284,6 +286,7 @@ class VendorController extends Controller
             $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
             $query = $query
+            ->with('ConsignmentDetail.vehicletype')
                 ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                     $query->whereIn('regclient_id', $regclient);
                 });
@@ -307,9 +310,9 @@ class VendorController extends Controller
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());
         $vehicles = Vehicle::select('id', 'regn_no')->get();
-
+        $vehicletype = VehicleType::select('id', 'name')->get();
         $vendors = Vendor::all();
-        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles]);
+        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles,'vehicletype' => $vehicletype]);
 
     }
 
@@ -485,7 +488,7 @@ class VendorController extends Controller
 
             foreach ($simpl as $lr) {
 
-                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price]);
+                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price,'vehicle_type' => $request->vehicle_type]);
 
             }
             $response['success'] = true;
@@ -693,8 +696,8 @@ class VendorController extends Controller
             ->groupBy('transaction_id')
             ->get();
         $vendors = Vendor::all();
-
-        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors]);
+        $vehicletype = VehicleType::select('id', 'name')->get();
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors,'vehicletype' => $vehicletype]);
     }
 
     public function getVendorReqDetails(Request $request)

@@ -244,5 +244,32 @@ class GlobalFunctions {
         $data = DB::table('payment_requests')->where('transaction_id',$trans_id)->count();
         return $data;
     }
+    ///////////// Create Payment ////////
+    
+    public static function totalQuantity($drs_number)
+    {
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
 
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_quantity');
+      
+        return $total_quantity;
+    }
+
+    public static function totalGrossWeight($drs_number)
+    {
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_gross_weight');
+      
+        return $total_gross;
+    }
+
+    public static function totalWeight($drs_number)
+    {
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no',$drs_number)->get();
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_weight');
+      
+        return $total_weight;
+    }
 }

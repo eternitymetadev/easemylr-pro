@@ -221,9 +221,19 @@
                 <form id="purchase_amt_form">
                     <input type="hidden" class="form-control" id="drs_num" name="drs_no" value="">
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
                             <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vehicle Type</label>
+                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                                <option value="">Select vehicle type</option>
+                                @foreach($vehicletype as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
@@ -276,6 +286,21 @@
                             <label for="exampleFormControlInput2">Purchase Amount</label>
                             <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount"
                                 value="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Type</label>
+                            <select class="form-control" id="" name="" tabindex="-1">
+                                <option value="">select</option>
+                                <option value="Advance">Advance</option>
+                                <option value="Balance">Balance</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Amount</label>
+                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount"
+                                value="">
                         </div>
                     </div>
 

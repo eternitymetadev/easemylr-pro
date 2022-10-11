@@ -18,6 +18,7 @@
                 <th>Total Lr</th>
                 <th>Vehicle No</th>
                 <th>Gross Wt.</th>
+                <th>Total Wt.</th>
                 <th>Quantity</th>
                 <th>Driver Name</th>
                 
@@ -44,7 +45,7 @@
                         style="margin-right:4px;">Add amount</button> </td>
                 <?php } ?>
                 <!-- end purchase price -->
-                <td>{{$list->ConsignmentDetail->vehicle_type ?? '-'}}</td>
+                <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
                 <!-- delivery Status ---- -->
                 <td>
@@ -63,8 +64,9 @@
                 <!-- END Delivery Status  --------------->
                 <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
                 <td>{{$list->vehicle_no ?? '-'}}</td>
-                <td>{{$list->ConsignmentDetail->total_gross_weight ?? '-'}}</td>
-                <td>{{$list->ConsignmentDetail->total_quantity ?? '-'}}</td>
+                <td>{{ Helper::totalGrossWeight($list->drs_no) ?? "-"}}</td>
+                <td>{{ Helper::totalWeight($list->drs_no) ?? "-"}}</td>
+                <td>{{ Helper::totalQuantity($list->drs_no) ?? "-"}}</td>
                 <td>{{$list->driver_name ?? '-'}}</td>
 
             </tr>
