@@ -40,7 +40,7 @@ class VendorController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
 
-        $vendors = Vendor::with('DriverDetail')->get();
+        $vendors = Vendor::with('DriverDetail','Branch')->get();
         return view('vendors.vendor-list', ['prefix' => $this->prefix, 'vendors' => $vendors]);
     }
     public function create()

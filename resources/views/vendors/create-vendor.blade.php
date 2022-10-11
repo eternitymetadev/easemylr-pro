@@ -66,7 +66,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Contact Number<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="contact_person_number" placeholder="">
+                                    <input type="text" class="form-control" name="contact_person_number" placeholder=""  maxlength="10">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -137,7 +137,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code</label>
-                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="">
+                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
@@ -159,7 +159,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan</label>
-                                    <input type="text" class="form-control" name="pan" placeholder="">
+                                    <input type="text" class="form-control" name="pan" placeholder="" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan Upload</label>
@@ -178,7 +178,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
-                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder=""
+                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="" maxlength="15"
                                         disabled>
                                 </div>
                             </div>
