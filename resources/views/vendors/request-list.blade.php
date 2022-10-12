@@ -162,7 +162,7 @@ $(document).on('click', '.payment_button', function() {
             $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
 
             if (data.status == 'Successful') {
-                $('#p_type').append('<option value="Balance">Balance</option>');
+                $('#p_type').append('<option value="Fully">Fully Payment</option>');
                 //check balance if null or delevery successful
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                      $('#amt').val(data.req_data[0].total_amount);
@@ -184,11 +184,11 @@ $(document).on('click', '.payment_button', function() {
             } else {
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                 $('#p_type').append(
-                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
+                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'
                     );
                 }else{
                     $('#p_type').append(
-                    '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option>'
+                    '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option><option value="Fully">Fully Payment</option>'
                     );
                     var amt = $('#amt').val(data.req_data[0].balance);
                     var amt = $('#amt').val();

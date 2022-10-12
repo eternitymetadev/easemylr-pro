@@ -366,38 +366,39 @@ class VendorController extends Controller
     {
 
         echo '<pre>';
-        print_r($request->all());die;
+        // print_r($request->all());die;
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => "[{
-                \"unique_code\": \"$request->vendor_no\",
-                \"name\": \"$request->name\",
-                \"acc_no\": \"$request->acc_no\",
-                \"beneficiary_name\": \"$request->beneficiary_name\",
-                \"ifsc\": \"$request->ifsc\",
-                \"bank_name\": \"$request->bank_name\",
-                \"baddress\": \"$request->branch_name\",
-                \"payable_amount\": \"$request->final_payable_amount\",
-                \"claimed_amount\": \"$request->claimed_amount\",
-                \"pfu\": \"$pfu\",
-                \"ptype\": \"$request->p_type\",
-                \"email\": \"$request->email\",
-                \"transaction_id\": \"$request->transaction_id\"
-                }]",
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-            ),
-        ));
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$request->email\",
+            \"terid\": \"$request->transaction_id\",
+            \"txn_route\": \"DRS\"
+            }]",
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                ),
+            ));
 
         $response = curl_exec($curl);
         curl_close($curl);
@@ -741,7 +742,7 @@ class VendorController extends Controller
             // $cs = 'success' ;
             if ($res_data->message == 'success') {
 
-                if ($request->p_type == 'Balance') {
+                if ($request->p_type == 'Fully') {
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
                     if (!empty($getadvanced->balance)) {
                         $balance = $getadvanced->balance - $request->pay_amt;

@@ -183,7 +183,7 @@ $(document).on('click', '.payment', function() {
                     jQuery('#amt_1').prop('disabled', true);
             } else {
                 $('#p_type_1').append(
-                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
+                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Fully">Fully Payment</option>'
                     );
             }
 
@@ -371,7 +371,7 @@ $('#v_id').change(function() {
 $('#p_type_1').change(function() {
     var p_type = $(this).val();
     var total_amt = $("#total_clam_amt_1").val();
-     if(p_type == 'Balance'){
+     if(p_type == 'Fully'){
         $('#amt_1').val(total_amt);
 
         var amt = $('#amt_1').val();
