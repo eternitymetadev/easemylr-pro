@@ -266,16 +266,23 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="create_request_form">
+            <form id="create_request_form">
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <input type="hidden" class="form-control" id="drs_no" name="drs_no" value="">
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="drs_no_1" name="drs_no" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="vendor_no_1" name="vendor_no" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="transaction_id_1" name="transaction_id"
+                                value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
+                    <div class="form-group col-md-6">
                             <label for="location_name">Vendor</label>
-                            <select class="form-control my-select2" id="vendor_id" name="vendor_name" tabindex="-1">
+                            <select class="form-control my-select2" id="vendor_id_1" name="vendor_name" tabindex="-1">
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
                                 <option value="{{$vendor->id}}">{{$vendor->name}}</option>
@@ -284,26 +291,67 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount"
-                                value="" readonly>
+                            <input type="text" class="form-control" id="total_clam_amt_1" name="claimed_amount" value=""
+                                readonly>
                         </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Beneficiary Name</label>
+                            <input type="text" class="form-control" id="beneficiary_name_1" name="beneficiary_name"
+                                value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Branch Name</label>
+                            <input type="text" class="form-control" id="branch_name_1" name="branch_name" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Account No</label>
+                            <input type="text" class="form-control" id="bank_acc_1" name="acc_no" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Ifsc Code</label>
+                            <input type="text" class="form-control" id="ifsc_code_1" name="ifsc" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Bank Name</label>
+                            <input type="text" class="form-control" id="bank_name_1" name="bank_name" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Email</label>
+                            <input type="text" class="form-control" id="email_1" name="email" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
-                            <select class="form-control" id="" name="" tabindex="-1">
-                                <option value="">select</option>
-                                <option value="Advance">Advance</option>
-                                <option value="Balance">Balance</option>
+                            <select class="form-control" id="p_type_1" name="p_type" tabindex="-1">
+
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Amount</label>
-                            <input type="text" class="form-control" id="purchase_amount_total" name="claimed_amount"
-                                value="">
+                            <input type="text" class="form-control" id="amt_1" name="payable_amount" value="">
                         </div>
                     </div>
-
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Tds rate</label>
+                            <input type="text" class="form-control" id="tds_rate_1" name="tds_rate" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">tds deduct amount</label>
+                            <input type="text" class="form-control" id="tds_dedut_1" name="final_payable_amount" value="">
+                        </div>
+                    </div>
                     <div class="modal-footer">
                         <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
                             Discard</button>

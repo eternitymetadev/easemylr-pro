@@ -2150,7 +2150,7 @@ $('#update_vendor').validate({
 $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    var vendor = $('#vendor_id').val();
+    var vendor = $('#vendor_id_1').val();
     if(!vendor)
     {
         swal('Error!', 'Please select a vendor','error');
