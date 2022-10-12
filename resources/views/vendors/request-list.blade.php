@@ -96,6 +96,7 @@ div.relative {
                         <td>{{ $requestlist->balance ?? "-" }}</td>
                         <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                       
                         <!-- payment Status -->
                         <?php if($requestlist->payment_status == 0){ ?>
                         <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unpaid</button>
@@ -103,7 +104,7 @@ div.relative {
                         <?php } elseif($requestlist->payment_status == 1) { ?>
                         <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Paid</button> </td>
                         <?php } elseif($requestlist->payment_status == 2) { ?>
-                        <td> <button type="button" class="btn btn-warning " style="margin-right:4px;">Sent</button>
+                        <td> <button type="button" class="btn btn-success " style="margin-right:4px;">Sent to Finfect</button>
                         </td>
                         <?php } elseif($requestlist->payment_status == 3) { ?>
                         <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Partial
