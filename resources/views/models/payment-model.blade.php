@@ -269,13 +269,13 @@
             <form id="create_request_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="drs_no_1" name="drs_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no_1" name="drs_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="vendor_no_1" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_1" name="vendor_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="transaction_id_1" name="transaction_id"
+                            <input type="hidden" class="form-control" id="transaction_id_1" name="transaction_id"
                                 value="">
                         </div>
                     </div>
@@ -339,8 +339,9 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Amount</label>
-                            <input type="text" class="form-control" id="amt_1" name="payable_amount" value="">
+                            <input type="text" class="form-control" id="amt_1" name="pay_amt" value="">
                         </div>
+                        
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">

@@ -657,6 +657,7 @@ class VendorController extends Controller
     {
       
             $this->prefix = request()->route()->getPrefix();
+            // echo'<pre>'; print_r($request->pay_amt); die;
             $drsno = explode(',', $request->drs_no);
             $consignment = TransactionSheet::whereIn('drs_no', $drsno)
                 ->groupby('drs_no')
@@ -680,18 +681,18 @@ class VendorController extends Controller
                 $vehicle_no = $value['vehicle_no'];
 
                 if($request->p_type == 'Advance'){
-                    $balance_amt = $request->claimed_amount - $request->payable_amount;
+                    $balance_amt = $request->claimed_amount - $request->pay_amt;
               
-
-                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->payable_amount, 'balance' => $balance_amt,'payment_status' => 0, 'status' => '1']);
+                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt,'payment_status' => 0, 'status' => '1']);
                 }else{
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
                     if (!empty($getadvanced->balance)) {
-                        $balance = $getadvanced->balance - $request->payable_amount;
+                        $balance = $getadvanced->balance - $request->pay_amt;
                     } else {
                         $balance = 0;
                     }
-                    $advance = $request->payable_amount;
+                    $advance = $request->pay_amt;
+                    // dd($advance);
 
                     $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no,'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount,'advanced' => $advance, 'balance' => $balance,'payment_status' => 0, 'status' => '1']);
                 }
@@ -742,11 +743,11 @@ class VendorController extends Controller
                 if ($request->p_type == 'Balance') {
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
                     if (!empty($getadvanced->balance)) {
-                        $balance = $getadvanced->balance - $request->payable_amount;
+                        $balance = $getadvanced->balance - $request->pay_amt;
                     } else {
                         $balance = 0;
                     }
-                    $advance = $request->payable_amount;
+                    $advance = $request->pay_amt;
 
                     TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
 
@@ -769,7 +770,7 @@ class VendorController extends Controller
 
                 } else {
                     
-                    $balance_amt = $request->claimed_amount - $request->payable_amount;
+                    $balance_amt = $request->claimed_amount - $request->pay_amt;
                     //======== Payment History save =========//
                     $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
@@ -779,13 +780,13 @@ class VendorController extends Controller
                     $paymentresponse['bank_details'] = json_encode($bankdetails);
                     $paymentresponse['purchase_amount'] = $request->claimed_amount;
                     $paymentresponse['payment_type'] = $request->p_type;
-                    $paymentresponse['advance'] = $request->payable_amount;
+                    $paymentresponse['advance'] = $request->pay_amt;
                     $paymentresponse['balance'] = $balance_amt;
                     $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
                     $paymentresponse['payment_status'] = 2;
 
                     $paymentresponse = PaymentHistory::create($paymentresponse);
-                    PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
+                    PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advance' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
 
                     TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
                 }

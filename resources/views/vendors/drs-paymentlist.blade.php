@@ -171,23 +171,16 @@ $(document).on('click', '.payment', function() {
             if (data.status == 'Successful') {
                 $('#p_type_1').append('<option value="Balance">Balance</option>');
                 //check balance if null or delevery successful
-                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                     $('#amt_1').val(data.req_data[0].total_amount);
+                   var total = $('#total_clam_amt_1').val();
+
+                     $('#amt_1').val(total);
+
                      var amt = $('#amt_1').val();
                     var tds_rate = $('#tds_rate_1').val();
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut_1').val(final_amt);
-
-                } else {
-                    var amt = $('#amt_1').val(data.req_data[0].balance);
-                   
-                    //calculate
-                    var tds_rate = $('#tds_rate_1').val();
-                    var cal = (tds_rate / 100) * amt;
-                    var final_amt = amt - cal;
-                    $('#tds_dedut_1').val(final_amt);
-                }
+                    jQuery('#amt_1').prop('disabled', true);
             } else {
                 $('#p_type_1').append(
                     '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option>'
