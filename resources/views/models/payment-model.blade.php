@@ -268,14 +268,18 @@
             <div class="modal-body">
             <form id="create_request_form">
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <input type="hidden" class="form-control" id="drs_no_1" name="drs_no" value="">
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <input type="hidden" class="form-control" id="vendor_no_1" name="vendor_no" value="">
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-3">
                             <input type="hidden" class="form-control" id="transaction_id_1" name="transaction_id"
+                                value="">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="name_1" name="v_name"
                                 value="">
                         </div>
                     </div>

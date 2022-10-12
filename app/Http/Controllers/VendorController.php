@@ -365,7 +365,7 @@ class VendorController extends Controller
     public function createPaymentRequest(Request $request)
     {
 
-        echo '<pre>';
+        // echo '<pre>';
         // print_r($request->all());die;
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
@@ -656,9 +656,9 @@ class VendorController extends Controller
     // ==================CreatePayment Request =================
     public function createPaymentRequestVendor(Request $request)
     {
-      
+        
             $this->prefix = request()->route()->getPrefix();
-            // echo'<pre>'; print_r($request->pay_amt); die;
+            
             $drsno = explode(',', $request->drs_no);
             $consignment = TransactionSheet::whereIn('drs_no', $drsno)
                 ->groupby('drs_no')
@@ -716,7 +716,7 @@ class VendorController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => "[{
             \"unique_code\": \"$request->vendor_no\",
-            \"name\": \"$request->name\",
+            \"name\": \"$request->v_name\",
             \"acc_no\": \"$request->acc_no\",
             \"beneficiary_name\": \"$request->beneficiary_name\",
             \"ifsc\": \"$request->ifsc\",
