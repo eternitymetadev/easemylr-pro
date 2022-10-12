@@ -702,43 +702,44 @@ class VendorController extends Controller
             TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
             // ============== Sent to finfect
 
-            // $pfu = 'ETF';
-            // $curl = curl_init();
-            // curl_setopt_array($curl, array(
-            //     CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments',
-            //     CURLOPT_RETURNTRANSFER => true,
-            //     CURLOPT_ENCODING => '',
-            //     CURLOPT_MAXREDIRS => 10,
-            //     CURLOPT_TIMEOUT => 0,
-            //     CURLOPT_FOLLOWLOCATION => true,
-            //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            //     CURLOPT_CUSTOMREQUEST => 'POST',
-            //     CURLOPT_POSTFIELDS => "[{
-            // \"unique_code\": \"$request->vendor_no\",
-            // \"name\": \"$request->name\",
-            // \"acc_no\": \"$request->acc_no\",
-            // \"beneficiary_name\": \"$request->beneficiary_name\",
-            // \"ifsc\": \"$request->ifsc\",
-            // \"bank_name\": \"$request->bank_name\",
-            // \"baddress\": \"$request->branch_name\",
-            // \"payable_amount\": \"$request->final_payable_amount\",
-            // \"claimed_amount\": \"$request->claimed_amount\",
-            // \"pfu\": \"$pfu\",
-            // \"ptype\": \"$request->p_type\",
-            // \"email\": \"$request->email\",
-            // \"transaction_id\": \"$request->transaction_id\"
-            // }]",
-            //     CURLOPT_HTTPHEADER => array(
-            //         'Content-Type: application/json',
-            //     ),
-            // ));
+            $pfu = 'ETF';
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$request->email\",
+            \"terid\": \"$transaction_id\",
+            \"txn_route\": \"DRS\"
+            }]",
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                ),
+            ));
 
-            // $response = curl_exec($curl);
-            // curl_close($curl);
-            // $res_data = json_decode($response);
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $res_data = json_decode($response);
             // ============== Success Response
-            $cs = 'success' ;
-            if ($cs == 'success') {
+            // $cs = 'success' ;
+            if ($res_data->message == 'success') {
 
                 if ($request->p_type == 'Balance') {
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
@@ -755,7 +756,7 @@ class VendorController extends Controller
 
                     $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
-                    // $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                     $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                     $paymentresponse['transaction_id'] = $transaction_id;
                     $paymentresponse['drs_no'] = $request->drs_no;
                     $paymentresponse['bank_details'] = json_encode($bankdetails);
@@ -774,7 +775,7 @@ class VendorController extends Controller
                     //======== Payment History save =========//
                     $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
-                    // $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                    $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                     $paymentresponse['transaction_id'] = $transaction_id;
                     $paymentresponse['drs_no'] = $request->drs_no;
                     $paymentresponse['bank_details'] = json_encode($bankdetails);
@@ -786,17 +787,17 @@ class VendorController extends Controller
                     $paymentresponse['payment_status'] = 2;
 
                     $paymentresponse = PaymentHistory::create($paymentresponse);
-                    PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advance' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+                    PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
 
                     TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
                 }
 
                 $new_response['success'] = true;
-                // $new_response['message'] = $res_data->message;
+                 $new_response['message'] = $res_data->message;
 
             } else {
 
-                // $new_response['message'] = $res_data->message;
+                $new_response['message'] = $res_data->message;
                 $new_response['success'] = false;
 
             }
