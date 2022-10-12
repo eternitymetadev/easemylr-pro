@@ -800,7 +800,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
-                    '][invoice_no]" value=""></td>';
+                    '][invoice_no]" id="'+item_no+'" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
