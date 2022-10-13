@@ -235,7 +235,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_nick_name'   => @$consignment->ConsigneeDetail->nick_name,
                     'consignee_city'        => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'    => @$consignment->ConsigneeDetail->district,
+                    'consignee_district'    => @$consignment->ConsigneeDetail->Zone->district,
                     'consignee_state'       => @$consignment->ConsigneeDetail->Zone->state,
                     'invoice_no'            => $invno,
                     'invoice_date'          => $invdate,

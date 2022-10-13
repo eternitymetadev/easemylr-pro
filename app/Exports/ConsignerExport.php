@@ -23,7 +23,6 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit ( 6000 );
         $arr = array();
-        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id); 
@@ -40,7 +39,6 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         else{
             $query = $query->whereIn('regionalclient_id', $regclient);
         }
-
         $consigners = $query->get();
 
         if($consigners->count() > 0){
