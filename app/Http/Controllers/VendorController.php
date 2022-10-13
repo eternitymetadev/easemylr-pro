@@ -871,4 +871,43 @@ class VendorController extends Controller
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
     }
+
+    public function editPurchasePrice(Request $request)
+    {
+        $drs_price = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $request->drs_no)->first();
+        $vehicletype = VehicleType::select('id', 'name')->get();
+
+        $response['drs_price'] = $drs_price;
+        $response['vehicletype'] = $vehicletype;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+    }
+
+    public function updatePurchasePriceVehicleType(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
+            $simpl = json_decode(json_encode($getlr), true);
+
+            foreach ($simpl as $lr) {
+
+                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price, 'vehicle_type' => $request->vehicle_type]);
+
+            }
+            $response['success'] = true;
+            $response['success_message'] = "Price Added successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
 }

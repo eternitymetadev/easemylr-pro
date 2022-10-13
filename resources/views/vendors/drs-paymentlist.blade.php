@@ -336,11 +336,40 @@ jQuery(document).on('click', '.chkBoxClass', function() {
         $('#ckbCheckAll').prop('checked', false);
     }
 });
-// ====================================================== //
+// ====================Add Purchase Price================================== //
 $(document).on('click', '.add_purchase_price', function() {
     var drs_no = $(this).val();
     $('#add_amt').modal('show');
     $('#drs_num').val(drs_no);
+});
+// ====================update Purchase Price================================== //
+$(document).on('click', '.update_purchase_price', function() {
+    var drs_no = $(this).attr('drs-no');
+    $('#edit_amt').modal('show');
+    $.ajax({
+        type: 'get',
+        url: 'edit-purchase-price',
+        data: {
+            drs_no: drs_no
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+
+        },
+        success: function(response) {
+            $('#drs_num_edit').val(response.drs_price.drs_no);
+            $('#purchse_edit').val(response.drs_price.consignment_detail.purchase_price);
+            
+             $("#vehicle_type_edit").val(response.drs_price.consignment_detail.vehicle_type).change();
+
+            
+        }
+    });
+
+    
 });
 // ==================Vehicle search ================
 $('#v_id').change(function() {

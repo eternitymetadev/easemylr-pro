@@ -42,7 +42,7 @@ if ($authuser->role_id == 2) {?>
                 <?php }}?>
                 <!------- Purchase Price --------------->
                 <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?>
-                <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
+                <td class="update_purchase_price" drs-no="{{$list->drs_no}}">{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                 <?php } else {?>
                 <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
                         style="margin-right:4px;">Add amount</button> </td>

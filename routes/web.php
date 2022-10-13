@@ -314,6 +314,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
+    Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
+    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
+
 
 
 });
@@ -607,6 +610,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequest']);
+    Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
