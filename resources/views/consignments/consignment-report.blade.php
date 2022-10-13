@@ -157,7 +157,7 @@
                                 <td>{{ $consignment['consignee_detail']['city'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['postal_code'] ?? "-" }}</td>
                                 <td>{{ $consignment['consignee_detail']['district'] ?? "-" }}</td>
-                                <td>{{ $consignment['consignee_detail']['get_state']['name'] ?? "-" }}</td>
+                                <td>{{ $consignment['consignee_detail']['zone']['state'] ?? "-" }}</td>
                                 <?php if(empty($consignment['invoice_no'])){ 
                                     if(!empty( $order_item['invoices'])){?>
                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
@@ -347,16 +347,16 @@
                         }else{
                             var cnee_district = value.consignee_detail.district;
                         }
-                        if(value.consignee_detail.get_state == null || value.consignee_detail.get_state == ''){
+                        if(value.consignee_detail.zone == null || value.consignee_detail.zone == ''){
                             var cnee_state = '-';
                         }else{
-                            var cnee_state = value.consignee_detail.get_state;
+                            var cnee_state = value.consignee_detail.zone;
                         }
                     }
                     if(cnee_state == null || cnee_state == '-'){
                         var cnstate = '-';
                     }else{
-                        var cnstate = value.consignee_detail.get_state.name;
+                        var cnstate = value.consignee_detail.zone.state;
                     }
                    // ===============End Consignee Check ================== //
                     //console.log(value.vehicle_detail);
