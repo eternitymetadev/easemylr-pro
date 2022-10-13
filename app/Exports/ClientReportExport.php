@@ -54,18 +54,7 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
         $query = $query
                 ->where('status', '!=', 5)
                 ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                    'ConsignerDetail.GetState:id,name',
-                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail.GetState:id,name',
-                    'VehicleDetail:id,regn_no', 
-                    'DriverDetail:id,name,fleet_id,phone', 
-                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                    'VehicleType:id,name',
-                    'RegClientdetail:id,regclient_id,docket_price',
-                    'RegClientdetail.ClientPriceDetails'
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
         
     
@@ -203,8 +192,8 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     $shipto_state = '';
                 }
                 
-                $cnr_state = @$consignment->ConsignerDetail->state_id;
-                $cnee_state = @$consignment->ConsigneeDetail->state_id;
+                $cnr_state = @$consignment->ConsignerDetail->Zone->state;
+                $cnee_state = @$consignment->ConsigneeDetail->Zone->state;
 
                 $data = DB::table('client_price_details')->select('from_state','to_state','price_per_kg','open_delivery_price')->where('from_state',$cnr_state)->where('to_state',$cnee_state)->first();
                 if(isset($data->price_per_kg)){
@@ -246,8 +235,8 @@ class ClientReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_nick_name'   => @$consignment->ConsigneeDetail->nick_name,
                     'consignee_city'        => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'      => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'    => @$consignment->ConsigneeDetail->district,
-                    'consignee_state'       => @$consignment->ConsigneeDetail->GetState->name,
+                    'consignee_district'    => @$consignment->ConsigneeDetail->Zone->district,
+                    'consignee_state'       => @$consignment->ConsigneeDetail->Zone->state,
                     'invoice_no'            => $invno,
                     'invoice_date'          => $invdate,
                     'invoice_amt'           => $invamt,

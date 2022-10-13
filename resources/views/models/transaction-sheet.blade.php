@@ -356,13 +356,14 @@
                                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                                     <thead>
                                         <tr>
-                                        <th>
-                                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
-                                    </th>
+                                            <th>
+                                                <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
+                                            </th>
                                             <th>LR No</th>
                                             <th>Consignment Date</th>
                                             <th>Consigner Name</th>
                                             <th>Consignee</th>
+                                            <th>City</th>
                                             <th>District</th>
                                             <th>Pin Code</th>
                                             <th>Zone</th>

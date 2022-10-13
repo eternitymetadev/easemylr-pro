@@ -63,12 +63,12 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">District</th>
-                                    <td>{{isset($getconsigner->district)?ucfirst($getconsigner->district):'-'}} </td>
+                                    <td>{{isset($getconsigner->GetZone->district)?ucfirst($getconsigner->GetZone->district):'-'}} </td>
                                 </tr>
                               
                                 <tr>
                                     <th scope="row">State</th>
-                                    <td>{{isset($getconsigner->GetState->name) ? ucfirst($getconsigner->GetState->name) : "-" }}</td>
+                                    <td>{{isset($getconsigner->GetZone->state)?ucfirst($getconsigner->GetZone->state):'-'}}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Address Line 1</th>

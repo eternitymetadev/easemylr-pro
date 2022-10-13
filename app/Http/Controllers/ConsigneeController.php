@@ -40,49 +40,82 @@ class ConsigneeController extends Controller
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
-            
+            $query = Consignee::with('Consigner','Zone');
+
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
-                    $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                        ->join('states', 'states.id', '=', 'consignees.state_id')
-                        ->where('consigners.branch_id', $cc)
-                        ->get();
+                    $query = $query->whereHas('Consigner', function($query) use($cc){
+                        $query->whereIn('branch_id', $cc);
+                    });
+                    // where('consigners.branch_id', $cc);
+                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                    //     ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                    //     ->where('consigners.branch_id', $cc)
+                    //     ->get();
                 }else{
-                    $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                    $query = $query;
+                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                    // ->get();
                 }
             }else if($authuser->role_id != 2 || $authuser->role_id != 3){
                 if($authuser->role_id == $role_id->id){
                     if($authuser->role_id !=1){
-                        $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                                ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                                ->join('states', 'states.id', '=', 'consignees.state_id')
-                                ->whereIn('consigners.regionalclient_id',$regclient)
-                                ->get();
+                        $query = $query->whereHas('Consigner', function($query) use($regclient){
+                            $query->whereIn('regionalclient_id', $regclient);
+                        });
+                        
+                        // whereIn('Consigner.regionalclient_id',$regclient);
+                        // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                        //         ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                        //         ->whereIn('consigners.regionalclient_id',$regclient)
+                        //         ->get();
                     }else{
-                        $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                        $query = $query;
+                    //     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                    // ->get();
                     }
                 }else{
-                    $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    ->join('states', 'states.id', '=', 'consignees.state_id')
-                    ->get();
+                    $query = $query;
+                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                    // ->get();
                 }
             }
             else{
-                $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-                ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                ->join('states', 'states.id', '=', 'consignees.state_id')
-                ->get();
+                $query = $query;
+                // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
+                // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+                // ->get();
             }
+            $consignees = $query->get();
             return datatables()->of($consignees)
                 ->addIndexColumn()
+                ->addColumn('consigner', function($row){
+                    if(isset($row->Consigner)){
+                        $consigner = $row->Consigner->nick_name;
+                    }else{
+                        $consigner = '';
+                    }
+                    return $consigner;
+                })
+                ->addColumn('district', function($row){
+                    if(isset($row->Zone)){
+                        $district = $row->Zone->district;
+                    }else{
+                        $district = '';
+                    }
+                    return $district;
+                })
+                ->addColumn('state', function($row){
+                    if(isset($row->Zone)){
+                        $state = $row->Zone->state;
+                    }else{
+                        $state = '';
+                    }
+                    return $state;
+                })
                 ->addColumn('action', function($row){
                     $btn = '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                     $btn .= '&nbsp;&nbsp;';
@@ -92,7 +125,7 @@ class ConsigneeController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','consigner','district','state'])
                 ->make(true);
         }
         return view('consignees.consignee-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);
@@ -106,7 +139,7 @@ class ConsigneeController extends Controller
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
-        // $consigners = Helper::getConsigners();
+        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -121,9 +154,8 @@ class ConsigneeController extends Controller
         }else{
             $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
         }
-        $branches = Helper::getLocations();
-        $states = Helper::getStates();
-        return view('consignees.create-consignee',['consigners'=>$consigners, 'branches'=>$branches, 'states'=>$states, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>'Create']);
+        
+        return view('consignees.create-consignee',['consigners'=>$consigners, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>'Create']);
     }
 
     /**
@@ -181,7 +213,6 @@ class ConsigneeController extends Controller
             $response['error'] = false;
             $response['page'] = 'consignee-create'; 
             $response['redirect_url'] = URL::to($this->prefix.'/consignees');
-            // $response['resetform'] = true;
         }else{
             $response['success'] = false;
             $response['error_message'] = "Can not created consignee please try again";
@@ -200,7 +231,7 @@ class ConsigneeController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($consignee);
-        $getconsignee = Consignee::where('id',$id)->with('GetConsigner','GetBranch','GetState')->first();
+        $getconsignee = Consignee::where('id',$id)->with('GetConsigner','GetBranch','GetZone')->first();
         return view('consignees.view-consignee',['prefix'=>$this->prefix,'title'=>$this->title,'getconsignee'=>$getconsignee,'pagetitle'=>'View Details']);
     }
 
@@ -213,10 +244,8 @@ class ConsigneeController extends Controller
     public function edit($id)
     {
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($id);      
-        $states = Helper::getStates();
-        $branches = Helper::getLocations();  
-        // $consigners = Helper::getConsigners(); 
+        $id = decrypt($id);
+        $branches = Helper::getLocations();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -231,8 +260,8 @@ class ConsigneeController extends Controller
         }else{
             $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
         }      
-        $getconsignee = Consignee::where('id',$id)->first();
-        return view('consignees.update-consignee')->with(['prefix'=>$this->prefix, 'getconsignee'=>$getconsignee,'states'=>$states,'branches'=>$branches,'consigners'=>$consigners,'title'=>$this->title,'pagetitle'=>'Update']);
+        $getconsignee = Consignee::with('GetZone')->where('id',$id)->first();
+        return view('consignees.update-consignee')->with(['prefix'=>$this->prefix, 'getconsignee'=>$getconsignee,'branches'=>$branches,'consigners'=>$consigners,'title'=>$this->title,'pagetitle'=>'Update']);
     }
 
     /**
@@ -246,18 +275,28 @@ class ConsigneeController extends Controller
     {
         try { 
             $this->prefix = request()->route()->getPrefix();
-             $rules = array(
-              'nick_name' => 'required|unique:consignees,nick_name,'.$request->consignee_id,
+            $rules = array(
+                'nick_name' => 'required',
+                'legal_name' => 'required'
             );
 
             $validator = Validator::make($request->all(),$rules);
-
+            
             if($validator->fails())
             {
                 $errors                  = $validator->errors();
                 $response['success']     = false;
                 $response['formErrors']  = true;
                 $response['errors']      = $errors;
+                return response()->json($response);
+            }
+
+            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('id','!=',$request->consignee_id)->get();
+
+            if(!$check_nickname_exist->isEmpty()){
+                $response['success'] = false;
+                $response['error_message'] = "Nick name already exists.";
+                $response['cnee_nickname_duplicate_error'] = true;
                 return response()->json($response);
             }
 
@@ -291,7 +330,6 @@ class ConsigneeController extends Controller
             $response['success'] = true;
             $response['success_message'] = "Consignee Updated Successfully";
             $response['error'] = false;
-            // $response['html'] = $html;
             $response['redirect_url'] = $url;
         }catch(Exception $e) {
             $response['error'] = false;
@@ -354,7 +392,6 @@ class ConsigneeController extends Controller
                 $response['zone'] = $getZone;
             }
         }
-        // dd($response);
         return response()->json($response);
     }
 

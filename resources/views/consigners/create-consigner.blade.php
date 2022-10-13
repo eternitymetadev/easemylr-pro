@@ -21,7 +21,6 @@
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <!-- <div class="breadcrumb-title pe-3"><h5>Create Consigner</h5></div> -->
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
@@ -103,14 +102,7 @@
                                     <label for="exampleFormControlInput2">Pincode</label>
                                     <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="" maxlength="6">
                                 </div>
-
-
                             </div>
-
-                            <!-- <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">Address</label>
-                                <textarea class="form-control" name="address" cols="5" rows="3" placeholder="Address"></textarea>
-                            </div> -->
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">City</label>
@@ -142,18 +134,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">State</label>
-                                    <select class="form-control" id="state" name="state_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($states)>0) {
-                                            foreach ($states as $key => $state) {
-                                        ?>
-                                        <option value="{{ $key }}">{{ucwords($state)}}</option>
-                                        <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
+                                    <input type="text" class="form-control" id="state" name="state_id" placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 1</label>

@@ -171,451 +171,6 @@ class ConsignmentController extends Controller
         return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
-    public function consignment_list()
-    {
-        $query = ConsignmentNote::query();
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-
-        $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consigners.city as con_city', 'consigners.postal_code as con_pincode', 'consigners.district as con_district', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.address_line1 as con_add1', 'consignees.address_line2 as con_add2', 'consignees.address_line3 as con_add3','consignees.district as conee_district', 'vehicles.regn_no as regn_no','drivers.name as driver_name', 'drivers.phone as driver_phone', 'jobs.status as job_status', 'jobs.response_data as trail')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-            ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-            ->leftjoin('jobs', function($data){
-                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
-                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-            });
-            if($authuser->role_id== 1){
-                $data;
-            }
-            elseif($authuser->role_id== 4){
-                $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-            }
-            elseif($authuser->role_id== 6){
-                $data = $data->whereIn('base_clients.id', $baseclient);
-            }
-            elseif($authuser->role_id== 7){
-                $data = $data->whereIn('regional_clients.id', $regclient);
-            }
-            else{
-                $data = $data->whereIn('consignment_notes.branch_id', $cc);
-            }
-            $data = $data->where('consignment_notes.status', '!=', 5)->orderBy('id', 'DESC');
-            // DB::connection()->enableQueryLog();
-            $data = $data->get();
-            // $queries = DB::getQueryLog();
-            // dd($queries);
-            
-        return Datatables::of($data)
-            ->addColumn('lrdetails', function ($data) {
-
-                if(!empty( $data->regn_no)){
-                    $v = '<span class="badge bg-cust">(' . $data->regn_no . ')<span>';
-                }
-                else{
-                    $v = '';
-                } 
-                
-
-                $trps = '<div class="">
-                    <div class=""><span style="color:#4361ee;">LR No: </span>' . $data->id . $v . '</div>';
-                    // echo'<pre>'; print_r($data->id);die;
-                     if(empty($data->order_id)){
-                        $getorders = ConsignmentItem::select('order_id','invoice_no')->where('consignment_id', $data->id)->get();
-                        if(count($getorders)>0){
-                        foreach($getorders as $order)
-                        {
-                            $sahil[] = $order->order_id;
-                            $invoices[] = $order->invoice_no;
-                        }
-                        $order_item['orders'] = implode(',', $sahil);
-                        $order_item['invoices'] = implode(',', $invoices);
-                        
-                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $order_item['orders'] . '</div>
-                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $order_item['invoices'] . '</div>';
-                    }else{
-                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span> - </div>
-                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>  -  </div>';
-                    }
-                    }else{
-                        $trps .= '<div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Order No: </span>' . $data->order_id . '</div>
-                     <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No: </span>' . $data->invoice_no . '</div>';
-                    }
-                        
-                     $trps .= '</div>';
-
-                return $trps;
-            })
-            ->addColumn('trackinglink', function ($data) {
-                if(!empty($data->job_id) && $data->delivery_status != 'Successful'){
-                    $trackinglink = '<iframe id="iGmap" width="100%" height="350px" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$data->tracking_link.'" ></iframe>';
-                }else{
-                    $trackinglink = '<div id="map-'.$data->id.'" style="height: 50vh; width: 100%" ></div>';
-                }
-                return $trackinglink;
-            })
-            ->addColumn('orderdetails', function ($data) {
-
-                
-                $orderdetails = '<table id="" class="table table-striped">
-                <tbody>';
-
-                if(empty($data->order_id)){
-                    $getorders = ConsignmentItem::select('order_id','invoice_no')->where('consignment_id', $data->id)->get();
-                    if(count($getorders)>0){
-                        foreach($getorders as $order)
-                        {
-                            $sahil[] = $order->order_id;
-                            $invoices[] = $order->invoice_no;
-                        }
-                        $order_item['orders'] = implode(',', $sahil);
-                        $order_item['invoices'] = implode(',', $invoices);
-
-                        $orderdetails .= '<tr>
-                            <td>Order Number</td>
-                            <td><span class="badge bg-info mt-2">'.$order_item['orders'].'</span>&nbsp;</td>
-                        </tr>
-
-                        <tr>
-                            <td>Invoice Number</td>
-                            <td>' . $order_item['invoices'] . '</td>
-                        </tr>';
-                    }else{
-                        $orderdetails .= '<tr>
-                            <td>Order Number</td>
-                            <td><span class="badge bg-info mt-2"> - </span>&nbsp;</td>
-                        </tr>
-
-                        <tr>
-                            <td>Invoice Number</td>
-                            <td> - </td>
-                        </tr>';
-                    }
-                }else{
-                    $orders = explode(',',$data->order_id);
-                
-                    $ol = '';
-                    foreach($orders as $order){
-                        $ol .= '<span class="badge bg-info mt-2">' . $order . '</span>&nbsp;';
-                    }
-                    
-                    $orderdetails .= '<tr>
-                        <td>Order Number</td>
-                        <td>'.$ol.'</td>
-                    </tr>
-
-                    <tr>
-                        <td>Invoice Number</td>
-                        <td>' . $data->invoice_no . '</td>
-                    </tr>'; 
-                }
-
-                $orderdetails .= '</tbody>
-                </table>';
-
-                return $orderdetails;
-            })
-            ->addColumn('txndetails', function ($data) {
-
-                if(!empty($data->job_id)){
-                    $jobid = $data->job_id;
-                }else{
-                    $jobid = "Manual";
-                }
-
-                $txndetails = '<table id="" class="table table-striped">
-                <tbody>
-
-               <tr>
-                    <td>Delivery Status</td>
-                    <td><span class="badge bg-info">' . $data->delivery_status . '</span></td>
-                </tr>
-                <tr>
-
-                  <tr>
-                    <td>Shadow Job Id</td>
-                    <td>' . $jobid . '</td>
-                  </tr>
-                  <tr>
-                  <td>Vehicle No</td>
-                  <td>' . $data->regn_no . '</td>
-                  </tr>
-
-                  <tr>
-                  <td>Driver Name</td>
-                  <td>' . $data->driver_name . '</td>
-                  </tr/>
-                  <tr>
-
-                  <tr>
-                  <td>Driver Phone</td>
-                  <td>' . $data->driver_phone . '</td>
-                  </tr/>
-                  <tr>
-
-                  <td>No. of Boxes</td>
-                  <td>' . $data->total_quantity . '</td>
-                  </tr/>
-
-                  <tr>
-                  <td>Net Weight</td>
-                  <td>' . $data->total_weight . '</td>
-                  </tr/>
-
-                  <tr>
-                  <td>Gross Weight</td>
-                  <td>' . $data->total_gross_weight . '</td>
-                  </tr/>
-
-                  <tr>
-                  <td colspan="2"><ul class="ant-timeline mt-3" style="">
-                  <li class="ant-timeline-item  css-b03s4t">
-                      <div class="ant-timeline-item-tail"></div>
-                      <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
-                      <div class="ant-timeline-item-content">
-                          <div class="css-16pld72">' . $data->consigner_id . ' </div>
-                      
-                      </div>
-                  </li>
-                  <li class="ant-timeline-item ant-timeline-item-last css-phvyqn">
-                      <div class="ant-timeline-item-tail"></div>
-                      <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
-                      <div class="ant-timeline-item-content">
-                      <div class="css-16pld72">' . $data->consignee_id . '</div>
-                      <div class="css-16pld72" style="font-size: 12px; color: rgb(102, 102, 102);">
-                          <span>' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</span>
-                      </div>
-                      </div>
-                  </li>
-                  </ul></td>
-                  </tr/>
-
-                </tbody>
-              </table>';
-
-                return $txndetails;
-            })
-            ->addColumn('trail', function ($data) {
-
-                $json = json_decode($data->trail);
-                if (!empty($json)) {
-                    $trcking_history = array_reverse($json->task_history);
-
-                    //echo "<pre>";print_r($trcking_history);die;
-
-                    $trail = '<div class="container" oncontextmenu="return false;">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <ul class="cbp_tmtimeline">';
-                    /*$result = array();
-                foreach ($trcking_history as $element) {
-                $result[$element->type][] = $element;
-                }*/
-                    //echo "<pre>"; print_r($trcking_history);   die;
-                    foreach ($trcking_history as $task) {
-                        $timestamp = $task->creation_datetime;
-                        $date = new \DateTime($timestamp);
-                        $task_date = $date->format('d-m-Y h:i');
-                        $type = $task->type;
-
-                        $des_data = '';
-                        if ($type == 'image_added') {
-                            $des_data .= 'Attachment uploaded by ' . $task->fleet_name . '<br/>    <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_' . $task->id . '">
-                        View Attachment
-                      </button>
-
-                      <!-- Modal -->
-                  <div class="modal fade" id="mod_' . $task->id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Attachment</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                  </button>
-                              </div>
-                              <div class="modal-body">
-                              <img src="' . $task->description . '" width="100%"  seamless="">
-                              </div>
-                              <div class="modal-footer">
-                                  <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-
-                              </div>
-                          </div>
-                      </div>
-                  </div>';
-                        } elseif ($type == 'signature_image_added') {
-                            $des_data .= 'Signature Added by ' . $task->fleet_name . '<br/><img src="' . $task->description . '" width="10%"><br/><br/><button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_' . $task->id . '">
-                        View Signatures
-                      </button>
-
-                      <!-- Modal -->
-                  <div class="modal fade" id="mod_' . $task->id . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Signatures</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                  </button>
-                              </div>
-                              <div class="modal-body">
-                              <img src="' . $task->description . '" width="100%" height="298" seamless=""/>
-                              </div>
-                              <div class="modal-footer">
-                                  <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button>
-
-                              </div>
-                          </div>
-                      </div>
-                  </div>';
-                        } else {
-                            $str = trim($task->label_description, 'at') . ' by ' . $task->fleet_name;
-                            if (str_contains($str, 'CREATED')) {
-                                $des_data .= "LR Created";
-                            } else {
-                                $des_data .= $str;
-                            }
-                        }
-
-                        $trail .= '
-                                <li>
-                                    <time class="cbp_tmtime" datetime="' . $task_date . '"><span class="hidden">' . $task_date . '</span></time>
-                                    <div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div>
-                                    <div class="cbp_tmlabel empty"> <span>' . $des_data . '</span> </div>
-                                </li>';
-                    }
-
-                    $trail .= '</ul>
-                        </div>
-                    </div>
-                </div>';
-
-                } else {
-                    $trail = "No data available";
-                }
-
-                //echo "<pre>";print_r($trcking_history);die;
-
-                return $trail;
-            })
-            ->addColumn('route', function ($data) {
-                // echo "<pre>";print_r($data);die;
-                $troute = '<ul class="ant-timeline">
-            <li class="ant-timeline-item  css-b03s4t">
-                <div class="ant-timeline-item-tail"></div>
-                <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
-                <div class="ant-timeline-item-content">
-                    <div class="css-16pld72 ellipse">' . $data->consigner_id . ' </div>
-                
-                </div>
-            </li>
-            <li class="ant-timeline-item ant-timeline-item-last css-phvyqn">
-                <div class="ant-timeline-item-tail"></div>
-                <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
-                <div class="ant-timeline-item-content">
-                <div class="css-16pld72 ellipse">' . $data->consignee_id . '</div>
-                <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
-                    <span>' . $data->pincode . ', ' . $data->city . ' ,' . $data->conee_district . '</span>
-                </div>
-                </div>
-            </li>
-            </ul>';
-                return $troute;
-            })
-            ->addColumn('impdates', function ($data) {
-
-                $dates = '<div class="">
-                         <div class=""><span style="color:#4361ee;">LRD: </span>' . Helper::ShowDayMonthYear($data->consignment_date) . '</div>
-                         <div class=""><span style="color:#4361ee;">EDD: </span>' . Helper::ShowDayMonthYear($data->edd). '</div>
-                         <div class=""><span style="color:#4361ee;">ADD: </span>' . Helper::ShowDayMonthYear($data->delivery_date) . '</div>
-                         </div>';
-
-                return $dates;
-            })
-            ->addColumn('poptions', function($data){
-                $authuser = Auth::user();
-                if($authuser->role_id !=6 && $authuser->role_id !=7){
-                    if($data->invoice_no != null || $data->invoice_no != ''){
-                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-viewold/2/" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>';
-                    }else{
-                        $po = '<a href="print-sticker/'.$data->id.'/" target="_blank" class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a href="consignments/'.$data->id.'/print-view/2/" target="_blank" class="badge alert bg-cust shadow-sm">Print LR</a>';
-                    }
-                return $po;
-                }else{
-                    $po = '';
-                    return $po;
-                }
-            }) 
-            ->addColumn('status', function($data){
-                $authuser = Auth::user();
-                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
-                    $disable = 'disable_n'; 
-                    
-                } else{
-                    $disable = '';
-                }
-                if ($data->status == 0) {
-                    $st = '<span class="alert badge alert bg-secondary shadow-sm">Cancel</span>';
-                } 
-                elseif($data->status == 1){
-                      if($data->delivery_status == 'Successful'){
-                        $st = '<a class="alert activestatus btn btn-success disable_n"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';  
-                      }else{
-                    $st = '<a class="alert activestatus btn btn-success '.$disable.'"  data-id = "'.$data->id.'" data-text="consignment" data-status = "0"><span><i class="fa fa-check-circle-o"></i> Active</span></a>';   
-                      }
-                }
-                elseif($data->status == 2){
-                    $st = '<span class="badge alert bg-success activestatus '.$disable.'" data-id = "'.$data->id.'">Unverified</span>';    
-                }
-                elseif($data->status == 3){
-                    $st = '<span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>';  
-                }
-
-                return $st;
-            })
-            ->addColumn('delivery_status', function ($data) {
-                $authuser = Auth::user();
-                
-                if($authuser->role_id == 7 || $authuser->role_id == 6 ) { 
-                    $disable = 'disable_n'; 
-                } elseif($authuser->role_id != 7 || $authuser->role_id != 6){
-                    if($data->status == 0){ 
-                        $disable = 'disable_n';
-                    }else{
-                        $disable = '';
-                    }
-                }
-
-                if ($data->delivery_status == "Unassigned") {
-                    $dt = '<span class="badge alert bg-primary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-                } elseif ($data->delivery_status == "Assigned") {
-                    $dt = '<span class="badge alert bg-secondary shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-                } elseif ($data->delivery_status == "Started") {
-                    $dt = '<span class="badge alert bg-warning shadow-sm manual_updateLR '.$disable.'" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-                } elseif ($data->delivery_status == "Successful") {
-                    $dt = '<span class="badge alert bg-success shadow-sm manual_updateLR" lr-no = "'.$data->id.'">'.$data->delivery_status.'</span>';
-                } elseif ($data->delivery_status == "Accepted") {
-                    $dt = '<span class="badge alert bg-info shadow-sm" lr-no = "'.$data->id.'">Acknowledged</span>';
-
-                 }
-                 else{
-                     $dt = '<span class="badge alert bg-success shadow-sm" lr-no = "'.$data->id.'">need to update</span>';
-                 }
-             
-                return $dt;
-            })
-            
-            ->rawColumns(['lrdetails','txndetails','trackinglink','route', 'impdates', 'poptions', 'status', 'delivery_status', 'trail','orderdetails'])
-            ->make(true);
-
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -718,6 +273,7 @@ class ConsignmentController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
@@ -918,9 +474,8 @@ class ConsignmentController extends Controller
     public function getConsigners(Request $request)
     {
         $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
-        // dd($getconsigners->GetRegClient->is_multiple_invoice);
-        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
         
+        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
             $response['success'] = true;
@@ -1006,57 +561,55 @@ class ConsignmentController extends Controller
         $locations = Location::whereIn('id', $cc)->first();
 
         $cn_id = $request->id;
-        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->first();
+        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        // echo'<pre>'; print_r($data); die; 
 
-
-        if ($data['consigner_detail']['legal_name'] != null) {
+        if (isset($data['consigner_detail']['legal_name'])) {
             $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
         } else {
             $legal_name = '';
         }
-        if ($data['consigner_detail']['address_line1'] != null) {
+        if (isset($data['consigner_detail']['address_line1'])) {
             $address_line1 = '' . $data['consigner_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consigner_detail']['address_line2'] != null) {
+        if (isset($data['consigner_detail']['address_line2'])) {
             $address_line2 = '' . $data['consigner_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consigner_detail']['address_line3'] != null) {
+        if (isset($data['consigner_detail']['address_line3'] )) {
             $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consigner_detail']['address_line4'] != null) {
+        if (isset($data['consigner_detail']['address_line4'] )) {
             $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['consigner_detail']['city'] != null) {
+        if (isset($data['consigner_detail']['city'] )) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consigner_detail']['get_state'] != null) {
-            $district = $data['consigner_detail']['get_state']['name'] . ',';
+        if (isset($data['consigner_detail']['get_zone']['state'] )) {
+            $district = $data['consigner_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consigner_detail']['postal_code'] != null) {
+        if (isset($data['consigner_detail']['postal_code'] )) {
             $postal_code = $data['consigner_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
-        if ($data['consigner_detail']['gst_number'] != null) {
+        if (isset($data['consigner_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['consigner_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['consigner_detail']['phone'] != null) {
+        if (isset($data['consigner_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['consigner_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1064,53 +617,53 @@ class ConsignmentController extends Controller
 
         $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['legal_name'] != null) {
+        if (isset($data['consignee_detail']['legal_name'] )) {
             $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if ($data['consignee_detail']['address_line1'] != null) {
+        if (isset($data['consignee_detail']['address_line1'] )) {
             $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consignee_detail']['address_line2'] != null) {
+        if (isset($data['consignee_detail']['address_line2'] )) {
             $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consignee_detail']['address_line3'] != null) {
+        if (isset($data['consignee_detail']['address_line3'] )) {
             $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consignee_detail']['address_line4'] != null) {
+        if (isset($data['consignee_detail']['address_line4'] )) {
             $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['consignee_detail']['city'] != null) {
+        if (isset($data['consignee_detail']['city'] )) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['get_state'] != null) {
-            $district = $data['consignee_detail']['get_state']['name'] . ',';
+        if (isset($data['consignee_detail']['get_zone']['state'] )) {
+            $district = $data['consignee_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consignee_detail']['postal_code'] != null) {
+        if (isset($data['consignee_detail']['postal_code'] )) {
             $postal_code = $data['consignee_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
 
-        if ($data['consignee_detail']['gst_number'] != null) {
+        if (isset($data['consignee_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['consignee_detail']['phone'] != null) {
+        if (isset($data['consignee_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1118,52 +671,52 @@ class ConsignmentController extends Controller
 
         $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['legal_name'] != null) {
+        if (isset($data['shipto_detail']['legal_name'] )) {
             $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if ($data['shipto_detail']['address_line1'] != null) {
+        if (isset($data['shipto_detail']['address_line1'] )) {
             $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if ($data['shipto_detail']['address_line2'] != null) {
+        if (isset($data['shipto_detail']['address_line2'] )) {
             $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if ($data['shipto_detail']['address_line3'] != null) {
+        if (isset($data['shipto_detail']['address_line3'] )) {
             $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if ($data['shipto_detail']['address_line4'] != null) {
+        if (isset($data['shipto_detail']['address_line4'] )) {
             $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if ($data['shipto_detail']['city'] != null) {
+        if (isset($data['shipto_detail']['city'] )) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['shipto_detail']['get_state'] != null) {
-            $district = $data['shipto_detail']['get_state']['name'] . ',';
+        if (isset($data['shipto_detail']['get_zone']['state'] )) {
+            $district = $data['shipto_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if ($data['shipto_detail']['postal_code'] != null) {
+        if (isset($data['shipto_detail']['postal_code'] )) {
             $postal_code = $data['shipto_detail']['postal_code'].'<br>';
         } else {
             $postal_code = '';
         }
-        if ($data['shipto_detail']['gst_number'] != null) {
+        if (isset($data['shipto_detail']['gst_number'] )) {
             $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if ($data['shipto_detail']['phone'] != null) {
+        if (isset($data['shipto_detail']['phone'] )) {
             $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -1197,12 +750,12 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
-if(!empty($data['consigner_detail']['get_state'])){
-    $cnr_state = $data['consigner_detail']['get_state']['name'];
-}
-else{
-    $cnr_state = '';
-}
+        if(!empty($data['consigner_detail']['get_zone']['state'])){
+            $cnr_state = $data['consigner_detail']['get_zone']['state'];
+        }
+        else{
+            $cnr_state = '';
+        }
 
             $html = '<!DOCTYPE html>
             <html lang="en">
@@ -1349,8 +902,8 @@ else{
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
-                                            <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">'.$data['consignee_detail']['city'] . '</th>
+                                            <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                            <th class="mini-th">'.@$data['consignee_detail']['city'] . '</th>
                                             
                                         </tr>
                                     </table>
@@ -1363,9 +916,9 @@ else{
                                 <tr>
                                     <td class="width_set">
                                         <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
+                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.@$data['consignee_detail']['postal_code'].','.@$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_zone']['state'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
@@ -1566,52 +1119,52 @@ else{
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
 
-        if ($data['consigner_detail']['legal_name'] != null) {
+        if (isset($data['consigner_detail']['legal_name'] )) {
             $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
         } else {
             $legal_name = '';
         }
-        if ($data['consigner_detail']['address_line1'] != null) {
+        if (isset($data['consigner_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consigner_detail']['address_line2'] != null) {
+        if (isset($data['consigner_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consigner_detail']['address_line3'] != null) {
+        if (isset($data['consigner_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consigner_detail']['address_line4'] != null) {
+        if (isset($data['consigner_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['consigner_detail']['city'] != null) {
+        if (isset($data['consigner_detail']['city'] )) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consigner_detail']['district'] != null) {
-            $district = $data['consigner_detail']['district'] . ',';
+        if (isset($data['consigner_detail']['get_zone']['district'] )) {
+            $district = @$data['consigner_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consigner_detail']['postal_code'] != null) {
+        if (isset($data['consigner_detail']['postal_code'] )) {
             $postal_code = $data['consigner_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if ($data['consigner_detail']['gst_number'] != null) {
+        if (isset($data['consigner_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['consigner_detail']['phone'] != null) {
+        if (isset($data['consigner_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1620,53 +1173,53 @@ else{
         $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
             ' . $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['consignee_detail']['nick_name'] != null) {
+        if (isset($data['consignee_detail']['nick_name'] )) {
             $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if ($data['consignee_detail']['address_line1'] != null) {
+        if (isset($data['consignee_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['consignee_detail']['address_line2'] != null) {
+        if (isset($data['consignee_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['consignee_detail']['address_line3'] != null) {
+        if (isset($data['consignee_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['consignee_detail']['address_line4'] != null) {
+        if (isset($data['consignee_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['consignee_detail']['city'] != null) {
+        if (isset($data['consignee_detail']['city'] )) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['consignee_detail']['district'] != null) {
-            $district = $data['consignee_detail']['district'] . ',';
+        if (isset($data['consignee_detail']['get_zone']['district'] )) {
+            $district = @$data['consignee_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['consignee_detail']['postal_code'] != null) {
+        if (isset($data['consignee_detail']['postal_code'] )) {
             $postal_code = $data['consignee_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
 
-        if ($data['consignee_detail']['gst_number'] != null) {
+        if (isset($data['consignee_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['consignee_detail']['phone'] != null) {
+        if (isset($data['consignee_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1675,52 +1228,52 @@ else{
         $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if ($data['shipto_detail']['nick_name'] != null) {
+        if (isset($data['shipto_detail']['nick_name'] )) {
             $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if ($data['shipto_detail']['address_line1'] != null) {
+        if (isset($data['shipto_detail']['address_line1'] )) {
             $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if ($data['shipto_detail']['address_line2'] != null) {
+        if (isset($data['shipto_detail']['address_line2'] )) {
             $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if ($data['shipto_detail']['address_line3'] != null) {
+        if (isset($data['shipto_detail']['address_line3'] )) {
             $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if ($data['shipto_detail']['address_line4'] != null) {
+        if (isset($data['shipto_detail']['address_line4'] )) {
             $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if ($data['shipto_detail']['city'] != null) {
+        if (isset($data['shipto_detail']['city'] )) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if ($data['shipto_detail']['district'] != null) {
-            $district = $data['shipto_detail']['district'] . ',';
+        if (isset($data['shipto_detail']['get_zone']['district'] )) {
+            $district = @$data['shipto_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if ($data['shipto_detail']['postal_code'] != null) {
+        if (isset($data['shipto_detail']['postal_code'] )) {
             $postal_code = $data['shipto_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if ($data['shipto_detail']['gst_number'] != null) {
+        if (isset($data['shipto_detail']['gst_number'] )) {
             $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if ($data['shipto_detail']['phone'] != null) {
+        if (isset($data['shipto_detail']['phone'] )) {
             $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -2796,37 +2349,30 @@ else{
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
-        $query = ConsignmentNote::query();
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        $query = ConsignmentNote::query();
+
+        $query = $query->where('consignment_date', '>=', $date)
+                ->where('status', '!=', 5)
+                ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
 
         if($authuser->role_id ==1){ 
-            $query = $query
-            ->where('consignment_date', '>=', $date)
-            ->where('status', '!=', 5)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            $query = $query;
         }elseif($authuser->role_id == 4){
-            $query = $query
-            ->where('status', '!=', 5)
-            ->where('consignment_date', '>=', $date)
-            ->whereIn('regclient_id', $regclient)
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            $query = $query->whereIn('regclient_id', $regclient);
         }else{
             $query = $query
-            ->where('consignment_date', '>=', $date)
-            ->where('consignment_notes.status', '!=', 5)
-            ->whereIn('branch_id', $cc)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
-        }
-         
+            ->whereIn('branch_id', $cc);
+        }        
+        $query = $query->orderBy('id','ASC')->get();
         $consignments = json_decode(json_encode($query), true);
         return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
-
     }
+
     public function getFilterReport(Request $request)
     {
-        // echo'<pre>'; print_r($_POST); die;
-        $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -2834,25 +2380,21 @@ else{
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
         $query = ConsignmentNote::query();
-        if($authuser->role_id ==1){
-            $query = $query
+        $query = $query
             ->where('status', '!=', 5)
             ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
+
+        if($authuser->role_id ==1){
+            $query = $query;
         }elseif($authuser->role_id == 4){
             $query = $query
-            ->where('status', '!=', 5)
-            ->whereIn('regclient_id', $regclient)
-            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();                
+            ->whereIn('regclient_id', $regclient);      
         }else{ 
             $query = $query
-            ->where('consignment_notes.status', '!=', 5)
-            ->whereIn('branch_id', $cc)
-            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype')->orderBy('id','DESC')->get();
+            ->whereIn('branch_id', $cc);
         }
-        
+        $query = $query->orderBy('id','ASC')->get();
         $consignments = json_decode(json_encode($query), true);
 
         $response['fetch'] = $consignments;
@@ -2942,7 +2484,7 @@ else{
 
         foreach ($lrno as $key => $value) {
 
-            $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail')->first();
+            $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
             $data = json_decode(json_encode($getdata), true);
             // echo'<pre>'; print_r($data); die;
     //  ==================================new lr view ==========================  //
@@ -2978,8 +2520,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['consigner_detail']['get_state'] != null) {
-                    $district = $data['consigner_detail']['get_state']['name'] . ',';
+                if ($data['consigner_detail']['get_zone']['state'] != null) {
+                    $district = $data['consigner_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3031,8 +2573,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['consignee_detail']['get_state'] != null) {
-                    $district = $data['consignee_detail']['get_state']['name'] . ',';
+                if ($data['consignee_detail']['get_zone']['state'] != null) {
+                    $district = $data['consignee_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3085,8 +2627,8 @@ else{
                 } else {
                     $city = '';
                 }
-                if ($data['shipto_detail']['get_state'] != null) {
-                    $district = $data['shipto_detail']['get_state']['name'] . ',';
+                if ($data['shipto_detail']['get_zone']['state'] != null) {
+                    $district = $data['shipto_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
                 }
@@ -3143,8 +2685,8 @@ else{
                     } elseif ($pdf == 4) {
                         $type = 'QUADRUPLE';
                     }
-        if(!empty($data['consigner_detail']['get_state'])){
-            $cnr_state = $data['consigner_detail']['get_state']['name'];
+        if(!empty($data['consigner_detail']['get_zone']['state'])){
+            $cnr_state = $data['consigner_detail']['get_zone']['state'];
         }
         else{
             $cnr_state = '';
@@ -3311,7 +2853,7 @@ else{
                                                 <div style="margin-left: 20px">
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
         
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_state']['name'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_zone']['state'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 </div>
                                             </td>
                                             <td class="width_set">
@@ -4288,7 +3830,7 @@ else{
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.city as consignee_city', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')

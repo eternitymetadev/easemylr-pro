@@ -81,7 +81,7 @@ div.relat {
                                 <th>PIN Code</th>
                                 <th>City</th>
                                 <th>District</th>
-                                <!-- <th>State</th> -->
+                                <th>State</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -121,14 +121,14 @@ var table = $('#consignerstable').DataTable({
 
     columns: [
         {data: 'id', name: 'id', defaultContent: '-'},
-        {data: 'regional_clientname', name: 'regional_clientname', defaultContent: '-'},
+        {data: 'regclient', name: 'regclient', defaultContent: '-'},
         {data: 'nick_name', name: 'nick_name', defaultContent: '-'},
         {data: 'contact_name', name: 'contact_name', defaultContent: '-'},
         {data: 'phone', name: 'phone', defaultContent: '-'},
         {data: 'postal_code', name: 'postal_code', defaultContent: '-'},
         {data: 'city', name: 'city', defaultContent: '-'},
         {data: 'district', name: 'district', defaultContent: '-'},
-        // {data: 'State.name', name: 'state_id', defaultContent: '-'},
+        {data: 'state', name: 'state', defaultContent: '-'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
     ]
 

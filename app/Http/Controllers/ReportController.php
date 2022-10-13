@@ -73,18 +73,8 @@ class ReportController extends Controller
             $query = $query
                 ->where('status', '!=', 5)
                 ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                    'ConsignerDetail.GetState:id,name',
-                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail.GetState:id,name', 
-                    'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'ShiptoDetail.GetState:id,name',
-                    'VehicleDetail:id,regn_no', 
-                    'DriverDetail:id,name,fleet_id,phone', 
-                    'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                    'VehicleType:id,name');
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                );
 
             if($authuser->role_id ==1)
             {
@@ -152,18 +142,8 @@ class ReportController extends Controller
         $query = $query
             ->where('status', '!=', 5)
             ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name');
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+            );
 
         if($authuser->role_id ==1)
         {
@@ -180,54 +160,7 @@ class ReportController extends Controller
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
     
-    public function getFilterReportall(Request $request)
-    {
-        $query = ConsignmentNote::query();
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
-
-        if($authuser->role_id ==1){
-            $query = $query
-            ->where('status', '!=', 5)
-            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsignerDetail.GetState:id,name',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail.GetState:id,name', 
-                'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'ShiptoDetail.GetState:id,name',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name')
-            ->orderBy('id','DESC')->get();
-        }elseif($authuser->role_id == 4){
-            $query =  $query->whereIn('consignment_notes.regclient_id', $regclient)
-            ->where('status', '!=', 5)
-            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();  
-
-        }else{
-            $query = $query->whereIn('branch_id', $cc)
-            ->where('status', '!=', 5)
-            ->whereBetween('consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.GetState', 'ConsigneeDetail.GetState', 'ShiptoDetail.GetState', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient', 'ConsignerDetail.GetRegClient.BaseClient','VehicleType')->orderBy('id','DESC')->get();
-        }
-
-        $consignments = json_decode(json_encode($query), true);
-
-        $response['fetch'] = $consignments;
-        $response['success'] = true;
-        $response['messages'] = 'Succesfully loaded';
-        return Response::json($response);
-    }
-       // =============================Admin Report ============================= //
+    // =============================Admin Report ============================= //
        
     public function adminReport1(Request $request)
     {
@@ -239,12 +172,12 @@ class ReportController extends Controller
             $regclient = explode(',',$authuser->regionalclient_id); 
             $cc = explode(',',$authuser->branch_id);
           
-                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'states.name as state_id','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district','consignees.state_id as consignee_states','consigne_stat.name as consignee_state')
+                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'zones.state as consigner_state','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district','consigne_stat.state as consignee_state')
                 ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
                 ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
                 ->join('consignees', 'consignees.consigner_id', '=', 'consigners.id')
-                ->leftjoin('states', 'states.id', '=', 'consigners.state_id')
-                ->leftjoin('states as consigne_stat', 'consigne_stat.id', '=', 'consignees.state_id')
+                ->leftjoin('zones', 'zones.postal_code', '=', 'consigners.postal_code')
+                ->leftjoin('zones as consigne_stat', 'consigne_stat.postal_code', '=', 'consignees.postal_code')
                 ->get();
                 
 

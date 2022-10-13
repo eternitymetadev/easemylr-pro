@@ -74,12 +74,12 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">District</th>
-                                    <td>{{isset($getconsignee->district)?ucfirst($getconsignee->district):'-'}} </td>
+                                    <td>{{isset($getconsignee->GetZone->district)?ucfirst($getconsignee->GetZone->district):'-'}} </td>
                                 </tr>
                               
                                 <tr>
                                     <th scope="row">State</th>
-                                    <td>{{isset($getconsignee->GetState->name) ? ucfirst($getconsignee->GetState->name) : "-" }}</td>
+                                    <td>{{isset($getconsignee->GetZone->state) ? ucfirst($getconsignee->GetZone->state) : "-" }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Primary Zone</th>
