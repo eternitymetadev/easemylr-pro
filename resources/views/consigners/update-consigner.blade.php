@@ -107,7 +107,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">District</label>
-                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsigner->district)?$getconsigner->district:'')}}" placeholder="">
+                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsigner->GetZone->district)?$getconsigner->GetZone->district:'')}}" placeholder="">
                                 </div>
                                
                                 <!-- <div class="form-group col-md-6">

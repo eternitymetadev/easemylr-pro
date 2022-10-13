@@ -1149,8 +1149,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if (isset($data['consigner_detail']['district'] )) {
-            $district = $data['consigner_detail']['district'] . ',';
+        if (isset($data['consigner_detail']['get_zone']['district'] )) {
+            $district = @$data['consigner_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
@@ -1203,8 +1203,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if (isset($data['consignee_detail']['district'] )) {
-            $district = $data['consignee_detail']['district'] . ',';
+        if (isset($data['consignee_detail']['get_zone']['district'] )) {
+            $district = @$data['consignee_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
@@ -1258,8 +1258,8 @@ class ConsignmentController extends Controller
         } else {
             $city = '';
         }
-        if (isset($data['shipto_detail']['district'] )) {
-            $district = $data['shipto_detail']['district'] . ',';
+        if (isset($data['shipto_detail']['get_zone']['district'] )) {
+            $district = @$data['shipto_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }

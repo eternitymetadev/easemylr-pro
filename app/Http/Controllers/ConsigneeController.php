@@ -100,6 +100,14 @@ class ConsigneeController extends Controller
                     }
                     return $consigner;
                 })
+                ->addColumn('district', function($row){
+                    if(isset($row->Zone)){
+                        $district = $row->Zone->district;
+                    }else{
+                        $district = '';
+                    }
+                    return $district;
+                })
                 ->addColumn('state', function($row){
                     if(isset($row->Zone)){
                         $state = $row->Zone->state;
@@ -117,7 +125,7 @@ class ConsigneeController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action','consigner','state'])
+                ->rawColumns(['action','consigner','district','state'])
                 ->make(true);
         }
         return view('consignees.consignee-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);

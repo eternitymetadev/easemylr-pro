@@ -84,7 +84,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Village/City</label>
                                     <input type="text" class="form-control" id="city" name="city" placeholder="City">
-                                </div>  
+                                </div>
                               
                             </div>
                             <div class="form-row mb-0">

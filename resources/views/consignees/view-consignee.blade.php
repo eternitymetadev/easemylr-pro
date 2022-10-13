@@ -74,7 +74,7 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">District</th>
-                                    <td>{{isset($getconsignee->district)?ucfirst($getconsignee->district):'-'}} </td>
+                                    <td>{{isset($getconsignee->GetZone->district)?ucfirst($getconsignee->GetZone->district):'-'}} </td>
                                 </tr>
                               
                                 <tr>

@@ -64,6 +64,14 @@ class ConsignerController extends Controller
                     }
                     return $regional;
                 })
+                ->addColumn('district', function($row){
+                    if(isset($row->Zone)){
+                        $district = $row->Zone->district;
+                    }else{
+                        $district = '';
+                    }
+                    return $district;
+                })
                 ->addColumn('state', function($row){
                     if(isset($row->Zone)){
                         $state = $row->Zone->state;
@@ -80,7 +88,7 @@ class ConsignerController extends Controller
                     $btn .= '<a class="delete btn btn-sm btn-danger delete_consigner" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consigner').'"><i class="fa fa-trash"></i></a>';
                     return $btn;
                 })
-                ->rawColumns(['action','regclient','state'])
+                ->rawColumns(['action','regclient','district','state'])
                 ->make(true);
  
         }

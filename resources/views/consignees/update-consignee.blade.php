@@ -94,7 +94,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">District</label>
-                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsignee->district)?$getconsignee->district:'')}}" placeholder="District">
+                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsignee->GetZone->district)?$getconsignee->GetZone->district:'')}}" placeholder="District">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Select State</label>
