@@ -5,12 +5,12 @@
         </div>
         <thead>
             <tr>
-                <?php $authuser = Auth::user(); 
-                                if($authuser->role_id == 2){?>
+                <?php $authuser = Auth::user();
+if ($authuser->role_id == 2) {?>
                 <th>
                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
                 </th>
-                <?php } ?>
+                <?php }?>
                 <th>Purchase Amount</th>
                 <th>Vehicle Type</th>
                 <th>DRS NO</th>
@@ -21,45 +21,48 @@
                 <th>Total Wt.</th>
                 <th>Quantity</th>
                 <th>Driver Name</th>
-                
+
             </tr>
         </thead>
         <tbody>
             @if(count($paymentlist)>0)
             @foreach($paymentlist as $list)
+
             <tr>
-                <?php if($authuser->role_id == 2){
-                    if(!empty($list->ConsignmentDetail->purchase_price)){?>
+                <?php if ($authuser->role_id == 2) {
+           if ($list->status != 0) {
+           if (!empty($list->ConsignmentDetail->purchase_price)) {?>
                 <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}"
-                    data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
+                        data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
                 </td>
-                <?php    }else{ ?>
+                <?php } else {?>
                 <td>-</td>
-                <?php  } ?>
-                <?php } ?>
+                <?php }} else {?>
+                <td>-</td>
+                <?php }}?>
                 <!------- Purchase Price --------------->
-                <?php if(!empty($list->ConsignmentDetail->purchase_price)){ ?>
+                <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?>
                 <td>{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
-                <?php } else { ?>
+                <?php } else {?>
                 <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
                         style="margin-right:4px;">Add amount</button> </td>
-                <?php } ?>
+                <?php }?>
                 <!-- end purchase price -->
                 <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
                 <!-- delivery Status ---- -->
                 <td>
-                    <?php if($list->status == 0){?>
+                    <?php if ($list->status == 0) {?>
                     <label class="badge badge-dark">Cancelled</label>
-                    <?php } else { ?>
-                    <?php if(empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no)) { ?>
+                    <?php } else {?>
+                    <?php if (empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no)) {?>
                     <label class="badge badge-warning">No Status</label>
-                    <?php }else{ ?>
+                    <?php } else {?>
                     <a class="drs_cancel btn btn-success drs_lr" drs-no="{{$list->drs_no}}" data-text="consignment"
                         data-status="0"
-                        data-action="<?php echo URL::current();?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
-                    <?php } ?>
-                    <?php } ?>
+                        data-action="<?php echo URL::current(); ?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
+                    <?php }?>
+                    <?php }?>
                 </td>
                 <!-- END Delivery Status  --------------->
                 <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
