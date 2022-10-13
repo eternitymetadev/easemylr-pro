@@ -126,7 +126,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('consignments', ConsignmentController::class);
-    Route::any('clist', [ConsignmentController::class, 'consignment_list']);
     //Test Routes 
     Route::any('testview', [ConsignmentController::class, 'testview']);
     Route::any('test', [ConsignmentController::class, 'test']);
@@ -189,7 +188,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
-    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
@@ -285,7 +283,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('clients-list', [ClientController::class, 'clientList']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
-    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
@@ -404,7 +401,6 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
-    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
@@ -505,7 +501,6 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::resource('clients', ClientController::class);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
-    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
@@ -573,7 +568,6 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
-    Route::any('get-filter-reportall', [ReportController::class, 'getFilterReportall']);
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
 

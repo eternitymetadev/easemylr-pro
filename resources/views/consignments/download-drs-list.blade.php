@@ -539,6 +539,7 @@ $(document).on('click', '#addlr', function() {
                     value.id + " style='width: 30px; height:30px;'></td><td>" + value
                     .id + "</td><td>" + value.consignment_date + "</td><td>" + value
                     .consigner_id + "</td><td>" + value.consignee_id + "</td><td>" +
+                    value.consignee_city + "</td><td>" +
                     value.consignee_district + "</td><td>" + value.pincode +
                     "</td><td>" + value.zone + "</td></tr>");
             });

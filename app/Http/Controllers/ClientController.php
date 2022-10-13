@@ -488,16 +488,7 @@ class ClientController extends Controller
             $query = $query
                 ->where('status', '!=', 5)
                 ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                    'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                    'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                    'VehicleDetail:id,regn_no', 
-                    'DriverDetail:id,name,fleet_id,phone', 
-                    'ConsignerDetail.GetRegClient:id,name,baseclient_id',
-                    'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                    'VehicleType:id,name',
-                    'RegClientdetail:id,regclient_id,docket_price',
-                    'RegClientdetail.ClientPriceDetails'
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
 
             if($request->peritem){
@@ -535,16 +526,7 @@ class ClientController extends Controller
         $query = $query
             ->where('status', '!=', 5)
             ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-                'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-                'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-                'VehicleDetail:id,regn_no', 
-                'DriverDetail:id,name,fleet_id,phone', 
-                'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
-                'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-                'VehicleType:id,name',
-                'RegClientdetail:id,regclient_id,docket_price',
-                'RegClientdetail.ClientPriceDetails'
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
 
         $regionalclients = RegionalClient::select('id','name','location_id')->get();

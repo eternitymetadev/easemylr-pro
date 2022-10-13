@@ -79,7 +79,7 @@
                               
                                 <tr>
                                     <th scope="row">State</th>
-                                    <td>{{isset($getconsignee->state_id) ? ucfirst($getconsignee->state_id) : "-" }}</td>
+                                    <td>{{isset($getconsignee->GetZone->state) ? ucfirst($getconsignee->GetZone->state) : "-" }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Primary Zone</th>

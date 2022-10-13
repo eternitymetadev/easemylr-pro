@@ -34,52 +34,44 @@ class ConsignerController extends Controller
     { 
         $this->prefix = request()->route()->getPrefix(); 
         if ($request->ajax()) {
-            $query = Consigner::query();
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id); 
             $cc = explode(',',$authuser->branch_id);
             
-            if($authuser->role_id == 2 || $authuser->role_id == 3){
-                if($authuser->role_id == $role_id->id){
-                    $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname')
-                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->whereIn('consigners.branch_id', $cc)
-                    ->get();
-                }else{
-                    $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname')
-                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->get();
-                }
-            }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-                if($authuser->role_id == $role_id->id){
-                    if($authuser->role_id !=1){
-                        $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname')
-                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->whereIn('consigners.regionalclient_id', $regclient)
-                    ->get();
-                        // $consigners = $query->whereIn('regionalclient_id',$regclient)->orderBy('id','DESC')->with('State','RegClient')->get();
-                    }else{
-                          //$consigners = $query->orderBy('id','DESC')->with('State','RegClient')->count();
-                        $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname')
-                        ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                        ->get();
-                    }
-                }else{
-                    $consigners = DB::table('consigners')->select('consigners.*','regional_clients.name as regional_clientname')
-                    ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                    ->get();
-                    // $consigners = $query->orderBy('id','DESC')->with('State','RegClient')->get();
-                }
-            }else{
-                $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname')
-                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                ->get();
-                // $consigners = $query->orderBy('id','DESC')->with('State','RegClient')->get();
+            $query = Consigner::query();
+            $query = $query->with('RegClient','Zone');
+
+            if($authuser->role_id == 1){
+                $query = $query;
+            } 
+            else if($authuser->role_id == 2 || $authuser->role_id == 3){
+                $query = $query->whereIn('branch_id', $cc);
+            } 
+            else{
+                $query = $query->whereIn('regionalclient_id', $regclient);
             }
+
+            $consigners = $query->orderby('created_at','DESC')->get();
 
             return datatables()->of($consigners)
                 ->addIndexColumn()
+                ->addColumn('regclient', function($row){
+                    if(isset($row->RegClient)){
+                        $regional = $row->RegClient->name;
+                    }else{
+                        $regional = '';
+                    }
+                    return $regional;
+                })
+                ->addColumn('state', function($row){
+                    if(isset($row->Zone)){
+                        $state = $row->Zone->state;
+                    }else{
+                        $state = '';
+                    }
+                    return $state;
+                })
                 ->addColumn('action', function($row){
                     $btn = '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
                     $btn .= '&nbsp;&nbsp;';
@@ -88,7 +80,7 @@ class ConsignerController extends Controller
                     $btn .= '<a class="delete btn btn-sm btn-danger delete_consigner" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consigner').'"><i class="fa fa-trash"></i></a>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','regclient','state'])
                 ->make(true);
  
         }
@@ -188,7 +180,7 @@ class ConsignerController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($consigner);
-        $getconsigner = Consigner::where('id',$id)->with('GetRegClient')->first();
+        $getconsigner = Consigner::where('id',$id)->with('GetRegClient','GetZone')->first();
         return view('consigners.view-consigner',['prefix'=>$this->prefix,'title'=>$this->title, 'pagetitle'=>'View Details', 'getconsigner'=>$getconsigner]);
     }
 
@@ -217,7 +209,7 @@ class ConsignerController extends Controller
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
         } 
 
-        $getconsigner = Consigner::where('id',$id)->first();
+        $getconsigner = Consigner::with('GetZone')->where('id',$id)->first();
         return view('consigners.update-consigner')->with(['prefix'=>$this->prefix,'getconsigner'=>$getconsigner,'regclients'=>$regclients, 'title'=>$this->title, 'pagetitle'=>'Update']);
     }
 

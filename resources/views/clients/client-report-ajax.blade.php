@@ -48,8 +48,8 @@
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
-                $cnr_state = $consignment->ConsignerDetail->state_id;
-                $cnee_state = $consignment->ConsigneeDetail->state_id;
+                $cnr_state = $consignment->ConsignerDetail->Zone->state;
+                $cnee_state = $consignment->ConsigneeDetail->Zone->state;
                 //echo $cstate;die;
             ?>
             <tr>
@@ -90,7 +90,7 @@
                     <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                     <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
                     <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
-                    <td>{{ $consignment->ConsigneeDetail->state_id ?? "-" }}</td>
+                    <td>{{ $consignment->ConsigneeDetail->Zone->state ?? "-" }}</td>
                     
                     <?php if(empty($consignment->invoice_no)){ ?>
                         <td>{{ $order_item['invoices'] ?? "-" }}</td>

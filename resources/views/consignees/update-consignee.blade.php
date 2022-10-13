@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Select State</label>
-                                    <input type="text" class="form-control" id="state" name="state_id" value="{{old('state_id',isset($getconsignee->state_id)?$getconsignee->state_id:'')}}" placeholder="" readonly>
+                                    <input type="text" class="form-control" id="state" name="state_id" value="{{old('state_id',isset($getconsignee->GetZone->state)?$getconsignee->GetZone->state:'')}}" placeholder="" readonly>
                                 
                                 </div>
                             </div>

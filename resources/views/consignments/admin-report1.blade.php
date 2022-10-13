@@ -101,14 +101,13 @@ div.relative {
                                     <td>{{ $report->phone ?? "-" }}</td>
                                     <td>{{ $report->postal_code ?? "-" }}</td>
                                     <td>{{ $report->district ?? "-" }}</td>
-                                    <td>{{ $report->state_id ?? "-" }}</td>
+                                    <td>{{ $report->consigner_state ?? "-" }}</td>
                                     <td>{{ $report->consignee_nick_name ?? "-" }}</td>
                                     <td>{{ $report->consignee_contact_name ?? "-" }}</td>
                                     <td>{{ $report->consignee_phone ?? "-" }}</td>
                                     <td>{{ $report->consignee_postal_code ?? "-" }}</td>
                                     <td>{{ $report->consignee_district ?? "-" }}</td>
                                     <td>{{ $report->consignee_state ?? "-" }}</td>
-                                    
 
                                 </tr>
                             @endforeach
