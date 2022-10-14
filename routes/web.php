@@ -22,6 +22,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\API\ReceiveAddressController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\PickupRunSheetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -197,6 +198,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+
+    Route::resource('prs', PickupRunSheetController::class);
 
     
 });
