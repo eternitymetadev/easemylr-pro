@@ -155,7 +155,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
-                            <select class="form-control" id="p_type" name="p_type" tabindex="-1">
+                            <select class="form-control" id="p_type" name="p_type" tabindex="-1"> 
 
                             </select>
                         </div>

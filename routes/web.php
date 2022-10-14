@@ -312,6 +312,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
+    Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
 
 
 

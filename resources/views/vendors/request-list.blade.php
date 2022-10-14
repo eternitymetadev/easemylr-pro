@@ -172,6 +172,7 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('disabled', 'disabled');
 
                 } else {
                     var amt = $('#amt').val(data.req_data[0].balance);
@@ -181,6 +182,7 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('disabled', 'disabled');
                 }
             } else {
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
@@ -197,6 +199,7 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('disabled', 'disabled');
 
                 }
             }
@@ -241,20 +244,49 @@ $("#purchase_amount").keyup(function() {
 });
 // ====================================================== //
 $('#p_type').change(function() {
+    $('#amt').val('');
     var p_typ = $(this).val();
-    var purchs_amt = $('#total_clam_amt').val();
-    if (p_typ == 'Balance') {
-        $('#amt').val(purchs_amt);
+    var transaction_id = $('#transaction_id').val();
+    // alert(transaction_id);
+    $.ajax({
+        type: "GET",
+        url: "get-balance-amount",
+        data: {
+            transaction_id: transaction_id,
+            p_typ:p_typ
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+          
 
-        //calculate
-        var tds_rate = $('#tds_rate').val();
-        var cal = (tds_rate / 100) * purchs_amt;
-        var final_amt = purchs_amt - cal;
-        $('#tds_dedut').val(final_amt);
-    } else {
-        $('#amt').val('');
-        $('#tds_dedut').val('');
-    }
+            },
+        success: function(data) {
+            console.log(data.getbalance.balance);
+            if(p_typ == 'Balance'){
+                $('#amt').val(data.getbalance.balance);
+            //calculate
+                     var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * data.getbalance.balance;
+                    var final_amt = data.getbalance.balance - cal;
+                    $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('disabled', 'disabled');
+            }else if(p_typ == 'Fully'){
+                $('#amt').val(data.getbalance.balance);
+                  //calculate
+                     var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * data.getbalance.balance;
+                    var final_amt = data.getbalance.balance - cal;
+                    $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('disabled', 'disabled');
+            }else{
+                $('#amt').removeAttr('disabled');
+            }
+
+        }
+
+    });
+
+   
 
 });
 ///////////////////////////////////////////////

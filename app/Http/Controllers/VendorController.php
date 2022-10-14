@@ -920,4 +920,14 @@ class VendorController extends Controller
         return response()->json($response);
 
     }
+
+    public function getBalanceAmount(Request $request)
+    {
+        $getbalance = PaymentRequest::where('transaction_id', $request->transaction_id)->first();
+
+        $response['getbalance'] = $getbalance;
+        $response['success'] = true;
+        $response['success_message'] = "get balance";
+        return response()->json($response);
+    }
 }
