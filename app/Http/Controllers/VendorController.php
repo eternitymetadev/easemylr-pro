@@ -40,8 +40,18 @@ class VendorController extends Controller
     public function index()
     {
         $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $cc = explode(',',$authuser->branch_id);
+        $query = Vendor::query();
+        $query = $query->with('DriverDetail', 'Branch');
+        if($authuser->role_id == 2){
+            $query = $query->whereIn('branch_id', $cc);
+        }else{
+            $query = $query;
+        }
+        $vendors = $query->get();
 
-        $vendors = Vendor::with('DriverDetail', 'Branch')->get();
         return view('vendors.vendor-list', ['prefix' => $this->prefix, 'vendors' => $vendors]);
     }
     public function create()
