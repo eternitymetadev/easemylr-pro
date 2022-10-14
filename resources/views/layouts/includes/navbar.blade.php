@@ -130,9 +130,6 @@
                         <li>
                             <a href="{{$prefixurl.'consignments'}}"> Consignments List </a>
                         </li>
-                        <!-- <li>
-                            <a href="{{$prefixurl.'clist'}}"> Consignments List v1 </a>
-                        </li> -->
                         <li>
                             <a href="{{$prefixurl.'unverified-list'}}"> Create DRS</a>
                         </li>

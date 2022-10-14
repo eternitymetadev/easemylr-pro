@@ -29,19 +29,23 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         
-        // $consignee = $query->with('Consigner','State')->orderby('created_at','DESC')->get();
-        $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'states.name as state_id')
-        ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-        ->join('states', 'states.id', '=', 'consignees.state_id');
+        $query = Consignee::with('Consigner','Zone');
+        // $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'zones.postal_code as postal_code')
+        // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
+        // ->join('zones', 'zones.postal_code', '=', 'consignees.postal_code');
 
         if($authuser->role_id == 1){
             $query = $query;
         }
         else if($authuser->role_id == 2 || $authuser->role_id == 3){
-            $query = $query->whereIn('consigners.branch_id', $cc);
+            $query = $query->whereHas('Consigner', function($query) use($cc){
+                $query->whereIn('branch_id', $cc);
+            });
         }
         else{
-            $query = $query->whereIn('consigners.regionalclient_id',$regclient);
+            $query = $query->whereHas('Consigner', function($query) use($regclient){
+                $query->whereIn('regionalclient_id', $regclient);
+            });
         }
 
         $consignee = $query->orderby('created_at','DESC')->get();
@@ -68,19 +72,19 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                 }
 
                 $arr[] = [
-                    'nick_name' => $value->nick_name,
-                    'legal_name' => $value->legal_name,
-                    'consigner_id' => $value->consigner_id,
-                    'contact_name' => $value->contact_name,
-                    'email' => $value->email,
-                    'dealer_type' => $dealer_type,
-                    'gst_number' => $value->gst_number,
-                    'phone' => $value->phone,
-                    'postal_code' => $value->postal_code,
-                    'city' => $value->city,
-                    'district' => $value->district,
-                    'state_id' => $value->state_id,
-                    'zone_id' => $zone,
+                    'nick_name'     => $value->nick_name,
+                    'legal_name'    => $value->legal_name,
+                    'consigner_id'  => $value->consigner_id,
+                    'contact_name'  => $value->contact_name,
+                    'email'         => $value->email,
+                    'dealer_type'   => $dealer_type,
+                    'gst_number'    => $value->gst_number,
+                    'phone'         => $value->phone,
+                    'postal_code'   => @$value->postal_code,
+                    'city'          => @$value->city,
+                    'district'      => @$value->Zone->district,
+                    'state_id'      => @$value->Zone->state,
+                    'zone_id'       => @$zone,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,
                     'address_line3' => $value->address_line3,

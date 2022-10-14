@@ -1509,6 +1509,7 @@ jQuery(document).ready(function () {
                     if (data.success) {
                         $("#city").val(data.data.city);
                         $("#district").val(data.zone.district);
+                        $("#state").val(data.zone.state);
 
                         if (data.zone == null || data.zone == "") {
                             $("#zone_name").val("No Zone Assigned");
@@ -1520,6 +1521,7 @@ jQuery(document).ready(function () {
                     } else {
                         $("#city").val("");
                         $("#district").val("");
+                        $("#state").val("");
                         $("#zone_name").val("");
                         $("#zone_id").val("");
                     }

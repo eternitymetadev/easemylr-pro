@@ -107,7 +107,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">District</label>
-                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsigner->district)?$getconsigner->district:'')}}" placeholder="">
+                                    <input type="text" class="form-control" id="district" name="district" value="{{old('district',isset($getconsigner->GetZone->district)?$getconsigner->GetZone->district:'')}}" placeholder="">
                                 </div>
                                
                                 <!-- <div class="form-group col-md-6">
@@ -131,18 +131,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">State</label>
-                                    <select class="form-control" name="state_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($states)>0) {
-                                            foreach ($states as $k => $state) {
-                                        ?>
-                                            <option value="{{ $k }}" {{ $k == $getconsigner->state_id ? 'selected' : ''}}>{{ucwords($state)}}</option> 
-                                            <?php 
-                                            }
-                                        }
-                                        ?>                            
-                                    </select>
+                                    <input type="text" class="form-control" id="state" name="state_id" value="{{old('state_id',isset($getconsigner->GetZone->state)?$getconsigner->GetZone->state:'')}}" placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 1</label>
@@ -150,7 +139,6 @@
                                 </div>
                             </div>
                             <div class="form-row mb-0">
-                            
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 2</label>
                                     <input type="text" class="form-control" name="address_line2" value="{{old('address_line2',isset($getconsigner->address_line2)?$getconsigner->address_line2:'')}}" placeholder="">

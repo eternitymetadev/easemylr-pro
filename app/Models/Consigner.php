@@ -36,4 +36,12 @@ class Consigner extends Model
         return $this->hasOne('App\Models\State','id','state_id');
     }
 
+    public function GetZone(){
+        return $this->hasOne('App\Models\Zone','postal_code','postal_code');
+    }
+
+    public function Zone(){
+        return $this->belongsTo('App\Models\Zone','postal_code','postal_code');
+    }
+
 }

@@ -37,7 +37,15 @@ class Consignee extends Model
     }
 
     public function GetZone(){
-        return $this->hasOne('App\Models\Zone','id','zone_id');
+        return $this->hasOne('App\Models\Zone','postal_code','postal_code');
     }
+
+    public function Zone(){
+        return $this->belongsTo('App\Models\Zone','postal_code','postal_code');
+    }
+
+    // public function GetZone1(){
+    //     return $this->hasOne('App\Models\Zone','id','zone_id');
+    // }
 
 }

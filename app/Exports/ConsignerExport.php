@@ -23,52 +23,45 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit ( 6000 );
         $arr = array();
-        $query = Consigner::query();
-
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id); 
         $cc = explode(',',$authuser->branch_id);
 
-        // $consigner = $query->with('State','RegClient','Branch')->orderby('created_at','DESC')->get();
-
-        $query = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname', 'states.name as state_id')
-                ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
-                ->leftjoin('states', 'states.id', '=', 'consigners.state_id');
+        $query = Consigner::with('RegClient','Zone');
 
         if($authuser->role_id == 1){
             $query = $query;
         }
         else if($authuser->role_id == 2 || $authuser->role_id == 3){
-            $query = $query->whereIn('consigners.branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
         else{
-            $query = $query->whereIn('consigners.regionalclient_id', $regclient);
+            $query = $query->whereIn('regionalclient_id', $regclient);
         }
-
-        $consigners = $query->orderby('created_at','DESC')->get();
+        $consigners = $query->get();
 
         if($consigners->count() > 0){
             foreach ($consigners as $key => $value){  
             
                 $arr[] = [
-                    'id' => $value->id,
-                    'nick_name' => $value->nick_name,
-                    'legal_name' => $value->legal_name,
-                    'gst_number' => $value->gst_number,
-                    'contact_name' => $value->contact_name,
-                    'phone' => $value->phone,
+                    'id'            => $value->id,
+                    'nick_name'     => $value->nick_name,
+                    'legal_name'    => $value->legal_name,
+                    'gst_number'    => $value->gst_number,
+                    'contact_name'  => $value->contact_name,
+                    'phone'         => $value->phone,
                     'regionalclient_id' => @$value->regional_clientname,
-                    'email' => $value->email,
+                    'email'         => $value->email,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,
                     'address_line3' => $value->address_line3,
                     'address_line4' => $value->address_line4,
-                    'postal_code' => $value->postal_code,
-                    'city' => $value->city,
-                    'district' => $value->district,
-                    'postal_code' => $value->postal_code,
-                    'state_id' => $value->state_id,
+                    'postal_code'   => $value->postal_code,
+                    'city'          => $value->city,
+                    'district'      => @$value->Zone->district,
+                    'postal_code'   => $value->postal_code,
+                    'state_id'      => @$value->Zone->state,
                 ];
             }
         }                 
