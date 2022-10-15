@@ -719,7 +719,6 @@ class VendorController extends Controller
            
             TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
             // ============== Sent to finfect
-dd($cc);
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(
