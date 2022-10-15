@@ -45,9 +45,8 @@
                                         >
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Transporter Name<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="transporter_name" placeholder="">
+                                    <label for="exampleFormControlInput2">Transporter Name</label>
+                                    <input type="text" class="form-control" id="transporter_name" name="transporter_name" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -64,9 +63,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Contact Number<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="contact_person_number" placeholder="">
+                                    <label for="exampleFormControlSelect1">Contact Number</label>
+                                    <input type="text" class="form-control" name="contact_person_number" placeholder=""  maxlength="10">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -77,7 +75,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Vendor Type<span
                                             class="text-danger">*</span></label>
-                                    <select class="form-control  my-select2" id="vendor_type" name="vendor_type"
+                                    <select class="form-control" id="vendor_type" name="vendor_type"
                                         tabindex="-1">
                                         <option selected disabled>Select</option>
                                         <option value="Individual">Individual </option>
@@ -125,19 +123,22 @@
                             <h3>Vendor NEFT details</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name </label>
-                                    <input type="text" class="form-control" name="acc_holder_name" placeholder="">
+                                    <label for="exampleFormControlInput2">Account Holder Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="acc_holder_name" name="acc_holder_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Account No.</label>
+                                    <label for="exampleFormControlSelect1">Account No.<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="account_no" name="account_no" placeholder="">
                                 </div>
                             </div>
 
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Ifsc Code</label>
-                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="">
+                                    <label for="exampleFormControlInput2">Ifsc Code<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
@@ -158,8 +159,9 @@
                             <h3>Vendor Documents</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan</label>
-                                    <input type="text" class="form-control" name="pan" placeholder="">
+                                    <label for="exampleFormControlInput2">Pan<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="pan_no" name="pan" placeholder="" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan Upload</label>
@@ -178,7 +180,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
-                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder=""
+                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="" maxlength="15"
                                         disabled>
                                 </div>
                             </div>
@@ -196,6 +198,22 @@
 @endsection
 @section('js')
 <script>
+ jQuery(function () {
+        $('.my-select2').each(function () {
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+            })
+        })
+
+        // fix select2 bootstrap modal scroll bug
+        $(document).on('select2:close', '.my-select2', function (e) {
+            var evt = "scroll.select2"
+            $(e.target).parents().off(evt)
+            $(window).off(evt)
+        })
+    })
+
 $('#vendor_type').change(function() {
     var v_typ = $(this).val();
     var declaration = ($('input[name=decalaration_available]:checked').val());

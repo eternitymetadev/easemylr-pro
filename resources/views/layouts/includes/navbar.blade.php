@@ -155,10 +155,12 @@
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="payments"  data-parent="#topAccordion">
                          <li>
-                            <a href="{{$prefixurl.'vendor-list'}}">Vendor list </a>
+                            <a href="{{$prefixurl.'vendor-list'}}">Vendor Module </a>
                         </li>
                         <li>
-                            <a href="{{$prefixurl.'drs-paymentlist'}}"> payment list </a>
+                            <a href="{{$prefixurl.'drs-paymentlist'}}"> Create payment </a>
+                        </li> <li>
+                            <a href="{{$prefixurl.'request-list'}}"> Transactions Status </a>
                         </li>
                     </ul>
                 </li>

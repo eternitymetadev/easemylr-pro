@@ -37,7 +37,8 @@
                 <?php 
                 if($trns->status == 0){?>
                 <td>
-                    <label class="badge badge-dark">Cancelled</label></td>
+                    <label class="badge badge-dark">Cancelled</label>
+                </td>
                 <?php }else{?>
                 <td>
                     <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)){ ?>

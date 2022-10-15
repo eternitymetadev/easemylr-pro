@@ -33,6 +33,17 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
         $number = $vendor_no['vendor_no'] + 1;
         $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
+        if($row['declaration_available'] == 'Yes'){
+            $declaration = 1;
+        }else if($row['declaration_available'] == 'No'){
+            $declaration = 2;
+        }else{
+            $declaration = 0;
+        }
+
+        $vendor_check = Vendor::where('name', '=', $row['vendor_name'])->first();
+        if(empty($vendor_check)){
+
         return new Vendor([
             'type'                   => 'Vendor',
             'vendor_no'              => $vendor_no,
@@ -40,10 +51,10 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
             'email'                  => $row['email'],
             'other_details'          => json_encode($other_details),
             'bank_details'           => json_encode($bankdetails),
-            'driver_id'              => $driver->id,
+            'driver_id'              => @$driver->id,
             'pan'                    => $row['pan'],
             'vendor_type'            => $row['vendor_type'],
-            'declaration_available'  => $row['declaration_available'],
+            'declaration_available'  => $declaration,
             'tds_rate'               => $row['tds_rate'],
             'branch_id'              => $row['branch_id'],
             'gst_register'           => $row['gst_register'],
@@ -52,6 +63,7 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
             'is_active'              => 1,
             'created_at'             => time(),
         ]);
+    }
 
     }
 }
