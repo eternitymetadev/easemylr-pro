@@ -674,8 +674,8 @@ class VendorController extends Controller
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $cc = $authuser->branch_id;
-    
-            
+            $user = $authuser->id;
+            // dd($user);
             $drsno = explode(',', $request->drs_no);
             $consignment = TransactionSheet::whereIn('drs_no', $drsno)
                 ->groupby('drs_no')
@@ -701,7 +701,7 @@ class VendorController extends Controller
                 if($request->p_type == 'Advance'){
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
               
-                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc,'payment_status' => 0, 'status' => '1']);
+                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc, 'user_id' => $user,'payment_status' => 0, 'status' => '1']);
                 }else{
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
                     if (!empty($getadvanced->balance)) {
@@ -712,7 +712,7 @@ class VendorController extends Controller
                     $advance = $request->pay_amt;
                     // dd($advance);
 
-                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no,'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount,'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc,'payment_status' => 0, 'status' => '1']);
+                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no,'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount,'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc,'user_id' => $user,'payment_status' => 0, 'status' => '1']);
                 }
                 
             }
@@ -830,10 +830,21 @@ class VendorController extends Controller
     public function requestList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
 
+        if($authuser->role_id == 2){
         $requestlists = PaymentRequest::with('VendorDetails')
+            ->where('branch_id', $cc)
             ->groupBy('transaction_id')
             ->get();
+        }else{
+            $requestlists = PaymentRequest::with('VendorDetails')
+            ->groupBy('transaction_id')
+            ->get();
+        }
+
         $vendors = Vendor::all();
         $vehicletype = VehicleType::select('id', 'name')->get();
         return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
