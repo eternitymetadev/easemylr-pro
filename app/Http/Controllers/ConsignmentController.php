@@ -2523,7 +2523,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['consigner_detail']['get_zone']['state'] != null) {
+                if ($data['consigner_detail']['get_zone'] != null) {
                     $district = $data['consigner_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
@@ -2576,7 +2576,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['consignee_detail']['get_zone']['state'] != null) {
+                if ($data['consignee_detail']['get_zone'] != null) {
                     $district = $data['consignee_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
