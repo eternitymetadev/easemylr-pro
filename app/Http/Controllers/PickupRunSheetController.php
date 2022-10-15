@@ -137,7 +137,61 @@ class PickupRunSheetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->prefix = request()->route()->getPrefix();
+        $rules = array(
+            // 'regclient_id' => 'required',
+            // 'prs_type' => 'required',
+            // 'vehicle_id'  => 'required',
+            // 'driver_id' => 'required',
+        );
+
+        $validator = Validator::make($request->all(),$rules);
+    
+        if($validator->fails())
+        {
+            $errors                  = $validator->errors();
+            $response['success']     = false;
+            $response['validation']  = false;
+            $response['formErrors']  = true;
+            $response['errors']      = $errors;
+            return response()->json($response);
+        }
+
+        if(!empty($request->regclient_id)){
+            $regclients = $request->regclient_id;
+            $prssave['regclient_id']   = implode(',', $regclients);
+        }
+        if(!empty($request->prs_type)){
+            $prssave['prs_type']   = $request->prs_type;
+        }
+        if(!empty($request->vehicle_id)){
+            $prssave['vehicle_id']  = $request->vehicle_id;
+        }
+        if(!empty($request->driver_id)){
+            $prssave['driver_id'] = $request->driver_id;
+        }
+
+        $prssave['phone']         = $request->phone;
+        
+        $prssave['status'] = "1";
+        
+        $saveprs = PickupRunSheet::create($prssave);
+        if($saveprs)
+        {
+            
+            $url    =   URL::to($this->prefix.'/prs');
+            $response['success'] = true;
+            $response['success_message'] = "PRS Added successfully";
+            $response['error'] = false;
+            // $response['resetform'] = true;
+            $response['page'] = 'prs-create';
+            $response['redirect_url'] = $url;
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not created PRS please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
     }
 
     /**

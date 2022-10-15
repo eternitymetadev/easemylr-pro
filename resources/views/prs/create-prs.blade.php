@@ -18,10 +18,10 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/consigners')}}"
-                            id="createconsigner">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}"
+                            id="createprs">
                             <div class="form-row mb-0">
-                            <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Regional Client<span
                                             class="text-danger">*</span></label>
                                     <?php $authuser = Auth::user();
@@ -39,15 +39,7 @@
                                         ?>
                                     </select>
                                     <input type="hidden" name="branch_id" value="{{$client->location_id}}">
-                                    
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Consigner Nick Name<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="nick_name" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">PRS Type</label>
                                     <select class="form-control" id="prs_type" name="prs_type">
@@ -56,6 +48,8 @@
                                         <option value="1">Recuring</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
                                     <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
@@ -66,8 +60,6 @@
                                     @endforeach
                                     </select>
                                 </div>
-                            </div>
-                            <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Driver Name</label>
                                     <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
@@ -78,12 +70,6 @@
                                     @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Mobile No.<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control mbCheckNm" name="phone"
-                                        placeholder="Enter 10 digit mobile no" maxlength="10">
-                                </div>                                
                             </div>
                             
                             <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary">Submit</button>

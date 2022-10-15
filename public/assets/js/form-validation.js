@@ -1496,6 +1496,45 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    // create Pickup run sheet
+    jQuery('#createprs').validate({
+        rules:
+        {
+            regclient_id: {
+                // required: true,
+            },
+            prs_type: {
+                // required: true,
+            },
+            vehicle_id: {
+                // required: true,
+            },
+            driver_id: {
+                // required: true,
+            },
+
+        },
+        messages:
+        {
+            regclient_id: {
+                required: "Select regional client",
+            },
+            prs_type: {
+                required: "PRS is required",
+            },
+            vehicle_id: {
+                required: "",
+            },
+            driver_id: {
+                required: "",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
     
 
 
@@ -1657,6 +1696,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);
             }else if(response.page == 'clientdetail-create' || response.page == 'clientdetail-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'prs-create' || response.page == 'prs-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

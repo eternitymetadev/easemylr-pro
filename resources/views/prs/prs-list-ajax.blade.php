@@ -13,7 +13,7 @@
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <tr>
-                <td></td>
+                <td>{{ ucwords($user->regclient_name ?? "-") }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
