@@ -671,6 +671,10 @@ class VendorController extends Controller
     {
         
             $this->prefix = request()->route()->getPrefix();
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $cc = $authuser->branch_id;
+    
             
             $drsno = explode(',', $request->drs_no);
             $consignment = TransactionSheet::whereIn('drs_no', $drsno)
@@ -697,7 +701,7 @@ class VendorController extends Controller
                 if($request->p_type == 'Advance'){
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
               
-                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt,'payment_status' => 0, 'status' => '1']);
+                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc,'payment_status' => 0, 'status' => '1']);
                 }else{
                     $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
                     if (!empty($getadvanced->balance)) {
@@ -708,14 +712,14 @@ class VendorController extends Controller
                     $advance = $request->pay_amt;
                     // dd($advance);
 
-                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no,'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount,'advanced' => $advance, 'balance' => $balance,'payment_status' => 0, 'status' => '1']);
+                    $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no,'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount,'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc,'payment_status' => 0, 'status' => '1']);
                 }
                 
             }
            
             TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
             // ============== Sent to finfect
-
+dd($cc);
             $pfu = 'ETF';
             $curl = curl_init();
             curl_setopt_array($curl, array(
