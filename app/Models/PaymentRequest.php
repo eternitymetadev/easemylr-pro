@@ -18,6 +18,8 @@ class PaymentRequest extends Model
         'advanced',
         'balance',
         'tds_deduct_balance',
+        'branch_id',
+        'user_id',
         'payment_status',
         'status',
         'created_at',
