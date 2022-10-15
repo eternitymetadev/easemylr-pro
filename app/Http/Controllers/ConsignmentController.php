@@ -2630,7 +2630,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['shipto_detail']['get_zone']['state'] != null) {
+                if ($data['shipto_detail']['get_zone'] != null) {
                     $district = $data['shipto_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
@@ -2688,7 +2688,7 @@ class ConsignmentController extends Controller
                     } elseif ($pdf == 4) {
                         $type = 'QUADRUPLE';
                     }
-        if(!empty($data['consigner_detail']['get_zone']['state'])){
+        if(!empty($data['consigner_detail']['get_zone'])){
             $cnr_state = $data['consigner_detail']['get_zone']['state'];
         }
         else{
