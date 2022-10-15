@@ -45,8 +45,7 @@
                                         >
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Transporter Name<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Transporter Name</label>
                                     <input type="text" class="form-control" id="transporter_name" name="transporter_name" placeholder="">
                                 </div>
                             </div>

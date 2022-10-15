@@ -1860,10 +1860,6 @@ $('#vendor-master').submit(function (e) {
         swal("Error!", "Please Enter Vendor Name", "error");
         return false;
     }
-    if (!trans_name) {
-        swal("Error!", "Please Enter Transporter Name", "error");
-        return false;
-    }
     if (!vendor_type) {
         swal("Error!", "Please Select Vendor Type", "error");
         return false;
