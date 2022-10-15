@@ -378,44 +378,44 @@ class VendorController extends Controller
         // echo '<pre>';
         // print_r($request->all());die;
         $drs = explode(',', $request->drs_no);
-        // $pfu = 'ETF';
-        //     $curl = curl_init();
-        //     curl_setopt_array($curl, array(
-        //         CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
-        //         CURLOPT_RETURNTRANSFER => true,
-        //         CURLOPT_ENCODING => '',
-        //         CURLOPT_MAXREDIRS => 10,
-        //         CURLOPT_TIMEOUT => 0,
-        //         CURLOPT_FOLLOWLOCATION => true,
-        //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //         CURLOPT_CUSTOMREQUEST => 'POST',
-        //         CURLOPT_POSTFIELDS => "[{
-        //     \"unique_code\": \"$request->vendor_no\",
-        //     \"name\": \"$request->name\",
-        //     \"acc_no\": \"$request->acc_no\",
-        //     \"beneficiary_name\": \"$request->beneficiary_name\",
-        //     \"ifsc\": \"$request->ifsc\",
-        //     \"bank_name\": \"$request->bank_name\",
-        //     \"baddress\": \"$request->branch_name\",
-        //     \"payable_amount\": \"$request->final_payable_amount\",
-        //     \"claimed_amount\": \"$request->claimed_amount\",
-        //     \"pfu\": \"$pfu\",
-        //     \"ptype\": \"$request->p_type\",
-        //     \"email\": \"$request->email\",
-        //     \"terid\": \"$request->transaction_id\",
-        //     \"txn_route\": \"DRS\"
-        //     }]",
-        //         CURLOPT_HTTPHEADER => array(
-        //             'Content-Type: application/json',
-        //         ),
-        //     ));
+        $pfu = 'ETF';
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$request->email\",
+            \"terid\": \"$request->transaction_id\",
+            \"txn_route\": \"DRS\"
+            }]",
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                ),
+            ));
 
-        // $response = curl_exec($curl);
-        // curl_close($curl);
-        // $res_data = json_decode($response);
-        $cc = 'success';
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res_data = json_decode($response);
+        // $cc = 'success';
         // ============== Success Response
-        if ($cc == 'success') {
+        if ($res_data->message == 'success') {
 
             if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
 
@@ -433,7 +433,7 @@ class VendorController extends Controller
 
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
-                // $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
@@ -452,7 +452,7 @@ class VendorController extends Controller
                 //======== Payment History save =========//
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
-                // $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
@@ -471,11 +471,11 @@ class VendorController extends Controller
             }
 
             $new_response['success'] = true;
-            // $new_response['message'] = $res_data->message;
+            $new_response['message'] = $res_data->message;
 
         } else {
 
-            // $new_response['message'] = $res_data->message;
+            $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
 
         }
