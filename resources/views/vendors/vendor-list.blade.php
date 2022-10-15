@@ -54,12 +54,12 @@
                                 //   echo'<pre>'; print_r($img);die;
                             ?>
                             <tr>
-                                <td>{{$vendor->vendor_no}}</td>
-                                <td>{{$vendor->Branch->name}}</td>
+                                <td>{{$vendor->vendor_no ?? '-'}}</td>
+                                <td>{{$vendor->Branch->name ?? '-'}}</td>
                                 <td>{{$vendor->name}}</td>
                                 <td>{{$other_details->transporter_name ?? '-'}}</td>
                                 <td>{{$vendor->pan ?? '-'}}</td>
-                                <td>{{$vendor->vendor_type}}</td>
+                                <td>{{$vendor->vendor_type ?? '-'}}</td>
                                 <td>{{$vendor->tds_rate ?? '-'}}</td>
                                 <?php if(!empty($vendor->upload_pan)){?>
                                 <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$img}}"

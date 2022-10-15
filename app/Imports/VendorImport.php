@@ -41,6 +41,9 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
             $declaration = 0;
         }
 
+        $vendor_check = Vendor::where('name', '=', $row['vendor_name'])->first();
+        if(empty($vendor_check)){
+
         return new Vendor([
             'type'                   => 'Vendor',
             'vendor_no'              => $vendor_no,
@@ -60,6 +63,7 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
             'is_active'              => 1,
             'created_at'             => time(),
         ]);
+    }
 
     }
 }
