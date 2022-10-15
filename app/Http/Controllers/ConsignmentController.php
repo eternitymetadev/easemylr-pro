@@ -80,7 +80,7 @@ class ConsignmentController extends Controller
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
 
-            $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+            $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
 
             if($authuser->role_id ==1){
                 $query;
@@ -92,10 +92,10 @@ class ConsignmentController extends Controller
                 $query = $query->whereIn('base_clients.id', $baseclient);
             }
             elseif($authuser->role_id ==7){
-                $query = $query->whereIn('regional_clients.id', $regclient);
+                $query = $query->whereIn('regclient_id', $regclient);
             }
             else{
-                $query = $query->whereIn('consignment_notes.branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc);
             }
 
             if(!empty($request->search)){
@@ -147,7 +147,7 @@ class ConsignmentController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
-        $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+        $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
 
         if($authuser->role_id ==1){
             $query;
@@ -159,10 +159,10 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('base_clients.id', $baseclient);
         }
         elseif($authuser->role_id ==7){
-            $query = $query->whereIn('regional_clients.id', $regclient);
+            $query = $query->whereIn('regclient_id', $regclient);
         }
         else{
-            $query = $query->whereIn('consignment_notes.branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
