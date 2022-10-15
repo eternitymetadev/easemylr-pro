@@ -281,7 +281,6 @@ $('#p_type').change(function() {
             }else{
                 $('#amt').removeAttr('disabled');
             }
-
         }
 
     });
