@@ -102,7 +102,7 @@
                             <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="hidden" class="form-control" id="transaction_id" name="transaction_id"
+                            <input type="hidden" class="form-control" id="transaction_id_2" name="transaction_id"
                                 value="">
                         </div>
                     </div>

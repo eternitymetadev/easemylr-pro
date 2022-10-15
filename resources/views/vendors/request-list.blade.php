@@ -151,7 +151,7 @@ $(document).on('click', '.payment_button', function() {
             
             $('#drs_no_request').val(data.drs_no);
             $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
-            $('#transaction_id').val(data.req_data[0].transaction_id);
+            $('#transaction_id_2').val(data.req_data[0].transaction_id);
             $('#name').val(bank_details.acc_holder_name);
             $('#email').val(data.req_data[0].vendor_details.email);
             $('#beneficiary_name').val(bank_details.acc_holder_name);
@@ -172,7 +172,7 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('disabled', 'disabled');
+                    $('#amt').attr('readonly', true);
 
                 } else {
                     var amt = $('#amt').val(data.req_data[0].balance);
@@ -182,7 +182,9 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('disabled', 'disabled');
+                    // $('#amt').attr('disabled', 'disabled');
+                    $('#amt').attr('readonly', true);
+
                 }
             } else {
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
@@ -199,7 +201,8 @@ $(document).on('click', '.payment_button', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('disabled', 'disabled');
+                    // $('#amt').attr('disabled', 'disabled');
+                    $('#amt').attr('readonly', true);
 
                 }
             }
@@ -246,7 +249,7 @@ $("#purchase_amount").keyup(function() {
 $('#p_type').change(function() {
     $('#amt').val('');
     var p_typ = $(this).val();
-    var transaction_id = $('#transaction_id').val();
+    var transaction_id = $('#transaction_id_2').val();
     // alert(transaction_id);
     $.ajax({
         type: "GET",
@@ -279,7 +282,7 @@ $('#p_type').change(function() {
                     $('#tds_dedut').val(final_amt);
                     $('#amt').attr('disabled', 'disabled');
             }else{
-                $('#amt').removeAttr('disabled');
+                $('#amt').attr('readonly', false);
             }
         }
 
