@@ -218,6 +218,7 @@ class VendorController extends Controller
 
             $query = $query->whereIn('status', ['1', '0', '3'])
                 ->where('request_status', 0)
+                ->where('payment_status','=', 0)
                 ->groupBy('drs_no');
 
             if ($authuser->role_id == 1) {
@@ -290,6 +291,7 @@ class VendorController extends Controller
 
         $query = $query->whereIn('status', ['1', '0', '3'])
             ->where('request_status', 0)
+            ->where('payment_status','=', 0)
             ->groupBy('drs_no');
 
         if ($authuser->role_id == 1) {
