@@ -1899,6 +1899,8 @@ $('#vendor-master').submit(function (e) {
                 swal('error', data.error_message.name[0], 'error');
             }else if(data.pan_check === true){
                 swal('error', data.errors, 'error');
+            }else if(data.decl_check === true){
+                swal('error', data.errors, 'error');
             } else {
                 swal('error', data.error_message, 'error');
             }

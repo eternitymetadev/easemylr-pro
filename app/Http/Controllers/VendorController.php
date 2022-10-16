@@ -95,7 +95,7 @@ class VendorController extends Controller
                 $response['error_message'] = $errors;
                 return response()->json($response);
             }
-
+            /// pan check
             $pancheck = Vendor::where('vendor_type', $request->vendor_type)->where('pan', $request->pan)->first();
             if ($pancheck) {
 
@@ -127,6 +127,17 @@ class VendorController extends Controller
                 $dec_file->move(public_path('drs/declaration'), $decl_file);
             } else {
                 $decl_file = null;
+            }
+            /////declaration file check
+            if($request->decalaration_available == 1){
+                if(empty($decl_file )){ 
+                $response['success'] = false;
+                $response['decl_check'] = true;
+                $response['errors'] = "please upload declaration file";
+                return response()->json($response);
+
+                }
+
             }
 
             $vendor = DB::table('vendors')->select('vendor_no')->latest('vendor_no')->first();
