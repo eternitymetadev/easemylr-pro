@@ -214,6 +214,9 @@
                         <li>
                             <a href="{{$prefixurl.'prs'}}"> Pickup Run Sheet</a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'driver-tasks'}}"> Driver Task</a>
+                        </li>
                     <?php// } ?>
                     </ul>
                   

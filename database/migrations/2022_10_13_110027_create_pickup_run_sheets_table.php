@@ -17,9 +17,12 @@ class CreatePickupRunSheetsTable extends Migration
             $table->increments('id');
             $table->string('regclient_id')->nullable();
             $table->string('prs_type')->nullable()->comment('0=>one time 1=>recuring');
+            $table->string('vehicletype_id')->nullable();
             $table->string('vehicle_id')->nullable();
             $table->string('driver_id')->nullable();
             $table->string('prs_date')->nullable();
+            $table->string('user_id')->nullable();
+            $table->string('branch_id')->nullable();
             $table->string('status')->default(0)->comment('0=>assigned 1=>picked 2=>received');
             $table->timestamps();
 

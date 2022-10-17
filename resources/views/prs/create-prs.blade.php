@@ -20,6 +20,9 @@
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}"
                             id="createprs">
+
+                            <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date" placeholder="" value="<?php echo date('d-m-Y'); ?>">
+
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Regional Client<span
@@ -73,7 +76,7 @@
                             </div>
                             
                             <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary">Submit</button>
-                            <a class="btn btn-primary" href="{{url($prefix.'/consigners') }}"> Back</a>
+                            <a class="btn btn-primary" href="{{url($prefix.'/prs') }}"> Back</a>
                         </form>
                     </div>
                 </div>
@@ -85,6 +88,9 @@
 @endsection
 @section('js')
 <script>
+
+// add prs date
+$('#prsDate').val(new Date().toJSON().slice(0, 10));
 
 //multiple select //
 var ss = $(".basic").select2({

@@ -92,7 +92,7 @@ class PickupRunSheetController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        $prsdata = $query->orderBy('id','DESC')->paginate($peritem);
+        $prsdata = $query->with('VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
         $prsdata = $prsdata->appends($request->query());
         
 
@@ -157,6 +157,8 @@ class PickupRunSheetController extends Controller
             return response()->json($response);
         }
 
+        $authuser = Auth::user();
+
         if(!empty($request->regclient_id)){
             $regclients = $request->regclient_id;
             $prssave['regclient_id']   = implode(',', $regclients);
@@ -171,7 +173,12 @@ class PickupRunSheetController extends Controller
             $prssave['driver_id'] = $request->driver_id;
         }
 
-        $prssave['phone']         = $request->phone;
+        $prssave['prs_date'] = $request->prs_date;
+
+        $prssave['phone']    = $request->phone;
+
+        $consignmentsave['user_id'] = $authuser->id;
+        $consignmentsave['branch_id'] = $authuser->branch_id;
         
         $prssave['status'] = "1";
         
