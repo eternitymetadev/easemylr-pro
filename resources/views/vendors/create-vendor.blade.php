@@ -289,7 +289,7 @@ $('#ifsc').blur(function() {
    if(count < 11){
     $('#ifsc-error').html('<p style="color:red;">Please enter 11 digit number</p>')
    }else{
-    $('#ifsc-error').empty();
+    $('#ifsc-error').empty();  
    }
     
 });
