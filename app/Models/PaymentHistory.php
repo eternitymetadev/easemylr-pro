@@ -18,6 +18,7 @@ class PaymentHistory extends Model
         'advance',
         'balance',
         'tds_deduct_balance',
+        'current_paid_amt',
         'payment_status',
         'created_at',
         'updated_at'

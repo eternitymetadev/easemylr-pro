@@ -384,6 +384,7 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+     
 
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
@@ -450,6 +451,7 @@ class VendorController extends Controller
                 $paymentresponse['advance'] = $advance;
                 $paymentresponse['balance'] = $balance;
                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
                 $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
@@ -469,6 +471,7 @@ class VendorController extends Controller
                 $paymentresponse['advance'] = $request->payable_amount;
                 $paymentresponse['balance'] = $balance_amt;
                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
                 $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
@@ -675,7 +678,6 @@ class VendorController extends Controller
     // ==================CreatePayment Request =================
     public function createPaymentRequestVendor(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -788,6 +790,7 @@ class VendorController extends Controller
                 $paymentresponse['advance'] = $advance;
                 $paymentresponse['balance'] = $balance;
                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
                 $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
@@ -807,6 +810,7 @@ class VendorController extends Controller
                 $paymentresponse['advance'] = $request->pay_amt;
                 $paymentresponse['balance'] = $balance_amt;
                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
                 $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
