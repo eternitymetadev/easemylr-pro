@@ -384,7 +384,6 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
-     
 
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
@@ -688,20 +687,25 @@ class VendorController extends Controller
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
             ->groupby('drs_no')
             ->get();
-
         $simplyfy = json_decode(json_encode($consignment), true);
-        $no_of_digit = 7;
         $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
         $transaction_id = json_decode(json_encode($transactionId), true);
         if (empty($transaction_id) || $transaction_id == null) {
-            $transaction_id['transaction_id'] = 0;
+            $transaction_id_new = 70000101;
+        } else {
+            $k = $transaction_id['transaction_id'];
+            $s = $k . ''; // or: $s = (string)$k;
+            $a = $s[0];
+            if ($a == 7) {
+                $transaction_id_new = $transaction_id['transaction_id'] + 1;
+            } else {
+                $transaction_id_new = 70000101;
+            }
         }
-        $number = $transaction_id['transaction_id'] + 1;
 
         $i = 0;
         foreach ($simplyfy as $value) {
             $i++;
-            $transaction_id = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
             $drs_no = $value['drs_no'];
             $vendor_id = $request->vendor_name;
             $vehicle_no = $value['vehicle_no'];
@@ -709,9 +713,9 @@ class VendorController extends Controller
             if ($request->p_type == 'Advance') {
                 $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             } else {
-                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->pay_amt;
                 } else {
@@ -720,7 +724,7 @@ class VendorController extends Controller
                 $advance = $request->pay_amt;
                 // dd($advance);
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             }
 
         }
@@ -751,7 +755,7 @@ class VendorController extends Controller
             \"pfu\": \"$pfu\",
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
-            \"terid\": \"$transaction_id\",
+            \"terid\": \"$transaction_id_new\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
@@ -763,11 +767,11 @@ class VendorController extends Controller
         curl_close($curl);
         $res_data = json_decode($response);
         // ============== Success Response
-        // $cs = 'success' ;
+        // $cs = 'success';
         if ($res_data->message == 'success') {
 
             if ($request->p_type == 'Fully') {
-                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->pay_amt;
                 } else {
@@ -777,12 +781,12 @@ class VendorController extends Controller
 
                 TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
 
-                PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
-                $paymentresponse['transaction_id'] = $transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id_new;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
@@ -802,7 +806,7 @@ class VendorController extends Controller
                 $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
-                $paymentresponse['transaction_id'] = $transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id_new;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
@@ -814,7 +818,7 @@ class VendorController extends Controller
                 $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
-                PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
 
                 TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
             }
@@ -957,5 +961,56 @@ class VendorController extends Controller
         $response['success_message'] = "get balance";
         return response()->json($response);
     }
-    
+//  ////
+    //  public function check_paid_status()
+    //  {
+    //      ini_set('max_execution_time', 0); // 0 = Unlimited
+    //      $get_data_db = DB::table('tercouriers')->select('id')->where('status', 3)->get()->toArray();
+    //      $size = sizeof($get_data_db);
+
+//      for ($i = 0; $i < $size; $i++) {
+    //          // print_r($get_data_db[$i]->id);
+    //          $id = $get_data_db[$i]->id;
+    //          // $id="1508";
+    //          https://stagging.finfect.biz/api/get_payment_response_drs/0000001
+    //          $url = 'https://finfect.biz/api/get_payment_response/' . $id;
+    //          $curl = curl_init();
+
+//          curl_setopt_array($curl, array(
+    //              CURLOPT_URL => $url,
+    //              CURLOPT_RETURNTRANSFER => true,
+    //              CURLOPT_ENCODING => '',
+    //              CURLOPT_MAXREDIRS => 10,
+    //              CURLOPT_TIMEOUT => 0,
+    //              CURLOPT_FOLLOWLOCATION => true,
+    //              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //              CURLOPT_CUSTOMREQUEST => 'GET',
+    //          ));
+
+//          $response = curl_exec($curl);
+
+//          curl_close($curl);
+    //          if ($response) {
+    //              $received_data = json_decode($response);
+    //              $status_code = $received_data->status_code;
+
+//              if ($status_code == 2) {
+    //                  $update_ter_data = DB::table('tercouriers')->where('id', $get_data_db[$i]->id)->update([
+    //                      'status' => 5, 'finfect_response' => 'Paid',
+    //                      'utr' => $received_data->bank_refrence_no, 'updated_at' => date('Y-m-d H:i:s'),
+    //                      'paid_date' => date('Y-m-d')
+    //                  ]);
+
+//                  if ($update_ter_data) {
+    //                      $amount = $received_data->amount;
+    //                      $sms_lib = new Sms_lib();
+    //                      $res = $sms_lib->send_paid_sms($id, $amount);
+
+//                  }
+    //              }
+    //          }
+    //      }
+    //      return 1;
+    //  }
+
 }

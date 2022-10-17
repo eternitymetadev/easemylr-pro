@@ -167,11 +167,11 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Tds rate</label>
-                            <input type="text" class="form-control" id="tds_rate" name="tds_rate" value="">
+                            <input type="text" class="form-control" id="tds_rate" name="tds_rate" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">tds deduct amount</label>
-                            <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value="">
+                            <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value="" readonly>
                         </div>
                     </div>
                     <div class="modal-footer">

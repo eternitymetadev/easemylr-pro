@@ -652,6 +652,9 @@ Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);
 Route::any('track-order', [TrackingController::class, 'trackOrder']);
 
+///check paid status
+Route::any('check-paid-status', [TrackingController::class, 'check_paid_status']);
+
 
 
 
