@@ -139,6 +139,7 @@
                                     <label for="exampleFormControlInput2">Ifsc Code<span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
+                                    <div id="ifsc-error"></div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
@@ -281,6 +282,18 @@ $('#account_no').blur(function() {
         }
     })
 });
+
+$('#ifsc').blur(function() {
+   var ifsc = $(this).val();
+   var count = ifsc.length;
+   if(count < 11){
+    $('#ifsc-error').html('<p style="color:red;">Please enter 11 digit number</p>')
+   }else{
+    $('#ifsc-error').empty();
+   }
+    
+});
+///
 </script>
 
 
