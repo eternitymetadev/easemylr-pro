@@ -416,6 +416,29 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
 
+
+    Route::any('vendor-list', [VendorController::class, 'index']);
+    Route::any('vendor/create', [VendorController::class, 'create']);
+    Route::post('vendor/add-vendor', [VendorController::class, 'store']);
+    Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
+    Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
+    Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
+    Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
+    Route::any('view-vendor-details', [VendorController::class, 'view_vendor_details']);
+    Route::any('update-purchas-price', [VendorController::class, 'update_purchase_price']);
+    Route::any('edit-vendor/{id}', [VendorController::class, 'editViewVendor']);
+    Route::post('vendor/update-vendor', [VendorController::class, 'updateVendor']);
+    Route::any('import-vendor', [VendorController::class, 'importVendor']);
+    Route::any('export-vendor', [VendorController::class, 'exportVendor']);
+    Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
+    Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
+    Route::any('request-list', [VendorController::class, 'requestList']);
+    Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
+    Route::any('show-drs', [VendorController::class, 'showDrs']);
+    Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
+    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
+    Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -653,7 +676,7 @@ Route::post('webhook', [ConsignmentController::class, 'handle']);
 Route::any('track-order', [TrackingController::class, 'trackOrder']);
 
 ///check paid status
-Route::any('check-paid-status', [TrackingController::class, 'check_paid_status']);
+Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
 
 
 

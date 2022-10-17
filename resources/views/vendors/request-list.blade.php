@@ -94,8 +94,13 @@ div.relative {
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
                         <td>{{ $requestlist->balance ?? "-" }}</td>
-                        <td><button class="btn btn-warning payment_button"
+                        <?php if($requestlist->payment_status == 2){ ?>
+                        <td><button class="btn btn-warning"
+                                value="{{$requestlist->transaction_id}}" disabled>Create Payment</button></td>
+                        <?php } else { ?>
+                            <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                            <?php } ?>
                        
                         <!-- payment Status -->
                         <?php if($requestlist->payment_status == 0){ ?>

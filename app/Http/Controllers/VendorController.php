@@ -84,7 +84,7 @@ class VendorController extends Controller
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'name' => 'required|unique:vendors',
-                'ifsc_code' => 'required|min:11'
+                'ifsc_code' => 'required|min:11',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -683,6 +683,9 @@ class VendorController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
+
+        $branch_name = Location::where('id', '=', $cc)->first();
+        // dd($branch_name->nick_name);
         // dd($user);
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
@@ -962,56 +965,51 @@ class VendorController extends Controller
         $response['success_message'] = "get balance";
         return response()->json($response);
     }
-//  ////
-    //  public function check_paid_status()
-    //  {
-    //      ini_set('max_execution_time', 0); // 0 = Unlimited
-    //      $get_data_db = DB::table('tercouriers')->select('id')->where('status', 3)->get()->toArray();
-    //      $size = sizeof($get_data_db);
 
-//      for ($i = 0; $i < $size; $i++) {
-    //          // print_r($get_data_db[$i]->id);
-    //          $id = $get_data_db[$i]->id;
-    //          // $id="1508";
-    //          https://stagging.finfect.biz/api/get_payment_response_drs/0000001
-    //          $url = 'https://finfect.biz/api/get_payment_response/' . $id;
-    //          $curl = curl_init();
+    public function check_paid_status()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        $get_data_db = DB::table('payment_requests')->select('transaction_id')->where('payment_status', 2)->get()->toArray();
+        $size = sizeof($get_data_db);
 
-//          curl_setopt_array($curl, array(
-    //              CURLOPT_URL => $url,
-    //              CURLOPT_RETURNTRANSFER => true,
-    //              CURLOPT_ENCODING => '',
-    //              CURLOPT_MAXREDIRS => 10,
-    //              CURLOPT_TIMEOUT => 0,
-    //              CURLOPT_FOLLOWLOCATION => true,
-    //              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //              CURLOPT_CUSTOMREQUEST => 'GET',
-    //          ));
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            // $id="1508";
+            $url = 'https://stagging.finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $curl = curl_init();
 
-//          $response = curl_exec($curl);
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
 
-//          curl_close($curl);
-    //          if ($response) {
-    //              $received_data = json_decode($response);
-    //              $status_code = $received_data->status_code;
+            $response = curl_exec($curl);
 
-//              if ($status_code == 2) {
-    //                  $update_ter_data = DB::table('tercouriers')->where('id', $get_data_db[$i]->id)->update([
-    //                      'status' => 5, 'finfect_response' => 'Paid',
-    //                      'utr' => $received_data->bank_refrence_no, 'updated_at' => date('Y-m-d H:i:s'),
-    //                      'paid_date' => date('Y-m-d')
-    //                  ]);
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
 
-//                  if ($update_ter_data) {
-    //                      $amount = $received_data->amount;
-    //                      $sms_lib = new Sms_lib();
-    //                      $res = $sms_lib->send_paid_sms($id, $amount);
+                    $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-//                  }
-    //              }
-    //          }
-    //      }
-    //      return 1;
-    //  }
+                    PaymentHistory::where('transaction_id', $trans_id)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                    $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', '70000101')->get();
+
+                    foreach ($get_drs as $drs) {
+                        TransactionSheet::where('drs_no', $drs_no)->update(['payment_status' => 1]);
+                    }
+                }
+            }
+        }
+        return 1;
+    }
 
 }
