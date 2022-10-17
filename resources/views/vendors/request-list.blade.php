@@ -272,7 +272,8 @@ $('#p_type').change(function() {
                     var cal = (tds_rate / 100) * data.getbalance.balance;
                     var final_amt = data.getbalance.balance - cal;
                     $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('disabled', 'disabled');
+                   $('#amt').attr('readonly', true);
+
             }else if(p_typ == 'Fully'){
                 $('#amt').val(data.getbalance.balance);
                   //calculate
@@ -280,7 +281,8 @@ $('#p_type').change(function() {
                     var cal = (tds_rate / 100) * data.getbalance.balance;
                     var final_amt = data.getbalance.balance - cal;
                     $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('disabled', 'disabled');
+                   $('#amt').attr('readonly', true);
+
             }else{
                 $('#amt').attr('readonly', false);
             }
