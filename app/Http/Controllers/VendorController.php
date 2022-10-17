@@ -84,6 +84,7 @@ class VendorController extends Controller
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'name' => 'required|unique:vendors',
+                'ifsc_code' => 'required|min:11'
             );
             $validator = Validator::make($request->all(), $rules);
 
