@@ -7,9 +7,13 @@ use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
 use App\Models\Location;
+use App\Models\PaymentHistory;
+use App\Models\PaymentRequest;
 use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\VehicleType;
 use App\Models\Vendor;
 use Auth;
 use Config;
@@ -18,15 +22,36 @@ use Excel;
 use Helper;
 use Illuminate\Http\Request;
 use Session;
+use URL;
 use Validator;
 
 class VendorController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
+
+    public function __construct()
+    {
+        $this->title = "Secondary Reports";
+        $this->segment = \Request::segment(2);
+    }
+
     public function index()
     {
         $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        $query = Vendor::query();
+        $query = $query->with('DriverDetail', 'Branch');
+        if ($authuser->role_id == 2) {
+            $query = $query->whereIn('branch_id', $cc);
+        } else {
+            $query = $query;
+        }
+        $vendors = $query->get();
 
-        $vendors = Vendor::with('DriverDetail')->get();
         return view('vendors.vendor-list', ['prefix' => $this->prefix, 'vendors' => $vendors]);
     }
     public function create()
@@ -54,13 +79,11 @@ class VendorController extends Controller
     public function store(Request $request)
     {
         try {
-            // echo'<pre>';print_r($request->all()); die;
             DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
-                'name' => 'required',
-                'transporter_name' => 'required',
+                'name' => 'required|unique:vendors',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -69,7 +92,16 @@ class VendorController extends Controller
                 $response['success'] = false;
                 $response['validation'] = false;
                 $response['formErrors'] = true;
-                $response['errors'] = $errors;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+            /// pan check
+            $pancheck = Vendor::where('vendor_type', $request->vendor_type)->where('pan', $request->pan)->first();
+            if ($pancheck) {
+
+                $response['success'] = false;
+                $response['pan_check'] = true;
+                $response['errors'] = "Pan no. and vendor type already exists";
                 return response()->json($response);
             }
 
@@ -96,15 +128,23 @@ class VendorController extends Controller
             } else {
                 $decl_file = null;
             }
+            /////declaration file check
+            if ($request->decalaration_available == 1) {
+                if (empty($decl_file)) {
+                    $response['success'] = false;
+                    $response['decl_check'] = true;
+                    $response['errors'] = "please upload declaration file";
+                    return response()->json($response);
+                }
+            }
 
-            $no_of_digit = 5;
             $vendor = DB::table('vendors')->select('vendor_no')->latest('vendor_no')->first();
             $vendor_no = json_decode(json_encode($vendor), true);
             if (empty($vendor_no) || $vendor_no == null) {
-                $vendor_no['vendor_no'] = 0;
+                $vendor_no = 10101;
+            } else {
+                $vendor_no = $vendor_no['vendor_no'] + 1;
             }
-            $number = $vendor_no['vendor_no'] + 1;
-            $vendor_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
             $bankdetails = array('acc_holder_name' => $request->acc_holder_name, 'account_no' => $request->account_no, 'ifsc_code' => $request->ifsc_code, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name);
 
@@ -133,7 +173,7 @@ class VendorController extends Controller
             $savevendor = Vendor::create($vendorsave);
 
             if ($savevendor) {
-                $url = $this->prefix . '/consignments';
+                $url = $this->prefix . '/vendor-list';
                 $response['success'] = true;
                 $response['success_message'] = "Vendor Added successfully";
                 $response['error'] = false;
@@ -157,6 +197,7 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
+
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -169,6 +210,7 @@ class VendorController extends Controller
         $query = TransactionSheet::query();
 
         if ($request->ajax()) {
+
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
@@ -183,23 +225,22 @@ class VendorController extends Controller
             $date = Helper::yearmonthdate($lastsevendays);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            // $query = $query
-            //     ->with('ConsignmentDetail')
-            //     ->groupBy('drs_no');
-
             $query = $query->whereIn('status', ['1', '0', '3'])
+                ->where('request_status', 0)
+                ->where('payment_status', '=', 0)
                 ->groupBy('drs_no');
 
             if ($authuser->role_id == 1) {
                 $query = $query->with('ConsignmentDetail');
             } elseif ($authuser->role_id == 4) {
                 $query = $query
+                    ->with('ConsignmentDetail.vehicletype')
                     ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                         $query->whereIn('regclient_id', $regclient);
                     });
             } elseif ($authuser->role_id == 5) {
                 $query = $query->with('ConsignmentDetail');
-            }elseif ($authuser->role_id == 6) {
+            } elseif ($authuser->role_id == 6) {
                 $query = $query
                     ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
                         $query->whereIn('base_clients.id', $baseclient);
@@ -210,7 +251,6 @@ class VendorController extends Controller
                         $query->whereIn('id', $regclient);
                     });
             } else {
-
                 $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
             }
 
@@ -218,12 +258,13 @@ class VendorController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        });
+                    $query->where('vehicle_no', 'like', '%' . $search . '%');
 
                 });
+            }
+
+            if (isset($request->vehicle_no)) {
+                $query = $query->where('vehicle_no', $request->vehicle_no);
             }
 
             if ($request->peritem) {
@@ -258,12 +299,15 @@ class VendorController extends Controller
         //     ->groupBy('drs_no');
 
         $query = $query->whereIn('status', ['1', '0', '3'])
+            ->where('request_status', 0)
+            ->where('payment_status', '=', 0)
             ->groupBy('drs_no');
 
         if ($authuser->role_id == 1) {
             $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
             $query = $query
+                ->with('ConsignmentDetail.vehicletype')
                 ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                     $query->whereIn('regclient_id', $regclient);
                 });
@@ -286,20 +330,38 @@ class VendorController extends Controller
 
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());
-
+        $vehicles = Vehicle::select('id', 'regn_no')->get();
+        $vehicletype = VehicleType::select('id', 'name')->get();
         $vendors = Vendor::all();
-        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem]);
+        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype]);
 
     }
 
     public function getdrsdetails(Request $request)
     {
 
-        $drs = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $request->drsno)->first();
+        $drs = TransactionSheet::with('ConsignmentDetail')->whereIn('drs_no', $request->drs_no)->first();
+
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
+
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
+        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
+
+        $total_lr = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->count();
+
+        if ($total_deldate == $total_lr) {
+            $status = "Successful";
+        } elseif ($total_lr == $total_empty) {
+            $status = "Started";
+        } else {
+            $status = "Partial Delivered";
+        }
 
         $response['get_data'] = $drs;
+        $response['status'] = $status;
         $response['success'] = true;
-        $response['error_message'] = "Can not find data";
+        $response['error_message'] = "find data";
         return response()->json($response);
     }
 
@@ -323,10 +385,11 @@ class VendorController extends Controller
     public function createPaymentRequest(Request $request)
     {
 
+        $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments',
+            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -335,23 +398,21 @@ class VendorController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => "[{
-                \"unique_code\": \"$request->vendor_no\",
-                \"name\": \"$request->name\",
-                \"acc_no\": \"$request->acc_no\",
-                \"beneficiary_name\": \"$request->beneficiary_name\",
-                \"ifsc\": \"$request->ifsc\",
-                \"bank_name\": \"$request->bank_name\",
-                \"baddress\": \"$request->branch_name\",
-                \"payable_amount\": \"$request->payable_amount\",
-                \"claimed_amount\": \"$request->claimed_amount\",
-                \"ax_id\": \"$request->drs_no\",
-                \"pfu\": \"$pfu\",
-                \"ax_voucher_code\": \"$request->drs_no\",
-                \"txn_route\": \"DRS\",
-                \"ptype\": \"$request->p_type\",
-                \"email\": \"$request->email\",
-                \"terid\": \"$request->drs_no\"
-                }]",
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$request->email\",
+            \"terid\": \"$request->transaction_id\",
+            \"txn_route\": \"DRS\"
+            }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
             ),
@@ -359,9 +420,75 @@ class VendorController extends Controller
 
         $response = curl_exec($curl);
         curl_close($curl);
-        // $res_data = json_decode($response);
-        echo $response;
+        $res_data = json_decode($response);
+        // $cc = 'success';
+        // ============== Success Response
+        if ($res_data->message == 'success') {
 
+            if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
+
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->payable_amount;
+                } else {
+                    $balance = 0;
+                }
+                $advance = $getadvanced->advanced + $request->payable_amount;
+
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+
+                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $advance;
+                $paymentresponse['balance'] = $balance;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
+            } else {
+
+                $balance_amt = $request->claimed_amount - $request->payable_amount;
+                //======== Payment History save =========//
+                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->payable_amount;
+                $paymentresponse['balance'] = $balance_amt;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
+
+                TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
+            }
+
+            $new_response['success'] = true;
+            $new_response['message'] = $res_data->message;
+
+        } else {
+
+            $new_response['message'] = $res_data->message;
+            $new_response['success'] = false;
+
+        }
+
+        return response()->json($new_response);
     }
 
     public function view_vendor_details(Request $request)
@@ -383,7 +510,7 @@ class VendorController extends Controller
 
             foreach ($simpl as $lr) {
 
-                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price]);
+                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price, 'vehicle_type' => $request->vehicle_type]);
 
             }
             $response['success'] = true;
@@ -453,12 +580,12 @@ class VendorController extends Controller
     public function viewdrsLr(Request $request)
     {
 
-         $id = $_GET['drs_lr'];
-         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
-         ->whereHas('ConsignmentDetail', function ($query){
-            $query->where('status', '1');
-        })
-         ->orderby('order_no', 'asc')->get();
+        $id = $_GET['drs_lr'];
+        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
+            ->whereHas('ConsignmentDetail', function ($query) {
+                $query->where('status', '1');
+            })
+            ->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
 
         $response['fetch'] = $result;
@@ -488,26 +615,25 @@ class VendorController extends Controller
             $branchs = Location::select('id', 'name')->get();
         }
 
-        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor, 'drivers' => $drivers,'branchs' => $branchs]);
+        return view('vendors.edit-vendor', ['prefix' => $this->prefix, 'getvendor' => $getvendor, 'drivers' => $drivers, 'branchs' => $branchs]);
     }
 
     public function updateVendor(Request $request)
     {
-        try { 
+        try {
 
             $this->prefix = request()->route()->getPrefix();
-             $rules = array(
-              'name' => 'required',
+            $rules = array(
+                'name' => 'required',
             );
 
-            $validator = Validator::make($request->all(),$rules);
+            $validator = Validator::make($request->all(), $rules);
 
-            if($validator->fails())
-            {
-                $errors                  = $validator->errors();
-                $response['success']     = false;
-                $response['formErrors']  = true;
-                $response['errors']      = $errors;
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['formErrors'] = true;
+                $response['errors'] = $errors;
                 return response()->json($response);
             }
 
@@ -532,18 +658,300 @@ class VendorController extends Controller
             $vendorsave['branch_id'] = $request->branch_id;
             $vendorsave['gst_register'] = $request->gst_register;
             $vendorsave['gst_no'] = $request->gst_no;
-            
-            Vendor::where('id',$request->vendor_id)->update($vendorsave);
+
+            Vendor::where('id', $request->vendor_id)->update($vendorsave);
 
             $response['success'] = true;
             $response['success_message'] = "Vendor Updated Successfully";
             $response['error'] = false;
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             $response['error'] = false;
             $response['error_message'] = $e;
             $response['success'] = false;
         }
         return response()->json($response);
-      
+
     }
+    // ==================CreatePayment Request =================
+    public function createPaymentRequestVendor(Request $request)
+    {
+
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = $authuser->branch_id;
+        $user = $authuser->id;
+        // dd($user);
+        $drsno = explode(',', $request->drs_no);
+        $consignment = TransactionSheet::whereIn('drs_no', $drsno)
+            ->groupby('drs_no')
+            ->get();
+
+        $simplyfy = json_decode(json_encode($consignment), true);
+        $no_of_digit = 7;
+        $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
+        $transaction_id = json_decode(json_encode($transactionId), true);
+        if (empty($transaction_id) || $transaction_id == null) {
+            $transaction_id['transaction_id'] = 0;
+        }
+        $number = $transaction_id['transaction_id'] + 1;
+
+        $i = 0;
+        foreach ($simplyfy as $value) {
+            $i++;
+            $transaction_id = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+            $drs_no = $value['drs_no'];
+            $vendor_id = $request->vendor_name;
+            $vehicle_no = $value['vehicle_no'];
+
+            if ($request->p_type == 'Advance') {
+                $balance_amt = $request->claimed_amount - $request->pay_amt;
+
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+            } else {
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->pay_amt;
+                } else {
+                    $balance = 0;
+                }
+                $advance = $request->pay_amt;
+                // dd($advance);
+
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+            }
+
+        }
+
+        TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
+        // ============== Sent to finfect
+        $pfu = 'ETF';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->v_name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$request->email\",
+            \"terid\": \"$transaction_id\",
+            \"txn_route\": \"DRS\"
+            }]",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res_data = json_decode($response);
+        // ============== Success Response
+        // $cs = 'success' ;
+        if ($res_data->message == 'success') {
+
+            if ($request->p_type == 'Fully') {
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->pay_amt;
+                } else {
+                    $balance = 0;
+                }
+                $advance = $request->pay_amt;
+
+                TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+
+                PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+
+                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $advance;
+                $paymentresponse['balance'] = $balance;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
+            } else {
+
+                $balance_amt = $request->claimed_amount - $request->pay_amt;
+                //======== Payment History save =========//
+                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->pay_amt;
+                $paymentresponse['balance'] = $balance_amt;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+                PaymentRequest::where('transaction_id', $transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+
+                TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+            }
+
+            $new_response['success'] = true;
+            $new_response['message'] = $res_data->message;
+
+        } else {
+
+            $new_response['message'] = $res_data->message;
+            $new_response['success'] = false;
+
+        }
+
+        $url = $this->prefix . '/request-list';
+        $new_response['redirect_url'] = $url;
+        $new_response['success_message'] = "Data Imported successfully";
+
+        return response()->json($new_response);
+
+    }
+
+    public function requestList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+
+        if ($authuser->role_id == 2) {
+            $requestlists = PaymentRequest::with('VendorDetails')
+                ->where('branch_id', $cc)
+                ->groupBy('transaction_id')
+                ->get();
+        } else {
+            $requestlists = PaymentRequest::with('VendorDetails')
+                ->groupBy('transaction_id')
+                ->get();
+        }
+
+        $vendors = Vendor::all();
+        $vehicletype = VehicleType::select('id', 'name')->get();
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
+    }
+
+    public function getVendorReqDetails(Request $request)
+    {
+        $req_data = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)
+            ->groupBy('transaction_id')->get();
+
+        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)
+            ->get();
+        $simply = json_decode(json_encode($getdrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['drs_no'];
+        }
+        $drs_no = implode(',', $store);
+// ==================================
+        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $store)->get();
+
+        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
+        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
+        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
+
+        $total_lr = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->count();
+
+        if ($total_deldate == $total_lr) {
+            $status = "Successful";
+        } elseif ($total_lr == $total_empty) {
+            $status = "Started";
+        } else {
+            $status = "Partial Delivered";
+        }
+
+        $response['status'] = $status;
+        $response['req_data'] = $req_data;
+        $response['drs_no'] = $drs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+    }
+
+    public function showDrs(Request $request)
+    {
+        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)->get();
+        // dd($request->transaction_id);
+
+        $response['getdrs'] = $getdrs;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+    }
+
+    public function editPurchasePrice(Request $request)
+    {
+        $drs_price = TransactionSheet::with('ConsignmentDetail')->where('drs_no', $request->drs_no)->first();
+        $vehicletype = VehicleType::select('id', 'name')->get();
+
+        $response['drs_price'] = $drs_price;
+        $response['vehicletype'] = $vehicletype;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+    }
+
+    public function updatePurchasePriceVehicleType(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
+            $simpl = json_decode(json_encode($getlr), true);
+
+            foreach ($simpl as $lr) {
+
+                ConsignmentNote::where('id', $lr['consignment_no'])->where('status', '!=', 0)->update(['purchase_price' => $request->purchase_price, 'vehicle_type' => $request->vehicle_type]);
+
+            }
+            $response['success'] = true;
+            $response['success_message'] = "Price Added successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
+
+    public function getBalanceAmount(Request $request)
+    {
+        $getbalance = PaymentRequest::where('transaction_id', $request->transaction_id)->first();
+
+        $response['getbalance'] = $getbalance;
+        $response['success'] = true;
+        $response['success_message'] = "get balance";
+        return response()->json($response);
+    }
+    
 }

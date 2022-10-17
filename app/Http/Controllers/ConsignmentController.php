@@ -80,7 +80,7 @@ class ConsignmentController extends Controller
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
 
-            $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+            $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
 
             if($authuser->role_id ==1){
                 $query;
@@ -92,10 +92,10 @@ class ConsignmentController extends Controller
                 $query = $query->whereIn('base_clients.id', $baseclient);
             }
             elseif($authuser->role_id ==7){
-                $query = $query->whereIn('regional_clients.id', $regclient);
+                $query = $query->whereIn('regclient_id', $regclient);
             }
             else{
-                $query = $query->whereIn('consignment_notes.branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc);
             }
 
             if(!empty($request->search)){
@@ -147,7 +147,7 @@ class ConsignmentController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
-        $query = $query->where('consignment_notes.status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+        $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
 
         if($authuser->role_id ==1){
             $query;
@@ -159,10 +159,10 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('base_clients.id', $baseclient);
         }
         elseif($authuser->role_id ==7){
-            $query = $query->whereIn('regional_clients.id', $regclient);
+            $query = $query->whereIn('regclient_id', $regclient);
         }
         else{
-            $query = $query->whereIn('consignment_notes.branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
@@ -2523,7 +2523,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['consigner_detail']['get_zone']['state'] != null) {
+                if ($data['consigner_detail']['get_zone'] != null) {
                     $district = $data['consigner_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
@@ -2576,7 +2576,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['consignee_detail']['get_zone']['state'] != null) {
+                if ($data['consignee_detail']['get_zone'] != null) {
                     $district = $data['consignee_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
@@ -2630,7 +2630,7 @@ class ConsignmentController extends Controller
                 } else {
                     $city = '';
                 }
-                if ($data['shipto_detail']['get_zone']['state'] != null) {
+                if ($data['shipto_detail']['get_zone'] != null) {
                     $district = $data['shipto_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
@@ -2688,7 +2688,7 @@ class ConsignmentController extends Controller
                     } elseif ($pdf == 4) {
                         $type = 'QUADRUPLE';
                     }
-        if(!empty($data['consigner_detail']['get_zone']['state'])){
+        if(!empty($data['consigner_detail']['get_zone'])){
             $cnr_state = $data['consigner_detail']['get_zone']['state'];
         }
         else{
@@ -4000,25 +4000,25 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    public function invoiceCheck(Request $request)
-    {
-        $invoice_check = Consignmentitem::where('invoice_no', $request->invc_no)->first();
+    // public function invoiceCheck(Request $request)
+    // {
+    //     $invoice_check = Consignmentitem::where('invoice_no', $request->invc_no)->first();
         
-        if(isset($request->invc_no)){
-            if (isset($invoice_check)) {
-                $response['success'] = true;
-                $response['invc_check'] = true;
-                $response['errors'] = "Invoice no already exist";
-                return response()->json($response);
-            }
-            $response['success'] = false;
-            $response['invc_check'] = false;
-            return response()->json($response);
-        }
-        $response['success'] = false;
-        $response['invc_check'] = false;
-        return response()->json($response);
-    }
+    //     if(isset($request->invc_no)){
+    //         if (isset($invoice_check)) {
+    //             $response['success'] = true;
+    //             $response['invc_check'] = true;
+    //             $response['errors'] = "Invoice no already exist";
+    //             return response()->json($response);
+    //         }
+    //         $response['success'] = false;
+    //         $response['invc_check'] = false;
+    //         return response()->json($response);
+    //     }
+    //     $response['success'] = false;
+    //     $response['invc_check'] = false;
+    //     return response()->json($response);
+    // }
 
 
 }

@@ -1849,16 +1849,37 @@ $('#vendor-master').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var v_name = $('#vendor_name').val();
+    var trans_name = $('#transporter_name').val();
+    var vendor_type = $('#vendor_type').val();
+    var acc_holder_name = $('#acc_holder_name').val();
     var acc_no = $('#account_no').val();
+    var ifsc = $('#ifsc').val();
+    var pan_no = $('#pan_no').val();
+    
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
+        return false;
+    }
+    if (!vendor_type) {
+        swal("Error!", "Please Select Vendor Type", "error");
+        return false;
+    }
+    if (!acc_holder_name) {
+        swal("Error!", "Please Enter Account holder Number", "error");
         return false;
     }
     if (!acc_no) {
         swal("Error!", "Please Enter Account Number", "error");
         return false;
     }
-
+    if (!ifsc) {
+        swal("Error!", "Please Enter Ifsc Code", "error");
+        return false;
+    }
+    if (!pan_no) {
+        swal("Error!", "Please Enter Ifsc Code", "error");
+        return false;
+    }
     $.ajax({
         url: "add-vendor",
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1873,6 +1894,13 @@ $('#vendor-master').submit(function (e) {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
                 $('#vendor-master')[0].reset();
+                window.location.href = data.redirect_url;
+            }else if(data.validation === false){
+                swal('error', data.error_message.name[0], 'error');
+            }else if(data.pan_check === true){
+                swal('error', data.errors, 'error');
+            }else if(data.decl_check === true){
+                swal('error', data.errors, 'error');
             } else {
                 swal('error', data.error_message, 'error');
             }
@@ -1884,6 +1912,12 @@ $('#vendor-master').submit(function (e) {
 $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
+    var tds_rate = $('#tds_rate').val();
+
+    if(!tds_rate){
+        swal('Error','please add tds rate in vendor','error');
+        return false;
+    }
 
     $.ajax({
         url: "create-payment",
@@ -1893,12 +1927,19 @@ $('#payment_form').submit(function (e) {
         processData: false,
         contentType: false,
         beforeSend: function () {
-
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
         },
         success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if(data.success == true){
 
-            swal('success', 'Request Sent Successfully', 'success')
+            swal('success', data.message, 'success')
             $('#payment_form')[0].reset();
+            }else{
+                swal('error', data.message ,'error');
+            }
 
         }
     });
@@ -2104,3 +2145,64 @@ $('#update_vendor').validate({
                 }
             }); 
         });
+
+        ////////////////// reate Drs Payment Request ////////////
+$('#create_request_form').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var vendor = $('#vendor_id_1').val();
+    if(!vendor)
+    {
+        swal('Error!', 'Please select a vendor','error');
+        return false;
+    }
+    var base_url = window.location.origin;
+    $.ajax({
+        url: "create-payment_request",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+            if(data.success == true){
+
+            swal('success', data.message, 'success')
+            window.location.href = data.redirect_url;
+            
+            }else{
+                swal('error', data.message ,'error');
+            }
+
+        }
+    });
+});
+//////////////////Update Purchase Price////////////
+$('#update_purchase_amt_form').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-purchas-price-vehicle-type",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});

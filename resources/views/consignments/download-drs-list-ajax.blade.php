@@ -1,4 +1,4 @@
-<?php  $authuser = Auth::user(); ?>
+<?php $authuser = Auth::user();?>
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
@@ -12,20 +12,21 @@
                 <th>Action</th>
                 <th>Delivery Status</th>
                 <th>DRS Status</th>
+                <th>Payment Status</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
             @if(count($transaction)>0)
             @foreach($transaction as $trns)
-            <?php 
+            <?php
 
-            $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
-            $date->setTimezone(new DateTimeZone('IST'));
-            $getdeldate =  Helper::getdeleveryStatus($trns->drs_no) ?? "" ;
-            $new =  Helper::oldnewLr($trns->drs_no) ?? "" ;
-            $lr = Helper::deliveryDate($trns->drs_no);
+$date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
+$date->setTimezone(new DateTimeZone('IST'));
+$getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
+$new = Helper::oldnewLr($trns->drs_no) ?? "";
+$lr = Helper::deliveryDate($trns->drs_no);
 
-            ?>
+?>
             <tr>
                 <td>DRS-{{$trns->drs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
@@ -34,61 +35,77 @@
                 <td>{{$trns->driver_no}}</td>
                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
                 <!-- action button -->
-                <?php 
-                if($trns->status == 0){?>
+                <?php
+if ($trns->status == 0) {?>
                 <td>
-                    <label class="badge badge-dark">Cancelled</label></td>
-                <?php }else{?>
+                    <label class="badge badge-dark">Cancelled</label>
+                </td>
+                <?php } else {?>
                 <td>
-                    <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)){ ?>
+                    <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
                     <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Draft</button>
                     <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Save</button>
-                    <?php } ?>
-                    <?php if(!empty($trns->vehicle_no)){
-                        if(!empty($new)){
-                    ?>
+                    <?php }?>
+                    <?php if (!empty($trns->vehicle_no)) {
+    if (!empty($new)) {
+        ?>
                     <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
                         role="button">Print</a>
-                    <?php }else {?>
+                    <?php } else {?>
                     <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}"
                         role="button">Print</a>
-                    <?php } } ?>
-                    <?php  
-                                    if($trns->delivery_status == 'Unassigned'){?>
+                    <?php }}?>
+                    <?php
+if ($trns->delivery_status == 'Unassigned') {?>
                     <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Unassigned</button>
-                    <?php }elseif($lr == 0){ ?>
+                    <?php } elseif ($lr == 0) {?>
                     <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Assigned</button>
-                    <?php } ?>
+                    <?php }?>
                 </td>
-                <?php } ?>
+                <?php }?>
                 <!------- end Action ---- -->
                 <!-- delivery Status ---- -->
 
                 <td>
-                    <?php if($trns->status == 0){?>
+                    <?php if ($trns->status == 0) {?>
                     <label class="badge badge-dark">Cancelled</label>
-                    <?php } else { ?>
-                    <?php if(empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) { ?>
+                    <?php } else {?>
+                    <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
                     <label class="badge badge-warning">No Status</label>
-                    <?php }else{ ?>
+                    <?php } else {?>
                     <a class="drs_cancel btn btn-success" drs-no="{{$trns->drs_no}}" data-text="consignment"
                         data-status="0"
-                        data-action="<?php echo URL::current();?>"><span>{{ Helper::getdeleveryStatus($trns->drs_no) }}</span></a>
-                    <?php } ?>
-                    <?php } ?>
+                        data-action="<?php echo URL::current(); ?>"><span>{{ Helper::getdeleveryStatus($trns->drs_no) }}</span></a>
+                    <?php }?>
+                    <?php }?>
                 </td>
                 <!-- END Delivery Status  -------------  -->
                 <!-- DRS STATUS --------------->
-                <?php if($trns->status == 0){?>
+                <?php if ($trns->status == 0) {?>
                 <td><label class="badge badge-dark">Cancelled</label></td>
-                <?php }else{?>
+                <?php } else {?>
                 <td><a class="active_drs btn btn-success" drs-no="{{$trns->drs_no}}"><span><i
                                 class="fa fa-check-circle-o"></i> Active</span></a></td>
-                <?php } ?>
+                <?php }?>
+                <!-- ------- payment status -->
+                <?php if ($trns->payment_status == 0) {
+              ?>
+                <td><label class="badge badge-dark">Unpaid</label></td>
+                <?php } else if ($trns->payment_status == 1) {?>
+                <td><label class="badge badge-success">Paid</label></td>
+                <?php } elseif ($trns->payment_status == 2) {?>
+                <td><label class="badge badge-dark">Sent to finfect</label></td>
+                <?php } elseif ($trns->payment_status == 3) {?>
+                <td><label class="badge badge-dark">Partial Paid</label></td>
+                <?php } else {?>
+                <td><label class="badge badge-dark">unknown</label></td>
+                <?php }?>
+
+                <!-- end payment status -->
 
             </tr>
 

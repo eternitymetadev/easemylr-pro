@@ -128,7 +128,7 @@ class ReportController extends Controller
             }
 
             $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
-            $consignments = $consignments->appends($request->query());
+            // $consignments = $consignments->appends($request->query());
 
             return response()->json(['html' => $html]);
         }

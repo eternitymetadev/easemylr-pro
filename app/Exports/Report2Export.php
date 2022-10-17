@@ -54,6 +54,17 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+            'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
+            'ConsignerDetail.Zone:id,state',
+            'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            'ConsigneeDetail.Zone:id,state',
+            'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
+            'ShiptoDetail.Zone:id,state',
+            'VehicleDetail:id,regn_no', 
+            'DriverDetail:id,name,fleet_id,phone', 
+            'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
+            'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
+            'VehicleType:id,name'
         );
 
         if($authuser->role_id ==1)

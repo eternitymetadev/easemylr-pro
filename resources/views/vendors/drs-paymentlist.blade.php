@@ -46,6 +46,28 @@ div.relative {
 .move {
     cursor: move;
 }
+.has-details {
+  position: relative;
+}
+
+.details {
+  position: absolute;
+  top: 0;
+  transform: translateY(70%) scale(0);
+  transition: transform 0.1s ease-in;
+  transform-origin: left;
+  display: inline;
+  background: white;
+  z-index: 20;
+  min-width: 100%;
+  padding: 1rem;
+  border: 1px solid black;
+}
+
+.has-details:hover span {
+  transform: translateY(70%) scale(1);
+}
+
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -67,15 +89,31 @@ div.relative {
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
+               
+                <div class="form-row mb-0">
+                <div class="form-group col-md-4">
                 <?php $authuser = Auth::user();
                 if ($authuser->role_id == 2) {?>
-                <button type="button" class="btn btn-warning mt-4 ml-4 payment">Create Payment</button>
+                <button type="button" class="btn btn-warning mt-4 ml-4 payment" style="font-size: 12px;">Create Payment</button>
                 <?php }?>
-                <div class="table-responsive mb-4 mt-4">
-                    @csrf
-                    <div class="main-table table-responsive">
-                        @include('vendors.drs-paymentlist-ajax')
+                </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" placeholder="Vehicle Number Search" id="search"
+                                                data-action="<?php echo url()->current(); ?>">
                     </div>
+                    <div class="form-group col-md-4">
+                    <div class="winery_btn_n btn-section px-0 text-right">
+                        <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                            style="font-size: 15px; padding: 9px; width: 130px"
+                            data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset
+                                Filters</span></a>
+                    </div>
+                </div>
+                </div>
+
+                @csrf
+                <div class="main-table table-responsive">
+                    @include('vendors.drs-paymentlist-ajax')
                 </div>
             </div>
         </div>
@@ -84,10 +122,26 @@ div.relative {
 @include('models.payment-model')
 @endsection
 @section('js')
-<script>
-$(document).on('click', '.payment', function() {
-    $('#payment_form')[0].reset();
+<script> 
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
 
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
+$(document).on('click', '.payment', function() {
+    $('#create_request_form')[0].reset();
+    $('#p_type_1').empty();
+    $('#pymt_modal').modal('show');
     var drs_no = [];
     var tdval = [];
     $(':checkbox[name="checked_drs[]"]:checked').each(function() {
@@ -95,26 +149,45 @@ $(document).on('click', '.payment', function() {
         var cc = $(this).attr('data-price');
         tdval.push(cc);
     });
-    $('#drs_no').val(drs_no);
+
+    $('#drs_no_1').val(drs_no);
+  
     var toNumbers = tdval.map(Number);
     var sum = toNumbers.reduce((x, y) => x + y);
-    $('#purchase_amount').val(sum);
+    $('#total_clam_amt_1').val(sum);
 
-    $('#pymt_modal').modal('show');
     $.ajax({
         type: "GET",
         url: "get-drs-details",
         data: {
-            drsno: drsno
+            drs_no: drs_no
         },
         beforeSend: //reinitialize Datatables
             function() {
 
             },
         success: function(data) {
-            // console.log(data.get_data.consignment_detail.purchase_price);
-            $('#drs_no').val(data.get_data.drs_no);
-            $('#purchase_amount').val(data.get_data.consignment_detail.purchase_price);
+
+            if (data.status == 'Successful') {
+                $('#p_type_1').append('<option value="Balance">Balance</option>');
+                //check balance if null or delevery successful
+                   var total = $('#total_clam_amt_1').val();
+
+                     $('#amt_1').val(total);
+
+                     var amt = $('#amt_1').val();
+                    var tds_rate = $('#tds_rate_1').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut_1').val(final_amt);
+                    jQuery('#amt_1').prop('disabled', true);
+            } else {
+                $('#p_type_1').append(
+                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Fully">Fully Payment</option>'
+                    );
+            }
+
+            
 
         }
 
@@ -122,7 +195,7 @@ $(document).on('click', '.payment', function() {
 
 });
 // ============================================================== //
-$('#vendor').change(function() {
+$('#vendor_id_1').change(function() {
     var vendor_id = $(this).val();
 
     $.ajax({
@@ -137,30 +210,41 @@ $('#vendor').change(function() {
         dataType: 'json',
         beforeSend: function() {
 
-
+            $('#tds_dedut').val('');
         },
         success: function(res) {
             if (res.success === true) {
                 jQuery('#crt_pytm').prop('disabled', false);
                 var simp = jQuery.parseJSON(res.vendor_details.bank_details);
-                $('#bank_acc').val(simp.account_no);
-                $('#ifsc_code').val(simp.ifsc_code);
-                $('#bank_name').val(simp.bank_name);
-                $('#branch_name').val(simp.branch_name);
-                $('#vendor_no').val(res.vendor_details.vendor_no);
-                $('#name').val(res.vendor_details.name);
-                $('#beneficiary_name').val(res.vendor_details.name);
-                $('#email').val(res.vendor_details.email);
+                $('#bank_acc_1').val(simp.account_no);
+                $('#ifsc_code_1').val(simp.ifsc_code);
+                $('#bank_name_1').val(simp.bank_name);
+                $('#branch_name_1').val(simp.branch_name);
+                $('#vendor_no_1').val(res.vendor_details.vendor_no);
+                $('#name_1').val(res.vendor_details.name);
+                $('#beneficiary_name_1').val(res.vendor_details.name);
+                $('#email_1').val(res.vendor_details.email);
+                $('#tds_rate_1').val(res.vendor_details.tds_rate);
+
+                //calculate
+                var amt = $('#amt_1').val();
+
+                var tds_rate = $('#tds_rate_1').val();
+                var cal = (tds_rate / 100) * amt;
+                var final_amt = amt - cal;
+                $('#tds_dedut_1').val(final_amt);
+
             } else {
-                $('#bank_acc').val('');
-                $('#ifsc_code').val('');
-                $('#bank_name').val('');
-                $('#branch_name').val('');
-                $('#vendor_no').val('');
-                $('#name').val('');
-                $('#beneficiary_name').val('');
-                $('#email').val('');
-                jQuery('#crt_pytm').prop('disabled', true);
+                $('#bank_acc_1').val('');
+                $('#ifsc_code_1').val('');
+                $('#bank_name_1').val('');
+                $('#branch_name_1').val('');
+                $('#vendor_no_1').val('');
+                $('#name_1').val('');
+                $('#beneficiary_name_1').val('');
+                $('#email_1').val('');
+                $('#tds_rate_1').val('');
+                jQuery('#crt_pytm_1').prop('disabled', true);
                 swal('error', 'account not verified', 'error');
             }
 
@@ -180,15 +264,14 @@ $(document).on('click', '.drs_lr', function() {
         data: {
             drs_lr: drs_lr
         },
-        beforeSend: 
-            function() {
-                $('#save-DraftSheet').dataTable().fnClearTable();
-                $('#save-DraftSheet').dataTable().fnDestroy();
-                $("#total_boxes").empty();
-                $("#totalweights").empty();
-                $("#totallr").empty();
-               
-            },
+        beforeSend: function() {
+            $('#view_drs_lrtable').dataTable().fnClearTable();
+            $('#view_drs_lrtable').dataTable().fnDestroy();
+            $("#total_boxes").empty();
+            $("#totalweights").empty();
+            $("#totallr").empty();
+
+        },
         success: function(data) {
             var re = jQuery.parseJSON(data)
             console.log(re);
@@ -206,19 +289,14 @@ $(document).on('click', '.drs_lr', function() {
                 totalweights += parseInt(value.consignment_detail.total_weight);
 
 
-                $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value.id +
-                    "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
-                    value.consignment_no +
-                    ">Edit</a></td><td><input type='date' name='edd[]' data-id=" + value
-                    .consignment_no + " class='new_edd' value='" + value
-                    .consignment_detail.edd + "'></td><td>" + value.consignment_no +
+                $('#view_drs_lrtable tbody').append("<tr id=" + value.id +
+                    "><td>" + value.consignment_no +
                     "</td><td>" + value.consignment_date + "</td><td>" + value
                     .consignee_id + "</td><td>" + value.city + "</td><td>" + value
                     .pincode + "</td><td>" + value.total_quantity + "</td><td>" + value
                     .total_weight + "</td></tr>");
             });
-            $("#transaction_id").val(consignmentID);
-            var rowCount = $("#save-DraftSheet tbody tr").length;
+            var rowCount = $("#view_drs_lrtable tbody tr").length;
 
             $("#total_boxes").append("No Of Boxes: " + totalBoxes);
             $("#totalweights").append("Net Weight: " + totalweights);
@@ -227,43 +305,7 @@ $(document).on('click', '.drs_lr', function() {
         }
     });
 });
-// ====================================================== //
-$('#p_type').change(function() {
-    var p_typ = $(this).val();
-    var purchs_amt = $('#purchase_amount').val();
-    if (p_typ == 'Balance') {
-        $('#amt').val(purchs_amt);
-    } else {
-        $('#amt').val('');
-    }
 
-});
-///
-
-$("#amt").keyup(function() {
-
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
-
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-        swal('error', 'amount must be greater than purchase price', 'error')
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        jQuery('#amt').prop('disabled', true);
-    }
-});
-$("#purchase_amount").keyup(function() {
-    var firstInput = document.getElementById("purchase_amount").value;
-    var secondInput = document.getElementById("amt").value;
-
-    if (parseInt(firstInput) < parseInt(secondInput)) {
-        $('#amt').val('');
-    } else if (parseInt(firstInput) == '') {
-        $('#amt').val('');
-        $('#amt').attr('disabled', 'disabled');
-    }
-});
 /////////////
 ///// check box checked unverified lr page
 jQuery(document).on('click', '#ckbCheckAll', function() {
@@ -294,11 +336,108 @@ jQuery(document).on('click', '.chkBoxClass', function() {
         $('#ckbCheckAll').prop('checked', false);
     }
 });
-// ====================================================== //
+// ====================Add Purchase Price================================== //
 $(document).on('click', '.add_purchase_price', function() {
     var drs_no = $(this).val();
     $('#add_amt').modal('show');
     $('#drs_num').val(drs_no);
 });
+// ====================update Purchase Price================================== //
+$(document).on('click', '.update_purchase_price', function() {
+    var drs_no = $(this).attr('drs-no');
+    $('#edit_amt').modal('show');
+    $.ajax({
+        type: 'get',
+        url: 'edit-purchase-price',
+        data: {
+            drs_no: drs_no
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+
+        },
+        success: function(response) {
+            $('#drs_num_edit').val(response.drs_price.drs_no);
+            $('#purchse_edit').val(response.drs_price.consignment_detail.purchase_price);
+            
+             $("#vehicle_type_edit").val(response.drs_price.consignment_detail.vehicle_type).change();
+
+            
+        }
+    });
+
+    
+});
+// ==================Vehicle search ================
+$('#v_id').change(function() {
+    var vehicle_no = $(this).val();
+
+    $.ajax({
+        type: 'get',
+        url: 'drs-paymentlist',
+        data: {
+            vehicle_no: vehicle_no
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+
+        },
+        success: function(response) {
+            if (response.html) {
+                jQuery('.main-table').html(response.html);
+            }
+        }
+    });
+
+});
+// =============================
+$('#p_type_1').change(function() {
+    var p_type = $(this).val();
+    var total_amt = $("#total_clam_amt_1").val();
+     if(p_type == 'Fully'){
+        $('#amt_1').val(total_amt);
+
+        var amt = $('#amt_1').val();
+        var tds_rate = $('#tds_rate_1').val();
+        var cal = (tds_rate / 100) * amt;
+        var final_amt = amt - cal;
+        $('#tds_dedut_1').val(final_amt);
+
+     }else{
+        $('#amt_1').val('');
+        $('#tds_dedut_1').val('');
+
+     }
+
+});
+// =============================
+$("#amt_1").keyup(function() {
+//  alert('k');
+var firstInput = document.getElementById("total_clam_amt_1").value;
+var secondInput = document.getElementById("amt_1").value;
+
+if (parseInt(firstInput) < parseInt(secondInput)) {
+    $('#amt_1').val('');
+    $('#tds_dedut_1').val('');
+    swal('error', 'amount must be greater than purchase price', 'error')
+} else if (parseInt(firstInput) == '') {
+    $('#amt_1').val('');
+    jQuery('#amt_1').prop('disabled', true);
+}
+// Calculate tds
+var tds_rate = $('#tds_rate_1').val();
+
+var cal = (tds_rate / 100) * secondInput;
+var final_amt = secondInput - cal;
+$('#tds_dedut_1').val(final_amt);
+
+});
+
 </script>
 @endsection
