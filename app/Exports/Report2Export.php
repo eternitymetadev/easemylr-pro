@@ -54,13 +54,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail:regionalclient_id,id,nick_name,city,postal_code,district,state_id',
-            'ConsignerDetail.Zone:id,state',
-            'ConsigneeDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-            'ConsigneeDetail.Zone:id,state',
-            'ShiptoDetail:id,consigner_id,nick_name,city,postal_code,district,state_id',
-            'ShiptoDetail.Zone:id,state',
-            'VehicleDetail:id,regn_no', 
+            'ConsignerDetail.GetZone',
+            'ConsigneeDetail.GetZone',
+            'ShiptoDetail.GetZone',
+            'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
@@ -81,7 +78,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }else {
             $consignments = $query->orderBy('id','ASC')->get();
         }
-
+// echo "<pre>"; print_r($consignments); die;
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
@@ -177,13 +174,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
                     'consignee_city'      => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'  => @$consignment->ConsigneeDetail->Zone->district,
-                    'consignee_state'     => @$consignment->ConsigneeDetail->Zone->state,
+                    'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
+                    'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
                     'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
                     'Ship_to_city'        => @$consignment->ShiptoDetail->city,
                     'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
-                    'Ship_to_district'    => @$consignment->ShiptoDetail->Zone->district,
-                    'Ship_to_state'       => @$consignment->ShiptoDetail->Zone->state,
+                    'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
+                    'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
                     'invoice_no'          => $invno,
                     'invoice_date'        => $invdate,
                     'invoice_amt'         => $invamt,
