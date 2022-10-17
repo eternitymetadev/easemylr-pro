@@ -143,7 +143,7 @@
                     </ul>
                 </li>
                 <?php }
-            }}if($authuser->role_id == 2 || $authuser->role_id ==5){ ?> 
+            }}if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?> 
             <li class="menu single-menu">
                     <a href="#payments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">

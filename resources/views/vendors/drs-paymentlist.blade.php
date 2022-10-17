@@ -93,7 +93,7 @@ div.relative {
                 <div class="form-row mb-0">
                 <div class="form-group col-md-4">
                 <?php $authuser = Auth::user();
-                if ($authuser->role_id == 2) {?>
+                if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <button type="button" class="btn btn-warning mt-4 ml-4 payment" style="font-size: 12px;">Create Payment</button>
                 <?php }?>
                 </div>
