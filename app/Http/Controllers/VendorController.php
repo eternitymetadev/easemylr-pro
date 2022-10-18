@@ -385,6 +385,12 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = $authuser->branch_id;
+        $user = $authuser->id;
+        $branch_name = Location::where('id', '=', $cc)->first();
+
         $url_header = $_SERVER['HTTP_HOST'];
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
@@ -412,6 +418,7 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
@@ -688,8 +695,7 @@ class VendorController extends Controller
         $user = $authuser->id;
 
         $branch_name = Location::where('id', '=', $cc)->first();
-        // dd($branch_name->nick_name);
-        // dd($user);
+
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
             ->groupby('drs_no')
@@ -763,6 +769,7 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$transaction_id_new\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
@@ -777,6 +784,7 @@ class VendorController extends Controller
         $res_data = json_decode($response);
         // ============== Success Response
         // $cs = 'success';
+        // echo'<pre>'; print_r($res_data); die;
         if ($res_data->message == 'success') {
 
             if ($request->p_type == 'Fully') {
