@@ -94,9 +94,9 @@ div.relative {
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
                         <td>{{ $requestlist->balance ?? "-" }}</td>
-                        <?php if($requestlist->payment_status == 2){ ?>
+                        <?php if($requestlist->payment_status == 2 ){ ?>
                         <td><button class="btn btn-warning"
-                                value="{{$requestlist->transaction_id}}" disabled>Create Payment</button></td>
+                                value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
                         <?php } else { ?>
                             <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
@@ -104,16 +104,15 @@ div.relative {
                        
                         <!-- payment Status -->
                         <?php if($requestlist->payment_status == 0){ ?>
-                        <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unpaid</button>
+                        <td> <label class="badge badge-dark">Unpaid</label>
                         </td>
                         <?php } elseif($requestlist->payment_status == 1) { ?>
-                        <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Paid</button> </td>
+                        <td> <label class="badge badge-success">Paid</label> </td>
                         <?php } elseif($requestlist->payment_status == 2) { ?>
-                        <td> <button type="button" class="btn btn-success " style="margin-right:4px;">Sent to Finfect</button>
+                        <td> <label class="badge badge-dark">Sent to Account</label>
                         </td>
                         <?php } elseif($requestlist->payment_status == 3) { ?>
-                        <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Partial
-                                Paid</button> </td>
+                        <td><label class="badge badge-dark">Partial Paid</label></td>
                         <?php } else{?>
                         <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
                         </td>
