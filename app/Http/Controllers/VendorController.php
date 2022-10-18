@@ -35,6 +35,7 @@ class VendorController extends Controller
     {
         $this->title = "Secondary Reports";
         $this->segment = \Request::segment(2);
+        $this->req_link = \Config::get('req_api_link.req');
     }
 
     public function index()
@@ -396,7 +397,7 @@ class VendorController extends Controller
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+            CURLOPT_URL => $this->req_link,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -747,7 +748,7 @@ class VendorController extends Controller
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+            CURLOPT_URL => $this->req_link,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -1023,6 +1024,12 @@ class VendorController extends Controller
             }
         }
         return 1;
+    }
+
+    // ========================= Create Payment Before DRS ================= //
+    public function paymentFormBeforeDrs(Request $request)
+    {
+       dd('payment');
     }
 
 }
