@@ -167,14 +167,23 @@ a.badge.alert.bg-secondary.shadow-sm {
                             </thead>
                             <tbody>
                                 @foreach($consignments as $value)
-                               
                                 <tr>
                                 <td><input type="checkbox" name="checked_lr[]" class="checkLr" value="{{$value->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                     <td>{{$value->id}}</td>
                                     <td>{{$value->consignment_date}}</td>
-                                    <td>{{$value->consigner_nickname ?? '-'}}</td>
-                                    <td>{{$value->consignee_nickname ?? '-'}}</td>
-                                    <td>{{$value->consignee_city ?? '-'}}</td>
+                                    <?php 
+                                    if($value->is_salereturn == 1){
+                                    $cnr_nickname = @$value->ConsigneeDetail->nick_name;
+                                    $cne_nickname = @$value->ConsignerDetail->nick_name;
+                                    $cne_city = @$value->ConsignerDetail->city;
+                                    }else{
+                                    $cnr_nickname = $value->ConsignerDetail->nick_name;
+                                    $cne_nickname = @$value->ConsigneeDetail->nick_name;
+                                    $cne_city = @$value->ConsigneeDetail->city;
+                                    } ?>
+                                    <td>{{$cnr_nickname ?? '-'}}</td>
+                                    <td>{{$cne_nickname ?? '-'}}</td>
+                                    <td>{{$cne_city ?? '-'}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
