@@ -1026,4 +1026,10 @@ class VendorController extends Controller
         return 1;
     }
 
+    // ========================= Create Payment Before DRS ================= //
+    public function paymentFormBeforeDrs(Request $request)
+    {
+       dd('payment');
+    }
+
 }
