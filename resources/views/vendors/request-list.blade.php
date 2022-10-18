@@ -79,6 +79,7 @@ div.relative {
                         <th>Total Amount</th>
                         <th>Adavanced</th>
                         <th>Balance</th>
+                        <th>Branch </th>
                         <th>Create Payment</th>
                         <th>Status</th>
 
@@ -94,6 +95,7 @@ div.relative {
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
                         <td>{{ $requestlist->balance ?? "-" }}</td>
+                        <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
                         <?php if($requestlist->payment_status == 2 ){ ?>
                         <td><button class="btn btn-warning"
                                 value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
