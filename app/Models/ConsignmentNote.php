@@ -13,6 +13,7 @@ class ConsignmentNote extends Model
         'consigner_id',
         'consignee_id',
         'ship_to_id',
+        'is_salereturn',
         'consignment_no',
         'consignment_date',
         'payment_type',

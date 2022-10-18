@@ -88,9 +88,6 @@ class ConsignmentController extends Controller
             elseif($authuser->role_id ==4){
                 $query = $query->whereIn('regclient_id', $regclient);
             }
-            elseif($authuser->role_id ==6){
-                $query = $query->whereIn('base_clients.id', $baseclient);
-            }
             elseif($authuser->role_id ==7){
                 $query = $query->whereIn('regclient_id', $regclient);
             }
@@ -154,9 +151,6 @@ class ConsignmentController extends Controller
         }
         elseif($authuser->role_id ==4){
             $query = $query->whereIn('regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
-            $query = $query->whereIn('base_clients.id', $baseclient);
         }
         elseif($authuser->role_id ==7){
             $query = $query->whereIn('regclient_id', $regclient);
@@ -306,6 +300,7 @@ class ConsignmentController extends Controller
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
+            $consignmentsave['is_salereturn'] = $request->is_salereturn;
             $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
@@ -334,6 +329,7 @@ class ConsignmentController extends Controller
             $saveconsignment = ConsignmentNote::create($consignmentsave);
             $consignment_id = $saveconsignment->id;
            //===================== Create DRS in LR ================================= //
+           
            if(!empty($request->vehicle_id)){
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -731,9 +727,9 @@ class ConsignmentController extends Controller
         $output_file = '/qr-code/img-' . time() . '.svg';
         Storage::disk('public')->put($output_file, $generate_qrcode);
         $fullpath = storage_path('app/public/' . $output_file);
-        //echo'<pre>'; print_r($fullpath);
         //  dd($generate_qrcode);
         $no_invoive = count($data['consignment_items']);
+
         if ($request->typeid == 1) {
             $adresses = '<table width="100%">
                     <tr>
@@ -750,6 +746,48 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+        
+        // relocate cnr cnee address check for sale to return case
+        if($data['is_salereturn'] == '1'){
+            $cnradd_heading = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+            </div>
+            <div style="margin-top: -11px;">
+            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+            '.$consnee_add.'
+            </p>
+            </div>';
+            $cneadd_heading = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                '.$conr_add.'
+            </p>
+            </div>';
+        }else{
+            $cnradd_heading = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+            </div>
+            <div style="margin-top: -11px;">
+            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+            '.$conr_add.'
+            </p>
+            </div>';
+            $cneadd_heading = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                '.$consnee_add.'
+            </p>
+            </div>';
+        }
+
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
@@ -953,26 +991,10 @@ class ConsignmentController extends Controller
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
                                     <td width="30%" style="vertical-align:top; >
-                                        <div class="container">
-                                        <div>
-                                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-                                        </div>
-                                        <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                        '.$conr_add.'
-                                        </p>
-                                        </div>
+                                    '.$cnradd_heading.'
                                     </td>
                                     <td width="30%" style="vertical-align:top;>
-                                    <div class="container">
-                                    <div>
-                                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-                                    </div>
-                                        <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                        '.$consnee_add.'
-                                    </p>
-                                        </div>
+                                    '.$cneadd_heading.'
                                     </td>
                                     <td width="30%" style="vertical-align:top;>
                                     <div class="container">
@@ -1940,7 +1962,6 @@ class ConsignmentController extends Controller
         $total_weight = 0;
 
         foreach ($simplyfy as $dataitem) {
-            //echo'<pre>'; print_r($dataitem); die;
 
             $i++;
             if ($i % 7 == 0) {
@@ -1949,7 +1970,7 @@ class ConsignmentController extends Controller
 
             $total_Boxes += $dataitem['total_quantity'];
             $total_weight += $dataitem['total_weight'];
-            //echo'<pre>'; print_r($dataitem['consignment_no']); die;
+            
             $html .= '
                 <div class="row" style="border: 1px solid black;">
                     <div class="column" style="width:75px;">
@@ -2007,7 +2028,7 @@ class ConsignmentController extends Controller
         ->whereIn('status', ['1', '3'])
         ->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
-        //echo'<pre>'; print_r($simplyfy); die;
+        
         $no_of_deliveries =  count($simplyfy);
         $details = $simplyfy[0]; 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
@@ -2448,29 +2469,26 @@ class ConsignmentController extends Controller
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_nickname', 'consignees.nick_name as consignee_nickname', 'consignees.city as consignee_city', 'consignees.postal_code as consignee_pincode', 'consignees.district as consignee_district')
-        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-        ->where('consignment_notes.status', '!=', 5);
+        $query = ConsignmentNote::query();
+
+        $query = $query->where('status', '!=', 5)
+            ->with('ConsignerDetail','ConsigneeDetail');
 
         if($authuser->role_id ==1){
-            $data;
+            $query;
         }
         elseif($authuser->role_id ==4){
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
-            $data = $data->whereIn('base_clients.id', $baseclient);
+            $query = $query->whereIn('regclient_id', $regclient);
         }
         elseif($authuser->role_id ==7){
-             $data = $data->whereIn('regional_clients.id', $regclient);
+            $query = $query->whereIn('regclient_id', $regclient);
         }
         else{
-            $data = $data->whereIn('consignment_notes.branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
-        $data = $data->orderBy('id', 'DESC');
-        $consignments = $data->get();
-
+        $query = $query->orderBy('id', 'DESC');
+        $consignments = $query->get();
+        
         return view('consignments.bulkLr-view', ['prefix' => $this->prefix, 'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
 
@@ -2489,10 +2507,9 @@ class ConsignmentController extends Controller
 
             $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
             $data = json_decode(json_encode($getdata), true);
-            // echo'<pre>'; print_r($data); die;
+            
     //  ==================================new lr view ==========================  //
             if(empty($data['invoice_no'])){
-               
                 if ($data['consigner_detail']['legal_name'] != null) {
                     $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -2661,20 +2678,40 @@ class ConsignmentController extends Controller
                 //  dd($generate_qrcode);
                 $no_invoive = count($data['consignment_items']);
                 if ($request->typeid == 1) {
-                    $adresses = '<table width="100%">
+                    if($data['is_salereturn']== "1"){
+                        $adresses = '<table width="100%">
+                            <tr>
+                                <td style="width:50%">' . $consnee_add . '</td>
+                                <td style="width:50%">' . $conr_add . '</td>
+                            </tr>
+                        </table>';
+                    }else{
+                        $adresses = '<table width="100%">
                             <tr>
                                 <td style="width:50%">' . $conr_add . '</td>
                                 <td style="width:50%">' . $consnee_add . '</td>
                             </tr>
                         </table>';
+                    }
+                    
                 } else if ($request->typeid == 2) {
-                    $adresses = '<table width="100%">
+                    if($data['is_salereturn']== 1){
+                        $adresses = '<table width="100%">
+                                <tr>
+                                    <td style="width:33%">' . $consnee_add . '</td>
+                                    <td style="width:33%">' . $conr_add . '</td>
+                                    <td style="width:33%">' . $shiptoadd . '</td>
+                                </tr>
+                            </table>';
+                    }else{
+                        $adresses = '<table width="100%">
                                 <tr>
                                     <td style="width:33%">' . $conr_add . '</td>
                                     <td style="width:33%">' . $consnee_add . '</td>
                                     <td style="width:33%">' . $shiptoadd . '</td>
                                 </tr>
                             </table>';
+                    }
                 }
                 $pay = public_path('assets/img/LOGO_Frowarders.jpg');
                 foreach ($pdftype as $i => $pdf) {
@@ -2892,10 +2929,14 @@ class ConsignmentController extends Controller
                                                 <div>
                                                 <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
                                                 </div>
-                                                <div style="margin-top: -11px;">
-                                                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                                '.$conr_add.'
-                                                </p>
+                                                <div style="margin-top: -11px;">';
+                                            if($data['is_salereturn'] == "1"){
+                                                $conr_address = $consnee_add;
+                                            }else{
+                                                $conr_address = $conr_add;
+                                            }
+                                                // '.$conr_add.'
+                                            $html .=  '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">'.$conr_address.'</p>
                                                 </div>
                                             </td>
                                             <td width="30%" style="vertical-align:top;>
@@ -2903,9 +2944,14 @@ class ConsignmentController extends Controller
                                             <div>
                                             <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
                                             </div>
-                                                <div style="margin-top: -11px;">
-                                                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                                '.$consnee_add.'
+                                                <div style="margin-top: -11px;">';
+                                                if($data['is_salereturn'] == "1"){
+                                                    $consnee_address = $conr_add;
+                                                }else{
+                                                    $consnee_address = $consnee_add;
+                                                }
+                                            $html .=  '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                                                '.$consnee_address.'
                                             </p>
                                                 </div>
                                             </td>

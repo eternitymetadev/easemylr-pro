@@ -59,13 +59,23 @@
                     </div>
                 </td>
                 <td>
+
+                <!-- relocate cnr cnee check for sale to return case -->
+                <?php 
+                if($consignment->is_salereturn == 1){
+                    $cnr_nickname = $consignment->ConsigneeDetail->nick_name;
+                    $cne_nickname = $consignment->ConsignerDetail->nick_name;
+                }else{
+                    $cnr_nickname = $consignment->ConsignerDetail->nick_name;
+                    $cne_nickname = $consignment->ConsigneeDetail->nick_name;
+                } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
                             <div class="ant-timeline-item-tail"></div>
                             <div class="ant-timeline-item-head ant-timeline-item-head-green"></div>
                             <div class="ant-timeline-item-content">
                                 <div class="css-16pld72 ellipse">
-                                    {{ $consignment->ConsignerDetail->nick_name ?? "-" }}
+                                    {{ $cnr_nickname ?? "-" }}
                                 </div>
                             </div>
                         </li>
@@ -74,12 +84,18 @@
                             <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                             <div class="ant-timeline-item-content">
                                 <div class="css-16pld72 ellipse">
-                                    {{ $consignment->ConsigneeDetail->nick_name ?? "-" }}
+                                    {{ $cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
-                                    <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
-                                        {{ $consignment->ConsigneeDetail->city ?? "" }},
-                                        {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                <?php if($consignment->is_salereturn == '1'){ ?>
+                                    <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
+                                        {{ $consignment->ConsignerDetail->city ?? "" }},
+                                        {{ $consignment->ConsignerDetail->district ?? "" }} </span>
+                                        <?php }else{ ?>
+                                            <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
+                                            {{ $consignment->ConsigneeDetail->city ?? "" }},
+                                            {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                            <?php } ?>
                                 </div>
                             </div>
                         </li>
@@ -245,6 +261,14 @@
                                                         </tr>
 
                                                         <tr>
+                                                        <?php if($consignment->is_salereturn ==1){
+                                                                    $cnr_nickname_txn = $consignment->ConsigneeDetail->nick_name;
+                                                                    $cne_nickname_txn = $consignment->ConsignerDetail->nick_name;
+                                                                }else{
+                                                                $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name;
+                                                                $cne_nickname_txn = $consignment->ConsigneeDetail->nick_name;
+                                                                }
+                                                                ?>
                                                             <td colspan="2">
                                                                 <ul class="ant-timeline mt-3" style="">
                                                                     <li class="ant-timeline-item  css-b03s4t">
@@ -254,9 +278,9 @@
                                                                         </div>
                                                                         <div class="ant-timeline-item-content">
                                                                             <div class="css-16pld72">
-                                                                                {{$consignment->ConsignerDetail->nick_name ?? ''}}
+                                                                                {{$cnr_nickname_txn ?? ''}}
                                                                             </div>
-
+                                                                            
                                                                         </div>
                                                                     </li>
                                                                     <li
@@ -267,14 +291,23 @@
                                                                         </div>
                                                                         <div class="ant-timeline-item-content">
                                                                             <div class="css-16pld72">
-                                                                                {{$consignment->ConsignerDetail->nick_name ?? ''}}
+                                                                                {{$cne_nickname_txn ?? ''}}
                                                                             </div>
+                                                                            <?php if($consignment->is_salereturn == 1){ ?>
                                                                             <div class="css-16pld72"
                                                                                 style="font-size: 12px; color: rgb(102, 102, 102);">
                                                                                 <span>{{$consignment->ConsignerDetail->postal_code}},
                                                                                     {{$consignment->ConsignerDetail->city}},
                                                                                     {{$consignment->ConsignerDetail->district}}</span>
                                                                             </div>
+                                                                            <?php }else{?>
+                                                                            <div class="css-16pld72"
+                                                                                style="font-size: 12px; color: rgb(102, 102, 102);">
+                                                                                <span>{{$consignment->ConsigneeDetail->postal_code}},
+                                                                                    {{$consignment->ConsigneeDetail->city}},
+                                                                                    {{$consignment->ConsigneeDetail->district}}</span>
+                                                                            </div>
+                                                                            <?php } ?>
                                                                         </div>
                                                                     </li>
                                                                 </ul>

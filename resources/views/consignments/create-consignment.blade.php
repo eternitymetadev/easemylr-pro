@@ -193,6 +193,26 @@ span.round-tab:hover {
                             <p>Freight</p>
                             <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight">
                         </div>
+
+                        <div class="form-group col-sm-4">
+                            <p>Sale Return</p>
+                            <div class="check-box d-flex">
+                                <div class="checkbox radio">
+                                    <label class="check-label">Yes
+                                        <input type="radio" name="is_salereturn" value="1" class="" >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkbox radio ml-3">
+                                    <label class="check-label">No
+                                        <input type="radio" name="is_salereturn" value="0" checked="">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>                             
+                        </div>
+
+                        
                     </div>
                 </div>
               <!-- </div> --> 
