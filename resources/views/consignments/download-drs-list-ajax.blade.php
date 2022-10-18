@@ -98,7 +98,7 @@ if ($trns->delivery_status == 'Unassigned') {?>
                 <?php } else if ($trns->payment_status == 1) {?>
                 <td><label class="badge badge-success">Paid</label></td>
                 <?php } elseif ($trns->payment_status == 2) {?>
-                <td><label class="badge badge-dark">Sent to finfect</label></td>
+                <td><label class="badge badge-dark">Sent to Account</label></td>
                 <?php } elseif ($trns->payment_status == 3) {?>
                 <td><label class="badge badge-dark">Partial Paid</label></td>
                 <?php } else {?>

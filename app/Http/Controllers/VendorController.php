@@ -385,7 +385,13 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = $authuser->branch_id;
+        $user = $authuser->id;
+        $branch_name = Location::where('id', '=', $cc)->first();
 
+        $url_header = $_SERVER['HTTP_HOST'];
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
         $curl = curl_init();
@@ -412,10 +418,12 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
             ),
         ));
 
@@ -679,14 +687,15 @@ class VendorController extends Controller
     public function createPaymentRequestVendor(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $url_header = $_SERVER['HTTP_HOST'];
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
 
         $branch_name = Location::where('id', '=', $cc)->first();
-        // dd($branch_name->nick_name);
-        // dd($user);
+
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
             ->groupby('drs_no')
@@ -760,10 +769,13 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$transaction_id_new\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
+                 'Access-Control-Request-Headers:' . $url_header,
+
             ),
         ));
 
@@ -772,6 +784,7 @@ class VendorController extends Controller
         $res_data = json_decode($response);
         // ============== Success Response
         // $cs = 'success';
+        // echo'<pre>'; print_r($res_data); die;
         if ($res_data->message == 'success') {
 
             if ($request->p_type == 'Fully') {
@@ -969,7 +982,7 @@ class VendorController extends Controller
     public function check_paid_status()
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
-        $get_data_db = DB::table('payment_requests')->select('transaction_id')->where('payment_status', 2)->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id')->whereIn('payment_status', [2,3])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
@@ -999,12 +1012,12 @@ class VendorController extends Controller
 
                     $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                    PaymentHistory::where('transaction_id', $trans_id)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                    PaymentHistory::where('transaction_id',$trans_id )->where('payment_status',2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                    $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', '70000101')->get();
+                    $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
                     foreach ($get_drs as $drs) {
-                        TransactionSheet::where('drs_no', $drs_no)->update(['payment_status' => 1]);
+                        TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status',2)->update(['payment_status' => 1]);
                     }
                 }
             }
