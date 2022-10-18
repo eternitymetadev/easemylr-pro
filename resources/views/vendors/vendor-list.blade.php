@@ -41,7 +41,8 @@
                                 <th>Pan No</th>
                                 <th>Vendor Type</th>
                                 <th>TDS Rate</th>
-                                <th>Document View</th>
+                                <th>Pan View</th>
+                                <th>Declaration View</th>
                                 <th>Action</th>
 
                             </tr>
@@ -51,7 +52,7 @@
                             <?php $bank_details = json_decode($vendor->bank_details);
                                   $other_details = json_decode($vendor->other_details);
                                   $img = URL::to('/drs/uploadpan/'.$vendor->upload_pan.'');
-                                //   echo'<pre>'; print_r($img);die;
+                                  $decl = URL::to('/drs/declaration/'.$vendor->declaration_file.'');
                             ?>
                             <tr>
                                 <td>{{$vendor->vendor_no ?? '-'}}</td>
@@ -63,7 +64,13 @@
                                 <td>{{$vendor->tds_rate ?? '-'}}</td>
                                 <?php if(!empty($vendor->upload_pan)){?>
                                 <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$img}}"
-                                        role="button">pan</a></td>
+                                        role="button">Pan</a></td>
+                                <?php }else{ ?>
+                                <td>-</td>
+                                <?php } ?>
+                                <?php if(!empty($vendor->declaration_file)){?>
+                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$decl}}"
+                                        role="button">Declaration</a></td>
                                 <?php }else{ ?>
                                 <td>-</td>
                                 <?php } ?>

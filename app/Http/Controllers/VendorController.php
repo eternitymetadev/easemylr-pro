@@ -867,12 +867,12 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
 
         if ($authuser->role_id == 2) {
-            $requestlists = PaymentRequest::with('VendorDetails')
+            $requestlists = PaymentRequest::with('VendorDetails','Branch')
                 ->where('branch_id', $cc)
                 ->groupBy('transaction_id')
                 ->get();
         } else {
-            $requestlists = PaymentRequest::with('VendorDetails')
+            $requestlists = PaymentRequest::with('VendorDetails','Branch')
                 ->groupBy('transaction_id')
                 ->get();
         }

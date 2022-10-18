@@ -31,4 +31,8 @@ class PaymentRequest extends Model
     {
         return $this->hasOne('App\Models\Vendor','id','vendor_id');
     }
+
+    public function Branch(){
+        return $this->belongsTo('App\Models\Location','branch_id');
+    }
 }
