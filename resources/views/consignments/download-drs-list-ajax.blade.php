@@ -75,7 +75,7 @@ if ($trns->delivery_status == 'Unassigned') {?>
                     <label class="badge badge-dark">Cancelled</label>
                     <?php } else {?>
                     <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
-                    <label class="badge badge-warning">No Status</label>
+                    <label class="badge badge-secondary">No Status</label>
                     <?php } else {?>
                     <a class="drs_cancel btn btn-success" drs-no="{{$trns->drs_no}}" data-text="consignment"
                         data-status="0"
