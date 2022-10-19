@@ -100,7 +100,7 @@ if ($trns->delivery_status == 'Unassigned') {?>
                 <?php } elseif ($trns->payment_status == 2) {?>
                 <td><label class="badge badge-dark">Sent to Account</label></td>
                 <?php } elseif ($trns->payment_status == 3) {?>
-                <td><label class="badge badge-dark">Partial Paid</label></td>
+                <td><label class="badge badge-primary">Partial Paid</label></td>
                 <?php } else {?>
                 <td><label class="badge badge-dark">unknown</label></td>
                 <?php }?>
