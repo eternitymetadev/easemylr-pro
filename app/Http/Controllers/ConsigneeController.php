@@ -44,19 +44,11 @@ class ConsigneeController extends Controller
 
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
-                    $query = $query->whereHas('Consigner', function($query) use($cc){
-                        $query->whereIn('branch_id', $cc);
+                    $query = $query->whereHas('Consigner', function ($regclientquery) use($cc) {
+                    $regclientquery->where('branch_id', $cc);
                     });
-                    // where('consigners.branch_id', $cc);
-                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                    //     ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    //     ->where('consigners.branch_id', $cc)
-                    //     ->get();
                 }else{
                     $query = $query;
-                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    // ->get();
                 }
             }else if($authuser->role_id != 2 || $authuser->role_id != 3){
                 if($authuser->role_id == $role_id->id){
@@ -65,29 +57,15 @@ class ConsigneeController extends Controller
                             $query->whereIn('regionalclient_id', $regclient);
                         });
                         
-                        // whereIn('Consigner.regionalclient_id',$regclient);
-                        // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                        //         ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                        //         ->whereIn('consigners.regionalclient_id',$regclient)
-                        //         ->get();
                     }else{
                         $query = $query;
-                    //     $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    // ->get();
                     }
                 }else{
                     $query = $query;
-                    // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                    // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                    // ->get();
                 }
             }
             else{
                 $query = $query;
-                // $consignees = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id')
-                // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
-                // ->get();
             }
             $consignees = $query->get();
             return datatables()->of($consignees)
