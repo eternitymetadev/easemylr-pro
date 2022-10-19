@@ -45,7 +45,7 @@ class ConsigneeController extends Controller
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
                     $query = $query->whereHas('Consigner.RegClient', function ($regclientquery) use($cc) {
-                    $regclientquery->whereIn('branch_id', $cc);
+                    $regclientquery->whereIn('location_id', $cc);
                     });
                 }else{
                     $query = $query;
