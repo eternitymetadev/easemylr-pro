@@ -96,7 +96,10 @@ div.relative {
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
                         <td>{{ $requestlist->balance ?? "-" }}</td>
                         <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
-                        <?php if($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
+                        <?php if($requestlist->payment_status == 1){?>
+                            <td><button class="btn btn-warning"
+                                value="{{$requestlist->transaction_id}}" disabled>Settled</button></td>
+                        <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
                         <td><button class="btn btn-warning"
                                 value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
                         <?php } else if($requestlist->payment_status == 0){ ?>
