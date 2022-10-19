@@ -40,12 +40,12 @@ class ConsigneeController extends Controller
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
-            $query = Consignee::with('Consigner','Zone');
+            $query = Consignee::with('Consigner.RegClient','Zone');
 
             if($authuser->role_id == 2 || $authuser->role_id == 3){
                 if($authuser->role_id == $role_id->id){
-                    $query = $query->whereHas('Consigner', function ($regclientquery) use($cc) {
-                    $regclientquery->where('branch_id', $cc);
+                    $query = $query->whereHas('Consigner.RegClient', function ($regclientquery) use($cc) {
+                    $regclientquery->whereIn('branch_id', $cc);
                     });
                 }else{
                     $query = $query;
@@ -56,7 +56,6 @@ class ConsigneeController extends Controller
                         $query = $query->whereHas('Consigner', function($query) use($regclient){
                             $query->whereIn('regionalclient_id', $regclient);
                         });
-                        
                     }else{
                         $query = $query;
                     }

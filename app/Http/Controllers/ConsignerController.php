@@ -44,10 +44,10 @@ class ConsignerController extends Controller
 
             if($authuser->role_id == 1){
                 $query = $query;
-            } else if($authuser->role_id == 2){
+            } else if($authuser->role_id == 2 || $authuser->role_id == 3){
                 // $query = $query->whereIn('branch_id', $cc);
                 $query = $query->WhereHas('RegClient', function ($regclientquery) use($cc) {
-                    $regclientquery->where('location_id', $cc);
+                    $regclientquery->whereIn('location_id', $cc);
                 });
             }
             else{
