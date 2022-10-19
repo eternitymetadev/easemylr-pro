@@ -313,8 +313,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
-    Route::get('create-payment-bdrs', [VendorController::class, 'paymentFormBeforeDrs']);
-
 
 
 });
