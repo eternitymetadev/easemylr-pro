@@ -775,7 +775,7 @@ class VendorController extends Controller
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                 'Access-Control-Request-Headers:' . $url_header,
+                'Access-Control-Request-Headers:' . $url_header,
 
             ),
         ));
@@ -867,12 +867,12 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
 
         if ($authuser->role_id == 2) {
-            $requestlists = PaymentRequest::with('VendorDetails','Branch')
+            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->where('branch_id', $cc)
                 ->groupBy('transaction_id')
                 ->get();
         } else {
-            $requestlists = PaymentRequest::with('VendorDetails','Branch')
+            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->groupBy('transaction_id')
                 ->get();
         }
@@ -983,13 +983,14 @@ class VendorController extends Controller
     public function check_paid_status()
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
-        $get_data_db = DB::table('payment_requests')->select('transaction_id')->whereIn('payment_status', [2,3])->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
-            // $id="1508";
-            $url = 'https://stagging.finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1010,26 +1011,33 @@ class VendorController extends Controller
                 $received_data = json_decode($response);
                 $status_code = $received_data->status_code;
                 if ($status_code == 2) {
+                    if ($p_type == 'Fully') {
 
-                    $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
+                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                    PaymentHistory::where('transaction_id',$trans_id )->where('payment_status',2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                    $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
-                    foreach ($get_drs as $drs) {
-                        TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status',2)->update(['payment_status' => 1]);
+                        foreach ($get_drs as $drs) {
+                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
+                        }
+                    } else {
+                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+
+                        foreach ($get_drs as $drs) {
+                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
+                        }
+
                     }
                 }
             }
         }
         return 1;
-    }
-
-    // ========================= Create Payment Before DRS ================= //
-    public function paymentFormBeforeDrs(Request $request)
-    {
-       dd('payment');
     }
 
 }
