@@ -35,6 +35,7 @@ class VendorController extends Controller
     {
         $this->title = "Secondary Reports";
         $this->segment = \Request::segment(2);
+        $this->req_link = \Config::get('req_api_link.req');
     }
 
     public function index()
@@ -84,6 +85,7 @@ class VendorController extends Controller
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'name' => 'required|unique:vendors',
+                'ifsc_code' => 'required|min:11',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -384,12 +386,18 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = $authuser->branch_id;
+        $user = $authuser->id;
+        $branch_name = Location::where('id', '=', $cc)->first();
 
+        $url_header = $_SERVER['HTTP_HOST'];
         $drs = explode(',', $request->drs_no);
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+            CURLOPT_URL => $this->req_link,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -411,10 +419,12 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
             ),
         ));
 
@@ -678,11 +688,15 @@ class VendorController extends Controller
     public function createPaymentRequestVendor(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $url_header = $_SERVER['HTTP_HOST'];
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
-        // dd($user);
+
+        $branch_name = Location::where('id', '=', $cc)->first();
+
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
             ->groupby('drs_no')
@@ -734,7 +748,7 @@ class VendorController extends Controller
         $pfu = 'ETF';
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://stagging.finfect.biz/api/non_finvendors_payments_drs',
+            CURLOPT_URL => $this->req_link,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -756,10 +770,13 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$request->email\",
             \"terid\": \"$transaction_id_new\",
+            \"branch\": \"$branch_name->nick_name\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
+
             ),
         ));
 
@@ -768,6 +785,7 @@ class VendorController extends Controller
         $res_data = json_decode($response);
         // ============== Success Response
         // $cs = 'success';
+        // echo'<pre>'; print_r($res_data); die;
         if ($res_data->message == 'success') {
 
             if ($request->p_type == 'Fully') {
@@ -849,12 +867,12 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
 
         if ($authuser->role_id == 2) {
-            $requestlists = PaymentRequest::with('VendorDetails')
+            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->where('branch_id', $cc)
                 ->groupBy('transaction_id')
                 ->get();
         } else {
-            $requestlists = PaymentRequest::with('VendorDetails')
+            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->groupBy('transaction_id')
                 ->get();
         }
@@ -961,56 +979,65 @@ class VendorController extends Controller
         $response['success_message'] = "get balance";
         return response()->json($response);
     }
-//  ////
-    //  public function check_paid_status()
-    //  {
-    //      ini_set('max_execution_time', 0); // 0 = Unlimited
-    //      $get_data_db = DB::table('tercouriers')->select('id')->where('status', 3)->get()->toArray();
-    //      $size = sizeof($get_data_db);
 
-//      for ($i = 0; $i < $size; $i++) {
-    //          // print_r($get_data_db[$i]->id);
-    //          $id = $get_data_db[$i]->id;
-    //          // $id="1508";
-    //          https://stagging.finfect.biz/api/get_payment_response_drs/0000001
-    //          $url = 'https://finfect.biz/api/get_payment_response/' . $id;
-    //          $curl = curl_init();
+    public function check_paid_status()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
+        $size = sizeof($get_data_db);
 
-//          curl_setopt_array($curl, array(
-    //              CURLOPT_URL => $url,
-    //              CURLOPT_RETURNTRANSFER => true,
-    //              CURLOPT_ENCODING => '',
-    //              CURLOPT_MAXREDIRS => 10,
-    //              CURLOPT_TIMEOUT => 0,
-    //              CURLOPT_FOLLOWLOCATION => true,
-    //              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //              CURLOPT_CUSTOMREQUEST => 'GET',
-    //          ));
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
 
-//          $response = curl_exec($curl);
+            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $curl = curl_init();
 
-//          curl_close($curl);
-    //          if ($response) {
-    //              $received_data = json_decode($response);
-    //              $status_code = $received_data->status_code;
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
 
-//              if ($status_code == 2) {
-    //                  $update_ter_data = DB::table('tercouriers')->where('id', $get_data_db[$i]->id)->update([
-    //                      'status' => 5, 'finfect_response' => 'Paid',
-    //                      'utr' => $received_data->bank_refrence_no, 'updated_at' => date('Y-m-d H:i:s'),
-    //                      'paid_date' => date('Y-m-d')
-    //                  ]);
+            $response = curl_exec($curl);
 
-//                  if ($update_ter_data) {
-    //                      $amount = $received_data->amount;
-    //                      $sms_lib = new Sms_lib();
-    //                      $res = $sms_lib->send_paid_sms($id, $amount);
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+                    if ($p_type == 'Fully' || $p_type == 'Balance') {
 
-//                  }
-    //              }
-    //          }
-    //      }
-    //      return 1;
-    //  }
+                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+
+                        foreach ($get_drs as $drs) {
+                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
+                        }
+                    } else {
+                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
+                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+
+                        foreach ($get_drs as $drs) {
+                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
+                        }
+
+                    }
+                }
+            }
+        }
+        return 1;
+    }
 
 }

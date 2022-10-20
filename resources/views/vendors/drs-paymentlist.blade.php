@@ -93,7 +93,7 @@ div.relative {
                 <div class="form-row mb-0">
                 <div class="form-group col-md-4">
                 <?php $authuser = Auth::user();
-                if ($authuser->role_id == 2) {?>
+                if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <button type="button" class="btn btn-warning mt-4 ml-4 payment" style="font-size: 12px;">Create Payment</button>
                 <?php }?>
                 </div>
@@ -169,7 +169,7 @@ $(document).on('click', '.payment', function() {
         success: function(data) {
 
             if (data.status == 'Successful') {
-                $('#p_type_1').append('<option value="Balance">Balance</option>');
+                $('#p_type_1').append('<option value="Fully">Fully Payment</option>');
                 //check balance if null or delevery successful
                    var total = $('#total_clam_amt_1').val();
 
@@ -180,7 +180,7 @@ $(document).on('click', '.payment', function() {
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
                     $('#tds_dedut_1').val(final_amt);
-                    jQuery('#amt_1').prop('disabled', true);
+                    $('#amt_1').attr('readonly', true);
             } else {
                 $('#p_type_1').append(
                     '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Fully">Fully Payment</option>'
