@@ -1011,7 +1011,7 @@ class VendorController extends Controller
                 $received_data = json_decode($response);
                 $status_code = $received_data->status_code;
                 if ($status_code == 2) {
-                    if ($p_type == 'Fully') {
+                    if ($p_type == 'Fully' || $p_type == 'Balance') {
 
                         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
