@@ -1040,4 +1040,33 @@ class VendorController extends Controller
         return 1;
     }
 
+    public function paymentReportView(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+
+        if ($authuser->role_id == 2) {
+            $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
+                ->where('branch_id', $cc)
+                ->get();
+        } else {
+            $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
+                ->get();
+        }
+
+        return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
+    }
+    // public function paymentReportView(Request $request)
+    // {
+    //     $this->prefix = request()->route()->getPrefix();
+
+    //     $payment_lists = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->get();
+    //     // $simply = json_decode(json_encode($payment_lists),true);
+    //     // echo'<pre>'; print_r($simply);die;
+
+    //     return view('vendors.payment-report-view', ['prefix' => $this->prefix , 'payment_lists' => $payment_lists]);
+    // }
+
 }

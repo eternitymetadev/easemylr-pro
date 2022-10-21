@@ -31,4 +31,6 @@ class TransactionSheet extends Model
         return $this->hasMany('App\Models\ConsignmentItem','consignment_id','consignment_no');
     }
 
+    
+
 }

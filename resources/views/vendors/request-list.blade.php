@@ -100,7 +100,7 @@ div.relative {
                             <td><button class="btn btn-warning"
                                 value="{{$requestlist->transaction_id}}" disabled>Settled</button></td>
                         <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
-                        <td><button class="btn btn-warning"
+                        <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
                         <?php } else if($requestlist->payment_status == 0){ ?>
                             <td><button class="btn btn-warning"

@@ -35,4 +35,12 @@ class PaymentRequest extends Model
     public function Branch(){
         return $this->belongsTo('App\Models\Location','branch_id');
     }
+
+    public function TransactionDetails(){
+        return $this->hasMany('App\Models\TransactionSheet','drs_no','drs_no');
+    }
+
+    public function PaymentHistory(){
+        return $this->hasMany('App\Models\PaymentHistory','transaction_id','transaction_id');
+    }
 }
