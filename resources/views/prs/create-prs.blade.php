@@ -44,16 +44,42 @@
                                     <input type="hidden" name="branch_id" value="{{$client->location_id}}">
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Consigner</label>
+                                    <select class="form-control" name="consigner_id">
+                                        <option value="">Select</option>
+                                        <?php 
+                                        if(count($consigners)>0) {
+                                            foreach ($consigners as $key => $consigner) {
+                                        ?>
+                                            <option value="{{ $key }}">{{ucwords($consigner)}}</option>
+                                            <?php 
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <!-- <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">PRS Type</label>
                                     <select class="form-control" id="prs_type" name="prs_type">
                                         <option value="">Select</option>
                                         <option value="0">One Time</option>
                                         <option value="1">Recuring</option>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
+                                    <label for="exampleFormControlInput2">Vehicle Type</label>
+                                    <select class="form-control my-select2" id="vehicle_type" name="vehicletype_id" tabindex="-1">
+                                        <option value="">Select vehicle type</option>
+                                        @foreach($vehicletypes as $vehicletype)
+                                        <option value="{{$vehicletype->id}}">{{$vehicletype->name}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    
+                                </div>
+                                <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
                                     <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
                                     <option value="">Select vehicle</option>
@@ -63,7 +89,7 @@
                                     @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Driver Name</label>
                                     <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
                                     <option value="">Select driver</option>

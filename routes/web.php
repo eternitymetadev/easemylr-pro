@@ -200,6 +200,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
 
     
 });

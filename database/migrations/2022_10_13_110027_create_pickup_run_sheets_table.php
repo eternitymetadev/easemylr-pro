@@ -16,6 +16,8 @@ class CreatePickupRunSheetsTable extends Migration
         Schema::create('pickup_run_sheets', function (Blueprint $table) {
             $table->increments('id');
             $table->string('regclient_id')->nullable();
+            $table->string('location_id')->nullable();
+            $table->string('consigner_id')->nullable();
             $table->string('prs_type')->nullable()->comment('0=>one time 1=>recuring');
             $table->string('vehicletype_id')->nullable();
             $table->string('vehicle_id')->nullable();
@@ -23,7 +25,7 @@ class CreatePickupRunSheetsTable extends Migration
             $table->string('prs_date')->nullable();
             $table->string('user_id')->nullable();
             $table->string('branch_id')->nullable();
-            $table->string('status')->default(0)->comment('0=>assigned 1=>picked 2=>received');
+            $table->string('status')->default(0)->comment('0=>Assigned 1=>Acknowledged 2=>Started 3=>Material Picked up 4=>Material Received in HUB');
             $table->timestamps();
 
         });
