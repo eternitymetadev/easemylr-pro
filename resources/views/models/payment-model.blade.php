@@ -107,6 +107,21 @@
                         </div>
                     </div>
                     <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Branch Location</label>
+                                    <select class="form-control" id="branch_id" name="branch_id"
+                                        tabindex="-1">
+                                        <?php $countbranch = count($branchs); 
+                                        if($countbranch > 1){?>
+                                          <option selected disabled>select location </option>
+                                       <?php } ?>
+                                        @foreach($branchs as $branch)
+                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                    </div>
+                    <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vendor Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="" readonly>
@@ -325,6 +340,21 @@
                             <input type="hidden" class="form-control" id="name_1" name="v_name"
                                 value="">
                         </div>
+                    </div>
+                    <div class="form-row mb-0">
+                    <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Branch Location</label>
+                                    <select class="form-control" id="branch_id_1" name="branch_id"
+                                        tabindex="-1">
+                                        <?php $countbranch = count($branchs); 
+                                        if($countbranch > 1){?>
+                                          <option selected disabled>select location </option>
+                                       <?php } ?>
+                                        @foreach($branchs as $branch)
+                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                     </div>
                     <div class="form-row mb-0">
                     <div class="form-group col-md-6">

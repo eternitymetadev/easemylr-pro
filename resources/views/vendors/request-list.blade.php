@@ -189,8 +189,8 @@ $(document).on('click', '.payment_button', function() {
                     $('#amt').attr('readonly', true);
 
                 } else {
-                    var amt = $('#amt').val(data.req_data[0].balance);
-
+                    $('#amt').val(data.req_data[0].balance);
+                    var amt = $('#amt').val();
                     //calculate
                     var tds_rate = $('#tds_rate').val();
                     var cal = (tds_rate / 100) * amt;

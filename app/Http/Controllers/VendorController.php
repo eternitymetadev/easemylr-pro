@@ -223,6 +223,7 @@ class VendorController extends Controller
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
+           
             $lastsevendays = \Carbon\Carbon::today()->subDays(7);
             $date = Helper::yearmonthdate($lastsevendays);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
@@ -292,6 +293,8 @@ class VendorController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+       
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
@@ -335,7 +338,8 @@ class VendorController extends Controller
         $vehicles = Vehicle::select('id', 'regn_no')->get();
         $vehicletype = VehicleType::select('id', 'name')->get();
         $vendors = Vendor::all();
-        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype]);
+
+        return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
 
     }
 
@@ -390,7 +394,7 @@ class VendorController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
-        $branch_name = Location::where('id', '=', $cc)->first();
+        $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
         $url_header = $_SERVER['HTTP_HOST'];
         $drs = explode(',', $request->drs_no);
@@ -695,7 +699,7 @@ class VendorController extends Controller
         $cc = $authuser->branch_id;
         $user = $authuser->id;
 
-        $branch_name = Location::where('id', '=', $cc)->first();
+        $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
@@ -727,7 +731,7 @@ class VendorController extends Controller
             if ($request->p_type == 'Advance') {
                 $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             } else {
                 $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
@@ -738,7 +742,7 @@ class VendorController extends Controller
                 $advance = $request->pay_amt;
                 // dd($advance);
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $cc, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             }
 
         }
@@ -865,6 +869,7 @@ class VendorController extends Controller
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
         if ($authuser->role_id == 2) {
             $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
@@ -879,7 +884,8 @@ class VendorController extends Controller
 
         $vendors = Vendor::all();
         $vehicletype = VehicleType::select('id', 'name')->get();
-        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype]);
+
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
     }
 
     public function getVendorReqDetails(Request $request)
