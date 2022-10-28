@@ -1058,6 +1058,7 @@ class VendorController extends Controller
 
         return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
     }
+    
     // public function paymentReportView(Request $request)
     // {
     //     $this->prefix = request()->route()->getPrefix();
