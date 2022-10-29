@@ -162,9 +162,9 @@
                         </li> <li>
                             <a href="{{$prefixurl.'request-list'}}"> Transactions Status </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="{{$prefixurl.'payment-report-view'}}"> Report </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
             <?php } ?>
