@@ -189,7 +189,7 @@ div.relative {
 @endsection
 @section('js')
 <script>
-$('#unverified-table').DataTable({
+$('#unverified-table').DataTable({ 
 
     "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
@@ -200,7 +200,8 @@ $('#unverified-table').DataTable({
             // { extend: 'csv', className: 'btn btn-sm' },
             {
                 extend: 'excel',
-                className: 'btn btn-sm'
+                className: 'btn btn-sm',
+                title: '', 
             },
             // { extend: 'print', className: 'btn btn-sm' }
         ]
