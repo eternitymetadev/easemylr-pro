@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PickupRunSheet;
+use App\Models\PrsItem;
 use App\Models\RegionalClient;
 use App\Models\Consigner;
 use App\Models\Role;
@@ -56,17 +57,20 @@ class PickupRunSheetController extends Controller
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
                     $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
                     ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
+                        $query->where(function ($cnrquery)use($search,$searchT) {
                             $cnrquery->where('nick_name', 'like', '%' . $search . '%');
                         });
                     })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                    ->orWhereHas('DriverDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($driverquery)use($search,$searchT) {
+                            $driverquery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('phone', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('VehicleDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($vehiclequery)use($search,$searchT) {
+                            $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
                         });
                     });
 
@@ -84,8 +88,7 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-
-            $prsdata = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $prsdata = $query->with('RegClient')->orderBy('id', 'DESC')->paginate($peritem);
             $prsdata = $prsdata->appends($request->query());
 
             $html =  view('prs.prs-list-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem])->render();
@@ -162,20 +165,19 @@ class PickupRunSheetController extends Controller
         $authuser = Auth::user();
 
         if(!empty($request->regclient_id)){
-            $regclients = $request->regclient_id;
-            $prssave['regclient_id']   = implode(',', $regclients);
+            $prssave['regclient_id'] = $request->regclient_id;
         }
+
         if(!empty($request->consigner_id)){
-            $prssave['consigner_id'] = $request->consigner_id;
+            $consigners = $request->consigner_id;
+            $prssave['consigner_id'] = implode(',', $consigners);
         }
-        // if(!empty($request->prs_type)){
-        //     $prssave['prs_type']   = $request->prs_type;
-        // }
+        
         if(!empty($request->vehicletype_id)){
-            $prssave['vehicletype_id']  = $request->vehicletype_id;
+            $prssave['vehicletype_id'] = $request->vehicletype_id;
         }
         if(!empty($request->vehicle_id)){
-            $prssave['vehicle_id']  = $request->vehicle_id;
+            $prssave['vehicle_id'] = $request->vehicle_id;
         }
         if(!empty($request->driver_id)){
             $prssave['driver_id'] = $request->driver_id;
@@ -183,17 +185,26 @@ class PickupRunSheetController extends Controller
 
         $prssave['prs_date'] = $request->prs_date;
 
-        $prssave['phone']    = $request->phone;
-
-        $consignmentsave['user_id'] = $authuser->id;
-        $consignmentsave['branch_id'] = $authuser->branch_id;
+        $prssave['user_id'] = $authuser->id;
+        $prssave['branch_id'] = $authuser->branch_id;
         
         $prssave['status'] = "1";
         
         $saveprs = PickupRunSheet::create($prssave);
+
         if($saveprs)
         {
-            
+            $consigners = $saveprs->consigner_id;
+            $consinger_ids  = explode(',',$consigners);
+            // $consigner_count = count($consinger_ids);
+            foreach($consinger_ids as $consigner){
+                $prstask['prs_date'] = $saveprs->prs_date;
+                $prstask['prs_id'] = $saveprs->id;
+                $prstask['prsconsigner_id'] = $consigner;
+                $prstask['status'] = "1";
+                $saveprsitems = PrsItem::create($prstask);
+            }
+
             $url    =   URL::to($this->prefix.'/prs');
             $response['success'] = true;
             $response['success_message'] = "PRS Added successfully";
@@ -213,7 +224,7 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
-        $query = PickupRunSheet::query();
+        $query = PrsItem::query();
         
         if ($request->ajax()) {
             if(isset($request->resetfilter)){
@@ -244,6 +255,8 @@ class PickupRunSheetController extends Controller
                 });
             }
 
+            $query = $query->with('ConsignerDetail:id,nick_name,city');
+
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
@@ -255,7 +268,6 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-
             $drivertasks = $query->orderBy('id', 'DESC')->paginate($peritem);
             $drivertasks = $prsdata->appends($request->query());
 
@@ -265,10 +277,11 @@ class PickupRunSheetController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        $drivertasks  = $query->with('VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $query = $query->with('ConsignerDetail:id,nick_name,city');
+
+        $drivertasks  = $query->orderBy('id','DESC')->paginate($peritem);
         $drivertasks  = $drivertasks->appends($request->query());
         
-
         return view('prs.driver-task-list', ['drivertasks' => $drivertasks, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
 
     }
@@ -317,4 +330,21 @@ class PickupRunSheetController extends Controller
     {
         //
     }
+    public function getConsigner(Request $request){
+        $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+
+        if ($getconsigners) {
+            $response['success'] = true;
+            $response['success_message'] = "Consigner list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getconsigners;
+
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consigner list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
 }

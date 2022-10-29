@@ -2,31 +2,23 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>PRS No</th>
-                <th>Number of Task</th>
+                <th>Task No</th>
                 <th>Date</th>
-                <th>PRS Type </th>
-                <th>Vehicle No.</th>
-                <th>Driver Name </th>
+                <th>Consigner </th>
+                <th>City</th>
                 <th>Status </th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
             @if(count($drivertasks)>0)
             @foreach($drivertasks as $value)
-            <?php 
-            $regclient = $value->regclient_id;
-            $regclient_ids  = explode(',',$regclient);
-            $client_count = count($regclient_ids);
-            ?>
+            
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ $value->id ?? "-" }}</td>
+                <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
+                <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
+                <td>{{ $value->ConsignerDetail->city ?? "-" }}</td>
+                <td>{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</td>
             </tr>
             @endforeach
             @else

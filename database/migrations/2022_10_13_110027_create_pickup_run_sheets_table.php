@@ -25,7 +25,7 @@ class CreatePickupRunSheetsTable extends Migration
             $table->string('prs_date')->nullable();
             $table->string('user_id')->nullable();
             $table->string('branch_id')->nullable();
-            $table->string('status')->default(0)->comment('0=>Assigned 1=>Acknowledged 2=>Started 3=>Material Picked up 4=>Material Received in HUB');
+            $table->tinyInteger('status')->default(1)->comment('1=>assigned 2=>acknowledged 3=>started 4=>material picked up 5=>material received in hub');
             $table->timestamps();
 
         });

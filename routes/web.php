@@ -277,7 +277,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
-    Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -320,6 +319,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
 
 
 });
@@ -667,6 +667,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_locations', [ConsignerController::class, 'regLocations']);
     Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
+    Route::get('/get-consignerprs', [PickupRunSheetController::class, 'getConsigner']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);

@@ -21,5 +21,14 @@ class PickupRunSheet extends Model
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
     }
+    public function ConsignerDetail()
+    {
+        return $this->hasOne('App\Models\Consigner','id','consigner_id');
+    }
+
+    public function RegClient()
+    {
+        return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
+    }
 
 }

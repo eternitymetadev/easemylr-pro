@@ -381,6 +381,7 @@ class ConsignmentController extends Controller
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;
+                    dd($get_data);
                     foreach ($get_data as $key => $save_data) {
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;

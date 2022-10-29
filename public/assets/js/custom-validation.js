@@ -483,7 +483,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
-
+                
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
                 );
@@ -493,7 +493,6 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
-
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -2207,5 +2206,60 @@ $('#update_purchase_amt_form').submit(function (e) {
             }
 
         }
+    });
+});
+
+/*====== In create PRS  get consigner on click regional client =====*/
+$("#select_prsregclient").change(function (e) {
+    var regclient_id = $(this).val();
+    $("#select_consigner").empty();
+
+    $.ajax({
+        url: "/get-consignerprs",
+        type: "get",
+        cache: false,
+        data: { regclient_id: regclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {            
+            $("#select_consigner").append(
+                '<option value="">select consigner</option>'
+            );
+
+            $.each(res.data, function (index, value) {
+                $("#select_consigner").append(
+                    '<option value="' +
+                    value.id +
+                    '">' +
+                    value.nick_name +
+                    "</option>"
+                );
+            });
+
+            if (res.data_regclient == null) {
+                var multiple_invoice = "";
+            } else {
+                if (
+                    res.data_regclient.is_multiple_invoice == null ||
+                    res.data_regclient.is_multiple_invoice == ""
+                ) {
+                    var multiple_invoice = "";
+                } else {
+                    var multiple_invoice =
+                        res.data_regclient.is_multiple_invoice;
+                }
+            }
+
+            if (multiple_invoice == 1) {
+                $(".insert-more").attr("disabled", false);
+            } else {
+                $(".insert-more").attr("disabled", true);
+            }
+        },
     });
 });

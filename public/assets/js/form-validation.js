@@ -1502,10 +1502,10 @@ jQuery(document).ready(function(){
         rules:
         {
             regclient_id: {
-                // required: true,
+                required: true,
             },
-            prs_type: {
-                // required: true,
+            consigner_id: {
+                required: true,
             },
             vehicle_id: {
                 // required: true,
@@ -1520,8 +1520,8 @@ jQuery(document).ready(function(){
             regclient_id: {
                 required: "Select regional client",
             },
-            prs_type: {
-                required: "PRS is required",
+            consigner_id: {
+                required: "Select consigner",
             },
             vehicle_id: {
                 required: "",
@@ -1535,7 +1535,15 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-    
+    $(".consigner_prs").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Select Consigner."
+                },
+            });
+    });
 
 
 

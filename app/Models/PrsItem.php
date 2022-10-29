@@ -9,6 +9,11 @@ class PrsItem extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'prs_id', 'regclient_id', 'order_id', 'invoice_no', 'invoice_date', 'quantity', 'net_weight', 'gross_weight', 'prs_date', 'status', 'created_at', 'updated_at'
+        'prs_id', 'prsconsigner_id', 'order_id', 'invoice_no', 'invoice_date', 'quantity', 'net_weight', 'gross_weight', 'prs_date', 'status', 'created_at', 'updated_at'
     ];
+
+    public function ConsignerDetail()
+    {
+        return $this->hasOne('App\Models\Consigner','id','prsconsigner_id');
+    }
 }

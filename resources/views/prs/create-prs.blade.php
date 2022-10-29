@@ -7,9 +7,8 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consigner</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Consigner</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create PRS</a></li>
                     </ol>
                 </nav>
             </div>
@@ -29,7 +28,7 @@
                                             class="text-danger">*</span></label>
                                     <?php $authuser = Auth::user();
                                     ?>
-                                    <select class="form-control tagging" id="regionalclient_id" multiple="multiple" name="regclient_id[]">
+                                    <select class="form-control" id="select_prsregclient" name="regclient_id">
                                     <option value="">Select</option>
                                         <?php 
                                         if(count($regclients)>0) {
@@ -45,16 +44,16 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Consigner</label>
-                                    <select class="form-control" name="consigner_id">
+                                    <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple" name="consigner_id[]">
                                         <option value="">Select</option>
                                         <?php 
-                                        if(count($consigners)>0) {
-                                            foreach ($consigners as $key => $consigner) {
+                                        // if(count($consigners)>0) {
+                                        //     foreach ($consigners as $key => $consigner) {
                                         ?>
-                                            <option value="{{ $key }}">{{ucwords($consigner)}}</option>
+                                            <!-- <option value="{{ $key }}">ucwords($consigner)</option> -->
                                             <?php 
-                                            }
-                                        }
+                                        //     }
+                                        // }
                                         ?>
                                     </select>
                                 </div>

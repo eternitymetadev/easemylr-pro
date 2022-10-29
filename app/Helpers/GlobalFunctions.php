@@ -27,6 +27,40 @@ use DateTimeZone;
 
 class GlobalFunctions {
 
+    public static function PrsStatus($status){
+        if($status == 1){
+            $status = 'Assigned';
+        }
+        else if($status == 2){
+          $status = 'Acknowledged';
+        }
+        else if($status == 3){
+          $status = 'Started';
+        }
+        else if($status == 4){
+          $status = 'Material Picked Up';
+        }
+        else if($status == 5){
+          $status = 'Material Received in HUB';
+        }
+    
+        return $status;
+    }
+
+    public static function PrsDriverTaskStatus($status){
+        if($status == 1){
+            $status = 'Acknowledged';
+        }
+        else if($status == 2){
+          $status = 'Started';
+        }
+        else if($status == 3){
+          $status = 'Complete';
+        }
+    
+        return $status;
+    }
+
   // function for get branches //
 
     public static function getBranches(){

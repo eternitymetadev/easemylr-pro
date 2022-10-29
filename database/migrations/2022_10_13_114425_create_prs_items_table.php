@@ -16,7 +16,7 @@ class CreatePrsItemsTable extends Migration
         Schema::create('prs_items', function (Blueprint $table) {
             $table->increments('id');
             $table->string('prs_id')->nullable();
-            $table->string('regclient_id')->nullable();
+            $table->string('prsconsigner_id')->nullable();
             $table->string('order_id')->nullable();
             $table->string('invoice_no')->nullable();
             $table->string('invoice_date')->nullable();
