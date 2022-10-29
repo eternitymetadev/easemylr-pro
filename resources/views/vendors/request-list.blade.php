@@ -147,7 +147,7 @@ div.relative {
 $(document).on('click', '.payment_button', function() {
     $("#payment_form")[0].reset();
     var trans_id = $(this).val();
-    $('#pymt_request_modal').modal('show');
+    
 
     $.ajax({
         type: "GET",
@@ -161,22 +161,25 @@ $(document).on('click', '.payment_button', function() {
 
             },
         success: function(data) {
-            var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
-
-            $('#drs_no_request').val(data.drs_no);
-            $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
-            $('#transaction_id_2').val(data.req_data[0].transaction_id);
-            $('#name').val(bank_details.acc_holder_name);
-            $('#email').val(data.req_data[0].vendor_details.email);
-            $('#beneficiary_name').val(bank_details.acc_holder_name);
-            $('#bank_acc').val(bank_details.account_no);
-            $('#ifsc_code').val(bank_details.ifsc_code);
-            $('#bank_name').val(bank_details.bank_name);
-            $('#branch_name').val(bank_details.branch_name);
-            $('#total_clam_amt').val(data.req_data[0].total_amount);
-            $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
-
+           
             if (data.status == 'Successful') {
+                
+                $('#pymt_request_modal').modal('show');
+                var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
+
+                $('#drs_no_request').val(data.drs_no);
+                $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
+                $('#transaction_id_2').val(data.req_data[0].transaction_id);
+                $('#name').val(bank_details.acc_holder_name);
+                $('#email').val(data.req_data[0].vendor_details.email);
+                $('#beneficiary_name').val(bank_details.acc_holder_name);
+                $('#bank_acc').val(bank_details.account_no);
+                $('#ifsc_code').val(bank_details.ifsc_code);
+                $('#bank_name').val(bank_details.bank_name);
+                $('#branch_name').val(bank_details.branch_name);
+                $('#total_clam_amt').val(data.req_data[0].total_amount);
+                $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
+
                 $('#p_type').append('<option value="Fully">Fully Payment</option>');
                 //check balance if null or delevery successful
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
@@ -201,6 +204,9 @@ $(document).on('click', '.payment_button', function() {
 
                 }
             } else {
+                // $('#pymt_request_modal').modal('hide');
+                swal('error', 'Please update delivey status','error');
+                return false;
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                     $('#p_type').append(
                         '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'

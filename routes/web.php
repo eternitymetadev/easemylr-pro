@@ -439,6 +439,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
+    Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -633,6 +634,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
+    Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
+
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
