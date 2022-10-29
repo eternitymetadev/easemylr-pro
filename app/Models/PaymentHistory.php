@@ -27,4 +27,9 @@ class PaymentHistory extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function PaymentRequest(){
+        return $this->hasOne('App\Models\PaymentRequest','transaction_id','transaction_id');
+    }
+
 }

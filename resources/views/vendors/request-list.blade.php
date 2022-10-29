@@ -57,7 +57,8 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Request List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Request
+                                List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -90,26 +91,27 @@ div.relative {
                     <tr>
 
                         <td>{{ $requestlist->transaction_id ?? "-" }}</td>
-                        <td class="show-drs" data-id="{{$requestlist->transaction_id}}">{{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
+                        <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
+                            {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
                         <td>{{ $requestlist->balance ?? "-" }}</td>
                         <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
                         <?php if($requestlist->payment_status == 1){?>
-                            <td><button class="btn btn-warning"
-                                value="{{$requestlist->transaction_id}}" disabled>Settled</button></td>
+                        <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
+                                Paid</button></td>
                         <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
-                        <td><button class="btn btn-warning"
-                                value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
+                        <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}"
+                                disabled>Processing...</button></td>
                         <?php } else if($requestlist->payment_status == 0){ ?>
-                            <td><button class="btn btn-warning"
-                                value="{{$requestlist->transaction_id}}" disabled>Create Payment</button></td>
-                       <?php }else{ ?>
-                            <td><button class="btn btn-warning payment_button"
+                        <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
+                                Payment</button></td>
+                        <?php }else{ ?>
+                        <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
-                            <?php } ?>
-                       
+                        <?php } ?>
+
                         <!-- payment Status -->
                         <?php if($requestlist->payment_status == 0){ ?>
                         <td> <label class="badge badge-dark">Faild</label>
@@ -160,7 +162,7 @@ $(document).on('click', '.payment_button', function() {
             },
         success: function(data) {
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
-            
+
             $('#drs_no_request').val(data.drs_no);
             $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
             $('#transaction_id_2').val(data.req_data[0].transaction_id);
@@ -178,8 +180,8 @@ $(document).on('click', '.payment_button', function() {
                 $('#p_type').append('<option value="Fully">Fully Payment</option>');
                 //check balance if null or delevery successful
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                     $('#amt').val(data.req_data[0].total_amount);
-                     var amt = $('#amt').val();
+                    $('#amt').val(data.req_data[0].total_amount);
+                    var amt = $('#amt').val();
                     var tds_rate = $('#tds_rate').val();
                     var cal = (tds_rate / 100) * amt;
                     var final_amt = amt - cal;
@@ -187,8 +189,8 @@ $(document).on('click', '.payment_button', function() {
                     $('#amt').attr('readonly', true);
 
                 } else {
-                    var amt = $('#amt').val(data.req_data[0].balance);
-                   
+                    $('#amt').val(data.req_data[0].balance);
+                    var amt = $('#amt').val();
                     //calculate
                     var tds_rate = $('#tds_rate').val();
                     var cal = (tds_rate / 100) * amt;
@@ -200,12 +202,12 @@ $(document).on('click', '.payment_button', function() {
                 }
             } else {
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                $('#p_type').append(
-                    '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'
-                    );
-                }else{
                     $('#p_type').append(
-                    '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option><option value="Fully">Fully Payment</option>'
+                        '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'
+                    );
+                } else {
+                    $('#p_type').append(
+                        '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option><option value="Fully">Fully Payment</option>'
                     );
                     var amt = $('#amt').val(data.req_data[0].balance);
                     var amt = $('#amt').val();
@@ -268,46 +270,46 @@ $('#p_type').change(function() {
         url: "get-balance-amount",
         data: {
             transaction_id: transaction_id,
-            p_typ:p_typ
+            p_typ: p_typ
         },
         beforeSend: //reinitialize Datatables
             function() {
-          
+
 
             },
         success: function(data) {
             console.log(data.getbalance.balance);
-            if(p_typ == 'Balance'){
+            if (p_typ == 'Balance') {
                 $('#amt').val(data.getbalance.balance);
-            //calculate
-                     var tds_rate = $('#tds_rate').val();
-                    var cal = (tds_rate / 100) * data.getbalance.balance;
-                    var final_amt = data.getbalance.balance - cal;
-                    $('#tds_dedut').val(final_amt);
-                   $('#amt').attr('readonly', true);
+                //calculate
+                var tds_rate = $('#tds_rate').val();
+                var cal = (tds_rate / 100) * data.getbalance.balance;
+                var final_amt = data.getbalance.balance - cal;
+                $('#tds_dedut').val(final_amt);
+                $('#amt').attr('readonly', true);
 
-            }else if(p_typ == 'Fully'){
+            } else if (p_typ == 'Fully') {
                 $('#amt').val(data.getbalance.balance);
-                  //calculate
-                     var tds_rate = $('#tds_rate').val();
-                    var cal = (tds_rate / 100) * data.getbalance.balance;
-                    var final_amt = data.getbalance.balance - cal;
-                    $('#tds_dedut').val(final_amt);
-                   $('#amt').attr('readonly', true);
+                //calculate
+                var tds_rate = $('#tds_rate').val();
+                var cal = (tds_rate / 100) * data.getbalance.balance;
+                var final_amt = data.getbalance.balance - cal;
+                $('#tds_dedut').val(final_amt);
+                $('#amt').attr('readonly', true);
 
-            }else{
+            } else {
                 $('#amt').attr('readonly', false);
             }
         }
 
     });
 
-   
+
 
 });
 ///////////////////////////////////////////////
 $(document).on('click', '.show-drs', function() {
-  
+
     var trans_id = $(this).attr('data-id');
     // alert(show);
     $('#show_drs').modal('show');
@@ -319,7 +321,7 @@ $(document).on('click', '.show-drs', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
-                $('#show_drs_table').dataTable().fnClearTable();             
+                $('#show_drs_table').dataTable().fnClearTable();
                 $('#show_drs_table').dataTable().fnDestroy();
 
             },
@@ -327,7 +329,7 @@ $(document).on('click', '.show-drs', function() {
             // console.log(data.)
             $.each(data.getdrs, function(index, value) {
 
-                $('#show_drs_table tbody').append("<tr><td>" + value.drs_no + "</td></tr>");   
+                $('#show_drs_table tbody').append("<tr><td>" + value.drs_no + "</td></tr>");
 
             });
         }
