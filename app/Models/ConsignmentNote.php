@@ -92,5 +92,9 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\RegionalClientDetail','regclient_id','regclient_id');
     }
+    public function RegClient()
+    {
+        return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
+    }
 
 }

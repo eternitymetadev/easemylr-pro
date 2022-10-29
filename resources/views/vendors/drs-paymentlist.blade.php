@@ -408,6 +408,7 @@ $('#p_type_1').change(function() {
         var cal = (tds_rate / 100) * amt;
         var final_amt = amt - cal;
         $('#tds_dedut_1').val(final_amt);
+        $('#amt_1').attr('readonly', true);
 
      }else{
         $('#amt_1').val('');

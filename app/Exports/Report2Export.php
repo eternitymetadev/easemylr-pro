@@ -152,7 +152,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                  }elseif($consignment->status == 2){
                    $status = 'Unverified';
                  }elseif($consignment->status == 0){
-                  $status = 'Cancle';
+                  $status = 'Cancel';
                  }else{
                   $status = 'Unknown';
                  }
