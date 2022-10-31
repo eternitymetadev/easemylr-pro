@@ -55,7 +55,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <!-- end purchase price -->
                 <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
-                <td>{{$date->format('Y-m-d')}}</td>
+                <td>{{$date->format('d-m-Y')}}</td>
                 <!-- delivery Status ---- -->
                 <td>
                     <?php if ($list->status == 0) {?>
