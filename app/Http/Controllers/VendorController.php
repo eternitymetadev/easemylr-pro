@@ -453,7 +453,7 @@ class VendorController extends Controller
 
                 PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
-                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
@@ -473,7 +473,7 @@ class VendorController extends Controller
 
                 $balance_amt = $request->claimed_amount - $request->payable_amount;
                 //======== Payment History save =========//
-                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
@@ -805,7 +805,7 @@ class VendorController extends Controller
 
                 PaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
-                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $transaction_id_new;
@@ -825,7 +825,7 @@ class VendorController extends Controller
 
                 $balance_amt = $request->claimed_amount - $request->pay_amt;
                 //======== Payment History save =========//
-                $bankdetails = array('acc_holder_name' => $request->name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $transaction_id_new;

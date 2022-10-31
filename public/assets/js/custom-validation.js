@@ -2158,6 +2158,7 @@ $('#create_request_form').submit(function (e) {
     var formData = new FormData(this);
     var vendor = $('#vendor_id_1').val();
     var branch = $('#branch_id_1').val();
+    var bank_acc = $('#bank_acc_1').val();
     if(!vendor)
     {
         swal('Error!', 'Please select a vendor','error');
@@ -2166,6 +2167,11 @@ $('#create_request_form').submit(function (e) {
     if(!branch)
     {
         swal('Error!', 'Please select Branch','error');
+        return false;
+    }
+    if(!bank_acc)
+    {
+        swal('Error!', 'Error in Bank Details','error');
         return false;
     }
     var base_url = window.location.origin;
