@@ -217,12 +217,12 @@ $('#vendor_id_1').change(function() {
                 jQuery('#crt_pytm').prop('disabled', false);
                 var simp = jQuery.parseJSON(res.vendor_details.bank_details);
                 $('#bank_acc_1').val(simp.account_no);
-                $('#ifsc_code_1').val(simp.ifsc_code);
+                $('#ifsc_code_1').val(simp.ifsc_code); 
                 $('#bank_name_1').val(simp.bank_name);
                 $('#branch_name_1').val(simp.branch_name);
                 $('#vendor_no_1').val(res.vendor_details.vendor_no);
                 $('#name_1').val(res.vendor_details.name);
-                $('#beneficiary_name_1').val(res.vendor_details.name);
+                $('#beneficiary_name_1').val(simp.acc_holder_name);
                 $('#email_1').val(res.vendor_details.email);
                 $('#tds_rate_1').val(res.vendor_details.tds_rate);
 

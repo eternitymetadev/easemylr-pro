@@ -126,7 +126,7 @@
                             <label for="location_name">Vendor Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="" readonly>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-6"> 
                             <label for="exampleFormControlInput2">Purchase Amount</label>
                             <input type="text" class="form-control" id="total_clam_amt" name="claimed_amount" value=""
                                 readonly>
