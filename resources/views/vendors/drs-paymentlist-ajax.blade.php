@@ -56,7 +56,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
                 <td>{{$date->format('d-m-Y')}}</td>
-                <!-- delivery Status ---- -->
+                <!-- delivery Status ------>
                 <td>
                     <?php if ($list->status == 0) {?>
                     <label class="badge badge-dark">Cancelled</label>
