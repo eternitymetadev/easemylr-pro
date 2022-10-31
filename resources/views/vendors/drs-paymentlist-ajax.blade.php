@@ -14,6 +14,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <th>Purchase Amount</th>
                 <th>Vehicle Type</th>
                 <th>DRS NO</th>
+                <th>DRS Date</th>
                 <th>DRS Status</th>
                 <th>Total Lr</th>
                 <th>Vehicle No</th>
@@ -27,6 +28,10 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
         <tbody>
             @if(count($paymentlist)>0)
             @foreach($paymentlist as $list)
+            <?php
+            $date = new DateTime($list->created_at, new DateTimeZone('GMT-7'));
+            $date->setTimezone(new DateTimeZone('IST'));
+            ?>
 
             <tr>
                 <?php if ($authuser->role_id == 2 || $authuser->role_id == 3) {
@@ -50,6 +55,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <!-- end purchase price -->
                 <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
                 <td>DRS-{{$list->drs_no}}</td>
+                <td>{{$date->format('Y-m-d')}}</td>
                 <!-- delivery Status ---- -->
                 <td>
                     <?php if ($list->status == 0) {?>
@@ -62,7 +68,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                         data-status="0"
                         data-action="<?php echo URL::current(); ?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
                     <?php }?>
-                    <?php }?>
+                    <?php }?> 
                 </td>
                 <!-- END Delivery Status  --------------->
                 <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
