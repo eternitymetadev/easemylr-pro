@@ -1077,10 +1077,10 @@ class ConsignmentController extends Controller
                       $html .='      </table>
                                 <div>
                                     <table style="margin-top:0px;">
-                                        <tr>
-                                            <td width="50%" style="font-size: 13px;"><p><b>Receivers Signatures</b><br>Received the goods mentioned above in good conditions.</p></td>
-                                            <td  width="50%"><p style="margin-left: 99px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
-                                        </tr>
+                                    <tr>
+                                    <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
+                                    <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
+                                </tr>
                                     </table>
                             
                                 </div>
