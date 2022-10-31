@@ -8,6 +8,7 @@ use App\Imports\VehiclesImport;
 use App\Imports\ConsignerImport;
 use App\Imports\DriverImport;
 use App\Imports\ZoneImport;
+use App\Imports\DeliveryDateImport;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
 
@@ -47,6 +48,11 @@ class ImportCsvController extends Controller
             $data = Excel::import(new ZoneImport,request()->file('zonesfile'));
             $url  = URL::to($this->prefix.'/zones');
             $message = 'Zones Uploaded Successfully';
+        }
+        if($request->hasFile('deliverydatesfile')){
+            $data = Excel::import(new DeliveryDateImport,request()->file('deliverydatesfile'));
+            $url  = URL::to($this->prefix.'/consignments');
+            $message = 'Delivery dates Uploaded Successfully';
         }
         if($data){            
             $response['success']    = true;
@@ -91,6 +97,12 @@ class ImportCsvController extends Controller
     {
         $path = public_path('sample/zone_bulkimport.xlsx');
         return response()->download($path);   
+    }
+
+    public function deliverydateSampleDownload()
+    {
+        $path = public_path('sample/deliverydate_bulkimport.xlsx');
+        return response()->download($path);
     }
 
 
