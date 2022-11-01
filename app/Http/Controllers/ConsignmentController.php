@@ -1806,10 +1806,9 @@ class ConsignmentController extends Controller
         $id = $_GET['cat_id'];
 
         $query = TransactionSheet::query();
-        $query = $query->where('drs_no', $id);
-        $query = $query
+        $query = $query->where('drs_no', $id)
             ->with('ConsignmentDetail', function ($query) {
-                $query->where('status', 1);
+                $query->whereIn('status', [1,5]);
             });
         $query = $query
             ->orderby('order_no', 'asc')
@@ -1817,7 +1816,6 @@ class ConsignmentController extends Controller
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($query), true);
-        //  echo'<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
         $response['success'] = true;
