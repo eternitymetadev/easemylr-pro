@@ -79,18 +79,18 @@ div.relative {
                         <th>Station</th>
                        <th>Drs No</th>
                          <th>LR No</th>
-                        <th>Invoice No</th>
-                        <!--<th>Type of Vehicle </th>
+                       <th>Invoice No</th>
+                       <th>Type of Vehicle </th>
                         <th>No. of Cartons</th>
                         <th>Net Weight</th>
                         <th>Gross weight</th>
-                        <th>Truck No.</th>
+                       <th>Truck No.</th>
                         <th>Vendor Name</th>
                         <th>Bank Name</th>
                         <th>Account No.</th>
                         <th>IFSC Code</th>
                         <th>Vendor Pan</th>
-                        <th>Purchase Freight</th>
+                       <!--  <th>Purchase Freight</th>
                         <th>Advance</th>
                         <th>Payment Date</th>
                         <th>Blance Amount</th>
@@ -108,28 +108,51 @@ div.relative {
                     <?php $i = 0;?>
                     @foreach($payment_lists as $payment_list)
                     <?php
+                    $bankdetails = json_decode($payment_list->PaymentRequest[0]->VendorDetails->bank_details);
+                        
                         $date = date('d-m-Y',strtotime($payment_list->created_at));
                         $lr_arra = array();
                         $consigneecity = array();
-                        foreach($payment_list->PaymentRequest->TransactionDetails as $lr_no){
-                            $lr_arra[] = $lr_no->consignment_no;
-                            $consigneecity[] = $lr_no->ConsignmentNote->ShiptoDetail->city;
-
+                        $itm_arra = array();
+                        foreach($payment_list->PaymentRequest as $lr_no){
+                            $qty = Helper::totalQuantity($lr_no->drs_no);
+                            $totlwt = Helper::totalWeight($lr_no->drs_no);
+                            $grosswt = Helper::totalGrossWeight($lr_no->drs_no);
+                            // echo'<pre>'; print_r($lr_no->drs_no); die;
+                            foreach($lr_no->TransactionDetails as $lr_group){
+                                $lr_arra[] = $lr_group->consignment_no;
+                               $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
+                            }
+                            
+                            foreach($lr_group->ConsignmentNote->ConsignmentItems as $lr_no_item){
+                                $itm_arra[] = $lr_no_item->invoice_no;
+                            }
                         }
                         $city = implode(',', $consigneecity);
                         $multilr = implode(',', $lr_arra);
+                        $lr_itm = implode(',', $itm_arra);
                     ?>
 
                     <tr>
                     <td>{{$i}}</td>
                         <td>{{$payment_list->transaction_id ?? '-'}}</td>
                         <td>{{$date}}</td>
-                        <td>{{$lr_no->ConsignmentNote->RegClient->name ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentRequest->Branch->nick_name ?? '-'}}</td>
+                        <td>{{$lr_group->ConsignmentNote->RegClient->name ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->Branch->nick_name ?? '-'}}</td>
                         <td>{{$city ?? '-'}}</td>
                         <td>DRS-{{$payment_list->drs_no ?? '-'}}</td>
                         <td>{{$multilr ?? '-'}}</td>
-
+                        <td>{{$lr_itm ?? '-'}}</td>
+                       <td>{{$lr_no->ConsignmentNote[0]->vehicletype->name ?? '-'}}</td>
+                       <td>{{$qty}}</td>
+                       <td>{{$totlwt}}</td>
+                       <td>{{$grosswt}}</td>
+                       <td>{{$payment_list->PaymentRequest[0]->vehicle_no ?? '-'}}</td>
+                       <td>{{$payment_list->PaymentRequest[0]->VendorDetails->name ?? '-'}}</td>
+                       <td>{{$bankdetails->bank_name ?? '-'}}</td>
+                        <td>{{$bankdetails->account_no ?? '-'}}</td>
+                        <td>{{$bankdetails->ifsc_code ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->VendorDetails->pan ?? '-'}}</td>
 
                     </tr>
                     @endforeach
