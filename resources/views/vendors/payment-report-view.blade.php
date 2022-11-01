@@ -73,14 +73,14 @@ div.relative {
                     <tr>
                         <th>Sr. No</th>
                         <th>Transaction id</th>
-                        <th>Date</th>
+                         <th>Date</th>
                         <th>Client</th>
                         <th>Depot</th>
                         <th>Station</th>
-                        <th>Drs No</th>
-                        <th>LR No</th>
+                       <th>Drs No</th>
+                         <th>LR No</th>
                         <th>Invoice No</th>
-                        <th>Type of Vehicle </th>
+                        <!--<th>Type of Vehicle </th>
                         <th>No. of Cartons</th>
                         <th>Net Weight</th>
                         <th>Gross weight</th>
@@ -101,82 +101,36 @@ div.relative {
                         <th>Balance Due</th>
                         <th>Tds Amount.</th>
                         <th>TDS Status YES/NO</th>
-                        <th>Declaration</th>
+                        <th>Declaration</th> -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php $i = 0;?>
                     @foreach($payment_lists as $payment_list)
-                    <?php $i++;
-                    $bankdetails = json_decode($payment_list->VendorDetails->bank_details);
-                     $lr_arra = array();
-                     $itm_arra = array();
-                     $consigneecity = array();
-                     foreach($payment_list->TransactionDetails as $lr_no){
-                              $lr_arra[] = $lr_no->consignment_no;
-                              $consigneecity[] = $lr_no->ConsignmentNote->ShiptoDetail->city;
+                    <?php
+                        $date = date('d-m-Y',strtotime($payment_list->created_at));
+                        $lr_arra = array();
+                        $consigneecity = array();
+                        foreach($payment_list->PaymentRequest->TransactionDetails as $lr_no){
+                            $lr_arra[] = $lr_no->consignment_no;
+                            $consigneecity[] = $lr_no->ConsignmentNote->ShiptoDetail->city;
 
-                        foreach($lr_no->ConsignmentNote->ConsignmentItems as $lr_no_item){
-                            $itm_arra[] = $lr_no_item->invoice_no;
                         }
-                     }
-                     $multilr = implode(',', $lr_arra);
-                       $lr_itm = implode(',', $itm_arra);
-                       $city = implode(',', $consigneecity);
-                      $utr_arra = array();
-                      $tds_deduct = array();
-                     foreach($payment_list->PaymentHistory as $payment_list_item){
-                         $utr_arra[] = $payment_list_item->bank_refrence_no;
-                         $tds_deduct[] = $payment_list_item->tds_deduct_balance;
-                     }
-                        $utr = implode(',',$utr_arra);
-                        $tds = implode('/',$tds_deduct);
-                      $histrycount = count($payment_list->PaymentHistory);
-                     $date = date('d-m-Y',strtotime($payment_list->created_at));
-                     if($payment_list->VendorDetails->declaration_available == 1){
-                            $decl = 'Yes';
-                     }else{
-                        $decl = 'No';
-                     }
+                        $city = implode(',', $consigneecity);
+                        $multilr = implode(',', $lr_arra);
                     ?>
+
                     <tr>
-                        <td>{{$i}}</td>
+                    <td>{{$i}}</td>
                         <td>{{$payment_list->transaction_id ?? '-'}}</td>
                         <td>{{$date}}</td>
                         <td>{{$lr_no->ConsignmentNote->RegClient->name ?? '-'}}</td>
-                        <td>{{$payment_list->Branch->nick_name ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest->Branch->nick_name ?? '-'}}</td>
                         <td>{{$city ?? '-'}}</td>
                         <td>DRS-{{$payment_list->drs_no ?? '-'}}</td>
                         <td>{{$multilr ?? '-'}}</td>
-                        <td>{{$lr_itm ?? '-'}}</td>
-                        <td>{{$lr_no->ConsignmentNote->vehicletype->name ?? '-'}}</td>
-                        <td>{{ Helper::totalQuantity($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{ Helper::totalWeight($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{ Helper::totalGrossWeight($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{$payment_list->vehicle_no ?? '-'}}</td>
-                        <td>{{$payment_list->VendorDetails->name ?? '-'}}</td>
-                        <td>{{$bankdetails->bank_name ?? '-'}}</td>
-                        <td>{{$bankdetails->account_no ?? '-'}}</td>
-                        <td>{{$bankdetails->ifsc_code ?? '-'}}</td>
-                        <td>{{$payment_list->VendorDetails->pan ?? '-'}}</td>
-                        <td>{{$payment_list->total_amount ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[0]->advance ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[0]->payment_date ?? '-'}}</td>
-                        <?php if($histrycount > 1){?>
-                        <td>{{$payment_list->PaymentHistory[1]->current_paid_amt ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[1]->payment_date ?? '-'}}</td>
-                        <?php }else{?>
-                        <td>-</td>
-                        <td>-</td>
-                        <?php } ?>
 
-                        <td>{{$payment_list->advanced ?? '-'}}</td>
-                        <td>HDFC</td>
-                        <td>{{$utr ?? '-'}}</td>
-                        <td>{{$payment_list->balance ?? '-'}}</td>
-                        <td>{{$tds}}</td>
-                        <td>{{$decl}}</td>
-                        <td>-</td>
+
                     </tr>
                     @endforeach
                 </tbody>
