@@ -90,12 +90,12 @@ div.relative {
                         <th>Account No.</th>
                         <th>IFSC Code</th>
                         <th>Vendor Pan</th>
-                       <!--  <th>Purchase Freight</th>
+                        <th>Purchase Freight</th>
                         <th>Advance</th>
                         <th>Payment Date</th>
-                        <th>Blance Amount</th>
+                       <th>Blance Amount</th>
                         <th>payment date</th>
-                        <th>Total Amount Paid</th>
+                       <!-- <th>Total Amount Paid</th>
                         <th>Debit Bank</th>
                         <th>Ref.No.</th>
                         <th>Balance Due</th>
@@ -153,6 +153,11 @@ div.relative {
                         <td>{{$bankdetails->account_no ?? '-'}}</td>
                         <td>{{$bankdetails->ifsc_code ?? '-'}}</td>
                         <td>{{$payment_list->PaymentRequest[0]->VendorDetails->pan ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->total_amount ?? '-'}}</td>
+                        <td>{{$payment_list->advance ?? '-'}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
 
                     </tr>
                     @endforeach
