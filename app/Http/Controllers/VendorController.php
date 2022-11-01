@@ -337,7 +337,7 @@ class VendorController extends Controller
         $paymentlist = $paymentlist->appends($request->query());
         $vehicles = Vehicle::select('id', 'regn_no')->get();
         $vehicletype = VehicleType::select('id', 'name')->get();
-        $vendors = Vendor::all();
+        $vendors = Vendor::with('Branch')->get();
 
         return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
 
