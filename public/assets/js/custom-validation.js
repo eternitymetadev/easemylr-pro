@@ -1912,7 +1912,7 @@ $('#vendor-master').submit(function (e) {
         return false;
     }
     if (!pan_no) {
-        swal("Error!", "Please Enter Ifsc Code", "error");
+        swal("Error!", "Please Enter Pan No", "error");
         return false;
     }
     $.ajax({
