@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\VendorExport;
+use App\Exports\PaymentReportExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
@@ -1070,11 +1071,16 @@ class VendorController extends Controller
         {
             $this->prefix = request()->route()->getPrefix();
 
-            $payment_lists = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->get();
+            $payment_lists = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
             // $simply = json_decode(json_encode($payment_lists),true);
             // echo'<pre>'; print_r($simply);die;
 
             return view('vendors.payment-report-view', ['prefix' => $this->prefix , 'payment_lists' => $payment_lists]);
+        }
+
+        public function exportPaymentReport(Request $request)
+        {
+            return Excel::download(new PaymentReportExport, 'PaymentReport.csv');
         }
 
 }
