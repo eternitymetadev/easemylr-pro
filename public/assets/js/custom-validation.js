@@ -30,6 +30,40 @@ jQuery(document).ready(function () {
     });
     /*===== End check box checked create/update user permission page =====*/
 
+    /// search by assign user
+
+    jQuery('#searchvehicle').SumoSelect({
+        search: true,
+        selectAll: true,
+        okCancelInMulti: true,
+        triggerChangeCombined: false
+    });
+
+    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click( function () {
+        var selectedvehicles = jQuery('#searchvehicle').val();
+        //var search =  jQuery('#search').val();
+        var url =  jQuery(this).val();
+        jQuery.ajax({
+            type      : 'get',
+            url       : url,
+            data      : {searchvehicle:selectedvehicles},
+            headers   : {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(response){
+              if(response.html){
+                alert("kl");
+                jQuery('.main-table').html(response.html);
+                jQuery("#assignto").modal("hide");
+                //jQuery('#searchvehicle').multiselect( 'reset');
+                jQuery('.assignedtoarray').val(selectedvehicles);
+              }
+            }
+        });
+        return false;
+    });
+
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
         var regn_no = $(this).val().toUpperCase();
