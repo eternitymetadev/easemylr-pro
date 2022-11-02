@@ -82,9 +82,9 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $histrycount = count($trans_id);
                 if ($histrycount > 1) {
                     $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance;
-                    $curr_paid_amt = $trans_id[1]->current_paid_amt;
-                    $paymt_date_2 = $trans_id[1]->payment_date;
-                    $ref_no_2 = $trans_id[1]->bank_refrence_no;
+                    $curr_paid_amt = @$trans_id[1]->current_paid_amt;
+                    $paymt_date_2 = @$trans_id[1]->payment_date;
+                    $ref_no_2 = @$trans_id[1]->bank_refrence_no;
                     $tds_amt = $payment_list->PaymentRequest[0]->total_amount - $paid_amt;
                 } else {
                     $paid_amt = $trans_id[0]->tds_deduct_balance;

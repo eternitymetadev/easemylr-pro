@@ -105,13 +105,6 @@ div.relative {
                         <th>Blance Amount</th>
                         <th>payment date</th>
                         <th>Ref. No</th>
-                        <!-- <th>Total Amount Paid</th>
-                        <th>Debit Bank</th>
-                        <th>Ref.No.</th>
-                        <th>Balance Due</th>
-                        <th>Tds Amount.</th>
-                        <th>TDS Status YES/NO</th>
-                        <th>Declaration</th> -->
                     </tr>
                 </thead>
                 <tbody>
