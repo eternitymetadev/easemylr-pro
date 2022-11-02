@@ -841,6 +841,42 @@ jQuery(document).ready(function () {
         });
     });
 
+    // Add Another Row in PRS driver task
+    $(document).on("click", ".insert-moreprs", function () {
+        $("#create-driver-task").each(function () {
+            var item_no = $("tr", this).length;
+            if (item_no <= 6) {
+                var tds = "<tr>";
+
+                tds +=
+                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
+                tds +=
+                    '<td><input type="text" class="form-control form-small invc_no" name="data['+
+                    item_no +'][invoice_no]" id="'+item_no+'" value=""></td>';
+                tds +=
+                    '<td><input type="date" class="form-control form-small invc_date" name="data[' +
+                    item_no +'][invoice_date]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                    item_no +'][quantity]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small net" name="data[' +
+                    item_no +'][weight]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small gross" name="data[' +
+                    item_no +'][gross_weight]"></td>';
+                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                tds += "</tr>";
+            }
+
+            if ($("tbody", this).length > 0) {
+                $("tbody", this).append(tds);
+            } else {
+                $(this).append(tds);
+            }
+        });
+    });
+
     //Remove the current row
     $(document).on("click", ".remove-row", function () {
         var current_val = $(this).parent().siblings(":first").text();

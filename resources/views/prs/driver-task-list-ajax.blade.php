@@ -3,10 +3,12 @@
         <thead>
             <tr>
                 <th>Task No</th>
+                <th>PRS No</th>
                 <th>Date</th>
                 <th>Consigner </th>
                 <th>City</th>
                 <th>Status </th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -15,10 +17,20 @@
             
             <tr>
                 <td>{{ $value->id ?? "-" }}</td>
+                <td>{{ $value->prs_id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->city ?? "-" }}</td>
                 <td>{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</td>
+
+                <?php if($value->status == 1 ) { 
+                    $disable = ''; 
+                } else{
+                    $disable = 'disable_n';
+                } ?>
+
+                <td><a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#add-task">Add Task</a></td>
+                <!-- href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id))}}"  -->
             </tr>
             @endforeach
             @else

@@ -8,7 +8,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">PRS List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Task List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -32,10 +32,10 @@
                             </div>
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
-                                    <a class="btn-primary btn-cstm btn ml-2"
+                                    <!-- <a class="btn-primary btn-cstm btn ml-2"
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         href="{{'prs/create'}}"><span><i class="fa fa-plus"></i> Add
-                                            New</span></a>
+                                            New</span></a> -->
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         data-action="<?php echo url()->current(); ?>"><span><i
@@ -54,11 +54,19 @@
         </div>
     </div>
 </div>
-
+@include('models.create-prs-drivertask')
 @endsection
+
 @section('js')
 <script>
+    $(document).on("click", ".add-taskbtn", function () {
+        var prs_id = jQuery(this).attr("data-prsid");
+        // alert(prs_id);
+        var drivertask_id = jQuery(this).attr("data-drivertaskid");
+        $("#drivertask_id").val(drivertask_id);
+        $("#prs_id").val(prs_id);
 
+    });
 </script>
 
 @endsection

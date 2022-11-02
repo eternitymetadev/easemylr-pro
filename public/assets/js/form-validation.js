@@ -1099,32 +1099,65 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    /*===== Create prs task item =====*/
+    $('#createprstaskitem').validate({ 
+        rules: {
+            'quantity[]': {
+                required: true
+            },
+           'net_weight[]': {
+                required: true
+            },
+           'gross_weight[]': {
+                required: true
+            }
+        },
+        messages: {
+            'quantity[]': {
+                required: "Enter quantity"
+            },
+            'net_weight[]': {
+                required: "Enter weight"
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight"
+            },
+            
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+
+    });
+
     $(".qnt").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter quantity."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter quantity."
+            },
+        });
     });
     $(".net").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter net weight."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter net weight."
+            },
+        });
     });
     $(".gross").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter gross weight."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter gross weight."
+            },
+        });
     });
   
     /*===== Create payment =====*/
@@ -1706,6 +1739,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'clientdetail-create' || response.page == 'clientdetail-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'prs-create' || response.page == 'prs-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-prstaskitem'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

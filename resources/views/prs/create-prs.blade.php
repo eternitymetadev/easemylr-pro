@@ -17,8 +17,7 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}"
-                            id="createprs">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}" id="createprs">
 
                             <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date" placeholder="" value="<?php echo date('d-m-Y'); ?>">
 

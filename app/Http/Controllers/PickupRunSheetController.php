@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PickupRunSheet;
-use App\Models\PrsItem;
+use App\Models\PrsDrivertask;
+use App\Models\PrsTaskItem;
 use App\Models\RegionalClient;
 use App\Models\Consigner;
 use App\Models\Role;
@@ -19,7 +20,6 @@ use Auth;
 use Crypt;
 use DB;
 use URL;
-
 
 
 class PickupRunSheetController extends Controller
@@ -202,7 +202,7 @@ class PickupRunSheetController extends Controller
                 $prstask['prs_id'] = $saveprs->id;
                 $prstask['prsconsigner_id'] = $consigner;
                 $prstask['status'] = "1";
-                $saveprsitems = PrsItem::create($prstask);
+                $saveprsdrivertasks = PrsDrivertask::create($prstask);
             }
 
             $url    =   URL::to($this->prefix.'/prs');
@@ -224,7 +224,7 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
-        $query = PrsItem::query();
+        $query = PrsDrivertask::query();
         
         if ($request->ajax()) {
             if(isset($request->resetfilter)){
@@ -284,6 +284,69 @@ class PickupRunSheetController extends Controller
         
         return view('prs.driver-task-list', ['drivertasks' => $drivertasks, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
 
+    }
+
+    public function createTaskItem(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $rules = array(
+            // 'regclient_id' => 'required',
+        );
+
+        $validator = Validator::make($request->all(),$rules);
+    
+        if($validator->fails())
+        {
+            $errors                  = $validator->errors();
+            $response['success']     = false;
+            $response['validation']  = false;
+            $response['formErrors']  = true;
+            $response['errors']      = $errors;
+            return response()->json($response);
+        }
+
+        $authuser = Auth::user();
+
+        // insert prs driver task items
+        if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+                $save_data['drivertask_id'] = $request->drivertask_id;
+                $save_data['status'] = 1;
+                $save_data['user_id'] = $authuser->id;
+                $save_data['branch_id'] = $authuser->branch_id;
+                $savetaskitems = PrsTaskItem::create($save_data);
+
+                if($savetaskitems){
+                    PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 2]);
+
+                    $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
+                    $countdrivertask_status = PrsDrivertask::where('status',2)->count();
+                    // dd($countdrivertask_id);
+                    if($countdrivertask_id == $countdrivertask_status){
+                        PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
+                    }
+
+                    $url    =   URL::to($this->prefix.'/driver-tasks');
+                    $response['success'] = true;
+                    $response['success_message'] = "PRS task item Added successfully";
+                    $response['error'] = false;
+                    // $response['resetform'] = true;
+                    $response['page'] = 'create-prstaskitem';
+                    $response['redirect_url'] = $url;
+                }else{
+                    $response['success'] = false;
+                    $response['error_message'] = "Can not created PRS task item please try again";
+                    $response['error'] = true;
+                }
+            }
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not created PRS task item please try again";
+            $response['error'] = true;
+        }
+            
+        return response()->json($response);
     }
 
     /**
