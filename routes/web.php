@@ -315,6 +315,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
+    Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
 
 
 });
@@ -441,6 +442,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
+    Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+
     
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -636,6 +639,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
+    Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+
 
 
 });
