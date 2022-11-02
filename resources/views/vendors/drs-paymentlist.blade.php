@@ -68,6 +68,15 @@ div.relative {
   transform: translateY(70%) scale(1);
 }
 
+.vehicleField .sumo_vehicle{
+    width: 100% !important;
+}
+
+.vehicleField .text-right.close-c{
+    display: none;
+}
+
+
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">

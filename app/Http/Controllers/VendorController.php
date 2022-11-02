@@ -278,7 +278,7 @@ class VendorController extends Controller
             }
             $searchvehicle = Session::get('searchvehicle');
             if(isset($searchvehicle)){
-                $query = $query->WhereIn('vehicle_no',$searchvehicle);
+                $query = $query->whereIn('vehicle_no',$searchvehicle);
             }
 
             // if (isset($request->vehicle_no)) {
@@ -297,7 +297,7 @@ class VendorController extends Controller
             }
 
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
-
+        // dd($paymentlist);
             $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem, 'vehicles'=>$vehicles])->render();
             $paymentlist = $paymentlist->appends($request->query());
 
