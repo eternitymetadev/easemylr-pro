@@ -61,34 +61,7 @@ jQuery(document).ready(function () {
             }
         });
         return false;
-    });
-
-    /// reset model validations and value on close
-
-    jQuery('.modal').on('hidden.bs.modal', function (e) {
-        var modelid = jQuery(this).attr('id');
-        if(modelid == 'search-status'){
-          //jQuery(".checkboxall").prop("checked", false);
-          //jQuery(".checkbox").prop("checked", false);
-        } else if(modelid == 'search-paymentvehicle'){
-        //   jQuery('#searchvehicle').multiselect( 'refresh' );
-        //   jQuery('#searchvehicle').val([]);
-        } 
-        else{
-        //   jQuery(".assignuser").select2("val", "");
-        //   jQuery(this)
-        //   .find("input,textarea,select")
-        //   .val('')
-        //   .end()
-        //   .find("input[type=radio],input[type=checkbox]")
-        //   .prop("checked", "")
-        //   .end();
-        //   jQuery(this).find('.error').html('')
-        //   jQuery(this).find('.filetext').text('Upload File');
-        //   jQuery('.assignuser').val(null).trigger('change');
-        }
-      })
-    
+    });    
 
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
