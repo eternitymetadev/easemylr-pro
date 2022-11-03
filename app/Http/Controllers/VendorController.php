@@ -210,11 +210,13 @@ class VendorController extends Controller
             $peritem = Config::get('variable.PER_PAGE');
         }
 
-        $query = TransactionSheet::query();
+        $query = TransactionSheet::query();        
 
         if ($request->ajax()) {
-
+            $searchids  = [];
+            
             if (isset($request->resetfilter)) {
+                Session::forget('searchvehicle');
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
@@ -267,9 +269,19 @@ class VendorController extends Controller
                 });
             }
 
-            if (isset($request->vehicle_no)) {
-                $query = $query->where('vehicle_no', $request->vehicle_no);
+            /// search with vehicle no
+
+            if($request->searchvehicle){
+                Session::put('searchvehicle',$request->searchvehicle);
             }
+            $searchvehicle = Session::get('searchvehicle');
+            if(isset($searchvehicle)){
+                $query = $query->whereIn('vehicle_no',$searchvehicle);
+            }
+
+            // if (isset($request->vehicle_no)) {
+            //     $query = $query->where('vehicle_no', $request->vehicle_no);
+            // }
 
             if ($request->peritem) {
                 Session::put('peritem', $request->peritem);
@@ -282,9 +294,11 @@ class VendorController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
+            $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
+            
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
 
-            $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem])->render();
+            $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem, 'vehicles'=>$vehicles])->render();
             $paymentlist = $paymentlist->appends($request->query());
 
             return response()->json(['html' => $html]);
@@ -308,7 +322,7 @@ class VendorController extends Controller
             ->where('request_status', 0)
             ->where('payment_status', '=', 0)
             ->groupBy('drs_no');
-
+        
         if ($authuser->role_id == 1) {
             $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
@@ -334,14 +348,15 @@ class VendorController extends Controller
             $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
 
+        $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
+
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());
-        $vehicles = Vehicle::select('id', 'regn_no')->get();
+        // $vehicles    = Vehicle::select('id', 'regn_no')->get();
         $vehicletype = VehicleType::select('id', 'name')->get();
         $vendors = Vendor::with('Branch')->get();
 
         return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
-
     }
 
     public function getdrsdetails(Request $request)
