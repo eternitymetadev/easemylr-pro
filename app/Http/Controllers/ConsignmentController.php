@@ -755,12 +755,8 @@ class ConsignmentController extends Controller
                 ' . $conr_add . '
             </p>
             </div>';
-<<<<<<< HEAD
-        } else {
-=======
             $shipto_address = '';
         }else{
->>>>>>> 512afcf4c10769be3102a30f966d9f0f90a60fde
             $cnradd_heading = '<div class="container">
             <div>
             <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
@@ -2674,18 +2670,12 @@ class ConsignmentController extends Controller
                 } else {
                     $phone = '';
                 }
-<<<<<<< HEAD
-
-                $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
-=======
                 if($data['is_salereturn']!= 1){
                     $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
                 }else{
                     $shiptoadd ='';
                 }
-        
->>>>>>> 512afcf4c10769be3102a30f966d9f0f90a60fde
+                
                 $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                 $output_file = '/qr-code/img-' . time() . '.svg';
                 Storage::disk('public')->put($output_file, $generate_qrcode);
