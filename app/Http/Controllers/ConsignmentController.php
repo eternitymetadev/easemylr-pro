@@ -767,6 +767,7 @@ class ConsignmentController extends Controller
                 '.$conr_add.'
             </p>
             </div>';
+            $shipto_address = '';
         }else{
             $cnradd_heading = '<div class="container">
             <div>
@@ -786,6 +787,17 @@ class ConsignmentController extends Controller
                 '.$consnee_add.'
             </p>
             </div>';
+            $shipto_address = '<td width="30%" style="vertical-align:top;>
+            <div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+              '.$shiptoadd.'
+            </p>
+                </div>
+            </td>';
         }
 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
@@ -996,17 +1008,7 @@ class ConsignmentController extends Controller
                                     <td width="30%" style="vertical-align:top;>
                                     '.$cneadd_heading.'
                                     </td>
-                                    <td width="30%" style="vertical-align:top;>
-                                    <div class="container">
-                                    <div>
-                                    <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
-                                    </div>
-                                        <div style="margin-top: -11px;">
-                                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                      '.$shiptoadd.'
-                                    </p>
-                                        </div>
-                                    </td>
+                                    '.$shipto_address.'
                                 </tr>
                             </table>
                       </div>
@@ -2667,8 +2669,11 @@ class ConsignmentController extends Controller
                 } else {
                     $phone = '';
                 }
-        
-                $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+                if($data['is_salereturn']!= 1){
+                    $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+                }else{
+                    $shiptoadd ='';
+                }
         
                 $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                 $output_file = '/qr-code/img-' . time() . '.svg';
@@ -2700,7 +2705,7 @@ class ConsignmentController extends Controller
                                 <tr>
                                     <td style="width:33%">' . $consnee_add . '</td>
                                     <td style="width:33%">' . $conr_add . '</td>
-                                    <td style="width:33%">' . $shiptoadd . '</td>
+                                    
                                 </tr>
                             </table>';
                     }else{
