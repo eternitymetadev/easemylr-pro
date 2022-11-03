@@ -359,7 +359,11 @@
                             <select class="form-control my-select2" id="vendor_id_1" name="vendor_name" tabindex="-1">
                                 <option value="" selected disabled>Select Vendor</option>
                                 @foreach($vendors as $vendor)
-                                <option value="{{$vendor->id}}">{{$vendor->name}}</option>
+                                <?php
+                                $bank_details = json_decode($vendor->bank_details, true);
+                                
+                                ?>
+                                <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}-{{$vendor->Branch->name}}</option>
                                 @endforeach
                             </select>
                         </div>

@@ -180,7 +180,8 @@ class DashboardController extends Controller
         Session::forget('startdate'); 
         Session::forget('endate');
         
-         Session::forget('internalperitem');
+        Session::forget('internalperitem');
+        Session::forget('searchvehicle');
          
          $response['success'] = true;
          return response()->json($response);

@@ -29,7 +29,7 @@ class PaymentHistory extends Model
     ];
 
     public function PaymentRequest(){
-        return $this->hasOne('App\Models\PaymentRequest','transaction_id','transaction_id');
+        return $this->hasMany('App\Models\PaymentRequest','transaction_id','transaction_id');
     }
 
 }
