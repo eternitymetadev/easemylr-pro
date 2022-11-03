@@ -163,6 +163,7 @@ span.round-tab:hover {
     <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder" style="margin: auto; ">
     @csrf
     <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
+    <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">

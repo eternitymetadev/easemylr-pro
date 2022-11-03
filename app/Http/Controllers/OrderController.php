@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\ConsignmentNote;
-use App\Models\BranchAddress;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
+use App\Models\ConsignmentNote;
 use App\Models\Driver;
 use App\Models\Location;
-use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
-use App\Models\Vehicle;
 use App\Models\Role;
+use App\Models\Vehicle;
 use App\Models\VehicleType;
-use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Auth;
 use DB;
-use QrCode;
+use Illuminate\Http\Request;
 use Storage;
-use Validator;
-use DataTables;
-use Helper;
-use Crypt;
 use URL;
+use Validator;
 
 class OrderController extends Controller
 {
@@ -45,37 +38,32 @@ class OrderController extends Controller
         // $peritem = 20;
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
 
         $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $data;
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $data = $data->where('consignment_notes.user_id', $authuser->id);
-        }
-        elseif($authuser->role_id ==6){
+        } elseif ($authuser->role_id == 6) {
             $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-                $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
+        } elseif ($authuser->role_id == 7) {
+            $data = $data->whereIn('regional_clients.id', $regclient);
+        } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
-        $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
+        $data = $data->where('consignment_notes.status', '5')->orderBy('id', 'DESC');
         $consignments = $data->get();
-        
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status'=>$request->status,'reason_to_cancel' => $request->reason_to_cancel]);
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
             }
 
             $url = $this->prefix . '/orders';
@@ -100,33 +88,33 @@ class OrderController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $cc = explode(',', $authuser->branch_id);
 
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
-            if($authuser->role_id == $role_id->id){
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+            if ($authuser->role_id == $role_id->id) {
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('branch_id', $cc)->get();
-            }else{
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            if($authuser->role_id !=1){
-                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-            }else{
+        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+            if ($authuser->role_id != 1) {
+                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id', $regclient)->get();
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else{
+        } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        
+
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        
+
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -140,7 +128,7 @@ class OrderController extends Controller
             $consignmentno = $con_series . '-1';
         }
 
-        if(empty($consignmentno)) {
+        if (empty($consignmentno)) {
             $consignmentno = "";
         }
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -148,24 +136,22 @@ class OrderController extends Controller
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
-       
-        if($authuser->role_id == 2 || $authuser->role_id == 3 ){
+
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
-        
-        }
-        elseif($authuser->role_id == 4){
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+
+        } elseif ($authuser->role_id == 4) {
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
-       
-        }
-        else{
+            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+
+        } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -210,9 +196,9 @@ class OrderController extends Controller
             $consignmentsave['branch_id'] = $authuser->branch_id;
             $consignmentsave['status'] = 5;
 
-            if (!empty($request->vehicle_id)) {                
+            if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
-            }else{
+            } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
@@ -269,28 +255,28 @@ class OrderController extends Controller
 
         if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             if ($authuser->role_id == $role_id->id) {
-                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
+                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             } else {
-                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            if($authuser->role_id !=1){
-                $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
-                }else{
-                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+            if ($authuser->role_id != 1) {
+                $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+            } else {
+                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             }
         } else {
-            $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+            $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         }
-        $consignees = Consignee::orderby('nick_name','ASC')->pluck('nick_name','id');
-        
+        $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        
+
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -303,7 +289,7 @@ class OrderController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        
+
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
@@ -311,23 +297,23 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        //////////////Bill to regional clients //////////////
-       
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+        ////////////// Bill to regional clients //////////////
+
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
-        
-        }elseif($authuser->role_id == 4){
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+
+        } elseif ($authuser->role_id == 4) {
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
-       
-        }else{
+            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+
+        } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments'=>$getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient'=>$regionalclient]);
+        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -341,7 +327,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'consigner_id' => 'required',
@@ -361,8 +347,12 @@ class OrderController extends Controller
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
+            if ($request->booked_drs == 0) {
+                if (empty($request->vehicle_id)) {
+                    $status = '2';
+                } else {
+                    $status = '1';
+                }
             } else {
                 $status = '1';
             }
@@ -399,8 +389,8 @@ class OrderController extends Controller
             $consignmentsave['total_quantity'] = $request->total_quantity;
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            $consignmentsave['transporter_name']  = $request->transporter_name;
-            $consignmentsave['vehicle_type']      = $request->vehicle_type;
+            $consignmentsave['transporter_name'] = $request->transporter_name;
+            $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
@@ -414,30 +404,32 @@ class OrderController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            $saveconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
+            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
             $consignment_id = $request->consignment_id;
-           //===================== Create DRS in LR ================================= //
-           if(!empty($request->vehicle_id)){
-                $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->where('consignment_notes.id', $consignment_id)
-                    ->first(['consignees.city']);
-                $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                //echo'<pre>'; print_r($simplyfy); die;
+            //===================== Create DRS in LR ================================= //
+            if ($request->booked_drs == 0) {
+                if (!empty($request->vehicle_id)) {
+                    $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
+                        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                        ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                        ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                        ->where('consignment_notes.id', $consignment_id)
+                        ->first(['consignees.city']);
+                    $simplyfy = json_decode(json_encode($consignmentdrs), true);
+                    //echo'<pre>'; print_r($simplyfy); die;
 
-                $no_of_digit = 5;
-                $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
-                $drs_no = json_decode(json_encode($drs), true);
-                if (empty($drs_no) || $drs_no == null) {
-                    $drs_no['drs_no'] = 0;
+                    $no_of_digit = 5;
+                    $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
+                    $drs_no = json_decode(json_encode($drs), true);
+                    if (empty($drs_no) || $drs_no == null) {
+                        $drs_no['drs_no'] = 0;
+                    }
+                    $number = $drs_no['drs_no'] + 1;
+                    $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+
+                    $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
                 }
-                $number = $drs_no['drs_no'] + 1;
-                $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
-
-                $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
             }
             //===========================End drs lr ================================= //
             if ($saveconsignment) {
@@ -455,7 +447,7 @@ class OrderController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
-                $get_data = ConsignmentNote::where('id',$request->consignment_id)->first();
+                $get_data = ConsignmentNote::where('id', $request->consignment_id)->first();
 
                 if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                     $createTask = $this->createTookanTasks($simplyfy);
@@ -473,7 +465,7 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = URL::to($this->prefix.'/consignments');
+                $url = URL::to($this->prefix . '/consignments');
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;
@@ -580,5 +572,4 @@ class OrderController extends Controller
 
     }
 
-    
 }

@@ -281,7 +281,6 @@ $('#p_type').change(function() {
         beforeSend: //reinitialize Datatables
             function() {
 
-
             },
         success: function(data) {
             console.log(data.getbalance.balance);
@@ -329,7 +328,6 @@ $(document).on('click', '.show-drs', function() {
             function() {
                 $('#show_drs_table').dataTable().fnClearTable();
                 $('#show_drs_table').dataTable().fnDestroy();
-
             },
         success: function(data) {
             // console.log(data.)
