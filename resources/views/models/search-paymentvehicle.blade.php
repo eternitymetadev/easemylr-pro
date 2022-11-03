@@ -16,7 +16,7 @@
 
               foreach ($vehicles as $key => $vehicle) {
                ?>
-                <option value="{{$vehicle->regn_no}}">{{$vehicle->regn_no}}</option>
+                <option value="{{$vehicle->vehicle_no}}">{{$vehicle->vehicle_no}}</option>
               <?php } ?>
             </select>
             <div class="text-right close-c"><i class="fa fa-times"></i></div>

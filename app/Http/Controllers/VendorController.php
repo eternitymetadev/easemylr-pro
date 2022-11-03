@@ -209,10 +209,7 @@ class VendorController extends Controller
             $peritem = Config::get('variable.PER_PAGE');
         }
 
-        $query = TransactionSheet::query();
-        
-        $vehicles = Vehicle::select('id','regn_no')->where('status','1')->get();
-
+        $query = TransactionSheet::query();        
 
         if ($request->ajax()) {
             $searchids  = [];
@@ -296,8 +293,10 @@ class VendorController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
+            $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
+            
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
-        // dd($paymentlist);
+
             $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem, 'vehicles'=>$vehicles])->render();
             $paymentlist = $paymentlist->appends($request->query());
 
@@ -322,7 +321,7 @@ class VendorController extends Controller
             ->where('request_status', 0)
             ->where('payment_status', '=', 0)
             ->groupBy('drs_no');
-
+        
         if ($authuser->role_id == 1) {
             $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
@@ -347,6 +346,8 @@ class VendorController extends Controller
 
             $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
+
+        $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
 
         $paymentlist = $query->orderBy('id', 'DESC')->paginate($peritem);
         $paymentlist = $paymentlist->appends($request->query());

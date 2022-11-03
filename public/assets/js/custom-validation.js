@@ -55,7 +55,7 @@ jQuery(document).ready(function () {
               if(response.html){
                 jQuery('.main-table').html(response.html);
                 jQuery("#search-paymentvehicle").modal("hide");
-                jQuery('#searchvehicle').multiselect( 'reset');
+                // jQuery('#searchvehicle').multiselect( 'reset');
                 jQuery('.assignedtoarray').val(selectedvehicles);
               }
             }
