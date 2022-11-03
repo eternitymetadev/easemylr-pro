@@ -64,6 +64,8 @@ div.relative {
             </div>
 
             <div class="widget-content widget-content-area br-6">
+            <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/payment-reportExport') }}">Export
+                    data</a>
                 <div class=" mb-4 mt-4">
                     @csrf
                     <table id="unverified-table" class="table table-hover" style="width:100%">
@@ -86,97 +88,141 @@ div.relative {
                         <th>Gross weight</th>
                         <th>Truck No.</th>
                         <th>Vendor Name</th>
+                        <th>Vendor Type</th>
+                        <th>Declaration</th>
+                        <th>TDS Rate</th>
                         <th>Bank Name</th>
                         <th>Account No.</th>
                         <th>IFSC Code</th>
                         <th>Vendor Pan</th>
                         <th>Purchase Freight</th>
+                        <th>Paid Amount</th>
+                        <th>Tds Amount</th>
+                        <th>Balance Due</th>
                         <th>Advance</th>
                         <th>Payment Date</th>
+                        <th>Ref. No</th>
                         <th>Blance Amount</th>
                         <th>payment date</th>
-                        <th>Total Amount Paid</th>
-                        <th>Debit Bank</th>
-                        <th>Ref.No.</th>
-                        <th>Balance Due</th>
-                        <th>Tds Amount.</th>
-                        <th>TDS Status YES/NO</th>
-                        <th>Declaration</th>
+                        <th>Ref. No</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php $i = 0;?>
                     @foreach($payment_lists as $payment_list)
-                    <?php $i++;
-                    $bankdetails = json_decode($payment_list->VendorDetails->bank_details);
-                     $lr_arra = array();
-                     $itm_arra = array();
-                     $consigneecity = array();
-                     foreach($payment_list->TransactionDetails as $lr_no){
-                              $lr_arra[] = $lr_no->consignment_no;
-                              $consigneecity[] = $lr_no->ConsignmentNote->ShiptoDetail->city;
+                    <?php
+                    $i++;
+                    $bankdetails = json_decode($payment_list->PaymentRequest[0]->VendorDetails->bank_details);
+                        
+                        $date = date('d-m-Y',strtotime($payment_list->created_at));
+                        $lr_arra = array();
+                        $consigneecity = array();
+                        $itm_arra = array();
+                        $qty = array();
+                        $totlwt = array();
+                        $grosswt = array();
+                        $drsvehicel = array();
+                        $vel_type = array();
+                        foreach($payment_list->PaymentRequest as $lr_no){
 
-                        foreach($lr_no->ConsignmentNote->ConsignmentItems as $lr_no_item){
-                            $itm_arra[] = $lr_no_item->invoice_no;
+                            $drsvehicel[] = $lr_no->vehicle_no;
+                            $qty[] = Helper::totalQuantity($lr_no->drs_no);
+                            $totlwt[] = Helper::totalWeight($lr_no->drs_no);
+                            $grosswt[] = Helper::totalGrossWeight($lr_no->drs_no);
+                            foreach($lr_no->TransactionDetails as $lr_group){
+                                $lr_arra[] = $lr_group->consignment_no;
+                               $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
+                               $vel_type[] = @$lr_group->ConsignmentNote->vehicletype->name;
+                            }
+                            
+                            foreach($lr_group->ConsignmentNote->ConsignmentItems as $lr_no_item){
+                                $itm_arra[] = $lr_no_item->invoice_no;
+                            }
                         }
-                     }
-                     $multilr = implode(',', $lr_arra);
-                       $lr_itm = implode(',', $itm_arra);
-                       $city = implode(',', $consigneecity);
-                      $utr_arra = array();
-                      $tds_deduct = array();
-                     foreach($payment_list->PaymentHistory as $payment_list_item){
-                         $utr_arra[] = $payment_list_item->bank_refrence_no;
-                         $tds_deduct[] = $payment_list_item->tds_deduct_balance;
-                     }
-                        $utr = implode(',',$utr_arra);
-                        $tds = implode('/',$tds_deduct);
-                      $histrycount = count($payment_list->PaymentHistory);
-                     $date = date('d-m-Y',strtotime($payment_list->created_at));
-                     if($payment_list->VendorDetails->declaration_available == 1){
+                        $csd = array_unique($vel_type);
+                        $group_vehicle_type = implode('/',$csd);
+                        $group_vehicle = implode('/',$drsvehicel);
+                        $ttqty = implode('/', $qty);
+                        $groupwt = implode('/', $totlwt);
+                        $groupgross = implode('/', $grosswt);
+                        $city = implode('/', $consigneecity);
+                        $multilr = implode('/', $lr_arra);
+                        $lr_itm = implode('/', $itm_arra);
+
+                        if($payment_list->PaymentRequest[0]->VendorDetails->declaration_available == 1){
                             $decl = 'Yes';
-                     }else{
-                        $decl = 'No';
-                     }
+                        }else{
+                            $decl = 'No';
+                        }
+
+                        $exp_drs = explode(',',$payment_list->drs_no);
+                        $exp_arra = array();
+                        foreach($exp_drs as $exp){
+                             $exp_arra[] = 'DRS-'.$exp;
+                        }
+                        $newDrs = implode(',',$exp_arra);
+
+                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
+                        $histrycount = count($trans_id);
+                        if($histrycount > 1){
+                           $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance ;
+                           $curr_paid_amt = $trans_id[1]->current_paid_amt;
+                           $paymt_date_2 = $trans_id[1]->payment_date;
+                           $ref_no_2 = $trans_id[1]->bank_refrence_no;
+                           $tds_amt = $payment_list->PaymentRequest[0]->total_amount - $paid_amt ;
+
+                        }else{
+                            $paid_amt = $trans_id[0]->tds_deduct_balance ;
+                            $curr_paid_amt = '';
+                            $paymt_date_2 = '';
+                            $ref_no_2 = '';
+                            $tds_amt =  $payment_list->advance - $payment_list->tds_deduct_balance ;
+                        }
                     ?>
+
                     <tr>
                         <td>{{$i}}</td>
                         <td>{{$payment_list->transaction_id ?? '-'}}</td>
                         <td>{{$date}}</td>
-                        <td>{{$lr_no->ConsignmentNote->RegClient->name ?? '-'}}</td>
-                        <td>{{$payment_list->Branch->nick_name ?? '-'}}</td>
+                        <td>{{$lr_group->ConsignmentNote->RegClient->name ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->Branch->nick_name ?? '-'}}</td>
                         <td>{{$city ?? '-'}}</td>
-                        <td>DRS-{{$payment_list->drs_no ?? '-'}}</td>
+                        <td>{{$newDrs ?? '-'}}</td>
                         <td>{{$multilr ?? '-'}}</td>
                         <td>{{$lr_itm ?? '-'}}</td>
-                        <td>{{$lr_no->ConsignmentNote->vehicletype->name ?? '-'}}</td>
-                        <td>{{ Helper::totalQuantity($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{ Helper::totalWeight($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{ Helper::totalGrossWeight($payment_list->drs_no) ?? "-"}}</td>
-                        <td>{{$payment_list->vehicle_no ?? '-'}}</td>
-                        <td>{{$payment_list->VendorDetails->name ?? '-'}}</td>
+                        <td>{{$group_vehicle_type ?? '-'}}</td>
+                        <td>{{$ttqty}}</td>
+                        <td>{{$groupwt}}</td>
+                        <td>{{$groupgross}}</td>
+                        <td>{{$group_vehicle}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->VendorDetails->name ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->VendorDetails->vendor_type ?? '-'}}</td>
+                        <td>{{$decl}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->VendorDetails->tds_rate ?? '-'}}</td>
                         <td>{{$bankdetails->bank_name ?? '-'}}</td>
                         <td>{{$bankdetails->account_no ?? '-'}}</td>
                         <td>{{$bankdetails->ifsc_code ?? '-'}}</td>
-                        <td>{{$payment_list->VendorDetails->pan ?? '-'}}</td>
-                        <td>{{$payment_list->total_amount ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[0]->advance ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[0]->payment_date ?? '-'}}</td>
-                        <?php if($histrycount > 1){?>
-                        <td>{{$payment_list->PaymentHistory[1]->current_paid_amt ?? '-'}}</td>
-                        <td>{{$payment_list->PaymentHistory[1]->payment_date ?? '-'}}</td>
-                        <?php }else{?>
-                        <td>-</td>
-                        <td>-</td>
-                        <?php } ?>
-
-                        <td>{{$payment_list->advanced ?? '-'}}</td>
-                        <td>HDFC</td>
-                        <td>{{$utr ?? '-'}}</td>
-                        <td>{{$payment_list->balance ?? '-'}}</td>
-                        <td>{{$tds}}</td>
-                        <td>{{$decl}}</td>
-                        <td>-</td>
+                        <td>{{$payment_list->PaymentRequest[0]->VendorDetails->pan ?? '-'}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->total_amount ?? '-'}}</td>
+                        <td>{{$paid_amt}}</td>
+                        <td>{{$tds_amt}}</td>
+                        <td>{{$payment_list->PaymentRequest[0]->balance ?? '-'}}</td>
+                        <td>{{$payment_list->advance ?? '-'}}</td>
+                        <td>{{$payment_list->payment_date ?? '-'}}</td>
+                        <td>{{$payment_list->bank_refrence_no ?? '-'}}</td>
+                        <?php
+                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
+                        $histrycount = count($trans_id);
+                        if($histrycount > 1){
+                        ?>
+                        <td>{{$trans_id[1]->current_paid_amt ?? '-'}}</td>
+                        <td>{{$trans_id[1]->payment_date ?? '-'}}</td>
+                        <td>{{$trans_id[1]->bank_refrence_no ?? '-'}}</td>
+                        <?php }else{ ?>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <?php  } ?>
                     </tr>
                     @endforeach
                 </tbody>
@@ -189,7 +235,7 @@ div.relative {
 @endsection
 @section('js')
 <script>
-$('#unverified-table').DataTable({ 
+$('#unverified-table').DataTable({
 
     "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
@@ -198,11 +244,11 @@ $('#unverified-table').DataTable({
         buttons: [
             // { extend: 'copy', className: 'btn btn-sm' },
             // { extend: 'csv', className: 'btn btn-sm' },
-            {
-                extend: 'excel',
-                className: 'btn btn-sm',
-                title: '', 
-            },
+            // {
+            //     extend: 'excel',
+            //     className: 'btn btn-sm',
+            //     title: '',
+            // },
             // { extend: 'print', className: 'btn btn-sm' }
         ]
     },

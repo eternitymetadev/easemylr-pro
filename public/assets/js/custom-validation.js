@@ -1946,17 +1946,11 @@ $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var tds_rate = $('#tds_rate').val();
-    var branch = $('#branch_id').val();
 
     if(!tds_rate){
         swal('Error','please add tds rate in vendor','error');
         return false;
     }
-    if(!branch){
-        swal('Error','please select branch location','error');
-        return false;
-    }
-
 
     $.ajax({
         url: "create-payment",
@@ -2190,21 +2184,9 @@ $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var vendor = $('#vendor_id_1').val();
-    var branch = $('#branch_id_1').val();
-    var bank_acc = $('#bank_acc_1').val();
     if(!vendor)
     {
         swal('Error!', 'Please select a vendor','error');
-        return false;
-    }
-    if(!branch)
-    {
-        swal('Error!', 'Please select Branch','error');
-        return false;
-    }
-    if(!bank_acc)
-    {
-        swal('Error!', 'Error in Bank Details','error');
         return false;
     }
     var base_url = window.location.origin;
