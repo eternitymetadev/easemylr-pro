@@ -64,7 +64,7 @@ div.relative {
             </div>
 
             <div class="widget-content widget-content-area br-6">
-            <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/payment-reportExport') }}">Export
+                <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/payment-reportExport') }}">Export
                     data</a>
                 <div class=" mb-4 mt-4">
                     @csrf
@@ -217,11 +217,11 @@ div.relative {
                         <td>{{$tds_amt}}</td>
                         <td>{{$balance_due}}</td>
                         <?php if($payment_list->payment_type == 'Balance'){ ?>
-                            <td>{{$payment_list->balance ?? '-'}}</td>
-                            <?php }else{ ?>
-                                <td>{{$payment_list->advance ?? '-'}}</td>
-                                <?php } ?>
-                      
+                        <td>{{$payment_list->balance ?? '-'}}</td>
+                        <?php }else{ ?>
+                        <td>{{$payment_list->advance ?? '-'}}</td>
+                        <?php } ?>
+
                         <td>{{$payment_list->payment_date ?? '-'}}</td>
                         <td>{{$payment_list->bank_refrence_no ?? '-'}}</td>
                         <?php
