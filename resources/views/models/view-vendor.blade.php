@@ -17,8 +17,13 @@
                             <input type="file" class="form-control" id="vendor_file" name="vendor_file" value="">
                         </div>
                     </div>
+
+                    <div class="ignored" style="display:none;">
+            <h4>Ignored Vendor, These Vendor Ifsc code is less than 11 digit</h4>
+             </div>
           
        </div>
+     
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">

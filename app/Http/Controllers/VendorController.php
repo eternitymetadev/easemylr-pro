@@ -545,18 +545,45 @@ class VendorController extends Controller
 
     }
 
+    public function rewrap(array $input)
+    {
+        $key_names = array_shift($input);
+        $output = array();
+        foreach ($input as $index => $inner_array) {
+            $output[] = array_combine($key_names, $inner_array);
+        }
+        return $output;
+    }
+
     public function importVendor(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
 
+        $rows = Excel::toArray([], request()->file('vendor_file'));
+        $data = $rows[0];
+       
+        $chng = $this->rewrap($data);
+        $ignore_vendor = array();
+                  foreach ($chng as $val) {
+                      $ifsc_code = $val['ifsc_code'];
+                      $check_length = strlen($ifsc_code);
+
+                      if ($check_length != 11) {
+                          $ignore_vendor[] = ['vendor' => $val['vendor_name'], 'ifsc_code' => $val['ifsc_code']];
+                      }
+                  }
+                  $ignorecount = count($ignore_vendor);
+        
         $data = Excel::import(new VendorImport, request()->file('vendor_file'));
         $message = 'Vendors Imported Successfully';
 
         if ($data) {
-            $response['success'] = true;
-            $response['page'] = 'bulk-imports';
-            $response['error'] = false;
-            $response['success_message'] = $message;
+            $response['success']            = true;
+            $response['page']               = 'bulk-imports';
+            $response['error']              = false;
+            $response['success_message']    = $message;
+            $response['ignore_vendor']      = $ignore_vendor;
+            $response['ignorecount']        = $ignorecount;
         } else {
             $response['success'] = false;
             $response['error'] = true;

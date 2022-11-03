@@ -1992,8 +1992,15 @@ $('#vendor_import').submit(function (e) {
         },
         success: (data) => {
             if (data.success == true) {
-                swal('success', data.success_message, 'success');
-                window.location.reload();
+                if (data.ignorecount > 0) {
+                    $(".ignored").show();
+                    $.each(data.ignore_vendor, function (key, value) {
+                        $(".ignored").append('<li>' + value.vendor + '</li>');
+                    });
+                swal('success', data.ignorecount + " ignored, These Vendor Ifsc code is less than 11 digit", 'success');
+                } else {
+                    swal("success!", data.success_message, "success");
+                }
             } else {
                 swal('error', data.error_message, 'error');
             }
