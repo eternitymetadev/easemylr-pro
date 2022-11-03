@@ -17,7 +17,9 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
      */
     public function model(array $row)
     {
-        
+         $check_ifsc = strlen($row['ifsc_code']);
+
+         if($check_ifsc == 11){
         $driver = Driver::select('id')->where('name', $row['driver_name'])->where('phone', $row['driver_number'])->first();
 
         $other_details = array('transporter_name' => $row['transporter_name'], 'contact_person_number' => $row['transporter_name']);
@@ -64,6 +66,7 @@ class VendorImport implements ToModel, WithHeadingRow//ToCollection
             'created_at'             => time(),
         ]);
     }
+}
 
     }
 }
