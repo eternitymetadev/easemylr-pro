@@ -264,7 +264,8 @@ class VendorController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('vehicle_no', 'like', '%' . $search . '%');
+                    $query->where('vehicle_no', 'like', '%' . $search . '%')
+                    ->orWhere('drs_no', 'like', '%' . $search . '%');
 
                 });
             }
