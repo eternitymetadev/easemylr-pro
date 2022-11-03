@@ -516,7 +516,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
-
+                
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
                 );
@@ -526,7 +526,6 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
-
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -864,6 +863,42 @@ jQuery(document).ready(function () {
                     '][gross_weight]"></td>';
                 tds +=
                     '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                tds += "</tr>";
+            }
+
+            if ($("tbody", this).length > 0) {
+                $("tbody", this).append(tds);
+            } else {
+                $(this).append(tds);
+            }
+        });
+    });
+
+    // Add Another Row in PRS driver task
+    $(document).on("click", ".insert-moreprs", function () {
+        $("#create-driver-task").each(function () {
+            var item_no = $("tr", this).length;
+            if (item_no <= 6) {
+                var tds = "<tr>";
+
+                tds +=
+                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
+                tds +=
+                    '<td><input type="text" class="form-control form-small invc_no" name="data['+
+                    item_no +'][invoice_no]" id="'+item_no+'" value=""></td>';
+                tds +=
+                    '<td><input type="date" class="form-control form-small invc_date" name="data[' +
+                    item_no +'][invoice_date]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                    item_no +'][quantity]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small net" name="data[' +
+                    item_no +'][weight]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small gross" name="data[' +
+                    item_no +'][gross_weight]"></td>';
+                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
             }
 
@@ -2247,5 +2282,60 @@ $('#update_purchase_amt_form').submit(function (e) {
             }
 
         }
+    });
+});
+
+/*====== In create PRS  get consigner on click regional client =====*/
+$("#select_prsregclient").change(function (e) {
+    var regclient_id = $(this).val();
+    $("#select_consigner").empty();
+
+    $.ajax({
+        url: "/get-consignerprs",
+        type: "get",
+        cache: false,
+        data: { regclient_id: regclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {            
+            $("#select_consigner").append(
+                '<option value="">select consigner</option>'
+            );
+
+            $.each(res.data, function (index, value) {
+                $("#select_consigner").append(
+                    '<option value="' +
+                    value.id +
+                    '">' +
+                    value.nick_name +
+                    "</option>"
+                );
+            });
+
+            if (res.data_regclient == null) {
+                var multiple_invoice = "";
+            } else {
+                if (
+                    res.data_regclient.is_multiple_invoice == null ||
+                    res.data_regclient.is_multiple_invoice == ""
+                ) {
+                    var multiple_invoice = "";
+                } else {
+                    var multiple_invoice =
+                        res.data_regclient.is_multiple_invoice;
+                }
+            }
+
+            if (multiple_invoice == 1) {
+                $(".insert-more").attr("disabled", false);
+            } else {
+                $(".insert-more").attr("disabled", true);
+            }
+        },
     });
 });
