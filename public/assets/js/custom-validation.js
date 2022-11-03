@@ -1372,7 +1372,7 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
                 $.each(data.fetch, function (index, value) {
                     console.log(value);
-
+                    
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
