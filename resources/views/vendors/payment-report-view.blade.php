@@ -142,9 +142,12 @@ div.relative {
                         $csd = array_unique($vel_type);
                         $group_vehicle_type = implode('/',$csd);
                         $group_vehicle = implode('/',$drsvehicel);
-                        $ttqty = implode('/', $qty);
-                        $groupwt = implode('/', $totlwt);
-                        $groupgross = implode('/', $grosswt);
+                        // $ttqty = implode('/', $qty);
+                        $totalqty = array_sum($qty);
+                        $groupwt = array_sum($totlwt);
+                        $groupgross = array_sum($grosswt);
+                        // $groupwt = implode('/', $totlwt);
+                        // $groupgross = implode('/', $grosswt);
                         $city = implode('/', $consigneecity);
                         $multilr = implode('/', $lr_arra);
                         $lr_itm = implode('/', $itm_arra);
@@ -200,7 +203,7 @@ div.relative {
                         <td>{{$multilr ?? '-'}}</td>
                         <td>{{$lr_itm ?? '-'}}</td>
                         <td>{{$group_vehicle_type ?? '-'}}</td>
-                        <td>{{$ttqty}}</td>
+                        <td>{{$totalqty}}</td>
                         <td>{{$groupwt}}</td>
                         <td>{{$groupgross}}</td>
                         <td>{{$group_vehicle}}</td>
@@ -228,7 +231,7 @@ div.relative {
                         $histrycount = count($trans_id);
                         if($histrycount > 1){
                         ?>
-                        <td>{{$trans_id[1]->current_paid_amt ?? '-'}}</td>
+                        <td>{{$trans_id[1]->tds_deduct_balance ?? '-'}}</td>
                         <td>{{$trans_id[1]->payment_date ?? '-'}}</td>
                         <td>{{$trans_id[1]->bank_refrence_no ?? '-'}}</td>
                         <?php }else{ ?>
