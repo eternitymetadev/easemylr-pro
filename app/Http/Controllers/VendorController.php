@@ -1126,4 +1126,16 @@ class VendorController extends Controller
             return Excel::download(new PaymentReportExport, 'PaymentReport.csv');
         }
 
+        public function handshakeReport(Request $request)
+        {
+
+            $this->prefix = request()->route()->getPrefix();
+            $paymentreports = PaymentRequest::with('VendorDetails', 'Branch')
+            ->groupBy('transaction_id')
+            ->get();
+            
+
+            return view('vendors.handshake-report', ['prefix' => $this->prefix, 'paymentreports' => $paymentreports]);
+        }
+
 }
