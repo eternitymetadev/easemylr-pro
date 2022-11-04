@@ -58,9 +58,12 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $csd = array_unique($vel_type);
                 $group_vehicle_type = implode('/', $csd);
                 $group_vehicle = implode('/', $drsvehicel);
-                $ttqty = implode('/', $qty);
-                $groupwt = implode('/', $totlwt);
-                $groupgross = implode('/', $grosswt);
+                $ttqty = array_sum($qty);
+                $groupwt = array_sum($totlwt);
+                $groupgross = array_sum($grosswt);
+                // $ttqty = implode('/', $qty);
+                // $groupwt = implode('/', $totlwt);
+                // $groupgross = implode('/', $grosswt);
                 $city = implode('/', $consigneecity);
                 $multilr = implode('/', $lr_arra);
                 $lr_itm = implode('/', $itm_arra);
@@ -82,16 +85,31 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $histrycount = count($trans_id);
                 if ($histrycount > 1) {
                     $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance;
-                    $curr_paid_amt = @$trans_id[1]->current_paid_amt;
+                    $curr_paid_amt = @$trans_id[1]->tds_deduct_balance;
                     $paymt_date_2 = @$trans_id[1]->payment_date;
                     $ref_no_2 = @$trans_id[1]->bank_refrence_no;
                     $tds_amt = $payment_list->PaymentRequest[0]->total_amount - $paid_amt;
+
+                    $sumof_paid_tds = $paid_amt + $tds_amt;
+                    $balance_due = $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds;
                 } else {
                     $paid_amt = $trans_id[0]->tds_deduct_balance;
                     $curr_paid_amt = '';
                     $paymt_date_2 = '';
                     $ref_no_2 = '';
-                    $tds_amt = $payment_list->advance - $payment_list->tds_deduct_balance;
+                    if ($payment_list->payment_type == 'Balance') {
+                        $tds_amt = $payment_list->balance - $payment_list->tds_deduct_balance;
+                    } else {
+                        $tds_amt = $payment_list->advance - $payment_list->tds_deduct_balance;
+                    }
+                    $sumof_paid_tds = $paid_amt + $tds_amt;
+                    $balance_due = $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds;
+                }
+
+                if ($payment_list->payment_type == 'Balance') {
+                    $advan = $payment_list->tds_deduct_balance;
+                } else {
+                    $advan = $payment_list->tds_deduct_balance;
                 }
 
                 $arr[] = [
@@ -120,8 +138,8 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'purchase_freight' => @$payment_list->PaymentRequest[0]->total_amount,
                     'paid_amt' => @$paid_amt,
                     'tds_amt' => @$tds_amt,
-                    'balance_due' => @$payment_list->PaymentRequest[0]->balance,
-                    'advance' => @$payment_list->advance,
+                    'balance_due' => @$balance_due,
+                    'advance' => @$advan,
                     'payment_date' => @$payment_list->payment_date,
                     'ref_no' => @$payment_list->bank_refrence_no,
                     'balance_amt' => @$curr_paid_amt,

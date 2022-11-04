@@ -443,6 +443,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
 
     
 });

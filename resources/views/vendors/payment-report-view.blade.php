@@ -64,7 +64,7 @@ div.relative {
             </div>
 
             <div class="widget-content widget-content-area br-6">
-            <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/payment-reportExport') }}">Export
+                <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/payment-reportExport') }}">Export
                     data</a>
                 <div class=" mb-4 mt-4">
                     @csrf
@@ -142,9 +142,12 @@ div.relative {
                         $csd = array_unique($vel_type);
                         $group_vehicle_type = implode('/',$csd);
                         $group_vehicle = implode('/',$drsvehicel);
-                        $ttqty = implode('/', $qty);
-                        $groupwt = implode('/', $totlwt);
-                        $groupgross = implode('/', $grosswt);
+                        // $ttqty = implode('/', $qty);
+                        $totalqty = array_sum($qty);
+                        $groupwt = array_sum($totlwt);
+                        $groupgross = array_sum($grosswt);
+                        // $groupwt = implode('/', $totlwt);
+                        // $groupgross = implode('/', $grosswt);
                         $city = implode('/', $consigneecity);
                         $multilr = implode('/', $lr_arra);
                         $lr_itm = implode('/', $itm_arra);
@@ -171,12 +174,21 @@ div.relative {
                            $ref_no_2 = $trans_id[1]->bank_refrence_no;
                            $tds_amt = $payment_list->PaymentRequest[0]->total_amount - $paid_amt ;
 
+                           $sumof_paid_tds = $paid_amt + $tds_amt ;
+                           $balance_due =  $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds ;
+
                         }else{
                             $paid_amt = $trans_id[0]->tds_deduct_balance ;
                             $curr_paid_amt = '';
                             $paymt_date_2 = '';
                             $ref_no_2 = '';
+                            if($payment_list->payment_type == 'Balance'){
+                                $tds_amt =  $payment_list->balance - $payment_list->tds_deduct_balance ;
+                            }else{
                             $tds_amt =  $payment_list->advance - $payment_list->tds_deduct_balance ;
+                            }
+                            $sumof_paid_tds = $paid_amt + $tds_amt ;
+                            $balance_due =  $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds ;
                         }
                     ?>
 
@@ -191,7 +203,7 @@ div.relative {
                         <td>{{$multilr ?? '-'}}</td>
                         <td>{{$lr_itm ?? '-'}}</td>
                         <td>{{$group_vehicle_type ?? '-'}}</td>
-                        <td>{{$ttqty}}</td>
+                        <td>{{$totalqty}}</td>
                         <td>{{$groupwt}}</td>
                         <td>{{$groupgross}}</td>
                         <td>{{$group_vehicle}}</td>
@@ -206,8 +218,12 @@ div.relative {
                         <td>{{$payment_list->PaymentRequest[0]->total_amount ?? '-'}}</td>
                         <td>{{$paid_amt}}</td>
                         <td>{{$tds_amt}}</td>
-                        <td>{{$payment_list->PaymentRequest[0]->balance ?? '-'}}</td>
-                        <td>{{$payment_list->advance ?? '-'}}</td>
+                        <td>{{$balance_due}}</td>
+                        <?php if($payment_list->payment_type == 'Balance'){ ?>
+                        <td>{{$payment_list->tds_deduct_balance ?? '-'}}</td>
+                        <?php }else{ ?>
+                        <td>{{$payment_list->tds_deduct_balance ?? '-'}}</td>
+                        <?php } ?>
                         <td>{{$payment_list->payment_date ?? '-'}}</td>
                         <td>{{$payment_list->bank_refrence_no ?? '-'}}</td>
                         <?php
@@ -215,7 +231,7 @@ div.relative {
                         $histrycount = count($trans_id);
                         if($histrycount > 1){
                         ?>
-                        <td>{{$trans_id[1]->current_paid_amt ?? '-'}}</td>
+                        <td>{{$trans_id[1]->tds_deduct_balance ?? '-'}}</td>
                         <td>{{$trans_id[1]->payment_date ?? '-'}}</td>
                         <td>{{$trans_id[1]->bank_refrence_no ?? '-'}}</td>
                         <?php }else{ ?>

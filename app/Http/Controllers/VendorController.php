@@ -918,10 +918,12 @@ class VendorController extends Controller
         if ($authuser->role_id == 2) {
             $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->where('branch_id', $cc)
+                ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id')
                 ->get();
         } else {
             $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id')
                 ->get();
         }
@@ -1124,6 +1126,18 @@ class VendorController extends Controller
         public function exportPaymentReport(Request $request)
         {
             return Excel::download(new PaymentReportExport, 'PaymentReport.csv');
+        }
+
+        public function handshakeReport(Request $request)
+        {
+
+            $this->prefix = request()->route()->getPrefix();
+            $paymentreports = PaymentRequest::with('VendorDetails', 'Branch')
+            ->groupBy('transaction_id')
+            ->get();
+            
+
+            return view('vendors.handshake-report', ['prefix' => $this->prefix, 'paymentreports' => $paymentreports]);
         }
 
 }
