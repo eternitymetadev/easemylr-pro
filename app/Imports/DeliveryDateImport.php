@@ -19,7 +19,6 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        dd($row['pod_image']);
         $date_string = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['delivery_date']);
         $delivery_date = $date_string->format('Y-m-d');
         

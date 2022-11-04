@@ -64,7 +64,7 @@ class ImportCsvController extends Controller
                 $zip = new ZipArchive();
                 if($zip->open($_FILES['podsfile']['tmp_name'])===True){
                     // $rand = rand(111111111,999999999);
-                    $data = $zip->extractTo("upload-pod/");
+                    $data = $zip->extractTo("drs/");
                     $zip->close();
                     $message = 'Unzip done!';
                 }else{
