@@ -162,7 +162,7 @@
                         </li> <li>
                             <a href="{{$prefixurl.'request-list'}}"> Transactions Status </a>
                         </li>
-                        <?php if($authuser->role_id ==5 || $authuser->role_id ==3){?>
+                        <?php if($authuser->role_id == 2 || $authuser->role_id ==5 || $authuser->role_id ==3){?>
                         <li>
                             <a href="{{$prefixurl.'payment-report-view'}}"> Report </a>
                         </li>
