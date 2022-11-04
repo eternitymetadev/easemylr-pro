@@ -2321,9 +2321,9 @@ class ConsignmentController extends Controller
         $id = $_GET['draft_id'];
         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
             ->whereHas('ConsignmentDetail', function ($query) {
-                $query->where('status', '1');
+                $query->whereIn('status', ['1','5']);
             })
-            ->orderby('order_no', 'asc')->get();
+            ->orderby('order_no', 'asc')->get();  
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
         //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
