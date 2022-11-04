@@ -411,7 +411,16 @@ class VendorController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
+        $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
+
+        $get_vehicle = PaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
+        $sent_vehicle = array();
+        foreach($get_vehicle as $vehicle){
+              $sent_vehicle[] = $vehicle->vehicle_no;
+        }
+        $unique = array_unique($sent_vehicle);
+        $sent_vehicle_no = implode(',', $unique);
 
         $url_header = $_SERVER['HTTP_HOST'];
         $drs = explode(',', $request->drs_no);
@@ -438,9 +447,11 @@ class VendorController extends Controller
             \"claimed_amount\": \"$request->claimed_amount\",
             \"pfu\": \"$pfu\",
             \"ptype\": \"$request->p_type\",
-            \"email\": \"$request->email\",
+            \"email\": \"$bm_email\",
             \"terid\": \"$request->transaction_id\",
             \"branch\": \"$branch_name->nick_name\",
+            \"pan\": \"$request->pan\",
+            \"vehicle\": \"$sent_vehicle_no\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
@@ -470,7 +481,7 @@ class VendorController extends Controller
 
                 PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
 
-                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
@@ -490,7 +501,7 @@ class VendorController extends Controller
 
                 $balance_amt = $request->claimed_amount - $request->payable_amount;
                 //======== Payment History save =========//
-                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $request->email);
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
@@ -793,7 +804,8 @@ class VendorController extends Controller
             }
 
         }
-        $sent_venicle_no = implode(',', $sent_vehicle);
+        $unique = array_unique($sent_vehicle);
+        $sent_venicle_no = implode(',', $unique);
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
         // ============== Sent to finfect

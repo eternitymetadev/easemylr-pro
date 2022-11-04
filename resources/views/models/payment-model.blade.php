@@ -132,7 +132,7 @@
                                 readonly>
                         </div>
                     </div>
-                    <div class="form-row mb-0">
+                    <div class="form-row mb-0" style="display: none">
 
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Beneficiary Name</label>
@@ -144,7 +144,7 @@
                             <input type="text" class="form-control" id="branch_name" name="branch_name" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0" >
+                    <div class="form-row mb-0" style="display: none">
                         <div class="form-group col-md-6">
                             <label for="location_name">Account No</label>
                             <input type="text" class="form-control" id="bank_acc" name="acc_no" value="">
@@ -154,7 +154,7 @@
                             <input type="text" class="form-control" id="ifsc_code" name="ifsc" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0" >
+                    <div class="form-row mb-0" style="display: none">
                         <div class="form-group col-md-6">
                             <label for="location_name">Bank Name</label>
                             <input type="text" class="form-control" id="bank_name" name="bank_name" value="">
@@ -164,8 +164,11 @@
                             <input type="text" class="form-control" id="email" name="email" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0">
-
+                    <div class="form-row mb-0" style="display: none">
+                    <div class="form-group col-md-6">
+                            <label for="location_name">Pan</label>
+                            <input type="text" class="form-control" id="pan" name="pan" value="">
+                        </div>
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
@@ -376,9 +379,9 @@
                                 readonly>
                         </div>
                     </div>
-                    <div class="form-row mb-0" >
+                    <div class="form-row mb-0"  style="display: none">
 
-                        <div class="form-group col-md-6" style="display: none">
+                        <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Beneficiary Name</label>
                             <input type="text" class="form-control" id="beneficiary_name_1" name="beneficiary_name"
                                 value="">
