@@ -19,6 +19,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
+        dd($row['pod_image']);
         $date_string = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['delivery_date']);
         $delivery_date = $date_string->format('Y-m-d');
         
@@ -29,7 +30,9 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                 ConsignmentNote::where('id', $row['lr_no'])->update([
                     'delivery_date'  => $delivery_date,
                     'delivery_status' => 'Successful',
-                    // 'signed_drs'    => $row['pod_image'],
+
+                    
+                    'signed_drs'    => $row['pod_image'],
                 ]);
             }
         }

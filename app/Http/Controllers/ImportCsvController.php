@@ -11,6 +11,7 @@ use App\Imports\ZoneImport;
 use App\Imports\DeliveryDateImport;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
+use ZipArchive;
 
 class ImportCsvController extends Controller
 {
@@ -53,6 +54,27 @@ class ImportCsvController extends Controller
             $data = Excel::import(new DeliveryDateImport,request()->file('deliverydatesfile'));
             $url  = URL::to($this->prefix.'/consignments');
             $message = 'Delivery dates Uploaded Successfully';
+        }
+        if($request->hasFile('podsfile')){
+            $url  = URL::to($this->prefix.'/consignments');
+            $fileName = $_FILES['podsfile']['name'];
+            $fileNameArr = explode(".",$fileName);
+            if($fileNameArr[count($fileNameArr)-1]=='zip'){
+                $fileName = $fileNameArr[0];
+                $zip = new ZipArchive();
+                if($zip->open($_FILES['podsfile']['tmp_name'])===True){
+                    // $rand = rand(111111111,999999999);
+                    $data = $zip->extractTo("upload-pod/");
+                    $zip->close();
+                    $message = 'Unzip done!';
+                }else{
+                    $message = 'Something went wrong!';
+                }
+                $message = 'Delivery dates Uploaded Successfully';
+            }else{
+                $message = 'Please select zip file';
+            }
+            
         }
         if($data){            
             $response['success']    = true;
