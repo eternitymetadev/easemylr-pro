@@ -17,6 +17,7 @@ use App\Models\ConsignmentNote;
 use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
+use App\Models\Vehicle;
 use URL;
 use Crypt;
 use Storage;
@@ -86,6 +87,11 @@ class GlobalFunctions {
     public static function getConsigners(){
         $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
         return $consigners;
+    }
+
+    public static function getVehicles(){
+        $vehicles = Vehicle::where('status',1)->orderby('regn_no','ASC')->pluck('regn_no','id');
+        return $vehicles;
     }
 
     public static function uploadImage($file,$path)

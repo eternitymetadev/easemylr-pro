@@ -31,12 +31,12 @@ class ConsignerImport implements ToModel,WithHeadingRow
             $regclient = 'N/A';
         }
 
-        // if(!empty($row['location_id'])){
-        //     $location = $row['location_id'];
-        // }
-        // else{
-        //     $location = 'N/A';
-        // }
+        if(!empty($row['location_id'])){
+            $location = $row['location_id'];
+        }
+        else{
+            $location = 'N/A';
+        }
         
         // if(!empty($getState)){
         //     $state = $getState->id;

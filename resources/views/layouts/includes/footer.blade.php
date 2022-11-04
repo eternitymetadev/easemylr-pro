@@ -111,6 +111,7 @@
 <script src="{{asset('plugins/select2/select2.min.js')}}"></script>
 <script src="{{asset('plugins/select2/custom-select2.js')}}"></script>
 
+<script src="{{asset('assets/js/jquery.sumoselect.js')}}"></script>
 
 <script>
     var APP_URL = {!! json_encode(url('/'))!!};

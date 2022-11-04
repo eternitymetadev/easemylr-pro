@@ -755,7 +755,8 @@ class ConsignmentController extends Controller
                 ' . $conr_add . '
             </p>
             </div>';
-        } else {
+            $shipto_address = '';
+        }else{
             $cnradd_heading = '<div class="container">
             <div>
             <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
@@ -774,6 +775,17 @@ class ConsignmentController extends Controller
                 ' . $consnee_add . '
             </p>
             </div>';
+            $shipto_address = '<td width="30%" style="vertical-align:top;>
+            <div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+              '.$shiptoadd.'
+            </p>
+                </div>
+            </td>';
         }
 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
@@ -983,6 +995,7 @@ class ConsignmentController extends Controller
                                     <td width="30%" style="vertical-align:top;>
                                     ' . $cneadd_heading . '
                                     </td>
+<<<<<<< HEAD
                                     <td width="30%" style="vertical-align:top;>
                                     <div class="container">
                                     <div>
@@ -994,6 +1007,9 @@ class ConsignmentController extends Controller
                                     </p>
                                         </div>
                                     </td>
+=======
+                                    '.$shipto_address.'
+>>>>>>> 512afcf4c10769be3102a30f966d9f0f90a60fde
                                 </tr>
                             </table>
                       </div>
@@ -2305,9 +2321,9 @@ class ConsignmentController extends Controller
         $id = $_GET['draft_id'];
         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
             ->whereHas('ConsignmentDetail', function ($query) {
-                $query->where('status', '1');
+                $query->whereIn('status', ['1','5']);
             })
-            ->orderby('order_no', 'asc')->get();
+            ->orderby('order_no', 'asc')->get();  
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
         //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
@@ -2654,9 +2670,12 @@ class ConsignmentController extends Controller
                 } else {
                     $phone = '';
                 }
-
-                $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
+                if($data['is_salereturn']!= 1){
+                    $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+                }else{
+                    $shiptoadd ='';
+                }
+                
                 $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                 $output_file = '/qr-code/img-' . time() . '.svg';
                 Storage::disk('public')->put($output_file, $generate_qrcode);
@@ -2687,7 +2706,7 @@ class ConsignmentController extends Controller
                                 <tr>
                                     <td style="width:33%">' . $consnee_add . '</td>
                                     <td style="width:33%">' . $conr_add . '</td>
-                                    <td style="width:33%">' . $shiptoadd . '</td>
+                                    
                                 </tr>
                             </table>';
                     } else {

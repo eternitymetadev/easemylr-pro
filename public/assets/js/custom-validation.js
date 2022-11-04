@@ -30,6 +30,39 @@ jQuery(document).ready(function () {
     });
     /*===== End check box checked create/update user permission page =====*/
 
+    /// search by assign user
+
+    jQuery('#searchvehicle').SumoSelect({
+        search: true,
+        // selectAll: true,
+        okCancelInMulti: true,
+        triggerChangeCombined: false
+    });
+
+    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click( function () {
+        var selectedvehicles = jQuery('#searchvehicle').val();
+        //var search =  jQuery('#search').val();
+        var url =  jQuery(this).val();
+        jQuery.ajax({
+            type      : 'get',
+            url       : url,
+            data      : {searchvehicle:selectedvehicles},
+            headers   : {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType  : 'json',
+            success:function(response){
+              if(response.html){
+                jQuery('.main-table').html(response.html);
+                jQuery("#search-paymentvehicle").modal("hide");
+                // jQuery('#searchvehicle').multiselect( 'reset');
+                jQuery('.assignedtoarray').val(selectedvehicles);
+              }
+            }
+        });
+        return false;
+    });    
+
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
         var regn_no = $(this).val().toUpperCase();
@@ -1948,17 +1981,11 @@ $('#payment_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var tds_rate = $('#tds_rate').val();
-    var branch = $('#branch_id').val();
 
     if(!tds_rate){
         swal('Error','please add tds rate in vendor','error');
         return false;
     }
-    if(!branch){
-        swal('Error','please select branch location','error');
-        return false;
-    }
-
 
     $.ajax({
         url: "create-payment",
@@ -2033,8 +2060,15 @@ $('#vendor_import').submit(function (e) {
         },
         success: (data) => {
             if (data.success == true) {
-                swal('success', data.success_message, 'success');
-                window.location.reload();
+                if (data.ignorecount > 0) {
+                    $(".ignored").show();
+                    $.each(data.ignore_vendor, function (key, value) {
+                        $(".ignored").append('<li>' + value.vendor + '</li>');
+                    });
+                swal('success', data.ignorecount + " ignored, These Vendor Ifsc code is less than 11 digit", 'success');
+                } else {
+                    swal("success!", data.success_message, "success");
+                }
             } else {
                 swal('error', data.error_message, 'error');
             }
@@ -2192,21 +2226,9 @@ $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var vendor = $('#vendor_id_1').val();
-    var branch = $('#branch_id_1').val();
-    var bank_acc = $('#bank_acc_1').val();
     if(!vendor)
     {
         swal('Error!', 'Please select a vendor','error');
-        return false;
-    }
-    if(!branch)
-    {
-        swal('Error!', 'Please select Branch','error');
-        return false;
-    }
-    if(!bank_acc)
-    {
-        swal('Error!', 'Error in Bank Details','error');
         return false;
     }
     var base_url = window.location.origin;

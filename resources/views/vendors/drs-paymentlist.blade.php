@@ -68,6 +68,15 @@ div.relative {
   transform: translateY(70%) scale(1);
 }
 
+.vehicleField .sumo_vehicle{
+    width: 100% !important;
+}
+
+.vehicleField .text-right.close-c{
+    display: none;
+}
+
+
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -98,8 +107,7 @@ div.relative {
                 <?php }?>
                 </div>
                     <div class="form-group col-md-4">
-                        <input type="text" class="form-control" placeholder="Vehicle Number Search" id="search"
-                                                data-action="<?php echo url()->current(); ?>">
+                        <input type="text" class="form-control" placeholder="Vehicle Number Search" id="search" data-action="<?php echo url()->current(); ?>">
                     </div>
                     <div class="form-group col-md-4">
                     <div class="winery_btn_n btn-section px-0 text-right">
@@ -119,10 +127,14 @@ div.relative {
         </div>
     </div>
 </div>
+@include('models.search-paymentvehicle')
 @include('models.payment-model')
 @endsection
 @section('js')
 <script> 
+function testFunction(){
+    alert('test')
+}
 jQuery(function() {
     $('.my-select2').each(function() {
         $(this).select2({
@@ -130,6 +142,10 @@ jQuery(function() {
             dropdownParent: $(this).parent(), // fix select2 search input focus bug
         })
     })
+
+    $(document).ready(function() {
+    $('.my-select3').select2();
+});
 
     // fix select2 bootstrap modal scroll bug
     $(document).on('select2:close', '.my-select2', function(e) {

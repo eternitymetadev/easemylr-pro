@@ -17,7 +17,11 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <th>DRS Date</th>
                 <th>DRS Status</th>
                 <th>Total Lr</th>
-                <th>Vehicle No</th>
+                <th>Vehicle No
+                <a href="javascript:void();" class="vehicle-a" data-toggle="modal" data-target="#search-paymentvehicle">  
+                    <i class="fa fa-caret-down"></i>
+                </a>
+                </th>
                 <th>Gross Wt.</th>
                 <th>Total Wt.</th>
                 <th>Quantity</th>
