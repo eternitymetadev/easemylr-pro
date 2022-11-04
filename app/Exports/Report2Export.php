@@ -120,8 +120,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                             $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
                             $inv_amt[] = $orders->invoice_amount;
                         }
-                        $order_item['orders'] = implode(',', $order);
-                        $order_item['invoices'] = implode(',', $invoices);
+                        $order_item['orders'] = implode('/', $order);
+                        $order_item['invoices'] = implode('/', $invoices);
                         $invoice['date'] = implode(',', $inv_date);
                         $invoice['amt'] = implode(',', $inv_amt);
 
