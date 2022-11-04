@@ -1115,11 +1115,19 @@ class VendorController extends Controller
     public function paymentReportView(Request $request)
         {
             $this->prefix = request()->route()->getPrefix();
+                 $authuser = Auth::user();
+                 $role_id = Role::where('id', '=', $authuser->role_id)->first();
+                 $cc = explode(',', $authuser->branch_id);
+               $query = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
 
-            $payment_lists = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
-            // $simply = json_decode(json_encode($payment_lists),true);
-            // echo'<pre>'; print_r($simply);die;
-
+            if($authuser->role_id == 2){
+                $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+                    $query->whereIn('branch_id', $cc);
+                });
+            }else{
+                $query = $query;
+             }
+            $payment_lists = $query->groupBy('transaction_id')->get();
             return view('vendors.payment-report-view', ['prefix' => $this->prefix , 'payment_lists' => $payment_lists]);
         }
 
