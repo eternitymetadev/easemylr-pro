@@ -5,6 +5,8 @@ namespace App\Exports;
 use App\Models\PaymentHistory;
 use App\Models\PaymentRequest;
 use DB;
+use Auth;
+use App\Models\Role;
 use Helper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -20,8 +22,21 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit(6000);
         $arr = array();
+              $authuser = Auth::user();
+                 $role_id = Role::where('id', '=', $authuser->role_id)->first();
+                 $cc = explode(',', $authuser->branch_id);
+               $query = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+               if($authuser->role_id == 2){
+                $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+                    $query->whereIn('branch_id', $cc);
+                });
+            }else{
+                $query = $query;
+             }
+            $payment_lists = $query->groupBy('transaction_id')->get();
 
-        $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
+        
+        // $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
 
         if ($payment_lists->count() > 0) {
             $i = 0;
