@@ -918,10 +918,12 @@ class VendorController extends Controller
         if ($authuser->role_id == 2) {
             $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
                 ->where('branch_id', $cc)
+                ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id')
                 ->get();
         } else {
             $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id')
                 ->get();
         }
