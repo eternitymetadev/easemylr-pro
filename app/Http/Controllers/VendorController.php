@@ -540,6 +540,7 @@ class VendorController extends Controller
             DB::beginTransaction();
             $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
             $simpl = json_decode(json_encode($getlr), true);
+            TransactionSheet::where('drs_no', $request->drs_no)->update(['purchase_amount' => $request->purchase_price]);
 
             foreach ($simpl as $lr) {
 
@@ -1001,6 +1002,7 @@ class VendorController extends Controller
             DB::beginTransaction();
             $getlr = TransactionSheet::select('consignment_no')->where('drs_no', $request->drs_no)->get();
             $simpl = json_decode(json_encode($getlr), true);
+            TransactionSheet::where('drs_no', $request->drs_no)->update(['purchase_amount' => $request->purchase_price]);
 
             foreach ($simpl as $lr) {
 
@@ -1154,13 +1156,13 @@ class VendorController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
 
-        $query = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
+        $query = PaymentRequest::with('PaymentHistory','Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
         if ($authuser->role_id == 2) {
                 $query->whereIn('branch_id', $cc);
         } else {
             $query = $query;
         }
-        $drswiseReports = $query->get();
+        $drswiseReports = $query->where('payment_status', '!=', 0)->get();
             
         return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
     }
