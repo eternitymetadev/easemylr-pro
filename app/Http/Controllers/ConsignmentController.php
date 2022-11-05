@@ -51,7 +51,7 @@ class ConsignmentController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $peritem = Config::get('variable.PER_PAGE');
+        $peritem = Config::get('variable.PER_PAGE');  
         $query = ConsignmentNote::query();
         
         if ($request->ajax()) {
