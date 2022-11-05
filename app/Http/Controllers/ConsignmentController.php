@@ -556,10 +556,10 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
-        $branch_add = BranchAddress::first();
+        $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
-
         $cn_id = $request->id;
+        
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
 
@@ -746,6 +746,19 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+
+        // get branch address
+        if($locations->id == 2 || $locations->id == 6 || $locations->id == 26){
+            $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[1]->name.' </b></span><br />
+        <b>' . $branch_add[1]->address . ',</b><br />
+        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+        <b>GST No. : '. $branch_add[1]->gst_number .'</b><br />';
+        }else{
+            $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[0]->name.' </b></span><br />
+        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        <b>GST No. : '. $branch_add[0]->gst_number .'</b><br />';
+        }
         
         // relocate cnr cnee address check for sale to return case
         if($data['is_salereturn'] == '1'){
@@ -916,10 +929,7 @@ class ConsignmentController extends Controller
                         <table style="height: 70px;">
                             <tr>
                             <td class="a" style="font-size: 10px;">
-                            <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
-                            <b>	Plot no: ' . $branch_add->address . ',</b><br />
-                            <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b><br />
-                            <b>GST No. : 03AAGCE4639L1ZI</b><br />
+                            '.$branch_address.'
                             </td>
                                
                                 <td class="a">
@@ -1139,7 +1149,7 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
-        $branch_add = BranchAddress::first();
+        $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
 
         $cn_id = $request->id;
@@ -1314,7 +1324,6 @@ class ConsignmentController extends Controller
         Storage::disk('public')->put($output_file, $generate_qrcode);
         $fullpath = storage_path('app/public/' . $output_file);
         //echo'<pre>'; print_r($fullpath);
-        //  dd($generate_qrcode);
         if ($request->typeid == 1) {
             $adresses = '<table width="100%">
                     <tr>
@@ -1331,6 +1340,42 @@ class ConsignmentController extends Controller
                         </tr>
                     </table>';
         }
+        if($locations->id == 2 || $locations->id == 6 || $locations->id == 26){
+        $branch_address = '<h2>' . $branch_add[1]->name . '</h2>
+                                <table width="100%">
+                                    <tr>
+                                        <td width="50%">
+                                            <p>' . $branch_add[1]->address . '</p>
+                                            <p>' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</p>
+                                            <p>GST No. : ' . $branch_add[1]->gst_number . '</p>
+                                            <p>CIN No. : U63030PB2021PTC053388 </p>
+                                            <p>Email : ' . @$locations->email . '</p>
+                                            <p>Phone No. : ' . @$locations->phone . '' . '</p>
+                                            <br>
+                                            <span>
+                                                <hr id="s" style="width:100%;">
+                                                </hr>
+                                            </span>
+                                        </td>';
+        }else{
+            $branch_address = '<h2>' . $branch_add[0]->name . '</h2>
+            <table width="100%">
+                <tr>
+                    <td width="50%">
+                        <p>Plot No. ' . $branch_add[0]->address . '</p>
+                        <p>' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</p>
+                        <p>GST No. : ' . $branch_add[0]->gst_number . '</p>
+                        <p>CIN No. : U63030PB2021PTC053388 </p>
+                        <p>Email : ' . @$locations->email . '</p>
+                        <p>Phone No. : ' . @$locations->phone . '' . '</p>
+                        <br>
+                        <span>
+                            <hr id="s" style="width:100%;">
+                            </hr>
+                        </span>
+                    </td>';
+        }
+
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
 
@@ -1383,28 +1428,12 @@ class ConsignmentController extends Controller
                         <div class="container">
                             <div class="row">';
 
-            $html .= '<h2>' . $branch_add->name . '</h2>
-                                <table width="100%">
-                                    <tr>
-                                        <td width="50%">
-                                            <p>Plot No. ' . $branch_add->address . '</p>
-                                            <p>' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . '</p>
-                                            <p>GST No. : ' . $branch_add['gst_number'] . '</p>
-                                            <p>CIN No. : U63030PB2021PTC053388 </p>
-                                            <p>Email : ' . @$locations->email . '</p>
-                                            <p>Phone No. : ' . @$locations->phone . '' . '</p>
-                                            <br>
-                                            <span>
-                                                <hr id="s" style="width:100%;">
-                                                </hr>
-                                            </span>
-                                        </td>
-                                        <td width="50%">
-                                            <h2 class="l">CONSIGNMENT NOTE</h2>
-                                            <p class="l">' . $type . '</p>
-                                        </td>
-                                    </tr>
-                                </table></div></div>';
+            $html .= $branch_address.'<td width="50%">
+            <h2 class="l">CONSIGNMENT NOTE</h2>
+            <p class="l">' . $type . '</p>
+        </td>
+    </tr>
+</table></div></div>';
             $html .= '<div class="row"><div class="col-sm-6">
                                 <table width="100%">
                                 <tr>
@@ -2502,7 +2531,7 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
-        $branch_add = BranchAddress::first();
+        $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
 
         foreach ($lrno as $key => $value) {
@@ -2718,6 +2747,17 @@ class ConsignmentController extends Controller
                             </table>';
                     }
                 }
+                if($locations->id == 2 || $locations->id == 6 || $locations->id == 26){
+                    $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[1]->name.' </b></span><br />
+                <b>' . $branch_add[1]->address . ',</b><br />
+                <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . 'b</b><br />
+                <b>GST No. : '. $branch_add[1]->gst_number .'</b><br />';
+            }else{
+                $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[0]->name.' </b></span><br />
+                                    <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+                                    <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . 'b</b><br />
+                                    <b>GST No. : '. $branch_add[0]->gst_number .'</b><br />';
+            }
                 $pay = public_path('assets/img/LOGO_Frowarders.jpg');
                 foreach ($pdftype as $i => $pdf) {
 
@@ -2843,10 +2883,7 @@ class ConsignmentController extends Controller
                                 <table style="height: 70px;">
                                     <tr>
                                     <td class="a" style="font-size: 10px;">
-                                    <span style="font-size: 14px;"><b>'.$branch_add->name.' </b></span><br />
-                                    <b>	Plot no: ' . $branch_add->address . ',</b><br />
-                                    <b>	' . $branch_add->district . ' - ' . $branch_add->postal_code . ',' . $branch_add->state . 'b</b><br />
-                                    <b>GST No. : 03AAGCE4639L1ZI</b><br />
+                                    '. $branch_address .'
                                     </td>
                                        
                                         <td class="a">
