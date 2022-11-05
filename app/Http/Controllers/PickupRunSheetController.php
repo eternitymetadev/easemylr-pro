@@ -165,7 +165,8 @@ class PickupRunSheetController extends Controller
         $authuser = Auth::user();
 
         if(!empty($request->regclient_id)){
-            $prssave['regclient_id'] = $request->regclient_id;
+            $regclients = $request->regclient_id;
+            $prssave['regclient_id'] = implode(',', $regclients);
         }
 
         if(!empty($request->consigner_id)){
