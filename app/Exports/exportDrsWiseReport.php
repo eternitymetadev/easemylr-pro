@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Auth;
 use App\Models\Role;
 use Helper;
+use DB;
 
 class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
 {
@@ -33,7 +34,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         } else {
             $query = $query;
         }
-        $drswiseReports = $query->get();
+        $drswiseReports = $query->where('payment_status', '!=', 0)->get();
 
         if ($drswiseReports->count() > 0) {
             $i = 0;
@@ -58,6 +59,14 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
 
                    $unique_veltype = array_unique($vel_type);
                    $vehicle_type = implode('/', $unique_veltype);
+                   $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                        $histrycount = count($trans_id);
+                        
+                        if($histrycount > 1){
+                           $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                        }else{
+                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+                        }
 
 
                 $arr[] = [
@@ -69,6 +78,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'purchase_amt' => @$purchase,
                     'transaction_id' => $drswiseReport->transaction_id,
                     'transaction_idamt' => @$drswiseReport->total_amount,
+                    'paid_amt' => @$paid_amt,
                     'client' => @$regn,
                     'location' => @$drswiseReport->Branch->name,
                     'lr_no' => @$lr,
@@ -93,6 +103,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             'Purchase Amount',
             'Transaction ID',
             'Transaction ID Amount',
+            'Paid Amount',
             'Client',
             'Location',
             'Lr NO',

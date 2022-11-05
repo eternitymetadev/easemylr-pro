@@ -82,6 +82,7 @@ div.relative {
                         <th>Purchase Amount</th>
                         <th>Transaction Id</th>
                         <th>Transaction Id Amount</th>
+                        <th>Paid Amount</th>
                         <th>Clients</th>
                         <th>Locations</th>
                         <th>LRs No</th>
@@ -115,6 +116,15 @@ div.relative {
 
                         $unique_veltype = array_unique($vel_type);
                         $vehicle_type = implode('/', $unique_veltype);
+                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                        $histrycount = count($trans_id);
+                        
+                        if($histrycount > 1){
+                           $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                        }else{
+                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+                        }
+
                     ?>
                     <tr>
                         <td>{{$i}}</td>
@@ -125,6 +135,7 @@ div.relative {
                         <td>{{$purchase}}</td>
                         <td>{{$drswiseReport->transaction_id}}</td>
                         <td>{{$drswiseReport->total_amount}}</td>
+                        <td>{{$paid_amt}}</td>
                         <td>{{$regn}}</td>
                         <td>{{@$drswiseReport->Branch->name}}</td>
                         <td>{{$lr}}</td>
