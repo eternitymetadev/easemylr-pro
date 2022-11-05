@@ -132,7 +132,7 @@ div.relative {
                             $grosswt[] = Helper::totalGrossWeight($lr_no->drs_no);
                             foreach($lr_no->TransactionDetails as $lr_group){
                                 $lr_arra[] = $lr_group->consignment_no;
-                               $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
+                               $consigneecity[] = @$lr_group->ConsignmentNote->ShiptoDetail->city;
                                $vel_type[] = @$lr_group->ConsignmentNote->vehicletype->name;
                                $regn_clt[] = @$lr_group->ConsignmentNote->RegClient->name;
                             }
