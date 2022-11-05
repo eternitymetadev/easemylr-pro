@@ -750,7 +750,7 @@ class ConsignmentController extends Controller
         // get branch address
         if($locations->id == 2 || $locations->id == 6 || $locations->id == 26){
             $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[1]->name.' </b></span><br />
-        <b>	Plot no: ' . $branch_add[1]->address . ',</b><br />
+        <b>' . $branch_add[1]->address . ',</b><br />
         <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
         <b>GST No. : '. $branch_add[1]->gst_number .'</b><br />';
         }else{
@@ -1345,7 +1345,7 @@ class ConsignmentController extends Controller
                                 <table width="100%">
                                     <tr>
                                         <td width="50%">
-                                            <p>Plot No. ' . $branch_add[1]->address . '</p>
+                                            <p>' . $branch_add[1]->address . '</p>
                                             <p>' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</p>
                                             <p>GST No. : ' . $branch_add[1]->gst_number . '</p>
                                             <p>CIN No. : U63030PB2021PTC053388 </p>
@@ -2531,7 +2531,7 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
-        $branch_add = BranchAddress::first();
+        $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
 
         foreach ($lrno as $key => $value) {
@@ -2749,7 +2749,7 @@ class ConsignmentController extends Controller
                 }
                 if($locations->id == 2 || $locations->id == 6 || $locations->id == 26){
                     $branch_address = '<span style="font-size: 14px;"><b>'.$branch_add[1]->name.' </b></span><br />
-                <b>	Plot no: ' . $branch_add[1]->address . ',</b><br />
+                <b>' . $branch_add[1]->address . ',</b><br />
                 <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . 'b</b><br />
                 <b>GST No. : '. $branch_add[1]->gst_number .'</b><br />';
             }else{
