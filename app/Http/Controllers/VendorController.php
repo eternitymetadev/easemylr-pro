@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\VendorExport;
 use App\Exports\PaymentReportExport;
+use App\Exports\exportDrsWiseReport;
+use App\Exports\VendorExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
@@ -13,7 +14,6 @@ use App\Models\PaymentRequest;
 use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\User;
-use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
 use Auth;
@@ -210,11 +210,11 @@ class VendorController extends Controller
             $peritem = Config::get('variable.PER_PAGE');
         }
 
-        $query = TransactionSheet::query();        
+        $query = TransactionSheet::query();
 
         if ($request->ajax()) {
-            $searchids  = [];
-            
+            $searchids = [];
+
             if (isset($request->resetfilter)) {
                 Session::forget('searchvehicle');
                 Session::forget('peritem');
@@ -226,7 +226,7 @@ class VendorController extends Controller
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
-           
+
             $lastsevendays = \Carbon\Carbon::today()->subDays(7);
             $date = Helper::yearmonthdate($lastsevendays);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
@@ -265,19 +265,19 @@ class VendorController extends Controller
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('vehicle_no', 'like', '%' . $search . '%')
-                    ->orWhere('drs_no', 'like', '%' . $search . '%');
+                        ->orWhere('drs_no', 'like', '%' . $search . '%');
 
                 });
             }
 
             /// search with vehicle no
 
-            if($request->searchvehicle){
-                Session::put('searchvehicle',$request->searchvehicle);
+            if ($request->searchvehicle) {
+                Session::put('searchvehicle', $request->searchvehicle);
             }
             $searchvehicle = Session::get('searchvehicle');
-            if(isset($searchvehicle)){
-                $query = $query->whereIn('vehicle_no',$searchvehicle);
+            if (isset($searchvehicle)) {
+                $query = $query->whereIn('vehicle_no', $searchvehicle);
             }
 
             // if (isset($request->vehicle_no)) {
@@ -296,10 +296,10 @@ class VendorController extends Controller
             }
 
             $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
-            
+
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
 
-            $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem, 'vehicles'=>$vehicles])->render();
+            $html = view('vendors.drs-paymentlist-ajax', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'peritem' => $peritem, 'vehicles' => $vehicles])->render();
             $paymentlist = $paymentlist->appends($request->query());
 
             return response()->json(['html' => $html]);
@@ -310,7 +310,7 @@ class VendorController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
         $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-       
+
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
@@ -323,7 +323,7 @@ class VendorController extends Controller
             ->where('request_status', 0)
             ->where('payment_status', '=', 0)
             ->groupBy('drs_no');
-        
+
         if ($authuser->role_id == 1) {
             $query = $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
@@ -577,29 +577,29 @@ class VendorController extends Controller
 
         $rows = Excel::toArray([], request()->file('vendor_file'));
         $data = $rows[0];
-       
+
         $chng = $this->rewrap($data);
         $ignore_vendor = array();
-                  foreach ($chng as $val) {
-                      $ifsc_code = $val['ifsc_code'];
-                      $check_length = strlen($ifsc_code);
+        foreach ($chng as $val) {
+            $ifsc_code = $val['ifsc_code'];
+            $check_length = strlen($ifsc_code);
 
-                      if ($check_length != 11) {
-                          $ignore_vendor[] = ['vendor' => $val['vendor_name'], 'ifsc_code' => $val['ifsc_code']];
-                      }
-                  }
-                  $ignorecount = count($ignore_vendor);
-        
+            if ($check_length != 11) {
+                $ignore_vendor[] = ['vendor' => $val['vendor_name'], 'ifsc_code' => $val['ifsc_code']];
+            }
+        }
+        $ignorecount = count($ignore_vendor);
+
         $data = Excel::import(new VendorImport, request()->file('vendor_file'));
         $message = 'Vendors Imported Successfully';
 
         if ($data) {
-            $response['success']            = true;
-            $response['page']               = 'bulk-imports';
-            $response['error']              = false;
-            $response['success_message']    = $message;
-            $response['ignore_vendor']      = $ignore_vendor;
-            $response['ignorecount']        = $ignorecount;
+            $response['success'] = true;
+            $response['page'] = 'bulk-imports';
+            $response['error'] = false;
+            $response['success_message'] = $message;
+            $response['ignore_vendor'] = $ignore_vendor;
+            $response['ignorecount'] = $ignorecount;
         } else {
             $response['success'] = false;
             $response['error'] = true;
@@ -1102,50 +1102,72 @@ class VendorController extends Controller
     //     if ($authuser->role_id == 2) {
     //         $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
     //             ->where('branch_id', $cc)
-    //             ->get(); 
+    //             ->get();
     //     } else {
     //         $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
     //             ->get();
     //     }
-    //     $simp = 
+    //     $simp =
 
     //     return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
     // }
-    
+
     public function paymentReportView(Request $request)
-        {
-            $this->prefix = request()->route()->getPrefix();
-                 $authuser = Auth::user();
-                 $role_id = Role::where('id', '=', $authuser->role_id)->first();
-                 $cc = explode(',', $authuser->branch_id);
-               $query = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
 
-            if($authuser->role_id == 2){
-                $query->whereHas('PaymentRequest', function ($query) use ($cc) {
-                    $query->whereIn('branch_id', $cc);
-                });
-            }else{
-                $query = $query;
-             }
-            $payment_lists = $query->groupBy('transaction_id')->get();
-            return view('vendors.payment-report-view', ['prefix' => $this->prefix , 'payment_lists' => $payment_lists]);
+        if ($authuser->role_id == 2) {
+            $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+                $query->whereIn('branch_id', $cc);
+            });
+        } else {
+            $query = $query;
         }
+        $payment_lists = $query->groupBy('transaction_id')->get();
+        return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
+    }
 
-        public function exportPaymentReport(Request $request)
-        {
-            return Excel::download(new PaymentReportExport, 'PaymentReport.csv');
-        }
+    public function exportPaymentReport(Request $request)
+    {
+        return Excel::download(new PaymentReportExport, 'PaymentReport.xlsx');
+    }
 
-        public function handshakeReport(Request $request)
-        {
+    public function handshakeReport(Request $request)
+    {
 
-            $this->prefix = request()->route()->getPrefix();
-            $paymentreports = PaymentRequest::with('VendorDetails', 'Branch')
+        $this->prefix = request()->route()->getPrefix();
+        $paymentreports = PaymentRequest::with('VendorDetails', 'Branch')
             ->groupBy('transaction_id')
             ->get();
-            
 
-            return view('vendors.handshake-report', ['prefix' => $this->prefix, 'paymentreports' => $paymentreports]);
+        return view('vendors.handshake-report', ['prefix' => $this->prefix, 'paymentreports' => $paymentreports]);
+    }
+
+    public function drsWiseReport(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
+        if ($authuser->role_id == 2) {
+                $query->whereIn('branch_id', $cc);
+        } else {
+            $query = $query;
         }
+        $drswiseReports = $query->get();
+            
+        return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
+    }
+
+    public function exportdrsWiseReport(Request $request)
+    {
+        return Excel::download(new exportDrsWiseReport, 'DrsWise-PaymentReport.xlsx');
+    }
 
 }
