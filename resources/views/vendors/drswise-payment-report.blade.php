@@ -126,7 +126,7 @@ div.relative {
                         <td>{{$drswiseReport->transaction_id}}</td>
                         <td>{{$drswiseReport->total_amount}}</td>
                         <td>{{$regn}}</td>
-                        <td>{{$drswiseReport->Branch->name}}</td>
+                        <td>{{@$drswiseReport->Branch->name}}</td>
                         <td>{{$lr}}</td>
                         <td>{{$no_ofcases}}</td>
                         <td>{{$totlwt}}</td>
