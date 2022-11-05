@@ -123,6 +123,7 @@ div.relative {
                         $grosswt = array();
                         $drsvehicel = array();
                         $vel_type = array();
+                        $regn_clt = array();
                         foreach($payment_list->PaymentRequest as $lr_no){
 
                             $drsvehicel[] = $lr_no->vehicle_no;
@@ -131,8 +132,9 @@ div.relative {
                             $grosswt[] = Helper::totalGrossWeight($lr_no->drs_no);
                             foreach($lr_no->TransactionDetails as $lr_group){
                                 $lr_arra[] = $lr_group->consignment_no;
-                               $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
+                               $consigneecity[] = @$lr_group->ConsignmentNote->ShiptoDetail->city;
                                $vel_type[] = @$lr_group->ConsignmentNote->vehicletype->name;
+                               $regn_clt[] = @$lr_group->ConsignmentNote->RegClient->name;
                             }
                             
                             foreach($lr_group->ConsignmentNote->ConsignmentItems as $lr_no_item){
@@ -151,6 +153,9 @@ div.relative {
                         $city = implode('/', $consigneecity);
                         $multilr = implode('/', $lr_arra);
                         $lr_itm = implode('/', $itm_arra);
+
+                        $unique_regn = array_unique($regn_clt);
+                        $regn = implode('/', $unique_regn);
 
                         if($payment_list->PaymentRequest[0]->VendorDetails->declaration_available == 1){
                             $decl = 'Yes';
@@ -196,7 +201,7 @@ div.relative {
                         <td>{{$i}}</td>
                         <td>{{$payment_list->transaction_id ?? '-'}}</td>
                         <td>{{$date}}</td>
-                        <td>{{$lr_group->ConsignmentNote->RegClient->name ?? '-'}}</td>
+                        <td>{{$regn ?? '-'}}</td>
                         <td>{{$payment_list->PaymentRequest[0]->Branch->nick_name ?? '-'}}</td>
                         <td>{{$city ?? '-'}}</td>
                         <td>{{$newDrs ?? '-'}}</td>

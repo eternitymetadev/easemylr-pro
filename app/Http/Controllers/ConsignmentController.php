@@ -4071,5 +4071,10 @@ class ConsignmentController extends Controller
     //     return response()->json($response);
     // }
 
+    public function exportDownloadDrs(Request $request)
+    {
+        return Excel::download(new exportDownloadDrs, 'PaymentReport.xlsx');
+    }
+
 
 }
