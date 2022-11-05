@@ -316,6 +316,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
 
 
 });
@@ -443,6 +444,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
 
     
@@ -641,6 +643,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
+
 
 
 

@@ -54,6 +54,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $grosswt = array();
                 $drsvehicel = array();
                 $vel_type = array();
+                $regn_clt = array();
                 foreach ($payment_list->PaymentRequest as $lr_no) {
                     $drsvehicel[] = $lr_no->vehicle_no;
                     $qty[] = Helper::totalQuantity($lr_no->drs_no);
@@ -64,6 +65,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                         $lr_arra[] = $lr_group->consignment_no;
                         $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
                         $vel_type[] = @$lr_group->ConsignmentNote->vehicletype->name;
+                        $regn_clt[] = @$lr_group->ConsignmentNote->RegClient->name;
                     }
 
                     foreach ($lr_group->ConsignmentNote->ConsignmentItems as $lr_no_item) {
@@ -82,6 +84,10 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $city = implode('/', $consigneecity);
                 $multilr = implode('/', $lr_arra);
                 $lr_itm = implode('/', $itm_arra);
+
+                $unique_regn = array_unique($regn_clt);
+                $regn = implode('/', $unique_regn);
+
 
                 if ($payment_list->PaymentRequest[0]->VendorDetails->declaration_available == 1) {
                     $decl = 'Yes';
@@ -131,7 +137,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'Sr_no' => $i,
                     'transaction_id' => $payment_list->transaction_id,
                     'date' => $date,
-                    'client' => @$lr_group->ConsignmentNote->RegClient->name,
+                    'client' => @$regn,
                     'depot' => @$payment_list->PaymentRequest[0]->Branch->nick_name,
                     'station' => @$city,
                     'drs_no' => $newDrs,

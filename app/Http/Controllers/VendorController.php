@@ -1133,7 +1133,7 @@ class VendorController extends Controller
 
         public function exportPaymentReport(Request $request)
         {
-            return Excel::download(new PaymentReportExport, 'PaymentReport.csv');
+            return Excel::download(new PaymentReportExport, 'PaymentReport.xlsx');
         }
 
         public function handshakeReport(Request $request)
@@ -1143,9 +1143,19 @@ class VendorController extends Controller
             $paymentreports = PaymentRequest::with('VendorDetails', 'Branch')
             ->groupBy('transaction_id')
             ->get();
-            
 
             return view('vendors.handshake-report', ['prefix' => $this->prefix, 'paymentreports' => $paymentreports]);
+        }
+
+        public function drsWiseReport(Request $request)
+        {
+            $this->prefix = request()->route()->getPrefix();
+            $drswiseReports = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')
+            ->get();
+            // $simpl = json_decode(json_encode($drswiseReports));
+            // echo'<pre>'; print_r($simpl);die;
+
+            return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
         }
 
 }
