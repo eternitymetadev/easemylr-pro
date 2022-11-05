@@ -27,14 +27,15 @@
                                             class="text-danger">*</span></label>
                                     <?php $authuser = Auth::user();
                                     ?>
-                                    <select class="form-control" id="select_prsregclient" name="regclient_id">
-                                    <option value="">Select</option>
+                                    
+                                    <select class="form-control tagging select_prsregclient" id="select_prsregclient"  multiple="multiple" name="regclient_id[]">
+                                        <option value="" disabled>Select</option>
                                         <?php 
                                         if(count($regclients)>0) {
                                             foreach ($regclients as $key => $client) {
                                         ?>
-                                        <option data-locationid="{{$client->location_id}}" value="{{ $client->id }}">{{ucwords($client->name)}}</option>
-                                        <?php 
+                                            <option value="{{ $client->id }}">{{ucwords($client->name)}}</option>
+                                            <?php 
                                             }
                                         }
                                         ?>
@@ -44,16 +45,8 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Consigner</label>
                                     <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple" name="consigner_id[]">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        // if(count($consigners)>0) {
-                                        //     foreach ($consigners as $key => $consigner) {
-                                        ?>
-                                            <!-- <option value="{{ $key }}">ucwords($consigner)</option> -->
-                                            <?php 
-                                        //     }
-                                        // }
-                                        ?>
+                                        <option value="" disabled>Select</option>
+                                       
                                     </select>
                                 </div>
                                 <!-- <div class="form-group col-md-6">
@@ -112,7 +105,6 @@
 @endsection
 @section('js')
 <script>
-
 // add prs date
 $('#prsDate').val(new Date().toJSON().slice(0, 10));
 

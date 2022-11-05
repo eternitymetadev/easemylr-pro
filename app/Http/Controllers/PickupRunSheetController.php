@@ -394,7 +394,7 @@ class PickupRunSheetController extends Controller
         //
     }
     public function getConsigner(Request $request){
-        $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+        $getconsigners = Consigner::select('id','nick_name')->whereIn('regionalclient_id', $request->regclient_id)->get();
 
         if ($getconsigners) {
             $response['success'] = true;
