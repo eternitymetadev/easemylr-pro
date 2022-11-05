@@ -275,6 +275,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
+    Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
+
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -317,6 +319,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
+    Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
 
 });
@@ -446,6 +449,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
+    Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+
 
     
 });
@@ -644,9 +649,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
-
-
-
+    Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()

@@ -65,6 +65,8 @@ div.relative {
 
             <div class="widget-content widget-content-area br-6">
                 <div class=" mb-4 mt-4">
+                <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-drswise-report') }}">Export
+                    data</a>
                     @csrf
                     <table id="unverified-table" class="table table-hover" style="width:100%">
 
@@ -94,28 +96,41 @@ div.relative {
                     @foreach($drswiseReports as $drswiseReport)
                         
                     <?php $i++; 
+                     $date = date('d-m-Y',strtotime($drswiseReport->created_at));
+                     $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
+                     $totlwt = Helper::totalWeight($drswiseReport->drs_no);
+                     $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
                     $lrgr = array();
+                    $regnclt = array();
+                    $vel_type = array();
                         foreach($drswiseReport->TransactionDetails as $lrgroup){
-                              
                                $lrgr[] =  $lrgroup->ConsignmentNote->id;
+                               $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
+                               $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
+                               $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
                         }
                         $lr = implode('/', $lrgr);
+                        $unique_regn = array_unique($regnclt);
+                        $regn = implode('/', $unique_regn);
+
+                        $unique_veltype = array_unique($vel_type);
+                        $vehicle_type = implode('/', $unique_veltype);
                     ?>
                     <tr>
                         <td>{{$i}}</td>
                         <td>DRS-{{$drswiseReport->drs_no}}</td>
-                        <td>{{$drswiseReport->created_at}}</td>
+                        <td>{{$date}}</td>
                         <td>{{$drswiseReport->vehicle_no}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
-                        <td>{{$drswiseReport->total_amount}}</td>
+                        <td>{{$vehicle_type}}</td>
+                        <td>{{$purchase}}</td>
                         <td>{{$drswiseReport->transaction_id}}</td>
                         <td>{{$drswiseReport->total_amount}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
+                        <td>{{$regn}}</td>
+                        <td>{{$drswiseReport->Branch->name}}</td>
                         <td>{{$lr}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
-                        <td>{{$drswiseReport->vehicle_no}}</td>
+                        <td>{{$no_ofcases}}</td>
+                        <td>{{$totlwt}}</td>
+                        <td>{{$grosswt}}</td>
                     </tr>
                     @endforeach
                 </tbody>

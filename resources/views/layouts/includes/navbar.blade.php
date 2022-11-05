@@ -167,6 +167,9 @@
                             <a href="{{$prefixurl.'payment-report-view'}}"> Report </a>
                         </li>
                         <?php } ?>
+                        <li>
+                            <a href="{{$prefixurl.'drswise-report'}}"> Drs Wise Report </a>
+                        </li>
                     </ul>
                 </li>
             <?php } ?>
