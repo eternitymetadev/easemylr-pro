@@ -38,7 +38,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
             ?>
 
             <tr>
-                <?php if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+                <?php if ($authuser->role_id == 2 || $authuser->role_id == 3) { 
            if ($list->status != 0) {
            if (!empty($list->ConsignmentDetail->purchase_price)) {?>
                 <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}"

@@ -5,6 +5,8 @@ namespace App\Exports;
 use App\Models\PaymentHistory;
 use App\Models\PaymentRequest;
 use DB;
+use Auth;
+use App\Models\Role;
 use Helper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -20,8 +22,21 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit(6000);
         $arr = array();
+              $authuser = Auth::user();
+                 $role_id = Role::where('id', '=', $authuser->role_id)->first();
+                 $cc = explode(',', $authuser->branch_id);
+               $query = PaymentHistory::with('PaymentRequest.Branch','PaymentRequest.TransactionDetails.ConsignmentNote.RegClient','PaymentRequest.VendorDetails','PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems','PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+               if($authuser->role_id == 2){
+                $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+                    $query->whereIn('branch_id', $cc);
+                });
+            }else{
+                $query = $query;
+             }
+            $payment_lists = $query->groupBy('transaction_id')->get();
 
-        $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
+        
+        // $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
 
         if ($payment_lists->count() > 0) {
             $i = 0;
@@ -39,6 +54,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $grosswt = array();
                 $drsvehicel = array();
                 $vel_type = array();
+                $regn_clt = array();
                 foreach ($payment_list->PaymentRequest as $lr_no) {
                     $drsvehicel[] = $lr_no->vehicle_no;
                     $qty[] = Helper::totalQuantity($lr_no->drs_no);
@@ -47,8 +63,9 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     // echo'<pre>'; print_r($lr_no->drs_no); die;
                     foreach ($lr_no->TransactionDetails as $lr_group) {
                         $lr_arra[] = $lr_group->consignment_no;
-                        $consigneecity[] = $lr_group->ConsignmentNote->ShiptoDetail->city;
+                        $consigneecity[] = @$lr_group->ConsignmentNote->ShiptoDetail->city;
                         $vel_type[] = @$lr_group->ConsignmentNote->vehicletype->name;
+                        $regn_clt[] = @$lr_group->ConsignmentNote->RegClient->name;
                     }
 
                     foreach ($lr_group->ConsignmentNote->ConsignmentItems as $lr_no_item) {
@@ -67,6 +84,10 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $city = implode('/', $consigneecity);
                 $multilr = implode('/', $lr_arra);
                 $lr_itm = implode('/', $itm_arra);
+
+                $unique_regn = array_unique($regn_clt);
+                $regn = implode('/', $unique_regn);
+
 
                 if ($payment_list->PaymentRequest[0]->VendorDetails->declaration_available == 1) {
                     $decl = 'Yes';
@@ -116,7 +137,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'Sr_no' => $i,
                     'transaction_id' => $payment_list->transaction_id,
                     'date' => $date,
-                    'client' => @$lr_group->ConsignmentNote->RegClient->name,
+                    'client' => @$regn,
                     'depot' => @$payment_list->PaymentRequest[0]->Branch->nick_name,
                     'station' => @$city,
                     'drs_no' => $newDrs,

@@ -75,6 +75,7 @@ div.relative {
                 <thead>
                     <tr>
                         <th>Transaction Id</th>
+                        <th>Date</th>
                         <th>Total Drs</th>
                         <th>Vendor</th>
                         <th>Total Amount</th>
@@ -88,9 +89,13 @@ div.relative {
                 </thead>
                 <tbody>
                     @foreach($requestlists as $requestlist)
+                    <?php
+                          $date = date('d-m-Y',strtotime($requestlist->created_at));
+                    ?>
                     <tr>
 
                         <td>{{ $requestlist->transaction_id ?? "-" }}</td>
+                        <td>{{ $date }}</td>
                         <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
                             {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
