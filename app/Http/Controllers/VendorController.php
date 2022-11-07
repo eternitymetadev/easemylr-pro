@@ -758,6 +758,9 @@ class VendorController extends Controller
 
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
+        //deduct balance
+        $deduct_balance = $request->pay_amt - $request->final_payable_amount ;
+
         $drsno = explode(',', $request->drs_no);
         $consignment = TransactionSheet::whereIn('drs_no', $drsno)
             ->groupby('drs_no')
@@ -807,6 +810,7 @@ class VendorController extends Controller
         }
         $unique = array_unique($sent_vehicle);
         $sent_venicle_no = implode(',', $unique);
+        
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
         // ============== Sent to finfect
