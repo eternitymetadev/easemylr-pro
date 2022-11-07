@@ -4104,7 +4104,13 @@ class ConsignmentController extends Controller
             ->leftjoin('jobs', function($data){
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-            })->first();
+            })
+            ->leftjoin('jobs as manual_jobs', function($data){
+                $data->on('manual_jobs.consignment_id', '=', 'consignment_notes.id')
+                     ->on('manual_jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+            })
+            ->first();
+            echo'<pre>'; print_r($job); die;
             
         if(!empty($job->trail)){
             $job_data= json_decode($job->trail);
