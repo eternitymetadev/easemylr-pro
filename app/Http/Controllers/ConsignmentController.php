@@ -3899,6 +3899,15 @@ class ConsignmentController extends Controller
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
+                $ccd = date("Y-m-d h:i:sa");
+                $respons3 = array('consignment_id' => $request->lr, 'status' => 'Successful','create_at' => $ccd, 'type' => '2');
+                
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->latest('created_at')->orderBy('id','DESC')->first();
+                $lastjobresponse = json_decode($lastjob->response_data);
+                array_push($lastjobresponse, $respons3);
+                $lastresponse = json_encode($lastjobresponse); 
+                $start = Job::create(['consignment_id' => $request->lr ,'response_data' => $lastresponse, 'status' => 'Successful','type'=> '2']);
+
                 $response['success'] = true;
                 $response['messages'] = 'Image uploaded successfully';
                 return Response::json($response);

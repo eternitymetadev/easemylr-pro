@@ -484,6 +484,7 @@ function row_click(row_id, job_id, url)
                 console.log(response);
                 // return false;
                 if(response.job_data){
+                    
                     var modal_container = '<div class="container" oncontextmenu="return true;"><div class="row"><div class="col-md-10"><ul class="cbp_tmtimeline">';
                     $.each(response.job_data, function (index, task) {
                         var timestamp = task.creation_datetime;
