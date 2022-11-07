@@ -20,7 +20,7 @@
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <tr>
-                <td class="card-header collapsed" id="{{$consignment->id}}" data-toggle="collapse" href="#collapse-{{$consignment->id}}" data-jobid="{{$consignment->job_id}}" data-action="<?php echo URL::to($prefix.'/get-jobs'); ?>" onClick="row_click(this.id,this.getAttribute('data-jobid'),this.getAttribute('data-action'))">
+                <td class="card-header collapsed" id="{{$consignment->id}}" data-toggle="collapse" href="#collapse-{{$consignment->id}}" data-jobid="{{$consignment->job_id}}" data-lrid ="{{$consignment->id}}" data-action="<?php echo URL::to($prefix.'/get-jobs'); ?>" onClick="row_click(this.id,this.getAttribute('data-jobid'),this.getAttribute('data-action'),this.getAttribute('data-lrid'))">
 
                 </td>
                 <td>

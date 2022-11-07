@@ -453,7 +453,7 @@ a.badge.alert.bg-secondary.shadow-sm {
 <script>
     
 // jQuery(document).on("click", ".card-header", function () {
-function row_click(row_id, job_id, url)
+function row_click(row_id, job_id, url,lr_id)
 {   
     $('.append-modal').empty(); 
     $('.cbp_tmtimeline').empty();
@@ -464,11 +464,12 @@ function row_click(row_id, job_id, url)
 
     var job_id = job_id;  
     var url =url;
+    var lr_id = lr_id;
     jQuery.ajax({
         url: url,
         type: "get",
         cache: false,
-        data: { job_id: job_id },
+        data: { job_id: job_id, lr_id:lr_id},
         dataType: "json",
         headers: {
             "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
@@ -481,7 +482,7 @@ function row_click(row_id, job_id, url)
                 var modal_html = '';
                 var trackinglink = '';
 
-                console.log(response);
+                // console.log(response);
                 // return false;
                 if(response.job_data){
                     
@@ -547,8 +548,19 @@ function row_click(row_id, job_id, url)
                     $('.cbp_tmtimeline').append(modal_html);
                     
                 } else{
-                    var modal_html1 = 'No data available';
-                    $('.append-modal').html(modal_html1);
+                    // console.log(response.trail_response); 
+                    //   var decode_trail = JSON.parse(response.trail_response);
+                      
+                    $.each(response.trail_response, function (index, value) {
+                        // alert(value.status);
+                        //  var modal_html1 = '<li>'+value.status+'</li>';
+                        //  $('.append-modal').html(modal_html1);
+                         $(".append-modal").append('<li>' + value.status + '-' +value.create_at+ '</li>');
+                        });
+                    // //console.log(response.trail_response);
+                    // var modal_html1 = 'No data available';
+                    
+                
                 }
                 if(( response.job_id != '') && (response.delivery_status != 'Successful')){
                     var trackinglink = '<iframe id="iGmap-'+row_id+'" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'+response.tracking_link+'" ></iframe>';

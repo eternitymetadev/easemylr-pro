@@ -4097,8 +4097,19 @@ class ConsignmentController extends Controller
     public function getJob(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        if(!empty($request->job_id)){
         $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','consignment_notes.tracking_link as tracking_link','consignment_notes.delivery_status as delivery_status','jobs.status as job_status', 'jobs.response_data as trail','consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
             ->where('consignment_notes.job_id',$request->job_id )
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('jobs', function($data){
+                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+            })
+            ->first();
+        }else{
+            $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','consignment_notes.tracking_link as tracking_link','consignment_notes.delivery_status as delivery_status','jobs.status as job_status', 'jobs.response_data as trail','consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode','manual_jobs.response_data as trail_response')
+            ->where('consignment_notes.id',$request->lr_id )
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('jobs', function($data){
@@ -4110,7 +4121,8 @@ class ConsignmentController extends Controller
                      ->on('manual_jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })
             ->first();
-            echo'<pre>'; print_r($job); die;
+            }
+            // echo'<pre>'; print_r($job); die;
             
         if(!empty($job->trail)){
             $job_data= json_decode($job->trail);
@@ -4138,6 +4150,8 @@ class ConsignmentController extends Controller
             $response['cnr_pincode'] = $job->cnr_pincode;
             $response['cne_pincode'] = $job->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
+            $response['trail_response']= json_decode($job->trail_response);
+
         }
         
         return response()->json($response);
