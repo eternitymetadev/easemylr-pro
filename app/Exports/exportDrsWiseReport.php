@@ -28,9 +28,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         $cc = explode(',', $authuser->branch_id);
         $query = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
         if ($authuser->role_id == 2) {
-            $query->whereHas('PaymentRequest', function ($query) use ($cc) {
-                $query->whereIn('branch_id', $cc);
-            });
+            $query->whereIn('branch_id', $cc);
         } else {
             $query = $query;
         }
