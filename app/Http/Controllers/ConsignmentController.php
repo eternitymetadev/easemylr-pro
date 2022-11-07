@@ -328,6 +328,7 @@ class ConsignmentController extends Controller
 
             $saveconsignment = ConsignmentNote::create($consignmentsave);
             $consignment_id = $saveconsignment->id;
+            $currentdate = date("d-m-y h:i:sa");
            //===================== Create DRS in LR ================================= //
            
            if(!empty($request->vehicle_id)){
@@ -376,8 +377,47 @@ class ConsignmentController extends Controller
                         $job_id = $json['data']['job_id'];
                         $tracking_link = $json['data']['tracking_link'];
                         $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    }else{
+                        $respons = array(['consignment_id' => $consignment_id, 'status' => 'Created', 'create_at' => $currentdate,'type' => '2']);
+                        $respons_data = json_encode($respons);
+    
+                        $create = Job::create(['consignment_id' => $consignment_id ,'response_data' => $respons_data,'status' => 'Created','type'=> '2']);
+                        if(!empty($request->vehicle_id)){
+                            $respons2 = array('consignment_id' => $consignment_id, 'status' => 'Started','create_at' => $currentdate, 'type' => '2');
+                            // $respons3 = json_encode($respons2);
+    
+                            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('consignment_id')->first();
+                            $st = json_decode($lastjob->response_data);
+                            array_push($st, $respons2);
+    
+                            // $cc = array($st,$respons2);
+                            $sts = json_encode($st); 
+    
+                            $start = Job::create(['consignment_id' => $consignment_id ,'response_data' => $sts, 'status' => 'Started','type'=> '2']);
+                    }
                     }
                 }
+                else {
+                      //  ================Manual trail ================ //
+                      if (empty($simplyfy[0]['team_id']) && empty($simplyfy[0]['fleet_id'])){
+                    $respons = array(['consignment_id' => $consignment_id, 'status' => 'Created', 'create_at' => $currentdate,'type' => '2']);
+                    $respons_data = json_encode($respons);
+
+                    $create = Job::create(['consignment_id' => $consignment_id ,'response_data' => $respons_data,'status' => 'Created','type'=> '2']);
+                    if(!empty($request->vehicle_id)){
+                        $respons2 = array('consignment_id' => $consignment_id, 'status' => 'Started','create_at' => $currentdate, 'type' => '2');
+                        // $respons3 = json_encode($respons2);  
+                        
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('consignment_id')->first();
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st); 
+
+                        $start = Job::create(['consignment_id' => $consignment_id ,'response_data' => $sts, 'status' => 'Started','type'=> '2']);
+                }
+            }
+            }
+
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;
