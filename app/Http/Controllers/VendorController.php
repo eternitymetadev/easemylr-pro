@@ -736,8 +736,7 @@ class VendorController extends Controller
     // ==================CreatePayment Request =================
     public function createPaymentRequestVendor(Request $request)
     {
-        try{
-            DB::beginTransaction();
+        
         $this->prefix = request()->route()->getPrefix();
         $url_header = $_SERVER['HTTP_HOST'];
 
@@ -911,16 +910,7 @@ class VendorController extends Controller
         $url = $this->prefix . '/request-list';
         $new_response['redirect_url'] = $url;
         $new_response['success_message'] = "Data Imported successfully";
-
-        // return response()->json($new_response);
-        DB::commit();
-    } catch (Exception $e) {
-        $new_response['error'] = false;
-        $new_response['error_message'] = $e;
-        $new_response['success'] = false;
-        $new_response['redirect_url'] = $url;
-    }
-    return response()->json($new_response);
+        return response()->json($new_response);
 
     }
 

@@ -3898,7 +3898,7 @@ class ConsignmentController extends Controller
             if (!empty($deliverydate)) {
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
-
+                // trail
                 $ccd = date("Y-m-d h:i:sa");
                 $respons3 = array('consignment_id' => $request->lr, 'status' => 'Successful','create_at' => $ccd, 'type' => '2');
                 
@@ -3907,6 +3907,16 @@ class ConsignmentController extends Controller
                 array_push($lastjobresponse, $respons3);
                 $lastresponse = json_encode($lastjobresponse); 
                 $start = Job::create(['consignment_id' => $request->lr ,'response_data' => $lastresponse, 'status' => 'Successful','type'=> '2']);
+                if(!empty($filename)){
+                    $respons4 = array('consignment_id' => $request->lr, 'status' => 'Successful','pod_img' => $filename,'create_at' => $ccd, 'type' => '2');
+                
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->latest('created_at')->orderBy('id','DESC')->first();
+                    $lastjobresponse3 = json_decode($lastjob->response_data);
+                    array_push($lastjobresponse3, $respons4);
+                    $lastresponse = json_encode($lastjobresponse3); 
+                    $start = Job::create(['consignment_id' => $request->lr ,'response_data' => $lastresponse, 'status' => 'Successful','type'=> '2']);
+
+                }
 
                 $response['success'] = true;
                 $response['messages'] = 'Image uploaded successfully';
