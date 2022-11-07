@@ -667,6 +667,9 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('consignment-report', [ConsignmentController::class, 'consignmentReports']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+
+    Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
+
 });
 
 Route::middleware(['auth'])->group(function () {
