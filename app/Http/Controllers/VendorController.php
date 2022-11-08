@@ -414,6 +414,9 @@ class VendorController extends Controller
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
+        //deduct balance
+        $deduct_balance = $request->payable_amount - $request->final_payable_amount ;
+
         $get_vehicle = PaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
         $sent_vehicle = array();
         foreach($get_vehicle as $vehicle){
@@ -451,6 +454,7 @@ class VendorController extends Controller
             \"terid\": \"$request->transaction_id\",
             \"branch\": \"$branch_name->nick_name\",
             \"pan\": \"$request->pan\",
+            \"amt_deducted\": \"$deduct_balance\",
             \"vehicle\": \"$sent_vehicle_no\",
             \"txn_route\": \"DRS\"
             }]",
@@ -842,6 +846,7 @@ class VendorController extends Controller
             \"branch\": \"$branch_name->nick_name\",
             \"vehicle\": \"$sent_venicle_no\",
             \"pan\": \"$request->pan\",
+            \"amt_deducted\": \"$deduct_balance\",
             \"txn_route\": \"DRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
