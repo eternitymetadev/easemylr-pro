@@ -1581,6 +1581,7 @@ class ConsignmentController extends Controller
 
     public function printSticker(Request $request)
     {
+        
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
