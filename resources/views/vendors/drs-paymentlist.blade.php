@@ -241,6 +241,7 @@ $('#vendor_id_1').change(function() {
                 $('#beneficiary_name_1').val(simp.acc_holder_name);
                 $('#email_1').val(res.vendor_details.email);
                 $('#tds_rate_1').val(res.vendor_details.tds_rate);
+                $('#pan_1').val(res.vendor_details.pan);
 
                 //calculate
                 var amt = $('#amt_1').val();
@@ -260,6 +261,7 @@ $('#vendor_id_1').change(function() {
                 $('#beneficiary_name_1').val('');
                 $('#email_1').val('');
                 $('#tds_rate_1').val('');
+                $('#pan_1').val('');
                 jQuery('#crt_pytm_1').prop('disabled', true);
                 swal('error', 'account not verified', 'error');
             }

@@ -184,6 +184,7 @@ $(document).on('click', '.payment_button', function() {
                 $('#branch_name').val(bank_details.branch_name);
                 $('#total_clam_amt').val(data.req_data[0].total_amount);
                 $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
+                $('#pan').val(data.req_data[0].vendor_details.pan);
 
                 $('#p_type').append('<option value="Fully">Fully Payment</option>');
                 //check balance if null or delevery successful
