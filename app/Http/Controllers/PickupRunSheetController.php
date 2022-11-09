@@ -269,7 +269,7 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $drivertasks = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $drivertasks = $query->orderBy('id', 'ASC')->paginate($peritem);
             $drivertasks = $prsdata->appends($request->query());
 
             $html =  view('prs.driver-task-list-ajax',['prefix'=>$this->prefix,'drivertasks' => $drivertasks,'peritem'=>$peritem])->render();
@@ -280,11 +280,77 @@ class PickupRunSheetController extends Controller
 
         $query = $query->with('ConsignerDetail:id,nick_name,city');
 
-        $drivertasks  = $query->orderBy('id','DESC')->paginate($peritem);
+        $drivertasks  = $query->orderBy('id','ASC')->paginate($peritem);
         $drivertasks  = $drivertasks->appends($request->query());
         
         return view('prs.driver-task-list', ['drivertasks' => $drivertasks, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
 
+    }
+
+    
+    public function vehicleReceivegate(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = PickupRunSheet::query();
+        
+        if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                            $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($cneequery)use($search,$searchT) {
+                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    });
+
+                });
+            }
+
+            $query = $query->with('PrsDriverTasks,VehicleDetail');
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehiclereceives = $query->orderBy('id', 'ASC')->paginate($peritem);
+            $vehiclereceives = $prsdata->appends($request->query());
+            
+            $html =  view('prs.vehicle-receivegate-list-ajax',['prefix'=>$this->prefix,'vehiclereceives' => $vehiclereceives,'peritem'=>$peritem])->render();
+            
+
+            return response()->json(['html' => $html]);
+        }
+
+        $query = $query->with('PrsDriverTasks.PrsTaskItems');
+
+        $vehiclereceives  = $query->orderBy('id','ASC')->paginate($peritem);
+        $vehiclereceives  = $vehiclereceives->appends($request->query());
+        
+        return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function createTaskItem(Request $request)

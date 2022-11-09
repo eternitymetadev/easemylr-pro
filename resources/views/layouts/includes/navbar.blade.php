@@ -225,6 +225,9 @@
                         <li>
                             <a href="{{$prefixurl.'driver-tasks'}}"> Driver Task</a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'vehicle-receivegate'}}"> Received at Gate</a>
+                        </li>
                     </ul>
                   
                 <li class="menu single-menu menu-extras">

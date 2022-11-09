@@ -16,4 +16,10 @@ class PrsDrivertask extends Model
     {
         return $this->hasOne('App\Models\Consigner','id','prsconsigner_id');
     }
+    public function PrsTaskItems()
+    {
+        return $this->hasMany('App\Models\PrsTaskItem','drivertask_id','id');
+    }
+
+
 }

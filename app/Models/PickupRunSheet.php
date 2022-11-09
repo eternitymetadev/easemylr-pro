@@ -21,6 +21,11 @@ class PickupRunSheet extends Model
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
     }
+    public function VehicleType()
+    {
+        return $this->hasOne('App\Models\VehicleType','id','vehicletype_id');
+    }
+
     public function ConsignerDetail()
     {
         return $this->hasOne('App\Models\Consigner','id','consigner_id');
@@ -30,5 +35,11 @@ class PickupRunSheet extends Model
     {
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
     }
+
+    public function PrsDriverTasks()
+    {
+        return $this->hasMany('App\Models\PrsDrivertask','prs_id','id');
+    }
+
 
 }

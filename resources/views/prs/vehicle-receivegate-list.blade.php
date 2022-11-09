@@ -8,7 +8,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Driver Task List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Vehicle Received List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -47,7 +47,7 @@
 
                     @csrf
                     <div class="main-table table-responsive">
-                        @include('prs.driver-task-list-ajax')
+                        @include('prs.vehicle-receivegate-list-ajax')
                     </div>
                 </div>
             </div>
