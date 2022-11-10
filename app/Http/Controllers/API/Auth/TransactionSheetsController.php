@@ -374,11 +374,40 @@ class TransactionSheetsController extends Controller
             ], 500);
         }
     }
-    public function taskStart(Request $request, $id)
+    //////
+    public function updateMultipleTask(Request $request, $id)
     {
         try {
             $update_status = ConsignmentNote::find(1118713);
+            $res = $update_status->update(['delivery_status' => 'Successful']);
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'data' => $update_status
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update transaction_sheets"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
+          
+    public function taskStart(Request $request, $id)
+    {
+        try {
+
+            $update_status = ConsignmentNote::find(1118713);
             $res = $update_status->update(['delivery_status' => 'Started']);
+
             if ($res) {
                 return response([
                     'status' => 'success',

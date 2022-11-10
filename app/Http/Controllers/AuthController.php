@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Drivers;
+use App\Models\Driver;
 use Validator;
 
 class AuthController extends Controller
@@ -47,15 +47,12 @@ class AuthController extends Controller
         $credentials = [
 
             'login_id' => $request->get('login_id'),
-
             'password' => $request->get('password')
 
         ];
        
-
         $validator = Validator::make($credentials, [
             'login_id' => 'required',
-
             'password' => 'required',
 
         ]);
