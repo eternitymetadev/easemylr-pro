@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use PHPOpenSourceSaver\JWTAuth\Middleware\RefreshToken;
+use PHPOpenSourceSaver\JWTAuth\Middleware\GetUserFromToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,5 +66,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'PermissionCheck' => \App\Http\Middleware\PermissionCheck::class,
+        'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
+        'jwt.auth' => GetUserFromToken::class,
+        'jwt.refresh' => RefreshToken::class,
     ];
 }
