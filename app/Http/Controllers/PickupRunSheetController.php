@@ -287,7 +287,7 @@ class PickupRunSheetController extends Controller
 
     }
 
-    
+    // get list vehicle receive gate
     public function vehicleReceivegate(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();

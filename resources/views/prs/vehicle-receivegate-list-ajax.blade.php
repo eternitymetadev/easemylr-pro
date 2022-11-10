@@ -1,3 +1,4 @@
+<?php  $authuser = Auth::user(); ?>
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
@@ -7,33 +8,43 @@
                 <th>Vehicle Type</th>
                 <th>Quantity (in Pieces) </th>
                 <th>Status </th>
+                <th>Action </th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
         
             @if(count($vehiclereceives)>0)
             @foreach($vehiclereceives as $value)
-            <?php //dd($value->PrsDriverTasks); ?>
-            <tr>
+            
+                @if(count($value->PrsDriverTasks)>0)
+                @foreach($value->PrsDriverTasks as $item)
+                
+                @if(count($item->PrsTaskItems)>0)
+                <?php $qty_value = [];  ?>
+                @foreach($item->PrsTaskItems as $taskitem)
+                <?php $qty_value[] = $taskitem->quantity; 
+                $task_status = $taskitem->status;
+                $taskitem_id = $taskitem->id;
+                $drivertask_id = $taskitem->drivertask_id;
+                ?>
+                
+                @endforeach
+                <?php $total_qty = array_sum($qty_value);
+                
+                ?>
+                @endif
+                <tr>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
-                @if(count($value->PrsDriverTasks)>0)
-                @foreach($value->PrsDriverTasks as $item)
-                <?php $qty_value = []; ?>
-                @if(count($item->PrsTaskItems)>0)
-                @foreach($item->PrsTaskItems as $taskitem)
-                <?php $qty_value[] = $taskitem->quantity;
-                $total_qty = array_sum($qty_value); ?>
-
                 <td>{{$total_qty}}</td>
+                <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}</td>
                 
+                <td><a class="alert taskitemstatus btn btn-success" data-toggle="modal" href="#taskitem-status" data-id="{{$taskitem_id}}" data-drivertaskid="{{$drivertask_id}}"><span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+            </td>
                 @endforeach
                 @endif
-                @endforeach
-                @endif
                 
-                <td>{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</td>
             </tr>
             @endforeach
             @else

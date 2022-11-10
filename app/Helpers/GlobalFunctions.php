@@ -62,6 +62,20 @@ class GlobalFunctions {
         return $status;
     }
 
+    public static function VehicleReceiveGateStatus($status){
+        if($status == 1){
+            $status = 'Incoming';
+        }
+        else if($status == 2){
+          $status = 'Received';
+        }
+        else if($status == 3){
+          $status = 'Complete';
+        }
+    
+        return $status;
+    }
+
   // function for get branches //
 
     public static function getBranches(){
