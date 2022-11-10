@@ -64,6 +64,8 @@ Route::post('/transaction_sheets', 'App\Http\Controllers\Api\Auth\TransactionShe
 
 Route::put('/transaction_sheets/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@update')->name('api.auth.update.transaction_sheets');
 
+Route::put('/task-start/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskStart')->name('api.auth.taskStart.transaction_sheets');
+
 Route::delete('/transaction_sheets/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@destroy')->name('api.auth.delete.transaction_sheets');
 
 Route::get('/transaction_sheets/search/{search}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@search')->name('api.auth.search.transaction_sheets');

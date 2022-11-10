@@ -5,8 +5,8 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\TransactionSheets;
-use App\Models\ConsignmentNotes;
+use App\Models\TransactionSheet;
+use App\Models\ConsignmentNote;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
 
@@ -32,7 +32,7 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $transaction_sheets = TransactionSheets::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function($q){
+            $transaction_sheets = TransactionSheet::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function($q){
                 $q->where('driver_id', 2);
             })
             ->get();
@@ -173,7 +173,7 @@ class TransactionSheetsController extends Controller
 
             $requestData = ['id','drs_no','consignment_no','consignee_id','consignment_date','city','pincode','total_quantity','total_weight','order_no','vehicle_no','driver_name','driver_no','branch_id','delivery_status','delivery_date','job_id','status','created_at','updated_at'];
 
-            $transaction_sheets = TransactionSheets::where(function ($q) use ($requestData, $searchQuery) {
+            $transaction_sheets = TransactionSheet::where(function ($q) use ($requestData, $searchQuery) {
 
                 foreach ($requestData as $field)
 
@@ -244,8 +244,9 @@ class TransactionSheetsController extends Controller
             // $transaction_sheets = TransactionSheets::WhereHas('ConsignmentNote.ConsigneeDetail',function($driverquery) use ($id) {
             //     $driverquery->where('driver_id', $id);
             // })->get();
-             $consignments = ConsignmentNotes::with('TransactionSheet','ConsigneeDetail','ConsignmentItems')->where('driver_id', $id)
+             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems')->where('driver_id', $id)
             ->get();
+            // echo'<pre>'; print_r($consignments); die;
          
             foreach($consignments as $value){
             //    echo'<pre>'; print_r($value->ConsignmentItems); die;
@@ -349,65 +350,55 @@ class TransactionSheetsController extends Controller
      */
 
     public function update(Request $request, $id)
-
     {
-
         try {
-
-            $input = $request->all();
-
-
-
-            $transaction_sheets = TransactionSheets::find($id);
-
-
-
-           $transaction_sheets->drs_no = $input['drs_no'];$transaction_sheets->consignment_no = $input['consignment_no'];$transaction_sheets->consignee_id = $input['consignee_id'];$transaction_sheets->consignment_date = $input['consignment_date'];$transaction_sheets->city = $input['city'];$transaction_sheets->pincode = $input['pincode'];$transaction_sheets->total_quantity = $input['total_quantity'];$transaction_sheets->total_weight = $input['total_weight'];$transaction_sheets->order_no = $input['order_no'];$transaction_sheets->vehicle_no = $input['vehicle_no'];$transaction_sheets->driver_name = $input['driver_name'];$transaction_sheets->driver_no = $input['driver_no'];$transaction_sheets->branch_id = $input['branch_id'];$transaction_sheets->delivery_status = $input['delivery_status'];$transaction_sheets->delivery_date = $input['delivery_date'];$transaction_sheets->job_id = $input['job_id'];$transaction_sheets->status = $input['status'];$transaction_sheets->created_at = $input['created_at'];$transaction_sheets->updated_at = $input['updated_at'];
-
-
-
-            $res = $transaction_sheets->update();
-
+            $update_status = ConsignmentNote::find(1118713);
+            $res = $update_status->update(['delivery_status' => 'Successful']);
             if ($res) {
-
                 return response([
-
                     'status' => 'success',
-
                     'code' => 1,
-
-                    'data' => $transaction_sheets
-
+                    'data' => $update_status
                 ], 200);
-
             }
-
             return response([
-
                 'status' => 'error',
-
                 'code' => 0,
-
                 'data' => "Failed to update transaction_sheets"
-
             ], 500);
-
         } catch (\Exception $exception) {
-
             return response([
-
                 'status' => 'error',
-
                 'code' => 0,
-
                 'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
-
             ], 500);
-
         }
-
     }
-
+    public function taskStart(Request $request, $id)
+    {
+        try {
+            $update_status = ConsignmentNote::find(1118713);
+            $res = $update_status->update(['delivery_status' => 'Started']);
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'data' => $update_status
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update transaction_sheets"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
 
 
     /**
