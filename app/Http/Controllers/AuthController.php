@@ -43,7 +43,6 @@ class AuthController extends Controller
     public function login(Request $request)
 
     {
-
         $credentials = [
 
             'login_id' => $request->get('login_id'),
@@ -74,8 +73,7 @@ class AuthController extends Controller
 
         }
 
-        if (!$token = auth()->attempt($validator->validated())) {
-
+        if (!$token = \Auth::guard('api')->attempt($validator->validated())) {
             return response([
 
                 'status' => 'error',
@@ -83,6 +81,7 @@ class AuthController extends Controller
                 'code' => 0,
 
                 'message' => "Unauthorized"
+                
 
             ], 401);
 
@@ -294,9 +293,9 @@ class AuthController extends Controller
 
                 'token_type' => 'bearer',
 
-                'expires_in' => auth()->factory()->getTTL() * 60 * 60 * 60,
+                 'expires_in' => auth('api')->factory()->getTTL() * 60,
 
-                'user' => auth()->user()
+                // 'user' => auth()->user()
 
             ]
 

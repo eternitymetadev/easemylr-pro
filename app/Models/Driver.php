@@ -12,6 +12,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class Driver extends Authenticatable implements JWTSubject
 { 
+    protected $guard = 'api';
     protected $table = "drivers";
     public $timestamps = false;
     public $boolean = 1;

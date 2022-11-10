@@ -5,8 +5,8 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\TransactionSheets;
-use App\Models\ConsignmentNotes;
+use App\Models\TransactionSheet;
+use App\Models\ConsignmentNote;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
 
@@ -32,7 +32,7 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $transaction_sheets = TransactionSheets::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function($q){
+            $transaction_sheets = TransactionSheet::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function($q){
                 $q->where('driver_id', 2);
             })
             ->get();
