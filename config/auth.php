@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'api',
+        'guard' => 'web',
         'passwords' => 'users',
     ],
 
@@ -41,9 +41,9 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
+        'phone' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'phone',
             'hash' => false,
         ],
     ],
@@ -68,13 +68,12 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+        'phone' => [
+            'driver' => 'eloquent',
             'model' => App\Models\Driver::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -95,6 +94,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'app' => [
+            'provider' => 'Drivers',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

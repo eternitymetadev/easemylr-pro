@@ -13,7 +13,9 @@
                     font-size: 15px;
                     font-family: "Arial";
                 }
-                
+                html, body {
+                height: 100%;
+                }
                 .centered {
                     text-align: center;
                     align-content: center;
@@ -23,10 +25,6 @@
                     border-collapse: collapse;
                    
                   }
-                .ticket {
-                    width:108mm;
-                    height:108mm;
-                }
                 .imu{ 
                     width:350px;
                 }
@@ -54,13 +52,22 @@
                     .hidden-print * {
                         display: none !important;
                     }
+                    table {
+                        height: 95vh;
+                    }
                     @page { margin: 5px 19px; }
                 }
                 </style>
             </head>
             <body onload="window.print()">
-                <div class="ticket">
-                    <table style="width:90%" style="background-color: aquamarine;">
+                <?php 
+                  $q = $data['total_quantity'];
+                  
+                  for($i = 1; $i <= $q; $i++){
+                   // echo $q; die;
+                ?>
+                <div class="ticket" style="height: 100%;" >
+                    <table style="width:100%" style="background-color: aquamarine;">
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <img src="/assets/img/logo_se.jpg" class="imu">
@@ -68,11 +75,11 @@
                             
                         </tr>
                         <tr>
-                            <td width="30%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
+                            <td width="50%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
                             <td colspan ="2" style="text-align:center; padding:5px 0px"><h3 class="ff"><?php echo $data['id'] ?></h3></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>
                             <?php if(empty($data['order_id'])){
                                 foreach($data['consignment_items'] as $order)
                                     {
@@ -90,7 +97,7 @@
                            <?php } ?>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>
                             <?php if(empty($data['invoice_no'])){ ?>
                             <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;"><?php echo $invoices[0] ?></b></td>
                             <?php }else{ ?>
@@ -98,15 +105,15 @@
                                 <?php } ?>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
                             <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:20px;"><?php echo $baseclient ?></b></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;">No Of Box:</b></td>
+                            <td width="50%"><b style="margin-left: 8px;">No Of Box:</b></td>
                             <td colspan ="2" style="text-align:center;"><p style="font-size: 70px;margin: -15px;font-weight:bold;position: relative;top: 8px;"><?php echo $data['total_quantity'] ?><p></td>
                         </tr>
                         <tr>
-                            <td width="30%" style="text-align:center;"><img src="/assets/img/barcode.png" style="width: 80px;"></td>
+                            <td width="50%" style="text-align:center;"><img src="/assets/img/barcode.png" style="width: 80px;"></td>
                             <td colspan ="2">
                                 <div class="row" style="margin-left: 8px;">
                                 <p  style="font-weight:bold; font-size:18px;">Ship To: <br/><?php echo $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2']; ?></p>
@@ -126,6 +133,8 @@
                         
                     </table>
                 </div>
+            <?php }
+            ?>
                 <script type="text/javascript">
       window.onload = function() { window.print(); }
  </script>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Drivers;
+use App\Models\Driver;
 use Validator;
 
 class AuthController extends Controller
