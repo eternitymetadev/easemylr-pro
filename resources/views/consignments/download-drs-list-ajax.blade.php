@@ -61,10 +61,11 @@ if ($trns->status == 0) {?>
 if ($trns->delivery_status == 'Unassigned') {?>
                     <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Unassigned</button>
-                    <?php } elseif ($lr == 0) {?>
+                    <?php } elseif ($lr == 0) {
+    if (Helper::getdeleveryStatus($trns->drs_no) != 'Lr Cancelled') {?>
                     <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Assigned</button>
-                    <?php }?>
+                    <?php }}?>
                 </td>
                 <?php }?>
                 <!------- end Action ---- -->
@@ -93,7 +94,7 @@ if ($trns->delivery_status == 'Unassigned') {?>
                 <?php }?>
                 <!-- ------- payment status -->
                 <?php if ($trns->payment_status == 0) {
-              ?>
+    ?>
                 <td><label class="badge badge-dark">Unpaid</label></td>
                 <?php } else if ($trns->payment_status == 1) {?>
                 <td><label class="badge badge-success">Paid</label></td>

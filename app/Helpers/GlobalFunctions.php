@@ -180,6 +180,7 @@ class GlobalFunctions {
 
         $total_lr = ConsignmentNote::whereIn('id',$get_lrs)->where('status','!=',0)->count();
 
+    if($total_lr > 0){
         if($total_deldate == $total_lr){
             $status = "Successful";
         }elseif($total_lr == $total_empty){
@@ -187,6 +188,9 @@ class GlobalFunctions {
         }else{
             $status = "Partial Delivered";
         }
+    }else{
+        $status = "Lr Cancelled";
+    }
 
         return $status;
     }
