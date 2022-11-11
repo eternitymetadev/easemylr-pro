@@ -364,7 +364,7 @@ class TransactionSheetsController extends Controller
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update transaction_sheets"
+                'data' => "Failed to update status"
             ], 500);
         } catch (\Exception $exception) {
             return response([
@@ -378,7 +378,7 @@ class TransactionSheetsController extends Controller
     public function updateMultipleTask(Request $request, $id)
     {
         try {
-            $update_status = ConsignmentNote::find(1118713);
+            $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Successful']);
             if ($res) {
                 return response([
@@ -405,7 +405,7 @@ class TransactionSheetsController extends Controller
     {
         try {
 
-            $update_status = ConsignmentNote::find(1118713);
+            $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Started']);
 
             if ($res) {
@@ -418,7 +418,7 @@ class TransactionSheetsController extends Controller
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update transaction_sheets"
+                'data' => "Failed to update status"
             ], 500);
         } catch (\Exception $exception) {
             return response([
