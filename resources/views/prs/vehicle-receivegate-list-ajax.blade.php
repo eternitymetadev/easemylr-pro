@@ -12,40 +12,39 @@
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
-        
+
             @if(count($vehiclereceives)>0)
             @foreach($vehiclereceives as $value)
-            
-                @if(count($value->PrsDriverTasks)>0)
-                @foreach($value->PrsDriverTasks as $item)
-                
-                @if(count($item->PrsTaskItems)>0)
-                <?php $qty_value = [];  ?>
-                @foreach($item->PrsTaskItems as $taskitem)
-                <?php $qty_value[] = $taskitem->quantity; 
+
+           
+            @if(count($value->PrsDriverTask->PrsTaskItems)>0)
+            <?php $qty_value = [];  ?>
+            @foreach($value->PrsDriverTask->PrsTaskItems as $taskitem)
+            <?php $qty_value[] = $taskitem->quantity; 
                 $task_status = $taskitem->status;
                 $taskitem_id = $taskitem->id;
                 $drivertask_id = $taskitem->drivertask_id;
                 ?>
-                
-                @endforeach
-                <?php $total_qty = array_sum($qty_value);
-                
+
+            @endforeach
+            <?php $total_qty = array_sum($qty_value);
+                $consigners = $value->consigner_id;
+                $consinger_ids  = explode(',',$consigners);
+                $consigner_count = count($consinger_ids);
                 ?>
-                @endif
-                <tr>
+            @endif
+            <tr>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
                 <td>{{$total_qty}}</td>
-                <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}</td>
-                
-                <td><a class="alert taskitemstatus btn btn-success" data-toggle="modal" href="#taskitem-status" data-id="{{$taskitem_id}}" data-drivertaskid="{{$drivertask_id}}"><span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
-            </td>
-                @endforeach
-                @endif
-                
+                <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
+                </td>
+                <td>
+                    <a class="alert btn btn-success receive-vehicle" data-toggle="modal" href="#receive-vehicle" data-prsid="{{$value->id}}" data-cnrcount="{{$consigner_count}}"> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                </td>
             </tr>
+            
             @endforeach
             @else
             <tr>

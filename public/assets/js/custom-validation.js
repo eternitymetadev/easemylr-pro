@@ -2344,3 +2344,40 @@ $('#update_purchase_amt_form').submit(function (e) {
     });
 });
 
+$(document).on("click", ".receive-vehicle", function () {
+    var prs_id = jQuery(this).attr("data-prsid");
+    var cnrcount = jQuery(this).attr("data-cnrcount");
+    
+    $.ajax({
+        type: "get",
+        url: APP_URL + "/vehicle/get-item",
+        data: { prs_id:prs_id, cnrcount: cnrcount },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $("#vehicleitems_table tbody").empty();
+        },
+        success: function (res) {
+            console.log(res);
+            if (res.data) {
+                $(".prs_id").val(res.data_prsid);
+                var consigner_count= res.data;
+                rows = '';
+                for(var i = 1; i <= consigner_count; i++){
+                    rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+i+'][consigner_id]"></td>';
+                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+i+'][invoice_no]"></td>';
+                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+i+'][total_qty]"></td>';
+                    rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+i+'][receive_qty]"></td>';
+                    rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+i+'][remaining_qty]"></td>';
+                    rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+i+'][remarks]"></td></tr>';
+                }
+                
+                $('#vehicleitems_table tbody').append(rows);
+            }
+        },
+    });
+
+});
+

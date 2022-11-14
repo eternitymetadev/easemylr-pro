@@ -1578,6 +1578,39 @@ jQuery(document).ready(function(){
             });
     });
 
+    /*===== Create prs receive vehicle on hub gate =====*/
+    jQuery('#create-receivevehicle').validate({
+        rules:
+        {
+            name: {
+                required: true,
+            },
+           
+        },
+        messages:
+        {
+            name: {
+                required: "Location name is required"
+            },
+           
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+            jQuery('#receive-vehicle').modal('hide');
+        }
+    });
+
+    $(".remarks").each(function()
+    {
+        $(this).rules('add', {
+            required: true,
+            messages: {
+                required: "Enter remarks."
+            },
+        });
+    });
+
 
 
 

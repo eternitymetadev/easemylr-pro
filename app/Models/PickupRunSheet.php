@@ -41,5 +41,10 @@ class PickupRunSheet extends Model
         return $this->hasMany('App\Models\PrsDrivertask','prs_id','id');
     }
 
+    public function PrsDriverTask()
+    {
+        return $this->hasOne('App\Models\PrsDrivertask','prs_id','id');
+    }
+
 
 }

@@ -12,6 +12,7 @@ use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\Driver;
 use App\Models\VehicleType;
+use App\Models\PrsReceiveVehicle;
 use Helper;
 use Validator;
 use Config;
@@ -323,7 +324,7 @@ class PickupRunSheetController extends Controller
                 });
             }
 
-            $query = $query->with('PrsDriverTasks,VehicleDetail');
+            $query = $query->with('PrsDriverTasks,PrsTaskItems');
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -345,11 +346,11 @@ class PickupRunSheetController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        $query = $query->with('PrsDriverTasks.PrsTaskItems');
+        $query = $query->with('PrsDriverTask.PrsTaskItems');
 
         $vehiclereceives  = $query->orderBy('id','ASC')->paginate($peritem);
         $vehiclereceives  = $vehiclereceives->appends($request->query());
-        
+            
         return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
@@ -413,6 +414,78 @@ class PickupRunSheetController extends Controller
             $response['error'] = true;
         }
             
+        return response()->json($response);
+    }
+
+    // get cnr count in receive vehicle list on receive vehicle action btn
+    public function getVehicleItem(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $get_prs= PickupRunSheet::where('id',$request->prs_id)->get();
+
+        if ($request->cnrcount) {
+            $response['success'] = true;
+            $response['success_message'] = "Consigner count fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $request->cnrcount;
+            $response['data_prsid'] = $request->prs_id;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consigner count please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
+    // store receive vehicle item from modal submit
+    public function createReceiveVehicle(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $rules = array(
+            // 'regclient_id' => 'required',
+        );
+
+        $validator = Validator::make($request->all(),$rules);
+    
+        if($validator->fails())
+        {
+            $errors                  = $validator->errors();
+            $response['success']     = false;
+            $response['validation']  = false;
+            $response['formErrors']  = true;
+            $response['errors']      = $errors;
+            return response()->json($response);
+        }
+
+        $authuser = Auth::user();
+        if (!empty($request->data)) {
+            $get_data = $request->data;
+            foreach ($get_data as $key => $save_data) {
+                $save_data['prs_id'] = $request->prs_id;
+                $save_data['status'] = 1;
+                $save_data['user_id'] = $authuser->id;
+                $save_data['branch_id'] = $authuser->branch_id;
+                $savevehiclereceive = PrsReceiveVehicle::create($save_data);
+            }
+
+        if($savevehiclereceive){
+            $url = URL::to($this->prefix.'/vehicle-receivegate');
+                    $response['success'] = true;
+                    $response['success_message'] = "PRS vehicle receive successfully";
+                    $response['error'] = false;
+                    $response['page'] = 'create-vehiclereceive';
+                    $response['redirect_url'] = $url;
+                }else{
+                    $response['success'] = false;
+                    $response['error_message'] = "Can not PRS vehicle receive please try again";
+                    $response['error'] = true;
+                }
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not created PRS task item please try again";
+                $response['error'] = true;
+            }
+        
         return response()->json($response);
     }
 

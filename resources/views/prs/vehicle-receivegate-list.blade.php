@@ -55,60 +55,12 @@
     </div>
 </div>
 @include('models.create-prs-drivertask')
-@include('models.driveritem-updatestatus')
+@include('models.receive-vehiclegate')
 @endsection
 
 @section('js')
 <script>
-    $(document).on("click", ".taskitemstatus", function () {
-        var dataaction = jQuery(this).attr("data-action");
-        var drivertaskid = jQuery(this).attr("data-drivertaskid");
-        var taskitem_id = jQuery(this).attr("data-id");
-        
-        jQuery(".statusconfirmclick").one("click", function () {
-                var reason_to_cancel = jQuery("#reason").val();
-
-                var data = {
-                    id: user_id,
-                    status: datastatus,
-                    updatestatus: updatestatus,
-                    reason_to_cancel: reason_to_cancel,
-                };
-
-                jQuery.ajax({
-                    url: "consignments",
-                    type: "get",
-                    cache: false,
-                    data: data,
-                    dataType: "json",
-                    headers: {
-                        "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
-                            "content"
-                        ),
-                    },
-                    processData: true,
-                    beforeSend: function () {
-                        // jQuery("input[type=submit]").attr("disabled", "disabled");
-                    },
-                    complete: function () {
-                        //jQuery("#loader-section").css('display','none');
-                    },
-
-                    success: function (response) {
-                        if (response.success) {
-                            jQuery("#commonconfirm").modal("hide");
-                            if (response.page == "consignment-updateupdate") {
-                                setTimeout(() => {
-                                    window.location.href =
-                                        response.redirect_url;
-                                }, 10);
-                            }
-                        }
-                    },
-                });
-            });
-
-    });
+   
 </script>
 
 @endsection

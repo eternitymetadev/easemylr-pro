@@ -332,6 +332,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
 
 
 });
@@ -698,7 +699,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
-
+    Route::any('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
 
 });
 
