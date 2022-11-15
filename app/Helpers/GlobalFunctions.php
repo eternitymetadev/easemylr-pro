@@ -18,6 +18,7 @@ use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use App\Models\Vehicle;
+use App\Models\PrsDrivertask;
 use URL;
 use Crypt;
 use Storage;
@@ -325,5 +326,17 @@ class GlobalFunctions {
         $total_weight = ConsignmentNote::select('total_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_weight');
       
         return $total_weight;
+    }
+
+    public static function DriverTaskStatusCheck($prs_id)
+    {
+        $totalstatus = PrsDrivertask::where('prs_id',$prs_id)->count();
+        $countstatus = PrsDrivertask::where('status',2)->count();
+        if($totalstatus == $countstatus){
+            $disable = '';
+        }else{
+            $disable = 'disable_n';
+        }
+        return $disable;
     }
 }

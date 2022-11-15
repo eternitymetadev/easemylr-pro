@@ -28,9 +28,12 @@
 
             @endforeach
             <?php $total_qty = array_sum($qty_value);
+            
                 $consigners = $value->consigner_id;
-                $consinger_ids  = explode(',',$consigners);
-                $consigner_count = count($consinger_ids);
+                $consinger_ids = explode(',',$consigners);
+                $consinger_ids = implode(",",$consinger_ids);
+                
+                $disable = Helper::DriverTaskStatusCheck($value->id);
                 ?>
             @endif
             <tr>
@@ -41,7 +44,7 @@
                 <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
-                    <a class="alert btn btn-success receive-vehicle" data-toggle="modal" href="#receive-vehicle" data-prsid="{{$value->id}}" data-cnrcount="{{$consigner_count}}"> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                    <a class="alert btn btn-success receive-vehicle {{$disable}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                 </td>
             </tr>
             

@@ -346,10 +346,12 @@ class PickupRunSheetController extends Controller
             return response()->json(['html' => $html]);
         }
 
-        $query = $query->with('PrsDriverTask.PrsTaskItems');
+        $query = $query->with('PrsDriverTasks','PrsDriverTask.PrsTaskItems');
 
         $vehiclereceives  = $query->orderBy('id','ASC')->paginate($peritem);
         $vehiclereceives  = $vehiclereceives->appends($request->query());
+        // $simp = json_decode(json_encode($vehiclereceives));
+        // echo "<pre>"; print_r($simp); die;
             
         return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
@@ -390,7 +392,6 @@ class PickupRunSheetController extends Controller
 
                     $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
                     $countdrivertask_status = PrsDrivertask::where('status',2)->count();
-                    // dd($countdrivertask_id);
                     if($countdrivertask_id == $countdrivertask_status){
                         PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
                     }
@@ -399,7 +400,6 @@ class PickupRunSheetController extends Controller
                     $response['success'] = true;
                     $response['success_message'] = "PRS task item Added successfully";
                     $response['error'] = false;
-                    // $response['resetform'] = true;
                     $response['page'] = 'create-prstaskitem';
                     $response['redirect_url'] = $url;
                 }else{
@@ -421,17 +421,20 @@ class PickupRunSheetController extends Controller
     public function getVehicleItem(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $get_prs= PickupRunSheet::where('id',$request->prs_id)->get();
+        $consinger_ids = explode(',',$request->consinger_ids);
+        $consigners = Consigner::select('nick_name')->whereIn('id',$consinger_ids)->get();
+        $cnr_data =json_decode(json_encode($consigners));
+        // $get_prs= PickupRunSheet::where('id',$request->prs_id)->get();
 
-        if ($request->cnrcount) {
+        if ($cnr_data) {
             $response['success'] = true;
-            $response['success_message'] = "Consigner count fetch successfully";
+            $response['success_message'] = "Consigner fetch successfully";
             $response['error'] = false;
-            $response['data'] = $request->cnrcount;
+            $response['data'] = $cnr_data;
             $response['data_prsid'] = $request->prs_id;
         } else {
             $response['success'] = false;
-            $response['error_message'] = "Can not fetch consigner count please try again";
+            $response['error_message'] = "Can not fetch consigner please try again";
             $response['error'] = true;
         }
         return response()->json($response);
