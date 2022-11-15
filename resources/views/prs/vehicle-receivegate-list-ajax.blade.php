@@ -15,7 +15,6 @@
 
             @if(count($vehiclereceives)>0)
             @foreach($vehiclereceives as $value)
-
            
             @if(count($value->PrsDriverTask->PrsTaskItems)>0)
             <?php $qty_value = [];  ?>
@@ -25,17 +24,14 @@
                 $taskitem_id = $taskitem->id;
                 $drivertask_id = $taskitem->drivertask_id;
                 ?>
-
             @endforeach
             <?php $total_qty = array_sum($qty_value);
-            
                 $consigners = $value->consigner_id;
                 $consinger_ids = explode(',',$consigners);
                 $consinger_ids = implode(",",$consinger_ids);
                 
                 $disable = Helper::DriverTaskStatusCheck($value->id);
-                ?>
-            @endif
+            ?>    
             <tr>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
@@ -47,7 +43,12 @@
                     <a class="alert btn btn-success receive-vehicle {{$disable}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                 </td>
             </tr>
-            
+            @else
+            <tr>
+                <td colspan="6" class="text-center">No Record Found </td>
+            </tr>
+            @endif
+
             @endforeach
             @else
             <tr>

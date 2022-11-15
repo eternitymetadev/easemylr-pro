@@ -2,8 +2,8 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>Task No</th>
-                <th>PRS No</th>
+                <th>Task ID</th>
+                <th>Pickup ID</th>
                 <th>Date</th>
                 <th>Consigner </th>
                 <th>City</th>
@@ -16,7 +16,7 @@
             @foreach($drivertasks as $value)
             
             <tr>
-                <td>{{ $value->id ?? "-" }}</td>
+                <td>{{ $value->task_id ?? "-" }}</td>
                 <td>{{ $value->prs_id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
@@ -30,7 +30,6 @@
                 } ?>
 
                 <td><a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#add-task">Add Task</a></td>
-                <!-- href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id))}}"  -->
             </tr>
             @endforeach
             @else

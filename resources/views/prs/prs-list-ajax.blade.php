@@ -2,9 +2,9 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>PRS No</th>
+                <th>Pickup ID</th>
                 <th>Regional Client</th>
-                <th>Number of Task</th>
+                <th>Tasks</th>
                 <th>Date</th>
                 <!-- <th>PRS Type </th> -->
                 <th>Vehicle No.</th>
@@ -16,23 +16,20 @@
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <?php 
+            $regclients = $value->regclient_id;
+            $regclient_ids  = explode(',',$regclients);
+            $regclient_count = count($regclient_ids);
+
             $consigners = $value->consigner_id;
             $consinger_ids  = explode(',',$consigners);
             $consigner_count = count($consinger_ids);
             ?>
             <tr>
-                <td>{{ $value->id ?? "-" }}</td>
-                <td>{{ $value->RegClient->name ?? "-" }}</td>
-                <td>{{ $consigner_count ?? "-" }}</td>
+                <td>{{ $value->pickup_id ?? "-" }}</td>
+                <td><i data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $regclient_count ?? "-" }}</i></td>
+                <td><a href="{{url($prefix.'/driver-tasks')}}" target="_blank" title="{{ $consigner_count ?? '-' }}">{{ $consigner_count ?? "-" }}</a>
+                </td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
-                <!-- if($value->prs_type == 0){
-                    $prs_type = 'One Time';
-                }else if($value->prs_type == 1){
-                    $prs_type = 'Recuring';
-                }else{
-                    $prs_type = '-';
-                }
-                <td> $prs_type </td> -->
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
                 <td>{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>

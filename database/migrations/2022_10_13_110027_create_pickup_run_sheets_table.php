@@ -15,6 +15,7 @@ class CreatePickupRunSheetsTable extends Migration
     {
         Schema::create('pickup_run_sheets', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('pickup_id')->nullable();
             $table->string('regclient_id')->nullable();
             $table->string('location_id')->nullable();
             $table->string('consigner_id')->nullable();

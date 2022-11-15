@@ -15,6 +15,7 @@ class CreatePrsDrivertasksTable extends Migration
     {
         Schema::create('prs_drivertasks', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('task_id')->nullable();
             $table->string('prs_id')->nullable();
             $table->string('prsconsigner_id')->nullable();
             $table->string('prs_date')->nullable();

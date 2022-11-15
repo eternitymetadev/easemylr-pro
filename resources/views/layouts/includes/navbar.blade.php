@@ -220,13 +220,13 @@
                         
                     <?php //if($authuser->role_id ==2){ ?>
                         <li>
-                            <a href="{{$prefixurl.'prs'}}"> Pickup Run Sheet</a>
+                            <a href="{{$prefixurl.'prs'}}"> Create Pickup</a>
                         </li>
                         <li>
                             <a href="{{$prefixurl.'driver-tasks'}}"> Driver Task</a>
                         </li>
                         <li>
-                            <a href="{{$prefixurl.'vehicle-receivegate'}}"> Received at Gate</a>
+                            <a href="{{$prefixurl.'vehicle-receivegate'}}"> HUB Receiving</a>
                         </li>
                     </ul>
                   

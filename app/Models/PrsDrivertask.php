@@ -9,7 +9,7 @@ class PrsDrivertask extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'prs_id', 'prsconsigner_id', 'prs_date', 'status', 'created_at', 'updated_at'
+        'task_id', 'prs_id', 'prsconsigner_id', 'prs_date', 'status', 'created_at', 'updated_at'
     ];
 
     public function ConsignerDetail()
