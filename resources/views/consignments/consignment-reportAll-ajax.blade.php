@@ -131,6 +131,8 @@
                     <td>Started</td>
                 <?php }elseif($consignment->delivery_status == 'Successful'){ ?>
                     <td>Successful</td>
+                <?php }elseif($consignment->delivery_status == 'Cancel'){ ?>
+                    <td>Cancel</td>
                 <?php }else{?>
                     <td>Unknown</td>
                 <?php }?>
