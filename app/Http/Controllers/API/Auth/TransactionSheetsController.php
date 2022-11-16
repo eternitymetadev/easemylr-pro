@@ -5,8 +5,13 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
+use App\Models\Job;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use DB;
 
 class TransactionSheetsController extends Controller
 
@@ -403,12 +408,59 @@ class TransactionSheetsController extends Controller
 
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Started']);
+            
+            $currentdate = date("d-m-y h:i:sa");
+              $respons2 = array('consignment_id' => $id, 'status' => 'Started','create_at' => $currentdate, 'type' => '2');
+                        
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('consignment_id')->first();
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st); 
+
+                        $start = Job::create(['consignment_id' => $id ,'response_data' => $sts, 'status' => 'Started','type'=> '2']);
 
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'data' => $update_status
+                    'message' => 'Status Updated Successfully'
+                    // 'data' => $update_status
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update status"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
+
+    public function taskAcknowledge(Request $request, $id)
+    {
+        try {
+
+            $update_status = ConsignmentNote::find($id);
+            $res = $update_status->update(['delivery_status' => 'Acknowledge']);
+            
+            $currentdate = date("d-m-y h:i:sa");
+            $respons = array(['consignment_id' => $id, 'status' => 'Acknowledge', 'create_at' => $currentdate,'type' => '2']);
+            $respons_data = json_encode($respons);
+            
+            $create = Job::create(['consignment_id' => $id ,'response_data' => $respons_data,'status' => 'Acknowledge','type'=> '2']);
+            
+
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Status Updated Successfully',
+                    //'data' => $update_status
                 ], 200);
             }
             return response([
@@ -445,29 +497,17 @@ class TransactionSheetsController extends Controller
         try {
 
             $res = TransactionSheets::find($id)->delete();
-
             if ($res) {
-
                 return response([
-
                     'status' => 'success',
-
                     'code' => 1,
-
                     'message' => "Deleted successfully"
-
                 ], 200);
-
             } else {
-
                 return response([
-
                     'status' => 'error',
-
                     'code' => 0,
-
-                    'data' => "Failed to delete transaction_sheets"
-
+                  'data' => "Failed to delete transaction_sheets"
                 ], 500);
 
             }
@@ -487,6 +527,30 @@ class TransactionSheetsController extends Controller
         }
 
     }
+    public function updateDeliveryData(Request $request,$id)
+    {
+
+        $get_data = $request->data;
+        $img_path = array();
+        foreach ($get_data as $key => $save_data) {
+            // $lrno = $save_data['lr_no'];
+            $images = @$save_data['pod_img'];
+
+            $path = Storage::disk('s3')->put('images', $images);
+            $img_path[] = Storage::disk('s3')->url($path);
+            // $product_filename = $product_pic->getClientOriginalName();
+            // $save = DB::table('app_media')->insert(['lr_no' => $lrno, 'pod_img' => $product_filename, 'type' => $type]);
+
+        }
+ 
+         /* Store $imageName name in DATABASE from HERE */
+         return response([
+            'success' =>'You have successfully upload image.',
+            'image' => $img_path
+        ], 200);
+
+    }
+ 
 
 }
 

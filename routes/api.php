@@ -28,6 +28,10 @@ use App\Http\Controllers\API\Auth\TransactionSheetsController;
 Route::group(['middleware' =>  ['jwt.verify'],'prefix' => 'auth'], function ($router) {
 
 Route::get('transaction_sheets/{id}', [TransactionSheetsController::class, 'show']);
+Route::post('/update-deliveryDetails/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@updateDeliveryData')->name('api.auth.updateDeliveryData.transaction_sheets');
+Route::get('/transaction_sheets/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@show')->name('api.auth.show.transaction_sheets');
+Route::put('/task-start/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskStart')->name('api.auth.taskStart.transaction_sheets');
+Route::put('/task-ack/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskAcknowledge')->name('api.auth.taskAcknowledge.transaction_sheets');
 
 });
 
