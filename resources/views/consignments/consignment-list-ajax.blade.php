@@ -150,6 +150,8 @@
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
                     <?php } elseif ($consignment->delivery_status == "Accepted") { ?>
                     <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Acknowledged</span>
+                    <?php }elseif ($consignment->delivery_status == "Cancel") { ?>
+                    <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Cancel</span>
                     <?php } else{ ?>
                     <span class="badge alert bg-success shadow-sm" lr-no="{{$consignment->id}}">need to update</span>
                     <?php } ?>
