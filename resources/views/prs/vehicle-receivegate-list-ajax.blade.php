@@ -4,9 +4,9 @@
         <thead>
             <tr>
                 <th>Vehicle No</th>
-                <th>Drver Name</th>
+                <th>Driver Name</th>
                 <th>Vehicle Type</th>
-                <th>Quantity (in Pieces) </th>
+                <th>Quantity (In Pieces) </th>
                 <th>Status </th>
                 <th>Action </th>
             </tr>

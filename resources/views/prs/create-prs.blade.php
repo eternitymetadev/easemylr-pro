@@ -1,6 +1,16 @@
 @extends('layouts.main')
 @section('content')
 
+<style>
+/* tbody tr:last-child .rowClearButton {
+    display: none;
+}
+
+tbody tr:last-child .rowAddButton {
+    display: flex;
+} */
+</style>
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -8,7 +18,8 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create PRS</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
+                                PRS</a></li>
                     </ol>
                 </nav>
             </div>
@@ -19,81 +30,97 @@
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}" id="createprs">
 
-                            <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date" placeholder="" value="<?php echo date('d-m-Y'); ?>">
+                            <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
+                                placeholder="" value="<?php echo date('d-m-Y'); ?>" />
 
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Regional Client<span
-                                            class="text-danger">*</span></label>
-                                    <?php $authuser = Auth::user();
-                                    ?>
-                                    
-                                    <select class="form-control tagging select_prsregclient" id="select_prsregclient"  multiple="multiple" name="regclient_id[]">
-                                        <option value="" disabled>Select</option>
-                                        <?php 
-                                        if(count($regclients)>0) {
-                                            foreach ($regclients as $key => $client) {
-                                        ?>
-                                            <option value="{{ $client->id }}">{{ucwords($client->name)}}</option>
-                                            <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
-                                    <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple" name="consigner_id[]">
-                                        <option value="" disabled>Select</option>
-                                       
-                                    </select>
-                                </div>
-                                <!-- <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">PRS Type</label>
-                                    <select class="form-control" id="prs_type" name="prs_type">
-                                        <option value="">Select</option>
-                                        <option value="0">One Time</option>
-                                        <option value="1">Recuring</option>
-                                    </select>
-                                </div> -->
-                            </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Type</label>
-                                    <select class="form-control my-select2" id="vehicle_type" name="vehicletype_id" tabindex="-1">
+                                    <select class="form-control my-select2" id="vehicle_type" name="vehicletype_id"
+                                        tabindex="-1">
                                         <option value="">Select vehicle type</option>
                                         @foreach($vehicletypes as $vehicletype)
                                         <option value="{{$vehicletype->id}}">{{$vehicletype->name}}
                                         </option>
                                         @endforeach
                                     </select>
-                                    
+
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
-                                    <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
-                                    <option value="">Select vehicle</option>
-                                    @foreach($vehicles as $vehicle)
-                                    <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                                    </option>
-                                    @endforeach
+                                    <select class="form-control my-select2" id="vehicle_no" name="vehicle_id"
+                                        tabindex="-1">
+                                        <option value="">Select vehicle</option>
+                                        @foreach($vehicles as $vehicle)
+                                        <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                                        </option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Driver Name</label>
-                                    <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
-                                    <option value="">Select driver</option>
-                                    @foreach($drivers as $driver)
-                                    <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ?? '-'}}
-                                    </option>
-                                    @endforeach
+                                    <select class="form-control my-select2" id="driver_id" name="driver_id"
+                                        tabindex="-1">
+                                        <option value="">Select driver</option>
+                                        @foreach($drivers as $driver)
+                                        <option value="{{$driver->id}}">
+                                            {{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ?? '-'}}
+                                        </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
-                            
+
+                            <div class="iterationRows">
+                                <div id="rowToIterate" class="amit d-flex align-items-center" style="gap: 8px;">
+                                    <table id="participantTable" style="width: 100%; border-spacing: 30px 5px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Regional Client*</th>
+                                                <th>Consigner</th>
+                                                <th width="24px"></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr class="rrow">
+                                                <td valign="middle" class="p-2">
+                                                    <?php $authuser = Auth::user();
+                                                        ?>
+                                                    <select class="form-control tagging select_prsregclient"
+                                                        id="" name="data[1][regclient_id]">
+                                                        <option selected="selected" disabled>
+                                                            Select client..
+                                                        </option>
+                                                        <?php  
+                                                                foreach ($regclients as $key => $client) {
+                                                            ?>
+                                                        <option value="{{ $client->id }}">
+                                                            {{ucwords($client->name)}}
+                                                        </option>
+                                                        <?php 
+                                                                } 
+                                                            ?>
+                                                    </select>
+                                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}" />
+                                                </td>
+                                                <td valign="middle" class="p-2">
+                                                    <select class="form-control consigner_prs tagging" multiple="multiple" name="data[1][consigner_id[]]">
+                                                        <option disabled>Select</option>
+                                                    </select>
+                                                </td>
+                                                <td valign="middle" class="p-2" width="24px">
+                                                <button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <button type="submit" name="time" class="mt-4 mb-4 btn btn-primary">Submit</button>
-                            <a class="btn btn-primary" href="{{url($prefix.'/prs') }}"> Back</a>
+                            <a class="btn btn-primary" href="{{url($prefix.'/prs')}}"> Back</a>
                         </form>
                     </div>
                 </div>
@@ -113,5 +140,39 @@ var ss = $(".basic").select2({
     tags: true,
 });
 
+
+function addrow() {
+    var i = $('.rrow').length;
+    console.log(i);
+    i = i + 1;
+    var rows = '';
+    // 
+    rows += '<tr class="rrow">';
+    rows += '<td valign="middle" class="p-2">';
+    rows += '<select class="form-control tagging select_prsregclient" id="" name="data['+i+'][regclient_id]">';
+    rows += '<option selected="selected" disabled>Select client..</option>';
+    <?php  
+        foreach ($regclients as $key => $client) {
+    ?>
+    rows += '<option value="{{ $client->id }}">{{ucwords($client->name)}}</option>';
+    <?php 
+        }
+    ?>
+    rows += '</select>';
+    rows += '<input type="hidden" name="branch_id" value="{{$client->location_id}}" /></td>';
+    rows += '<td valign="middle" class="p-2">';
+    rows += '<select class="form-control consigner_prs tagging" multiple="multiple" name="data['+i+'][consigner_id[]]">';
+    rows += '<option disabled>Select</option></select></td>';
+    rows += '<td valign="middle" class="p-2" width="24px">';
+    rows += '<button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>';
+    rows += '<button type="button" class="btn btn-danger rowClearButton"><i class="fa fa-minus-circle"></i></button>';
+    rows += '</td></tr>';
+
+    $('#participantTable tbody').append(rows);
+}
+
+$(document).on('click', '.rowClearButton', function() {
+    $(this).closest('tr').remove();
+});
 </script>
 @endsection

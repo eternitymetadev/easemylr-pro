@@ -2290,12 +2290,11 @@ $('#update_purchase_amt_form').submit(function (e) {
 
  /*====== In create PRS  get consigner on click regional client =====*/
 
- $('#select_prsregclient').change(function(e) {
+ $('.select_prsregclient').change(function(e) {
     var selected = $(e.target).val();
-    console.dir(selected);
     var regclient_id = $(this).val();
-    $("#select_consigner").empty();
 
+    // $("#select_consigner").empty();
     $.ajax({
         url: "/get-consignerprs",
         type: "get",
