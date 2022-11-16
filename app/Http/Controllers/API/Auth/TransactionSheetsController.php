@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
@@ -9,8 +7,6 @@ use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
-
-
 
 class TransactionSheetsController extends Controller
 

@@ -278,4 +278,15 @@ class GlobalFunctions {
       
         return $total_weight;
     }
+
+    public static function apiResponseSend($message,$data,$status = true,$errorCode){
+        $errorCode = $status ? 200 : $errorCode;
+        $result = [
+            "status" => $status,
+            "message" => $message,
+            "data" => $data,
+            'statuscode' => $errorCode
+        ];
+        return response()->json($result);
+    }
 }

@@ -71,7 +71,7 @@ class AuthController extends Controller
 
         }
 
-        if (!$token = auth()->attempt($validator->validated())) {
+        if (!$token = auth('api')->attempt($validator->validated())) {
 
             return response([
 
@@ -183,7 +183,7 @@ class AuthController extends Controller
 
     {
 
-        auth()->logout();
+        auth('api')->logout();
 
 
 
@@ -207,7 +207,7 @@ class AuthController extends Controller
 
     {
 
-        return $this->createNewToken(auth()->refresh());
+        return $this->createNewToken(auth('api')->refresh());
 
     }
 
@@ -237,7 +237,7 @@ class AuthController extends Controller
 
                 'message' => "Token Generated",
 
-                'data' => auth()->user()
+                'data' => auth('api')->user()
 
             ], 200);
 
@@ -291,9 +291,9 @@ class AuthController extends Controller
 
                 'token_type' => 'bearer',
 
-                'expires_in' => auth()->factory()->getTTL() * 60 * 60 * 60,
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
 
-                'user' => auth()->user()
+                'user' => auth('api')->user()
 
             ]
 
