@@ -1861,10 +1861,18 @@ class ConsignmentController extends Controller
     public function getTransactionDetails(Request $request)
     {
         $id = $_GET['cat_id'];
+        $query = TransactionSheet::query();
+        $query = $query->where('drs_no', $id)
+            ->with('ConsignmentDetail', function ($query) {
+                $query->whereIn('status', [1,5]);
+            });
+        $query = $query
+            ->orderby('order_no', 'asc')
+            ->get();
 
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
-        $result = json_decode(json_encode($transcationview), true);
+        // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
+        //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+        $result = json_decode(json_encode($query), true);
 
         $response['fetch'] = $result;
         $response['success'] = true;
@@ -2296,7 +2304,6 @@ class ConsignmentController extends Controller
             }
         }
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
