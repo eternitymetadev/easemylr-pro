@@ -115,12 +115,14 @@
                     <?php if($authuser->role_id !=6 && $authuser->role_id !=7){
                     if($consignment->invoice_no != null || $consignment->invoice_no != ''){ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a
+                        class="badge alert bg-cust shadow-sm">four by three</a> | <a href="{{url($prefix.'/sticker-FourbySix/'.$consignment->id)}}" target="_blank"
+                        class="badge alert bg-cust shadow-sm">four by six</a> | <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print LR</a>
                     <?php }else{ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a
+                        class="badge alert bg-cust shadow-sm">four by three</a> | <a href="{{url($prefix.'/sticker-FourbySix/'.$consignment->id)}}" target="_blank"
+                        class="badge alert bg-cust shadow-sm">four by six</a> | <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print LR</a>
                     <?php }} ?>

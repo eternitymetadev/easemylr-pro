@@ -1601,15 +1601,323 @@ class ConsignmentController extends Controller
             $baseclient = '';
         }
 
-        //$logo = url('assets/img/logo_se.jpg');
-        $barcode = url('assets/img/barcode.png');
+        $logo = public_path('assets/img/logo_se.jpg');
+        $barcode = public_path('assets/img/barcode.png');
+        
+        $html = '<!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <style>
+                * {
+                    font-size: 14px;
+                    font-family: "Arial";
+                }
+              
+                .ticket {
+                    transform: rotate(-90deg);
+                    padding: 0 10px; 
+                 }
+                .centered {
+                    text-align: center;
+                    align-content: center;
+                }
+                table, th, td {
+                    border: 1px solid;
+                    border-collapse: collapse;
+                  }
+                .imu{ 
+                    width:280px;
+                }
+                img {
+                  display: block;
+                  margin-left: auto;
+                  margin-right: auto;
+                }
+                .ff{
+                    font-size: 20px;
+                    margin: -12px;
+                }
+                .kk{
+                    margin-top: 4px;
+                    margin-bottom: 2px;
+                    font-size: 14px;
+                }
+                .address{
+                    font-size: 14px;
+                    margin-top: 2px;
+                }
+                @page {
+                     margin: 5px 10px;
+                }
+                </style>
+            </head>
+            <body>';
+            $q = $data['total_quantity'];
+            
+            if($q > 100){
+                $q = 100;
+            }
+                  
+            for($i = 1; $i <= $q; $i++){
+             // echo $q; die;
+  
+            $html .='<div class="ticket">
+                    <table style="width:88%">
+                        <tr>
+                            <td colspan="3" style="text-align:center;">
+                                <img src="'.$logo.'" class="imu">
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td width="30%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
+                            <td colspan ="2" style="text-align:center; padding:5px 0px"><h3 class="ff">'.$data['id'].'</h3></td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>';
+                            if(empty($data['order_id'])){
+                                foreach($data['consignment_items'] as $order)
+                                    {
+                                        $orders[] = $order['order_id'];
+                                        $invoices[] = $order['invoice_no'];
+                                    }
+                             $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px;"><b style="font-size:14px;">'.$orders[0].'</b></td>';
 
-        // if ($authuser->branch_id == 28) {
-        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        // } else {
-            return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-        // }
-        //echo $barcode; die;
+                              }else{ 
+                                $html .=  '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'. $data['order_id'] .'</b></td>';
+                            } 
+                        $html .='</tr>
+                        <tr>
+                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>';
+                            if(empty($data['invoice_no'])){ 
+                            $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'.$invoices[0].'</b></td>';
+                            }
+                            else{ 
+                                $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'.$data['invoice_no'].'</b></td>';
+                            } 
+                        $html .= '</tr>
+                        <tr>
+                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
+                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:16px;">'.$baseclient.'</b></td>
+                        </tr>
+                        <tr>
+                            <td width="30%"><b style="margin-left: 8px;">No Of Box:</b></td>
+                            <td colspan ="2" style="text-align:center;"><p style="font-size: 35px;margin: -15px;font-weight:bold;position: relative;top: 12px;">'. $data['total_quantity'] .'<p></td>
+                        </tr>
+                        <tr>
+                            <td width="30%" style="text-align:center;"><img src="'.$barcode.'" style="width: 80px;"></td>
+                            <td colspan ="2">
+                                <div class="row" style="margin-left: 8px;">
+                                <p  style="font-weight:bold; font-size:14px;">Ship To: <br/>'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                           <th>PIN Code</th>
+                           <th>Zone</th>
+                           <th>Delivery Station</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><h3 class="kk">'. $data['shipto_detail']['postal_code'] .'</h3></td>
+                            <td style="text-align:center;"><h3 class="kk"></h3></td>
+                            <td style="text-align:center;"><h3 class="kk">'. $data['shipto_detail']['city'].'</h3></td>
+                        </tr>
+                        
+                    </table>
+                </div>
+            </body>       
+          </html>';
+          
+          $pdf = \App::make('dompdf.wrapper');
+          $pdf->loadHTML($html);
+          $customPaper = array(10,0,320,280);
+          $pdf->setPaper($customPaper, 'portrait');
+          //$pdf->setOptions(["enable_font_subsetting" => true]);
+          $pdf->save(public_path() . '/consignment-pdf/sticker-' . $i . '.pdf')->stream('sticker-' . $i . '.pdf');
+          $pdf_name[] = 'sticker-' . $i . '.pdf';
+      }
+      $pdfMerger = PDFMerger::init();
+      foreach ($pdf_name as $pdf) {
+          $pdfMerger->addPDF(public_path() . '/consignment-pdf/' . $pdf);
+      }
+      $pdfMerger->merge();
+      $pdfMerger->save("all-sticker.pdf", "browser");
+      $file = new Filesystem;
+      $file->cleanDirectory('pdf');
+
+    }
+
+    ////////////////Print sticker 4 by 6 ////////////////////
+    public function printStickerFourBySix(Request $request)
+    {
+        $query = ConsignmentNote::query();
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        $branch_add = BranchAddress::first();
+        $locations = Location::whereIn('id', $cc)->first();
+
+        $cn_id = $request->id;
+        $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
+        $data = json_decode(json_encode($getdata), true);
+        //echo'<pre>'; print_r($data);die;
+        $regional = $data['consigner_detail']['regionalclient_id'];
+
+        $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
+        $sl = json_decode(json_encode($getdataregional), true);
+        if (!empty($sl)) {
+            $baseclient = $sl['base_client']['client_name'];
+        } else {
+            $baseclient = '';
+        }
+
+        $logo = public_path('assets/img/logo_se.jpg');
+        $barcode = public_path('assets/img/barcode.png');
+        
+        $html = '<!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                <style>
+                * {
+                    font-size: 15px;
+                    font-family: "Arial";
+                }
+                html, body {
+                height: 100%;
+                }
+                .centered {
+                    text-align: center;
+                    align-content: center;
+                }
+                table, th, td {
+                    border: 1px solid;
+                    border-collapse: collapse;
+                   
+                  }
+                .imu{ 
+                    width:350px;
+                }
+                img {
+                  display: block;
+                  margin-left: auto;
+                  margin-right: auto;
+                }
+                .ff{
+                    font-size: 52px;
+                    margin: -12px;
+                }
+                .kk{
+                    margin-top: 4px;
+                    margin-bottom: 2px;
+                    font-size: 19px;
+                }
+                .address{
+                    font-size: 19px;
+                    margin-top: 2px;
+                }
+                @page { margin: 5px 19px;
+
+                }
+                </style>
+            </head>
+            <body>';
+            $q = $data['total_quantity'];
+            if($q > 100){
+                $q = 100;
+            }
+                  
+            for($i = 1; $i <= $q; $i++){
+             // echo $q; die;
+  
+            $html .='<div class="ticket" >
+                    <table style="width="90%"">
+                        <tr>
+                            <td colspan="3" style="text-align:center;">
+                                <img src="'.$logo.'" class="imu">
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td width="50%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
+                            <td colspan ="2" style="text-align:center; padding:5px 0px"><h3 class="ff">'.$data['id'].'</h3></td>
+                        </tr>
+                        <tr>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>';
+                            if(empty($data['order_id'])){
+                                foreach($data['consignment_items'] as $order)
+                                    {
+                                        $orders[] = $order['order_id'];
+                                        $invoices[] = $order['invoice_no'];
+                                    }
+                             $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px;"><b style="font-size:18px;">'.$orders[0].'</b></td>';
+
+                              }else{ 
+                                $html .=  '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;">'. $data['order_id'] .'</b></td>';
+                            } 
+                        $html .='</tr>
+                        <tr>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>';
+                            if(empty($data['invoice_no'])){ 
+                            $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;">'.$invoices[0].'</b></td>';
+                            }
+                            else{ 
+                                $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:18px;">'.$data['invoice_no'].'</b></td>';
+                            } 
+                        $html .= '</tr>
+                        <tr>
+                            <td width="50%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
+                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:20px;">'.$baseclient.'</b></td>
+                        </tr>
+                        <tr>
+                            <td width="50%"><b style="margin-left: 8px;">No Of Box:</b></td>
+                            <td colspan ="2" style="text-align:center;"><p style="font-size: 70px;margin: -15px;font-weight:bold;position: relative;top: 8px;">'. $data['total_quantity'] .'<p></td>
+                        </tr>
+                        <tr>
+                            <td width="50%" style="text-align:center;"><img src="'.$barcode.'" style="width: 80px;"></td>
+                            <td colspan ="2">
+                                <div class="row" style="margin-left: 8px;">
+                                <p  style="font-weight:bold; font-size:18px;">Ship To: <br/>'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                           <th>PIN Code</th>
+                           <th>Zone</th>
+                           <th>Delivery Station</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;"><h3 class="kk">'. $data['shipto_detail']['postal_code'] .'</h3></td>
+                            <td style="text-align:center;"><h3 class="kk"></h3></td>
+                            <td style="text-align:center;"><h3 class="kk">'. $data['shipto_detail']['city'].'</h3></td>
+                        </tr>
+                        
+                    </table>
+                </div>
+            </body>       
+          </html>';
+          
+          $pdf = \App::make('dompdf.wrapper');
+          $pdf->loadHTML($html);
+          $customPaper = array(0,0,320,420);
+          $pdf->setPaper($customPaper, 'portrait');
+          $pdf->save(public_path() . '/consignment-pdf/sticker-' . $i . '.pdf')->stream('sticker-' . $i . '.pdf');
+          $pdf_name[] = 'sticker-' . $i . '.pdf';
+      }
+      $pdfMerger = PDFMerger::init();
+      foreach ($pdf_name as $pdf) {
+          $pdfMerger->addPDF(public_path() . '/consignment-pdf/' . $pdf);
+      }
+      $pdfMerger->merge();
+      $pdfMerger->save("all-sticker.pdf", "browser");
+      $file = new Filesystem;
+      $file->cleanDirectory('pdf');
 
     }
 
