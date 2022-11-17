@@ -341,7 +341,7 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'consigner_id' => 'required',
@@ -361,8 +361,12 @@ class OrderController extends Controller
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
+            if ($request->booked_drs == 0) {
+                if (empty($request->vehicle_id)) {
+                    $status = '2';
+                } else {
+                    $status = '1';
+                }
             } else {
                 $status = '1';
             }
@@ -399,8 +403,8 @@ class OrderController extends Controller
             $consignmentsave['total_quantity'] = $request->total_quantity;
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            $consignmentsave['transporter_name']  = $request->transporter_name;
-            $consignmentsave['vehicle_type']      = $request->vehicle_type;
+            $consignmentsave['transporter_name'] = $request->transporter_name;
+            $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
@@ -414,30 +418,32 @@ class OrderController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            $saveconsignment = ConsignmentNote::where('id',$request->consignment_id)->update($consignmentsave);
+            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
             $consignment_id = $request->consignment_id;
-           //===================== Create DRS in LR ================================= //
-           if(!empty($request->vehicle_id)){
-                $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->where('consignment_notes.id', $consignment_id)
-                    ->first(['consignees.city']);
-                $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                //echo'<pre>'; print_r($simplyfy); die;
+            //===================== Create DRS in LR ================================= //
+            if ($request->booked_drs == 0) {
+                if (!empty($request->vehicle_id)) {
+                    $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
+                        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                        ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                        ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                        ->where('consignment_notes.id', $consignment_id)
+                        ->first(['consignees.city']);
+                    $simplyfy = json_decode(json_encode($consignmentdrs), true);
+                    //echo'<pre>'; print_r($simplyfy); die;
 
-                $no_of_digit = 5;
-                $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
-                $drs_no = json_decode(json_encode($drs), true);
-                if (empty($drs_no) || $drs_no == null) {
-                    $drs_no['drs_no'] = 0;
+                    $no_of_digit = 5;
+                    $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
+                    $drs_no = json_decode(json_encode($drs), true);
+                    if (empty($drs_no) || $drs_no == null) {
+                        $drs_no['drs_no'] = 0;
+                    }
+                    $number = $drs_no['drs_no'] + 1;
+                    $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+
+                    $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
                 }
-                $number = $drs_no['drs_no'] + 1;
-                $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
-
-                $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
             }
             //===========================End drs lr ================================= //
             if ($saveconsignment) {
@@ -455,7 +461,7 @@ class OrderController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
-                $get_data = ConsignmentNote::where('id',$request->consignment_id)->first();
+                $get_data = ConsignmentNote::where('id', $request->consignment_id)->first();
 
                 if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                     $createTask = $this->createTookanTasks($simplyfy);
@@ -473,7 +479,7 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-                $url = URL::to($this->prefix.'/consignments');
+                $url = URL::to($this->prefix . '/consignments');
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";
                 $response['error'] = false;

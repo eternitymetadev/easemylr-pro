@@ -1627,8 +1627,8 @@ class ConsignmentController extends Controller
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
         ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2')
-        ->where('consignment_notes.status', '!=', 5);
+        ->whereIn('consignment_notes.status', ['2', '5'])
+        ->where('consignment_notes.booked_drs', '!=', '1');
 
         if($authuser->role_id ==1){
             $data;
@@ -1861,10 +1861,18 @@ class ConsignmentController extends Controller
     public function getTransactionDetails(Request $request)
     {
         $id = $_GET['cat_id'];
+        $query = TransactionSheet::query();
+        $query = $query->where('drs_no', $id)
+            ->with('ConsignmentDetail', function ($query) {
+                $query->whereIn('status', [1,5]);
+            });
+        $query = $query
+            ->orderby('order_no', 'asc')
+            ->get();
 
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
-        $result = json_decode(json_encode($transcationview), true);
+        // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
+        //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
+        $result = json_decode(json_encode($query), true);
 
         $response['fetch'] = $result;
         $response['success'] = true;
@@ -2286,7 +2294,16 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+        /////check order book drs
+        $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
+        foreach ($checklrstatus as $check) {
+            if ($check->status == 5) {
+                $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['booked_drs' => '1']);
+            } else {
+                $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+            }
+        }
+
         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -2346,7 +2363,7 @@ class ConsignmentController extends Controller
         $id = $_GET['draft_id'];
          $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
          ->whereHas('ConsignmentDetail', function ($query){
-            $query->where('status', '1');
+            $query->whereIn('status', ['1','5']);
         })
          ->orderby('order_no', 'asc')->get();
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
@@ -2477,7 +2494,7 @@ class ConsignmentController extends Controller
     public function getdeliverydatamodel(Request $request)
     {
         $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs')
-            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->where('consignment_notes.status', '1')->whereIn('transaction_sheets.status', ['1', '0', '3'])->get();
+            ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->whereIn('transaction_sheets.status', ['1', '0', '3'])->get();
         $result = json_decode(json_encode($transcationview), true);
         //echo'<pre>'; print_r($result); exit;
         $response['fetch'] = $result;

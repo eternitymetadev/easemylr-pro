@@ -163,6 +163,7 @@ span.round-tab:hover {
     <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder" style="margin: auto; ">
     @csrf
     <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
+    <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
                 <div class="widget-header">
@@ -374,9 +375,8 @@ span.round-tab:hover {
                             <p>vehicle Number</p>
                             <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
                             <option value="">Select vehicle no</option>
-                            @foreach($vehicles as $vehicle)
-                            <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                            </option>
+                            @foreach($vehicles as $vehicle) 
+                            <option value="{{$vehicle->id}}" {{ $vehicle->id == $getconsignments->vehicle_id ? 'selected' : ''}}>{{$vehicle->regn_no}}</option>
                             @endforeach
                             </select>
                         </div>
@@ -385,10 +385,8 @@ span.round-tab:hover {
                             <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
                             <option value="">Select driver</option>
                             @foreach($drivers as $driver)
-                            <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
-                                '-'}}
-                            </option>
-                            @endforeach
+                                        <option value="{{$driver->id}}" {{ $driver->id == $getconsignments->driver_id ? 'selected' : ''}}>{{$driver->name}}</option>
+                                        @endforeach
                             </select>
                         </div>
                         <div class=" col-sm-3 ">
@@ -413,7 +411,7 @@ span.round-tab:hover {
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Vendor Name</p>
-                            <Input type="text" class="form-control form-small" name="transporter_name" style="height: 43px;">
+                            <Input type="text" class="form-control form-small" name="transporter_name" style="height: 43px;" value="{{$getconsignments->transporter_name}}">
                         </div>
                         <div class=" col-sm-3 ">
                             <p>Vehicle Type</p>
@@ -421,14 +419,14 @@ span.round-tab:hover {
                             <select class="my-select2 sete" id="vehicle_type" name="vehicle_type" tabindex="-1">
                             <option value="">Select vehicle type</option>
                                 @foreach($vehicletypes as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                <option value="{{$vehicle->id}}" {{ $vehicle->id == $getconsignments->vehicle_type ? 'selected' : ''}}>{{$vehicle->name}}</option>
                                 </option>
                                 @endforeach
                                 </select>
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Purchase Price</p>
-                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="purchase_price">
+                            <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="purchase_price" value="{{$getconsignments->purchase_price}}">
                         </div>
                     </div>
                     
