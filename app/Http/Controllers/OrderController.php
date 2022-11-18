@@ -58,7 +58,8 @@ class OrderController extends Controller
             $data;
         }
         elseif($authuser->role_id ==4){
-            $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
+            // $data = $data->where('consignment_notes.user_id', $authuser->id);
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
@@ -69,6 +70,7 @@ class OrderController extends Controller
         else{
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
+        
         $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
         $consignments = $data->get();
         
