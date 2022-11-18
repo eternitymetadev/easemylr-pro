@@ -333,9 +333,9 @@ class GlobalFunctions {
         $countids = PrsDrivertask::where('prs_id',$prs_id)->count();
         $countstatus = PrsDrivertask::where('status',2)->count();
         if($countids == $countstatus){
-            $disable = '';
-        }else{
             $disable = 'disable_n';
+        }else{
+            $disable = '';
         }
         return $disable;
     }
