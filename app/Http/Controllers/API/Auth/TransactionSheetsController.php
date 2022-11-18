@@ -242,9 +242,7 @@ class TransactionSheetsController extends Controller
         
         try {
             
-            // $transaction_sheets = TransactionSheets::WhereHas('ConsignmentNote.ConsigneeDetail',function($driverquery) use ($id) {
-            //     $driverquery->where('driver_id', $id);
-            // })->get();
+          
              $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems')->where('driver_id', $id)
             ->get();
             // echo'<pre>'; print_r($consignments); die;
