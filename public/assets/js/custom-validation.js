@@ -538,10 +538,10 @@ jQuery(document).ready(function () {
                 });
 
                 if (res.data_regclient == null) {
+                    var location_id = "";
                     var multiple_invoice = "";
                 } else {
-                    if (
-                        res.data_regclient.is_multiple_invoice == null ||
+                    if (res.data_regclient.is_multiple_invoice == null ||
                         res.data_regclient.is_multiple_invoice == ""
                     ) {
                         var multiple_invoice = "";
@@ -549,7 +549,20 @@ jQuery(document).ready(function () {
                         var multiple_invoice =
                             res.data_regclient.is_multiple_invoice;
                     }
+
+                    if (res.data_regclient.location_id == null ||
+                        res.data_regclient.location_id == ""
+                    ) {
+                        var location_id = "";
+                    } else {
+                        var location_id =
+                            res.data_regclient.location_id;
+                    }
                 }
+
+                if (location_id) {
+                    $("#location_id").val(location_id);
+                } 
 
                 if (multiple_invoice == 1) {
                     $(".insert-more").attr("disabled", false);

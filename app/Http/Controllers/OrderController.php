@@ -152,17 +152,17 @@ class OrderController extends Controller
         if($authuser->role_id == 2 || $authuser->role_id == 3 ){
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name','location_id')->get();
         
         }
         elseif($authuser->role_id == 4){
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
+            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name','location_id')->get();
        
         }
         else{
-            $regionalclient = RegionalClient::select('id', 'name')->get();
+            $regionalclient = RegionalClient::select('id', 'name','location_id')->get();
         }
 
         return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
@@ -207,7 +207,11 @@ class OrderController extends Controller
             $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['freight'] = $request->freight;
             $consignmentsave['user_id'] = $authuser->id;
-            $consignmentsave['branch_id'] = $authuser->branch_id;
+            if($authuser->role_id == 3){
+                $consignmentsave['branch_id'] = $request->branch_id;
+            }else{
+                $consignmentsave['branch_id'] = $authuser->branch_id;
+            }
             $consignmentsave['status'] = 5;
 
             if (!empty($request->vehicle_id)) {                
@@ -409,7 +413,9 @@ class OrderController extends Controller
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            $consignmentsave['branch_id'] = $authuser->branch_id;
+            if ($authuser->role_id != 3) {
+                $consignmentsave['branch_id'] = $authuser->branch_id;
+            }
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
             if (!empty($request->vehicle_id)) {

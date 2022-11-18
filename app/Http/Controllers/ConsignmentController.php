@@ -490,28 +490,27 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
-////////////////////get consioner from regional client//
-        public function getConsignersonRegional(Request $request)
-        {
-            $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+    //// get consioner from regional client ////
+    public function getConsignersonRegional(Request $request)
+    {
+        $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
 
-            $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id',$request->regclient_id)->first();
-           // echo'<pre>';print_r($getconsigners); die;
-            
-            if ($getconsigners) {
-                $response['success'] = true;
-                $response['success_message'] = "Consigner list fetch successfully";
-                $response['error'] = false;
-                $response['data'] = $getconsigners;
-                $response['data_regclient'] = $getregclients;
+        $getregclients = RegionalClient::select('id','location_id','is_multiple_invoice')->where('id',$request->regclient_id)->first();
+        
+        if ($getconsigners) {
+            $response['success'] = true;
+            $response['success_message'] = "Consigner list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getconsigners;
+            $response['data_regclient'] = $getregclients;
 
-            } else {
-                $response['success'] = false;
-                $response['error_message'] = "Can not fetch consigner list please try again";
-                $response['error'] = true;
-            }
-            return response()->json($response);
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consigner list please try again";
+            $response['error'] = true;
         }
+        return response()->json($response);
+    }
 
 
     // get consigner address on change
