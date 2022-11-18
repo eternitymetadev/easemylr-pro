@@ -331,12 +331,13 @@ class GlobalFunctions {
     public static function DriverTaskStatusCheck($prs_id)
     {
         $countids = PrsDrivertask::where('prs_id',$prs_id)->count();
-        $countstatus = PrsDrivertask::where('status',2)->count();
+        $countstatus = PrsDrivertask::where('prs_id',$prs_id)->where('status',2)->count();
         if($countids == $countstatus){
-            $disable = 'disable_n';
-        }else{
             $disable = '';
+        }else{
+            $disable = 'disable_n';
         }
         return $disable;
     }
+
 }

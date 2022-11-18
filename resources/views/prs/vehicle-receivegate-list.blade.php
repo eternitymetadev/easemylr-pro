@@ -61,7 +61,19 @@
 @section('js')
 <script>
     $(document).on("keyup", ".receive_qty", function () {
-        console.log($(this).parent());
+        var receive_qty = $(this).val();
+        var total_qty = $(this).parent().prev().children().val();
+        var pending_receive = parseInt(total_qty) - parseInt(receive_qty);
+        console.log(pending_receive);
+        
+
+        if (parseInt(total_qty) > parseInt(receive_qty)) {
+            $(this).parent().next().children().val(pending_receive);
+        } else {
+            $(this).val("");
+            $(this).parent().next().children().val("");
+        }
+
     });
 
     
