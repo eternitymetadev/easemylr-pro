@@ -276,6 +276,7 @@ class TransactionSheetsController extends Controller
                        'consignee_pincode'         => $value->ConsigneeDetail->postal_code,
                        'order_id'                  => $order_item['orders'],
                        'invoice_no'                => $order_item['invoices'],
+                       'delivery_status'           => $value->delivery_status,
                   ];
             }
             if ($consignments) {
