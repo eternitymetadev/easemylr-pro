@@ -34,16 +34,16 @@ class GlobalFunctions {
             $status = 'Assigned';
         }
         else if($status == 2){
-          $status = 'Acknowledged';
+            $status = 'Acknowledged';
         }
         else if($status == 3){
-          $status = 'Started';
+            $status = 'Started';
         }
         else if($status == 4){
-          $status = 'Material Picked Up';
+            $status = 'Material Picked Up';
         }
         else if($status == 5){
-          $status = 'Material Received in HUB';
+            $status = 'Material Received in HUB';
         }
     
         return $status;
@@ -54,10 +54,10 @@ class GlobalFunctions {
             $status = 'Acknowledged';
         }
         else if($status == 2){
-          $status = 'Started';
+            $status = 'Started';
         }
         else if($status == 3){
-          $status = 'Complete';
+            $status = 'Complete';
         }
     
         return $status;
@@ -330,9 +330,9 @@ class GlobalFunctions {
 
     public static function DriverTaskStatusCheck($prs_id)
     {
-        $totalstatus = PrsDrivertask::where('prs_id',$prs_id)->count();
+        $countids = PrsDrivertask::where('prs_id',$prs_id)->count();
         $countstatus = PrsDrivertask::where('status',2)->count();
-        if($totalstatus == $countstatus){
+        if($countids == $countstatus){
             $disable = '';
         }else{
             $disable = 'disable_n';

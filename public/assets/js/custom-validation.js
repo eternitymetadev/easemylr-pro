@@ -2290,11 +2290,11 @@ $('#update_purchase_amt_form').submit(function (e) {
 
  /*====== In create PRS  get consigner on click regional client =====*/
 
- $('.select_prsregclient').change(function(e) {
+ $('#select_prsregclient').change(function(e) {
     var selected = $(e.target).val();
+    console.dir(selected);
     var regclient_id = $(this).val();
-
-    // $("#select_consigner").empty();
+    $("#select_consigner").empty();
     $.ajax({
         url: "/get-consignerprs",
         type: "get",
@@ -2321,26 +2321,7 @@ $('#update_purchase_amt_form').submit(function (e) {
                     "</option>"
                 );
             });
-
-            if (res.data_regclient == null) {
-                var multiple_invoice = "";
-            } else {
-                if (
-                    res.data_regclient.is_multiple_invoice == null ||
-                    res.data_regclient.is_multiple_invoice == ""
-                ) {
-                    var multiple_invoice = "";
-                } else {
-                    var multiple_invoice =
-                        res.data_regclient.is_multiple_invoice;
-                }
-            }
-
-            if (multiple_invoice == 1) {
-                $(".insert-more").attr("disabled", false);
-            } else {
-                $(".insert-more").attr("disabled", true);
-            }
+           
         },
     });
 });
@@ -2362,34 +2343,76 @@ $(document).on("click", ".receive-vehicle", function () {
         },
         success: function (res) {
             console.log(res);
-            // return false;
             if (res.data) {
                 $(".prs_id").val(res.data_prsid);
                 var consigner_count= res.data;
                 rows = '';
-                ///////////
+
                 $.each(res.data, function (index, value) {
-                    rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+index+'][consigner_id]" value="'+ value.nick_name +'" readonly></td>';
-                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]"></td>';
-                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"></td>';
+                    var inv_total = (value.prs_task_items).length;
+                    var qtyarr = [];
+                    $.each(value.prs_task_items, function (index, qtyval) {
+                        var qty = qtyval.quantity;
+                        qtyarr.push(qty);
+                    });
+                    var toNumbers = qtyarr.map(Number);
+                    var qty_sum = toNumbers.reduce((x, y) => x + y);
+                    
+                    rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+index+'][consigner_id]" value="'+ value.consigner_detail.nick_name +'" readonly></td>';
+                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]" value="'+ inv_total +'"></td>';
+                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"  value="'+ qty_sum +'"></td>';
                     rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+index+'][receive_qty]"></td>';
                     rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+index+'][remaining_qty]"></td>';
                     rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+index+'][remarks]"></td></tr>';
                 });
-                //////////
-                // for(var i = 1; i <= consigner_count; i++){
-                //     rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+i+'][consigner_id]"></td>';
-                //     rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+i+'][invoice_no]"></td>';
-                //     rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+i+'][total_qty]"></td>';
-                //     rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+i+'][receive_qty]"></td>';
-                //     rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+i+'][remaining_qty]"></td>';
-                //     rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+i+'][remarks]"></td></tr>';
-                // }
                 
                 $('#vehicleitems_table tbody').append(rows);
             }
         },
     });
 
+});
+
+// prs driver task status change
+jQuery(document).on("click", ".taskstatus_change", function (event) {
+    event.stopPropagation();
+    let id = jQuery(this).attr("data-drivertaskid");
+    var prsdrivertask_status = "prsdrivertask_status";
+
+    // jQuery("#prs-commonconfirm").modal("show");
+    jQuery(".commonconfirmclick").one("click", function () {
+        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+
+        jQuery.ajax({
+            url: "driver-tasks",
+            type: "get",
+            cache: false,
+            data: data,
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                    "content"
+                ),
+            },
+            processData: true,
+            beforeSend: function () {
+                // jQuery("input[type=submit]").attr("disabled", "disabled");
+            },
+            complete: function () {
+                //jQuery("#loader-section").css('display','none');
+            },
+
+            success: function (response) {
+                if (response.success) {
+                    jQuery("#prs-commonconfirm").modal("hide");
+                    if (response.page == "drivertsak-update") {
+                        setTimeout(() => {
+                            window.location.href = response.redirect_url;
+                        }, 10);
+                    }
+                }
+            },
+        });
+    });
 });
 

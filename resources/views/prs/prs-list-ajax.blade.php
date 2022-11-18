@@ -26,8 +26,8 @@
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>
-                <td><i data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $regclient_count ?? "-" }}</i></td>
-                <td><a href="{{url($prefix.'/driver-tasks')}}" target="_blank" title="{{ $consigner_count ?? '-' }}">{{ $consigner_count ?? "-" }}</a>
+                <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td>
+                <td><a href="{{url($prefix.'/driver-tasks')}}" title="{{ $consigner_count ?? '-' }}">{{ $consigner_count ?? "-" }}</a>
                 </td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>

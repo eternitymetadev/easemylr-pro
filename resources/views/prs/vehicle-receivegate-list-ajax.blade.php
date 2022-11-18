@@ -40,13 +40,15 @@
                 <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
-                    <a class="alert btn btn-success receive-vehicle {{$disable}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                <?php if($task_status == 2){ 
+                    $disablebtn = 'disable_n';
+                    }else{
+                    $disablebtn = "";
+                    } ?>
+                    <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                 </td>
             </tr>
-            @else
-            <tr>
-                <td colspan="6" class="text-center">No Record Found </td>
-            </tr>
+            
             @endif
 
             @endforeach

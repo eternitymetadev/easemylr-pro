@@ -60,7 +60,11 @@
 
 @section('js')
 <script>
-   
+    $(document).on("keyup", ".receive_qty", function () {
+        console.log($(this).parent());
+    });
+
+    
 </script>
 
 @endsection

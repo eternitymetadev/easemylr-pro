@@ -33,6 +33,54 @@ tbody tr:last-child .rowAddButton {
                             <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
                                 placeholder="" value="<?php echo date('d-m-Y'); ?>" />
 
+                            <div class="iterationRows">
+                                <div id="rowToIterate" class="amit d-flex align-items-center" style="gap: 8px;">
+                                    <table id="participantTable" style="width: 100%; border-spacing: 30px 5px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Regional Client*</th>
+                                                <th>Consigner</th>
+                                                <th width="24px"></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr class="rrow">
+                                                <td valign="middle" class="p-2">
+                                                    <?php $authuser = Auth::user();
+                                                        ?>
+                                                    <select class="form-control tagging select_prsregclient"
+                                                        id="select_prsregclient" name="regclient_id">
+                                                        <option selected="selected" disabled>
+                                                            Select client..
+                                                        </option>
+                                                        <?php  
+                                                            foreach ($regclients as $key => $client) {
+                                                        ?>
+                                                        <option value="{{ $client->id }}">
+                                                            {{ucwords($client->name)}}
+                                                        </option>
+                                                        <?php 
+                                                                } 
+                                                            ?>
+                                                    </select>
+                                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}" />
+                                                </td>
+                                                <td valign="middle" class="p-2">
+                                                    <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple" name="consigner_id[]">
+                                                        <option disabled>Select</option>
+                                                    </select>
+                                                </td>
+                                                <!-- <td valign="middle" class="p-2" width="24px">
+                                                <button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
+                                                </td> -->
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Type</label>
@@ -68,54 +116,6 @@ tbody tr:last-child .rowAddButton {
                                         </option>
                                         @endforeach
                                     </select>
-                                </div>
-                            </div>
-
-                            <div class="iterationRows">
-                                <div id="rowToIterate" class="amit d-flex align-items-center" style="gap: 8px;">
-                                    <table id="participantTable" style="width: 100%; border-spacing: 30px 5px;">
-                                        <thead>
-                                            <tr>
-                                                <th>Regional Client*</th>
-                                                <th>Consigner</th>
-                                                <th width="24px"></th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr class="rrow">
-                                                <td valign="middle" class="p-2">
-                                                    <?php $authuser = Auth::user();
-                                                        ?>
-                                                    <select class="form-control tagging select_prsregclient"
-                                                        id="" name="data[1][regclient_id]">
-                                                        <option selected="selected" disabled>
-                                                            Select client..
-                                                        </option>
-                                                        <?php  
-                                                                foreach ($regclients as $key => $client) {
-                                                            ?>
-                                                        <option value="{{ $client->id }}">
-                                                            {{ucwords($client->name)}}
-                                                        </option>
-                                                        <?php 
-                                                                } 
-                                                            ?>
-                                                    </select>
-                                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}" />
-                                                </td>
-                                                <td valign="middle" class="p-2">
-                                                    <select class="form-control consigner_prs tagging" multiple="multiple" name="data[1][consigner_id[]]">
-                                                        <option disabled>Select</option>
-                                                    </select>
-                                                </td>
-                                                <td valign="middle" class="p-2" width="24px">
-                                                <button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
 

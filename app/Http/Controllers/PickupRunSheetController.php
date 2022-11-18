@@ -182,10 +182,14 @@ class PickupRunSheetController extends Controller
             //     $prssave['regclient_id'] = implode(',', $regclients);
             // }
 
-            // if(!empty($request->consigner_id)){
-            //     $consigners = $request->consigner_id;
-            //     $prssave['consigner_id'] = implode(',', $consigners);
-            // }
+            if(!empty($request->regclient_id)){
+                $prssave['regclient_id'] = $request->regclient_id;
+            }
+            
+            if(!empty($request->consigner_id)){
+                $consigners = $request->consigner_id;
+                $prssave['consigner_id'] = implode(',', $consigners);
+            }
             
             if(!empty($request->vehicletype_id)){
                 $prssave['vehicletype_id'] = $request->vehicletype_id;
@@ -273,6 +277,20 @@ class PickupRunSheetController extends Controller
         $query = PrsDrivertask::query();
         
         if ($request->ajax()) {
+
+            if (isset($request->prsdrivertask_status)) {
+                PrsDrivertask::where('id', $request->id)->update(['status' => '3']);
+
+                $url = $this->prefix . '/driver-tasks';
+                $response['success'] = true;
+                $response['success_message'] = "Driver task status updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'drivertsak-update';
+                $response['redirect_url'] = $url;
+
+                return response()->json($response);
+            }
+
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
                 $url = URL::to($this->prefix.'/'.$this->segment);
@@ -492,6 +510,8 @@ class PickupRunSheetController extends Controller
     public function getVehicleItem(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $get_drivertasks = PrsDrivertask::where('prs_id',$request->prs_id)->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
+// dd($get_drivertasks);
         $consinger_ids = explode(',',$request->consinger_ids);
         $consigners = Consigner::select('nick_name')->whereIn('id',$consinger_ids)->get();
         $cnr_data =json_decode(json_encode($consigners));
@@ -501,7 +521,7 @@ class PickupRunSheetController extends Controller
             $response['success'] = true;
             $response['success_message'] = "Consigner fetch successfully";
             $response['error'] = false;
-            $response['data'] = $cnr_data;
+            $response['data'] = $get_drivertasks;
             $response['data_prsid'] = $request->prs_id;
         } else {
             $response['success'] = false;
@@ -543,6 +563,8 @@ class PickupRunSheetController extends Controller
             }
 
         if($savevehiclereceive){
+            PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
+
             $url = URL::to($this->prefix.'/vehicle-receivegate');
                     $response['success'] = true;
                     $response['success_message'] = "PRS vehicle receive successfully";

@@ -17,7 +17,7 @@
             
             <tr>
                 <td>{{ $value->task_id ?? "-" }}</td>
-                <td>{{ $value->prs_id ?? "-" }}</td>
+                <td>{{ $value->PickupId->pickup_id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->city ?? "-" }}</td>
@@ -29,7 +29,15 @@
                     $disable = 'disable_n';
                 } ?>
 
-                <td><a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#add-task">Add Task</a></td>
+                <td>
+                <?php if($value->status == 1 ) { ?>
+                    <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
+                    <?php } else if($value->status == 2){ ?>
+                    <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
+                    <?php }else{ ?>
+                        <span></span>
+                    <?php } ?>
+                    </td>
             </tr>
             @endforeach
             @else
