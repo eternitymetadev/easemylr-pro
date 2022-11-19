@@ -1428,7 +1428,7 @@ jQuery(document).ready(function () {
                             value.id +
                             " class='delivery_d' value='" +
                             value.delivery_date +
-                            "'>";
+                            "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1632,16 +1632,16 @@ function get_delivery_date() {
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
-    var delivery_date = $(this).closest("tr").find("td:eq(3) input[type='date']").val();
+    var ddd = $(this).closest("tr").find("td:eq(3) input[type='date']").val();
 
-    // if (ddd == undefined) {
-    //     var delivery_date = $(this).closest("tr").find("td").eq(3).text();
-    // } else {
-    //     var delivery_date = $(this)
-    //         .closest("tr")
-    //         .find("td:eq(3) input[type='date']")
-    //         .val();
-    // }
+    if (ddd == undefined) {
+        var delivery_date = $(this).closest("tr").find("td").eq(3).text();
+    } else {
+        var delivery_date = $(this)
+            .closest("tr")
+            .find("td:eq(3) input[type='date']")
+            .val();
+    }
 
     if (delivery_date == null || delivery_date == "") {
         alert("Please select a delivery date");
@@ -1654,10 +1654,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        if (files.length == 0) {
-            alert("Please choose a file");
-            return false;
-        }
+        // if (files.length == 0) {
+        //     alert("Please choose a file");
+        //     return false;
+        // }
 
     var form_data = new FormData();
     if (files.length != 0) {
