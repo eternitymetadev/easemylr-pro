@@ -1615,22 +1615,26 @@ class ConsignmentController extends Controller
                 * {
                     font-size: 14px;
                     font-family: "Arial";
+
                 }
-              
+                html { margin: 0px}
                 .ticket {
                     transform: rotate(-90deg);
-                    padding: 0 10px; 
+                    padding: 0 2px; 
+                    height: 280px;
+                    width: 305px;
+ 
                  }
                 .centered {
                     text-align: center;
                     align-content: center;
                 }
                 table, th, td {
-                    border: 1px solid;
+                    border: 2px solid;
                     border-collapse: collapse;
                   }
                 .imu{ 
-                    width:280px;
+                    width:240px;
                 }
                 img {
                   display: block;
@@ -1650,9 +1654,8 @@ class ConsignmentController extends Controller
                     font-size: 14px;
                     margin-top: 2px;
                 }
-                @page {
-                     margin: 5px 10px;
-                }
+             
+                body{padding: 0 !important;}
                 </style>
             </head>
             <body>';
@@ -1662,7 +1665,7 @@ class ConsignmentController extends Controller
              // echo $q; die;
   
             $html .='<div class="ticket">
-                    <table style="width:88%">
+                    <table style="width: 92%;padding:0 0 0 15px;">
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <img src="'.$logo.'" class="imu">
@@ -1698,24 +1701,24 @@ class ConsignmentController extends Controller
                         $html .= '</tr>
                         <tr>
                             <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
-                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:16px;">'.$baseclient.'</b></td>
+                            <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'.$baseclient.'</b></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;">No Of Box:</b></td>
-                            <td colspan ="2" style="text-align:center;"><p style="font-size: 35px;margin: -15px;font-weight:bold;position: relative;top: 12px;">'. $data['total_quantity'] .'<p></td>
+                            <td width="30%"><b style="margin-left: 8px;">Boxes:</b></td>
+                            <td colspan ="2" style="text-align:center;"><p style="font-size: 28px;margin: -15px;font-weight:bold;position: relative;top: 14px;">'. $data['total_quantity'] .'<p></td>
                         </tr>
                         <tr>
-                            <td width="30%" style="text-align:center;"><img src="'.$barcode.'" style="width: 80px;"></td>
+                            <td width="30%" style="text-align:center;"><img src="'.$barcode.'" style="width: 70px;"></td>
                             <td colspan ="2">
                                 <div class="row" style="margin-left: 8px;">
-                                <p  style="font-weight:bold; font-size:14px;">Ship To: <br/>'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
+                                <p  style="font-weight:bold; font-size:12px;">Ship To: <br/>Ship To: <br/>'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                           <th>PIN Code</th>
-                           <th>Zone</th>
-                           <th>Delivery Station</th>
+                           <td style="text-align:center;"><strong>PIN Code</strong></td>
+                           <td style="text-align:center;"><strong>Zone</strong></td>
+                           <td style="text-align:center;"><strong>Delivery Station</strong></td>
                         </tr>
                         <tr>
                             <td style="text-align:center;"><h3 class="kk">'. $data['shipto_detail']['postal_code'] .'</h3></td>
@@ -1730,7 +1733,7 @@ class ConsignmentController extends Controller
           
           $pdf = \App::make('dompdf.wrapper');
           $pdf->loadHTML($html);
-          $customPaper = array(10,0,320,280);
+          $customPaper = array(0,0,290,260);
           $pdf->setPaper($customPaper, 'portrait');
           //$pdf->setOptions(["enable_font_subsetting" => true]);
           $pdf->save(public_path() . '/consignment-pdf/sticker-' . $i . '.pdf')->stream('sticker-' . $i . '.pdf');
