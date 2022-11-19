@@ -1374,7 +1374,7 @@ jQuery(document).ready(function () {
                 
                 $.each(data.fetch, function (index, value) {
                    var trail_history = jQuery.parseJSON(value.trail);
-                
+                          
                    if(value.job_id != null){
                     var img_api = [];
                     $.each(trail_history.task_history, function (index, history) {
@@ -1654,10 +1654,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        // if (files.length == 0) {
-        //     alert("Please choose a file");
-        //     return false;
-        // }
+        if (files.length == 0) {
+            alert("Please choose a file");
+            return false;
+        }
 
     var form_data = new FormData();
     if (files.length != 0) {
@@ -1719,7 +1719,7 @@ $("#allsave").submit(function (e) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
             } else {
-                swal("error", "Something went wrong", "error");
+                swal("error", data.messages, "error");
             }
         },
     });

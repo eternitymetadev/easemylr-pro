@@ -3913,16 +3913,33 @@ class ConsignmentController extends Controller
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
+                
                 if(!empty($pic)){
-                    $filename = $pic->getClientOriginalName();
-                    $pic->move(public_path('drs/Image'), $filename);
+                    if(!empty($deliverydate)){
+                        $filename = $pic->getClientOriginalName();
+                        $pic->move(public_path('drs/Image'), $filename);
+                    } else {
+                        $response['success'] = false;
+                        $response['error'] = 'date';
+                        $response['messages'] = 'Please Enter Delivery Date';
+                        return Response::json($response);
+                    }
+                   
                 }else{
                     $filename = NULL ;
                 }
                          
                 if(!empty($deliverydate)){
-                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                    TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                    if(!empty($pic)){
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                    } else {
+                        $response['success'] = false;
+                        $response['error'] = 'img';
+                        $response['messages'] = 'Please UpLOAD Image';
+                        return Response::json($response);
+                    }
+                   
                 }else{
                     if(!empty($filename)){
                     ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
