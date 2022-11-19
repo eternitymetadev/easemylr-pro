@@ -3569,10 +3569,10 @@ class ConsignmentController extends Controller
         ->leftjoin('jobs', function($data){
             $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
-        })->first();
+        })->get();
             
         $result = json_decode(json_encode($transcationview), true);
-        echo '<pre>'; print_r($result); die;
+        //  echo '<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
         $response['role_id'] = $role;

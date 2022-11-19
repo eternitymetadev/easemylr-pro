@@ -1161,6 +1161,7 @@ jQuery(document).ready(function () {
             complete: function () { },
 
             success: function (data) {
+                
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
@@ -1372,12 +1373,23 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
                 
                 $.each(data.fetch, function (index, value) {
-                    console.log(value);
-
+                   var trail_history = jQuery.parseJSON(value.trail);
+                
+                   if(value.job_id != null){
+                    var img_api = [];
+                    $.each(trail_history.task_history, function (index, history) {
+                        if(history.type == "image_added"){
+                            img_api.push(history.description)
+                        }
+                    });
+                }
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
+                    /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
+
+                    if(value.job_id == null || value.job_id == ''){
                     if (value.signed_drs == null) {
                         if(data.role_id == 7){
                             var field = '-';
@@ -1393,7 +1405,19 @@ jQuery(document).ready(function () {
                             storage_img +
                             "' target='_blank' class='btn btn-warning'>view</a>";
                     }
-
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field =
+                        "<input type='file' name='img' data-id='" +
+                        value.id +
+                        "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                    var field =
+                            "<a href='" +
+                            img_api[0] +
+                            "' target='_blank' class='btn btn-warning'>view</a>";
+                    }
+                }
                     // delivery date check
                     if (value.delivery_date == null) {
                         if(data.role_id == 7){
