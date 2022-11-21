@@ -35,7 +35,7 @@ $lr = Helper::deliveryDate($trns->drs_no);
                 <td>{{$trns->driver_no}}</td>
                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
                 <!-- action button -->
-                <?php
+                <?php 
 if ($trns->status == 0) {?>
                 <td>
                     <label class="badge badge-dark">Cancelled</label>
