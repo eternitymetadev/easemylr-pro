@@ -1,7 +1,13 @@
 // Body
-$body-bg: #f8fafc;
+$body-bg: #137eea;
 
 // Typography
 $font-family-sans-serif: 'Nunito', sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
+
+//color
+$theme-colors: (
+    "primary": #f9b808,
+    "danger": #ff4136
+);

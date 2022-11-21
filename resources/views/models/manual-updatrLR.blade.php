@@ -5,15 +5,15 @@
        <!-- Modal Header -->
        <div class="modal-header text-center">
         	<h4 class="modal-title">Update Delivery Status</h4>
-       </div> 
+       </div>
        <!-- Modal body -->
        <div class="modal-body">
        <!-- <div class="form-row mb-0">
                         <div class="form-group col-md-12">
                             <label for="location_name">Status</label>
- 
+
                             <select class="form-control" id="lr_status" name="lr_status" onchange="lrCheck(this);" tabindex="-1" >
-                                
+
 
                             </select>
                         </div>
@@ -49,7 +49,7 @@
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
                <!-- <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal commonconfirmclick">Ok</a>  -->
-               <a type="" class="btn btn-modal" data-dismiss="modal">Close</a>
+               <a id="close_get_delivery_dateLR" type="" class="btn btn-modal" data-dismiss="modal">Close</a>
            </div>
        </div>
      </div>
