@@ -1622,7 +1622,9 @@ class ConsignmentController extends Controller
                     transform: rotate(-90deg);
                     padding: 0 2px; 
                     height: 280px;
-                    width: 305px;
+                    width: 310px;
+                    position: relative;
+                    top:20px;
  
                  }
                 .centered {
@@ -1642,8 +1644,9 @@ class ConsignmentController extends Controller
                   margin-right: auto;
                 }
                 .ff{
-                    font-size: 20px;
+                    font-size: 35px;
                     margin: -12px;
+                    padding: 5px 0;
                 }
                 .kk{
                     margin-top: 4px;
@@ -1665,7 +1668,7 @@ class ConsignmentController extends Controller
              // echo $q; die;
   
             $html .='<div class="ticket">
-                    <table style="width: 92%;padding:0 0 0 15px;">
+                    <table style="width: 92%;padding:0 10px 0 0;">
                         <tr>
                             <td colspan="3" style="text-align:center;">
                                 <img src="'.$logo.'" class="imu">
@@ -1673,11 +1676,11 @@ class ConsignmentController extends Controller
                             
                         </tr>
                         <tr>
-                            <td width="30%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
+                            <td width="35%" ><b style="margin-left: 8px; padding:5px 0px">LR No.</b></td>
                             <td colspan ="2" style="text-align:center; padding:5px 0px"><h3 class="ff">'.$data['id'].'</h3></td>
                         </tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>';
+                            <td width="35%"><b style="margin-left: 8px;padding:5px 0px">Order ID:</b></td>';
                             if(empty($data['order_id'])){
                                 foreach($data['consignment_items'] as $order)
                                     {
@@ -1691,7 +1694,7 @@ class ConsignmentController extends Controller
                             } 
                         $html .='</tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>';
+                            <td width="35%"><b style="margin-left: 8px;padding:5px 0px">Invoice no:</b></td>';
                             if(empty($data['invoice_no'])){ 
                             $html .= '<td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'.$invoices[0].'</b></td>';
                             }
@@ -1700,18 +1703,19 @@ class ConsignmentController extends Controller
                             } 
                         $html .= '</tr>
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
+                            <td width="35%"><b style="margin-left: 8px;padding:5px 0px">Client:</b></td>
                             <td colspan ="2" style="text-align:center;padding:5px 0px"><b style="font-size:14px;">'.$baseclient.'</b></td>
                         </tr>
+                        
                         <tr>
-                            <td width="30%"><b style="margin-left: 8px;">Boxes:</b></td>
-                            <td colspan ="2" style="text-align:center;"><p style="font-size: 28px;margin: -15px;font-weight:bold;position: relative;top: 14px;">'. $data['total_quantity'] .'<p></td>
+                            <td width="35%"><b style="margin-left: 8px;">Boxes:</b></td>
+                            <td colspan ="2" style="text-align:center;"><p style="font-size: 35px;margin: -15px;font-weight:bold;position: relative;top: 14px;">'. $data['total_quantity'] .'<p></td>
                         </tr>
                         <tr>
-                            <td width="30%" style="text-align:center;"><img src="'.$barcode.'" style="width: 70px;"></td>
+                            <td width="35%" style="text-align:center;"><img src="'.$barcode.'" style="width: 70px;"></td>
                             <td colspan ="2">
                                 <div class="row" style="margin-left: 8px;">
-                                <p  style="font-weight:bold; font-size:12px;">Ship To: <br/>Ship To: <br/>'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
+                                <p  style="font-weight:bold; font-size:12px;">'. $data['shipto_detail']['nick_name'].','. $data['shipto_detail']['address_line1'].','. $data['shipto_detail']['address_line2'].'</p>
                                 </div>
                             </td>
                         </tr>
@@ -1733,7 +1737,7 @@ class ConsignmentController extends Controller
           
           $pdf = \App::make('dompdf.wrapper');
           $pdf->loadHTML($html);
-          $customPaper = array(0,0,290,260);
+          $customPaper = array(5,0,280,260);
           $pdf->setPaper($customPaper, 'portrait');
           //$pdf->setOptions(["enable_font_subsetting" => true]);
           $pdf->save(public_path() . '/consignment-pdf/sticker-' . $i . '.pdf')->stream('sticker-' . $i . '.pdf');
