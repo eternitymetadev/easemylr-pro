@@ -61,7 +61,7 @@ jQuery(document).ready(function () {
             }
         });
         return false;
-    });    
+    });
 
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
@@ -1161,7 +1161,7 @@ jQuery(document).ready(function () {
             complete: function () { },
 
             success: function (data) {
-                
+
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
@@ -1371,10 +1371,10 @@ jQuery(document).ready(function () {
 
             success: function (data) {
                 var consignmentID = [];
-                
+
                 $.each(data.fetch, function (index, value) {
                    var trail_history = jQuery.parseJSON(value.trail);
-                          
+
                    if(value.job_id != null){
                     var img_api = [];
                     $.each(trail_history.task_history, function (index, history) {
@@ -1400,10 +1400,13 @@ jQuery(document).ready(function () {
                             "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                        var field =
-                            "<a href='" +
-                            storage_img +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
+                        var field = `<button type="button" className="btn btn-primary" data-toggle="modal"
+                                       onclick="closeGetDeliveryDateLR()"     data-target="#exampleModal">
+                            Launch demo modal
+                        </button>`;
+                        // "<a href='" +
+                        // storage_img +
+                        // "' target='_blank' class='btn btn-warning'>view</a>";
                     }
                 }else{
                     if(img_api == null || img_api == ''){
@@ -1461,9 +1464,9 @@ jQuery(document).ready(function () {
                     row += "<td>" + buton +"</td>";
                     }
                     row += "</tr>";
-                    
+
                     $("#get-delvery-dateLR tbody").append(row);
-                    
+
                 });
             },
         });
@@ -1647,7 +1650,7 @@ $(document).on("click", ".onelrupdate", function () {
         alert("Please select a delivery date");
         return false;
     }
-    
+
     var files = $(this)
         .closest("tr")
         .find("td")
@@ -1930,7 +1933,7 @@ $('#vendor-master').submit(function (e) {
     var acc_no = $('#account_no').val();
     var ifsc = $('#ifsc').val();
     var pan_no = $('#pan_no').val();
-    
+
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
         return false;
@@ -2138,7 +2141,7 @@ $('#update_vendor').validate({
                 'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
             },
             beforeSend : function(){
-                $('#select_consigner').empty(); 
+                $('#select_consigner').empty();
             },
             success:function(res){
                 // console.log(res.data_regclient.is_multiple_invoice);
@@ -2153,7 +2156,7 @@ $('#update_vendor').validate({
                 $.each(res.data, function (index, value) {
 
                     $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
-              
+
                 });
 
                 if(res.data_regclient == null){
@@ -2168,7 +2171,7 @@ $('#update_vendor').validate({
 
                 if(multiple_invoice == 1 ){
                     $('.insert-more').attr('disabled',false);
-                }else{  
+                }else{
                     $('.insert-more').attr('disabled',true);
                 }
             }
@@ -2180,18 +2183,18 @@ $('#update_vendor').validate({
         e.preventDefault();
 
         var formData = new FormData(this);
-       
+
             $.ajax({
-                url: "all-invoice-save", 
+                url: "all-invoice-save",
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'POST',  
+                type: 'POST',
                 data:new FormData(this),
                 processData: false,
                 contentType: false,
                 beforeSend: function(){
-                    $('#view_invoices').dataTable().fnClearTable();             
+                    $('#view_invoices').dataTable().fnClearTable();
                     $('#view_invoices').dataTable().fnDestroy();
-                    $(".indicator-progress").show(); 
+                    $(".indicator-progress").show();
                     $(".indicator-label").hide();
                 },
                 success: (data) => {
@@ -2215,17 +2218,17 @@ $('#update_vendor').validate({
                             var billdate = value.e_way_bill_date;
                          }
 
-                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
-                        
+                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");
+
                         i++ ;
                     });
                         // location.reload();
-                        
+
                     }else{
                         swal("error","Something went wrong", 'error')
                     }
                 }
-            }); 
+            });
         });
 
         ////////////////// reate Drs Payment Request ////////////
@@ -2257,7 +2260,7 @@ $('#create_request_form').submit(function (e) {
 
             swal('success', data.message, 'success')
             window.location.href = data.redirect_url;
-            
+
             }else{
                 swal('error', data.message ,'error');
             }
@@ -2291,3 +2294,7 @@ $('#update_purchase_amt_form').submit(function (e) {
         }
     });
 });
+
+function closeGetDeliveryDateLR(){
+    $('#close_get_delivery_dateLR').click();
+};
