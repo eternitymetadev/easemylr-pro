@@ -32,7 +32,10 @@
                                     <th>City</th>
                                     <th>Delivery Date</th>
                                     <th>Image</th>
+                             <?php $authuser = Auth::user(); 
+                                if($authuser->role_id != 7){?>
                                     <th>update</th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
                             <tbody>

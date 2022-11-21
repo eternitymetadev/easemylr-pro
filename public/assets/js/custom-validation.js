@@ -61,7 +61,7 @@ jQuery(document).ready(function () {
             }
         });
         return false;
-    });
+    });    
 
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
@@ -538,10 +538,10 @@ jQuery(document).ready(function () {
                 });
 
                 if (res.data_regclient == null) {
-                    var location_id = "";
                     var multiple_invoice = "";
                 } else {
-                    if (res.data_regclient.is_multiple_invoice == null ||
+                    if (
+                        res.data_regclient.is_multiple_invoice == null ||
                         res.data_regclient.is_multiple_invoice == ""
                     ) {
                         var multiple_invoice = "";
@@ -549,19 +549,6 @@ jQuery(document).ready(function () {
                         var multiple_invoice =
                             res.data_regclient.is_multiple_invoice;
                     }
-
-                    if (res.data_regclient.location_id == null ||
-                        res.data_regclient.location_id == ""
-                    ) {
-                        var location_id = "";
-                    } else {
-                        var location_id =
-                            res.data_regclient.location_id;
-                    }
-                }
-
-                if (location_id) {
-                    $("#location_id").val(location_id);
                 }
 
                 if (multiple_invoice == 1) {
@@ -1174,6 +1161,7 @@ jQuery(document).ready(function () {
             complete: function () { },
 
             success: function (data) {
+                
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
@@ -1383,35 +1371,65 @@ jQuery(document).ready(function () {
 
             success: function (data) {
                 var consignmentID = [];
+                
                 $.each(data.fetch, function (index, value) {
-                    console.log(value);
-
+                   var trail_history = jQuery.parseJSON(value.trail);
+                          
+                   if(value.job_id != null){
+                    var img_api = [];
+                    $.each(trail_history.task_history, function (index, history) {
+                        if(history.type == "image_added"){
+                            img_api.push(history.description)
+                        }
+                    });
+                }
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
+                    /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
+
+                    if(value.job_id == null || value.job_id == ''){
                     if (value.signed_drs == null) {
+                        if(data.role_id == 7){
+                            var field = '-';
+                        }else{
                         var field =
                             "<input type='file' name='img' data-id='" +
                             value.id +
                             "' placeholder='Choose image' class='drs_image'>";
+                        }
                     } else {
-                        var field = `<button type="button" className="btn btn-primary" data-toggle="modal"
-                                       onclick="closeGetDeliveryDateLR()"     data-target="#exampleModal">
-                            Launch demo modal
-                        </button>`;
-                            // "<a href='" +
-                            // storage_img +
-                            // "' target='_blank' class='btn btn-warning'>view</a>";
+                        var field =
+                            "<a href='" +
+                            storage_img +
+                            "' target='_blank' class='btn btn-warning'>view</a>";
                     }
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field =
+                        "<input type='file' name='img' data-id='" +
+                        value.id +
+                        "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                    var field =
+                            "<a href='" +
+                            img_api[0] +
+                            "' target='_blank' class='btn btn-warning'>view</a>";
+                    }
+                }
                     // delivery date check
                     if (value.delivery_date == null) {
+                        if(data.role_id == 7){
+                            var deliverydat = '-';
+                        }else{
                         var deliverydat =
                             "<input type='date' name='delivery_date[]' data-id=" +
                             value.id +
                             " class='delivery_d' value='" +
                             value.delivery_date +
-                            "'>";
+                            "' Required>";
+                        }
                     } else {
                         var deliverydat = value.delivery_date;
                     }
@@ -1428,21 +1446,24 @@ jQuery(document).ready(function () {
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
 
-                    $("#get-delvery-dateLR tbody").append(
-                        "<tr><td>" +
-                        value.id +
-                        "</td><td>" +
-                        value.consignee_nick +
-                        "</td><td>" +
-                        value.conee_city +
-                        "</td><td>" +
-                        deliverydat +
-                        "</td><td>" +
-                        field +
-                        "</td><td>" +
-                        buton +
-                        "</td></tr>"
-                    );
+                     row =   "<tr><td>" +
+                    value.id +
+                    "</td><td>" +
+                    value.consignee_nick +
+                    "</td><td>" +
+                    value.conee_city +
+                    "</td><td>" +
+                    deliverydat +
+                    "</td><td>" +
+                    field +
+                    "</td>";
+                    if(data.role_id != 7){
+                    row += "<td>" + buton +"</td>";
+                    }
+                    row += "</tr>";
+                    
+                    $("#get-delvery-dateLR tbody").append(row);
+                    
                 });
             },
         });
@@ -1626,12 +1647,17 @@ $(document).on("click", ".onelrupdate", function () {
         alert("Please select a delivery date");
         return false;
     }
-
+    
     var files = $(this)
         .closest("tr")
         .find("td")
         .eq(4)
         .children(".drs_image")[0].files;
+
+        if (files.length == 0) {
+            alert("Please choose a file");
+            return false;
+        }
 
     var form_data = new FormData();
     if (files.length != 0) {
@@ -1693,7 +1719,7 @@ $("#allsave").submit(function (e) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
             } else {
-                swal("error", "Something went wrong", "error");
+                swal("error", data.messages, "error");
             }
         },
     });
@@ -1904,7 +1930,7 @@ $('#vendor-master').submit(function (e) {
     var acc_no = $('#account_no').val();
     var ifsc = $('#ifsc').val();
     var pan_no = $('#pan_no').val();
-
+    
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
         return false;
@@ -2112,7 +2138,7 @@ $('#update_vendor').validate({
                 'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
             },
             beforeSend : function(){
-                $('#select_consigner').empty();
+                $('#select_consigner').empty(); 
             },
             success:function(res){
                 // console.log(res.data_regclient.is_multiple_invoice);
@@ -2127,7 +2153,7 @@ $('#update_vendor').validate({
                 $.each(res.data, function (index, value) {
 
                     $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
-
+              
                 });
 
                 if(res.data_regclient == null){
@@ -2142,7 +2168,7 @@ $('#update_vendor').validate({
 
                 if(multiple_invoice == 1 ){
                     $('.insert-more').attr('disabled',false);
-                }else{
+                }else{  
                     $('.insert-more').attr('disabled',true);
                 }
             }
@@ -2154,18 +2180,18 @@ $('#update_vendor').validate({
         e.preventDefault();
 
         var formData = new FormData(this);
-
+       
             $.ajax({
-                url: "all-invoice-save",
+                url: "all-invoice-save", 
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'POST',
+                type: 'POST',  
                 data:new FormData(this),
                 processData: false,
                 contentType: false,
                 beforeSend: function(){
-                    $('#view_invoices').dataTable().fnClearTable();
+                    $('#view_invoices').dataTable().fnClearTable();             
                     $('#view_invoices').dataTable().fnDestroy();
-                    $(".indicator-progress").show();
+                    $(".indicator-progress").show(); 
                     $(".indicator-label").hide();
                 },
                 success: (data) => {
@@ -2189,17 +2215,17 @@ $('#update_vendor').validate({
                             var billdate = value.e_way_bill_date;
                          }
 
-                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");
-
+                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");      
+                        
                         i++ ;
                     });
                         // location.reload();
-
+                        
                     }else{
                         swal("error","Something went wrong", 'error')
                     }
                 }
-            });
+            }); 
         });
 
         ////////////////// reate Drs Payment Request ////////////
@@ -2231,7 +2257,7 @@ $('#create_request_form').submit(function (e) {
 
             swal('success', data.message, 'success')
             window.location.href = data.redirect_url;
-
+            
             }else{
                 swal('error', data.message ,'error');
             }
@@ -2265,8 +2291,3 @@ $('#update_purchase_amt_form').submit(function (e) {
         }
     });
 });
-
-function closeGetDeliveryDateLR(){
-    // alert('dshsjd');
-    $('#close_get_delivery_dateLR').click();
-};
