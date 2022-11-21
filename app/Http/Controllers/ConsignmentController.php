@@ -3561,12 +3561,21 @@ class ConsignmentController extends Controller
     ////////////////get delevery date LR//////////////////////
     public function getDeleveryDateLr(Request $request)
     {
-        $transcationview = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_nick', 'consignees.city as conee_city')
-        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->where('consignment_notes.id', $request->lr_no)->get();
+        $authuser = Auth::user();
+        $role = $authuser->role_id;
+        $transcationview = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_nick', 'consignees.city as conee_city','jobs.status as job_status', 'jobs.response_data as trail')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id') 
+        ->where('consignment_notes.id', $request->lr_no)
+        ->leftjoin('jobs', function($data){
+            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+        })->get();
+            
         $result = json_decode(json_encode($transcationview), true);
+        //  echo '<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
+        $response['role_id'] = $role;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
@@ -3904,16 +3913,33 @@ class ConsignmentController extends Controller
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
+                
                 if(!empty($pic)){
-                    $filename = $pic->getClientOriginalName();
-                    $pic->move(public_path('drs/Image'), $filename);
+                    if(!empty($deliverydate)){
+                        $filename = $pic->getClientOriginalName();
+                        $pic->move(public_path('drs/Image'), $filename);
+                    } else {
+                        $response['success'] = false;
+                        $response['error'] = 'date';
+                        $response['messages'] = 'Please Enter Delivery Date';
+                        return Response::json($response);
+                    }
+                   
                 }else{
                     $filename = NULL ;
                 }
                          
                 if(!empty($deliverydate)){
-                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                    TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                    if(!empty($pic)){
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                    } else {
+                        $response['success'] = false;
+                        $response['error'] = 'img';
+                        $response['messages'] = 'Please UpLOAD Image';
+                        return Response::json($response);
+                    }
+                   
                 }else{
                     if(!empty($filename)){
                     ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
