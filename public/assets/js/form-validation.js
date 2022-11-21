@@ -476,13 +476,16 @@ jQuery(document).ready(function(){
             nick_name: {
                 required: true
             },
+            cnee_code: {
+                required: true
+            },
             // email: {
             //     required: true,
             //     email: true,
             //     regex: "",
             // },
             phone : {
-                required: true,
+                // required: true,
                 Numbers: true,
                 minlength: 10,
             },
@@ -495,7 +498,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
-                required: true,
+                // required: true,
                 Numbers: true,
                 minlength: 6,
             }
@@ -503,6 +506,9 @@ jQuery(document).ready(function(){
         messages: {
             nick_name: {
                 required: "Enter name",
+            },
+            cnee_code: {
+                required: "Enter consignee code",
             },
             email: {
                 required: "Enter Email",
@@ -539,13 +545,16 @@ jQuery(document).ready(function(){
             nick_name: {
                 required: true
             },
+            cnee_code: {
+                required: true
+            },
             // email: {
             //     required: true,
             //     email: true,
             //     regex: "",
             // },
             phone : {
-                required: true,
+                // required: true,
                 Numbers: true,
                 minlength: 10,
             },
@@ -557,7 +566,7 @@ jQuery(document).ready(function(){
                 required: true,
             },
             postal_code : {
-                required: true,
+                // required: true,
                 Numbers: true,
                 minlength: 6,
             },
@@ -565,6 +574,9 @@ jQuery(document).ready(function(){
         messages: {
             nick_name: {
                 required: "Enter name",
+            },
+            cnee_code: {
+                required: "Enter consignee code",
             },
             email: {
                 required: "Enter Email",

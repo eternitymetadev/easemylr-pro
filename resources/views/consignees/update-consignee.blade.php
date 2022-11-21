@@ -45,11 +45,11 @@
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Mobile No.<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Mobile No.</label>
                                     <input type="text" class="form-control mbCheckNm" name="phone" value="{{old('phone',isset($getconsignee->phone)?$getconsignee->phone:'')}}" placeholder="Phone" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
+                                    <label for="exampleFormControlSelect1">Consigner<span class="text-danger">*</span></label>
                                     <select class="form-control" name="consigner_id">
                                         <option value="">Select</option>
                                         <?php 
@@ -106,6 +106,10 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Primary Zone</label>
                                     <input type="text" class="form-control" id="zone_name" name="zone_name" disabled value="{{old('zone_id',isset($getconsignee->GetZone->primary_zone)?$getconsignee->GetZone->primary_zone:'No Zone Assigned')}}" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Consignee Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="cnee_code" disabled value="{{old('cnee_code',isset($getconsignee->cnee_code)?$getconsignee->cnee_code:'')}}" placeholder="">
                                 </div>
                                 <input type="hidden" id="zone_id" name="zone_id" value="{{old('zone_id',isset($getconsignee->GetZone->id)?$getconsignee->GetZone->id:'')}}">
                             </div>

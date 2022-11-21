@@ -14,7 +14,7 @@ class AddConeecodeToConsigneesTable extends Migration
     public function up()
     {
         Schema::table('consignees', function (Blueprint $table) {
-            //
+            $table->string('cnee_code')->after('legal_name')->nullable();
         });
     }
 

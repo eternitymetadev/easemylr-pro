@@ -41,11 +41,11 @@
                             </div>
                             <div class="form-row mb-0">
                             <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Mobile No.<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Mobile No.</label>
                                     <input type="tel" class="form-control mbCheckNm" name="phone" placeholder="Enter 10 digit mobile no" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
+                                    <label for="exampleFormControlSelect1">Consigner<span class="text-danger">*</span></label>
                                     <select class="form-control" name="consigner_id">
                                         <option value="">Select</option>
                                         <?php 
@@ -101,6 +101,10 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Primary Zone</label>
                                     <input type="text" class="form-control" id="zone_name" name="zone_name" disabled placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Consignee Code<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="cnee_code" placeholder="">
                                 </div>
                                 <input type="hidden" id="zone_id" name="zone_id" value="">
                             </div>         

@@ -74,6 +74,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                 $arr[] = [
                     'nick_name'     => $value->nick_name,
                     'legal_name'    => $value->legal_name,
+                    'cnee_code'     => $value->consignee_code,
                     'consigner_id'  => $value->consigner_id,
                     'contact_name'  => $value->contact_name,
                     'email'         => $value->email,
@@ -100,6 +101,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
         return [
             'Consignee Nick Name',
             'Consignee Legal Name',
+            'Consignee Code',
             'Consigner',
             'Contact Person Name',
             'Email',

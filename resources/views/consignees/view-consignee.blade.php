@@ -32,6 +32,10 @@
                                     <td>{{isset($getconsignee->legal_name)?ucfirst($getconsignee->legal_name):'-'}} </td>
                                 </tr>
                                 <tr>
+                                    <th scope="row">Consignee Code</th>
+                                    <td>{{isset($getconsignee->cnee_code)?ucfirst($getconsignee->cnee_code):'-'}} </td>
+                                </tr>
+                                <tr>
                                     <th scope="row">Contact Person Name</th>
                                     <td>{{isset($getconsignee->contact_name)?ucfirst($getconsignee->contact_name):'-'}}</td>
                                 </tr>

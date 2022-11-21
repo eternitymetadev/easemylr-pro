@@ -32,13 +32,6 @@ class ConsigneeImport implements ToModel,WithHeadingRow
             $consigner = '';
         }
 
-        // if(!empty($getState)){
-        //     $state = $getState->id;
-        // }
-        // else{
-        //     $state = '';
-        // }
-
         if($row['dealer_type'] == 'Registered'){
             $dealer_type = 1;
         }
@@ -46,11 +39,12 @@ class ConsigneeImport implements ToModel,WithHeadingRow
             $dealer_type = 0;
         }
 
-        $consignee = Consignee::where('nick_name', $row['nick_name'])->where('consigner_id',$consigner)->first();
+        $consignee = Consignee::where(['nick_name'=>$row['nick_name'],'cnee_code'=>$row['cnee_code'],'consigner_id'=>$consigner])->first();
         if(empty($consignee)){
             return new Consignee([
                 'nick_name'         => $row['nick_name'],
                 'legal_name'        => $row['legal_name'],
+                'cnee_code'         => $row['consignee_code'],
                 'user_id'           => $getuser->id,
                 'consigner_id'      => $consigner,
                 'dealer_type'       => $dealer_type,

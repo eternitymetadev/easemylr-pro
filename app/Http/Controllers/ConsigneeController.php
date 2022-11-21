@@ -146,7 +146,7 @@ class ConsigneeController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $rules = array(
-            'nick_name' => 'required|unique:consignees',
+            // 'nick_name' => 'required|unique:consignees',
         );
         $validator = Validator::make($request->all(),$rules);
         
@@ -159,8 +159,19 @@ class ConsigneeController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
+
+        $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name'],'cnee_code'=>$request['cnee_code'],'consigner_id'=>$request['consigner_id']])->get();
+
+        if(!$check_nickname_exist->isEmpty()){
+            $response['success'] = false;
+            $response['error_message'] = "Nick name, consignee code and consigner already exists.";
+            $response['cnee_nickname_duplicate_error'] = true;
+            return response()->json($response);
+        }
+
         $consigneesave['nick_name']           = $request->nick_name;
         $consigneesave['legal_name']          = $request->legal_name;
+        $consigneesave['cnee_code']           = $request->cnee_code;
         $consigneesave['gst_number']          = $request->gst_number;
         $consigneesave['contact_name']        = $request->contact_name;
         $consigneesave['phone']               = $request->phone;
@@ -268,17 +279,18 @@ class ConsigneeController extends Controller
                 return response()->json($response);
             }
 
-            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('id','!=',$request->consignee_id)->get();
+            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name'],'cnee_code'=>$request['cnee_code'],'consigner_id'=>$request['consigner_id']])->where('id','!=',$request->consignee_id)->get();
 
             if(!$check_nickname_exist->isEmpty()){
                 $response['success'] = false;
-                $response['error_message'] = "Nick name already exists.";
+                $response['error_message'] = "Nick name, consignee code and consigner already exists.";
                 $response['cnee_nickname_duplicate_error'] = true;
                 return response()->json($response);
             }
 
             $consigneesave['nick_name']           = $request->nick_name;
             $consigneesave['legal_name']          = $request->legal_name;
+            $consigneesave['cnee_code']           = $request->cnee_code;
             $consigneesave['gst_number']          = $request->gst_number;
             $consigneesave['contact_name']        = $request->contact_name;
             $consigneesave['phone']               = $request->phone;

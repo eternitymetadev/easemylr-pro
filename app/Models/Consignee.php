@@ -9,7 +9,7 @@ class Consignee extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nick_name', 'legal_name', 'user_id', 'branch_id', 'consigner_id', 'zone_id', 'dealer_type', 'gst_number', 'contact_name', 'phone', 'email', 'sales_officer_name', 'sales_officer_email', 'sales_officer_phone', 'address_line1', 'address_line2', 'address_line3','address_line4', 'city', 'district', 'postal_code', 'state_id', 'status', 'created_at', 'updated_at'
+        'nick_name', 'legal_name', 'cnee_code', 'user_id', 'branch_id', 'consigner_id', 'zone_id', 'dealer_type', 'gst_number', 'contact_name', 'phone', 'email', 'sales_officer_name', 'sales_officer_email', 'sales_officer_phone', 'address_line1', 'address_line2', 'address_line3','address_line4', 'city', 'district', 'postal_code', 'state_id', 'status', 'created_at', 'updated_at'
     ];
 
     public function Branch(){
