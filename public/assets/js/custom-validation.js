@@ -2299,3 +2299,25 @@ function closeGetDeliveryDateLR(){
     // alert('dshsjd');
     $('#close_get_delivery_dateLR').click();
 };
+
+/////
+$('#upload_techical').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    
+
+    $.ajax({
+        url: "import-technical-master",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+           
+        }
+    });
+});

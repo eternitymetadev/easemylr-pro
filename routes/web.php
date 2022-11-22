@@ -201,6 +201,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
+    Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
