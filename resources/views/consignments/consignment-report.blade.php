@@ -232,16 +232,17 @@
                             })->first();
                             $trail_decorator = json_decode($job->trail);
                             $img_group = array();
+                            if(is_array($trail_decorator->task_history)){
                             foreach($trail_decorator->task_history as $task_img){
                                 if($task_img->type == 'image_added'){
                                     $img_group[] = $task_img->description;
                                 }
-                            }
+                            }}else{
                             if(empty($img_group)){?>
                             <br><td>Not Available</td>
                             <?php } else{?>
                                 <br><td>Available</td>
-                            <?php } ?>
+                            <?php }} ?>
                                 <?php } ?>
                             </tr>
                             @endforeach
