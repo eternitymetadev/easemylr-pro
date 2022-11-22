@@ -2304,7 +2304,7 @@ function closeGetDeliveryDateLR(){
     $('#close_get_delivery_dateLR').click();
 };
 
-/////
+   //////////
 $('#upload_techical').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
@@ -2321,6 +2321,36 @@ $('#upload_techical').submit(function (e) {
 
         },
         success: (data) => {
+            if (data.success == true) {
+                    swal("success!", data.success_message, "success");
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+           
+        }
+    });
+});
+////
+$('#item_master').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "import-item-master",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+            if (data.success == true) {
+                    swal("success!", data.success_message, "success");
+            } else {
+                swal('error', data.error_message, 'error');
+            }
            
         }
     });

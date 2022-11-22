@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model; 
 
 class TechnicalMaster extends Model
 {
@@ -11,4 +11,9 @@ class TechnicalMaster extends Model
     protected $fillable = [
         'technical_formula', 'manufacturer', 'brand_name', 'created_at','updated_at'
     ];
+
+    public function TechnicalFormula()
+    {
+        return $this->hasMany('App\Models\ItemMaster','technical_id','id');
+    }
 }

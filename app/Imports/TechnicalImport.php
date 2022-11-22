@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\Vendor;
+use App\Models\TechnicalMaster;
 use DB;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -16,14 +16,10 @@ class TechnicalImport implements ToModel, WithHeadingRow//ToCollection
      */
     public function model(array $row)
     {
-        echo'<pre>'; print_r($row); die;
-        
-        return new Tmaster([
-            'type'                   => 'Vendor',
-            'vendor_no'              => $vendor_no,
-            'name'                   => $row['vendor_name'],
-            'email'                  => $row['email'],
-           
+       
+        return new TechnicalMaster([
+            'technical_formula'      => $row['technical_formula'],
+       
         ]);
     }
 }

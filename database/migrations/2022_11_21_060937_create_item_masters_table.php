@@ -15,12 +15,15 @@ class CreateItemMastersTable extends Migration
     {
         Schema::create('item_masters', function (Blueprint $table) {
             $table->id();
-            $table->string('manufacturer');
-            $table->string('brand_name');
-            $table->string('technical_formula');
-            $table->string('net_weight');
-            $table->string('gross_weight');
-            $table->string('chargable_weight');
+            $table->string('technical_id')->nullable();
+            $table->string('manufacturer')->nullable();
+            $table->string('brand_name')->nullable();
+            $table->string('technical_formula')->nullable();
+            $table->string('net_weight')->nullable();
+            $table->string('gross_weight')->nullable();
+            $table->string('chargable_weight')->nullable();
+            $table->string('erp_mat_code')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

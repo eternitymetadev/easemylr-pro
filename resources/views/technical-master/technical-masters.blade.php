@@ -70,49 +70,27 @@
                 <tr>
                     <th scope="col">Sr.</th>
                     <th scope="col">Technical Name</th>
+                    <th scope="col">formula</th>
+
                 </tr>
                 </thead>
                 <tbody>
+                    @foreach($technicals as $technical)
+                    <?php
+                       $formula_array = array();
+                      foreach($technical->TechnicalFormula as $formula){
+                           $formula_array[] = $formula->brand_name;
+ 
+                      }
+                        $brand_name = implode(',', $formula_array);
+
+                    ?>
                 <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
+                    <th scope="row">{{$technical->id}}</th>
+                    <td>{{$technical->technical_formula}}</td>
+                    <td>{{$brand_name}}</td>
                 </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">5</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">6</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">7</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">8</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">9</th>
-                    <td>Jacob</td>
-                </tr>
-                <tr>
-                    <th scope="row">10</th>
-                    <td>Jacob</td>
-                </tr>
+                @endforeach
                 </tbody>
             </table>
 
