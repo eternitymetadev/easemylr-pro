@@ -2416,27 +2416,32 @@ class ConsignmentController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-
         $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $baseclient = explode(',',$authuser->baseclient_id);
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
+
         $lastsevendays = \Carbon\Carbon::today()->subDays(7);
         $date = Helper::yearmonthdate($lastsevendays);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         $query = ConsignmentNote::query();
 
         $query = $query->where('consignment_date', '>=', $date)
                 ->where('status', '!=', 5)
                 ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
-
-        if($authuser->role_id ==1){ 
-            $query = $query;
-        }elseif($authuser->role_id == 4){
+               
+        if($authuser->role_id ==1){
+            $query;
+        }
+        elseif($authuser->role_id ==4){
             $query = $query->whereIn('regclient_id', $regclient);
-        }else{
-            $query = $query
-            ->whereIn('branch_id', $cc);
-        }        
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->whereIn('regclient_id', $regclient);
+        }
+        else{
+            $query = $query->whereIn('branch_id', $cc);
+        }
+
         $query = $query->orderBy('id','ASC')->get();
         $consignments = json_decode(json_encode($query), true);
         return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
