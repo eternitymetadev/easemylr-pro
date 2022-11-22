@@ -214,6 +214,35 @@
                                  <?php }else{?>
                                     <td>Online</td>
                                 <?php } ?>
+
+                                <?php if(empty($consignment['job_id'])){
+                            if(empty($consignment['signed_drs'])){
+                            ?>
+                        <br><td>Not Available</td>
+                      <?php } else { ?>
+                     <br><td>Avliable</td>
+                     <?php } ?>
+                    <?php } else { 
+                            $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','jobs.status as job_status', 'jobs.response_data as trail')
+                            ->where('consignment_notes.job_id',$consignment['job_id'] )
+                            ->where('consignment_notes.id',$consignment['id'])
+                            ->leftjoin('jobs', function($data){
+                                $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                                ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+                            })->first();
+                            $trail_decorator = json_decode($job->trail);
+                            $img_group = array();
+                            foreach($trail_decorator->task_history as $task_img){
+                                if($task_img->type == 'image_added'){
+                                    $img_group[] = $task_img->description;
+                                }
+                            }
+                            if(empty($img_group)){?>
+                            <br><td>Not Available</td>
+                            <?php } else{?>
+                                <br><td>Available</td>
+                            <?php } ?>
+                                <?php } ?>
                             </tr>
                             @endforeach
                         </tbody>
