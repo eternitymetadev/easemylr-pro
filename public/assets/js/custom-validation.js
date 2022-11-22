@@ -2318,9 +2318,12 @@ $('#upload_techical').submit(function (e) {
         processData: false,
         contentType: false,
         beforeSend: function () {
-
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
         },
         success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
             if (data.success == true) {
                     swal("success!", data.success_message, "success");
             } else {
@@ -2343,9 +2346,12 @@ $('#item_master').submit(function (e) {
         processData: false,
         contentType: false,
         beforeSend: function () {
-
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
         },
         success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
             if (data.success == true) {
                     swal("success!", data.success_message, "success");
             } else {

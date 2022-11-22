@@ -115,7 +115,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <button type="submit" class="btn btn-primary"><span class="indicator-label">Upload</span>
+                        <span class="indicator-progress" style="display: none;">Please wait...
+            	        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
                         </div>
                     </form>
                 </div>
