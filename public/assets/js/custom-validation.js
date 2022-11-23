@@ -1212,9 +1212,13 @@ jQuery(document).ready(function () {
                         value.consignment_no +
                         "'>" +
                         value.consignment_no +
-                        "</td><td>" +
+                        "</td><td><input type='hidden' name='data[" +
+                        i +
+                        "][lr_date]' class='c_date' value='" +
+                        value.consignment_date +
+                        "'>" +
                         value.consignee_id +
-                        "</td><td>" +
+                        " </td><td>" +
                         value.city +
                         "</td><td>" +
                         edd_date +
@@ -1373,6 +1377,7 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
 
                 $.each(data.fetch, function (index, value) {
+                   
                    var trail_history = jQuery.parseJSON(value.trail);
 
                    if(value.job_id != null){
@@ -1456,7 +1461,7 @@ jQuery(document).ready(function () {
 
                      row =   "<tr><td>" +
                     value.id +
-                    "</td><td>" +
+                    " <input type='hidden' name='delivery_date' value='"+value.consignment_date+"'</td><td>" +
                     value.consignee_nick +
                     "</td><td>" +
                     value.conee_city +
@@ -1640,20 +1645,28 @@ function get_delivery_date() {
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
+    var consignment_date = $(this).closest("tr").find("td:eq(0) input[type='hidden']").val();
     var ddd = $(this).closest("tr").find("td:eq(3) input[type='date']").val();
-
-    if (ddd == undefined) {
+    
+    if (ddd == undefined) { 
         var delivery_date = $(this).closest("tr").find("td").eq(3).text();
     } else {
         var delivery_date = $(this)
             .closest("tr")
             .find("td:eq(3) input[type='date']")
             .val();
-    }
+    } 
 
     if (delivery_date == null || delivery_date == "") {
         alert("Please select a delivery date");
         return false;
+    }
+
+    var c_date = new Date(consignment_date); //Year, Month, Date    
+    var d_date = new Date(ddd); //Year, Month, Date   
+    if (c_date > d_date) {     
+        swal("Error", "delivery date can't be less than lr date", "error");
+        return false ; 
     }
 
     var files = $(this)
@@ -1662,10 +1675,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        if (files.length == 0) {
-            alert("Please choose a file");
-            return false;
-        }
+        // if (files.length == 0) {
+        //     alert("Please choose a file");
+        //     return false;
+        // }
 
     var form_data = new FormData();
     if (files.length != 0) {
@@ -1726,6 +1739,8 @@ $("#allsave").submit(function (e) {
             if (data.success == true) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
+            }else if(data.error == 'date_less'){
+                swal("error", data.messages, "error");
             } else {
                 swal("error", data.messages, "error");
             }
