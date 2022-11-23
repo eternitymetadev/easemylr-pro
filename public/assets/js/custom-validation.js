@@ -495,7 +495,7 @@ jQuery(document).ready(function () {
 
     /*======get consigner on regional client =====*/
     $("#select_regclient").change(function (e) {
-        $("#items_table").find("tr:gt(1)").remove();
+        // $("#items_table").find("tr:gt(1)").remove();
         var regclient_id = $(this).val();
         $("#select_consigner").empty();
         $("#select_consignee").empty();
@@ -1382,7 +1382,7 @@ jQuery(document).ready(function () {
 
                    if(value.job_id != null){
                     var img_api = [];
-                   
+
                     $.each(trail_history.task_history, function (index, history) {
                         if(history.type == "image_added"){
                             img_api.push(history.description)
@@ -1407,7 +1407,7 @@ jQuery(document).ready(function () {
                             "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                         var field = 
+                         var field =
                         "<a href='" +
                         storage_img +
                         "' target='_blank' class='btn btn-warning'>view</a>";
@@ -1425,7 +1425,7 @@ jQuery(document).ready(function () {
                         $.each(img_api, function (index, img) {
                             i++
                             img_group  = "<a href='"+img+
-                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> ";
                              field1.push(img_group);
                         });
                        var field = (field1.join(' '));

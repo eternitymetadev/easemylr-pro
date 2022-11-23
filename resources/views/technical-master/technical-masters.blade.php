@@ -36,6 +36,7 @@
     </style>
 
     <div class="layout-px-spacing">
+
         <div class="page-header layout-spacing">
             <h2 class="pageHeading">Technical Master</h2>
             <div class="d-flex align-content-center" style="gap: 1rem;">
@@ -64,7 +65,6 @@
         </div>
 
         <div>
-
             <table class="table table-sm">
                 <thead class="thead-dark">
                 <tr>
@@ -123,5 +123,6 @@
                 </div>
             </div>
         </div>
+    </div>
 
 @endsection
