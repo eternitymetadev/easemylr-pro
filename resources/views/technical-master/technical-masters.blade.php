@@ -70,7 +70,7 @@
                 <tr>
                     <th scope="col">Sr.</th>
                     <th scope="col">Technical Name</th>
-                    <th scope="col">formula</th>
+                    <th scope="col">Brand Name</th>
 
                 </tr>
                 </thead>
