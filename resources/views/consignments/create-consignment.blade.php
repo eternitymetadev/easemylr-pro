@@ -193,6 +193,7 @@
             outline: 1px solid #838383;
             background: #f4f4f4;
             border-radius: 12px;
+            width: 100%;
         }
 
         .childTable {
@@ -201,6 +202,15 @@
         }
 
         .addRowButton {
+            text-align: right;
+            width: 100%;
+            font-weight: 800;
+            color: #f9b600;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .addItem {
             float: right;
             font-weight: 800;
             color: #f9b600;
@@ -212,10 +222,42 @@
             position: relative;
         }
 
-        .main_table_body .removeIcon:first-child, .items_table_body .removeIcon:first-child {
-            display: none;
+
+        .main_table_body td {
+            min-width: 150px;
         }
 
+        .main_table_body td:has(div.removeIcon) {
+            min-width: 50px;
+            width: 50px;
+        }
+
+        .main_table_body td div.removeIcon:has(span) {
+            cursor: pointer;
+            height: 20px;
+            width: 20px;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50vh;
+            color: darkred;
+            font-weight: 800;
+            border: 1px solid darkred;
+            transition: all 200ms ease-in-out;
+        }
+        .main_table_body td div.removeIcon:has(span):hover {
+            background: darkred;
+            color: white;
+        }
+
+        .appendedAddress:has(br) {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            background: #f9b60024;
+            color: #000;
+        }
 
     </style>
 
@@ -304,7 +346,7 @@
                         {{--                            </option>--}}
                         {{--                        @endforeach--}}
                     </select>
-                    <div id="consigner_address"></div>
+                    <div class="appendedAddress" id="consigner_address"></div>
                 </div>
                 <div class="form-group col-md-4">
                     <label>
@@ -314,7 +356,7 @@
                             name="consignee_id" id="select_consignee">
                         <option value="">Select Consignee</option>
                     </select>
-                    <div id="consignee_address"></div>
+                    <div class="appendedAddress" id="consignee_address"></div>
                 </div>
                 <div class="form-group col-md-4">
                     <label>
@@ -324,7 +366,7 @@
                             name="ship_to_id" id="select_ship_to">
                         <option value="">Select Ship To</option>
                     </select>
-                    <div id="ship_to_address"></div>
+                    <div class="appendedAddress" id="ship_to_address"></div>
                 </div>
             </div>
 
@@ -334,7 +376,7 @@
                 <h6 class="col-12">Order Information</h6>
 
                 <div style="width: 100%">
-                    <div class="d-flex align-items-center form-group form-group-sm">
+                    <div class="d-flex flex-wrap align-items-center form-group form-group-sm">
                         <div class="col-md-3">
                             <label>Item Description</label>
                             <input type="text" class="form-control" value="Pesticide"
@@ -368,7 +410,7 @@
                 </div>
 
 
-                <div style="overflow-x:auto; padding: 1rem 8px; margin-top: 1rem;">
+                <div style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
                     <table style="width: 100%; border-collapse: collapse;" id="items_table">
                         <tbody class="main_table_body">
                         <tr>
@@ -458,36 +500,113 @@
                                                         </div>
 
                                                     </td>
-                                                    <td width="50px"><span class="removeIcon removeItem">xx</span></td>
+                                                    <td><div class="removeIcon"></div></td>
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <span style="margin-right: 8%" class="addRowButton "
-                                            onclick="insertItemTableRow()">+ Add Item</span>
+                                            <span style="margin-right: 8%" class="addItem">+ Add Item</span>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </td>
-                            <td width="50px"><span class="removeIcon removeInvoice">xx</span></td>
+                            <td><div class="removeIcon"></div></td>
                         </tr>
                         </tbody>
                     </table>
-                    <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>
                 </div>
+                <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>
             </div>
-        </form>
-        <!-- widget-content-area -->
 
-        @endsection
-        @section('js')
-            <script>
-                function insertMaintableRow() {
-                    $("#items_table").each(function () {
-                        var item_no = $("tr", this).length;
-                        // alert(item_no);
-                        // if (item_no <= 6) {
-                        var tds = `<tr>
+
+            {{--vehicle info--}}
+            <div class="form-row">
+                <h6 class="col-12">Vehicle Information</h6>
+
+                <div class="form-group col-md-4">
+                    <label>
+                        Vehicle Number<span class="text-danger">*</span>
+                    </label>
+                    <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id"
+                            tabindex="-1">
+                        <option value="">Select vehicle no</option>
+                        @foreach($vehicles as $vehicle)
+                            <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        Driver Name<span class="text-danger">*</span>
+                    </label>
+                    <select class="form-control form-small my-select2" id="driver_id" name="driver_id"
+                            tabindex="-1">
+                        <option value="">Select driver</option>
+                        @foreach($drivers as $driver)
+                            <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
+                                '-'}}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>
+                        EDD<span class="text-danger">*</span>
+                    </label>
+                    <Input type="date" class="form-control form-small" name="edd"/>
+                </div>
+
+                <div class="form-group col-12">
+                    <input type="checkbox" id="chek" style="margin-left:19px;">
+                    <label for="chek">Vehicle Purchase Information</label>
+                </div>
+
+                <div class="row flex-wrap align-items-center" style="display:none; width: 100%;" id="veh">
+
+                    <div class="form-group col-md-4">
+                        <label>Vehicle Name<span class="text-danger">*</span></label>
+                        <Input type="text" class="form-control form-small" name="transporter_name"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>
+                            Vehicle Type<span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control my-select2 sete" id="vehicle_type" name="vehicle_type"
+                                tabindex="-1">
+                            <option value="">Select vehicle type</option>
+                            @foreach($vehicletypes as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>
+                            Purchase Price<span class="text-danger">*</span>
+                        </label>
+                        <Input type="number" class="form-control form-small" name="purchase_price"/>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
+{{--                <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
+                <button type="submit" class="mt-2 btn btn-primary disableme" style="height: 40px; width: 200px">Submit</button>
+            </div>
+
+        </form>
+    </div>
+    <!-- widget-content-area -->
+
+@endsection
+@section('js')
+    <script>
+        function insertMaintableRow() {
+            $("#items_table").each(function () {
+                var tds = `<tr>
                             <td>
                                 <table class="mainTr">
                                     <tbody>
@@ -574,39 +693,31 @@
                                                         </div>
 
                                                     </td>
-                                                    <td width="50px"><span class="removeItem">xx</span></td>
+                                                    <td width="50px"><div class="removeIcon"></div></td>
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <span style="margin-right: 8%" class="addRowButton"
+                                            <span style="margin-right: 8%" class="addItem"
                                                   onclick="insertItemTableRow()">+ Add Item</span>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </td>
-                            <td width="50px"><span class="removeInvoice">xx</span></td>
+                            <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
                         </tr>`;
-                        // }
-                        $(this).append(tds);
-                    });
-                };
 
-                $(document).on("click", ".removeInvoice", function () {
-                    var current_val = $(this).parent().siblings(":first").text();
-                    $(this).closest("tr").remove();
-                });
+                $(this).append(tds);
+            });
+        };
 
-                $(document).on("click", ".removeItem", function () {
-                    var current_val = $(this).parent().siblings(":first").text();
-                    $(this).closest("tr").remove();
-                });
+        $(document).on("click", ".removeInvoice", function () {
+            $(this).closest("tr").remove();
+        });
 
 
-                $(document).on("click", ".addItem", function () {
-                    // $(this).closest("tr").remove();
-                    // $("#childTable").each(function ()   {
-                    var itemTds = `<tr>
+        $(document).on("click", ".addItem", function () {
+            var itemTds = `<tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
@@ -644,148 +755,100 @@
                                                         </div>
 
                                                     </td>
-                                                    <td width="50px"><span class="removeItem">xx</span></td>
+                                                    <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
                                                 </tr>`
 
-                    // var current_val = $(this).parent().siblings(":first").text();
-
-                    $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
-                    // $(this).parentElement.appendChild(itemTds);
-                    // });
-                });
-
-                function insertItemTableRow() {
-                    $("#childTable").each(function () {
-                        var itemTds = `<tr>
-                                                    <td width="200px">
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Item</label>
-                                                            <select class="form-control">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="grossWeight">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
-                                                        </div>
-
-                                                    </td>
-                                                    <td width="50px"><span class="removeItem">xx</span></td>
-                                                </tr>`
-
-                        // $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
-
-                        $(".items_table_body").append(itemTds);
-                    });
-                };
-            </script>
+            $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
+        });
 
 
-            <script>
-                // $(function() {
-                //     $('.basic').selectpicker();
-                // });
-                // $(document).ready(function () {
-                //     $('.insert-more').attr('disabled', true);
-                // });
+        $(document).on("click", ".removeItem", function () {
+            $(this).closest("tr").remove();
+        });
+    </script>
 
-                jQuery(function () {
-                    $('.my-select2').each(function () {
-                        $(this).select2({
-                            theme: "bootstrap-5",
-                            dropdownParent: $(this).parent(), // fix select2 search input focus bug
-                        })
-                    })
 
-                    // fix select2 bootstrap modal scroll bug
-                    $(document).on('select2:close', '.my-select2', function (e) {
-                        var evt = "scroll.select2"
-                        $(e.target).parents().off(evt)
-                        $(window).off(evt)
-                    })
+    <script>
+        // $(function() {
+        //     $('.basic').selectpicker();
+        // });
+        // $(document).ready(function () {
+        //     $('.insert-more').attr('disabled', true);
+        // });
+
+        jQuery(function () {
+            $('.my-select2').each(function () {
+                $(this).select2({
+                    theme: "bootstrap-5",
+                    dropdownParent: $(this).parent(), // fix select2 search input focus bug
                 })
+            })
 
-                // add consignment date
-                $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
+            // fix select2 bootstrap modal scroll bug
+            $(document).on('select2:close', '.my-select2', function (e) {
+                var evt = "scroll.select2"
+                $(e.target).parents().off(evt)
+                $(window).off(evt)
+            })
+        })
 
-                function showResult(str) {
-                    if (str.length == 0) {
-                        $(".search-suggestions").empty();
-                        $(".search-suggestions").css('border', '0px');
-                    } else if (str.length > 0) {
-                        $(".search-suggestions").css('border', 'solid 1px #f6f6f6');
-                        var options = '';
-                        options = "<option value='Seeds'>";
-                        options += "<option value='Chemicals'>";
-                        options += "<option value='PGR'>";
-                        options += "<option value='Fertilizer'>";
-                        options += "<option value='Pesticides'>";
-                        $('#json-datalist').html(options);
+        // add consignment date
+        $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
+
+        function showResult(str) {
+            if (str.length == 0) {
+                $(".search-suggestions").empty();
+                $(".search-suggestions").css('border', '0px');
+            } else if (str.length > 0) {
+                $(".search-suggestions").css('border', 'solid 1px #f6f6f6');
+                var options = '';
+                options = "<option value='Seeds'>";
+                options += "<option value='Chemicals'>";
+                options += "<option value='PGR'>";
+                options += "<option value='Fertilizer'>";
+                options += "<option value='Pesticides'>";
+                $('#json-datalist').html(options);
+            }
+        }
+
+        $('#chek').click(function () {
+            $('#veh').toggle();
+        });
+
+        function myMap() {
+            var mapProp = {
+                center: new google.maps.LatLng(51.508742, -0.120850),
+                zoom: 5,
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        }
+
+        // invoice no duplicate validate
+        $('.invc_no').blur(function () {
+            var invc_no = $(this).val();
+            var row_id = jQuery(this).attr('id');
+            $.ajax({
+                url: "/invoice-check",
+                method: "get",
+                data: {
+                    invc_no: invc_no
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response.success == true) {
+                        swal('error', response.errors, 'error');
+                        $("#" + row_id).val('');
                     }
                 }
-
-                $('#chek').click(function () {
-                    $('#veh').toggle();
-                });
-
-                function myMap() {
-                    var mapProp = {
-                        center: new google.maps.LatLng(51.508742, -0.120850),
-                        zoom: 5,
-                    };
-                    var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-                }
-
-                // invoice no duplicate validate
-                $('.invc_no').blur(function () {
-                    var invc_no = $(this).val();
-                    var row_id = jQuery(this).attr('id');
-                    $.ajax({
-                        url: "/invoice-check",
-                        method: "get",
-                        data: {
-                            invc_no: invc_no
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        dataType: 'json',
-                        success: function (response) {
-                            console.log(response);
-                            if (response.success == true) {
-                                swal('error', response.errors, 'error');
-                                $("#" + row_id).val('');
-                            }
-                        }
-                    })
-                });
+            })
+        });
 
 
-            </script>
-            <script
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
+    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
 @endsection
