@@ -1648,8 +1648,6 @@ $(document).on("click", ".onelrupdate", function () {
     var consignment_date = $(this).closest("tr").find("td:eq(0) input[type='hidden']").val();
     var ddd = $(this).closest("tr").find("td:eq(3) input[type='date']").val();
     
-   
-
     if (ddd == undefined) { 
         var delivery_date = $(this).closest("tr").find("td").eq(3).text();
     } else {
@@ -1677,10 +1675,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        if (files.length == 0) {
-            alert("Please choose a file");
-            return false;
-        }
+        // if (files.length == 0) {
+        //     alert("Please choose a file");
+        //     return false;
+        // }
 
     var form_data = new FormData();
     if (files.length != 0) {
