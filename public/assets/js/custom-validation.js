@@ -1212,7 +1212,7 @@ jQuery(document).ready(function () {
                         value.consignment_no +
                         "'>" +
                         value.consignment_no +
-                        "</td><td><input type='date' name='data[" +
+                        "</td><td><input type='hidden' name='data[" +
                         i +
                         "][lr_date]' class='c_date' value='" +
                         value.consignment_date +
