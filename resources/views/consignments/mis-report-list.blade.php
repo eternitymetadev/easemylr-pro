@@ -1,40 +1,5 @@
 @extends('layouts.main')
 @section('content')
-<style>
-.dt--top-section {
-    margin: none;
-}
-
-div.relative {
-    position: absolute;
-    left: 110px;
-    top: 24px;
-    z-index: 1;
-    width: 145px;
-    height: 38px;
-}
-
-.dt-buttons .dt-button {
-    width: 83px;
-    height: 38px;
-    font-size: 13px;
-}
-
-.btn-group>.btn,
-.btn-group .btn {
-    padding: 0px 0px;
-    padding: 10px;
-}
-
-.btn {
-
-    font-size: 10px;
-}
-</style>
-<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
-<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
 <!-- END PAGE LEVEL CUSTOM STYLES -->
 
 <div class="layout-px-spacing">
@@ -44,7 +9,7 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">MIS Reports1</a></li>
                     </ol>
                 </nav>
             </div>
@@ -62,21 +27,16 @@ div.relative {
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
                         <div class="col-6">
-                            <button type="button" id="filter_reportall" class="btn btn-primary"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
+                            <button type="button" id="filter_reportall" class="btn btn-primary" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
                                 <span class="indicator-label">Filter Data</span>
                             </button>
-                            <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>"
-                                data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
-                                class="consignmentReportEx btn btn-white btn-cstm"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                            <a href="<?php echo URL::to($prefix.'/reports/export1'); ?>" data-url="<?php echo URL::to($prefix.'/consignment-misreport'); ?>" class="consignmentReportEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" data-action="<?php echo URL::to($prefix.'/reports/export1'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
                             <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
                     @csrf
                     <div class="main-table table-responsive">
-                        @include('consignments.consignment-reportAll-ajax')
+                        @include('consignments.mis-report-list-ajax')
                     </div>
                 </div>
             </div>
@@ -95,7 +55,7 @@ jQuery(document).on('click', '#filter_reportall', function() {
     
     jQuery.ajax({
         type: 'get',
-        url: 'consignment-report2',
+        url: 'consignment-misreport',
         data: {
             startdate: startdate,
             enddate: enddate,
@@ -193,6 +153,7 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
             }, 10);
         }
     });
-});
+})
 </script>
+
 @endsection
