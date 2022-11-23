@@ -3914,15 +3914,25 @@ class ConsignmentController extends Controller
           if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
-
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
-                
+
                 if(!empty($pic)){
                     if(!empty($deliverydate)){
                         $filename = $pic->getClientOriginalName();
                         $pic->move(public_path('drs/Image'), $filename);
+
+                        $dateTimestamp1 = strtotime($save_data['lr_date']);
+                $dateTimestamp2 = strtotime($deliverydate);
+                
+                // Compare the timestamp date 
+                if ($dateTimestamp1 > $dateTimestamp2){
+                        $response['success'] = false;
+                        $response['error'] = 'date_less';
+                        $response['messages'] = 'Delivery date cannot be less than LR Date';
+                        return Response::json($response);
+                 } 
                     } else {
                         $response['success'] = false;
                         $response['error'] = 'date';
@@ -3935,6 +3945,7 @@ class ConsignmentController extends Controller
                 }
                          
                 if(!empty($deliverydate)){
+
                     if(!empty($pic)){
                         ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
