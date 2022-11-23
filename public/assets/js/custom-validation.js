@@ -1377,12 +1377,14 @@ jQuery(document).ready(function () {
 
                    if(value.job_id != null){
                     var img_api = [];
+                   
                     $.each(trail_history.task_history, function (index, history) {
                         if(history.type == "image_added"){
                             img_api.push(history.description)
                         }
                     });
                 }
+            //   console.log(img_api); return false;
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
@@ -1400,13 +1402,10 @@ jQuery(document).ready(function () {
                             "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                        var field = `<button type="button" className="btn btn-primary" data-toggle="modal"
-                                       onclick="closeGetDeliveryDateLR()"     data-target="#exampleModal">
-                            Launch demo modal
-                        </button>`;
-                        // "<a href='" +
-                        // storage_img +
-                        // "' target='_blank' class='btn btn-warning'>view</a>";
+                         var field = 
+                        "<a href='" +
+                        storage_img +
+                        "' target='_blank' class='btn btn-warning'>view</a>";
                     }
                 }else{
                     if(img_api == null || img_api == ''){
@@ -1415,10 +1414,16 @@ jQuery(document).ready(function () {
                         value.id +
                         "' placeholder='Choose image' class='drs_image'>";
                     }else{
-                    var field =
-                            "<a href='" +
-                            img_api[0] +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
+                         var field1 = [];
+                        var img_length = img_api.length;
+                        var i = 0;
+                        $.each(img_api, function (index, img) {
+                            i++
+                            img_group  = "<a href='"+img+
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             field1.push(img_group);
+                        });
+                       var field = (field1.join(' '));
                     }
                 }
                     // delivery date check
