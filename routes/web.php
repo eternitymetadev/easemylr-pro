@@ -670,6 +670,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);
+    Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
