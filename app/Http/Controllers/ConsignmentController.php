@@ -2376,14 +2376,11 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
-
     }
 
     public function updateDelivery(Request $request)
     {
         $id = $_GET['draft_id'];
-        // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->get();
-
         $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd')
             ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->get();
         $result = json_decode(json_encode($transcationview), true);
@@ -2392,7 +2389,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
-
     }
 
     public function updateDeliveryStatus(Request $request)
@@ -2411,77 +2407,8 @@ class ConsignmentController extends Controller
 
     }
 
-    ///////////////////////////Reports/////////////////////////
-    public function consignmentReports()
-    {
-        $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-
-        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        $date = Helper::yearmonthdate($lastsevendays);
-        $query = ConsignmentNote::query();
-
-        $query = $query->where('consignment_date', '>=', $date)
-                ->where('status', '!=', 5)
-                ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
-               
-        if($authuser->role_id ==1){
-            $query;
-        }
-        elseif($authuser->role_id ==4){
-            $query = $query->whereIn('regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==7){
-            $query = $query->whereIn('regclient_id', $regclient);
-        }
-        else{
-            $query = $query->whereIn('branch_id', $cc);
-        }
-
-        $query = $query->orderBy('id','ASC')->get();
-        $consignments = json_decode(json_encode($query), true);
-        return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
-    }
-
-    public function getFilterReport(Request $request)
-    {
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
-
-        $query = ConsignmentNote::query();
-        $query = $query
-            ->where('status', '!=', 5)
-            ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
-
-        if($authuser->role_id ==1){
-            $query = $query;
-        }elseif($authuser->role_id == 4){
-            $query = $query
-            ->whereIn('regclient_id', $regclient);      
-        }else{ 
-            $query = $query
-            ->whereIn('branch_id', $cc);
-        }
-        $query = $query->orderBy('id','ASC')->get();
-        $consignments = json_decode(json_encode($query), true);
-
-        $response['fetch'] = $consignments;
-        $response['success'] = true;
-        $response['messages'] = 'Succesfully loaded';
-        return Response::json($response);
-    }
-
     public function updateDeliveryDateOneBy(Request $request)
     {
-
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_date' => $delivery_date]);
