@@ -65,12 +65,16 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
             'VehicleType:id,name'
         );
 
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
+        if($authuser->role_id ==1){
+            $query;
+        }
+        elseif($authuser->role_id ==4){
+            $query = $query->whereIn('regclient_id', $regclient);
+        }
+        elseif($authuser->role_id ==7){
+            $query = $query->whereIn('regclient_id', $regclient);
+        }
+        else{
             $query = $query->whereIn('branch_id', $cc);
         }
 
