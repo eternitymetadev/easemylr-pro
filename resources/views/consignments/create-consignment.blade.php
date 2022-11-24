@@ -421,39 +421,39 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="order_id">
+                                                <input type="text" class="form-control orderid" name="data[1][order_id]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Number</label>
                                                 <input type="text" class="form-control invc_no" id="1"
-                                                       name="invoice_no">
+                                                       name="data[1][invoice_no]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="invoice_date">
+                                                <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Amount</label>
                                                 <input type="number" class="form-control invc_amt"
-                                                       name="invoice_amount">
+                                                       name="data[1][invoice_amount]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="e_way_bill">
+                                                <input type="number" class="form-control ew_bill" name="data[1][e_way_bill]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="e_way_bill_date">
+                                                <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
                                             </div>
                                         </td>
                                     </tr>
@@ -466,7 +466,7 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control">
+                                                            <select class="form-control" name="data[1][item_data][0][item]">
                                                                 <option>Option 1</option>
                                                                 <option>Option 2</option>
                                                                 <option>Option 3</option>
@@ -477,26 +477,26 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
+                                                            <input type="number" class="form-control" name="data[1][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
+                                                            <input type="number" class="form-control" name="data[1][item_data][0][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="grossWeight">
+                                                                   name="data[1][item_data][0][gross_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
+                                                            <input type="number" class="form-control" name="data[1][item_data][0][c_weight]">
                                                         </div>
 
                                                     </td>
@@ -606,6 +606,7 @@
     <script>
         function insertMaintableRow() {
             $("#items_table").each(function () {
+                var item_no = $("tr", this).length;
                 var tds = `<tr>
                             <td>
                                 <table class="mainTr">
@@ -614,39 +615,51 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="order_id">
+                                                <input type="text" class="form-control orderid" name="data[`+
+                    item_no +
+                    `][order_id]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Number</label>
                                                 <input type="text" class="form-control invc_no" id="1"
-                                                       name="invoice_no">
+                                                       name="data[` +
+                    item_no +
+                    `][invoice_no]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="invoice_date">
+                                                <input type="date" class="form-control invc_date" name="data[` +
+                    item_no +
+                    `][invoice_date]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Amount</label>
                                                 <input type="number" class="form-control invc_amt"
-                                                       name="invoice_amount">
+                                                       name="data[` +
+                    item_no +
+                    `][invoice_amount]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="e_way_bill">
+                                                <input type="number" class="form-control ew_bill" name="data[` +
+                    item_no +
+                    `][e_way_bill]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="e_way_bill_date">
+                                                <input type="date" class="form-control ewb_date" name="data[` +
+                    item_no +
+                    `][e_way_bill_date]">
                                             </div>
                                         </td>
                                     </tr>
@@ -654,8 +667,11 @@
                                         <td colspan="7">
                                             <table id="childTable" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
-                                                <tbody class="items_table_body">
-                                                <tr>
+                                                <tbody class="items_table_body">`;
+                                                var i = 1;
+                                            $("#childTable").each(function () {
+                                                i++
+                                        tds +=`<tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
@@ -670,42 +686,44 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="grossWeight">
+                                                                   name="data[`+item_no+`][item_data][`+i+`][gross_weigth]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][c_weight]">
                                                         </div>
 
                                                     </td>
                                                     <td width="50px"><div class="removeIcon"></div></td>
-                                                </tr>
-                                                </tbody>
+                                                </tr>`;
+                                });
+                                tds +=`</tbody>
                                             </table>
                                             <span style="margin-right: 8%" class="addItem"
                                                   onclick="insertItemTableRow()">+ Add Item</span>
                                         </td>
                                     </tr>
-                                    </tbody>
+                                  </tbody>
                                 </table>
                             </td>
                             <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
                         </tr>`;
+                                        
 
                 $(this).append(tds);
             });
