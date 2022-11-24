@@ -113,6 +113,11 @@ class ConsignmentController extends Controller
                             $cneequery->where('nick_name', 'like', '%' . $search . '%');
                         });
                     });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
 
                 });
             }
@@ -131,10 +136,9 @@ class ConsignmentController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-
+            
             $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             
-
             return response()->json(['html' => $html]);
         }
 
