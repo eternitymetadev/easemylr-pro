@@ -3845,9 +3845,12 @@ class ConsignmentController extends Controller
           if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
+                // echo'<pre>'; print_r($save_data); die;
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
+
+                if($save_data['job_id'] == 'null'){
 
                 if(!empty($pic)){
                         $filename = $pic->getClientOriginalName();
@@ -3874,6 +3877,7 @@ class ConsignmentController extends Controller
                     ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
                     // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                 }
+            }
             }
             }
             $response['success'] = true;
