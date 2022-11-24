@@ -136,10 +136,9 @@ class ConsignmentController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-
+            
             $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             
-
             return response()->json(['html' => $html]);
         }
 

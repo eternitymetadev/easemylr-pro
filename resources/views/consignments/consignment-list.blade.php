@@ -441,45 +441,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                 </div>
             </div>
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                                <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img class="d-block w-100" src="..." alt="First slide">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img class="d-block w-100" src="..." alt="Second slide">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img class="d-block w-100" src="..." alt="Third slide">
-                                    </div>
-                                </div>
-                                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
     </div>
@@ -536,20 +498,23 @@ function row_click(row_id, job_id, url)
                             var uploaded_by = 'Attachment uploaded by';
                             var view_text = 'View Attachment';
                             var title = 'Attachment';
-                            var image = '<img src="'+ task.description +'" width="100%" seamless="">';
+                            var image = task.description;
+                            // var image = '<img src="'+ task.description +'" width="100%" seamless="">';
                         }else if (type == 'signature_image_added') {
                             var uploaded_by = 'Signature Added by';
                             var view_text = 'View Signatures';
                             var title = 'Signature';
-                            var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
+                            // var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
+                            var image = task.description;
                         }
 
                         if(type == 'image_added' || type == 'signature_image_added'){
                             modal_html += '<span style="padding-left:245px; font-size: 12px;">'+uploaded_by+' '+task.fleet_name +'</span><br />';
-                            modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
+                            modal_html += "<a style='margin-left:245px;' href='"+image+"' target='_blank' class='btn btn-warning mt-3'>"+ view_text +"</a>";
+                            // modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
 
                             //  Modal start //
-                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog">';
                             modal_html += '<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header">';
                             modal_html += '<h5 class="modal-title" id="exampleModalLabel">'+ title +'</h5>';
                             modal_html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
