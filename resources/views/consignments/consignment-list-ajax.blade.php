@@ -25,8 +25,7 @@
                 </td>
                 <td>
                     <div class="">
-                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span
-                                class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}<span></span></span>
+                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}</span>
                         </div>
 
                         <?php
@@ -150,6 +149,8 @@
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
                     <?php } elseif ($consignment->delivery_status == "Accepted") { ?>
                     <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Acknowledged</span>
+                    <?php }elseif ($consignment->delivery_status == "Cancel") { ?>
+                    <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Cancel</span>
                     <?php } else{ ?>
                     <span class="badge alert bg-success shadow-sm" lr-no="{{$consignment->id}}">need to update</span>
                     <?php } ?>

@@ -60,6 +60,10 @@ class ConsignmentNote extends Model
     {
         return $this->hasMany('App\Models\ConsignmentItem','consignment_id','id');
     }
+    public function ConsignmentItem()
+    {
+        return $this->hasOne('App\Models\ConsignmentItem','consignment_id','id');
+    }
     public function ConsigneeDetail()
     {
         return $this->hasOne('App\Models\Consignee','id','consignee_id');

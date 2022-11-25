@@ -60,7 +60,7 @@ class ConsignmentController extends Controller
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
 
                 $url = $this->prefix . '/consignments';
@@ -109,6 +109,12 @@ class ConsignmentController extends Controller
                                 $cneequery->where('nick_name', 'like', '%' . $search . '%');
                             });
                         });
+                    });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
 
                 });
             }
@@ -126,8 +132,8 @@ class ConsignmentController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-
-            $html = view('consignments.consignment-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
+            
+            $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -479,14 +485,14 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
-////////////////////get consioner from regional client//
+    
+    //// get consioner from regional client ////
     public function getConsignersonRegional(Request $request)
     {
-        $getconsigners = Consigner::select('id', 'nick_name')->where('regionalclient_id', $request->regclient_id)->get();
+        $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
 
-        $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
-        // echo'<pre>';print_r($getconsigners); die;
-
+        $getregclients = RegionalClient::select('id','location_id','is_multiple_invoice')->where('id',$request->regclient_id)->first();
+        
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
@@ -1591,11 +1597,11 @@ class ConsignmentController extends Controller
         //$logo = url('assets/img/logo_se.jpg');
         $barcode = url('assets/img/barcode.png');
 
-        if ($authuser->branch_id == 28) {
-            return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        } else {
+        // if ($authuser->branch_id == 28) {
+        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
+        // } else {
             return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-        }
+        // }
         //echo $barcode; die;
 
     }
@@ -1611,11 +1617,11 @@ class ConsignmentController extends Controller
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '5'])
-            ->where('consignment_notes.booked_drs', '!=', '1');
+        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+        ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+        ->whereIn('consignment_notes.status', ['2', '5'])
+        ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
             $data;
@@ -1835,7 +1841,6 @@ class ConsignmentController extends Controller
     public function getTransactionDetails(Request $request)
     {
         $id = $_GET['cat_id'];
-
         $query = TransactionSheet::query();
         $query = $query->where('drs_no', $id)
             ->with('ConsignmentDetail', function ($query) {
@@ -1844,6 +1849,7 @@ class ConsignmentController extends Controller
         $query = $query
             ->orderby('order_no', 'asc')
             ->get();
+
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($query), true);
@@ -2268,6 +2274,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
+        /////check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
         foreach ($checklrstatus as $check) {
             if ($check->status == 5) {
@@ -2334,11 +2341,13 @@ class ConsignmentController extends Controller
     {
         //echo'hi';
         $id = $_GET['draft_id'];
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
-            ->whereHas('ConsignmentDetail', function ($query) {
-                $query->whereIn('status', ['1','5']);
-            })
-            ->orderby('order_no', 'asc')->get();  
+        
+         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
+         ->whereHas('ConsignmentDetail', function ($query){
+            $query->whereIn('status', ['1','5']);
+        })
+         ->orderby('order_no', 'asc')->get();
+
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
         //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
@@ -2350,14 +2359,11 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
-
     }
 
     public function updateDelivery(Request $request)
     {
         $id = $_GET['draft_id'];
-        // $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail')->where('drs_no', $id)->get();
-
         $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd')
             ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->get();
         $result = json_decode(json_encode($transcationview), true);
@@ -2366,7 +2372,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
-
     }
 
     public function updateDeliveryStatus(Request $request)
@@ -2385,72 +2390,8 @@ class ConsignmentController extends Controller
 
     }
 
-    ///////////////////////////Reports/////////////////////////
-    public function consignmentReports()
-    {
-        $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        $lastsevendays = \Carbon\Carbon::today()->subDays(7);
-        $date = Helper::yearmonthdate($lastsevendays);
-        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-        $query = ConsignmentNote::query();
-
-        $query = $query->where('consignment_date', '>=', $date)
-            ->where('status', '!=', 5)
-            ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient.BaseClient', 'vehicletype');
-
-        if ($authuser->role_id == 1) {
-            $query = $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } else {
-            $query = $query
-                ->whereIn('branch_id', $cc);
-        }
-        $query = $query->orderBy('id', 'ASC')->get();
-        $consignments = json_decode(json_encode($query), true);
-        return view('consignments.consignment-report', ['consignments' => $consignments, 'prefix' => $this->prefix]);
-    }
-
-    public function getFilterReport(Request $request)
-    {
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-
-        $query = ConsignmentNote::query();
-        $query = $query
-            ->where('status', '!=', 5)
-            ->whereBetween('consignment_notes.consignment_date', [$_POST['first_date'], $_POST['last_date']])
-            ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient.BaseClient', 'vehicletype');
-
-        if ($authuser->role_id == 1) {
-            $query = $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query
-                ->whereIn('regclient_id', $regclient);
-        } else {
-            $query = $query
-                ->whereIn('branch_id', $cc);
-        }
-        $query = $query->orderBy('id', 'ASC')->get();
-        $consignments = json_decode(json_encode($query), true);
-
-        $response['fetch'] = $consignments;
-        $response['success'] = true;
-        $response['messages'] = 'Succesfully loaded';
-        return Response::json($response);
-    }
-
     public function updateDeliveryDateOneBy(Request $request)
     {
-
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_date' => $delivery_date]);
@@ -3529,12 +3470,21 @@ class ConsignmentController extends Controller
     ////////////////get delevery date LR//////////////////////
     public function getDeleveryDateLr(Request $request)
     {
-        $transcationview = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_nick', 'consignees.city as conee_city')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->where('consignment_notes.id', $request->lr_no)->get();
+        $authuser = Auth::user();
+        $role = $authuser->role_id;
+        $transcationview = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_nick', 'consignees.city as conee_city','jobs.status as job_status', 'jobs.response_data as trail')
+        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id') 
+        ->where('consignment_notes.id', $request->lr_no)
+        ->leftjoin('jobs', function($data){
+            $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
+                ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
+        })->get();
+
         $result = json_decode(json_encode($transcationview), true);
+        //  echo '<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
+        $response['role_id'] = $role;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
@@ -3867,26 +3817,40 @@ class ConsignmentController extends Controller
         if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
-
+                // echo'<pre>'; print_r($save_data); die;
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
-                if (!empty($pic)) {
-                    $filename = $pic->getClientOriginalName();
-                    $pic->move(public_path('drs/Image'), $filename);
-                } else {
-                    $filename = null;
-                }
 
-                if (!empty($deliverydate)) {
-                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                    TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
-                } else {
-                    if (!empty($filename)) {
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
-                        // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
-                    }
+                if($save_data['job_id'] == 'null'){
+
+                if(!empty($pic)){
+                        $filename = $pic->getClientOriginalName();
+                        $pic->move(public_path('drs/Image'), $filename);
+                }else{
+                    $filename = NULL ;
                 }
+                         
+                if(!empty($deliverydate)){
+                    $dateTimestamp1 = strtotime($save_data['lr_date']);
+                    $dateTimestamp2 = strtotime($deliverydate);
+                    // Compare the timestamp date 
+                    if ($dateTimestamp1 > $dateTimestamp2){
+                            $response['success'] = false;
+                            $response['error'] = 'date_less';
+                            $response['messages'] = 'Delivery date cannot be less than LR Date';
+                            return Response::json($response);
+                     } 
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                 
+                }else{
+                    if(!empty($filename)){
+                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                    // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                }
+            }
+            }
             }
             $response['success'] = true;
             $response['messages'] = 'img uploaded successfully';

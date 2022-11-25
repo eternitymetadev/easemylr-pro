@@ -1,46 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     @include('layouts.includes.header')
     <style>
         .dropdown-toggle svg.feather[class*="feather-chevron-"] {
-    width: 15px;
-    height: auto;
-    vertical-align: middle;
-}
-.fade {
-    transition: opacity .15s linear;
-    zoom: 110%;
-}
+            width: 15px;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        .fade {
+            transition: opacity .15s linear;
+            zoom: 110%;
+        }
     </style>
-    </head>
+</head>
 
-    <body class="zoomer alt-menu sidebar-noneoverflow" style="zoom: 90%;">
-       <!-- BEGIN LOADER -->
-    <div id="load_screen"> <div class="loader"> <div class="loader-content">
-        <div class="spinner-grow align-self-center"></div>
-    </div></div></div>
-    <!--  END LOADER -->
- 
-        <!--  BEGIN NAVBAR  -->
-        <div class="header-container fixed-top">
-            <header class="header navbar navbar-expand-sm">
-            	@include('layouts.includes.navbar')
-            </header>
+<body class="zoomer alt-menu sidebar-noneoverflow" style="zoom: 90%;">
+<!-- BEGIN LOADER -->
+<div id="load_screen">
+    <div class="loader">
+        <div class="loader-content">
+            <div class="spinner-grow align-self-center"></div>
         </div>
-        <!--  END NAVBAR  -->
+    </div>
+</div>
+<!--  END LOADER -->
 
-       <!--  BEGIN MAIN CONTAINER  -->
-    <div class="main-container" id="container">
+<!--  BEGIN NAVBAR  -->
+<div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
+        @include('layouts.includes.navbar')
+    </header>
+</div>
+<!--  END NAVBAR  -->
 
-<div class="overlay"></div>
-<div class="search-overlay"></div>
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
 
-            <!--  BEGIN CONTENT AREA  -->
-            <div id="content" class="main-content">
+    <div class="overlay"></div>
+    <div class="search-overlay"></div>
 
-            	@yield('content')
-            	@include('layouts.includes.footer')
-                @yield('js')
-    </body>
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content" style="min-height: calc(100% - 64px)">
+        @yield('content')
+    </div>
+@include('layouts.includes.footer')
+@yield('js')
+</body>
 </html>

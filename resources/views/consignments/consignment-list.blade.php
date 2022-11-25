@@ -242,7 +242,7 @@
 
 .bg-info {
     background-color: #2CA8FF !important;
-}    
+}
 .dt--top-section {
     margin:none;
 }
@@ -300,13 +300,13 @@ td.dt-control {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize; 
+    text-transform: capitalize;
 }
 .css-16pld73 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-transform: capitalize; 
+    text-transform: capitalize;
 }
 .ellipse{
     width:320px;
@@ -315,12 +315,12 @@ td.dt-control {
     width:200px;
 }
 .ellipse:hover{
-    overflow: visible; 
+    overflow: visible;
     white-space: normal;
     width:100%; /* just added this line */
 }
 .ellipse2:hover{
-    overflow: visible; 
+    overflow: visible;
     white-space: normal;
     width:100%; /* just added this line */
 }
@@ -426,7 +426,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                                         href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a>
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
-                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                        style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span><i
                                                 class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>
@@ -440,6 +440,9 @@ a.badge.alert.bg-secondary.shadow-sm {
                     </div>
                 </div>
             </div>
+
+            
+
         </div>
     </div>
 </div>
@@ -451,18 +454,18 @@ a.badge.alert.bg-secondary.shadow-sm {
 
 @section('js')
 <script>
-    
+
 // jQuery(document).on("click", ".card-header", function () {
 function row_click(row_id, job_id, url)
-{   
-    $('.append-modal').empty(); 
+{
+    $('.append-modal').empty();
     $('.cbp_tmtimeline').empty();
 
     var modal_container = '';
     var modal_html = '';
     var modal_html1 = '';
 
-    var job_id = job_id;  
+    var job_id = job_id;
     var url =url;
     jQuery.ajax({
         url: url,
@@ -495,20 +498,23 @@ function row_click(row_id, job_id, url)
                             var uploaded_by = 'Attachment uploaded by';
                             var view_text = 'View Attachment';
                             var title = 'Attachment';
-                            var image = '<img src="'+ task.description +'" width="100%" seamless="">';
+                            var image = task.description;
+                            // var image = '<img src="'+ task.description +'" width="100%" seamless="">';
                         }else if (type == 'signature_image_added') {
                             var uploaded_by = 'Signature Added by';
                             var view_text = 'View Signatures';
                             var title = 'Signature';
-                            var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
+                            // var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
+                            var image = task.description;
                         }
 
                         if(type == 'image_added' || type == 'signature_image_added'){
-                            modal_html += '<span style="padding-left:245px; font-size: 12px;">'+uploaded_by+' '+task.fleet_name +'</span><br />'; 
-                            modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
+                            modal_html += '<span style="padding-left:245px; font-size: 12px;">'+uploaded_by+' '+task.fleet_name +'</span><br />';
+                            modal_html += "<a style='margin-left:245px;' href='"+image+"' target='_blank' class='btn btn-warning mt-3'>"+ view_text +"</a>";
+                            // modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
 
                             //  Modal start //
-                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog">';
                             modal_html += '<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header">';
                             modal_html += '<h5 class="modal-title" id="exampleModalLabel">'+ title +'</h5>';
                             modal_html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
@@ -537,14 +543,14 @@ function row_click(row_id, job_id, url)
                         if(result){
                         modal_html += '<div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span>'+ result +'</span></div>';
                         }
-                        
+
                     });
-                    
+
                     modal_container += '</li></ul></div></div></div>';
-                    
-                    $('.append-modal').append(modal_container); 
+
+                    $('.append-modal').append(modal_container);
                     $('.cbp_tmtimeline').append(modal_html);
-                    
+
                 } else{
                     var modal_html1 = 'No data available';
                     $('.append-modal').html(modal_html1);
@@ -558,12 +564,12 @@ function row_click(row_id, job_id, url)
                     $("#mapdiv-"+row_id).html(trackinglink);
                     initMap(response, row_id);
                 }
-                
-            } 
+
+            }
         }
-                    
+
     });
-    
+
 }
 
 
@@ -574,7 +580,7 @@ function initMap(response, row_id)
     var directionsDisplay = new google.maps.DirectionsRenderer({'draggable': false});
     var directionsService = new google.maps.DirectionsService();
     var travel_mode = 'DRIVING';
-    var origin = response.cnr_pincode;  
+    var origin = response.cnr_pincode;
     var destination = response.cne_pincode;
     directionsService.route({
         "origin": origin,

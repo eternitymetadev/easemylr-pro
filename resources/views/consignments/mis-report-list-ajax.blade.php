@@ -1,64 +1,55 @@
-<p class="totalcount">Total Count: <span class = "reportcount">{{$consignments->total()}}</span></p>
+<p class="totalcount">Total Count: <span class="reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
+                <!-- <th> </th> -->
                 <th>LR No</th>
                 <th>LR Date</th>
                 <th>Order No</th>
-                <th>Base Client</th>
                 <th>Regional Client</th>
                 <th>Consigner</th>
                 <th>Consigner City</th>
                 <th>Consignee Name</th>
-                <th>Consignee Phone</th>
                 <th>City</th>
-                <th>Pin Code</th> 
+                <th>Pin Code</th>
                 <th>District</th>
                 <th>State</th>
-                <th>Ship To Name</th>
-                <th>Ship To City</th>
-                <th>Ship To pin code</th>
-                <th>Ship To District</th>
-                <th>Ship To State</th>
                 <th>Invoice No</th>
                 <th>Invoice Date</th>
                 <th>Invoice Amount</th>
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
-                <th>Transporter Name</th>
-                <th>Purchase Price</th>
                 <th>Boxes</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
-                <th>Driver Name</th>
-                <th>Driver Number</th>
-                <th>Driver Fleet</th>
                 <th>LR Status</th>
                 <th>Dispatch Date</th>
                 <th>Delivery Date</th>
                 <th>Delivery Status</th>
                 <th>TAT</th>
-                <th>Delivery Mode</th>
+                <th>Delivery Type</th>
+                <th>POD</th>
             </tr>
         </thead>
         <tbody>
         @if(count($consignments)>0)
-        @foreach($consignments as $consignment)
-        <?php
-            $start_date = strtotime($consignment->consignment_date);
-            $end_date = strtotime($consignment->delivery_date);
-            $tat = ($end_date - $start_date)/60/60/24;
-        ?>
+            @foreach($consignments as $consignment)
+            <?php 
+                $start_date = strtotime($consignment['consignment_date']);
+                $end_date = strtotime($consignment['delivery_date']);
+                $tat = ($end_date - $start_date) / 60 / 60 / 24;
+                ?>
             <tr>
-                <td>{{ $consignment->id ?? "-" }}</td>
-                <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
+                <td>{{ $consignment['id'] ?? "-" }}</td>
+                <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
+                    if(!empty($consignment->consignment_items)){
                     $order = array();
                     $invoices = array();
                     $inv_date = array();
                     $inv_amt = array();
+
                     foreach($consignment->ConsignmentItems as $orders){ 
                         
                         $order[] = $orders->order_id;
@@ -72,28 +63,44 @@
                     $invoice['date'] = implode(',', $inv_date);
                     $invoice['amt'] = implode(',', $inv_amt);?>
 
-                    <td>{{ $orders->order_id ?? "-" }}</td>
+                <td>{{ $orders->order_id ?? "-" }}</td>
 
                 <?php }else{ ?>
                 <td>-</td>
-            <?php } }else{ ?>
-            <td>{{ $consignment->order_id ?? "-" }}</td>
-            <?php  } ?>
-                <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
+                <?php } }else{ ?>
+                <td>{{ $consignment->order_id ?? "-" }}</td>
+                <?php  } ?>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->nick_name ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->phone ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->Zone->state ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->nick_name ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->city ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->postal_code ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->Zone->state ?? "-" }}</td>
+                <td>{{ $consignment->ConsigneeDetail->zone->state ?? "-" }}</td>
+                
+                <!-- <?php if(empty($consignment['invoice_no'])){ 
+                    if(!empty( $order_item['invoices'])){?>
+                <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                <?php }else{ ?>
+                <td>-</td>
+                <?php } 
+                if(!empty($invoice['date'])){?>
+                <td>{{ $invoice['date'] ?? '-'}}</td>
+                <?php }else{ ?>
+                <td>-
+                <td>
+                    <?php } 
+                if(!empty($invoice['amt'] )){?>
+                <td>{{ $invoice['amt'] ?? '-'}}</td>
+                <?php }else{?>
+                <td>-</td>
+                <?php }  } else{ ?>
+                <td>{{ $consignment['invoice_no'] ?? "-" }}</td>
+                <td>{{ Helper::ShowDayMonthYearslash($consignment['invoice_date'] ?? "-" )}}</td>
+                <td>{{ $consignment['invoice_amount'] ?? "-" }}</td>
+                <?php  } ?> -->
+
                 <?php if(empty($consignment->invoice_no)){ ?>
                 <td>{{ $order_item['invoices'] ?? "-" }}</td>
                 <td>{{ $invoice['date'] ?? '-'}}</td>
@@ -103,17 +110,12 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->invoice_date ?? "-" )}}</td>
                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
             <?php  } ?>
+            
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
-                <td>{{ $consignment->transporter_name ?? "-" }}</td>
-                <td>{{ $consignment->purchase_price ?? "-" }}</td>
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
-                <td>{{ $consignment->DriverDetail->name ?? "-" }}</td>
-                <td>{{ $consignment->DriverDetail->phone ?? "-" }}</td>
-                <td>{{ $consignment->DriverDetail->fleet_id ?? "-" }}</td>
-
                 <?php 
                 if($consignment->status == 0){ ?>
                     <td>Cancel</td>
@@ -147,7 +149,33 @@
                     <?php }else{?>
                         <td>Shadow</td>
                     <?php } ?>
-                
+
+                <?php if(empty($consignment->job_id)){
+            if(empty($consignment->signed_drs)){
+            ?>
+                <td>Not Available</td>
+                <?php } else { ?>
+                <td>Avliable</td>
+                <?php } ?>
+                <?php } else { 
+                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
+
+            if(!empty($job->response_data)){
+            $trail_decorator = json_decode($job->response_data);
+            $img_group = array();
+            foreach($trail_decorator->task_history as $task_img){
+                if($task_img->type == 'image_added'){
+                    $img_group[] = $task_img->description;
+                }
+            }
+            if(empty($img_group)){?>
+                <td>Not Available</td>
+                <?php } else{?>
+                <td>Available</td>
+                <?php }
+            }
+            ?>
+                <?php } ?>
             </tr>
             @endforeach
             @else
@@ -157,6 +185,7 @@
             @endif
         </tbody>
     </table>
+
     <div class="perpage container-fluid">
         <div class="row"> 
             <div class="col-md-12 col-lg-8 col-xl-9">

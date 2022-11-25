@@ -180,6 +180,10 @@ span.round-tab:hover {
                                 <option value="{{$client->id}}">{{$client->name}}</option>
                                 @endforeach
                             </select>
+                            <?php $authuser = Auth::user();
+                                if($authuser->role_id ==3) { ?>
+                                <input id="location_id" type="hidden" name="branch_id" value="">
+                            <?php } ?> 
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Payment Term</p>
