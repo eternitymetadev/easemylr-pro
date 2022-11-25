@@ -1218,7 +1218,11 @@ jQuery(document).ready(function () {
                         value.consignment_date +
                         "'>" +
                         value.consignee_id +
-                        " </td><td>" +
+                        " </td><td><input type='hidden' name='data[" +
+                        i +
+                        "][job_id]' class='c_date' value='" +
+                        value.job_id +
+                        "'>" +
                         value.city +
                         "</td><td>" +
                         edd_date +
@@ -1470,8 +1474,11 @@ jQuery(document).ready(function () {
                     "</td><td>" +
                     field +
                     "</td>";
+                    if(value.job_id ==''){
                     if(data.role_id != 7){
                     row += "<td>" + buton +"</td>";
+                    }}else{
+                        row += "<td>Update from shadow</td>";
                     }
                     row += "</tr>";
 

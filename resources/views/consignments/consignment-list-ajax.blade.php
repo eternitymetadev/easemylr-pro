@@ -25,8 +25,7 @@
                 </td>
                 <td>
                     <div class="">
-                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span
-                                class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}<span></span></span>
+                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}</span>
                         </div>
 
                         <?php

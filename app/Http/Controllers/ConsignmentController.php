@@ -113,6 +113,11 @@ class ConsignmentController extends Controller
                             $cneequery->where('nick_name', 'like', '%' . $search . '%');
                         });
                     });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
 
                 });
             }
@@ -131,10 +136,9 @@ class ConsignmentController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-
+            
             $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             
-
             return response()->json(['html' => $html]);
         }
 
@@ -3843,9 +3847,12 @@ class ConsignmentController extends Controller
           if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
+                // echo'<pre>'; print_r($save_data); die;
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
                 $pic = @$save_data['img'];
+
+                if($save_data['job_id'] == 'null'){
 
                 if(!empty($pic)){
                         $filename = $pic->getClientOriginalName();
@@ -3872,6 +3879,7 @@ class ConsignmentController extends Controller
                     ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
                     // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                 }
+            }
             }
             }
             $response['success'] = true;
