@@ -9,6 +9,7 @@ use App\Imports\ConsignerImport;
 use App\Imports\DriverImport;
 use App\Imports\ZoneImport;
 use App\Imports\DeliveryDateImport;
+use App\Imports\ManualDeliveryImport;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
 use ZipArchive;
@@ -129,6 +130,12 @@ class ImportCsvController extends Controller
     public function deliverydateSampleDownload()
     {
         $path = public_path('sample/deliverydate_bulkimport.xlsx');
+        return response()->download($path);
+    }
+
+    public function manualdeliverySampleDownload()
+    {
+        $path = public_path('sample/manualdelivery_bulkimport.xlsx');
         return response()->download($path);
     }
 
