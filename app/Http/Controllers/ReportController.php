@@ -146,7 +146,7 @@ class ReportController extends Controller
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
 
-        if($authuser->role_id ==1)
+        if($authuser->role_id ==1) 
         {
             $query = $query;            
         }elseif($authuser->role_id == 4){

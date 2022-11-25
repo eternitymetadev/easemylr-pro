@@ -163,8 +163,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $deliverymode = 'Manual';
                   }
 
+                  if(!empty($consignment->DrsDetail->drs_no)){
+                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
+                  }else{
+                    $drs = '-';
+                  }
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
+                    'drs_no'              => $drs,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'order_id'            => $order_id,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
@@ -212,6 +219,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     {
         return [
             'LR No',
+            'DRS No',
             'LR Date',
             'Order No',
             'Base Client',

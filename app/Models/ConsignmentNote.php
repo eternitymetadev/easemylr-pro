@@ -102,4 +102,9 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
     }
 
+    public function DrsDetail()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    }
+
 }

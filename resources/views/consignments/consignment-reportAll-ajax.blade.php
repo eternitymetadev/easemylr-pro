@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>LR No</th>
+                <th>Drs No</th>
                 <th>LR Date</th>
                 <th>Order No</th>
                 <th>Base Client</th>
@@ -52,6 +53,7 @@
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
+                <td>DRS-{{ $consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
