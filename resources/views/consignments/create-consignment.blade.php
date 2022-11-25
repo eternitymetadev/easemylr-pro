@@ -667,11 +667,7 @@
                                         <td colspan="7">
                                             <table id="childTable" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
-                                                <tbody class="items_table_body">`;
-                                                var i = 1;
-                                            $("#childTable").each(function () {
-                                                i++
-                                        tds +=`<tr>
+                                                <tbody class="items_table_body"><tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
@@ -686,33 +682,31 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][quantity]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][weight]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="data[`+item_no+`][item_data][`+i+`][gross_weigth]">
+                                                                   name="data[`+item_no+`][item_data][1][gross_weigth]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][`+i+`][c_weight]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][c_weight]">
                                                         </div>
 
                                                     </td>
                                                     <td width="50px"><div class="removeIcon"></div></td>
-                                                </tr>`;
-                                });
-                                tds +=`</tbody>
+                                                </tr></tbody>
                                             </table>
                                             <span style="margin-right: 8%" class="addItem"
                                                   onclick="insertItemTableRow()">+ Add Item</span>
@@ -723,7 +717,6 @@
                             </td>
                             <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
                         </tr>`;
-                                        
 
                 $(this).append(tds);
             });
@@ -735,6 +728,7 @@
 
 
         $(document).on("click", ".addItem", function () {
+            
             var itemTds = `<tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
@@ -750,26 +744,26 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
+                                                            <input type="number" class="form-control" name="data[1][item_data][2][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
+                                                            <input type="number" class="form-control" name="data[1][item_data][2][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="grossWeight">
+                                                                   name="data[1][item_data][2][gross_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
+                                                            <input type="number" class="form-control" name="data[1][item_data][2][c_weight]">
                                                         </div>
 
                                                     </td>
