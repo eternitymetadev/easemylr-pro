@@ -1218,7 +1218,7 @@ jQuery(document).ready(function () {
                         value.consignment_date +
                         "'>" +
                         value.consignee_id +
-                        " </td><td><input type='text' name='data[" +
+                        " </td><td><input type='hidden' name='data[" +
                         i +
                         "][job_id]' class='c_date' value='" +
                         value.job_id +
