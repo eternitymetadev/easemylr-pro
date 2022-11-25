@@ -28,7 +28,6 @@
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
                 <th>Transporter Name</th>
-                <th>Purchase Price</th>
                 <th>Boxes</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
@@ -108,7 +107,6 @@
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
                 <td>{{ $consignment->transporter_name ?? "-" }}</td>
-                <td>{{ $consignment->purchase_price ?? "-" }}</td>
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
