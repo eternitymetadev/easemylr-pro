@@ -116,7 +116,7 @@ class ConsignmentController extends Controller
                     //     });
                     // });
 
-                });
+                // });
             }
 
             if ($request->peritem) {
