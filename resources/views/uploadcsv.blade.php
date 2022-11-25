@@ -94,6 +94,18 @@
                 <br/>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
+                        <h4 class="win-h4">Browse LR Type Changes</h4>
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                        <input type="file" name="manualdeliveryfile" id="manualdeliveryfile" class="manualdeliveryfile"> 
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                    <a class="btn btn-primary" href="{{url($prefix.'/sample-manualdelivery')}}">Sample Download</a> 
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse POD Zip Folder(Image)</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
