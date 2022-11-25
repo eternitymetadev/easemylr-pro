@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\ConsignmentNote;
-use App\Models\BranchAddress;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
+use App\Models\ConsignmentNote;
 use App\Models\Driver;
 use App\Models\Location;
-use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
-use App\Models\Vehicle;
 use App\Models\Role;
+use App\Models\Vehicle;
 use App\Models\VehicleType;
-use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Auth;
 use DB;
-use QrCode;
+use Illuminate\Http\Request;
 use Storage;
-use Validator;
-use DataTables;
-use Helper;
-use Crypt;
 use URL;
+use Validator;
 
 class OrderController extends Controller
 {
@@ -45,16 +38,16 @@ class OrderController extends Controller
         // $peritem = 20;
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
 
         $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $data;
         }
         elseif($authuser->role_id ==4){
@@ -63,21 +56,18 @@ class OrderController extends Controller
         }
         elseif($authuser->role_id ==6){
             $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-                $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
+        } elseif ($authuser->role_id == 7) {
+            $data = $data->whereIn('regional_clients.id', $regclient);
+        } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
-        
         $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
+
         $consignments = $data->get();
-        
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status'=>$request->status,'reason_to_cancel' => $request->reason_to_cancel]);
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
             }
 
             $url = $this->prefix . '/orders';
@@ -102,33 +92,33 @@ class OrderController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $cc = explode(',', $authuser->branch_id);
 
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
-            if($authuser->role_id == $role_id->id){
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+            if ($authuser->role_id == $role_id->id) {
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('branch_id', $cc)->get();
-            }else{
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            if($authuser->role_id !=1){
-                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-            }else{
+        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+            if ($authuser->role_id != 1) {
+                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id', $regclient)->get();
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else{
+        } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        
+
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        
+
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -142,7 +132,7 @@ class OrderController extends Controller
             $consignmentno = $con_series . '-1';
         }
 
-        if(empty($consignmentno)) {
+        if (empty($consignmentno)) {
             $consignmentno = "";
         }
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -150,8 +140,8 @@ class OrderController extends Controller
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
-       
-        if($authuser->role_id == 2 || $authuser->role_id == 3 ){
+
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
             $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name','location_id')->get();
@@ -167,7 +157,7 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name','location_id')->get();
         }
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -216,9 +206,9 @@ class OrderController extends Controller
             }
             $consignmentsave['status'] = 5;
 
-            if (!empty($request->vehicle_id)) {                
+            if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
-            }else{
+            } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
@@ -275,28 +265,28 @@ class OrderController extends Controller
 
         if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             if ($authuser->role_id == $role_id->id) {
-                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
+                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             } else {
-                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            if($authuser->role_id !=1){
-                $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
-                }else{
-                $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+            if ($authuser->role_id != 1) {
+                $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+            } else {
+                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
             }
         } else {
-            $consigners = Consigner::orderby('nick_name','ASC')->pluck('nick_name','id');
+            $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         }
-        $consignees = Consignee::orderby('nick_name','ASC')->pluck('nick_name','id');
-        
+        $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        
+
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -309,7 +299,7 @@ class OrderController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        
+
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
@@ -317,23 +307,23 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        //////////////Bill to regional clients //////////////
-       
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+        ////////////// Bill to regional clients //////////////
+
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
-        
-        }elseif($authuser->role_id == 4){
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+
+        } elseif ($authuser->role_id == 4) {
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
-       
-        }else{
+            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+
+        } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments'=>$getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient'=>$regionalclient]);
+        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -594,5 +584,4 @@ class OrderController extends Controller
 
     }
 
-    
 }

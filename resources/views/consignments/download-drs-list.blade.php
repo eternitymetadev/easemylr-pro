@@ -154,8 +154,8 @@ $(document).on('click', '.view-sheet', function() {
                 $('#sheet tbody').append("<tr id=" + value.id + " class='move'><td>" + value
                     .consignment_no + "</td><td>" + value.consignment_date +
                     "</td><td>" + value.consignee_id + "</td><td>" + value.city +
-                    "</td><td>" + value.pincode + "</td><td>" + value.total_quantity +
-                    "</td><td>" + value.total_weight +
+                    "</td><td>" + value.pincode + "</td><td>" + value.consignment_detail.total_quantity +
+                    "</td><td>" + value.consignment_detail.total_weight +
                     "</td><td><button type='button'  data-id=" + value.consignment_no +
                     " class='btn btn-primary remover_lr'>remove</button></td></tr>");
 
