@@ -606,7 +606,7 @@
     <script>
         function insertMaintableRow() {
             $("#items_table").each(function () {
-                var item_no = $("tr", this).length;
+                var item_no = $("#items_table tr", this).length;
                 var tds = `<tr>
                             <td>
                                 <table class="mainTr">
