@@ -55,6 +55,11 @@ class ImportCsvController extends Controller
             $url  = URL::to($this->prefix.'/consignments');
             $message = 'Delivery dates Uploaded Successfully';
         }
+        if($request->hasFile('manualdeliveryfile')){
+            $data = Excel::import(new ManualDeliveryImport,request()->file('manualdeliveryfile'));
+            $url  = URL::to($this->prefix.'/consignments');
+            $message = 'Manual delivery status Uploaded Successfully';
+        }
         if($request->hasFile('podsfile')){
             $url  = URL::to($this->prefix.'/consignments');
             $fileName = $_FILES['podsfile']['name'];

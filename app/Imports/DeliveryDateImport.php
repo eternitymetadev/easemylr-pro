@@ -29,8 +29,6 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                 ConsignmentNote::where('id', $row['lr_no'])->update([
                     'delivery_date'  => $delivery_date,
                     'delivery_status' => 'Successful',
-
-                    
                     'signed_drs'    => $row['pod_image'],
                 ]);
             }
