@@ -606,7 +606,7 @@
     <script>
         function insertMaintableRow() {
             $("#items_table").each(function () {
-                var item_no = $("#items_table tr", this).length;
+                var item_no = $("tr", this).length;
                 var tds = `<tr>
                             <td>
                                 <table class="mainTr">
@@ -726,9 +726,8 @@
             $(this).closest("tr").remove();
         });
 
-
         $(document).on("click", ".addItem", function () {
-            
+
             var itemTds = `<tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
