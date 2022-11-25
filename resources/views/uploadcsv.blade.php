@@ -94,7 +94,7 @@
                 <br/>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
-                        <h4 class="win-h4">Browse Manual Delivery Status</h4>
+                        <h4 class="win-h4">Browse LR Type Changes</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
                         <input type="file" name="manualdeliveryfile" id="manualdeliveryfile" class="manualdeliveryfile"> 
