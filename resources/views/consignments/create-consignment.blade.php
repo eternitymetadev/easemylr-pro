@@ -413,9 +413,10 @@
                 <div style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
                     <table style="width: 100%; border-collapse: collapse;" id="items_table">
                         <tbody class="main_table_body">
+                            <input type="hidden" name="tid" id="tid" value="1" />
                         <tr>
                             <td>
-                                <table class="mainTr">
+                                <table class="mainTr" id="1">
                                     <tbody>
                                     <tr>
                                         <td>
@@ -461,8 +462,9 @@
                                         <td colspan="7">
                                             <table id="childTable" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
+                                                   <input type="hidden" name="rid" id="rid" value="1" />
                                                 <tbody class="items_table_body">
-                                                <tr>
+                                                <tr id="tid_1_1">
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
@@ -605,11 +607,14 @@
 @section('js')
     <script>
         function insertMaintableRow() {
+            var tid = $('#tid').val();
             $("#items_table").each(function () {
-                var item_no = $("tr", this).length;
+                var item_no = parseInt(tid) + 1;
+                $('#tid').val(item_no);
+                $('#tid_1').attr();
                 var tds = `<tr>
                             <td>
-                                <table class="mainTr">
+                                <table class="mainTr" id="`+item_no+`">
                                     <tbody>
                                     <tr>
                                         <td>
@@ -667,7 +672,9 @@
                                         <td colspan="7">
                                             <table id="childTable" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
-                                                <tbody class="items_table_body"><tr>
+                                                   <input type="hidden" name="rid" id="rid" value="1" />
+                                                <tbody class="items_table_body">
+                                                <tr id="tid_2">
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
@@ -715,7 +722,7 @@
                                   </tbody>
                                 </table>
                             </td>
-                            <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
+                        
                         </tr>`;
 
                 $(this).append(tds);
@@ -724,9 +731,14 @@
 
         $(document).on("click", ".removeInvoice", function () {
             $(this).closest("tr").remove();
+
         });
 
         $(document).on("click", ".addItem", function () {
+
+            var rid = $(this).closest('table').attr('id');
+            alert(rid);
+            
 
             var itemTds = `<tr>
                                                     <td width="200px">
@@ -743,26 +755,26 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][quantity]">
+                                                            <input type="number" class="form-control" name="data[`+rid+`][item_data][2][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][weight]">
+                                                            <input type="number" class="form-control" name="data[`+rid+`][item_data][2][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="data[1][item_data][2][gross_weight]">
+                                                                   name="data[`+rid+`][item_data][2][gross_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][c_weight]">
+                                                            <input type="number" class="form-control" name="data[`+rid+`][item_data][2][c_weight]">
                                                         </div>
 
                                                     </td>
