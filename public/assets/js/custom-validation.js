@@ -1512,7 +1512,7 @@ jQuery(document).ready(function () {
                     "</td><td>" +
                     field +
                     "</td>";
-                    if(value.job_id ==''){
+                    if(value.job_id =='' || value.job_id == null){
                     if(data.role_id != 7){
                     row += "<td>" + buton +"</td>";
                     }}else{
