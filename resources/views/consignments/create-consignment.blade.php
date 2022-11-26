@@ -410,8 +410,8 @@
                 </div>
 
 
-                <div style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
-                    <table style="width: 100%; border-collapse: collapse;" id="items_table">
+                <div id="maindiv" style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse;" id="items_table" class="items_table">
                         <tbody class="main_table_body">
                         <tr>
                             <td>
@@ -459,7 +459,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-                                            <table id="childTable" class="childTable"
+                                            <table id="" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
                                                 <tbody class="items_table_body">
                                                 <tr>
@@ -605,8 +605,8 @@
 @section('js')
     <script>
         function insertMaintableRow() {
-            $("#items_table").each(function () {
-                var item_no = $("#items_table tr", this).length;
+            $(".items_table").each(function () {
+                var item_no = $("#maindiv table").not(".childTable").length;
                 var tds = `<tr>
                             <td>
                                 <table class="mainTr">
@@ -615,63 +615,49 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="data[`+
-                    item_no +
-                    `][order_id]">
+                                                <input type="text" class="form-control orderid" name="data[`+ item_no + `][order_id]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Number</label>
                                                 <input type="text" class="form-control invc_no" id="1"
-                                                       name="data[` +
-                    item_no +
-                    `][invoice_no]">
+                                                       name="data[` + item_no + `][invoice_no]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="data[` +
-                    item_no +
-                    `][invoice_date]">
+                                                <input type="date" class="form-control invc_date" name="data[` + item_no + `][invoice_date]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Amount</label>
-                                                <input type="number" class="form-control invc_amt"
-                                                       name="data[` +
-                    item_no +
-                    `][invoice_amount]">
+                                                <input type="number" class="form-control invc_amt" name="data[` + item_no + `][invoice_amount]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="data[` +
-                    item_no +
-                    `][e_way_bill]">
+                                                <input type="number" class="form-control ew_bill" name="data[` + item_no + `][e_way_bill]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="data[` +
-                    item_no +
-                    `][e_way_bill_date]">
+                                                <input type="date" class="form-control ewb_date" name="data[` + item_no + `][e_way_bill_date]">
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-                                            <table id="childTable" class="childTable"
-                                                   style="width: 85%; min-width: 500px; margin-inline: auto;">
+                                            <table id="" class="childTable" style="width: 85%; min-width: 500px; margin-inline: auto;">
                                                 <tbody class="items_table_body"><tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control">
+                                                            <select class="form-control" name="data[`+ item_no +`][item_data][1][item]">
                                                                 <option>Option 1</option>
                                                                 <option>Option 2</option>
                                                                 <option>Option 3</option>
@@ -682,34 +668,32 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][quantity]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][1][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][weight]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][1][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="data[`+item_no+`][item_data][1][gross_weigth]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][1][gross_weigth]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][c_weight]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][1][c_weight]">
                                                         </div>
 
                                                     </td>
                                                     <td width="50px"><div class="removeIcon"></div></td>
                                                 </tr></tbody>
                                             </table>
-                                            <span style="margin-right: 8%" class="addItem"
-                                                  onclick="insertItemTableRow()">+ Add Item</span>
+                                            <span style="margin-right: 8%" class="addItem" onclick="insertItemTableRow()">+ Add Item</span>
                                         </td>
                                     </tr>
                                   </tbody>
@@ -726,53 +710,56 @@
             $(this).closest("tr").remove();
         });
 
-
         $(document).on("click", ".addItem", function () {
-            
-            var itemTds = `<tr>
-                                                    <td width="200px">
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Item</label>
-                                                            <select class="form-control">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][quantity]">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][weight]">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="data[1][item_data][2][gross_weight]">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][2][c_weight]">
-                                                        </div>
+            $(this).siblings(".childTable").each(function () {
+                // alert("eachhh");
+                var itemrows = $(this).siblings(".childTable").children('.items_table_body tr').length +1;
+                // var itemrows = $(this).siblings(".childTable").children('.items_table_body tr:last').index()+1;
+                alert(itemrows);
+                var itemTds = `<tr>
+                                <td width="200px">
+                                    <div class="form-group form-group-sm">
+                                        <label>Item</label>
+                                        <select class="form-control" name="data[1][item_data][`+itemrows+`][item]">
+                                            <option>Option 1</option>
+                                            <option>Option 2</option>
+                                            <option>Option 3</option>
+                                            <option>Option 4</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group form-group-sm">
+                                        <label>Quantity</label>
+                                        <input type="number" class="form-control" name="data[1][item_data][`+itemrows+`][quantity]">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group form-group-sm">
+                                        <label>Net Weight</label>
+                                        <input type="number" class="form-control" name="data[1][item_data][`+itemrows+`][weight]">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group form-group-sm">
+                                        <label>Gross Weight</label>
+                                        <input type="number" class="form-control"
+                                                name="data[1][item_data][`+itemrows+`][gross_weight]">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group form-group-sm">
+                                        <label>Chargeable Weight</label>
+                                        <input type="number" class="form-control" name="data[1][item_data][`+itemrows+`][c_weight]">
+                                    </div>
 
-                                                    </td>
-                                                    <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
-                                                </tr>`
+                                </td>
+                                <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
+                            </tr>`
 
-            $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
+                $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
+            });
         });
-
 
         $(document).on("click", ".removeItem", function () {
             $(this).closest("tr").remove();
