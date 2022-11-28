@@ -689,26 +689,26 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][quantity]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][weight]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][0][weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
                                                             <input type="number" class="form-control"
-                                                                   name="data[`+item_no+`][item_data][1][gross_weigth]">
+                                                                   name="data[`+item_no+`][item_data][0][gross_weigth]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][1][c_weight]">
+                                                            <input type="number" class="form-control" name="data[`+item_no+`][item_data][0][c_weight]">
                                                         </div>
 
                                                     </td>
