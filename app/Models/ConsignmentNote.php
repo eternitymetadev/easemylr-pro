@@ -45,6 +45,7 @@ class ConsignmentNote extends Model
         'job_id',
         'tracking_link',
         'delivery_status',
+        'delivery_notes',
         'delivery_date',
         'signed_drs',
         'e_way_bill',
@@ -101,10 +102,18 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
     }
-    
+    public function TransactionSheet()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    }
+
     public function DrsDetail()
     {
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    }
+    public function AppMedia()
+    {
+        return $this->hasMany('App\Models\AppMedia','consignment_no','id');
     }
 
 }

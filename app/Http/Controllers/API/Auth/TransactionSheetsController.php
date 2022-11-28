@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
+use App\Models\AppMedia;
+use App\Models\Consignee;
 use App\Models\Job;
 use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
@@ -243,7 +245,7 @@ class TransactionSheetsController extends Controller
         try {
             
           
-             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems')->where('driver_id', $id)
+             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia')->where('driver_id', $id)
             ->get();
             // echo'<pre>'; print_r($consignments); die;
          
@@ -251,14 +253,17 @@ class TransactionSheetsController extends Controller
             //    echo'<pre>'; print_r($value->ConsignmentItems); die;
                     $order = array();
                     $invoices = array();
+                    $pod_img = array();
                    
                    foreach($value->ConsignmentItems as $orders){
-                     
                            $order[] = $orders->order_id;
-                        
                            $invoices[] = $orders->invoice_no;
 
                    }
+                   foreach($value->AppMedia as $pod){
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
+                   );
+                }
                             $order_item['orders'] = implode(',', $order);
                             $order_item['invoices'] = implode(',', $invoices);
 
@@ -274,9 +279,13 @@ class TransactionSheetsController extends Controller
                        'consignee_mobile'          => $value->ConsigneeDetail->phone, 
                        'consignee_address'         => $value->ConsigneeDetail->address_line1.','.@$value->ConsigneeDetail->address_line2.','.        @$value->ConsigneeDetail->address_line3.','.@$value->ConsigneeDetail->address_line4,
                        'consignee_pincode'         => $value->ConsigneeDetail->postal_code,
+                       'latitude'                  => $value->ConsigneeDetail->latitude,
+                       'longitude'                 => $value->ConsigneeDetail->longitude,
                        'order_id'                  => $order_item['orders'],
                        'invoice_no'                => $order_item['invoices'],
                        'delivery_status'           => $value->delivery_status,
+                       'delivery_notes'            =>  $value->delivery_notes,
+                       'img'                        => $pod_img
                   ];
             }
             if ($consignments) {
@@ -492,7 +501,6 @@ class TransactionSheetsController extends Controller
     public function destroy($id)
 
     {
-
         try {
 
             $res = TransactionSheets::find($id)->delete();
@@ -512,9 +520,7 @@ class TransactionSheetsController extends Controller
             }
 
         } catch (\Exception $exception) {
-
             return response([
-
                 'status' => 'error',
 
                 'code' => 0,
@@ -526,23 +532,33 @@ class TransactionSheetsController extends Controller
         }
 
     }
-    public function updateDeliveryData(Request $request,$id)
+    public function uploadImage(Request $request,$id)
     {
-
+          
         $get_data = $request->data;
         $img_path = array();
         foreach ($get_data as $key => $save_data) {
-            // $lrno = $save_data['lr_no'];
             $images = @$save_data['pod_img'];
+            $type = @$save_data['type'];
 
             $path = Storage::disk('s3')->put('images', $images);
+          
             $img_path[] = Storage::disk('s3')->url($path);
-            // $product_filename = $product_pic->getClientOriginalName();
-            // $save = DB::table('app_media')->insert(['lr_no' => $lrno, 'pod_img' => $product_filename, 'type' => $type]);
+            $img_path_save = Storage::disk('s3')->url($path);
+
+            $appmedia['consignment_no'] = $id;
+            $appmedia['pod_img'] = $img_path_save;
+            $appmedia['type'] = $type;
+            
+            $savedata = AppMedia::create($appmedia);
 
         }
- 
-         /* Store $imageName name in DATABASE from HERE */
+         //update latitudes and longitude
+          $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+          $consignee_id = $getconsignee_id->consignee_id;
+           
+          Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+
          return response([
             'success' =>'You have successfully upload image.',
             'image' => $img_path
@@ -550,6 +566,100 @@ class TransactionSheetsController extends Controller
 
     }
  
+    public function singleTask($id)
+    {
+
+        try {
+
+             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia')->where('id',$id)
+            ->get();
+         
+            foreach($consignments as $value){
+                    $order = array();
+                    $invoices = array();
+                    $pod_img = array();
+                   
+                   foreach($value->ConsignmentItems as $orders){
+                           $order[] = $orders->order_id;
+                           $invoices[] = $orders->invoice_no;
+                   }
+                   foreach($value->AppMedia as $pod){
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
+                   );
+                }
+
+                            $order_item['orders'] = implode(',', $order);
+                            $order_item['invoices'] = implode(',', $invoices);
+
+                    
+                  $data[] =[
+                       'lr_no'                     => $value->id,
+                       'lr_date'                   => $value->consignment_date,
+                       'edd'                       => $value->edd,
+                       'total_gross_weight'        => $value->total_gross_weight,
+                       'total_quantity'            => $value->total_quantity,
+                       'drs_no'                    => $value->TransactionSheet->drs_no,
+                       'consignee_name'            => $value->ConsigneeDetail->nick_name,
+                       'consignee_mobile'          => $value->ConsigneeDetail->phone, 
+                       'consignee_address'         => $value->ConsigneeDetail->address_line1.','.@$value->ConsigneeDetail->address_line2.','.        @$value->ConsigneeDetail->address_line3.','.@$value->ConsigneeDetail->address_line4,
+                       'consignee_pincode'         => $value->ConsigneeDetail->postal_code,
+                       'latitude'                  => $value->ConsigneeDetail->latitude,
+                       'longitude'                 => $value->ConsigneeDetail->longitude,
+                       'order_id'                  => $order_item['orders'],
+                       'invoice_no'                => $order_item['invoices'],
+                       'delivery_status'           => $value->delivery_status,
+                       'delivery_notes'            =>  $value->delivery_notes,
+                       'img'                       => $pod_img
+                  ];
+            }
+            if ($consignments) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'data' => $data
+                ], 200);
+            } else {
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "No record found"
+
+                ], 404);
+
+            }
+
+        } catch (\Exception $exception) {
+
+            return response([
+
+                'status' => 'error',
+
+                'code' => 0,
+
+                'message' => "Failed to get transaction_sheets data, please try again. {$exception}"
+
+            ], 500);
+
+        }
+
+    }
+
+    public function updateDeliveryDetails(Request $request, $id)
+    {
+
+          ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
+
+          //update latitudes and longitude
+          $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+          $consignee_id = $getconsignee_id->consignee_id;
+           
+          Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+
+         return response([
+            'success' =>'Data Updated Successfully',
+        ], 200);
+    }
+
 
 }
 
