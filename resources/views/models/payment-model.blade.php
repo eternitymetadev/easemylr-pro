@@ -65,9 +65,6 @@
 
                             </tbody>
                         </table> 
-        
-
-
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
@@ -369,7 +366,7 @@
                                 $bank_details = json_decode($vendor->bank_details, true);
                                 
                                 ?>
-                                <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}-{{$vendor->Branch->name}}</option>
+                                <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}-{{$vendor->Branch->name ?? '-'}}</option>
                                 @endforeach
                             </select>
                         </div>

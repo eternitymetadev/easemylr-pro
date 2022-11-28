@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>LR No</th>
+                <th>Drs No</th>
                 <th>LR Date</th>
                 <th>Order No</th>
                 <th>Base Client</th>
@@ -11,6 +12,7 @@
                 <th>Consigner</th>
                 <th>Consigner City</th>
                 <th>Consignee Name</th>
+                <th>Consignee Phone</th>
                 <th>City</th>
                 <th>Pin Code</th> 
                 <th>District</th>
@@ -26,7 +28,6 @@
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
                 <th>Transporter Name</th>
-                <th>Purchase Price</th>
                 <th>Boxes</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
@@ -51,6 +52,7 @@
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
+                <td>DRS-{{ $consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
@@ -83,6 +85,7 @@
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->nick_name ?? "-" }}</td>
+                <td>{{ $consignment->ConsigneeDetail->phone ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
@@ -104,7 +107,6 @@
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
                 <td>{{ $consignment->transporter_name ?? "-" }}</td>
-                <td>{{ $consignment->purchase_price ?? "-" }}</td>
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>

@@ -70,7 +70,7 @@
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a> -->
-                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px; width: 130px" data-action="<?php echo url()->current(); ?>"><span>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
                                         <i class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>
                             </div>
@@ -154,8 +154,8 @@ $(document).on('click', '.view-sheet', function() {
                 $('#sheet tbody').append("<tr id=" + value.id + " class='move'><td>" + value
                     .consignment_no + "</td><td>" + value.consignment_date +
                     "</td><td>" + value.consignee_id + "</td><td>" + value.city +
-                    "</td><td>" + value.pincode + "</td><td>" + value.total_quantity +
-                    "</td><td>" + value.total_weight +
+                    "</td><td>" + value.pincode + "</td><td>" + value.consignment_detail.total_quantity +
+                    "</td><td>" + value.consignment_detail.total_weight +
                     "</td><td><button type='button'  data-id=" + value.consignment_no +
                     " class='btn btn-primary remover_lr'>remove</button></td></tr>");
 

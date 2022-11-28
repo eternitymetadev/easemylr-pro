@@ -18,6 +18,7 @@ use App\Models\ConsignmentItem;
 use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use App\Models\Vehicle;
+use App\Models\PrsDrivertask;
 use URL;
 use Crypt;
 use Storage;
@@ -27,6 +28,54 @@ use DateTime;
 use DateTimeZone;
 
 class GlobalFunctions {
+
+    public static function PrsStatus($status){
+        if($status == 1){
+            $status = 'Assigned';
+        }
+        else if($status == 2){
+            $status = 'Acknowledged';
+        }
+        else if($status == 3){
+            $status = 'Started';
+        }
+        else if($status == 4){
+            $status = 'Material Picked Up';
+        }
+        else if($status == 5){
+            $status = 'Material Received in HUB';
+        }
+    
+        return $status;
+    }
+
+    public static function PrsDriverTaskStatus($status){
+        if($status == 1){
+            $status = 'Acknowledged';
+        }
+        else if($status == 2){
+            $status = 'Started';
+        }
+        else if($status == 3){
+            $status = 'Complete';
+        }
+    
+        return $status;
+    }
+
+    public static function VehicleReceiveGateStatus($status){
+        if($status == 1){
+            $status = 'Incoming';
+        }
+        else if($status == 2){
+          $status = 'Received';
+        }
+        else if($status == 3){
+          $status = 'Complete';
+        }
+    
+        return $status;
+    }
 
   // function for get branches //
 
@@ -289,4 +338,16 @@ class GlobalFunctions {
         ];
         return response()->json($result);
     }
+    public static function DriverTaskStatusCheck($prs_id)
+    {
+        $countids = PrsDrivertask::where('prs_id',$prs_id)->count();
+        $countstatus = PrsDrivertask::where('prs_id',$prs_id)->where('status',2)->count();
+        if($countids == $countstatus){
+            $disable = '';
+        }else{
+            $disable = 'disable_n';
+        }
+        return $disable;
+    }
+
 }

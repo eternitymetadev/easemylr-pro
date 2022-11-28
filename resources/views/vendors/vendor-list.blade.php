@@ -51,7 +51,7 @@
                             @foreach($vendors as $vendor)
                             <?php $bank_details = json_decode($vendor->bank_details);
                                   $other_details = json_decode($vendor->other_details);
-                                  $img = URL::to($prefix.'/drs/uploadpan/'.$vendor->upload_pan);
+                                  $img = URL::to('/drs/uploadpan/'.$vendor->upload_pan);
                                   $decl = URL::to('/drs/declaration/'.$vendor->declaration_file.'');
                             ?>
                             <tr>

@@ -163,8 +163,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $deliverymode = 'Manual';
                   }
 
+                  if(!empty($consignment->DrsDetail->drs_no)){
+                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
+                  }else{
+                    $drs = '-';
+                  }
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
+                    'drs_no'              => $drs,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'order_id'            => $order_id,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
@@ -172,6 +179,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
                     'consigner_city'      => @$consignment->ConsignerDetail->city,
                     'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
+                    'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
                     'consignee_city'      => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
                     'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
@@ -187,7 +195,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
                     'vehicle_type'        => @$consignment->vehicletype->name,
                     'transporter_name'    => @$consignment->transporter_name,
-                    'purchase_price'      => @$consignment->purchase_price,
+                    // 'purchase_price'      => @$consignment->purchase_price,
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,
@@ -211,6 +219,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     {
         return [
             'LR No',
+            'DRS No',
             'LR Date',
             'Order No',
             'Base Client',
@@ -218,6 +227,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Consigner',
             'Consigner City',
             'Consignee Name',
+            'Consignee Phone',
             'Consignee city',
             'Consignee Pin Code',
             'Consignee District',
@@ -233,7 +243,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Vehicle No',
             'Vehicle Type',
             'Transporter Name',
-            'Purchase Price',
+            // 'Purchase Price',
             'Boxes',
             'Net Weight',
             'Gross Weight',

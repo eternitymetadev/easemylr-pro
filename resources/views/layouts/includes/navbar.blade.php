@@ -180,13 +180,12 @@
                             
                             <span> Reports </span>
                         </div>
-                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg> -->
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
                         
                     <?php if($authuser->role_id !=6){ ?>
                         <li>
-                            <a href="{{$prefixurl.'consignment-report'}}"> MIS Report 1</a>
+                            <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
                         </li>
                     <?php } if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                         <li>
@@ -208,7 +207,29 @@
                         <?php } ?>
                     </ul>
                 </li>
-                  
+
+                <!-- <li class="menu single-menu">
+                    <a href="#prsnavList" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            
+                            <span> PRS </span>
+                        </div>
+                    </a>
+                    <ul class="collapse submenu list-unstyled animated fadeInUp" id="prsnavList"  data-parent="#topAccordion">
+                        
+                    <?php //if($authuser->role_id ==2){ ?>
+                        <li>
+                            <a href="{{$prefixurl.'prs'}}"> Create Pickup</a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'driver-tasks'}}"> Driver Task</a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'vehicle-receivegate'}}"> HUB Receiving</a>
+                        </li>
+                    </ul>
+                </li> -->
                 <li class="menu single-menu menu-extras">
                 <?php if($authuser->role_id==1){ ?>
                     <a href="#more" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">

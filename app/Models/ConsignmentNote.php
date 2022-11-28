@@ -41,6 +41,7 @@ class ConsignmentNote extends Model
         'edd',
         'order_id',
         'status',
+        'booked_drs',
         'job_id',
         'tracking_link',
         'delivery_status',
@@ -58,6 +59,10 @@ class ConsignmentNote extends Model
     public function ConsignmentItems()
     {
         return $this->hasMany('App\Models\ConsignmentItem','consignment_id','id');
+    }
+    public function ConsignmentItem()
+    {
+        return $this->hasOne('App\Models\ConsignmentItem','consignment_id','id');
     }
     public function ConsigneeDetail()
     {
@@ -96,8 +101,8 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
     }
-
-    public function TransactionSheet()
+    
+    public function DrsDetail()
     {
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
