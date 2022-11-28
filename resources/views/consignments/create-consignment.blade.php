@@ -595,7 +595,7 @@
             </div>
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
-{{--                <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
+{{--   <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
                 <button type="submit" class="mt-2 btn btn-primary disableme" style="height: 40px; width: 200px">Submit</button>
             </div>
 
@@ -611,7 +611,6 @@
             $("#items_table").each(function () {
                 var item_no = parseInt(tid) + 1;
                 $('#tid').val(item_no);
-                $('#tid_1').attr();
                 var tds = `<tr>
                             <td>
                                 <table class="mainTr" id="`+item_no+`">
@@ -722,7 +721,6 @@
                                   </tbody>
                                 </table>
                             </td>
-                        
                         </tr>`;
 
                 $(this).append(tds);
@@ -737,8 +735,6 @@
         $(document).on("click", ".addItem", function () {
 
             var rid = $(this).closest('table').attr('id');
-            alert(rid);
-            
 
             var itemTds = `<tr>
                                                     <td width="200px">
