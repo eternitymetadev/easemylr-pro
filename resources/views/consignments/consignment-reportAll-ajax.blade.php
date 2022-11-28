@@ -4,6 +4,7 @@
         <thead>
             <tr>
                 <th>LR No</th>
+                <th>Drs No</th>
                 <th>LR Date</th>
                 <th>Order No</th>
                 <th>Base Client</th>
@@ -27,7 +28,6 @@
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
                 <th>Transporter Name</th>
-                <th>Purchase Price</th>
                 <th>Boxes</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
@@ -52,6 +52,7 @@
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
+                <td>DRS-{{ $consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
@@ -106,7 +107,6 @@
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
                 <td>{{ $consignment->transporter_name ?? "-" }}</td>
-                <td>{{ $consignment->purchase_price ?? "-" }}</td>
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>

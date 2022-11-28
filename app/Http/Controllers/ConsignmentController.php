@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RealtimeMessage;
 use App\Models\BranchAddress;
 use App\Models\Consignee;
 use App\Models\Consigner;
@@ -13,23 +14,21 @@ use App\Models\Location;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\TransactionSheet;
+use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
-use App\Models\User;
 use Auth;
-use DataTables;
+use Config;
 use DB;
 use Helper;
 use Illuminate\Http\Request;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use QrCode;
 use Response;
-use Storage;
-use Validator;
-use Config;
 use Session;
-Use URL;
-use App\Events\RealtimeMessage;
+use Storage;
+use URL;
+use Validator;
 
 class ConsignmentController extends Controller
 {
@@ -53,12 +52,12 @@ class ConsignmentController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = ConsignmentNote::query();
-        
+
         if ($request->ajax()) {
-            if(isset($request->resetfilter)){
+            if (isset($request->resetfilter)) {
                 Session::forget('peritem');
-                $url = URL::to($this->prefix.'/'.$this->segment);
-                return response()->json(['success' => true,'redirect_url'=>$url]);
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
             }
             if (isset($request->updatestatus)) {
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
@@ -75,42 +74,40 @@ class ConsignmentController extends Controller
             }
 
             $authuser = Auth::user();
-            $role_id = Role::where('id','=',$authuser->role_id)->first();
-            $baseclient = explode(',',$authuser->baseclient_id);
-            $regclient = explode(',',$authuser->regionalclient_id);
-            $cc = explode(',',$authuser->branch_id);
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
 
-            $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+            $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if($authuser->role_id ==1){
+            if ($authuser->role_id == 1) {
                 $query;
-            }
-            elseif($authuser->role_id ==4){
+            } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            }
-            elseif($authuser->role_id ==7){
+            } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            }
-            else{
+            } else {
                 $query = $query->whereIn('branch_id', $cc);
             }
 
-            if(!empty($request->search)){
+            if (!empty($request->search)) {
                 $search = $request->search;
-                $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
                     $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
                         });
                     });
                     // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
@@ -119,54 +116,49 @@ class ConsignmentController extends Controller
                     //     });
                     // });
 
-                });
+                // });
             }
 
-            if($request->peritem){
-                Session::put('peritem',$request->peritem);
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
             }
-      
+
             $peritem = Session::get('peritem');
-            if(!empty($peritem)){
+            if (!empty($peritem)) {
                 $peritem = $peritem;
-            }else{
+            } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
-
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
             
             $html =  view('consignments.consignment-list-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
-            
+
             return response()->json(['html' => $html]);
         }
 
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->where('status', '!=', 5)->with('ConsignmentItems','ConsignerDetail','ConsigneeDetail','VehicleDetail','DriverDetail','JobDetail');
+        $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $query;
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==7){
+        } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        }
-        else{
+        } else {
             $query = $query->whereIn('branch_id', $cc);
         }
-        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-        
 
-        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
+        return view('consignments.consignment-list', ['consignments' => $consignments, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     /**
@@ -189,23 +181,23 @@ class ConsignmentController extends Controller
             } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            if($authuser->role_id !=1){
-                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id',$regclient)->get();
-            }else{
+        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+            if ($authuser->role_id != 1) {
+                $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id', $regclient)->get();
+            } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
             }
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        
+
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
         if (!empty($getconsignment->consignment_no)) {
             $con_series = $getconsignment->consignment_no;
         } else {
             $con_series = '';
         }
-        
+
         $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
         if ($cn) {
             if (!empty($cn->consignment_no)) {
@@ -218,7 +210,7 @@ class ConsignmentController extends Controller
         } else {
             $consignmentno = $con_series . '-1';
         }
-        
+
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
@@ -227,22 +219,21 @@ class ConsignmentController extends Controller
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
-       
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
+
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             $branch = $authuser->branch_id;
             $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc )->select('id', 'name')->get();
-        
-        }elseif($authuser->role_id == 4){
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+
+        } elseif ($authuser->role_id == 4) {
             $reg = $authuser->regionalclient_id;
             $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional )->select('id', 'name')->get();
-        }else{
+            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+        } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers,'regionalclient' => $regionalclient]);
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
 
     /**
@@ -317,8 +308,8 @@ class ConsignmentController extends Controller
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
             // $consignmentsave['total_freight'] = $request->total_freight;
-            $consignmentsave['transporter_name']  = $request->transporter_name;
-            $consignmentsave['vehicle_type']      = $request->vehicle_type;
+            $consignmentsave['transporter_name'] = $request->transporter_name;
+            $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
@@ -334,9 +325,9 @@ class ConsignmentController extends Controller
 
             $saveconsignment = ConsignmentNote::create($consignmentsave);
             $consignment_id = $saveconsignment->id;
-           //===================== Create DRS in LR ================================= //
-           
-           if(!empty($request->vehicle_id)){
+            //===================== Create DRS in LR ================================= //
+
+            if (!empty($request->vehicle_id)) {
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -375,7 +366,7 @@ class ConsignmentController extends Controller
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
 
-                if(($request->edd) >= $request->consignment_date){
+                if (($request->edd) >= $request->consignment_date) {
                     if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                         $createTask = $this->createTookanTasks($simplyfy);
                         $json = json_decode($createTask[0], true);
@@ -478,9 +469,9 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsigners(Request $request)
     {
-        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id','regionalclient_id')->with('GetRegClient','GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
-        
-        $getregclients = RegionalClient::select('id','is_multiple_invoice')->where('id', $request->regclient_id)->first();
+        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id', 'regionalclient_id')->with('GetRegClient', 'GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
+
+        $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
             $response['success'] = true;
@@ -496,6 +487,7 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
+    
     //// get consioner from regional client ////
     public function getConsignersonRegional(Request $request)
     {
@@ -517,7 +509,6 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
-
 
     // get consigner address on change
     public function getConsignees(Request $request)
@@ -583,91 +574,91 @@ class ConsignmentController extends Controller
         } else {
             $address_line2 = '';
         }
-        if (isset($data['consigner_detail']['address_line3'] )) {
+        if (isset($data['consigner_detail']['address_line3'])) {
             $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['consigner_detail']['address_line4'] )) {
+        if (isset($data['consigner_detail']['address_line4'])) {
             $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if (isset($data['consigner_detail']['city'] )) {
+        if (isset($data['consigner_detail']['city'])) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['consigner_detail']['get_zone']['state'] )) {
+        if (isset($data['consigner_detail']['get_zone']['state'])) {
             $district = $data['consigner_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['consigner_detail']['postal_code'] )) {
-            $postal_code = $data['consigner_detail']['postal_code'].'<br>';
+        if (isset($data['consigner_detail']['postal_code'])) {
+            $postal_code = $data['consigner_detail']['postal_code'] . '<br>';
         } else {
             $postal_code = '';
         }
-        if (isset($data['consigner_detail']['gst_number'] )) {
+        if (isset($data['consigner_detail']['gst_number'])) {
             $gst_number = 'GST No: ' . $data['consigner_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['consigner_detail']['phone'] )) {
+        if (isset($data['consigner_detail']['phone'])) {
             $phone = 'Phone No: ' . $data['consigner_detail']['phone'] . '<br>';
         } else {
             $phone = '';
         }
 
-        $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+        $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if (isset($data['consignee_detail']['legal_name'] )) {
+        if (isset($data['consignee_detail']['legal_name'])) {
             $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if (isset($data['consignee_detail']['address_line1'] )) {
+        if (isset($data['consignee_detail']['address_line1'])) {
             $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if (isset($data['consignee_detail']['address_line2'] )) {
+        if (isset($data['consignee_detail']['address_line2'])) {
             $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if (isset($data['consignee_detail']['address_line3'] )) {
+        if (isset($data['consignee_detail']['address_line3'])) {
             $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['consignee_detail']['address_line4'] )) {
+        if (isset($data['consignee_detail']['address_line4'])) {
             $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if (isset($data['consignee_detail']['city'] )) {
+        if (isset($data['consignee_detail']['city'])) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['consignee_detail']['get_zone']['state'] )) {
+        if (isset($data['consignee_detail']['get_zone']['state'])) {
             $district = $data['consignee_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['consignee_detail']['postal_code'] )) {
-            $postal_code = $data['consignee_detail']['postal_code'].'<br>';
+        if (isset($data['consignee_detail']['postal_code'])) {
+            $postal_code = $data['consignee_detail']['postal_code'] . '<br>';
         } else {
             $postal_code = '';
         }
 
-        if (isset($data['consignee_detail']['gst_number'] )) {
+        if (isset($data['consignee_detail']['gst_number'])) {
             $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['consignee_detail']['phone'] )) {
+        if (isset($data['consignee_detail']['phone'])) {
             $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
         } else {
             $phone = '';
@@ -675,58 +666,58 @@ class ConsignmentController extends Controller
 
         $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if (isset($data['shipto_detail']['legal_name'] )) {
+        if (isset($data['shipto_detail']['legal_name'])) {
             $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
         } else {
             $nick_name = '';
         }
-        if (isset($data['shipto_detail']['address_line1'] )) {
+        if (isset($data['shipto_detail']['address_line1'])) {
             $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
         } else {
             $address_line1 = '';
         }
-        if (isset($data['shipto_detail']['address_line2'] )) {
+        if (isset($data['shipto_detail']['address_line2'])) {
             $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
         } else {
             $address_line2 = '';
         }
-        if (isset($data['shipto_detail']['address_line3'] )) {
+        if (isset($data['shipto_detail']['address_line3'])) {
             $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['shipto_detail']['address_line4'] )) {
+        if (isset($data['shipto_detail']['address_line4'])) {
             $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br><br>';
         } else {
             $address_line4 = '<br>';
         }
-        if (isset($data['shipto_detail']['city'] )) {
+        if (isset($data['shipto_detail']['city'])) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['shipto_detail']['get_zone']['state'] )) {
+        if (isset($data['shipto_detail']['get_zone']['state'])) {
             $district = $data['shipto_detail']['get_zone']['state'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['shipto_detail']['postal_code'] )) {
-            $postal_code = $data['shipto_detail']['postal_code'].'<br>';
+        if (isset($data['shipto_detail']['postal_code'])) {
+            $postal_code = $data['shipto_detail']['postal_code'] . '<br>';
         } else {
             $postal_code = '';
         }
-        if (isset($data['shipto_detail']['gst_number'] )) {
+        if (isset($data['shipto_detail']['gst_number'])) {
             $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['shipto_detail']['phone'] )) {
+        if (isset($data['shipto_detail']['phone'])) {
             $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
         } else {
             $phone = '';
         }
 
-        $shiptoadd =  $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+        $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
         $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
         $output_file = '/qr-code/img-' . time() . '.svg';
@@ -766,14 +757,14 @@ class ConsignmentController extends Controller
         }
         
         // relocate cnr cnee address check for sale to return case
-        if($data['is_salereturn'] == '1'){
+        if ($data['is_salereturn'] == '1') {
             $cnradd_heading = '<div class="container">
             <div>
             <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            '.$consnee_add.'
+            ' . $consnee_add . '
             </p>
             </div>';
             $cneadd_heading = '<div class="container">
@@ -782,7 +773,7 @@ class ConsignmentController extends Controller
             </div>
                 <div style="margin-top: -11px;">
                 <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                '.$conr_add.'
+                ' . $conr_add . '
             </p>
             </div>';
             $shipto_address = '';
@@ -793,7 +784,7 @@ class ConsignmentController extends Controller
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            '.$conr_add.'
+            ' . $conr_add . '
             </p>
             </div>';
             $cneadd_heading = '<div class="container">
@@ -802,7 +793,7 @@ class ConsignmentController extends Controller
             </div>
                 <div style="margin-top: -11px;">
                 <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                '.$consnee_add.'
+                ' . $consnee_add . '
             </p>
             </div>';
             $shipto_address = '<td width="30%" style="vertical-align:top;>
@@ -821,12 +812,11 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
-        if(!empty($data['consigner_detail']['get_zone']['state'])){
-            $cnr_state = $data['consigner_detail']['get_zone']['state'];
-        }
-        else{
-            $cnr_state = '';
-        }
+            if (!empty($data['consigner_detail']['get_zone']['state'])) {
+                $cnr_state = $data['consigner_detail']['get_zone']['state'];
+            } else {
+                $cnr_state = '';
+            }
 
             $html = '<!DOCTYPE html>
             <html lang="en">
@@ -834,9 +824,9 @@ class ConsignmentController extends Controller
                     <!-- Required meta tags -->
                     <meta charset="utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
-            
+
                     <!-- Bootstdap CSS -->
-                   
+
                     <style>
                         * {
                             box-sizing: border-box;
@@ -845,7 +835,7 @@ class ConsignmentController extends Controller
                             padding: 12px 12px 12px 0;
                             display: inline-block;
                         }
-                        
+
                         /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
                         @media screen and (max-width: 600px) {
                         }
@@ -882,8 +872,8 @@ class ConsignmentController extends Controller
                position: fixed;
                left: 0;
                bottom: 0;
-             
-             
+
+
             }
             .vl {
                 border-left: solid;
@@ -898,12 +888,12 @@ class ConsignmentController extends Controller
               left: 30px;
             }
             .mini-table1{
-              
+
                 border: 1px solid;
                 border-radius: 13px;
                 width: 429px;
                 height: 72px;
-                
+
             }
             .mini-th{
               width:90px;
@@ -936,15 +926,15 @@ class ConsignmentController extends Controller
                             <td class="a" style="font-size: 10px;">
                             '.$branch_address.'
                             </td>
-                               
+
                                 <td class="a">
                                 <b>	Email & Phone</b><br />
                                 <b>	' . @$locations->email . '</b><br />
                                 ' . @$locations->phone . '<br />
-                                
+
                                 </td>
                             </tr>
-                        
+
                         </table>
                         <hr />
                         <table>
@@ -957,9 +947,9 @@ class ConsignmentController extends Controller
                                 <td>
                                     <div style="margin-top: -15px; text-align: center">
                                         <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
-                                        <P>'.$type.'</P>
+                                        <P>' . $type . '</P>
                                     </div>
-                       <div class="mini-table1" style="background:#C0C0C0;"> 
+                       <div class="mini-table1" style="background:#C0C0C0;">
                                     <table style=" border-collapse: collapse;" class="ee">
                                         <tr>
                                             <th class="mini-th mm nn">LR Number</th>
@@ -971,11 +961,11 @@ class ConsignmentController extends Controller
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
                                             <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">'.@$data['consignee_detail']['city'] . '</th>
-                                            
+                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
+
                                         </tr>
                                     </table>
-                        </div>  
+                        </div>
                                 </td>
                             </tr>
                         </table>
@@ -986,7 +976,7 @@ class ConsignmentController extends Controller
                                         <div style="margin-left: 20px">
                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
 
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.@$data['consignee_detail']['postal_code'].','.@$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_zone']['state'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                         </div>
                                     </td>
                                     <td class="width_set">
@@ -1008,20 +998,20 @@ class ConsignmentController extends Controller
                                 </tr>
                             </table>
                         </div>
-                        
+
                         <div class="container">
                                 <div class="row">
                                     <div class="col-sm-12 ">
                                         <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
-                                    </div>            
+                                    </div>
                                 </div>
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
                                     <td width="30%" style="vertical-align:top; >
-                                    '.$cnradd_heading.'
+                                    ' . $cnradd_heading . '
                                     </td>
                                     <td width="30%" style="vertical-align:top;>
-                                    '.$cneadd_heading.'
+                                    ' . $cneadd_heading . '
                                     </td>
                                     '.$shipto_address.'
                                 </tr>
@@ -1031,11 +1021,11 @@ class ConsignmentController extends Controller
                                       <div class="row">
                                                            <div class="col-sm-12 ">
                                                 <h4 style="margin-left:19px;"><b>Order Information</b></h4>
-                                                    </div>            
+                                                    </div>
                                                 </div>
                                             </div>
                                             <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
-                                                
+
                                                     <tr>
                                                         <th>Number of invoice</th>
                                                         <th>Item Description</th>
@@ -1045,18 +1035,18 @@ class ConsignmentController extends Controller
                                                         <th>Total Gross Weight</th>
                                                     </tr>
                                                     <tr>
-                                                        <th>'.$no_invoive .'</th>
+                                                        <th>' . $no_invoive . '</th>
                                                         <th>' . $data['description'] . '</th>
                                                         <th>' . $data['packing_type'] . '</th>
                                                         <th>' . $data['total_quantity'] . '</th>
                                                         <th>' . $data['total_weight'] . ' Kgs.</th>
                                                         <th>' . $data['total_gross_weight'] . ' Kgs.</th>
-                                                        
-                                                       
+
+
                                                     </tr>
                                                 </table>
                                 </div>
-                                
+
                                 <div class="inputfiled">
                                 <table style="width: 690px;
                                 font-size: 10px; background-color:#e0dddc40;">
@@ -1070,15 +1060,15 @@ class ConsignmentController extends Controller
                                   <th style="width: 60px">Quantity</th>
                                   <th style="width:70px ">Net Weight</th>
                                   <th style="width:70px ">Gross Weight</th>
-                              
+
                               </tr>
                             </table>
                             <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
-                            $counter = 0;
+            $counter = 0;
             foreach ($data['consignment_items'] as $k => $dataitem) {
                 $counter = $counter + 1;
-                               
-                         $html .=' <tr>
+
+                $html .= ' <tr>
                                 <td style="width:70px ">' . $dataitem['order_id'] . '</td>
                                 <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
                                 <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
@@ -1087,11 +1077,11 @@ class ConsignmentController extends Controller
                                 <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
                                 <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
                                 <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
-                                <td style="width:70px "> '. $dataitem['gross_weight'] . ' Kgs.</td>
-                                
+                                <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
+
                                 </tr>';
-                              }
-                      $html .='      </table>
+            }
+            $html .= '      </table>
                                 <div>
                                     <table style="margin-top:0px;">
                                     <tr>
@@ -1099,7 +1089,7 @@ class ConsignmentController extends Controller
                                     <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
                                 </tr>
                                     </table>
-                            
+
                                 </div>
                           </div>
 
@@ -1115,14 +1105,14 @@ class ConsignmentController extends Controller
                   </div> -->
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
-            
+
                     <!-- Option 1: Bootstdap Bundle with Popper -->
                     <script
                         src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
                         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                         crossorigin="anonymous"
                     ></script>
-            
+
                     <!-- Option 2: Separate Popper and Bootstdap JS -->
                     <!--
                 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -1161,52 +1151,52 @@ class ConsignmentController extends Controller
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
 
-        if (isset($data['consigner_detail']['legal_name'] )) {
+        if (isset($data['consigner_detail']['legal_name'])) {
             $legal_name = '<p><b>' . $data['consigner_detail']['legal_name'] . '</b></p>';
         } else {
             $legal_name = '';
         }
-        if (isset($data['consigner_detail']['address_line1'] )) {
+        if (isset($data['consigner_detail']['address_line1'])) {
             $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if (isset($data['consigner_detail']['address_line2'] )) {
+        if (isset($data['consigner_detail']['address_line2'])) {
             $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if (isset($data['consigner_detail']['address_line3'] )) {
+        if (isset($data['consigner_detail']['address_line3'])) {
             $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['consigner_detail']['address_line4'] )) {
+        if (isset($data['consigner_detail']['address_line4'])) {
             $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if (isset($data['consigner_detail']['city'] )) {
+        if (isset($data['consigner_detail']['city'])) {
             $city = $data['consigner_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['consigner_detail']['get_zone']['district'] )) {
+        if (isset($data['consigner_detail']['get_zone']['district'])) {
             $district = @$data['consigner_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['consigner_detail']['postal_code'] )) {
+        if (isset($data['consigner_detail']['postal_code'])) {
             $postal_code = $data['consigner_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if (isset($data['consigner_detail']['gst_number'] )) {
+        if (isset($data['consigner_detail']['gst_number'])) {
             $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['consigner_detail']['phone'] )) {
+        if (isset($data['consigner_detail']['phone'])) {
             $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1215,53 +1205,53 @@ class ConsignmentController extends Controller
         $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
             ' . $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if (isset($data['consignee_detail']['nick_name'] )) {
+        if (isset($data['consignee_detail']['nick_name'])) {
             $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if (isset($data['consignee_detail']['address_line1'] )) {
+        if (isset($data['consignee_detail']['address_line1'])) {
             $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if (isset($data['consignee_detail']['address_line2'] )) {
+        if (isset($data['consignee_detail']['address_line2'])) {
             $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if (isset($data['consignee_detail']['address_line3'] )) {
+        if (isset($data['consignee_detail']['address_line3'])) {
             $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['consignee_detail']['address_line4'] )) {
+        if (isset($data['consignee_detail']['address_line4'])) {
             $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if (isset($data['consignee_detail']['city'] )) {
+        if (isset($data['consignee_detail']['city'])) {
             $city = $data['consignee_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['consignee_detail']['get_zone']['district'] )) {
+        if (isset($data['consignee_detail']['get_zone']['district'])) {
             $district = @$data['consignee_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['consignee_detail']['postal_code'] )) {
+        if (isset($data['consignee_detail']['postal_code'])) {
             $postal_code = $data['consignee_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
 
-        if (isset($data['consignee_detail']['gst_number'] )) {
+        if (isset($data['consignee_detail']['gst_number'])) {
             $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['consignee_detail']['phone'] )) {
+        if (isset($data['consignee_detail']['phone'])) {
             $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1270,52 +1260,52 @@ class ConsignmentController extends Controller
         $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-        if (isset($data['shipto_detail']['nick_name'] )) {
+        if (isset($data['shipto_detail']['nick_name'])) {
             $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
         } else {
             $nick_name = '';
         }
-        if (isset($data['shipto_detail']['address_line1'] )) {
+        if (isset($data['shipto_detail']['address_line1'])) {
             $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
         } else {
             $address_line1 = '';
         }
-        if (isset($data['shipto_detail']['address_line2'] )) {
+        if (isset($data['shipto_detail']['address_line2'])) {
             $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
         } else {
             $address_line2 = '';
         }
-        if (isset($data['shipto_detail']['address_line3'] )) {
+        if (isset($data['shipto_detail']['address_line3'])) {
             $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
         } else {
             $address_line3 = '';
         }
-        if (isset($data['shipto_detail']['address_line4'] )) {
+        if (isset($data['shipto_detail']['address_line4'])) {
             $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
         } else {
             $address_line4 = '';
         }
-        if (isset($data['shipto_detail']['city'] )) {
+        if (isset($data['shipto_detail']['city'])) {
             $city = $data['shipto_detail']['city'] . ',';
         } else {
             $city = '';
         }
-        if (isset($data['shipto_detail']['get_zone']['district'] )) {
+        if (isset($data['shipto_detail']['get_zone']['district'])) {
             $district = @$data['shipto_detail']['get_zone']['district'] . ',';
         } else {
             $district = '';
         }
-        if (isset($data['shipto_detail']['postal_code'] )) {
+        if (isset($data['shipto_detail']['postal_code'])) {
             $postal_code = $data['shipto_detail']['postal_code'];
         } else {
             $postal_code = '';
         }
-        if (isset($data['shipto_detail']['gst_number'] )) {
+        if (isset($data['shipto_detail']['gst_number'])) {
             $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
         } else {
             $gst_number = '';
         }
-        if (isset($data['shipto_detail']['phone'] )) {
+        if (isset($data['shipto_detail']['phone'])) {
             $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
         } else {
             $phone = '';
@@ -1622,11 +1612,11 @@ class ConsignmentController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -1635,24 +1625,20 @@ class ConsignmentController extends Controller
         ->whereIn('consignment_notes.status', ['2', '5'])
         ->where('consignment_notes.booked_drs', '!=', '1');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $data;
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
+        } elseif ($authuser->role_id == 6) {
             $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-             $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
+        } elseif ($authuser->role_id == 7) {
+            $data = $data->whereIn('regional_clients.id', $regclient);
+        } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
-        
+
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
@@ -1671,7 +1657,7 @@ class ConsignmentController extends Controller
         $transporterName = $request->transporter_name;
         $purchasePrice = $request->purchase_price;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType,'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
 
         $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -1731,12 +1717,12 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-        
+
         if ($request->ajax()) {
-            if(isset($request->resetfilter)){
+            if (isset($request->resetfilter)) {
                 Session::forget('peritem');
-                $url = URL::to($this->prefix.'/'.$this->segment);
-                return response()->json(['success' => true,'redirect_url'=>$url]);
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
             }
 
             if (isset($request->updatestatus)) {
@@ -1751,116 +1737,107 @@ class ConsignmentController extends Controller
                 $response['error'] = false;
                 $response['page'] = 'dsr-cancel-update';
                 $response['redirect_url'] = $url;
-    
+
                 return response()->json($response);
             }
 
             $authuser = Auth::user();
-            $role_id = Role::where('id','=',$authuser->role_id)->first();
-            $baseclient = explode(',',$authuser->baseclient_id);
-            $regclient = explode(',',$authuser->regionalclient_id);
-            $cc = explode(',',$authuser->branch_id);
-            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
             $query = $query->whereIn('status', ['1', '0', '3'])
-                    ->groupBy('drs_no'); 
+                ->groupBy('drs_no');
 
-            if($authuser->role_id ==1){
+            if ($authuser->role_id == 1) {
                 $query = $query->with('ConsignmentDetail');
-            }
-            elseif($authuser->role_id ==4){
+            } elseif ($authuser->role_id == 4) {
                 $query = $query
-                ->whereHas('ConsignmentDetail', function($query) use($regclient){
-                    $query->whereIn('regclient_id', $regclient);
-                });
-            }
-            elseif($authuser->role_id ==6){
+                    ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                        $query->whereIn('regclient_id', $regclient);
+                    });
+            } elseif ($authuser->role_id == 6) {
                 $query = $query
-                ->whereHas('ConsignmentDetail', function($query) use($baseclient){
-                    $query->whereIn('base_clients.id', $baseclient);
-                });
-            }
-            elseif($authuser->role_id ==7){
+                    ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                        $query->whereIn('base_clients.id', $baseclient);
+                    });
+            } elseif ($authuser->role_id == 7) {
                 $query = $query
-                ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function($query) use($baseclient){
-                    $query->whereIn('id', $regclient);
-                });
-            }
-            else{
+                    ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
+                        $query->whereIn('id', $regclient);
+                    });
+            } else {
                 $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
             }
 
-            if(!empty($request->search)){
+            if (!empty($request->search)) {
                 $search = $request->search;
-                $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
                     $query->where('drs_no', 'like', '%' . $search . '%')
-                    ->orWhere('vehicle_no', 'like', '%' . $search . '%')
-                    ->orWhere('driver_name', 'like', '%' . $search . '%')
-                    ->orWhere('driver_no', 'like', '%' . $search . '%');
+                        ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                        ->orWhere('driver_name', 'like', '%' . $search . '%')
+                        ->orWhere('driver_no', 'like', '%' . $search . '%');
                 });
             }
 
-
-            if($request->peritem){
-                Session::put('peritem',$request->peritem);
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
             }
-      
+
             $peritem = Session::get('peritem');
-            if(!empty($peritem)){
+            if (!empty($peritem)) {
                 $peritem = $peritem;
-            }else{
+            } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
             $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
             $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
             $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-            $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+            $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
 
-            $html =  view('consignments.download-drs-list-ajax',['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
-            
+            $html = view('consignments.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+
             return response()->json(['html' => $html]);
         }
 
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-      
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $query = $query->with('ConsignmentDetail')
-                ->whereIn('status', ['1', '0', '3'])
-                ->groupBy('drs_no');
+            ->whereIn('status', ['1', '0', '3'])
+            ->groupBy('drs_no');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $query = $query->with('ConsignmentDetail');
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $query = $query
-            ->whereHas('ConsignmentDetail', function($query) use($regclient){
-                $query->whereIn('regclient_id', $regclient);
-            });
-        }
-        elseif($authuser->role_id ==6){
+                ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                    $query->whereIn('regclient_id', $regclient);
+                });
+        } elseif ($authuser->role_id == 6) {
             $query = $query
-            ->whereHas('ConsignmentDetail', function($query) use($baseclient){
-                $query->whereIn('base_clients.id', $baseclient);
-            });
-        }
-        elseif($authuser->role_id ==7){
+                ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                    $query->whereIn('base_clients.id', $baseclient);
+                });
+        } elseif ($authuser->role_id == 7) {
             $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-        }
-        else{
+        } else {
             $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
-        $transaction = $query->orderBy('id','DESC')->paginate($peritem);
+        $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
         $transaction = $transaction->appends($request->query());
-       
-        return view('consignments.download-drs-list', ['peritem'=>$peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+
+        return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
 
     public function getTransactionDetails(Request $request)
@@ -1882,7 +1859,7 @@ class ConsignmentController extends Controller
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
-        echo json_encode($response); 
+        echo json_encode($response);
 
     }
     public function printTransactionsheetold(Request $request)
@@ -1891,8 +1868,8 @@ class ConsignmentController extends Controller
         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'consigneeDetail')->where('drs_no', $id)->whereIn('status', ['1', '3'])->orderby('order_no', 'asc')->get();
 
         $simplyfy = json_decode(json_encode($transcationview), true);
-        $no_of_deliveries =  count($simplyfy);
-        $details = $simplyfy[0]; 
+        $no_of_deliveries = count($simplyfy);
+        $details = $simplyfy[0];
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $drsDate = date('d-m-Y', strtotime($details['created_at']));
@@ -2014,7 +1991,7 @@ class ConsignmentController extends Controller
 
             $total_Boxes += $dataitem['total_quantity'];
             $total_weight += $dataitem['total_weight'];
-            
+
             $html .= '
                 <div class="row" style="border: 1px solid black;">
                     <div class="column" style="width:75px;">
@@ -2064,17 +2041,17 @@ class ConsignmentController extends Controller
     {
         $id = $request->id;
         $transcationview = TransactionSheet::select('*')
-        ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail','ConsignmentItem')
-        ->whereHas('ConsignmentDetail', function($q){
-            $q->where('status', '!=', 0);
-        })
-        ->where('drs_no', $id)
-        ->whereIn('status', ['1', '3'])
-        ->orderby('order_no', 'asc')->get();
+            ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail', 'ConsignmentItem')
+            ->whereHas('ConsignmentDetail', function ($q) {
+                $q->where('status', '!=', 0);
+            })
+            ->where('drs_no', $id)
+            ->whereIn('status', ['1', '3'])
+            ->orderby('order_no', 'asc')->get();
         $simplyfy = json_decode(json_encode($transcationview), true);
-        
-        $no_of_deliveries =  count($simplyfy);
-        $details = $simplyfy[0]; 
+
+        $no_of_deliveries = count($simplyfy);
+        $details = $simplyfy[0];
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $drsDate = date('d-m-Y', strtotime($details['created_at']));
@@ -2126,7 +2103,7 @@ class ConsignmentController extends Controller
               .dd{
                 margin-left: 0px;
               }
-            
+
           </style>
         </head>
         <body style="font-size:13px; font-family:Arial Helvetica,sans-serif;">
@@ -2197,7 +2174,7 @@ class ConsignmentController extends Controller
         $total_weight = 0;
 
         foreach ($simplyfy as $dataitem) {
-        //    echo'<pre>'; print_r($dataitem); die;
+            //    echo'<pre>'; print_r($dataitem); die;
 
             $i++;
             if ($i % 5 == 0) {
@@ -2209,7 +2186,7 @@ class ConsignmentController extends Controller
             //echo'<pre>'; print_r($dataitem['consignment_no']); die;
             $html .= '
                 <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
-                   
+
                     <div class="column" style="width:125px;">
                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consigner_detail']['get_reg_client']['name'] . '</p>
                         <p style="margin-top:-8px;">' . $dataitem['consignment_no'] . '</p>
@@ -2235,23 +2212,23 @@ class ConsignmentController extends Controller
                         <p></p>
                       </div>
                   </div>';
-                  $html .='<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
-                  //echo'<pre>'; print_r($chunk); die;
-                  $html .=' <div class="column" style="width:230px; margin-top: -10px;">';
-                  $html .='<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
-                  $itm_no = 0;
-                  foreach($dataitem['consignment_item'] as $cc){
-                   $itm_no++;
-              
-                 $html .='  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">'.$itm_no.'.  '.$cc['order_id'].'</td><td style="width: 190px; padding:3px;">'.$itm_no.'.  '.$cc['invoice_no'].'</td></tr></table>';
-                 
-               }
-               $html .= '</div> ';
-        
-               $html .='</div>
+            $html .= '<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
+            //echo'<pre>'; print_r($chunk); die;
+            $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
+            $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
+            $itm_no = 0;
+            foreach ($dataitem['consignment_item'] as $cc) {
+                $itm_no++;
+
+                $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['order_id'] . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['invoice_no'] . '</td></tr></table>';
+
+            }
+            $html .= '</div> ';
+
+            $html .= '</div>
 
                 <br>';
-        
+
         }
 
         $html .= '</main>
@@ -2280,7 +2257,7 @@ class ConsignmentController extends Controller
         }
     }
     //////////////////////////////////remove lr////////////////////
-    public function removeLR(Request $request) 
+    public function removeLR(Request $request)
     {
         //
         $consignmentId = $_GET['consignment_id'];
@@ -2362,15 +2339,17 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    public function view_saveDraft(Request $request) 
+    public function view_saveDraft(Request $request)
     {
         //echo'hi';
         $id = $_GET['draft_id'];
+        
          $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail','ConsignmentItem')->where('drs_no', $id)
          ->whereHas('ConsignmentDetail', function ($query){
             $query->whereIn('status', ['1','5']);
         })
          ->orderby('order_no', 'asc')->get();
+
         // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*','consignment_items.*','consignment_notes.status as lrstatus', 'consignment_notes.edd as edd')
         //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')
         //     ->join('consignment_items','consignment_items.consignment_id', '=', 'transaction_sheets.consignment_no')
@@ -2448,32 +2427,29 @@ class ConsignmentController extends Controller
 
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $query = ConsignmentNote::query();
 
         $query = $query->where('status', '!=', 5)
-            ->with('ConsignerDetail','ConsigneeDetail');
+            ->with('ConsignerDetail', 'ConsigneeDetail');
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $query;
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==7){
+        } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        }
-        else{
+        } else {
             $query = $query->whereIn('branch_id', $cc);
         }
         $query = $query->orderBy('id', 'DESC');
         $consignments = $query->get();
-        
+
         return view('consignments.bulkLr-view', ['prefix' => $this->prefix, 'consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title]);
     }
 
@@ -2481,7 +2457,7 @@ class ConsignmentController extends Controller
     {
         $lrno = $request->checked_lr;
         $pdftype = $request->type;
-    
+
         $query = ConsignmentNote::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
@@ -2492,9 +2468,9 @@ class ConsignmentController extends Controller
 
             $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
             $data = json_decode(json_encode($getdata), true);
-            
-    //  ==================================new lr view ==========================  //
-            if(empty($data['invoice_no'])){
+
+            //  ==================================new lr view ==========================  //
+            if (empty($data['invoice_no'])) {
                 if ($data['consigner_detail']['legal_name'] != null) {
                     $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -2531,7 +2507,7 @@ class ConsignmentController extends Controller
                     $district = '';
                 }
                 if ($data['consigner_detail']['postal_code'] != null) {
-                    $postal_code = $data['consigner_detail']['postal_code'].'<br>';
+                    $postal_code = $data['consigner_detail']['postal_code'] . '<br>';
                 } else {
                     $postal_code = '';
                 }
@@ -2545,9 +2521,9 @@ class ConsignmentController extends Controller
                 } else {
                     $phone = '';
                 }
-        
-                $conr_add =  $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-        
+
+                $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+
                 if ($data['consignee_detail']['legal_name'] != null) {
                     $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -2584,11 +2560,11 @@ class ConsignmentController extends Controller
                     $district = '';
                 }
                 if ($data['consignee_detail']['postal_code'] != null) {
-                    $postal_code = $data['consignee_detail']['postal_code'].'<br>';
+                    $postal_code = $data['consignee_detail']['postal_code'] . '<br>';
                 } else {
                     $postal_code = '';
                 }
-        
+
                 if ($data['consignee_detail']['gst_number'] != null) {
                     $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
                 } else {
@@ -2599,9 +2575,9 @@ class ConsignmentController extends Controller
                 } else {
                     $phone = '';
                 }
-        
+
                 $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-        
+
                 if ($data['shipto_detail']['legal_name'] != null) {
                     $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -2638,7 +2614,7 @@ class ConsignmentController extends Controller
                     $district = '';
                 }
                 if ($data['shipto_detail']['postal_code'] != null) {
-                    $postal_code = $data['shipto_detail']['postal_code'].'<br>';
+                    $postal_code = $data['shipto_detail']['postal_code'] . '<br>';
                 } else {
                     $postal_code = '';
                 }
@@ -2657,7 +2633,7 @@ class ConsignmentController extends Controller
                 }else{
                     $shiptoadd ='';
                 }
-        
+                
                 $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                 $output_file = '/qr-code/img-' . time() . '.svg';
                 Storage::disk('public')->put($output_file, $generate_qrcode);
@@ -2666,14 +2642,14 @@ class ConsignmentController extends Controller
                 //  dd($generate_qrcode);
                 $no_invoive = count($data['consignment_items']);
                 if ($request->typeid == 1) {
-                    if($data['is_salereturn']== "1"){
+                    if ($data['is_salereturn'] == "1") {
                         $adresses = '<table width="100%">
                             <tr>
                                 <td style="width:50%">' . $consnee_add . '</td>
                                 <td style="width:50%">' . $conr_add . '</td>
                             </tr>
                         </table>';
-                    }else{
+                    } else {
                         $adresses = '<table width="100%">
                             <tr>
                                 <td style="width:50%">' . $conr_add . '</td>
@@ -2681,9 +2657,9 @@ class ConsignmentController extends Controller
                             </tr>
                         </table>';
                     }
-                    
+
                 } else if ($request->typeid == 2) {
-                    if($data['is_salereturn']== 1){
+                    if ($data['is_salereturn'] == 1) {
                         $adresses = '<table width="100%">
                                 <tr>
                                     <td style="width:33%">' . $consnee_add . '</td>
@@ -2691,7 +2667,7 @@ class ConsignmentController extends Controller
                                     
                                 </tr>
                             </table>';
-                    }else{
+                    } else {
                         $adresses = '<table width="100%">
                                 <tr>
                                     <td style="width:33%">' . $conr_add . '</td>
@@ -2724,22 +2700,21 @@ class ConsignmentController extends Controller
                     } elseif ($pdf == 4) {
                         $type = 'QUADRUPLE';
                     }
-        if(!empty($data['consigner_detail']['get_zone'])){
-            $cnr_state = $data['consigner_detail']['get_zone']['state'];
-        }
-        else{
-            $cnr_state = '';
-        }
-        
+                    if (!empty($data['consigner_detail']['get_zone'])) {
+                        $cnr_state = $data['consigner_detail']['get_zone']['state'];
+                    } else {
+                        $cnr_state = '';
+                    }
+
                     $html = '<!DOCTYPE html>
                     <html lang="en">
                         <head>
                             <!-- Required meta tags -->
                             <meta charset="utf-8" />
                             <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    
+
                             <!-- Bootstdap CSS -->
-                           
+
                             <style>
                                 * {
                                     box-sizing: border-box;
@@ -2748,7 +2723,7 @@ class ConsignmentController extends Controller
                                     padding: 12px 12px 12px 0;
                                     display: inline-block;
                                 }
-                                
+
                                 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
                                 @media screen and (max-width: 600px) {
                                 }
@@ -2785,8 +2760,8 @@ class ConsignmentController extends Controller
                        position: fixed;
                        left: 0;
                        bottom: 0;
-                     
-                     
+
+
                     }
                     .vl {
                         border-left: solid;
@@ -2801,12 +2776,12 @@ class ConsignmentController extends Controller
                       left: 30px;
                     }
                     .mini-table1{
-                      
+
                         border: 1px solid;
                         border-radius: 13px;
                         width: 429px;
                         height: 72px;
-                        
+
                     }
                     .mini-th{
                       width:90px;
@@ -2839,15 +2814,15 @@ class ConsignmentController extends Controller
                                     <td class="a" style="font-size: 10px;">
                                     '. $branch_address .'
                                     </td>
-                                       
+
                                         <td class="a">
                                         <b>	Email & Phone</b><br />
                                         <b>	' . @$locations->email . '</b><br />
                                         ' . @$locations->phone . '<br />
-                                        
+
                                         </td>
                                     </tr>
-                                
+
                                 </table>
                                 <hr />
                                 <table>
@@ -2860,9 +2835,9 @@ class ConsignmentController extends Controller
                                         <td>
                                             <div style="margin-top: -15px; text-align: center">
                                                 <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
-                                                <P>'.$type.'</P>
+                                                <P>' . $type . '</P>
                                             </div>
-                               <div class="mini-table1" style="background:#C0C0C0;"> 
+                               <div class="mini-table1" style="background:#C0C0C0;">
                                             <table style=" border-collapse: collapse;" class="ee">
                                                 <tr>
                                                     <th class="mini-th mm nn">LR Number</th>
@@ -2874,11 +2849,11 @@ class ConsignmentController extends Controller
                                                     <th class="mini-th mm" >' . $data['id'] . '</th>
                                                     <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
                                                     <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
-                                                    <th class="mini-th">'.$data['consignee_detail']['city'] . '</th>
-                                                    
+                                                    <th class="mini-th">' . $data['consignee_detail']['city'] . '</th>
+
                                                 </tr>
                                             </table>
-                                </div>  
+                                </div>
                                         </td>
                                     </tr>
                                 </table>
@@ -2888,8 +2863,8 @@ class ConsignmentController extends Controller
                                             <td class="width_set">
                                                 <div style="margin-left: 20px">
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
-        
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>'.$data['consignee_detail']['postal_code'].','.$data['consignee_detail']['city'].','.@$data['consignee_detail']['get_zone']['state'].'</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consignee_detail']['postal_code'] . ',' . $data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 </div>
                                             </td>
                                             <td class="width_set">
@@ -2911,12 +2886,12 @@ class ConsignmentController extends Controller
                                         </tr>
                                     </table>
                                 </div>
-                                
+
                                 <div class="container">
                                         <div class="row">
                                             <div class="col-sm-12 ">
                                                 <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
-                                            </div>            
+                                            </div>
                                         </div>
                                     <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                         <tr>
@@ -2926,13 +2901,13 @@ class ConsignmentController extends Controller
                                                 <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
                                                 </div>
                                                 <div style="margin-top: -11px;">';
-                                            if($data['is_salereturn'] == "1"){
-                                                $conr_address = $consnee_add;
-                                            }else{
-                                                $conr_address = $conr_add;
-                                            }
-                                                // '.$conr_add.'
-                                            $html .=  '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">'.$conr_address.'</p>
+                    if ($data['is_salereturn'] == "1") {
+                        $conr_address = $consnee_add;
+                    } else {
+                        $conr_address = $conr_add;
+                    }
+                    // '.$conr_add.'
+                    $html .= '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">' . $conr_address . '</p>
                                                 </div>
                                             </td>
                                             <td width="30%" style="vertical-align:top;>
@@ -2941,13 +2916,13 @@ class ConsignmentController extends Controller
                                             <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
                                             </div>
                                                 <div style="margin-top: -11px;">';
-                                                if($data['is_salereturn'] == "1"){
-                                                    $consnee_address = $conr_add;
-                                                }else{
-                                                    $consnee_address = $consnee_add;
-                                                }
-                                            $html .=  '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                                '.$consnee_address.'
+                    if ($data['is_salereturn'] == "1") {
+                        $consnee_address = $conr_add;
+                    } else {
+                        $consnee_address = $consnee_add;
+                    }
+                    $html .= '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                                                ' . $consnee_address . '
                                             </p>
                                                 </div>
                                             </td>
@@ -2958,7 +2933,7 @@ class ConsignmentController extends Controller
                                             </div>
                                                 <div style="margin-top: -11px;">
                                                 <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                              '.$shiptoadd.'
+                                              ' . $shiptoadd . '
                                             </p>
                                                 </div>
                                             </td>
@@ -2969,11 +2944,11 @@ class ConsignmentController extends Controller
                                               <div class="row">
                                                                    <div class="col-sm-12 ">
                                                         <h4 style="margin-left:19px;"><b>Order Information</b></h4>
-                                                            </div>            
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
-                                                        
+
                                                             <tr>
                                                                 <th>Number of invoice</th>
                                                                 <th>Item Description</th>
@@ -2983,18 +2958,18 @@ class ConsignmentController extends Controller
                                                                 <th>Total Gross Weight</th>
                                                             </tr>
                                                             <tr>
-                                                                <th>'.$no_invoive .'</th>
+                                                                <th>' . $no_invoive . '</th>
                                                                 <th>' . $data['description'] . '</th>
                                                                 <th>' . $data['packing_type'] . '</th>
                                                                 <th>' . $data['total_quantity'] . '</th>
                                                                 <th>' . $data['total_weight'] . ' Kgs.</th>
                                                                 <th>' . $data['total_gross_weight'] . ' Kgs.</th>
-                                                                
-                                                               
+
+
                                                             </tr>
                                                         </table>
                                         </div>
-                                        
+
                                         <div class="inputfiled">
                                         <table style="width: 690px;
                                         font-size: 10px; background-color:#e0dddc40;">
@@ -3008,15 +2983,15 @@ class ConsignmentController extends Controller
                                           <th style="width: 60px">Quantity</th>
                                           <th style="width:70px ">Net Weight</th>
                                           <th style="width:70px ">Gross Weight</th>
-                                      
+
                                       </tr>
                                     </table>
                                     <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
-                                    $counter = 0;
+                    $counter = 0;
                     foreach ($data['consignment_items'] as $k => $dataitem) {
                         $counter = $counter + 1;
-                                       
-                                 $html .=' <tr>
+
+                        $html .= ' <tr>
                                         <td style="width:70px ">' . $dataitem['order_id'] . '</td>
                                         <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
                                         <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
@@ -3025,11 +3000,11 @@ class ConsignmentController extends Controller
                                         <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
                                         <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
                                         <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
-                                        <td style="width:70px "> '. $dataitem['gross_weight'] . ' Kgs.</td>
-                                        
+                                        <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
+
                                         </tr>';
-                                      }
-                              $html .='      </table>
+                    }
+                    $html .= '      </table>
                                         <div>
                                             <table style="margin-top:0px;">
                                             <tr>
@@ -3037,10 +3012,10 @@ class ConsignmentController extends Controller
                                             <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
                                         </tr>
                                             </table>
-                                    
+
                                         </div>
                                   </div>
-        
+
                           <!-- <div class="footer">
                                           <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                         <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
@@ -3053,14 +3028,14 @@ class ConsignmentController extends Controller
                           </div> -->
                             </div>
                             <!-- Optional JavaScript; choose one of the two! -->
-                    
+
                             <!-- Option 1: Bootstdap Bundle with Popper -->
                             <script
                                 src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
                                 integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                                 crossorigin="anonymous"
                             ></script>
-                    
+
                             <!-- Option 2: Separate Popper and Bootstdap JS -->
                             <!--
                         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -3069,218 +3044,216 @@ class ConsignmentController extends Controller
                         </body>
                     </html>
                     ';
-        
+
                     $pdf = \App::make('dompdf.wrapper');
                     $pdf->loadHTML($html);
                     $pdf->setPaper('legal', 'portrait');
                     $pdf->save(public_path() . '/bulk/congn-' . $i . '-' . $value . '.pdf')->stream('congn-' . $i . '-' . $value . '.pdf');
-                $pdf_name[] = 'congn-' . $i . '-' . $value . '.pdf';
+                    $pdf_name[] = 'congn-' . $i . '-' . $value . '.pdf';
                 }
 
-            }else{
+            } else {
 
-            
+                if ($data['consigner_detail']['nick_name'] != null) {
+                    $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
+                } else {
+                    $nick_name = '';
+                }
+                if ($data['consigner_detail']['address_line1'] != null) {
+                    $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
+                } else {
+                    $address_line1 = '';
+                }
+                if ($data['consigner_detail']['address_line2'] != null) {
+                    $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
+                } else {
+                    $address_line2 = '';
+                }
+                if ($data['consigner_detail']['address_line3'] != null) {
+                    $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
+                } else {
+                    $address_line3 = '';
+                }
+                if ($data['consigner_detail']['address_line4'] != null) {
+                    $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
+                } else {
+                    $address_line4 = '';
+                }
+                if ($data['consigner_detail']['city'] != null) {
+                    $city = $data['consigner_detail']['city'] . ',';
+                } else {
+                    $city = '';
+                }
+                if ($data['consigner_detail']['district'] != null) {
+                    $district = $data['consigner_detail']['district'] . ',';
+                } else {
+                    $district = '';
+                }
+                if ($data['consigner_detail']['postal_code'] != null) {
+                    $postal_code = $data['consigner_detail']['postal_code'];
+                } else {
+                    $postal_code = '';
+                }
+                if ($data['consigner_detail']['gst_number'] != null) {
+                    $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
+                } else {
+                    $gst_number = '';
+                }
+                if ($data['consigner_detail']['phone'] != null) {
+                    $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
+                } else {
+                    $phone = '';
+                }
 
-            if ($data['consigner_detail']['nick_name'] != null) {
-                $nick_name = '<p><b>' . $data['consigner_detail']['nick_name'] . '</b></p>';
-            } else {
-                $nick_name = '';
-            }
-            if ($data['consigner_detail']['address_line1'] != null) {
-                $address_line1 = '<p>' . $data['consigner_detail']['address_line1'] . '</p>';
-            } else {
-                $address_line1 = '';
-            }
-            if ($data['consigner_detail']['address_line2'] != null) {
-                $address_line2 = '<p>' . $data['consigner_detail']['address_line2'] . '</p>';
-            } else {
-                $address_line2 = '';
-            }
-            if ($data['consigner_detail']['address_line3'] != null) {
-                $address_line3 = '<p>' . $data['consigner_detail']['address_line3'] . '</p>';
-            } else {
-                $address_line3 = '';
-            }
-            if ($data['consigner_detail']['address_line4'] != null) {
-                $address_line4 = '<p>' . $data['consigner_detail']['address_line4'] . '</p>';
-            } else {
-                $address_line4 = '';
-            }
-            if ($data['consigner_detail']['city'] != null) {
-                $city = $data['consigner_detail']['city'] . ',';
-            } else {
-                $city = '';
-            }
-            if ($data['consigner_detail']['district'] != null) {
-                $district = $data['consigner_detail']['district'] . ',';
-            } else {
-                $district = '';
-            }
-            if ($data['consigner_detail']['postal_code'] != null) {
-                $postal_code = $data['consigner_detail']['postal_code'];
-            } else {
-                $postal_code = '';
-            }
-            if ($data['consigner_detail']['gst_number'] != null) {
-                $gst_number = '<p>GST No: ' . $data['consigner_detail']['gst_number'] . '</p>';
-            } else {
-                $gst_number = '';
-            }
-            if ($data['consigner_detail']['phone'] != null) {
-                $phone = '<p>Phone No: ' . $data['consigner_detail']['phone'] . '</p>';
-            } else {
-                $phone = '';
-            }
-
-            $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
+                $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
             ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-            if ($data['consignee_detail']['nick_name'] != null) {
-                $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
-            } else {
-                $nick_name = '';
-            }
-            if ($data['consignee_detail']['address_line1'] != null) {
-                $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
-            } else {
-                $address_line1 = '';
-            }
-            if ($data['consignee_detail']['address_line2'] != null) {
-                $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
-            } else {
-                $address_line2 = '';
-            }
-            if ($data['consignee_detail']['address_line3'] != null) {
-                $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
-            } else {
-                $address_line3 = '';
-            }
-            if ($data['consignee_detail']['address_line4'] != null) {
-                $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
-            } else {
-                $address_line4 = '';
-            }
-            if ($data['consignee_detail']['city'] != null) {
-                $city = $data['consignee_detail']['city'] . ',';
-            } else {
-                $city = '';
-            }
-            if ($data['consignee_detail']['district'] != null) {
-                $district = $data['consignee_detail']['district'] . ',';
-            } else {
-                $district = '';
-            }
-            if ($data['consignee_detail']['postal_code'] != null) {
-                $postal_code = $data['consignee_detail']['postal_code'];
-            } else {
-                $postal_code = '';
-            }
+                if ($data['consignee_detail']['nick_name'] != null) {
+                    $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
+                } else {
+                    $nick_name = '';
+                }
+                if ($data['consignee_detail']['address_line1'] != null) {
+                    $address_line1 = '<p>' . $data['consignee_detail']['address_line1'] . '</p>';
+                } else {
+                    $address_line1 = '';
+                }
+                if ($data['consignee_detail']['address_line2'] != null) {
+                    $address_line2 = '<p>' . $data['consignee_detail']['address_line2'] . '</p>';
+                } else {
+                    $address_line2 = '';
+                }
+                if ($data['consignee_detail']['address_line3'] != null) {
+                    $address_line3 = '<p>' . $data['consignee_detail']['address_line3'] . '</p>';
+                } else {
+                    $address_line3 = '';
+                }
+                if ($data['consignee_detail']['address_line4'] != null) {
+                    $address_line4 = '<p>' . $data['consignee_detail']['address_line4'] . '</p>';
+                } else {
+                    $address_line4 = '';
+                }
+                if ($data['consignee_detail']['city'] != null) {
+                    $city = $data['consignee_detail']['city'] . ',';
+                } else {
+                    $city = '';
+                }
+                if ($data['consignee_detail']['district'] != null) {
+                    $district = $data['consignee_detail']['district'] . ',';
+                } else {
+                    $district = '';
+                }
+                if ($data['consignee_detail']['postal_code'] != null) {
+                    $postal_code = $data['consignee_detail']['postal_code'];
+                } else {
+                    $postal_code = '';
+                }
 
-            if ($data['consignee_detail']['gst_number'] != null) {
-                $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
-            } else {
-                $gst_number = '';
-            }
-            if ($data['consignee_detail']['phone'] != null) {
-                $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
-            } else {
-                $phone = '';
-            }
+                if ($data['consignee_detail']['gst_number'] != null) {
+                    $gst_number = '<p>GST No: ' . $data['consignee_detail']['gst_number'] . '</p>';
+                } else {
+                    $gst_number = '';
+                }
+                if ($data['consignee_detail']['phone'] != null) {
+                    $phone = '<p>Phone No: ' . $data['consignee_detail']['phone'] . '</p>';
+                } else {
+                    $phone = '';
+                }
 
-            $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
+                $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-            if ($data['shipto_detail']['nick_name'] != null) {
-                $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
-            } else {
-                $nick_name = '';
-            }
-            if ($data['shipto_detail']['address_line1'] != null) {
-                $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
-            } else {
-                $address_line1 = '';
-            }
-            if ($data['shipto_detail']['address_line2'] != null) {
-                $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
-            } else {
-                $address_line2 = '';
-            }
-            if ($data['shipto_detail']['address_line3'] != null) {
-                $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
-            } else {
-                $address_line3 = '';
-            }
-            if ($data['shipto_detail']['address_line4'] != null) {
-                $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
-            } else {
-                $address_line4 = '';
-            }
-            if ($data['shipto_detail']['city'] != null) {
-                $city = $data['shipto_detail']['city'] . ',';
-            } else {
-                $city = '';
-            }
-            if ($data['shipto_detail']['district'] != null) {
-                $district = $data['shipto_detail']['district'] . ',';
-            } else {
-                $district = '';
-            }
-            if ($data['shipto_detail']['postal_code'] != null) {
-                $postal_code = $data['shipto_detail']['postal_code'];
-            } else {
-                $postal_code = '';
-            }
-            if ($data['shipto_detail']['gst_number'] != null) {
-                $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
-            } else {
-                $gst_number = '';
-            }
-            if ($data['shipto_detail']['phone'] != null) {
-                $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
-            } else {
-                $phone = '';
-            }
+                if ($data['shipto_detail']['nick_name'] != null) {
+                    $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
+                } else {
+                    $nick_name = '';
+                }
+                if ($data['shipto_detail']['address_line1'] != null) {
+                    $address_line1 = '<p>' . $data['shipto_detail']['address_line1'] . '</p>';
+                } else {
+                    $address_line1 = '';
+                }
+                if ($data['shipto_detail']['address_line2'] != null) {
+                    $address_line2 = '<p>' . $data['shipto_detail']['address_line2'] . '</p>';
+                } else {
+                    $address_line2 = '';
+                }
+                if ($data['shipto_detail']['address_line3'] != null) {
+                    $address_line3 = '<p>' . $data['shipto_detail']['address_line3'] . '</p>';
+                } else {
+                    $address_line3 = '';
+                }
+                if ($data['shipto_detail']['address_line4'] != null) {
+                    $address_line4 = '<p>' . $data['shipto_detail']['address_line4'] . '</p>';
+                } else {
+                    $address_line4 = '';
+                }
+                if ($data['shipto_detail']['city'] != null) {
+                    $city = $data['shipto_detail']['city'] . ',';
+                } else {
+                    $city = '';
+                }
+                if ($data['shipto_detail']['district'] != null) {
+                    $district = $data['shipto_detail']['district'] . ',';
+                } else {
+                    $district = '';
+                }
+                if ($data['shipto_detail']['postal_code'] != null) {
+                    $postal_code = $data['shipto_detail']['postal_code'];
+                } else {
+                    $postal_code = '';
+                }
+                if ($data['shipto_detail']['gst_number'] != null) {
+                    $gst_number = '<p>GST No: ' . $data['shipto_detail']['gst_number'] . '</p>';
+                } else {
+                    $gst_number = '';
+                }
+                if ($data['shipto_detail']['phone'] != null) {
+                    $phone = '<p>Phone No: ' . $data['shipto_detail']['phone'] . '</p>';
+                } else {
+                    $phone = '';
+                }
 
-            $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
+                $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
         ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
-            $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
-            $output_file = '/qr-code/img-' . time() . '.svg';
-            Storage::disk('public')->put($output_file, $generate_qrcode);
-            $fullpath = storage_path('app/public/' . $output_file);
-            //echo'<pre>'; print_r($fullpath);
-            //  dd($generate_qrcode);
-            // if ($request->typeid == 1) {
-            //     $adresses = '<table width="100%">
-            //             <tr>
-            //                 <td style="width:50%">' . $conr_add . '</td>
-            //                 <td style="width:50%">' . $consnee_add . '</td>
-            //             </tr>
-            //         </table>';
-            // } else if ($request->typeid == 2) {
-            $adresses = '<table width="100%">
+                $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
+                $output_file = '/qr-code/img-' . time() . '.svg';
+                Storage::disk('public')->put($output_file, $generate_qrcode);
+                $fullpath = storage_path('app/public/' . $output_file);
+                //echo'<pre>'; print_r($fullpath);
+                //  dd($generate_qrcode);
+                // if ($request->typeid == 1) {
+                //     $adresses = '<table width="100%">
+                //             <tr>
+                //                 <td style="width:50%">' . $conr_add . '</td>
+                //                 <td style="width:50%">' . $consnee_add . '</td>
+                //             </tr>
+                //         </table>';
+                // } else if ($request->typeid == 2) {
+                $adresses = '<table width="100%">
                         <tr>
                             <td style="width:33%">' . $conr_add . '</td>
                             <td style="width:33%">' . $consnee_add . '</td>
                             <td style="width:33%">' . $shiptoadd . '</td>
                         </tr>
                     </table>';
-            // }
+                // }
 
-            // $type = count($pdftype);
-            foreach ($pdftype as $i => $pdf) {
+                // $type = count($pdftype);
+                foreach ($pdftype as $i => $pdf) {
 
-                if ($pdf == 1) {
-                    $type = 'ORIGINAL';
-                } elseif ($pdf == 2) {
-                    $type = 'DUPLICATE';
-                } elseif ($pdf == 3) {
-                    $type = 'TRIPLICATE';
-                } elseif ($pdf == 4) {
-                    $type = 'QUADRUPLE';
-                }
+                    if ($pdf == 1) {
+                        $type = 'ORIGINAL';
+                    } elseif ($pdf == 2) {
+                        $type = 'DUPLICATE';
+                    } elseif ($pdf == 3) {
+                        $type = 'TRIPLICATE';
+                    } elseif ($pdf == 4) {
+                        $type = 'QUADRUPLE';
+                    }
 
-                $html = '<!DOCTYPE html>
+                    $html = '<!DOCTYPE html>
                     <html lang="en">
                         <head>
                             <title>PDF</title>
@@ -3331,7 +3304,7 @@ class ConsignmentController extends Controller
                         <div class="container">
                             <div class="row">';
 
-                $html .= '<h2>' . $branch_add->name . '</h2>
+                    $html .= '<h2>' . $branch_add->name . '</h2>
                                 <table width="100%">
                                     <tr>
                                         <td width="50%">
@@ -3354,7 +3327,7 @@ class ConsignmentController extends Controller
                                         </td>
                                     </tr>
                                 </table></div></div>';
-                $html .= '<div class="row"><div class="col-sm-6">
+                    $html .= '<div class="row"><div class="col-sm-6">
                                 <table width="100%">
                                 <tr>
                             <td width="30%">
@@ -3369,54 +3342,54 @@ class ConsignmentController extends Controller
                                 <p><b>Driver Name</b></p>
                             </td>
                             <td width="30%">';
-                if (@$data['consignment_no'] != '') {
-                    $html .= '<p>' . $data['id'] . '</p>';
-                } else {
-                    $html .= '<p>N/A</p>';
-                }
-                if (@$data['consignment_date'] != '') {
-                    $html .= '<p>' . date('d-m-Y', strtotime($data['consignment_date'])) . '</p>';
-                } else {
-                    $html .= '<p> N/A </p>';
-                }
-                if (@$data['consigner_detail']['city'] != '') {
-                    $html .= '<p> ' . $data['consigner_detail']['city'] . '</p>';
-                } else {
-                    $html .= '<p> N/A </p>';
-                }
-                if (@$data['order_id'] != '') {
-                    $html .= '<p>' . $data['order_id'] . '</p>';
-                } else {
-                    $html .= '<p> - </p>';
-                }
-                if (@$data['invoice_no'] != '') {
-                    $html .= '<p>' . $data['invoice_no'] . '</p>';
-                } else {
-                    $html .= '<p> N/A </p>';
-                }
-                if (@$data['invoice_date'] != '') {
-                    $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
-                } else {
-                    $html .= '<p> N/A </p>';
-                }
+                    if (@$data['consignment_no'] != '') {
+                        $html .= '<p>' . $data['id'] . '</p>';
+                    } else {
+                        $html .= '<p>N/A</p>';
+                    }
+                    if (@$data['consignment_date'] != '') {
+                        $html .= '<p>' . date('d-m-Y', strtotime($data['consignment_date'])) . '</p>';
+                    } else {
+                        $html .= '<p> N/A </p>';
+                    }
+                    if (@$data['consigner_detail']['city'] != '') {
+                        $html .= '<p> ' . $data['consigner_detail']['city'] . '</p>';
+                    } else {
+                        $html .= '<p> N/A </p>';
+                    }
+                    if (@$data['order_id'] != '') {
+                        $html .= '<p>' . $data['order_id'] . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
+                    if (@$data['invoice_no'] != '') {
+                        $html .= '<p>' . $data['invoice_no'] . '</p>';
+                    } else {
+                        $html .= '<p> N/A </p>';
+                    }
+                    if (@$data['invoice_date'] != '') {
+                        $html .= '<p>' . date('d-m-Y', strtotime($data['invoice_date'])) . '</p>';
+                    } else {
+                        $html .= '<p> N/A </p>';
+                    }
 
-                if (@$data['invoice_amount'] != '') {
-                    $html .= '<p>' . $data['invoice_amount'] . '</p>';
-                } else {
-                    $html .= '<p> N/A </p>';
-                }
-                if (@$data['vehicle_detail']['regn_no'] != '') {
-                    $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
-                } else {
-                    $html .= '<p> - </p>';
-                }
-                if (@$data['driver_detail']['name'] != '') {
-                    $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
-                } else {
-                    $html .= '<p> - </p>';
-                }
+                    if (@$data['invoice_amount'] != '') {
+                        $html .= '<p>' . $data['invoice_amount'] . '</p>';
+                    } else {
+                        $html .= '<p> N/A </p>';
+                    }
+                    if (@$data['vehicle_detail']['regn_no'] != '') {
+                        $html .= '<p>' . $data['vehicle_detail']['regn_no'] . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
+                    if (@$data['driver_detail']['name'] != '') {
+                        $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
 
-                $html .= '</td>
+                    $html .= '</td>
                             <td width="50%" colspan="3" style="text-align: center;">
                             <img src= "' . $fullpath . '" alt="barcode">
                             </td>
@@ -3427,7 +3400,7 @@ class ConsignmentController extends Controller
             </div>
             <div class="main">' . @$adresses . '</div>
             <span><hr id="e"></hr></span><br>';
-                $html .= '<div class="bb">
+                    $html .= '<div class="bb">
                 <table class="aa" width="100%">
                     <tr>
                         <th class="cc">Sr.No.</th>
@@ -3438,21 +3411,21 @@ class ConsignmentController extends Controller
                         <th class="cc">Freight</th>
                         <th class="cc">Payment Terms</th>
                     </tr>';
-                ///
-                $counter = 0;
-                foreach ($data['consignment_items'] as $k => $dataitem) {
-                    $counter = $counter + 1;
-                    $html .= '<tr>' .
-                        '<td class="cc">' . $counter . '</td>' .
-                        '<td class="cc">' . $dataitem['description'] . '</td>' .
-                        '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
-                        '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
-                        '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
-                        '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
-                        '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
-                        '</tr>';
-                }
-                $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
+                    ///
+                    $counter = 0;
+                    foreach ($data['consignment_items'] as $k => $dataitem) {
+                        $counter = $counter + 1;
+                        $html .= '<tr>' .
+                            '<td class="cc">' . $counter . '</td>' .
+                            '<td class="cc">' . $dataitem['description'] . '</td>' .
+                            '<td class="cc">' . $dataitem['packing_type'] . ' ' . $dataitem['quantity'] . '</td>' .
+                            '<td class="cc">' . $dataitem['weight'] . ' Kgs.</td>' .
+                            '<td class="cc">' . $dataitem['gross_weight'] . ' Kgs.</td>' .
+                            '<td class="cc">INR ' . $dataitem['freight'] . '</td>' .
+                            '<td class="cc">' . $dataitem['payment_type'] . '</td>' .
+                            '</tr>';
+                    }
+                    $html .= '<tr><td colspan="2" class="cc"><b>TOTAL</b></td>
                             <td class="cc">' . $data['total_quantity'] . '</td>
                             <td class="cc">' . $data['total_weight'] . ' Kgs.</td>
                             <td class="cc">' . $data['total_gross_weight'] . ' Kgs.</td>
@@ -3461,7 +3434,7 @@ class ConsignmentController extends Controller
                         </tr></table></div><br><br>
                         <span><hr id="e"></hr></span>';
 
-                $html .= '<div class="nn">
+                    $html .= '<div class="nn">
                                 <table  width="100%">
                                     <tr>
                                         <td>
@@ -3477,14 +3450,14 @@ class ConsignmentController extends Controller
                         </body>
                     </html>';
 
-                $pdf = \App::make('dompdf.wrapper');
-                $pdf->loadHTML($html);
-                $pdf->setPaper('A4', 'portrait');
-                $pdf->save(public_path() . '/bulk/congn-' . $i . '-' . $value . '.pdf')->stream('congn-' . $i . '-' . $value . '.pdf');
-                $pdf_name[] = 'congn-' . $i . '-' . $value . '.pdf';
+                    $pdf = \App::make('dompdf.wrapper');
+                    $pdf->loadHTML($html);
+                    $pdf->setPaper('A4', 'portrait');
+                    $pdf->save(public_path() . '/bulk/congn-' . $i . '-' . $value . '.pdf')->stream('congn-' . $i . '-' . $value . '.pdf');
+                    $pdf_name[] = 'congn-' . $i . '-' . $value . '.pdf';
+                }
             }
         }
-    }
         $pdfMerger = PDFMerger::init();
         foreach ($pdf_name as $pdf) {
             $pdfMerger->addPDF(public_path() . '/bulk/' . $pdf);
@@ -3508,7 +3481,7 @@ class ConsignmentController extends Controller
             $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                 ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
         })->get();
-            
+
         $result = json_decode(json_encode($transcationview), true);
         //  echo '<pre>'; print_r($result); die;
 
@@ -3721,19 +3694,19 @@ class ConsignmentController extends Controller
         $delivery_status = $json['job_state'];
 
         //Update LR
-        if($delivery_status == 'Successful'){
-                $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
-                //Update DRS
-                $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
-        }else{
-                $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
-                //Update DRS
-                $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
+        if ($delivery_status == 'Successful') {
+            $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+            //Update DRS
+            $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state'], 'delivery_date' => $newformat]);
+        } else {
+            $update = \DB::table('consignment_notes')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
+            //Update DRS
+            $updatedrs = \DB::table('transaction_sheets')->where('job_id', $job_id)->limit(1)->update(['delivery_status' => $json['job_state']]);
 
         }
 
         //Save jobs response
-        
+
         $jobData['job_id'] = $json['job_id'];
         $jobData['response_data'] = $data;
         $jobData['status'] = $json['job_state'];
@@ -3771,8 +3744,7 @@ class ConsignmentController extends Controller
 
         return response()->json($response);
 
-        event(new \App\Events\RealTimeMessage('Status updated as '. $json['job_state']. ' for consignment no -'.$job_id));
-
+        event(new \App\Events\RealTimeMessage('Status updated as ' . $json['job_state'] . ' for consignment no -' . $job_id));
 
     }
 // //////////   ACTIVE CANCEL STATUS DRS
@@ -3812,14 +3784,14 @@ class ConsignmentController extends Controller
 
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
-            if(!empty($file)){
-            $filename = $file->getClientOriginalName();
-            $file->move(public_path('drs/Image'), $filename);
-            }else{
-                $filename = NULL;
+            if (!empty($file)) {
+                $filename = $file->getClientOriginalName();
+                $file->move(public_path('drs/Image'), $filename);
+            } else {
+                $filename = null;
             }
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename,'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 $response['success'] = true;
@@ -3843,8 +3815,8 @@ class ConsignmentController extends Controller
 
     public function allSaveDRS(Request $request)
     {
-          
-          if (!empty($request->data)) {
+
+        if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
                 // echo'<pre>'; print_r($save_data); die;
@@ -3888,41 +3860,38 @@ class ConsignmentController extends Controller
         }
     }
 
-    public function addmoreLr(Request $request){
+    public function addmoreLr(Request $request)
+    {
 
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $baseclient = explode(',',$authuser->baseclient_id);
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.city as consignee_city', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
-        ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-        ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-        ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        ->where('consignment_notes.status', '=', '2')
-        ->where('consignment_notes.status', '!=', 5);
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+            ->where('consignment_notes.status', '=', '2')
+            ->where('consignment_notes.status', '!=', 5);
 
-        if($authuser->role_id ==1){
+        if ($authuser->role_id == 1) {
             $data;
-        }
-        elseif($authuser->role_id ==4){
+        } elseif ($authuser->role_id == 4) {
             $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        }
-        elseif($authuser->role_id ==6){
+        } elseif ($authuser->role_id == 6) {
             $data = $data->whereIn('base_clients.id', $baseclient);
-        }
-        elseif($authuser->role_id ==7){
-             $data = $data->whereIn('regional_clients.id', $regclient);
-        }
-        else{
+        } elseif ($authuser->role_id == 7) {
+            $data = $data->whereIn('regional_clients.id', $regclient);
+        } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
-        
+
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
@@ -3931,8 +3900,7 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['messages'] = 'img uploaded successfully';
         return Response::json($response);
-        
-        
+
     }
 
     public function addunverifiedLr(Request $request)
@@ -3951,8 +3919,7 @@ class ConsignmentController extends Controller
         $simplyfy = json_decode(json_encode($consignment), true);
 
         $drs_order_no = DB::table('transaction_sheets')->select('order_no')->where('drs_no', $drs_no)->latest('order_no')->first();
-        $orderno = $drs_order_no->order_no; 
-
+        $orderno = $drs_order_no->order_no;
 
         $i = $orderno;
         foreach ($simplyfy as $value) {
@@ -3972,10 +3939,11 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-        
+
     }
 
-    public function viewupdateInvoice(Request $request){
+    public function viewupdateInvoice(Request $request)
+    {
         $consignment = $_GET['consignment_id'];
         $consignmentitm = ConsignmentItem::where('consignment_id', $consignment)->get();
 
@@ -3984,7 +3952,6 @@ class ConsignmentController extends Controller
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
 
-
     }
     public function allupdateInvoice(Request $request)
     {
@@ -3992,23 +3959,23 @@ class ConsignmentController extends Controller
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
 
-                $itm_id   =         $save_data['id'];
-                $billno   =         @$save_data['e_way_bill'];
-                $billdate =         @$save_data['e_way_bill_date'];
+                $itm_id = $save_data['id'];
+                $billno = @$save_data['e_way_bill'];
+                $billdate = @$save_data['e_way_bill_date'];
 
-                if(!empty($save_data['e_way_bill_date'])){
+                if (!empty($save_data['e_way_bill_date'])) {
                     $billdate = $save_data['e_way_bill_date'];
-                }else{
-                    $billdate = NULL;
+                } else {
+                    $billdate = null;
                 }
 
-                if(!empty($billno)){
-                     ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
-                if(!empty($billdate)){
-                    ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
-                   }
-                }else{
-                    if(!empty($billdate)){
+                if (!empty($billno)) {
+                    ConsignmentItem::where('id', $itm_id)->update(['e_way_bill' => $billno]);
+                    if (!empty($billdate)) {
+                        ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
+                    }
+                } else {
+                    if (!empty($billdate)) {
                         ConsignmentItem::where('id', $itm_id)->update(['e_way_bill_date' => $billdate]);
                     }
                 }
@@ -4025,21 +3992,21 @@ class ConsignmentController extends Controller
     public function getJob(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id','consignment_notes.tracking_link as tracking_link','consignment_notes.delivery_status as delivery_status','jobs.status as job_status', 'jobs.response_data as trail','consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
-            ->where('consignment_notes.job_id',$request->job_id )
+        $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
+            ->where('consignment_notes.job_id', $request->job_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->leftjoin('jobs', function($data){
+            ->leftjoin('jobs', function ($data) {
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
-            
-        if(!empty($job->trail)){
-            $job_data= json_decode($job->trail);
+
+        if (!empty($job->trail)) {
+            $job_data = json_decode($job->trail);
             $tracking_history = array_reverse($job_data->task_history);
             // array_push($tracking_history,$job->job_id,$job->delivery_status);
-            
-            $url    =   URL::to($this->prefix.'/consignments');
+
+            $url = URL::to($this->prefix . '/consignments');
             $response['success'] = true;
             $response['success_message'] = "Jobs fetch successfully";
             $response['error'] = false;
@@ -4049,8 +4016,8 @@ class ConsignmentController extends Controller
             $response['cnr_pincode'] = $job->cnr_pincode;
             $response['cne_pincode'] = $job->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
-        }else{
-            $url    =   URL::to($this->prefix.'/consignments');
+        } else {
+            $url = URL::to($this->prefix . '/consignments');
             $response['success'] = true;
             $response['success_message'] = "Job data not found";
             $response['error'] = false;
@@ -4061,14 +4028,14 @@ class ConsignmentController extends Controller
             $response['cne_pincode'] = $job->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
         }
-        
+
         return response()->json($response);
     }
 
     // public function invoiceCheck(Request $request)
     // {
     //     $invoice_check = Consignmentitem::where('invoice_no', $request->invc_no)->first();
-        
+
     //     if(isset($request->invc_no)){
     //         if (isset($invoice_check)) {
     //             $response['success'] = true;

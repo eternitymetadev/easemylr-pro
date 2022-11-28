@@ -41,6 +41,7 @@ class ConsignmentNote extends Model
         'edd',
         'order_id',
         'status',
+        'booked_drs',
         'job_id',
         'tracking_link',
         'delivery_status',
@@ -99,6 +100,11 @@ class ConsignmentNote extends Model
     public function RegClient()
     {
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
+    }
+
+    public function DrsDetail()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
 
 }

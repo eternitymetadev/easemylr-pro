@@ -1,4 +1,7 @@
+// const { each } = require("lodash");
+
 jQuery(document).ready(function () {
+
     /* check box checked create/update user permission page  */
     jQuery(document).on("click", "#ckbCheckAll", function () {
         if (this.checked) {
@@ -516,7 +519,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
-
+                
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
                 );
@@ -526,7 +529,6 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
-
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -864,6 +866,42 @@ jQuery(document).ready(function () {
                     '][gross_weight]"></td>';
                 tds +=
                     '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                tds += "</tr>";
+            }
+
+            if ($("tbody", this).length > 0) {
+                $("tbody", this).append(tds);
+            } else {
+                $(this).append(tds);
+            }
+        });
+    });
+
+    // Add Another Row in PRS driver task
+    $(document).on("click", ".insert-moreprs", function () {
+        $("#create-driver-task").each(function () {
+            var item_no = $("tr", this).length;
+            if (item_no <= 6) {
+                var tds = "<tr>";
+
+                tds +=
+                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
+                tds +=
+                    '<td><input type="text" class="form-control form-small invc_no" name="data['+
+                    item_no +'][invoice_no]" id="'+item_no+'" value=""></td>';
+                tds +=
+                    '<td><input type="date" class="form-control form-small invc_date" name="data[' +
+                    item_no +'][invoice_date]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                    item_no +'][quantity]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small net" name="data[' +
+                    item_no +'][weight]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small gross" name="data[' +
+                    item_no +'][gross_weight]"></td>';
+                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
             }
 
@@ -1474,7 +1512,7 @@ jQuery(document).ready(function () {
                     "</td><td>" +
                     field +
                     "</td>";
-                    if(value.job_id ==''){
+                    if(value.job_id =='' || value.job_id == null){
                     if(data.role_id != 7){
                     row += "<td>" + buton +"</td>";
                     }}else{
@@ -2383,3 +2421,132 @@ $('#item_master').submit(function (e) {
         }
     });
 });
+
+ /*====== In create PRS  get consigner on click regional client =====*/
+
+ $('#select_prsregclient').change(function(e) {
+    var selected = $(e.target).val();
+    console.dir(selected);
+    var regclient_id = $(this).val();
+    $("#select_consigner").empty();
+    $.ajax({
+        url: "/get-consignerprs",
+        type: "get",
+        cache: false,
+        data: { regclient_id: regclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {            
+            $("#select_consigner").append(
+                '<option value="">select consigner</option>'
+            );
+
+            $.each(res.data, function (index, value) {
+                $("#select_consigner").append(
+                    '<option value="' +
+                    value.id +
+                    '">' +
+                    value.nick_name +
+                    "</option>"
+                );
+            });
+           
+        },
+    });
+});
+
+$(document).on("click", ".receive-vehicle", function () {
+    var prs_id = jQuery(this).attr("data-prsid");
+    var consinger_ids = jQuery(this).attr("data-cnrid");
+    
+    $.ajax({
+        type: "get",
+        url: APP_URL + "/vehicle/get-item",
+        data: { prs_id:prs_id, consinger_ids:consinger_ids },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $("#vehicleitems_table tbody").empty();
+        },
+        success: function (res) {
+            console.log(res);
+            if (res.data) {
+                $(".prs_id").val(res.data_prsid);
+                var consigner_count= res.data;
+                rows = '';
+
+                $.each(res.data, function (index, value) {
+                    var inv_total = (value.prs_task_items).length;
+                    var qtyarr = [];
+                    $.each(value.prs_task_items, function (index, qtyval) {
+                        var qty = qtyval.quantity;
+                        qtyarr.push(qty);
+                    });
+                    var toNumbers = qtyarr.map(Number);
+                    var qty_sum = toNumbers.reduce((x, y) => x + y);
+                    
+                    rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+index+'][consigner_id]" value="'+ value.consigner_detail.nick_name +'" readonly></td>';
+                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]" value="'+ inv_total +'"></td>';
+                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"  value="'+ qty_sum +'"></td>';
+                    rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+index+'][receive_qty]"></td>';
+                    rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+index+'][remaining_qty]"></td>';
+                    rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+index+'][remarks]"></td></tr>';
+                });
+                
+                $('#vehicleitems_table tbody').append(rows);
+            }
+        },
+    });
+
+});
+
+// prs driver task status change
+jQuery(document).on("click", ".taskstatus_change", function (event) {
+    event.stopPropagation();
+    let id = jQuery(this).attr("data-drivertaskid");
+    var prsdrivertask_status = "prsdrivertask_status";
+
+    // jQuery("#prs-commonconfirm").modal("show");
+    jQuery(".commonconfirmclick").one("click", function () {
+        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+
+        jQuery.ajax({
+            url: "driver-tasks",
+            type: "get",
+            cache: false,
+            data: data,
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                    "content"
+                ),
+            },
+            processData: true,
+            beforeSend: function () {
+                // jQuery("input[type=submit]").attr("disabled", "disabled");
+            },
+            complete: function () {
+                //jQuery("#loader-section").css('display','none');
+            },
+
+            success: function (response) {
+                if (response.success) {
+                    jQuery("#prs-commonconfirm").modal("hide");
+                    if (response.page == "drivertsak-update") {
+                        setTimeout(() => {
+                            window.location.href = response.redirect_url;
+                        }, 10);
+                    }
+                }
+            },
+        });
+    });
+});
+

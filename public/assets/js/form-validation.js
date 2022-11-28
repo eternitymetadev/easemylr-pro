@@ -1099,32 +1099,65 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    /*===== Create prs task item =====*/
+    $('#createprstaskitem').validate({ 
+        rules: {
+            'quantity[]': {
+                required: true
+            },
+           'net_weight[]': {
+                required: true
+            },
+           'gross_weight[]': {
+                required: true
+            }
+        },
+        messages: {
+            'quantity[]': {
+                required: "Enter quantity"
+            },
+            'net_weight[]': {
+                required: "Enter weight"
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight"
+            },
+            
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+
+    });
+
     $(".qnt").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter quantity."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter quantity."
+            },
+        });
     });
     $(".net").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter net weight."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter net weight."
+            },
+        });
     });
     $(".gross").each(function()
     {
         $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: "Enter gross weight."
-                },
-            });
+            required: true,
+            messages: {
+                required: "Enter gross weight."
+            },
+        });
     });
   
     /*===== Create payment =====*/
@@ -1496,7 +1529,87 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-    
+
+    // create Pickup run sheet
+    jQuery('#createprs').validate({
+        rules:
+        {
+            regclient_id: {
+                required: true,
+            },
+            consigner_id: {
+                required: true,
+            },
+            vehicle_id: {
+                // required: true,
+            },
+            driver_id: {
+                // required: true,
+            },
+
+        },
+        messages:
+        {
+            regclient_id: {
+                required: "Select regional client",
+            },
+            consigner_id: {
+                required: "Select consigner",
+            },
+            vehicle_id: {
+                required: "",
+            },
+            driver_id: {
+                required: "",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+    $(".consigner_prs").each(function()
+    {
+        $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Select Consigner."
+                },
+            });
+    });
+
+    /*===== Create prs receive vehicle on hub gate =====*/
+    jQuery('#create-receivevehicle').validate({
+        rules:
+        {
+            name: {
+                required: true,
+            },
+           
+        },
+        messages:
+        {
+            name: {
+                required: "Location name is required"
+            },
+           
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+            jQuery('#receive-vehicle').modal('hide');
+        }
+    });
+
+    $(".remarks").each(function()
+    {
+        $(this).rules('add', {
+            required: true,
+            messages: {
+                required: "Enter remarks."
+            },
+        });
+    });
 
 
 
@@ -1657,6 +1770,10 @@ function formSubmitRedirect(form)
             }else if(response.page == 'settings-branch-address'){
                 setTimeout(function(){ location.reload(); }, 50);
             }else if(response.page == 'clientdetail-create' || response.page == 'clientdetail-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'prs-create' || response.page == 'prs-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-prstaskitem'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

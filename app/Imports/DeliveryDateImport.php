@@ -25,10 +25,13 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $lr_no = ConsignmentNote::where('id',$row['lr_no'])->first();
 
         if(empty($lr_no->delivery_date)){
-            ConsignmentNote::where('id', $row['lr_no'])->update([
-                'delivery_date'  => $delivery_date,
-                'delivery_status'    => 'Successful',
-            ]);
+            if(!empty($delivery_date)){
+                ConsignmentNote::where('id', $row['lr_no'])->update([
+                    'delivery_date'  => $delivery_date,
+                    'delivery_status' => 'Successful',
+                    'signed_drs'    => $row['pod_image'],
+                ]);
+            }
         }
     }
 }
