@@ -287,7 +287,7 @@ class TransactionSheetsController extends Controller
                        'delivery_notes'            =>  $value->delivery_notes,
                        'img'                        => $pod_img
                   ];
-            }
+            }   
             if ($consignments) {
                 return response([
                     'status' => 'success',
