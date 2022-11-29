@@ -8,6 +8,7 @@ use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
+use App\Models\ItemMaster;
 use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
 use App\Models\Job;
@@ -218,6 +219,7 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $item_lists = ItemMaster::where('status', '1')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
@@ -234,7 +236,7 @@ class ConsignmentController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'item_lists' => $item_lists]);
     }
 
     /**
@@ -245,7 +247,6 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        echo'<pre>'; print_r($request->all()); die;
         try {
             DB::beginTransaction();
 

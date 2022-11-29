@@ -466,11 +466,10 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control" name="data[1][item_data][0][item]">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control item_change" name="data[1][item_data][0][item]">
+                                                            @foreach($item_lists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
@@ -483,7 +482,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][net_weight]">
+                                                            <input type="number" class="form-control net_weight" name="data[1][item_data][0][net_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -598,6 +597,8 @@
             </div>
 
         </form>
+
+        
     </div>
     <!-- widget-content-area -->
 
@@ -607,6 +608,7 @@
         function insertMaintableRow() {
             var tid = $("#tid").val();
             $(".items_table").each(function () {
+                
                 var item_no = parseInt(tid)+1;
                 $("#tid").val(item_no);
                 // var item_no = $(".maindiv table").not(".childTable").length;
@@ -661,11 +663,10 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control" name="data[`+ item_no +`][item_data][0][item]">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control item_change" name="data[`+ item_no +`][item_data][0][item]">
+                                                            @foreach($item_lists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
@@ -729,11 +730,10 @@
                                 <td width="200px">
                                     <div class="form-group form-group-sm">
                                         <label>Item</label>
-                                        <select class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][item]">
-                                            <option>Option 1</option>
-                                            <option>Option 2</option>
-                                            <option>Option 3</option>
-                                            <option>Option 4</option>
+                                        <select class="form-control item_change" name="data[`+mainrows+`][item_data][`+itemrows+`][item]">
+                                        @foreach($item_lists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                         </select>
                                     </div>
                                 </td>
@@ -855,6 +855,10 @@
                 }
             })
         });
+        ///
+        $('.item_change').on('change', function () {
+                alert('gg');
+            });
 
 
     </script>
