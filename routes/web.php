@@ -255,6 +255,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
