@@ -8,6 +8,7 @@ use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
 use App\Models\Job;
 use App\Models\Location;
@@ -408,7 +409,7 @@ class ConsignmentController extends Controller
 
     public function storeLRItem(Request $request)
     {
-        echo'<pre>'; print_r($request->all()); die;
+        // echo'<pre>'; print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
@@ -542,11 +543,24 @@ class ConsignmentController extends Controller
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;
+                    // dd($get_data);
                     foreach ($get_data as $key => $save_data) {
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
+
+                        if($saveconsignmentitems){
+                            // dd($save_data['item_data']);
+                            if(!empty($save_data['item_data'])){
+                                foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                    $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                                    $save_itemdata['status'] = 1;
+                                    $saveconsignmentsubitems = ConsignmentSubItem::create($save_itemdata);
+                                }
+                            }
+                        }
                     }
+
                 }
                 $url = $this->prefix . '/consignments';
                 $response['success'] = true;

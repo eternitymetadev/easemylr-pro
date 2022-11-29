@@ -269,8 +269,7 @@
         </div>
 
 
-        <form class="general_form" method="POST" action="{{url($prefix.'/consignments/createlritem')}}" id="createconsignment"
-              style="margin: auto; ">
+        <form class="general_form" method="POST" action="{{url($prefix.'/consignments/createlritem')}}" id="createconsignment" style="margin: auto;">
 
             {{--bill to info--}}
             <div class="form-row">
@@ -484,7 +483,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][weight]">
+                                                            <input type="number" class="form-control" name="data[1][item_data][0][net_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -497,7 +496,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][c_weight]">
+                                                            <input type="number" class="form-control" name="data[1][item_data][0][chargeable_weight]">
                                                         </div>
 
                                                     </td>
@@ -679,7 +678,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][weight]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][net_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -691,7 +690,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][c_weight]">
+                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][chargeable_weight]">
                                                         </div>
 
                                                     </td>
@@ -725,7 +724,7 @@
                 
                 // alert(mainrows +'outer');
                 var itemrows = $(this).parents('.mainTr').children().children().eq(1).children().children('.childTable').children().children().length;
-                alert(itemrows +'inner');
+                // alert(itemrows +'inner');
                 var itemTds = `<tr>
                                 <td width="200px">
                                     <div class="form-group form-group-sm">
@@ -747,7 +746,7 @@
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Net Weight</label>
-                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][weight]">
+                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][net_weight]">
                                     </div>
                                 </td>
                                 <td>
@@ -760,7 +759,7 @@
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Chargeable Weight</label>
-                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][c_weight]">
+                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][chargeable_weight]">
                                     </div>
 
                                 </td>

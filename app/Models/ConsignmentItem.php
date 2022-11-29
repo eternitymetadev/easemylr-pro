@@ -27,4 +27,10 @@ class ConsignmentItem extends Model
         'created_at',
         'updated_at'
     ];
+    
+    public function ConsignmentSubItems()
+    {
+        return $this->hasMany('App\Models\ConsignmentSubItem','conitem_id','id');
+    }
+
 }
