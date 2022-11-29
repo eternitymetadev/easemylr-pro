@@ -253,7 +253,6 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        echo'<pre>'; print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
