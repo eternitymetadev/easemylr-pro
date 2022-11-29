@@ -2472,3 +2472,13 @@ label {
     padding-bottom: 0 !important;
 }
 
+.dt-buttons .dt-button {
+    min-width: 83px;
+    height: 38px;
+    font-size: 13px;
+}
+
+.page-header .btn {
+    padding: 9px;
+    font-size: 15px;
+}

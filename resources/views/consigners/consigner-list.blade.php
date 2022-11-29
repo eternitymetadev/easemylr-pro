@@ -370,7 +370,7 @@
                     <div class="modal-footer d-flex justify-content-end align-items-center mt-3 pt-3"
                          style="gap: 1rem;">
                         <button type="button" style="min-width: 80px" class="btn btn-outline-primary"
-                                onclick="closeConsignerDetaislModal()" data-dismiss="modal">
+                                onclick="closeConsignerDetaislModal()">
                             Edit
                         </button>
                         <button type="button" style="min-width: 80px" class="btn btn-outline-primary"
@@ -525,27 +525,21 @@
                                            placeholder="">
                                 </div>
 
-                                <div class="col-md-12 d-flex justify-content-end align-items-center" style="gap: 1rem;">
-                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close
-                                    </button>
-                                    <button type="submit" style="min-width: 120px" class="btn btn-primary">Update
-                                    </button>
-                                </div>
+                            </div>
 
+                            <div class="modal-footer d-flex justify-content-end align-items-center mt-3 pt-3"
+                                 style="gap: 1rem;">
+                                <button type="button" style="min-width: 80px" class="btn btn-outline-primary"
+                                        data-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="submit" style="min-width: 80px" class="btn btn-primary"
+                                        data-dismiss="modal">
+                                    Update
+                                </button>
                             </div>
 
                         </form>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-end align-items-center mt-3 pt-3"
-                         style="gap: 1rem;">
-                        <button type="button" style="min-width: 80px" class="btn btn-outline-primary"
-                                data-dismiss="modal">
-                            Edit
-                        </button>
-                        <button type="button" style="min-width: 80px" class="btn btn-outline-primary"
-                                data-dismiss="modal">
-                            Close
-                        </button>
                     </div>
                 </div>
             </div>
@@ -608,7 +602,10 @@
 
 
         function closeConsignerDetaislModal() {
-            document.getElementById('editConsignerIcon').click();
+            $('#consignerDetailsModal').modal('hide');
+            setTimeout(() => {
+                $('#editConsignerIcon').click();
+            }, 400)
         }
 
     </script>

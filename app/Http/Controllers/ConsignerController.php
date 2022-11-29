@@ -67,10 +67,10 @@ class ConsignerController extends Controller
                     }
                     $regnl_row = '<td valign="middle" style="max-width: 350px">
                             <p class="consigner">
-                                <span class="legalName" title="consigner legal name">
+                                <span class="legalName" title="'.$regional.'">
                                     '.$regional.'
                                 </span>
-                                <span title="consigner name">
+                                <span title="'.$row->nick_name.'">
                                     '.$row->nick_name.'
                                 </span>
                             </p>
