@@ -868,6 +868,8 @@
         // select item onchange
         function getItem(item)
         {
+        //    var itemval = $(this).item.value;
+        //    alert(itemval);
             var item_val = item.value;
             $.ajax({
                 url: '/get-items',
@@ -882,9 +884,10 @@
                 success: function (res) {
                     console.log(res);
                     if (res.success == true) {
-                        $(".net").val(res.item.net_weight);
-                        $(".gross").val(res.item.gross_weight);
-                        $(".charge_wt").val(res.item.chargable_weight);
+                        // $(".net").val(res.item.net_weight);
+                        $('.select_item').parents().parents(':first').siblings().eq(1).children().children('input, .net').val(res.item.net_weight);
+                        $('.select_item').parents().parents().children().eq(4).children().children('input, .gross').val(res.item.gross_weight);
+                        $('.select_item').parents().parents().children().eq(5).children().children('input, .charge_wt').val(res.item.chargable_weight);
                     }
                 }
             });
