@@ -2398,3 +2398,87 @@ code {
         display: none;
     }
 }
+
+
+/* ------- amit css ------ */
+label {
+    margin-bottom: 0 !important;
+}
+
+.form-group label, label {
+    font-size: 13px !important;
+    color: #888 !important;
+}
+
+.editIcon, .deleteIcon, .viewIcon {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    height: 30px;
+    width: 30px;
+    border-radius: 50vh;
+    transition: all 200ms ease-in-out;
+}
+
+.editIcon svg, .deleteIcon svg, .viewIcon svg {
+    height: 14px;
+    width: 14px;
+    transition: all 200ms ease-in-out;
+}
+
+.editIcon:hover svg, .deleteIcon:hover svg, .viewIcon:hover svg {
+    height: 16px;
+    width: 16px;
+    transition: all 200ms ease-in-out;
+    color: #fff;
+}
+
+.editIcon:hover {
+    background-color: #f9b808;
+}
+.viewIcon:hover {
+    background-color: #002ac4;
+}
+
+.deleteIcon:hover {
+    background-color: #dc3545;
+}
+
+.editIcon svg {
+    color: #c48e00;
+}
+.viewIcon svg {
+    color: #002ac4;
+}
+
+.deleteIcon {
+    color: #dc3545;
+}
+
+.deleteAlertIcon{
+    height: 3rem;
+    width: 3rem;
+    color: chocolate;
+}
+
+
+.dataTables_empty {
+    height: 340px;
+}
+
+.layout-spacing {
+    padding-bottom: 0 !important;
+}
+
+.dt-buttons .dt-button {
+    min-width: 83px;
+    height: 38px;
+    font-size: 13px;
+}
+
+.page-header .btn {
+    padding: 9px;
+    font-size: 15px;
+}
