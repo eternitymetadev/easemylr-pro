@@ -395,13 +395,13 @@
                         </div>
                         <div class="col-md-2">
                             <label>Total Net Weight</label>
-                            <span id="tot_nt_wt">
+                            <span id="total_nt_wt">
                                 <?php echo "0";?>
                             </span> Kgs.
                         </div>
                         <div class="col-md-2">
                             <label>Total Gross Weight</label>
-                            <span id="tot_gt_wt">
+                            <span id="total_gt_wt">
                                 <?php echo "0";?>
                             </span> Kgs.
                         </div>
@@ -466,37 +466,36 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control" name="data[1][item_data][0][item]">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                              @foreach($itemlists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][quantity]">
+                                                            <input type="number" class="form-control qty" name="data[1][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][net_weight]">
+                                                            <input type="number" class="form-control net" name="data[1][item_data][0][net_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
+                                                            <input type="number" class="form-control gross"
                                                                    name="data[1][item_data][0][gross_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][chargeable_weight]">
+                                                            <input type="number" class="form-control charge_wt" name="data[1][item_data][0][chargeable_weight]">
                                                         </div>
 
                                                     </td>
@@ -593,7 +592,7 @@
             </div>
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
-{{--                <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
+        {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
                 <button type="submit" class="mt-2 btn btn-primary disableme" style="height: 40px; width: 200px">Submit</button>
             </div>
 
@@ -661,36 +660,35 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control" name="data[`+ item_no +`][item_data][0][item]">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control select_item" name="data[`+ item_no +`][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                              @foreach($itemlists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][quantity]">
+                                                            <input type="number" class="form-control qty" name="data[`+ item_no +`][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][net_weight]">
+                                                            <input type="number" class="form-control net" name="data[`+ item_no +`][item_data][0][net_weight]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][gross_weigth]">
+                                                            <input type="number" class="form-control gross" name="data[`+ item_no +`][item_data][0][gross_weigth]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="data[`+ item_no +`][item_data][0][chargeable_weight]">
+                                                            <input type="number" class="form-control charge_wt" name="data[`+ item_no +`][item_data][0][chargeable_weight]">
                                                         </div>
 
                                                     </td>
@@ -714,8 +712,6 @@
             $(this).closest("tr").remove();
             // reassign_ids();
         });
-
-     
         
         $(document).on("click", ".addItem", function () {
             // var mainrows = $(".maindiv, .mainTr").length-1;
@@ -729,37 +725,35 @@
                                 <td width="200px">
                                     <div class="form-group form-group-sm">
                                         <label>Item</label>
-                                        <select class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][item]">
-                                            <option>Option 1</option>
-                                            <option>Option 2</option>
-                                            <option>Option 3</option>
-                                            <option>Option 4</option>
+                                        <select class="form-control select_item" name="data[`+mainrows+`][item_data][`+itemrows+`][item]" data-action="get-items" onchange="getItem(this);">
+                                            @foreach($itemlists as $item_list)
+                                            <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Quantity</label>
-                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][quantity]">
+                                        <input type="number" class="form-control qty" name="data[`+mainrows+`][item_data][`+itemrows+`][quantity]">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Net Weight</label>
-                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][net_weight]">
+                                        <input type="number" class="form-control net" name="data[`+mainrows+`][item_data][`+itemrows+`][net_weight]">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Gross Weight</label>
-                                        <input type="number" class="form-control"
-                                                name="data[`+mainrows+`][item_data][`+itemrows+`][gross_weight]">
+                                        <input type="number" class="form-control gross" name="data[`+mainrows+`][item_data][`+itemrows+`][gross_weight]">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group form-group-sm">
                                         <label>Chargeable Weight</label>
-                                        <input type="number" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][chargeable_weight]">
+                                        <input type="number" class="form-control charge_wt" name="data[`+mainrows+`][item_data][`+itemrows+`][chargeable_weight]">
                                     </div>
 
                                 </td>
@@ -774,17 +768,32 @@
         $(document).on("click", ".removeItem", function () {
             $(this).closest("tr").remove();
         });
-    </script>
+    
+        // calculation total
+        $(document).on("keyup", ".qty", function() {
+            var qty_sum = 0;
+            $("input[class *= 'qty']").each(function(){
+                qty_sum += +$(this).val();
+            });
+            $("#tot_qty").html(qty_sum);
+        });
 
+        $(document).on("keyup", ".net", function() {
+            var net_sum = 0;
+            $("input[class *= 'net']").each(function(){
+                net_sum += +$(this).val();
+            });
+            $("#total_nt_wt").html(net_sum);
+        });
 
-    <script>
-        // $(function() {
-        //     $('.basic').selectpicker();
-        // });
-        // $(document).ready(function () {
-        //     $('.insert-more').attr('disabled', true);
-        // });
-
+        $(document).on("keyup", ".gross", function() {
+            var gross_sum = 0;
+            $("input[class *= 'gross']").each(function(){
+                gross_sum += +$(this).val();
+            });
+            $("#total_gt_wt").html(gross_sum);
+        });
+    
         jQuery(function () {
             $('.my-select2').each(function () {
                 $(this).select2({
@@ -856,8 +865,32 @@
             })
         });
 
+        // select item onchange
+        function getItem(item)
+        {
+            var item_val = item.value;
+            $.ajax({
+                url: '/get-items',
+                method: "get",
+                data: {
+                    item_val: item_val
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.success == true) {
+                        $(".net").val(res.item.net_weight);
+                        $(".gross").val(res.item.gross_weight);
+                        $(".charge_wt").val(res.item.chargable_weight);
+                    }
+                }
+            });
+        }
+        
 
     </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
 @endsection

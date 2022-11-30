@@ -712,6 +712,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
+    Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
 });
 

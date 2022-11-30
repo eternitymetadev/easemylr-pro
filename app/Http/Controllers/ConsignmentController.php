@@ -18,6 +18,7 @@ use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\ItemMaster;
 use Auth;
 use Config;
 use DB;
@@ -218,6 +219,8 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $itemlists = ItemMaster::where('status', '1')->get();
+
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
@@ -234,7 +237,7 @@ class ConsignmentController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient,'itemlists'=>$itemlists]);
     }
 
     /**
@@ -4235,5 +4238,23 @@ class ConsignmentController extends Controller
         return Excel::download(new exportDownloadDrs, 'PaymentReport.xlsx');
     }
 
+    public function getItems(Request $request)
+    {
+        $getitem = ItemMaster::where('id', $request->item_val)->first();
+        
+        if($getitem){
+            $response['success']    = true;
+            $response['page']       = 'update-locations';
+            $response['error']      = false; 
+            $response['item']   = $getitem;
+            $response['success_message'] = "Item master fetch successfully";
+        }else{
+            $response['success']       = false;
+            $response['error']         = true;
+            $response['error_message'] = "Can not fetch Item master please try again";
+        }
+
+       return response()->json($response);
+    }
 
 }
