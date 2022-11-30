@@ -466,7 +466,7 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control item_change" name="data[1][item_data][0][item]">
+                                                            <select class="form-control item_change" name="data[1][item_data][0][item]" onchange="getval(this);">
                                                             @foreach($item_lists as $item_list)
                                                                 <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
                                                                @endforeach
@@ -476,7 +476,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="data[1][item_data][0][quantity]">
+                                                            <input type="number" class="form-control qty" name="data[1][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -663,7 +663,7 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control item_change" name="data[`+ item_no +`][item_data][0][item]">
+                                                            <select class="form-control item_change" name="data[`+ item_no +`][item_data][0][item]" onchange="getval(this);">
                                                             @foreach($item_lists as $item_list)
                                                                 <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
                                                                @endforeach
@@ -730,7 +730,7 @@
                                 <td width="200px">
                                     <div class="form-group form-group-sm">
                                         <label>Item</label>
-                                        <select class="form-control item_change" name="data[`+mainrows+`][item_data][`+itemrows+`][item]">
+                                        <select class="form-control item_change" name="data[`+mainrows+`][item_data][`+itemrows+`][item]" onchange="getval(this);">
                                         @foreach($item_lists as $item_list)
                                                                 <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
                                                                @endforeach
@@ -856,12 +856,38 @@
             })
         });
         ///
-        $('.item_change').on('change', function () {
-                alert('gg');
-            });
 
+        // $('.item_change').on('change', function (e) {
+            
+        // $('.childTable tr').each(function() {
+        //     alert('ll');
 
+        // })
+              
+        // });
+        function getval(sel)
+        {
+            var itm_id = sel.value
+            alert(itm_id);
+        $.ajax({
+                type: 'get',
+                url: '/get-item-details',
+                data: {
+                    itm_id: itm_id
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+
+                },
+                success: function(res) {
+
+                
+                }
+    });
+
+        }
     </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
+
 @endsection

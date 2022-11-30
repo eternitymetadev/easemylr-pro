@@ -343,6 +343,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
 
+   
+    Route::any('get-item-details', [TechnicalMasterController::class, 'getItemDetails']);
+
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -712,7 +715,6 @@ Route::middleware(['auth'])->group(function () {
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
-
 });
 
 Route::get('/forgot-session', [DashboardController::class, 'ForgotSession']);
@@ -723,6 +725,7 @@ Route::any('track-order', [TrackingController::class, 'trackOrder']);
 
 ///check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
+
 
 
 

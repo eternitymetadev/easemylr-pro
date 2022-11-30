@@ -75,4 +75,9 @@ class TechnicalMasterController extends Controller
         }
         return response()->json($response);
     }
+
+    public function getItemDetails(Request $request)
+    {
+        echo "<pre>"; print_r($request); die;
+    }
 }
