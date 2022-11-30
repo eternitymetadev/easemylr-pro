@@ -39,25 +39,25 @@ jQuery(document).ready(function () {
         triggerChangeCombined: false
     });
 
-    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click( function () {
+    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click(function () {
         var selectedvehicles = jQuery('#searchvehicle').val();
         //var search =  jQuery('#search').val();
-        var url =  jQuery(this).val();
+        var url = jQuery(this).val();
         jQuery.ajax({
-            type      : 'get',
-            url       : url,
-            data      : {searchvehicle:selectedvehicles},
-            headers   : {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            type: 'get',
+            url: url,
+            data: {searchvehicle: selectedvehicles},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            dataType  : 'json',
-            success:function(response){
-              if(response.html){
-                jQuery('.main-table').html(response.html);
-                jQuery("#search-paymentvehicle").modal("hide");
-                // jQuery('#searchvehicle').multiselect( 'reset');
-                jQuery('.assignedtoarray').val(selectedvehicles);
-              }
+            dataType: 'json',
+            success: function (response) {
+                if (response.html) {
+                    jQuery('.main-table').html(response.html);
+                    jQuery("#search-paymentvehicle").modal("hide");
+                    // jQuery('#searchvehicle').multiselect( 'reset');
+                    jQuery('.assignedtoarray').val(selectedvehicles);
+                }
             }
         });
         return false;
@@ -81,7 +81,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { branchid: branchid },
+                    data: {branchid: branchid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -110,7 +110,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { consignerid: consignerid },
+                    data: {consignerid: consignerid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -139,7 +139,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { consigneeid: consigneeid },
+                    data: {consigneeid: consigneeid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -168,7 +168,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { brokerid: brokerid },
+                    data: {brokerid: brokerid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -197,7 +197,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { driverid: driverid },
+                    data: {driverid: driverid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -278,7 +278,7 @@ jQuery(document).ready(function () {
 
         jQuery.ajax({
             type: "post",
-            data: { branchimgid: id },
+            data: {branchimgid: id},
             url: url,
             dataType: "JSON",
             headers: {
@@ -307,7 +307,7 @@ jQuery(document).ready(function () {
 
         jQuery.ajax({
             type: "post",
-            data: { licenseimgid: id },
+            data: {licenseimgid: id},
             url: url,
             dataType: "JSON",
             headers: {
@@ -336,7 +336,7 @@ jQuery(document).ready(function () {
 
         jQuery.ajax({
             type: "post",
-            data: { rcimgid: id },
+            data: {rcimgid: id},
             url: url,
             dataType: "JSON",
             headers: {
@@ -362,7 +362,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { userid: userid },
+                    data: {userid: userid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -391,7 +391,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { regclient_id: regclient_id },
+                    data: {regclient_id: regclient_id},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -419,7 +419,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { location_id: location_id },
+                    data: {location_id: location_id},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -447,7 +447,7 @@ jQuery(document).ready(function () {
                 jQuery.ajax({
                     type: "post",
                     url: url,
-                    data: { vehicleid: vehicleid },
+                    data: {vehicleid: vehicleid},
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
@@ -478,7 +478,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: "get",
             url: APP_URL + "/get_drivers",
-            data: { driver_id: driver_id },
+            data: {driver_id: driver_id},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -491,6 +491,7 @@ jQuery(document).ready(function () {
             },
         });
     }
+
     /*===== End get driver detail on create vehicle page =====*/
 
     /*======get consigner on regional client =====*/
@@ -504,7 +505,7 @@ jQuery(document).ready(function () {
             url: "/get-consigner-regional",
             type: "get",
             cache: false,
-            data: { regclient_id: regclient_id },
+            data: {regclient_id: regclient_id},
             dataType: "json",
             headers: {
                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
@@ -572,7 +573,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: "get",
             url: APP_URL + "/get_consigners",
-            data: { consigner_id: consigner_id },
+            data: {consigner_id: consigner_id},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -665,7 +666,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: "get",
             url: APP_URL + "/get_consignees",
-            data: { consignee_id: consignee_id },
+            data: {consignee_id: consignee_id},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -734,7 +735,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: "get",
             url: APP_URL + "/get_consignees",
-            data: { consignee_id: consignee_id },
+            data: {consignee_id: consignee_id},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -798,7 +799,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: "get",
             url: APP_URL + "/get_locations",
-            data: { location_id: location_id },
+            data: {location_id: location_id},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -833,7 +834,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
-                    '][invoice_no]" id="'+item_no+'" value=""></td>';
+                    '][invoice_no]" id="' + item_no + '" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
@@ -950,6 +951,7 @@ jQuery(document).ready(function () {
             }
         });
     }
+
     //Call the calculate total function
     $(document).on("keyup", ".qnt, .net, .gross, .frei", function () {
         calculate_totals();
@@ -995,7 +997,7 @@ jQuery(document).ready(function () {
         jQuery.ajax({
             type: "post",
             url: action,
-            data: { locationid: locationid },
+            data: {locationid: locationid},
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
@@ -1102,7 +1104,7 @@ jQuery(document).ready(function () {
 
         jQuery("#drs_commonconfirm").modal("show");
         jQuery(".commonconfirmclick").one("click", function () {
-            var data = { drs_id: drs_id, updatestatus: updatestatus };
+            var data = {drs_id: drs_id, updatestatus: updatestatus};
 
             jQuery.ajax({
                 url: "drs-status",
@@ -1142,7 +1144,7 @@ jQuery(document).ready(function () {
         event.stopPropagation();
 
         let drs_no = jQuery(this).attr("drs-no");
-        var data = { drs_no: drs_no };
+        var data = {drs_no: drs_no};
         var base_url = window.location.origin;
         jQuery.ajax({
             url: "get-delivery-datamodel",
@@ -1158,7 +1160,8 @@ jQuery(document).ready(function () {
                 $("#get-delvery-date").dataTable().fnClearTable();
                 $("#get-delvery-date").dataTable().fnDestroy();
             },
-            complete: function () { },
+            complete: function () {
+            },
 
             success: function (data) {
 
@@ -1169,18 +1172,18 @@ jQuery(document).ready(function () {
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
                     if (value.signed_drs == null) {
                         var field =
-                            "<input type='file' name='data[" +
+                            "<div class='d-flex align-items-center justify-content-center'><label for='data[" + i + "][img]'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-image\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" ry=\"2\"></rect><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"></circle><polyline points=\"21 15 16 10 5 21\"></polyline></svg></label><input type='file' name='data[" +
                             i +
                             "][img]' data-id='" +
                             value.consignment_no +
-                            "' placeholder='Choose image' class='drs_image value='" +
+                            "' placeholder='Choose image' style='width: 120px;' class='drs_image value=' id='data[" + i + "][img]'" +
                             value.signed_drs +
-                            "'>";
+                            "'></div>";
                     } else {
                         var field =
                             "<a href='" +
                             storage_img +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
+                            "' target='_blank' class='imageLink'>View Image</a>";
                     }
                     // delivery date//
                     if (value.dd == null) {
@@ -1205,6 +1208,12 @@ jQuery(document).ready(function () {
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
+                    if (value.dd != null) {
+                        var remove_disable = 'disabled';
+                    } else {
+                        var remove_disable = '';
+                    }
+
                     $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
                         i +
@@ -1214,17 +1223,17 @@ jQuery(document).ready(function () {
                         value.consignment_no +
                         "</td><td>" +
                         value.consignee_id +
-                        "</td><td>" +
+                        "</td><td><p style='width: 100px' class='textWrap' title='" + value.city + "'>" +
                         value.city +
-                        "</td><td>" +
+                        "</p></td><td>" +
                         edd_date +
                         "</td><td>" +
                         deliverydate +
                         "</td><td>" +
                         field +
-                        "</td><td><button type='button'  data-id=" +
+                        "</td><td><button " + remove_disable + " type='button'  data-id=" +
                         value.consignment_no +
-                        " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                        " style='border: none;' class='delete " + remove_disable + "  deleteIcon remover_lr'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-trash-2\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path><line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"17\"></line><line x1=\"14\" y1=\"11\" x2=\"14\" y2=\"17\"></line></svg></button></td></tr>"
                     );
                     i++;
                 });
@@ -1350,7 +1359,7 @@ jQuery(document).ready(function () {
         event.stopPropagation();
 
         let lr_no = jQuery(this).attr("lr-no");
-        var data = { lr_no: lr_no };
+        var data = {lr_no: lr_no};
         var base_url = window.location.origin;
         jQuery.ajax({
             url: "get-delivery-dateLR",
@@ -1367,76 +1376,77 @@ jQuery(document).ready(function () {
                 $("#get-delvery-dateLR").dataTable().fnDestroy();
                 $("#lr_status").empty();
             },
-            complete: function () { },
+            complete: function () {
+            },
 
             success: function (data) {
                 var consignmentID = [];
 
                 $.each(data.fetch, function (index, value) {
-                   var trail_history = jQuery.parseJSON(value.trail);
+                    var trail_history = jQuery.parseJSON(value.trail);
 
-                   if(value.job_id != null){
-                    var img_api = [];
+                    if (value.job_id != null) {
+                        var img_api = [];
 
-                    $.each(trail_history.task_history, function (index, history) {
-                        if(history.type == "image_added"){
-                            img_api.push(history.description)
-                        }
-                    });
-                }
-            //   console.log(img_api); return false;
+                        $.each(trail_history.task_history, function (index, history) {
+                            if (history.type == "image_added") {
+                                img_api.push(history.description)
+                            }
+                        });
+                    }
+                    //   console.log(img_api); return false;
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if(value.job_id == null || value.job_id == ''){
-                    if (value.signed_drs == null) {
-                        if(data.role_id == 7){
-                            var field = '-';
-                        }else{
-                        var field =
-                            "<input type='file' name='img' data-id='" +
-                            value.id +
-                            "' placeholder='Choose image' class='drs_image'>";
+                    if (value.job_id == null || value.job_id == '') {
+                        if (value.signed_drs == null) {
+                            if (data.role_id == 7) {
+                                var field = '-';
+                            } else {
+                                var field =
+                                    "<input type='file' name='img' data-id='" +
+                                    value.id +
+                                    "' placeholder='Choose image' class='drs_image'>";
+                            }
+                        } else {
+                            var field =
+                                "<a href='" +
+                                storage_img +
+                                "' target='_blank' class='btn btn-warning'>view</a>";
                         }
                     } else {
-                         var field =
-                        "<a href='" +
-                        storage_img +
-                        "' target='_blank' class='btn btn-warning'>view</a>";
+                        if (img_api == null || img_api == '') {
+                            var field =
+                                "<input type='file' name='img' data-id='" +
+                                value.id +
+                                "' placeholder='Choose image' class='drs_image'>";
+                        } else {
+                            var field1 = [];
+                            var img_length = img_api.length;
+                            var i = 0;
+                            $.each(img_api, function (index, img) {
+                                i++
+                                img_group = "<a href='" + img +
+                                    "' target='_blank' class='btn btn-warning mt-3'>Image " + i + "</a> ";
+                                field1.push(img_group);
+                            });
+                            var field = (field1.join(' '));
+                        }
                     }
-                }else{
-                    if(img_api == null || img_api == ''){
-                        var field =
-                        "<input type='file' name='img' data-id='" +
-                        value.id +
-                        "' placeholder='Choose image' class='drs_image'>";
-                    }else{
-                         var field1 = [];
-                        var img_length = img_api.length;
-                        var i = 0;
-                        $.each(img_api, function (index, img) {
-                            i++
-                            img_group  = "<a href='"+img+
-                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> ";
-                             field1.push(img_group);
-                        });
-                       var field = (field1.join(' '));
-                    }
-                }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if(data.role_id == 7){
+                        if (data.role_id == 7) {
                             var deliverydat = '-';
-                        }else{
-                        var deliverydat =
-                            "<input type='date' name='delivery_date[]' data-id=" +
-                            value.id +
-                            " class='delivery_d' value='" +
-                            value.delivery_date +
-                            "' Required>";
+                        } else {
+                            var deliverydat =
+                                "<input type='date' name='delivery_date[]' data-id=" +
+                                value.id +
+                                " class='delivery_d' value='" +
+                                value.delivery_date +
+                                "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1454,19 +1464,19 @@ jQuery(document).ready(function () {
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
 
-                     row =   "<tr><td>" +
-                    value.id +
-                    "</td><td>" +
-                    value.consignee_nick +
-                    "</td><td>" +
-                    value.conee_city +
-                    "</td><td>" +
-                    deliverydat +
-                    "</td><td>" +
-                    field +
-                    "</td>";
-                    if(data.role_id != 7){
-                    row += "<td>" + buton +"</td>";
+                    row = "<tr><td>" +
+                        value.id +
+                        "</td><td>" +
+                        value.consignee_nick +
+                        "</td><td>" +
+                        value.conee_city +
+                        "</td><td>" +
+                        deliverydat +
+                        "</td><td>" +
+                        field +
+                        "</td>";
+                    if (data.role_id != 7) {
+                        row += "<td>" + buton + "</td>";
                     }
                     row += "</tr>";
 
@@ -1576,7 +1586,7 @@ jQuery(document).ready(function () {
                 url: "/get-address-by-postcode",
                 type: "get",
                 cache: false,
-                data: { postcode: postcode },
+                data: {postcode: postcode},
                 dataType: "json",
                 headers: {
                     "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
@@ -1613,6 +1623,7 @@ jQuery(document).ready(function () {
         }
     });
 });
+
 /* End document ready function */
 
 function get_delivery_date() {
@@ -1633,10 +1644,12 @@ function get_delivery_date() {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             dataType: "json",
-            success: function (result) { },
+            success: function (result) {
+            },
         });
     });
 }
+
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
@@ -1662,10 +1675,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        if (files.length == 0) {
-            alert("Please choose a file");
-            return false;
-        }
+    if (files.length == 0) {
+        alert("Please choose a file");
+        return false;
+    }
 
     var form_data = new FormData();
     if (files.length != 0) {
@@ -1689,7 +1702,8 @@ $(document).on("click", ".onelrupdate", function () {
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
-        beforeSend: function () { },
+        beforeSend: function () {
+        },
         success: function (data) {
             // alert(data.success);
             if (data.success == true) {
@@ -1829,7 +1843,7 @@ jQuery("#search").searchtyping(function (callback) {
     jQuery.ajax({
         url: url,
         type: "get",
-        data: { search: search },
+        data: {search: search},
         headers: {
             "X-CSRF-TOKEN": jQuery('meta[name="csrf-token"]').attr("content"),
         },
@@ -1863,7 +1877,7 @@ jQuery(document).on("click", ".reset_filter", function () {
     jQuery.ajax({
         type: "get",
         url: url,
-        data: { resetfilter: resetfilter },
+        data: {resetfilter: resetfilter},
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -1885,13 +1899,13 @@ jQuery("body").on("click", ".pagination a", function () {
     jQuery(this).parent("li").addClass("active");
     var page = jQuery(this).attr("href").split("page=")[1];
     var pageUrl = jQuery(this).attr("href");
-    history.pushState({ page: page }, "title " + page, "?page=" + page);
+    history.pushState({page: page}, "title " + page, "?page=" + page);
 
     $.ajax({
         type: "GET",
         cache: false,
         url: pageUrl,
-        data: { page: page },
+        data: {page: page},
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -1913,7 +1927,7 @@ jQuery(document).on("change", ".perpage", function () {
     jQuery.ajax({
         type: "get",
         url: url,
-        data: { peritem: peritem, search: search },
+        data: {peritem: peritem, search: search},
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -1965,7 +1979,7 @@ $('#vendor-master').submit(function (e) {
     }
     $.ajax({
         url: "add-vendor",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -1978,11 +1992,11 @@ $('#vendor-master').submit(function (e) {
                 swal("success", data.success_message, "success");
                 $('#vendor-master')[0].reset();
                 window.location.href = data.redirect_url;
-            }else if(data.validation === false){
+            } else if (data.validation === false) {
                 swal('error', data.error_message.name[0], 'error');
-            }else if(data.pan_check === true){
+            } else if (data.pan_check === true) {
                 swal('error', data.errors, 'error');
-            }else if(data.decl_check === true){
+            } else if (data.decl_check === true) {
                 swal('error', data.errors, 'error');
             } else {
                 swal('error', data.error_message, 'error');
@@ -1997,14 +2011,14 @@ $('#payment_form').submit(function (e) {
     var formData = new FormData(this);
     var tds_rate = $('#tds_rate').val();
 
-    if(!tds_rate){
-        swal('Error','please add tds rate in vendor','error');
+    if (!tds_rate) {
+        swal('Error', 'please add tds rate in vendor', 'error');
         return false;
     }
 
     $.ajax({
         url: "create-payment",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -2016,12 +2030,12 @@ $('#payment_form').submit(function (e) {
         success: (data) => {
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            if(data.success == true){
+            if (data.success == true) {
 
-            swal('success', data.message, 'success')
-            $('#payment_form')[0].reset();
-            }else{
-                swal('error', data.message ,'error');
+                swal('success', data.message, 'success')
+                $('#payment_form')[0].reset();
+            } else {
+                swal('error', data.message, 'error');
             }
 
         }
@@ -2034,7 +2048,7 @@ $('#purchase_amt_form').submit(function (e) {
 
     $.ajax({
         url: "update-purchas-price",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -2065,7 +2079,7 @@ $('#vendor_import').submit(function (e) {
 
     $.ajax({
         url: "import-vendor",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -2080,7 +2094,7 @@ $('#vendor_import').submit(function (e) {
                     $.each(data.ignore_vendor, function (key, value) {
                         $(".ignored").append('<li>' + value.vendor + '</li>');
                     });
-                swal('success', data.ignorecount + " ignored, These Vendor Ifsc code is less than 11 digit", 'success');
+                    swal('success', data.ignorecount + " ignored, These Vendor Ifsc code is less than 11 digit", 'success');
                 } else {
                     swal("success!", data.success_message, "success");
                 }
@@ -2130,126 +2144,125 @@ $('#update_vendor').validate({
     }
 });
 
-    /*======get LR's on regional client in client report =====*/
-    $('.searchclientreport').click(function(e){
-        var regclient_id = $("#select_regclient").val();
-        var from_date = $("#select_regclient").val();
-        var to_date = $("#select_regclient").val();
+/*======get LR's on regional client in client report =====*/
+$('.searchclientreport').click(function (e) {
+    var regclient_id = $("#select_regclient").val();
+    var from_date = $("#select_regclient").val();
+    var to_date = $("#select_regclient").val();
 
-        $.ajax({
-            url         : '/consignment-regclient',
-            type        : 'get',
-            cache       : false,
-            data        :  {regclient_id:regclient_id},
-            dataType    :  'json',
-            headers     : {
-                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
-            },
-            beforeSend : function(){
-                $('#select_consigner').empty();
-            },
-            success:function(res){
-                // console.log(res.data_regclient.is_multiple_invoice);
-                $('#consigner_address').empty();
-                $('#consignee_address').empty();
-                $('#ship_to_address').empty();
+    $.ajax({
+        url: '/consignment-regclient',
+        type: 'get',
+        cache: false,
+        data: {regclient_id: regclient_id},
+        dataType: 'json',
+        headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+        },
+        beforeSend: function () {
+            $('#select_consigner').empty();
+        },
+        success: function (res) {
+            // console.log(res.data_regclient.is_multiple_invoice);
+            $('#consigner_address').empty();
+            $('#consignee_address').empty();
+            $('#ship_to_address').empty();
 
-                $('#select_consigner').append('<option value="">select consigner</option>');
-                $('#select_consignee').append('<option value="">Select Consignee</option>');
-                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+            $('#select_consigner').append('<option value="">select consigner</option>');
+            $('#select_consignee').append('<option value="">Select Consignee</option>');
+            $('#select_ship_to').append('<option value="">Select Ship To</option>');
 
-                $.each(res.data, function (index, value) {
+            $.each(res.data, function (index, value) {
 
-                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
+                $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
 
-                });
+            });
 
-                if(res.data_regclient == null){
+            if (res.data_regclient == null) {
+                var multiple_invoice = '';
+            } else {
+                if (res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == '') {
                     var multiple_invoice = '';
-                }else{
-                    if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
-                    var multiple_invoice = '';
-                    }else{
-                        var multiple_invoice = res.data_regclient.is_multiple_invoice;
-                    }
-                }
-
-                if(multiple_invoice == 1 ){
-                    $('.insert-more').attr('disabled',false);
-                }else{
-                    $('.insert-more').attr('disabled',true);
+                } else {
+                    var multiple_invoice = res.data_regclient.is_multiple_invoice;
                 }
             }
-        });
+
+            if (multiple_invoice == 1) {
+                $('.insert-more').attr('disabled', false);
+            } else {
+                $('.insert-more').attr('disabled', true);
+            }
+        }
     });
+});
 
-    //////////////////////////////////
-    $('#all_inv_save').submit(function(e) {
-        e.preventDefault();
+//////////////////////////////////
+$('#all_inv_save').submit(function (e) {
+    e.preventDefault();
 
-        var formData = new FormData(this);
+    var formData = new FormData(this);
 
-            $.ajax({
-                url: "all-invoice-save",
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'POST',
-                data:new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function(){
-                    $('#view_invoices').dataTable().fnClearTable();
-                    $('#view_invoices').dataTable().fnDestroy();
-                    $(".indicator-progress").show();
-                    $(".indicator-label").hide();
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if(data.success == true){
-                        swal("success","Data Updated successfully", 'success')
+    $.ajax({
+        url: "all-invoice-save",
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $('#view_invoices').dataTable().fnClearTable();
+            $('#view_invoices').dataTable().fnDestroy();
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success", "Data Updated successfully", 'success')
 
-                        var i = 1;
-                     $.each(data.fetch, function(index, value) {
+                var i = 1;
+                $.each(data.fetch, function (index, value) {
 
-                         if(value.e_way_bill == null || value.e_way_bill == ''){
-                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
-                         } else {
-                            var billno = value.e_way_bill;
-                         }
-
-                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
-                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
-                         }else{
-                            var billdate = value.e_way_bill_date;
-                         }
-
-                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");
-
-                        i++ ;
-                    });
-                        // location.reload();
-
-                    }else{
-                        swal("error","Something went wrong", 'error')
+                    if (value.e_way_bill == null || value.e_way_bill == '') {
+                        var billno = "<input type='text' name='data[" + i + "][e_way_bill]' >";
+                    } else {
+                        var billno = value.e_way_bill;
                     }
-                }
-            });
-        });
 
-        ////////////////// reate Drs Payment Request ////////////
+                    if (value.e_way_bill_date == null || value.e_way_bill_date == '') {
+                        var billdate = "<input type='date' name='data[" + i + "][e_way_bill_date]' >";
+                    } else {
+                        var billdate = value.e_way_bill_date;
+                    }
+
+                    $('#view_invoices tbody').append("<tr><input type='hidden' name='data[" + i + "][id]' value=" + value.id + " ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>" + billdate + "</td></tr>");
+
+                    i++;
+                });
+                // location.reload();
+
+            } else {
+                swal("error", "Something went wrong", 'error')
+            }
+        }
+    });
+});
+
+////////////////// reate Drs Payment Request ////////////
 $('#create_request_form').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var vendor = $('#vendor_id_1').val();
-    if(!vendor)
-    {
-        swal('Error!', 'Please select a vendor','error');
+    if (!vendor) {
+        swal('Error!', 'Please select a vendor', 'error');
         return false;
     }
     var base_url = window.location.origin;
     $.ajax({
         url: "create-payment_request",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -2261,13 +2274,13 @@ $('#create_request_form').submit(function (e) {
         success: (data) => {
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            if(data.success == true){
+            if (data.success == true) {
 
-            swal('success', data.message, 'success')
-            window.location.href = data.redirect_url;
+                swal('success', data.message, 'success')
+                window.location.href = data.redirect_url;
 
-            }else{
-                swal('error', data.message ,'error');
+            } else {
+                swal('error', data.message, 'error');
             }
 
         }
@@ -2280,7 +2293,7 @@ $('#update_purchase_amt_form').submit(function (e) {
 
     $.ajax({
         url: "update-purchas-price-vehicle-type",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -2300,6 +2313,6 @@ $('#update_purchase_amt_form').submit(function (e) {
     });
 });
 
-function closeGetDeliveryDateLR(){
+function closeGetDeliveryDateLR() {
     $('#close_get_delivery_dateLR').click();
 };
