@@ -771,10 +771,28 @@
     
         // calculation total
         $(document).on("keyup", ".qty", function() {
+           var quantaty = $(this).val();
             var qty_sum = 0;
             $("input[class *= 'qty']").each(function(){
                 qty_sum += +$(this).val();
             });
+            //  multiply net weight
+             var net_val = $('.qty').parents().parents(':first').siblings().eq(1).children().children('input, .net').val();
+
+             var qty_multply_net = parseInt(quantaty) * parseInt(net_val);
+             $('.select_item').parents().parents(':first').siblings().eq(1).children().children('input, .net').val(qty_multply_net);
+            //  multiply gorss weight
+            var gross_val = $('.qty').parents().parents().children().eq(4).children().children('input, .gross').val();
+
+            var qty_multply_gross = parseInt(quantaty) * parseInt(gross_val);
+            $('.select_item').parents().parents().children().eq(4).children().children('input, .gross').val(qty_multply_gross);
+             //  multiply chargable weight
+             var chargable = $('.qty').parents().parents().children().eq(5).children().children('input, .charge_wt').val();
+
+            var qty_multply_chargable = parseInt(quantaty) * parseInt(chargable);
+            $('.select_item').parents().parents().children().eq(5).children().children('input, .charge_wt').val(qty_multply_chargable);
+            
+
             $("#tot_qty").html(qty_sum);
         });
 
