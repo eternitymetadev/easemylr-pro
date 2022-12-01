@@ -1,4 +1,8 @@
 <style>
+    .flex1 {
+        flex: 1
+    }
+
     p {
         margin-bottom: 0;
     }
@@ -125,15 +129,31 @@
     .blackButton {
         font-weight: 600;
         color: #fff !important;
-        background-color: #222 !important;
-        border-color: #222;
-        box-shadow: 0 10px 20px -10px #222;
+        background-color: #0c9b95 !important;
+        border-color: #0c9b95;
+        box-shadow: 0 10px 20px -10px #0c9b95;
     }
 
     .blackButton:hover {
         color: #fff !important;
     }
 
+    .deliveryStatus span {
+        position: absolute;
+        top: -24px;
+        left: calc(100% + 2px);
+        background-color: #ffffff;
+        color: #494949;
+        box-shadow: 0 0 8px rgba(68, 154, 1, 0.58);
+        padding: 5px 10px;
+        border-radius: 12px 12px 12px 0;
+        display: none;
+        transition: all 200ms ease-in-out;
+    }
+
+    .deliveryStatus:hover span {
+        display: flex;
+    }
 
 </style>
 
@@ -196,12 +216,15 @@
                             @else
                                 <a class="drs_cancel pointer" drs-no="{{$trns->drs_no}}" data-text="consignment"
                                    data-status="0" data-action="<?php echo URL::current(); ?>">
-                                    <p class="deliveryStatus pointer @if($del_status == 'Successful')
-                                        green @elseif($del_status == 'Partial Delivered')
-                                        orange @elseif($del_status == 'Started')
-                                        extra2 @endif">
+                                    <p style="position:relative;"
+                                       class="deliveryStatus pointer @if($del_status == 'Successful')
+                                           green @elseif($del_status == 'Partial Delivered')
+                                           orange @elseif($del_status == 'Started')
+                                           extra2 @endif">
                                         {{ $del_status }}<i class="fa fa-caret-down ml-1" aria-hidden="true"></i>
+                                        <span style="font-size: 13px; line-height: 1rem">Click to update status</span>
                                     </p>
+
                                 </a>
                             @endif
                         @endif
@@ -242,30 +265,30 @@
 
 
                                 @if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no))
-                                    <button class=" btn btn-warning view-sheet" value="{{$trns->drs_no}}"
+                                    <button class="flex1 btn btn-warning view-sheet" value="{{$trns->drs_no}}"
                                             style="margin-right:4px;">Draft
                                     </button>
-                                    <button class="btn btn-success draft-sheet" value="{{$trns->drs_no}}"
+                                    <button class="flex1 btn btn-success draft-sheet" value="{{$trns->drs_no}}"
                                             style="margin-right:4px;">Save
                                     </button>
-                                @else
-                                    <a class=" btn btn-warning disabled disabledCursor" disabled
-                                       style="margin-right:4px;">Draft
-                                    </a>
-                                    <a class="btn btn-success disabled disabledCursor" disabled
-                                       style="margin-right:4px;">Save
-                                    </a>
+                                    {{--                                @else--}}
+                                    {{--                                    <a class="flex1 btn btn-warning disabled disabledCursor" disabled--}}
+                                    {{--                                       style="margin-right:4px;">Draft--}}
+                                    {{--                                    </a>--}}
+                                    {{--                                    <a class="flex1 btn btn-success disabled disabledCursor" disabled--}}
+                                    {{--                                       style="margin-right:4px;">Save--}}
+                                    {{--                                    </a>--}}
                                 @endif
                                 @if (!empty($trns->vehicle_no))
-                                    <a class="btn blackButton" target="_blank"
+                                    <a class="flex1 btn blackButton" target="_blank"
                                        @if (!empty($new))
                                        href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
                                        @else
                                        href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}"
                                        @endif
                                        role="button">Print</a>
-                                @else
-                                    <a class="btn blackButton disabled disabledCursor" href="#" disabled role="button">Print</a>
+                                    {{--                                @else--}}
+                                    {{--                                    <a class="flex1 btn blackButton disabled disabledCursor" href="#" disabled role="button">Print</a>--}}
                                 @endif
                             </div>
 
@@ -284,7 +307,7 @@
     </table>
 
     <div class="px-3 mt-5 d-flex flex-wrap justify-content-between align-items-center" style="gap: 1rem;">
-        <div class="d-flex align-items-center"  >
+        <div class="d-flex align-items-center">
             <label class=" mb-0 mr-1">Items per page</label>
             <select style="width: 90px" class="form-control form-control-sm perpage"
                     data-action="<?php echo url()->current(); ?>">
