@@ -770,7 +770,7 @@
         });
     
         // calculation total
-        $(document).on("keyup", ".qty", function() {
+        $(document).on("blur", ".qty", function() {
            var quantaty = $(this).val();
             var qty_sum = 0;
             $("input[class *= 'qty']").each(function(){
