@@ -15,8 +15,6 @@
             font-size: 18px;
 
         }
-
-
         .checkbox-round {
             width: 2.3em;
             height: 2.3em;
