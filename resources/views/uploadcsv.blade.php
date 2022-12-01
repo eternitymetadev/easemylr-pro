@@ -112,6 +112,15 @@
                         <input type="file" name="podsfile" id="podfile" class="podfile"> 
                     </div>
                 </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
+                        <h4 class="win-h4">Browse to update lattitude</h4>
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                        <input type="file" name="lat_lang" id="lat_lang" class="lat_lang"> 
+                    </div>
+                </div>
 
                 <button type="submit" name="" class="mt-4 mb-4 btn btn-primary">Submit</button>
                 <div class="spinner-border loader" style= "display:none;"></div>
