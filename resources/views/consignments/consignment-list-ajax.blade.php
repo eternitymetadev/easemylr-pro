@@ -7,7 +7,7 @@
                 <th>LR Details</th>
                 <th>Route</th>
                 <th>Dates</th>
-                <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
+                <?php if($authuser->role_id !=6){ ?>
                 <th>Printing options</th>
                 <?php }else {?>
                 <th></th>
@@ -111,17 +111,17 @@
                     </div>
                 </td>
                 <td>
-                    <?php if($authuser->role_id !=6 && $authuser->role_id !=7){
+                    <?php if($authuser->role_id !=6 ){
                     if($consignment->invoice_no != null || $consignment->invoice_no != ''){ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a>  <?php if($authuser->role_id !=7){?> |<a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print LR</a>
+                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php }else{ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a> | <a
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?>|  <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print LR</a>
+                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php }} ?>
                 </td>
 
