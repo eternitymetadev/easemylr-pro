@@ -1683,17 +1683,23 @@ class ConsignmentController extends Controller
         $tooken_details = json_decode(json_encode($chk_tooken), true);
         // Push to tooken if Team Id & Fleet Id Available
         if (!empty($tooken_details[0]['fleet_id'])) {
-            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
             $createTask = $this->createTookanMultipleTasks($simplyfy);
             $json = json_decode($createTask, true);
-            $response = $json['data']['deliveries'];
-            foreach ($response as $res) {
-                $job_id = $res['job_id'];
-                $orderId = $res['order_id'];
-                $tracking_link = $res['result_tracking_link'];
-                $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
-                $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
-            }
+            if(!empty($json['data'])){
+                $response = $json['data']['deliveries'];
+                $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+                foreach ($response as $res) {
+                    $job_id = $res['job_id'];
+                    $orderId = $res['order_id'];
+                    $tracking_link = $res['result_tracking_link'];
+                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
+                }
+                 }else{
+            $response['success'] = false;
+            $response['error_message'] = $json['message'];
+            return response()->json($response);
+                 }
         } else {
 
             $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
