@@ -104,7 +104,20 @@
                 </button>
             </div>
             <div class="modal-body">
-               
+                <div class="form-row">
+                    <div class="col-12">
+                        <label for="x">X</label>
+                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">X</label>
+                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">X</label>
+                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -118,18 +131,19 @@
 <script>
 $(document).on('click', '.edit_postal', function() {
     var postal_id = $(this).val();
-    alert(postal_id);
     $('#postal_edit').modal('show');
 
     $.ajax({
         type: "GET",
-        url: "update-delivery/" + draft_id,
+        url: "edit-postal-code/" + postal_id,
         data: {
-            draft_id: draft_id
+            postal_id: postal_id
         },
         beforeSend: //reinitialize Datatables
             function() {},
-        success: function(data) {}
+        success: function(data) {
+
+        }
 
     });
 });

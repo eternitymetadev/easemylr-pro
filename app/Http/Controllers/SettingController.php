@@ -169,4 +169,9 @@ class SettingController extends Controller
 
         return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones]);
     }
+
+    public function editPostalCode(Request $request)
+    {
+        dd('like');
+    }
 }
