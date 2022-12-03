@@ -2438,6 +2438,7 @@ label {
 .editIcon:hover {
     background-color: #f9b808;
 }
+
 .viewIcon:hover {
     background-color: #002ac4;
 }
@@ -2449,6 +2450,7 @@ label {
 .editIcon svg {
     color: #c48e00;
 }
+
 .viewIcon svg {
     color: #002ac4;
 }
@@ -2457,7 +2459,7 @@ label {
     color: #dc3545;
 }
 
-.deleteAlertIcon{
+.deleteAlertIcon {
     height: 3rem;
     width: 3rem;
     color: chocolate;
@@ -2482,3 +2484,59 @@ label {
     padding: 9px;
     font-size: 15px;
 }
+
+
+.textWrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+input::file-selector-button {
+    background: #ffecd5;
+    border: 1px solid #f2c9ba;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+/*for tooltip*/
+.swan-tooltip, .swan-tooltip-right, .swan-tooltip-left {
+    position: relative;
+}
+
+.swan-tooltip:after {
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px;
+}
+
+.swan-tooltip-right:after {
+    left: calc(100% + 2px);
+    border-radius: 12px 12px 12px 0;
+}
+
+.swan-tooltip-left:after {
+    right: calc(100% + 2px);
+    border-radius: 12px 12px 0 12px;
+}
+
+.swan-tooltip:after, .swan-tooltip-right:after, .swan-tooltip-left:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    background-color: #ffffff;
+    color: #494949;
+    box-shadow: 0 0 8px rgba(68, 154, 1, 0.58);
+    padding: 5px 10px;
+    display: none;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1rem;
+    transition: all 200ms ease-in-out;
+}
+
+.swan-tooltip:hover:after, .swan-tooltip-right:hover:after, .swan-tooltip-left:hover:after {
+    display: flex;
+}
+
+/*end tooltip css*/
