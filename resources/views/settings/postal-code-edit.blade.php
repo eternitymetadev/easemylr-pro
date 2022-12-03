@@ -96,34 +96,40 @@
 <div class="modal fade" id="postal_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <form class="modal-content" id="update_postal_code">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Update Zone Data</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
             <div class="modal-body">
                 <div class="form-row">
-                    <div class="col-12">
-                        <label for="x">X</label>
-                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                <div class="col-12">
+                    <input type="hidden" id="zone_id" name="zone_id"/>
+                        <label for="x">Postal Code</label>
+                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly/>
                     </div>
                     <div class="col-12">
-                        <label for="x">X</label>
-                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                        <label for="x">District</label>
+                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">X</label>
-                        <input class="form-control form-control-sm" id="x" name="x " placeholder="" />
+                        <label for="x">State</label>
+                        <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">Primary Zone</label>
+                        <input class="form-control form-control-sm" id="primary_zone" name="primary_zone" placeholder="" />
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 @endsection
@@ -140,12 +146,46 @@ $(document).on('click', '.edit_postal', function() {
             postal_id: postal_id
         },
         beforeSend: //reinitialize Datatables
-            function() {},
-        success: function(data) {
+            function() {
 
+            },
+        success: function(data) {
+            console.log(data.zone_data);
+            $('#primary_zone').val(data.zone_data.primary_zone);
+            $('#district').val(data.zone_data.district);
+            $('#state').val(data.zone_data.state);
+            $('#zone_id').val(data.zone_data.id);
+            $('#postal_code').val(data.zone_data.postal_code);
         }
 
     });
 });
+
+$('#update_postal_code').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-postal-code",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+
+        },
+        success: (data) => {
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+
 </script>
 @endsection

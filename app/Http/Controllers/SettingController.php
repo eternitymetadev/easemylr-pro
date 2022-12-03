@@ -13,6 +13,8 @@ use Config;
 use Auth;
 use App\Models\Role;
 use App\Models\User;
+use Session;
+use DB;
 
 class SettingController extends Controller
 {
@@ -128,10 +130,7 @@ class SettingController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('drs_no', 'like', '%' . $search . '%')
-                        ->orWhere('vehicle_no', 'like', '%' . $search . '%')
-                        ->orWhere('driver_name', 'like', '%' . $search . '%')
-                        ->orWhere('driver_no', 'like', '%' . $search . '%');
+                    $query->where('postal_code', 'like', '%' . $search . '%');
                 });
             }
 
@@ -142,13 +141,13 @@ class SettingController extends Controller
             $peritem = Session::get('peritem');
             if (!empty($peritem)) {
                 $peritem = $peritem;
-            } else {
+            } else {    
                 $peritem = Config::get('variable.PER_PAGE');
             }
             $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
             $zones = $zones->appends($request->query());
 
-            $html = view('settings.postal-code-ediAajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones])->render();
+            $html = view('settings.postal-code-editAjax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -172,6 +171,33 @@ class SettingController extends Controller
 
     public function editPostalCode(Request $request)
     {
-        dd('like');
+        $id = $request->postal_id;
+        $postal_code = Zone::where('id', $id)->first();
+
+        $response['zone_data'] = $postal_code;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetch";
+        return response()->json($response);
+    }
+
+    public function updatePostalCode(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Zone Data successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
     }
 }

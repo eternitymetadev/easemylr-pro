@@ -342,7 +342,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
-
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
 
 });
