@@ -5,6 +5,7 @@
             <tr>
                 <th>LR No</th>
                 <th>LR Date</th>
+                <th>Branch</th>
                 <th>LR Status</th>
                 <th>Delivery Status</th>
                 <th>Delivery Date</th>
@@ -23,15 +24,17 @@
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <?php
-$start_date = strtotime($consignment->consignment_date);
-$end_date = strtotime($consignment->delivery_date);
-$tat = ($end_date - $start_date) / 60 / 60 / 24;
-?>
+           
+            $start_date = strtotime($consignment->consignment_date);
+            $end_date = strtotime($consignment->delivery_date);
+            $tat = ($end_date - $start_date) / 60 / 60 / 24;
+            ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
+                <td>{{$consignment->Branch->name ?? '-'}}</td>
                 <?php
-if ($consignment->status == 0) {?>
+            if ($consignment->status == 0) {?>
                 <td>Cancel</td>
                 <?php } elseif ($consignment->status == 1) {?>
                 <td>Active</td>
@@ -40,7 +43,7 @@ if ($consignment->status == 0) {?>
                 <?php }?>
                 <!-- delivery status -->
                 <?php
-if ($consignment->delivery_status == 'Assigned') {?>
+            if ($consignment->delivery_status == 'Assigned') {?>
                 <td>Assigned</td>
                 <?php } elseif ($consignment->delivery_status == 'Unassigned') {?>
                 <td>Unassigned</td>
