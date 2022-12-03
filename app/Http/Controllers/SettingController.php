@@ -4,13 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BranchAddress;
+use App\Models\Zone;
 use Validator;
 use URL;
 use Crypt;
 use Helper;
+use Config;
+use Auth;
+use App\Models\Role;
+use App\Models\User;
 
 class SettingController extends Controller
 {
+    public $prefix;
+    public $title;
+    public $segment;
+
+    public function __construct()
+    {
+        $this->title = "Consignments";
+        $this->segment = \Request::segment(2);
+        $this->apikey = \Config::get('keys.api');
+    }
+
     public function getbranchAddress(Request $request)
     {
         return view('setting.index');
@@ -84,5 +100,73 @@ class SettingController extends Controller
             $branchaddvalue = BranchAddress::where(['meta_key'=>'addressdata_key'])->first();
             return view('settings.branch-address',['branchaddvalue'=>$branchaddvalue,'prefix'=>$this->prefix]);
         }
+    }
+    // postal code edit
+    public function postalCode(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Zone::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = $query->where('status',1);
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('drs_no', 'like', '%' . $search . '%')
+                        ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                        ->orWhere('driver_name', 'like', '%' . $search . '%')
+                        ->orWhere('driver_no', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+            $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $zones = $zones->appends($request->query());
+
+            $html = view('settings.postal-code-ediAajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $query = $query
+            ->where('status',1);
+
+        $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $zones = $zones->appends($request->query());
+
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones]);
     }
 }
