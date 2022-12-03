@@ -1,95 +1,134 @@
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
-        <div class="btn-group relative">
-            <!-- <a href="{{'consignments/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Consignment</a> -->
-        </div>
         <thead>
-            <tr>
-                <?php $authuser = Auth::user();
-if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
-                <th>
-                    <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
-                </th>
-                <?php }?>
-                <th>Purchase Amount</th>
-                <th>Vehicle Type</th>
-                <th>DRS NO</th>
-                <th>DRS Date</th>
-                <th>DRS Status</th>
-                <th>Total Lr</th>
-                <th>Vehicle No
-                <a href="javascript:void();" class="vehicle-a" data-toggle="modal" data-target="#search-paymentvehicle">  
+        <tr>
+            <?php $authuser = Auth::user();
+            if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
+            <th>
+                <input type="checkbox" name="" id="ckbCheckAll" style="width: 16px; height:16px;"/>
+            </th>
+            <?php }?>
+            <th>Purchase Amt</th>
+            <th>DRS</th>
+            <th>DRS Status</th>
+            <th>Vehicle
+                <a href="javascript:void();" class="vehicle-a" data-toggle="modal" data-target="#search-paymentvehicle">
                     <i class="fa fa-caret-down"></i>
                 </a>
-                </th>
-                <th>Gross Wt.</th>
-                <th>Total Wt.</th>
-                <th>Quantity</th>
-                <th>Driver Name</th>
+            </th>
+            <th>Total Lr</th>
 
-            </tr>
+            <th>Gross Wt.</th>
+            <th>Total Wt.</th>
+            <th>Qty</th>
+            <th>Driver Name</th>
+
+        </tr>
         </thead>
         <tbody>
-            @if(count($paymentlist)>0)
+        @if(count($paymentlist)>0)
             @foreach($paymentlist as $list)
-            <?php
-            $date = new DateTime($list->created_at, new DateTimeZone('GMT-7'));
-            $date->setTimezone(new DateTimeZone('IST'));
-            ?>
+                <?php
+                $date = new DateTime($list->created_at, new DateTimeZone('GMT-7'));
+                $date->setTimezone(new DateTimeZone('IST'));
+                ?>
 
-            <tr>
-                <?php if ($authuser->role_id == 2 || $authuser->role_id == 3) { 
-           if ($list->status != 0) {
-           if (!empty($list->ConsignmentDetail->purchase_price)) {?>
-                <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}"
-                        data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
-                </td>
-                <?php } else {?>
-                <td>-</td>
-                <?php }} else {?>
-                <td>-</td>
-                <?php }}?>
-                <!------- Purchase Price --------------->
-                <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?>
-                <td class="update_purchase_price" drs-no="{{$list->drs_no}}">{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
-                <?php } else {?>
-                <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"
-                        style="margin-right:4px;">Add amount</button> </td>
-                <?php }?>
-                <!-- end purchase price -->
-                <td>{{$list->ConsignmentDetail->vehicletype->name ?? '-'}}</td>
-                <td>DRS-{{$list->drs_no}}</td>
-                <td>{{$date->format('d-m-Y')}}</td>
-                <!-- delivery Status ------>
-                <td>
-                    <?php if ($list->status == 0) {?>
-                    <label class="badge badge-dark">Cancelled</label>
-                    <?php } else {?>
-                    <?php if (empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no)) {?>
-                    <label class="badge badge-warning">No Status</label>
-                    <?php } else {?>
-                    <a class="drs_cancel btn btn-success drs_lr" drs-no="{{$list->drs_no}}" data-text="consignment"
-                        data-status="0"
-                        data-action="<?php echo URL::current(); ?>"><span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span></a>
-                    <?php }?>
-                    <?php }?> 
-                </td>
-                <!-- END Delivery Status  --------------->
-                <td>{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
-                <td>{{$list->vehicle_no ?? '-'}}</td>
-                <td>{{ Helper::totalGrossWeight($list->drs_no) ?? "-"}}</td>
-                <td>{{ Helper::totalWeight($list->drs_no) ?? "-"}}</td>
-                <td>{{ Helper::totalQuantity($list->drs_no) ?? "-"}}</td>
-                <td>{{$list->driver_name ?? '-'}}</td>
+                <tr>
+                    @if ($authuser->role_id == 2 || $authuser->role_id == 3)
+                        @if ($list->status != 0)
+                            @if (!empty($list->ConsignmentDetail->purchase_price))
+                                <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass"
+                                           value="{{$list->drs_no}}"
+                                           data-price="{{$list->ConsignmentDetail->purchase_price}}"
+                                           style="width: 16px; height:16px;">
+                                </td>
+                            @else
+                                <td><input type="checkbox" style="width: 16px; height:16px;" disabled/></td>
+                            @endif
+                        @else
+                            <td><input type="checkbox" style="width: 16px; height:16px;" disabled/></td>
+                        @endif
+                    @endif
 
-            </tr>
+                    @if (!empty($list->ConsignmentDetail->purchase_price))
+                        <td>
+                            <p class="d-flex justify-content-center align-items-center mb-0" style="gap: 6px">
+                                ₹{{$list->ConsignmentDetail->purchase_price ?? '-'}}
+                                <span class="swan-tooltip-right update_purchase_price"
+                                      drs-no="{{$list->drs_no}}"
+                                      data-tooltip="Change purchase amount">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" class="feather feather-edit"><path
+                                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path
+                                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </span>
+                            </p>
+                        </td>
+                    @else
+                        <td style="text-align: center">
+                            <button type="button" class="btn btn-sm add_purchase_price" value="{{$list->drs_no}}"
+                                    style="font-size: 10px; background: #0b8fcb; color: #fff; font-weight: 600">
+                                Add Amount
+                            </button>
+                        </td>
+                    @endif
+
+                    <td>
+                        <p class="mb-0">
+                            <span style="color: #000">DRS-{{$list->drs_no}}</span><br/>
+                            Dated: {{$date->format('d-m-Y')}}
+                        </p>
+                    </td>
+
+                    <td>
+                        <?php $drs_status = Helper::getdeleveryStatus($list->drs_no) ?>
+
+                        @if ($list->status == 0)
+                            <p class="drsStatus" style="background: #d63232">Cancelled</p>
+                        @else
+                            @if (empty($list->vehicle_no) || empty($list->driver_name) || empty($list->driver_no))
+                                <p class="drsStatus" style="background: #7a6eff">No Status</p>
+                            @else
+                                <a class="drs_cancel drs_lr" drs-no="{{$list->drs_no}}"
+                                   data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>">
+                                    <p class="swan-tooltip-right drsStatus pointer @if($drs_status == 'Successful')
+                                        green @elseif($drs_status == 'Partial Delivered')
+                                        orange @elseif($drs_status == 'Started')
+                                        extra2 @endif" data-tooltip="View LR's">
+                                        <span>{{ Helper::getdeleveryStatus($list->drs_no) }}</span>
+                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                    </p>
+                                </a>
+                            @endif
+                        @endif
+                    </td>
+
+
+                    <td>
+                        <p class="mb-0 textWrap" style="max-width: 150px">
+                            <span style="font-size: 14px; font-weight: 700">
+                                {{$list->vehicle_no ?? '-'}}
+                            </span><br/>
+                            {{$list->ConsignmentDetail->vehicletype->name ?? '-'}}
+                        </p>
+                    </td>
+
+                    <td class="text-center">{{ Helper::countdrslr($list->drs_no) ?? "-" }}</td>
+                    <td>{{ Helper::totalGrossWeight($list->drs_no) ?? "-"}}</td>
+                    <td>{{ Helper::totalWeight($list->drs_no) ?? "-"}}</td>
+                    <td class="text-center">{{ Helper::totalQuantity($list->drs_no) ?? "-"}}</td>
+                    <td><p class="textWrap pb-0" style="max-width: 200px">{{$list->driver_name ?? '-'}}</p></td>
+
+                </tr>
 
             @endforeach
-            @else
+        @else
             <tr>
-                <td colspan="9" class="text-center">No Record Found </td>
+                <td colspan="9" class="text-center">No Record Found</td>
             </tr>
-            @endif
+        @endif
         </tbody>
     </table>
     <div class="perpage container-fluid">
