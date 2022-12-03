@@ -44,7 +44,7 @@
                 <td>{{ $consignment['id'] ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->consignment_items)){
+                    if(!empty($consignment->ConsignmentItems)){
                     $order = array();
                     $invoices = array();
                     $inv_date = array();
