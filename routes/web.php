@@ -209,7 +209,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
 
-    
+
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -320,7 +320,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('import-vendor', [VendorController::class, 'importVendor']);
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
-    
+
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
@@ -338,6 +338,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('custom-reports', [ReportController::class,'customReport']);
+
 
 
 });
