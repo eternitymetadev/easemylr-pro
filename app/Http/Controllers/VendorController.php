@@ -56,6 +56,7 @@ class VendorController extends Controller
 
         return view('vendors.vendor-list', ['prefix' => $this->prefix, 'vendors' => $vendors]);
     }
+
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
@@ -549,6 +550,7 @@ class VendorController extends Controller
         return response()->json($response);
 
     }
+
     public function update_purchase_price(Request $request)
     {
         try {
@@ -814,7 +816,7 @@ class VendorController extends Controller
         }
         $unique = array_unique($sent_vehicle);
         $sent_venicle_no = implode(',', $unique);
-        
+
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
         // ============== Sent to finfect
@@ -1190,7 +1192,7 @@ class VendorController extends Controller
             $query = $query;
         }
         $drswiseReports = $query->where('payment_status', '!=', 0)->get();
-            
+
         return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
     }
 
