@@ -340,6 +340,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
 
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+
+
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
