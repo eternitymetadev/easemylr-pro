@@ -412,7 +412,7 @@ class ConsignmentController extends Controller
 
     public function storeLRItem(Request $request)
     {
-        // echo'<pre>'; print_r($request->all()); die;
+         echo'<pre>'; print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
