@@ -150,7 +150,7 @@
                     }?>
 
                     <?php if (empty($consignment->job_id)) {
-                    $img = URL::to('/drs/image/' . $consignment->signed_drs)?>
+                    $img = URL::to('/drs/Image/' . $consignment->signed_drs)?>
 
                     <td style="max-width: 260px; vertical-align: middle">
                         <?php if (!empty($consignment->signed_drs)) {?>
