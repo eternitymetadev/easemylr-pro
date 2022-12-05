@@ -81,6 +81,19 @@
                     <h2>POD View</h2>
                 </div>
                 <div class="widget-content widget-content-area br-6">
+                <div class="col d-flex pr-0">
+                                <div class="search-inp w-100">
+                                    <form class="navbar-form" role="search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Search" id="search"
+                                                data-action="<?php echo url()->current(); ?>">
+                                            <!-- <div class="input-group-btn">
+                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                            </div> -->
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                     <div class="mb-4 mt-4">
                         <h5 class="limitmessage text-danger" style="display: none;">
                             You cannot download more than 30,000 records. Please select Filters.

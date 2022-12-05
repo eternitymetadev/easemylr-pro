@@ -4106,21 +4106,7 @@ class ConsignmentController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    });
-
+                    $query->where('id', 'like', '%' . $search . '%');
                 });
             }
 
