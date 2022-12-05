@@ -2499,6 +2499,10 @@ input::file-selector-button {
     cursor: pointer;
 }
 
+input[type=checkbox] {
+    accent-color: #f9b808;
+}
+
 /*for tooltip*/
 .swan-tooltip, .swan-tooltip-right, .swan-tooltip-left {
     position: relative;
@@ -2532,6 +2536,7 @@ input::file-selector-button {
     font-weight: 700;
     font-size: 14px;
     line-height: 1rem;
+    width: max-content;
     transition: all 200ms ease-in-out;
 }
 
