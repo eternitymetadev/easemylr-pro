@@ -4097,7 +4097,9 @@ class ConsignmentController extends Controller
             {
                 $query = $query;            
             }elseif($authuser->role_id == 4){
-                $query = $query->whereIn('regclient_id', $regclient);   
+                $query = $query->whereIn('regclient_id', $regclient);
+            }elseif ($authuser->role_id == 7) {
+                    $query = $query->whereIn('regclient_id', $regclient);
             }else{
                 $query = $query->whereIn('branch_id', $cc);
             }
@@ -4152,7 +4154,9 @@ class ConsignmentController extends Controller
         {
             $query = $query;            
         }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
+            $query = $query->whereIn('regclient_id', $regclient);  
+         } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
         }else{
             $query = $query->whereIn('branch_id', $cc);
         }
