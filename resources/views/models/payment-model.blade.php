@@ -1,29 +1,10 @@
+{{--drs count modal--}}
 <div class="modal fade" id="show_drs" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-            <!-- Modal Header -->
-            <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
-            </div>
-            <!-- Modal body -->
             <div class="modal-body">
-
-                <table id="show_drs_table" class="table table-hover"
-                       style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                    <thead>
-                    <tr>
-                        <th>Drs No</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
+                <h4 class="modal-title">DRS against Trans. no.: <span id="transAgainstDrs"></span></h4>
+                <ul id="drsTable"></ul>
             </div>
         </div>
     </div>
