@@ -4167,5 +4167,31 @@ class ConsignmentController extends Controller
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
 
+       public function updatePod(Request $request)
+       {
+        try {
 
+            $lr_no = $request->lr_no;
+            $file = $request->file('pod');
+            echo'<pre>'; print_r($file); die;
+            if (!empty($file)) {
+                $filename = $file->getClientOriginalName();
+                $file->move(public_path('drs/Image'), $filename);
+            } else {
+                $filename = null;
+            }
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
+
+                $response['success'] = true;
+                $response['messages'] = 'Image uploaded successfully';
+                return Response::json($response);
+
+        } catch (\Exception $e) {
+            $bug = $e->getMessage();
+            $response['success'] = false;
+            $response['messages'] = $bug;
+            return Response::json($response);
+        }
+       }
 }

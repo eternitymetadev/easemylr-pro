@@ -203,6 +203,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
     Route::resource('prs', PickupRunSheetController::class);
@@ -291,7 +292,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
-    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']); 
     
 
     Route::resource('locations', LocationController::class);

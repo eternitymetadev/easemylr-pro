@@ -16,7 +16,7 @@
                 <th style="text-align: center; width: 120px;">Delivery Status</th>
                 <th style="text-align: center; width: 120px;">Delivery Date</th>
                 <th>POD</th>
-                {{--            <th>Images</th>--}}
+                <th>Mode</th>
             </tr>
         </thead>
         <tbody>
@@ -167,25 +167,35 @@
                     <?php } else {?>
                     <div style="min-height: 50px" class="d-flex align-items-center">
                         Not Available
+                        <a data-toggle="modal" data-target="#updateImageModal" class="edit editButton" href="#">Add</a>
                     </div>
                     <?php }?>
                 </td>
                 <?php } else {?>
                 <td style="max-width: 260px">
                     <?php if(!empty($img_group)){ ?>
-                    <div class="d-flex flex-wrap" style="gap: 4px; width: 220px;">
-                        @foreach($img_group as $img)
-                        <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal" data-target="#exampleModal"
-                            style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
-                        @endforeach
+                    <div class="d-flex align-items-center flex-wrap" style="gap: 4px; width: 250px;">
+                        <div class="d-flex flex-wrap" style="gap: 4px; width: 220px;">
+                            @foreach($img_group as $img)
+                            <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal"
+                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                            @endforeach
+                        </div>
+                        <div>
+                            <a data-toggle="modal" data-target="#deleteImages" class="edit editButton" href="#">D</a>
+                        </div>
                     </div>
                     <?php }else{?>
                     <div style="min-height: 50px" class="d-flex align-items-center">
                         Not Available
+                        <a class="edit editButtonimg editIcon" data-id="{{$consignment->id}}" href="#">Add</a>
                     </div>
                     <?php }?>
                 </td>
                 <?php }?>
+
+                <td><a class="edit modeChange editIcon" data-id="{{$consignment->id}}" href="#">Mode Change</a></td>
 
             </tr>
             @endforeach

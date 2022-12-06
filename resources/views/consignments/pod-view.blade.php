@@ -80,7 +80,7 @@ label.statusLabel {
             <div class="page-header">
                 <h2>POD View</h2>
                 <input type="text" class="form-control" placeholder="Search" id="search"
-        data-action="<?php echo url()->current(); ?>" style="width: min(100%, 250px);"/>
+                    data-action="<?php echo url()->current(); ?>" style="width: min(100%, 250px);" />
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
@@ -99,16 +99,67 @@ label.statusLabel {
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width: max-content">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center">
-                    <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw"/>
+                    <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- update image Modal -->
+<div class="modal fade" id="updateImageModal" tabindex="-1" role="dialog" aria-labelledby="updateImageModalLabel"
+    aria-hidden="true">
+    <form class="modal-dialog modal-dialog-centered" role="document" id="update_image">
+        <div class="modal-content">
+            <div class="modal-header"><h4>Update Image</h4></div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center align-items-center">
+                    <input type="text" name="lr_no" id="lr_no" value="" />
+                    <div class="form-group">
+                        <label class="control-label">Image</label>
+                        <input type="file" accept="image/*" class="form-control" id="image-url"
+                            placeholder="Image URL" name="pod" style="border: none;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- delete images modal -->
+<div class="modal fade" id="deleteImages" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+     <div class="modal-content">
+       <!-- Modal Header -->
+       <div class="modal-header text-center">
+        <h4 class="modal-title">Delete</h4>
+       </div>
+       <!-- Modal body -->
+       <div class="modal-body">
+          <div class="Delt-content text-center">
+             <img src="{{asset('assets/img/delte.png')}}" class="img-fluid mb-2">
+             <h5 class="my-2">Are you sure to delete all images?</h5>
+          </div>
+       </div>
+       <!-- Modal footer -->
+       <div class="modal-footer">
+           <div class="btn-section w-100 P-0">
+               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal deleteclientconfirm">Yes</a> 
+               <a type="" class="btn btn-modal" data-dismiss="modal">No</a>
+           </div>
+       </div>
+     </div>
+   </div>
 </div>
 
 
@@ -232,5 +283,39 @@ jQuery(document).on('click', '.viewImageInNewTab', function() {
     let toggledImage = $(this).attr('src');
     $('#toggledImageView').attr('src', toggledImage);
 });
+
+jQuery(document).on('click', '.editButtonimg', function() {
+    var li_no = $(this).attr('data-id');
+    $('#updateImageModal').modal('show');
+    $('#lr_no').val(li_no);
+});
+
+jQuery(document).on('submit', '#update_image', function() {
+    
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-poddetails",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+          
+        },
+    });
+
+});
+
+
 </script>
 @endsection
