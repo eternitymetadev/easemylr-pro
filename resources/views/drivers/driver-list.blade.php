@@ -173,6 +173,20 @@
             margin-bottom: 1rem;
             font-weight: 700;
         }
+
+        .appLoginDetailsBlock {
+            width: 100%;
+            background: #ffcf0026;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid #ffcf00;
+        }
+
+        #toggleCreateUsernameView {
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 
 
@@ -297,57 +311,90 @@
                         </div>
 
                         <div class="form-row">
-                            <h6 class="col-12">Bank Details</h6>
-
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Account Holder Name</label>
-                                <input type="text" class="form-control form-control-sm" name="account_holdername"
-                                       placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Account No</label>
-                                <input type="text" class="form-control form-control-sm" name="account_number"
-                                       placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">IFSC</label>
-                                <input type="text" class="form-control form-control-sm" name="ifsc" placeholder="">
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Bank Name</label>
-                                <input type="text" class="form-control form-control-sm" name="bank_name" placeholder="">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Branch Name</label>
-                                <input type="text" class="form-control form-control-sm" name="branch_name"
-                                       placeholder="">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
                             <h6 class="col-12">Shadow Details</h6>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="exampleFormControlInput2">Team Id</label>
                                 <input type="text" class="form-control form-control-sm" name="team_id" placeholder="">
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="exampleFormControlInput2">Fleet ID</label>
                                 <input type="text" class="form-control form-control-sm" name="fleet_id" placeholder="">
                             </div>
-                        </div>
 
-                        <div class="form-row">
-                            <h6 class="col-12">Login Details</h6>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="exampleFormControlInput2">Login Id</label>
                                 <input type="text" class="form-control form-control-sm" name="login_id" placeholder="">
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <label for="exampleFormControlInput2">Password</label>
                                 <input type="password" class="form-control form-control-sm" name="password"
                                        placeholder="">
                             </div>
+                        </div>
+
+                        <div class="form-group col-12 d-flex align-items-center" style="gap: 8px">
+                            <input style="height: 1rem; width: 1rem" type="checkbox" class="" name="enableAppAccess"
+                                   id="enableAppAccess"/>
+                            <label for="enableAppAccess">Enable App Access to Driver</label>
+                        </div>
+
+                        <div id="enabledAppAccess" class="form-row" style="display: none">
+
+                            <div class="col-12 p-2">
+                                <div class="form-group mb-0">
+                                    <label>Tagged Branch</label>
+                                    <select id="branch_id" class="form-control tagging" multiple="multiple" name="branch_id[]">
+                                        <option disabled>Select</option>
+                                        <option>None</option>
+                                        <option value="AL">Alabama</option>
+                                        <option value="dWY">Wyoming</option>
+                                        <option value="fY">Wyoming</option>
+                                        <option value="WdfY">Wyoming</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="appLoginDetailsBlock">
+                                @if(true)
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center"
+                                         style="gap: 1rem">
+                                        <p id="createUsernameInfo"
+                                           style="font-size: 18px;font-weight: 600; margin-bottom: 0;">
+                                            No username & password created yet.
+                                        </p>
+                                        <span id="toggleCreateUsernameView">
+                                            <span id="toggleCreateUsernameLabel">Create</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                @endif
+
+                                <div id="createUsernameView"
+                                     class="mx-auto mt-2 row align-items-center justify-content-between"
+                                     style="width: 100%; @if(true)display: none;@endif">
+                                    <div class="form-group col-md-4">
+                                        <label for="nickName">Nick Name</label>
+                                        <input class="form-control form-control-sm" name="nickName" id="nickName"
+                                               placeholder="Driver Nick Name"/>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="loginId">App Login ID</label>
+                                        <input class="form-control form-control-sm" name="loginId" id="loginId"
+                                               placeholder="Username"/>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="appPassword">Password</label>
+                                        <input class="form-control form-control-sm" name="appPassword" id="appPassword"
+                                               placeholder="password"/>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
 
@@ -443,7 +490,8 @@
 
                 </div>
                 <div class="modal-footer col-md-12 d-flex justify-content-end align-items-center" style="gap: 1rem;">
-                    <button type="button" style="width: 80px" class="btn btn-outline-primary" onclick="clickEditDriverModal()">
+                    <button type="button" style="width: 80px" class="btn btn-outline-primary"
+                            onclick="clickEditDriverModal()">
                         Edit
                     </button>
                     <button type="button" style="width: 80px" class="btn btn-outline-primary" data-dismiss="modal">
@@ -685,7 +733,7 @@
 
         function clickEditDriverModal() {
             $('#driverDetailsModal').modal('hide');
-            setTimeout(()=>{
+            setTimeout(() => {
                 $('#editDriverModalIcon').click();
             }, 400)
         }
@@ -701,9 +749,6 @@
 
             $(this).parent().children(".image_upload").children().attr('src', imgurl);
             $(this).parent().children("input").val('');
-            ;
-            // $(this).parent().children('div').children('h4').text('Add Image');
-            // $(this).parent().children('div').children('h4').css("display", "block");
             $(this).css("display", "none");
         });
 
@@ -725,6 +770,37 @@
 
             readURL1(this);
         });
+
+        $('#enableAppAccess').click(function () {
+            $('.taggedBranches').select2();
+
+            if (this.checked) {
+                $('#enabledAppAccess').show();
+            } else {
+                $('#enabledAppAccess').hide();
+            }
+        });
+
+        $('#toggleCreateUsernameView').click(function () {
+            $('#createUsernameView').toggle();
+            if ($('#createUsernameView').is(":visible")) {
+                $('#toggleCreateUsernameLabel').html('Cancel');
+                $('#createUsernameInfo').html('Create Username & Password');
+                $('#createUsernameView').children().children('input').attr('required', true);
+            } else {
+                $('#toggleCreateUsernameLabel').html('Create');
+                $('#createUsernameInfo').html('No username & password created yet.');
+                $('#createUsernameView').children().children('input').attr('required', false);
+            }
+        });
+
+        // $(document).ready(function() {
+        //     $('.taggedBranches').select2();
+        // });
+        //
+        // $(document).ready(function() {
+        //     $('.js-example-basic-multiple').select2();
+        // });
 
     </script>
 
