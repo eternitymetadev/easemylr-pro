@@ -61,7 +61,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-            'VehicleType:id,name'
+            'VehicleType:id,name',
+            'DrsDetail:consignment_no,drs_no'
         );
 
         if($authuser->role_id ==1)
