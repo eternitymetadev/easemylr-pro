@@ -546,7 +546,6 @@ class ConsignmentController extends Controller
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;
-                    // dd($get_data);
                     foreach ($get_data as $key => $save_data) {
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;
@@ -555,11 +554,27 @@ class ConsignmentController extends Controller
                         if($saveconsignmentitems){
                             // dd($save_data['item_data']);
                             if(!empty($save_data['item_data'])){
+                                $qty_array = array();
+                                $netwt_array = array();
+                                $grosswt_array = array();
+                                $chargewt_array = array();
                                 foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                    // echo "<pre>"; print_r($save_itemdata); die;
+                                    $qty_array[] = $save_itemdata['quantity'];
+                                    $netwt_array[] = $save_itemdata['net_weight'];
+                                    $grosswt_array[] = $save_itemdata['gross_weight'];
+                                    $chargewt_array[] = $save_itemdata['chargeable_weight'];
+
                                     $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
                                     $save_itemdata['status'] = 1;
-                                    $saveconsignmentsubitems = ConsignmentSubItem::create($save_itemdata);
+                                    $savesubitems = ConsignmentSubItem::create($save_itemdata);
                                 }
+                                $quantity_sum = array_sum($qty_array);
+                                $netwt_sum = array_sum($netwt_array);
+                                $grosswt_sum = array_sum($grosswt_array);
+                                $chargewt_sum = array_sum($chargewt_array);
+                                
+                                ConsignmentItem::where('id',$savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
                             }
                         }
                     }

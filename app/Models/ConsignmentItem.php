@@ -15,6 +15,7 @@ class ConsignmentItem extends Model
         'quantity',
         'weight',
         'gross_weight',
+        'chargeable_weight',
         'freight',
         'payment_type',
         'order_id',
