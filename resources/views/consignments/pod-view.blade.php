@@ -96,6 +96,28 @@ label.statusLabel {
                     <h5 class="limitmessage text-danger" style="display: none;">
                         You cannot download more than 30,000 records. Please select Filters.
                     </h5>
+                    <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
+                        <div class="col-sm-3">
+                            <label>from</label>
+                            <input type="date" id="startdate" class="form-control" name="startdate">
+                        </div>
+                        <div class="col-sm-3">
+                            <label>To</label>
+                            <input type="date" id="enddate" class="form-control" name="enddate">
+                        </div>
+                        <div class="col-6">
+                            <button type="button" id="filter_reportall" class="btn btn-primary"
+                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
+                                <span class="indicator-label">Filter Data</span>
+                            </button>
+                            <a href="<?php echo URL::to($prefix.'/pod-export'); ?>"
+                                data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
+                                class="consignmentReportEx btn btn-white btn-cstm"
+                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                data-action="<?php echo URL::to($prefix.'/pod-export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                            <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
+                        </div>
+                    </div>
                     @csrf
                     <div class="main-table table-responsive">
                         @include('consignments.pod-view-ajax')
@@ -249,7 +271,7 @@ jQuery(document).on('click', '#filter_reportall', function() {
 
     jQuery.ajax({
         type: 'get',
-        url: 'consignment-report2',
+        url: 'pod-view',
         data: {
             startdate: startdate,
             enddate: enddate,
@@ -373,10 +395,14 @@ jQuery(document).on(
     function(event) {
         event.stopPropagation();
         let lr_id = jQuery(this).attr("data-id");
-        
+
         jQuery("#changemodeConfirm").modal("show");
         jQuery(".confirmclick").one("click", function() {
             var reason_to_change_mode = jQuery("#reason_to_change_mode").val();
+            if(!reason_to_change_mode){
+                alert('Please enter a reason to change mode');
+                return false;
+            }
             var data = {
                 lr_id: lr_id,
                 reason_to_change_mode: reason_to_change_mode,
@@ -422,6 +448,7 @@ jQuery(document).on(
     ".deletePod",
     function(event) {
         event.stopPropagation();
+        $("#deleteImages").trigger( "reset" );
         let lr_id = jQuery(this).attr("data-id");
         jQuery("#deleteImages").modal("show");
         jQuery(".deleteclientconfirm").one("click", function() {

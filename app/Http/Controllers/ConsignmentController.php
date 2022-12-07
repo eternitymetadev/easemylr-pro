@@ -17,6 +17,7 @@ use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Exports\PodExport;
 use Auth;
 use Config;
 use DB;
@@ -29,6 +30,7 @@ use Session;
 use Storage;
 use URL;
 use Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ConsignmentController extends Controller
 {
@@ -4107,7 +4109,7 @@ class ConsignmentController extends Controller
             if(!empty($request->search)){
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
+                $query->where(function ($query)use($search,$searchT) { 
                     $query->where('id', 'like', '%' . $search . '%');
                 });
             }
@@ -4165,6 +4167,11 @@ class ConsignmentController extends Controller
         $consignments = $consignments->appends($request->query());
         
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
+    }
+
+    public function exportPodFile(Request $request)
+    {
+        return Excel::download(new PodExport($request->startdate,$request->enddate), 'Pod.xlsx');
     }
 
        public function updatePod(Request $request)
