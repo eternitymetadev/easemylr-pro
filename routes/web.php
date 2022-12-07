@@ -204,6 +204,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
     Route::resource('prs', PickupRunSheetController::class);

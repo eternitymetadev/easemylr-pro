@@ -4173,18 +4173,16 @@ class ConsignmentController extends Controller
 
             $lr_no = $request->lr_no;
             $file = $request->file('pod');
-            echo'<pre>'; print_r($file); die;
             if (!empty($file)) {
                 $filename = $file->getClientOriginalName();
                 $file->move(public_path('drs/Image'), $filename);
             } else {
                 $filename = null;
             }
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date'=> $request->delivery_date]);
 
                 $response['success'] = true;
-                $response['messages'] = 'Image uploaded successfully';
+                $response['messages'] = 'POD uploaded successfully';
                 return Response::json($response);
 
         } catch (\Exception $e) {
@@ -4193,5 +4191,36 @@ class ConsignmentController extends Controller
             $response['messages'] = $bug;
             return Response::json($response);
         }
+       }
+
+       public function changePodMode(Request $request)
+       {
+         $lr_no = $request->lr_id;
+         $mode = ConsignmentNote::where('id', $lr_no)->update(['change_mode_remarks' => $request->reason_to_change_mode, 'lr_mode' => 0, 'delivery_status' => 'Started' , 'delivery_date' => NULL]);
+
+         if($mode){
+            $response['success'] = true;
+            $response['messages'] = 'Mode Change successfully';
+         }else{
+            $response['success'] = false;
+            $response['messages'] = 'Mode Change failed';
+         }
+         return Response::json($response);
+       }
+
+       public function deletePodStatus(Request $request)
+       {
+
+        $lr_no = $request->lr_id;
+         $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => NULL, 'delivery_status' => 'Started' , 'signed_drs' => NULL]);
+
+         if($mode){
+            $response['success'] = true;
+            $response['messages'] = 'POD Remove';
+         }else{
+            $response['success'] = false;
+            $response['messages'] = 'failed';
+         }
+         return Response::json($response);
        }
 }

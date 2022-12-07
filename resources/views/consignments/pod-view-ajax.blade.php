@@ -15,8 +15,7 @@
                 <th>Invoice No</th>
                 <th style="text-align: center; width: 120px;">Delivery Status</th>
                 <th style="text-align: center; width: 120px;">Delivery Date</th>
-                <th>POD</th>
-                <th>Mode</th>
+                <th class="text-center">POD</th>
             </tr>
         </thead>
         <tbody>
@@ -24,10 +23,10 @@
             @foreach($consignments as $consignment)
             <?php
 
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $tat = ($end_date - $start_date) / 60 / 60 / 24;
-                ?>
+$start_date = strtotime($consignment->consignment_date);
+$end_date = strtotime($consignment->delivery_date);
+$tat = ($end_date - $start_date) / 60 / 60 / 24;
+?>
             <tr>
                 <td>{{$consignment->Branch->name ?? '-'}}</td>
 
@@ -64,22 +63,22 @@
                 @if (empty($consignment->order_id))
                 @if (!empty($consignment->ConsignmentItems))
                 <?php
-                            $order = array();
-                            $invoices = array();
-                            $inv_date = array();
-                            $inv_amt = array();
-                            foreach ($consignment->ConsignmentItems as $orders) {
-                                $order[] = $orders->order_id;
-                                $invoices[] = $orders->invoice_no;
-                                $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                                $inv_amt[] = $orders->invoice_amount;
-                            }
-                            //echo'<pre>'; print_r($order); die;
-                            $order_item['orders'] = implode(',', $order);
-                            $order_item['invoices'] = implode(', ', $invoices);
-                            $invoice['date'] = implode(',', $inv_date);
-                            $invoice['amt'] = implode(',', $inv_amt);
-                            ?>
+$order = array();
+$invoices = array();
+$inv_date = array();
+$inv_amt = array();
+foreach ($consignment->ConsignmentItems as $orders) {
+    $order[] = $orders->order_id;
+    $invoices[] = $orders->invoice_no;
+    $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+    $inv_amt[] = $orders->invoice_amount;
+}
+//echo'<pre>'; print_r($order); die;
+$order_item['orders'] = implode(',', $order);
+$order_item['invoices'] = implode(', ', $invoices);
+$invoice['date'] = implode(',', $inv_date);
+$invoice['amt'] = implode(',', $inv_amt);
+?>
                 <td>{{ $orders->order_id ?? "-" }}</td>
                 @else
                 <td>-</td>
@@ -112,13 +111,15 @@
                 </td>
 
                 <td style="width: 120px;">
-                    <?php $dlStatus = $consignment->delivery_status ?>
+                    <?php $dlStatus = $consignment->delivery_status?>
                     <p style="font-size: 11px; text-align: center">
                         Mode:
-                        @if ($consignment->job_id == '')
-                        <span class="dlMode" style="color: #009a10">Manual</span>
+                        @if ($consignment->lr_mode == 0)
+                        <a class="swan-tooltip-right dlMode notAllowed" data-tooltip="Already in manual mode"
+                            style="color: #009a10">Manual</a>
                         @else
-                        <span class="dlMode" style="color: #005892">Shadow</span>
+                        <a class="dlMode change_mode swan-tooltip-right pointer" data-tooltip="Click to change mode"
+                            style="color: #005892" data-id="{{$consignment->id}}">Shadow</a>
                         @endif
                         </span>
                         <br />
@@ -142,60 +143,90 @@
                     {{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
 
 
-                <?php if (!empty($consignment->job_id)) {
-                        $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();
-                        if (!empty($job->response_data)) {
-                            $trail_decorator = json_decode($job->response_data);
-                            $img_group = array();
-                            foreach ($trail_decorator->task_history as $task_img) {
-                                if ($task_img->type == 'image_added') {
-                                    $img_group[] = $task_img->description;
-                                }
+                <?php if ($consignment->lr_mode == 1) {
+                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();
+                      if (!empty($job->response_data)) {
+                        $trail_decorator = json_decode($job->response_data);
+                        $img_group = array();
+                        foreach ($trail_decorator->task_history as $task_img) {
+                            if ($task_img->type == 'image_added') {
+                                $img_group[] = $task_img->description;
                             }
                         }
-                    }?>
+                    }
+                }?>
 
-                <?php if (empty($consignment->job_id)) {
-                    $img = URL::to('/drs/Image/' . $consignment->signed_drs)?>
+                <?php if ($consignment->lr_mode == 0) {
+                     $img = URL::to('/drs/Image/' . $consignment->signed_drs)
+                ?>
 
                 <td style="max-width: 260px; vertical-align: middle">
-                    <?php if (!empty($consignment->signed_drs)) {?>
-                    <div class="d-flex flex-wrap" style="gap: 4px; width: 220px;">
-                        <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal" data-target="#exampleModal"
-                            style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                    @if (!empty($consignment->signed_drs))
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal"
+                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                        </div>
+                        <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
+                            data-id="{{$consignment->id}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-trash-2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </a>
                     </div>
-                    <?php } else {?>
+                    @else
                     <div style="min-height: 50px" class="d-flex align-items-center">
-                        Not Available
-                        <a data-toggle="modal" data-target="#updateImageModal" class="edit editButton" href="#">Add</a>
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            Not Available
+                        </div>
+                        <a class="edit editButtonimg editIcon swan-tooltip-left" data-tooltip="Add Images"
+                            data-id="{{$consignment->id}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-edit-2">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
                     </div>
-                    <?php }?>
+                    @endif
                 </td>
                 <?php } else {?>
                 <td style="max-width: 260px">
-                    <?php if(!empty($img_group)){ ?>
-                    <div class="d-flex align-items-center flex-wrap" style="gap: 4px; width: 250px;">
-                        <div class="d-flex flex-wrap" style="gap: 4px; width: 220px;">
+                    <?php if (!empty($img_group)) {?>
+                    <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             @foreach($img_group as $img)
                             <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
                             @endforeach
                         </div>
-                        <div>
-                            <a data-toggle="modal" data-target="#deleteImages" class="edit editButton" href="#">D</a>
-                        </div>
                     </div>
-                    <?php }else{?>
+                    <?php } else {?>
                     <div style="min-height: 50px" class="d-flex align-items-center">
-                        Not Available
-                        <a class="edit editButtonimg editIcon" data-id="{{$consignment->id}}" href="#">Add</a>
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            Not Available
+                        </div>
+
+                        <a class="edit editIcon notAllowed swan-tooltip-left" data-tooltip="First change mode to manual">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-edit-2">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
                     </div>
                     <?php }?>
                 </td>
                 <?php }?>
-
-                <td><a class="edit modeChange editIcon" data-id="{{$consignment->id}}" href="#">Mode Change</a></td>
 
             </tr>
             @endforeach

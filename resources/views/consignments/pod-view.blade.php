@@ -26,6 +26,15 @@ td p {
     border-radius: 4px;
     border: 1px solid;
     padding: 0 5px;
+    user-select: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.notAllowed {
+    cursor: not-allowed;
 }
 
 label.statusLabel {
@@ -115,16 +124,22 @@ label.statusLabel {
 <!-- update image Modal -->
 <div class="modal fade" id="updateImageModal" tabindex="-1" role="dialog" aria-labelledby="updateImageModalLabel"
     aria-hidden="true">
-    <form class="modal-dialog modal-dialog-centered" role="document" id="update_image">
+    <form class="modal-dialog modal-dialog-centered" role="document" id="update_image_pod">
         <div class="modal-content">
-            <div class="modal-header"><h4>Update Image</h4></div>
+            <div class="modal-header">
+                <h4>Update Image</h4>
+            </div>
             <div class="modal-body">
-                <div class="d-flex justify-content-center align-items-center">
-                    <input type="text" name="lr_no" id="lr_no" value="" />
-                    <div class="form-group">
+                <div class="d-flex flex-wrap justify-content-center align-items-center">
+                    <input type="hidden" name="lr_no" id="lr_no" value="" />
+                    <div class="form-group col-12">
                         <label class="control-label">Image</label>
-                        <input type="file" accept="image/*" class="form-control" id="image-url"
-                            placeholder="Image URL" name="pod" style="border: none;"/>
+                        <input type="file" class="form-control" id="image-url" accept="image/*" placeholder="Image URL"
+                            name="pod" style="border: none;" />
+                    </div>
+                    <div class="form-group col-12">
+                        <label class="control-label">Delivery Date</label>
+                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" />
                     </div>
                 </div>
             </div>
@@ -138,34 +153,95 @@ label.statusLabel {
 
 <!-- delete images modal -->
 <div class="modal fade" id="deleteImages" tabindex="-1" role="dialog" aria-hidden="true">
-   <div class="modal-dialog modal-dialog-centered">
-     <div class="modal-content">
-       <!-- Modal Header -->
-       <div class="modal-header text-center">
-        <h4 class="modal-title">Delete</h4>
-       </div>
-       <!-- Modal body -->
-       <div class="modal-body">
-          <div class="Delt-content text-center">
-             <img src="{{asset('assets/img/delte.png')}}" class="img-fluid mb-2">
-             <h5 class="my-2">Are you sure to delete all images?</h5>
-          </div>
-       </div>
-       <!-- Modal footer -->
-       <div class="modal-footer">
-           <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal deleteclientconfirm">Yes</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">No</a>
-           </div>
-       </div>
-     </div>
-   </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Delete</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="Delt-content text-center">
+                    <img src="{{asset('assets/img/delte.png')}}" class="img-fluid mb-2">
+                    <h5 class="my-2">Are you sure to delete all images?</h5>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="btn-section w-100 P-0">
+                    <a class="btn-cstm btn-white btn btn-modal delete-btn-modal deleteclientconfirm">Yes</a>
+                    <a type="" class="btn btn-modal" data-dismiss="modal">No</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- update delivery mode Modal -->
+<div class="modal fade" id="changemodeConfirm" tabindex="-1" role="dialog" aria-labelledby="updateImageModalLabel"
+    aria-hidden="true">
+    <form class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <h4 class="p-3">Change Mode</h4>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Reason:</label>
+                    <textarea class="form-control" name="reason_to_change_mode" id="reason_to_change_mode"
+                        rows="2"></textarea>
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end align-items-center p-3 pt-1" style="gap: 1rem">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary confirmclick">Update</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 
 @endsection
 @section('js')
 <script>
+$("#update_image_pod").submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var files = $("#image-url")[0].files;
+    var dd = $("#dlvery_date").val();
+    if (files.length == 0) {
+        alert("Please choose a file");
+        return false;
+    }
+    if (!dd) {
+        alert("Please select Date");
+        return false;
+    }
+    $.ajax({
+        url: "update-poddetails",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {},
+        success: (data) => {
+            if (data.success == true) {
+                swal('success', data.messages, 'success');
+                location.reload();
+            } else {
+                swal('error', data.messages, 'error');
+            }
+        },
+    });
+
+});
+
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
@@ -290,32 +366,98 @@ jQuery(document).on('click', '.editButtonimg', function() {
     $('#lr_no').val(li_no);
 });
 
-jQuery(document).on('submit', '#update_image', function() {
-    
-    var formData = new FormData(this);
+// lr mode change
+jQuery(document).on(
+    "click",
+    ".change_mode",
+    function(event) {
+        event.stopPropagation();
+        let lr_id = jQuery(this).attr("data-id");
+        
+        jQuery("#changemodeConfirm").modal("show");
+        jQuery(".confirmclick").one("click", function() {
+            var reason_to_change_mode = jQuery("#reason_to_change_mode").val();
+            var data = {
+                lr_id: lr_id,
+                reason_to_change_mode: reason_to_change_mode,
+            };
 
-    $.ajax({
-        url: "update-poddetails",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        type: "POST",
-        data: new FormData(this),
-        processData: false,
-        contentType: false,
-        beforeSend: function () {
-            $(".indicator-progress").show();
-            $(".indicator-label").hide();
-        },
-        success: (data) => {
-            $(".indicator-progress").hide();
-            $(".indicator-label").show();
-          
-        },
-    });
-
+            jQuery.ajax({
+                url: "change-pod-mode",
+                type: "get",
+                cache: false,
+                data: data,
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                        "content"
+                    ),
+                },
+                processData: true,
+                beforeSend: function() {
+                    // jQuery("input[type=submit]").attr("disabled", "disabled");
+                },
+                complete: function() {
+                    //jQuery("#loader-section").css('display','none');
+                },
+                success: function(response) {
+                    if (response.success == true) {
+                        swal('success', response.messages, 'success')
+                        location.reload();
+                    } else {
+                        swal('error', response.messages, 'error')
+                    }
+                },
+            });
+        });
+    }
+);
+//mode alert
+jQuery(document).on('click', '.modealert', function() {
+    swal('Error', 'Mode Already in Manual', 'error');
 });
+///Delete Pod and status changed
+jQuery(document).on(
+    "click",
+    ".deletePod",
+    function(event) {
+        event.stopPropagation();
+        let lr_id = jQuery(this).attr("data-id");
+        jQuery("#deleteImages").modal("show");
+        jQuery(".deleteclientconfirm").one("click", function() {
+            var data = {
+                lr_id: lr_id,
+            };
 
-
+            jQuery.ajax({
+                url: "delete-pod-status",
+                type: "get",
+                cache: false,
+                data: data,
+                dataType: "json",
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                        "content"
+                    ),
+                },
+                processData: true,
+                beforeSend: function() {
+                    // jQuery("input[type=submit]").attr("disabled", "disabled");
+                },
+                complete: function() {
+                    //jQuery("#loader-section").css('display','none');
+                },
+                success: function(response) {
+                    if (response.success == true) {
+                        swal('success', response.messages, 'success')
+                        location.reload();
+                    } else {
+                        swal('error', response.messages, 'error')
+                    }
+                },
+            });
+        });
+    }
+);
 </script>
 @endsection
