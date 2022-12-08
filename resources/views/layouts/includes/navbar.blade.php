@@ -225,9 +225,9 @@
                         <li>
                             <a href="{{$prefixurl.'driver-tasks'}}"> Driver Task</a>
                         </li>
-                        <!-- <li>
+                        <li>
                             <a href="{{$prefixurl.'vehicle-receivegate'}}"> HUB Receiving</a>
-                        </li> -->
+                        </li>
                     </ul>
                 </li>
                 <li class="menu single-menu menu-extras">
