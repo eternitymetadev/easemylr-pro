@@ -758,13 +758,58 @@
             });
         }
 
+        //Reassign the Ids of the row items
+        function reassign_itemids(_this) {
+            var i = 0;
+            // var tid = $(_this).closest("#tid").val();
+            var tid = document.getElementById("tid");
+            // alert(tid+" ll");
+            var t = document.getElementsByClassName("childTable");
+            // var totalChildTr = document.getElementsByClassName("childTable tr").length;
+            var totalChildTr = $(".removeItem").closest('.items_table_body').find('tr').length;
+            // console.log(totalChildTr);
+            $(".childTable tr").each(function () {
+                // var srno = $(t.rows[i].cells[0]).text();
+                if (totalChildTr == 1) {
+                    i++;
+                }
+                if (parseInt(totalChildTr) >= 2) {
+                    // alert(i+"kk");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".select_item")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][item]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".qty")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][quantity]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".net")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][net_weight]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".gross")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][gross_weight]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".charge_wt")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][chargeable_weight]");
+                                       
+
+                    i++;
+                }
+            });
+        }
+
         
         // add item row btn
         $(document).on("click", ".addItem", function () {
+            // var cc = $(this).siblings('.childTable').find('.charge_wt').length;
+            // var itemrows = cc;
             var mainrows = $(this).closest('table').attr('id');
             $(this).siblings(".childTable").each(function () {
             var itemrows = $(this).parents('.mainTr').children().children().eq(1).children().children('.childTable').children().children().length;
-            // var itemrows = parseInt(itemrows)+1;
             var itemTds = `<tr>
                             <td width="200px">
                                 <div class="form-group form-group-sm">
@@ -814,6 +859,7 @@
         $(document).on("click", ".removeItem", function () {
             $(this).closest("tr").remove();
             var _this = $(this);
+            // reassign_itemids(_this);            
             calculate_totals(_this);
         });
     
@@ -824,7 +870,7 @@
             var qty_sum = 0;
             $("input[class *= 'qty']").each(function(){
                 qty_sum += +$(this).val();
-            });            
+            });
             $("#tot_qty").html(qty_sum);
             var qty_val = $(this).val();
 
