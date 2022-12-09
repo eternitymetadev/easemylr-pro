@@ -205,6 +205,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
+    Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
+    Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
+    Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
     
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
@@ -217,7 +220,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
-    
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -260,6 +262,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -719,6 +722,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
+    Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
 });
 

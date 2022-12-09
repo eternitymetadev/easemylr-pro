@@ -8,6 +8,7 @@ use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
 use App\Models\Job;
 use App\Models\Location;
@@ -17,6 +18,7 @@ use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\ItemMaster;
 use Auth;
 use Config;
 use DB;
@@ -168,6 +170,7 @@ class ConsignmentController extends Controller
      */
     public function create()
     {
+        
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -216,6 +219,8 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $itemlists = ItemMaster::where('status', '1')->get();
+
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
@@ -232,7 +237,7 @@ class ConsignmentController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
+        return view('consignments.create-consignment', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient,'itemlists'=>$itemlists]);
     }
 
     /**
@@ -381,6 +386,198 @@ class ConsignmentController extends Controller
                         $save_data['status'] = 1;
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
+                }
+                $url = $this->prefix . '/consignments';
+                $response['success'] = true;
+                $response['success_message'] = "Consignment Added successfully";
+                $response['error'] = false;
+                // $response['resetform'] = true;
+                $response['page'] = 'create-consignment';
+                $response['redirect_url'] = $url;
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created consignment please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    public function storeLRItem(Request $request)
+    {
+        // echo'<pre>'; print_r($request->all()); die;
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                'consigner_id' => 'required',
+                'consignee_id' => 'required',
+                'ship_to_id' => 'required',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['errors'] = $errors;
+                return response()->json($response);
+            }
+
+            $authuser = Auth::user();
+            $cc = explode(',', $authuser->branch_id);
+
+            if (empty($request->vehicle_id)) {
+                $status = '2';
+            } else {
+                $status = '1';
+            }
+
+            $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
+            if (!empty($getconsignment->consignment_no)) {
+                $con_series = $getconsignment->consignment_no;
+            } else {
+                $con_series = '';
+            }
+            // $con_series = $getconsignment->consignment_no;
+            $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
+            if ($cn) {
+                if (!empty($cn->consignment_no)) {
+                    $cc = explode('-', $cn->consignment_no);
+                    $getconsignmentno = @$cc[1] + 1;
+                    $consignmentno = $cc[0] . '-' . $getconsignmentno;
+                } else {
+                    $consignmentno = $con_series . '-1';
+                }
+            } else {
+                $consignmentno = $con_series . '-1';
+            }
+            $consignmentsave['regclient_id'] = $request->regclient_id;
+            $consignmentsave['consigner_id'] = $request->consigner_id;
+            $consignmentsave['consignee_id'] = $request->consignee_id;
+            $consignmentsave['ship_to_id'] = $request->ship_to_id;
+            $consignmentsave['is_salereturn'] = $request->is_salereturn;
+            $consignmentsave['consignment_no'] = $consignmentno;
+            $consignmentsave['consignment_date'] = $request->consignment_date;
+            $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['description'] = $request->description;
+            $consignmentsave['packing_type'] = $request->packing_type;
+            $consignmentsave['dispatch'] = $request->dispatch;
+            $consignmentsave['total_quantity'] = $request->total_quantity;
+            $consignmentsave['total_weight'] = $request->total_weight;
+            $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+            // $consignmentsave['total_freight'] = $request->total_freight;
+            $consignmentsave['transporter_name'] = $request->transporter_name;
+            $consignmentsave['vehicle_type'] = $request->vehicle_type;
+            $consignmentsave['purchase_price'] = $request->purchase_price;
+            $consignmentsave['user_id'] = $authuser->id;
+            $consignmentsave['vehicle_id'] = $request->vehicle_id;
+            $consignmentsave['driver_id'] = $request->driver_id;
+            $consignmentsave['branch_id'] = $authuser->branch_id;
+            $consignmentsave['edd'] = $request->edd;
+            $consignmentsave['status'] = $status;
+            if (!empty($request->vehicle_id)) {
+                $consignmentsave['delivery_status'] = "Started";
+            } else {
+                $consignmentsave['delivery_status'] = "Unassigned";
+            }
+
+            $saveconsignment = ConsignmentNote::create($consignmentsave);
+            $consignment_id = $saveconsignment->id;
+            //===================== Create DRS in LR ================================= //
+
+            if (!empty($request->vehicle_id)) {
+                $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                    ->where('consignment_notes.id', $consignment_id)
+                    ->first(['consignees.city']);
+                $simplyfy = json_decode(json_encode($consignmentdrs), true);
+                //echo'<pre>'; print_r($simplyfy); die;
+
+                $no_of_digit = 5;
+                $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
+                $drs_no = json_decode(json_encode($drs), true);
+                if (empty($drs_no) || $drs_no == null) {
+                    $drs_no['drs_no'] = 0;
+                }
+                $number = $drs_no['drs_no'] + 1;
+                $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
+
+                $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
+            }
+            //===========================End drs lr ================================= //
+            if ($saveconsignment) {
+
+                /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
+                $vn = $consignmentsave['vehicle_id'];
+                $lid = $saveconsignment->id;
+                $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
+                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                    ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                    ->where('consignment_notes.id', $lid)
+                    ->get();
+                $simplyfy = json_decode(json_encode($lrdata), true);
+                //echo "<pre>";print_r($simplyfy);die;
+                //Send Data to API
+
+                if (($request->edd) >= $request->consignment_date) {
+                    if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
+                        $createTask = $this->createTookanTasks($simplyfy);
+                        $json = json_decode($createTask[0], true);
+                        $job_id = $json['data']['job_id'];
+                        $tracking_link = $json['data']['tracking_link'];
+                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    }
+                }
+                // insert consignment items
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        $save_data['consignment_id'] = $saveconsignment->id;
+                        $save_data['status'] = 1;
+                        $saveconsignmentitems = ConsignmentItem::create($save_data);
+
+                        if($saveconsignmentitems){
+                            // dd($save_data['item_data']);
+                            if(!empty($save_data['item_data'])){
+                                $qty_array = array();
+                                $netwt_array = array();
+                                $grosswt_array = array();
+                                $chargewt_array = array();
+                                foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                    // echo "<pre>"; print_r($save_itemdata); die;
+                                    $qty_array[] = $save_itemdata['quantity'];
+                                    $netwt_array[] = $save_itemdata['net_weight'];
+                                    $grosswt_array[] = $save_itemdata['gross_weight'];
+                                    $chargewt_array[] = $save_itemdata['chargeable_weight'];
+
+                                    $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                                    $save_itemdata['status'] = 1;
+                                    $savesubitems = ConsignmentSubItem::create($save_itemdata);
+                                }
+                                $quantity_sum = array_sum($qty_array);
+                                $netwt_sum = array_sum($netwt_array);
+                                $grosswt_sum = array_sum($grosswt_array);
+                                $chargewt_sum = array_sum($chargewt_array);
+                                
+                                ConsignmentItem::where('id',$savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+                            }
+                        }
+                    }
+
                 }
                 $url = $this->prefix . '/consignments';
                 $response['success'] = true;
@@ -4061,6 +4258,24 @@ class ConsignmentController extends Controller
         return Excel::download(new exportDownloadDrs, 'PaymentReport.xlsx');
     }
 
+    public function getItems(Request $request)
+    {
+        $getitem = ItemMaster::where('id', $request->item_val)->first();
+        
+        if($getitem){
+            $response['success']    = true;
+            $response['page']       = 'update-locations';
+            $response['error']      = false; 
+            $response['item']   = $getitem;
+            $response['success_message'] = "Item master fetch successfully";
+        }else{
+            $response['success']       = false;
+            $response['error']         = true;
+            $response['error_message'] = "Can not fetch Item master please try again";
+        }
+
+       return response()->json($response);
+    }
     public function podView(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -4162,6 +4377,5 @@ class ConsignmentController extends Controller
         
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
-
 
 }
