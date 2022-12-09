@@ -16,3 +16,4 @@ composer.lock
 /.vscode
 /public/all.pdf
 /public/consignment-pdf/congn.pdf
+/public/drs

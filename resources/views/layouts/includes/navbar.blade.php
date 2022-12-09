@@ -139,6 +139,7 @@
                         <li>
                             <a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
                         </li>
+                      
                        
                     </ul>
                 </li>
@@ -184,9 +185,13 @@
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
                         
                     <?php if($authuser->role_id !=6){ ?>
+                        <!-- <li>
+                            <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
+                        </li> -->
                         <li>
                             <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
                         </li>
+                       
                     <?php } if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                         <li>
                             <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>
@@ -204,9 +209,7 @@
                         <li>
                             <a href="{{$prefixurl.'admin-report2'}}"> Admin Report 2</a>
                         </li>
-                        <!-- <li>
-                            <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
-                        </li> -->
+                       
                         <li>
                             <a href="{{$prefixurl.'postal-code'}}"> Postal Code Edit</a>
                         </li>
