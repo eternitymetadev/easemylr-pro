@@ -257,7 +257,9 @@ class VendorController extends Controller
                         $query->whereIn('id', $regclient);
                     });
             } else {
-                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc)->whereHas('ConsignmentDetail', function ($query) {
+                    $query->where('status', '!=' , 0);
+                });
             }
 
             if (!empty($request->search)) {
@@ -346,7 +348,9 @@ class VendorController extends Controller
                 });
         } else {
 
-            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->whereHas('ConsignmentDetail', function ($query) {
+                $query->where('status', '!=' , 0);
+            });
         }
 
         $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();

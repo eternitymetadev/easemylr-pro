@@ -1880,17 +1880,23 @@ class ConsignmentController extends Controller
         $tooken_details = json_decode(json_encode($chk_tooken), true);
         // Push to tooken if Team Id & Fleet Id Available
         if (!empty($tooken_details[0]['fleet_id'])) {
-            $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
             $createTask = $this->createTookanMultipleTasks($simplyfy);
             $json = json_decode($createTask, true);
-            $response = $json['data']['deliveries'];
-            foreach ($response as $res) {
-                $job_id = $res['job_id'];
-                $orderId = $res['order_id'];
-                $tracking_link = $res['result_tracking_link'];
-                $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
-                $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
-            }
+            if(!empty($json['data'])){
+                $response = $json['data']['deliveries'];
+                $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+                foreach ($response as $res) {
+                    $job_id = $res['job_id'];
+                    $orderId = $res['order_id'];
+                    $tracking_link = $res['result_tracking_link'];
+                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
+                }
+                 }else{
+            $response['success'] = false;
+            $response['error_message'] = $json['message'];
+            return response()->json($response);
+                 }
         } else {
 
             $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
@@ -4269,6 +4275,107 @@ class ConsignmentController extends Controller
         }
 
        return response()->json($response);
+    }
+    public function podView(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if(!empty($sessionperitem)){
+            $peritem = $sessionperitem;
+        }else{
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        $query = ConsignmentNote::query();
+        
+        if($request->ajax()){
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+            
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+            $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                );
+
+            if($authuser->role_id ==1)
+            {
+                $query = $query;            
+            }elseif($authuser->role_id == 4){
+                $query = $query->whereIn('regclient_id', $regclient);   
+            }else{
+                $query = $query->whereIn('branch_id', $cc);
+            }
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('id', 'like', '%' . $search . '%');
+                });
+            }
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+            
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
+            }else {
+                $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+            }
+
+            $html =  view('consignments.pod-view-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            // $consignments = $consignments->appends($request->query());
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+            );
+
+        if($authuser->role_id ==1) 
+        {
+            $query = $query;            
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('regclient_id', $regclient);   
+        }else{
+            $query = $query->whereIn('branch_id', $cc);
+        }
+        
+        $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        
+        return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
 
 }

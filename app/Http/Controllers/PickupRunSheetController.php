@@ -276,7 +276,7 @@ class PickupRunSheetController extends Controller
         $peritem = Config::get('variable.PER_PAGE');
         $query = PrsDrivertask::query();
         
-        if ($request->ajax()) {
+        if ($request->ajax()) { 
 
             if (isset($request->prsdrivertask_status)) {
                 PrsDrivertask::where('id', $request->id)->update(['status' => '3']);

@@ -23,7 +23,7 @@ class PrsDrivertask extends Model
 
     public function PickupId()
     {
-        return $this->hasOne('App\models\PickuprunSheet','id','prs_id');
+        return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
 
 

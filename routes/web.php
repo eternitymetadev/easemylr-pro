@@ -208,10 +208,17 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
     Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
     Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
-
+    
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
 });
 
@@ -290,6 +297,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
+    
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -342,6 +350,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+
+    
 
 
 });
