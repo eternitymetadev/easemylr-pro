@@ -14,15 +14,13 @@
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search" id="search"
-                                                data-action="<?php echo url()->current(); ?>">
+                                            <input type="text" class="form-control" placeholder="Search" id="search" data-action="<?php echo url()->current(); ?>">
                                             <!-- <div class="input-group-btn">
                                                 <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                             </div> -->
@@ -36,10 +34,7 @@
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         href="{{'prs/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a> -->
-                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
-                                        style="font-size: 15px; padding: 9px; width: 130px"
-                                        data-action="<?php echo url()->current(); ?>"><span><i
-                                                class="fa fa-refresh"></i> Reset Filters</span></a>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +60,6 @@
         var total_qty = $(this).parent().prev().children().val();
         var pending_receive = parseInt(total_qty) - parseInt(receive_qty);
         console.log(pending_receive);
-        
 
         if (parseInt(total_qty) > parseInt(receive_qty)) {
             $(this).parent().next().children().val(pending_receive);
