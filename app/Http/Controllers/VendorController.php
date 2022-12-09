@@ -929,6 +929,20 @@ class VendorController extends Controller
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
 
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id_new;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                $paymentresponse['payment_status'] = 4;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
         }
 
         $url = $this->prefix . '/request-list';
