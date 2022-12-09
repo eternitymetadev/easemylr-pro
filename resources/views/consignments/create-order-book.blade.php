@@ -269,9 +269,9 @@
         </div>
 
 
-        <form class="general_form" method="POST" action="{{url($prefix.'/orders')}}" id="createorder" style="margin: auto; ">
+        <form class="general_form" method="POST" action="{{url($prefix.'/consignments/createlritem')}}" id="createconsignment" style="margin: auto;">
 
-            {{--bill to info--}} 
+            {{--bill to info--}}
             <div class="form-row">
                 <h6 class="col-12">Bill To Information</h6>
 
@@ -286,10 +286,6 @@
                             <option value="{{$client->id}}">{{$client->name}}</option>
                         @endforeach
                     </select>
-                    <?php $authuser = Auth::user();
-                                if($authuser->role_id ==3) { ?>
-                                <input id="location_id" type="hidden" name="branch_id" value="">
-                            <?php } ?> 
                 </div>
 
                 <div class="form-group col-md-3">
@@ -903,7 +899,7 @@
             });
             $("#total_gt_wt").html(gross_sum);
             
-            // $(this).prop('disabled', true);
+            $(this).prop('disabled', true);
         });
 
          //Remove the current invoice row

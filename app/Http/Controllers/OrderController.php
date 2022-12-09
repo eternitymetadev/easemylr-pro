@@ -6,12 +6,14 @@ use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
 use App\Models\Location;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\ItemMaster;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -138,6 +140,8 @@ class OrderController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $itemlists = ItemMaster::where('status', '1')->get();
+
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
@@ -157,7 +161,7 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name','location_id')->get();
         }
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient,'itemlists' => $itemlists]);
     }
 
     /**
@@ -187,25 +191,63 @@ class OrderController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
+            if (empty($request->vehicle_id)) {
+                $status = '2';
+            } else {
+                $status = '1';
+            }
+
+            $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
+            if (!empty($getconsignment->consignment_no)) {
+                $con_series = $getconsignment->consignment_no;
+            } else {
+                $con_series = '';
+            }
+            // $con_series = $getconsignment->consignment_no;
+            $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
+            if ($cn) {
+                if (!empty($cn->consignment_no)) {
+                    $cc = explode('-', $cn->consignment_no);
+                    $getconsignmentno = @$cc[1] + 1;
+                    $consignmentno = $cc[0] . '-' . $getconsignmentno;
+                } else {
+                    $consignmentno = $con_series . '-1';
+                }
+            } else {
+                $consignmentno = $con_series . '-1';
+            }
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
+            $consignmentsave['is_salereturn'] = $request->is_salereturn;
+            $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
-            $consignmentsave['dispatch'] = $request->dispatch;
             $consignmentsave['payment_type'] = $request->payment_type;
-            $consignmentsave['freight'] = $request->freight;
+            $consignmentsave['description'] = $request->description;
+            $consignmentsave['packing_type'] = $request->packing_type;
+            $consignmentsave['dispatch'] = $request->dispatch;
+            $consignmentsave['total_quantity'] = $request->total_quantity;
+            $consignmentsave['total_weight'] = $request->total_weight;
+            $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+            // $consignmentsave['total_freight'] = $request->total_freight;
+            $consignmentsave['transporter_name'] = $request->transporter_name;
+            $consignmentsave['vehicle_type'] = $request->vehicle_type;
+            $consignmentsave['purchase_price'] = $request->purchase_price;
             $consignmentsave['user_id'] = $authuser->id;
+            $consignmentsave['vehicle_id'] = $request->vehicle_id;
+            $consignmentsave['driver_id'] = $request->driver_id;
             if($authuser->role_id == 3){
                 $consignmentsave['branch_id'] = $request->branch_id;
             }else{
                 $consignmentsave['branch_id'] = $authuser->branch_id;
             }
+            $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = 5;
-
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
             } else {
@@ -213,19 +255,58 @@ class OrderController extends Controller
             }
 
             $saveconsignment = ConsignmentNote::create($consignmentsave);
+            $consignment_id = $saveconsignment->id;
+            
             if ($saveconsignment) {
+                // insert consignment items
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        $save_data['consignment_id'] = $saveconsignment->id;
+                        $save_data['status'] = 1;
+                        $saveconsignmentitems = ConsignmentItem::create($save_data);
+
+                        if($saveconsignmentitems){
+                            // dd($save_data['item_data']);
+                            if(!empty($save_data['item_data'])){
+                                $qty_array = array();
+                                $netwt_array = array();
+                                $grosswt_array = array();
+                                $chargewt_array = array();
+                                foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                // echo "<pre>"; print_r($save_itemdata); die;
+                                    $qty_array[] = $save_itemdata['quantity'];
+                                    $netwt_array[] = $save_itemdata['net_weight'];
+                                    $grosswt_array[] = $save_itemdata['gross_weight'];
+                                    $chargewt_array[] = $save_itemdata['chargeable_weight'];
+
+                                    $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                                    $save_itemdata['status'] = 1;
+                                    $savesubitems = ConsignmentSubItem::create($save_itemdata);
+                                }
+                                $quantity_sum = array_sum($qty_array);
+                                $netwt_sum = array_sum($netwt_array);
+                                $grosswt_sum = array_sum($grosswt_array);
+                                $chargewt_sum = array_sum($chargewt_array);
+                                
+                                ConsignmentItem::where('id',$savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+                            }
+                        }
+                    }
+
+                }
                 $url = $this->prefix . '/orders';
                 $response['success'] = true;
-                $response['success_message'] = "Order created successfully";
+                $response['success_message'] = "Order Created successfully";
                 $response['error'] = false;
-                $response['page'] = 'create-order';
+                // $response['resetform'] = true;
+                $response['page'] = 'create-consignment';
                 $response['redirect_url'] = $url;
             } else {
                 $response['success'] = false;
                 $response['error_message'] = "Can not created order please try again";
                 $response['error'] = true;
             }
-
             DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;

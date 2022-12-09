@@ -8,18 +8,15 @@
 		.checkbox-round {
 	margin-left: 1px;
 }
-
 }
 h4{
     font-size: 18px;
-
 }
 .form-control {
     height: 33px;
     padding: 0px;
     
 }
-
 .checkbox-round {
     width: 2.3em;
     height: 2.3em;
@@ -31,8 +28,6 @@ p {
     font-size: 11px;
     font-weight: 500;
 }
-
-
 th,td {
   text-align: left;
   padding: 8px;
@@ -48,21 +43,17 @@ th,td {
 .mini_container {
     margin-top: 8px;
 }
-
 .wizard {
     background: #fff;
 }
-
     .wizard .nav-tabs {
         position: relative;
         margin: 40px auto;
         margin-bottom: 0;
     }
-
     .wizard > div.wizard-inner {
         position: relative;
     }
-
 .connecting-line {
     height: 2px;
     background: #e0e0e0;
@@ -80,7 +71,6 @@ th,td {
     cursor: default;
     border: none;
 }
-
 span.round-tab {
     width: 50px;
     height: 50px;
@@ -106,43 +96,35 @@ span.round-tab i{
 .wizard li.active span.round-tab i{
     color: #5bc0de;
 }
-
 span.round-tab:hover {
     color: #333;
     border: 2px solid #333;
 }
-
 .wizard .nav-tabs > li {
     width: 25%;
 }
-
 .wizard .nav-tabs > li a {
     width: 48px;
     height: 70px;
     border-radius: 100%;
     padding: 0;
 }
-
 @media( max-width : 585px ) {
-
     .wizard {
         width: 90%;
         height: auto !important;
     }
-
     span.round-tab {
         font-size: 16px;
         width: 50px;
         height: 50px;
         line-height: 50px;
     }
-
     .wizard .nav-tabs > li a {
         width: 50px;
         height: 50px;
         line-height: 50px;
     }
-
     .wizard li.active:after {
         content: " ";
         position: absolute;
@@ -261,7 +243,6 @@ span.round-tab:hover {
                         <!-- <div class="col-sm-3 ">
                                 <p style="margin-left: 60px;">Different Ship To Location </p>
                                 <input type="checkbox" class="checkbox-round" />
-
                                 </div> -->
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
@@ -454,7 +435,6 @@ span.round-tab:hover {
     $(document).ready(function() {
         $('.insert-more').attr('disabled',true);
     });
-
     jQuery(function () {
         $('.my-select2').each(function () {
             $(this).select2({
@@ -462,7 +442,6 @@ span.round-tab:hover {
                 dropdownParent: $(this).parent(), // fix select2 search input focus bug
             })
         })
-
         // fix select2 bootstrap modal scroll bug
         $(document).on('select2:close', '.my-select2', function (e) {
             var evt = "scroll.select2"
@@ -470,10 +449,8 @@ span.round-tab:hover {
             $(window).off(evt)
         })
     })
-
     // add consignment date
     $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
-
     function showResult(str) {
         if (str.length == 0) {
             $(".search-suggestions").empty();
@@ -489,11 +466,9 @@ span.round-tab:hover {
             $('#json-datalist').html(options);
         }
     }
-
     $('#chek').click(function () {
         $('#veh').toggle();
     });
-
     function myMap() {
 var mapProp= {
   center:new google.maps.LatLng(51.508742,-0.120850),
@@ -501,7 +476,6 @@ var mapProp= {
 };
 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 }
-
 // invoice no duplicate validate
 $('.invc_no').blur(function() {
     var invc_no = $(this).val();
@@ -525,7 +499,6 @@ $('.invc_no').blur(function() {
         }
     })
 });
-
  
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script> 
