@@ -372,7 +372,7 @@ class ConsignmentController extends Controller
                         $json = json_decode($createTask[0], true);
                         $job_id = $json['data']['job_id'];
                         $tracking_link = $json['data']['tracking_link'];
-                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                     }
                 }
                 // insert consignment items
@@ -1694,7 +1694,7 @@ class ConsignmentController extends Controller
                     $job_id = $res['job_id'];
                     $orderId = $res['order_id'];
                     $tracking_link = $res['result_tracking_link'];
-                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                     $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
                 }
                  }else{

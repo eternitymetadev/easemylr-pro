@@ -1422,7 +1422,7 @@ jQuery(document).ready(function () {
                    
                    var trail_history = jQuery.parseJSON(value.trail);
 
-                   if(value.job_id != null){
+                   if(value.lr_mode == 1){
                     var img_api = [];
                    
                     $.each(trail_history.task_history, function (index, history) {
@@ -1438,7 +1438,7 @@ jQuery(document).ready(function () {
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if(value.job_id == null || value.job_id == ''){
+                    if(value.lr_mode == 0){
                     if (value.signed_drs == null) {
                         if(data.role_id == 7){
                             var field = '-';
@@ -1512,7 +1512,7 @@ jQuery(document).ready(function () {
                     "</td><td>" +
                     field +
                     "</td>";
-                    if(value.job_id =='' || value.job_id == null){
+                    if(value.lr_mode == 0){
                     if(data.role_id != 7){
                     row += "<td>" + buton +"</td>";
                     }}else{
