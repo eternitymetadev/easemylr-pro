@@ -83,7 +83,7 @@ class ConsignmentController extends Controller
 
             $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1) {  
                 $query;
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
