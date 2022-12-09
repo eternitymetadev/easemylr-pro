@@ -204,6 +204,12 @@
                         <li>
                             <a href="{{$prefixurl.'admin-report2'}}"> Admin Report 2</a>
                         </li>
+                        <!-- <li>
+                            <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
+                        </li> -->
+                        <li>
+                            <a href="{{$prefixurl.'postal-code'}}"> Postal Code Edit</a>
+                        </li>
                         <?php } ?>
                     </ul>
                 </li>

@@ -385,9 +385,10 @@ span.round-tab:hover {
                             <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
                             <option value="">Select driver</option>
                             @foreach($drivers as $driver)
-                                        <option value="{{$driver->id}}" {{ $driver->id == $getconsignments->driver_id ? 'selected' : ''}}>{{$driver->name}}</option>
+                                        <option value="{{$driver->id}}" {{ $driver->id == $getconsignments->driver_id ? 'selected' : ''}}>{{$driver->name}}-{{$driver->phone ??
+                                '-'}}</option>
                                         @endforeach
-                            </select>
+                            </select> 
                         </div>
                         <div class=" col-sm-3 ">
                             <p>EDD</p>

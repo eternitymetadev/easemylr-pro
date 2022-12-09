@@ -107,4 +107,8 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
 
+    public function Branch(){
+        return $this->belongsTo('App\Models\Location','branch_id');
+    }
+
 }
