@@ -30,15 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
-                                    <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
-                                    <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
-                                    <td><input type="text" class="form-control form-small qnt" name="data[1][quantity]"></td>
-                                    <td><input type="number" class="form-control form-small net" name="data[1][net_weight]"></td>
-                                    <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
-                                    <td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>

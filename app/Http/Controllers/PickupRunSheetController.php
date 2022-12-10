@@ -657,7 +657,6 @@ class PickupRunSheetController extends Controller
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
-
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consigner list please try again";
