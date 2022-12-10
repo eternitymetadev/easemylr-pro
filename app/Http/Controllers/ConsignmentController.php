@@ -2061,6 +2061,7 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $drsDate = date('d-m-Y', strtotime($details['created_at']));
+         
         $html = '<html>
         <head>
         <title>Document</title>
