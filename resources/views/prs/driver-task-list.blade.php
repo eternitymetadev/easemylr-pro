@@ -59,8 +59,23 @@
     $(document).on("click", ".add-taskbtn", function () {
         var prs_id = jQuery(this).attr("data-prsid");
         var drivertask_id = jQuery(this).attr("data-drivertaskid");
+        var prsconsigner_id = jQuery(this).attr("data-prsconsignerid");
+
         $("#drivertask_id").val(drivertask_id);
         $("#prs_id").val(prs_id);
+
+        jQuery.ajax({
+            type: "get",
+            url: "getlr-item",
+            data: { prsconsigner_id: prsconsigner_id },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            dataType: "json",
+            success: function (response) {
+            
+            },
+        });
 
     });
 </script>

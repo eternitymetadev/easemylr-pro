@@ -14,6 +14,7 @@ use App\Models\Driver;
 use App\Models\VehicleType;
 use App\Models\PrsReceiveVehicle;
 use App\Models\PrsRegClient;
+use App\Models\ConsignmentNote;
 use Helper;
 use Validator;
 use Config;
@@ -646,4 +647,23 @@ class PickupRunSheetController extends Controller
         }
         return response()->json($response);
     }
+
+    // get consigner on select regclient
+    public function getlrItems(Request $request){
+        $getconsigners = ConsignmentNote::with('ConsignmentItems')->where(['consigner_id'=>$request->prsconsigner_id,'status'=> '5'])->orderBy('created_at', 'desc')->first();
+        // echo'<pre>'; print_r(json_decode($getconsigners)); die;
+        if ($getconsigners) {
+            $response['success'] = true;
+            $response['success_message'] = "Consigner list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getconsigners;
+
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consigner list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
 }

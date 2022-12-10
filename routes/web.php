@@ -214,6 +214,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
