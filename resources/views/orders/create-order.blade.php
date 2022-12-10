@@ -481,7 +481,8 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control qty" name="data[1][item_data][0][quantity]">
+                                                            <input type="number" class="form-control qty" name="">
+                                                            <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -673,7 +674,8 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control qty" name="data[`+ item_no +`][item_data][0][quantity]">
+                                                            <input type="number" class="form-control qty" name="">
+                                                            <input type="hidden" class="form-control" name="data[`+ item_no +`][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
@@ -829,7 +831,8 @@
                             <td>
                                 <div class="form-group form-group-sm">
                                     <label>Quantity</label>
-                                    <input type="number" class="form-control qty" name="data[`+mainrows+`][item_data][`+itemrows+`][quantity]">
+                                    <input type="number" class="form-control qty" name="">
+                                    <input type="hidden" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][quantity]">
                                 </div>
                             </td>
                             <td>
@@ -878,6 +881,8 @@
             $("#tot_qty").html(qty_sum);
             var qty_val = $(this).val();
 
+            $(this).siblings().val(qty_val);
+
             var netwt_val = $(this).closest('tr').find('td').eq(2).find('input').val();
             var netwt_cal = parseInt(netwt_val) *  parseInt(qty_val);
 
@@ -903,7 +908,7 @@
             });
             $("#total_gt_wt").html(gross_sum);
             
-            // $(this).prop('disabled', true);
+             $(this).prop('disabled', true);
         });
 
          //Remove the current invoice row
