@@ -45,27 +45,41 @@ class OrderController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
+        $query = $query->where('status', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail');
 
         if ($authuser->role_id == 1) {
-            $data;
-        }
-        elseif($authuser->role_id ==4){
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-            // $data = $data->where('consignment_notes.user_id', $authuser->id);
+            $query;
+        } elseif ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
         }
         elseif($authuser->role_id ==6){
-            $data = $data->whereIn('base_clients.id', $baseclient);
+            $query = $query->whereIn('base_clients.id', $baseclient);
         } elseif ($authuser->role_id == 7) {
-            $data = $data->whereIn('regional_clients.id', $regclient);
+            $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc);
         }
-        $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
+        // $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
+        //     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        //     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
 
-        $consignments = $data->get();
+        // if ($authuser->role_id == 1) {
+        //     $data;
+        // }
+        // elseif($authuser->role_id ==4){
+        //     $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
+        //     // $data = $data->where('consignment_notes.user_id', $authuser->id);
+        // }
+        // elseif($authuser->role_id ==6){
+        //     $data = $data->whereIn('base_clients.id', $baseclient);
+        // } elseif ($authuser->role_id == 7) {
+        //     $data = $data->whereIn('regional_clients.id', $regclient);
+        // } else {
+        //     $data = $data->whereIn('consignment_notes.branch_id', $cc);
+        // }
+        // $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
+
+        $consignments = $query->orderBy('id', 'DESC')->get();
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
@@ -253,15 +267,16 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
-            $saveconsignment = ConsignmentNote::create($consignmentsave);
-            $consignment_id = $saveconsignment->id;
             
-            if ($saveconsignment) {
+            // $consignment_id = $saveconsignment->id;
+            
+            // if ($saveconsignment) {
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;
                     foreach ($get_data as $key => $save_data) {
+                        $saveconsignment = ConsignmentNote::create($consignmentsave);
+
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
@@ -282,6 +297,7 @@ class OrderController extends Controller
 
                                     $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
                                     $save_itemdata['status'] = 1;
+
                                     $savesubitems = ConsignmentSubItem::create($save_itemdata);
                                 }
                                 $quantity_sum = array_sum($qty_array);
@@ -302,11 +318,11 @@ class OrderController extends Controller
                 // $response['resetform'] = true;
                 $response['page'] = 'create-consignment';
                 $response['redirect_url'] = $url;
-            } else {
-                $response['success'] = false;
-                $response['error_message'] = "Can not created order please try again";
-                $response['error'] = true;
-            }
+            // } else {
+            //     $response['success'] = false;
+            //     $response['error_message'] = "Can not created order please try again";
+            //     $response['error'] = true;
+            // }
             DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;
@@ -336,9 +352,10 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
+
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
-        $getconsignments = ConsignmentNote::where('id', $id)->first();
+        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems')->where('id', $id)->first();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
@@ -550,14 +567,14 @@ class OrderController extends Controller
                     $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
                 }
                 // insert consignment items
-                if (!empty($request->data)) {
-                    $get_data = $request->data;
-                    foreach ($get_data as $key => $save_data) {
-                        $save_data['consignment_id'] = $request->consignment_id;
-                        $save_data['status'] = 1;
-                        $saveconsignmentitems = ConsignmentItem::create($save_data);
-                    }
-                }
+                // if (!empty($request->data)) {
+                //     $get_data = $request->data;
+                //     foreach ($get_data as $key => $save_data) {
+                //         $save_data['consignment_id'] = $request->consignment_id;
+                //         $save_data['status'] = 1;
+                //         $saveconsignmentitems = ConsignmentItem::create($save_data);
+                //     }
+                // }
                 $url = URL::to($this->prefix . '/consignments');
                 $response['success'] = true;
                 $response['success_message'] = "Order Updated successfully";

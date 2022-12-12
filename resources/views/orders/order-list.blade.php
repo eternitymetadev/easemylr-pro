@@ -57,13 +57,15 @@ div.relative {
                                 <tr>
                                     <!-- <th> </th> -->
                                     <th>LR No</th>
+                                    <th>LR Date</th>
+                                    <th>Billing Client</th>
                                     <th>Consigner Name</th>
                                     <th>Consignee Name</th>
-                                    <th>City</th>
-                                    <!-- <th>Pin Code</th> 
-                                    <th>Boxes</th>
+                                    <th>Delivery City</th>
+                                    <th>Invoice no</th> 
+                                    <th>Order No</th>
+                                    <th>Quantity</th>
                                     <th>Net Weight</th>
-                                    <th>EDD</th> -->
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -74,14 +76,15 @@ div.relative {
                                 <tr>
                                   <!-- <td class="dt-control">+</td> -->
                                     <td>{{ $consignment->id ?? "-" }}</td>
-                                    <td>{{ $consignment->consigner_id}}</td>
-                                    <td>{{ $consignment->consignee_id}}</td>
-                                    <td>{{ $consignment->city ?? "-" }}</td>
-                                    <!-- <td>{{ $consignment->pincode ?? "-" }}</td>
+                                    <td>{{ $consignment->consignment_date ?? "-" }}</td>
+                                    <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
+                                    <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
+                                    <td>{{ $consignment->ConsigneeDetail->nick_name}}</td>
+                                    <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
+                                    <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
+                                    <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                    <td>{{ $consignment->edd ?? "-" }}</td> -->
-                                    
                                     <td>
                                         <a class="orderstatus btn btn-danger" data-id = "{{$consignment->id}}" data-action = "<?php echo URL::current();?>"><span><i class="fa fa-ban"></i> Cancel</span></a>
                                         <a class="btn btn-primary" href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
