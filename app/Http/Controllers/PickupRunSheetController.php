@@ -333,7 +333,7 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $drivertasks = $query->orderBy('id', 'ASC')->paginate($peritem);
+            $drivertasks = $query->orderBy('id', 'DESC')->paginate($peritem);
             $drivertasks = $prsdata->appends($request->query());
 
             $html =  view('prs.driver-task-list-ajax',['prefix'=>$this->prefix,'drivertasks' => $drivertasks,'peritem'=>$peritem])->render();
@@ -344,7 +344,7 @@ class PickupRunSheetController extends Controller
 
         $query = $query->with('ConsignerDetail:id,nick_name,city');
 
-        $drivertasks  = $query->orderBy('id','ASC')->paginate($peritem);
+        $drivertasks  = $query->orderBy('id','DESC')->paginate($peritem);
         $drivertasks  = $drivertasks->appends($request->query());
         
         return view('prs.driver-task-list', ['drivertasks' => $drivertasks, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);

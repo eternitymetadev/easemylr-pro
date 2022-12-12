@@ -38,8 +38,8 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <div class="btn-section w-100 P-0">
-                        <button type="submit" id="task_savebtn" class="btn-cstm btn-white btn btn-modal">Add</button>
-                        <a type="" class="btn btn-modal" data-dismiss="modal">Close</a>
+                        <button type="submit" id="task_savebtn" class="btn-cstm btn-success btn btn-modal">Complete Pickup</button>
+                        <a type="" class="btn btn-danger btn-modal" data-dismiss="modal">Close</a>
                     </div>
                 </div>
             </form>

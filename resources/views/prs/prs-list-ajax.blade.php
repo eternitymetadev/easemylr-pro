@@ -4,7 +4,7 @@
             <tr>
                 <th>Pickup ID</th>
                 <th>Regional Client</th>
-                <th>Tasks</th>
+                <th>Pickup Points</th>
                 <th>Date</th>
                 <!-- <th>PRS Type </th> -->
                 <th>Vehicle No.</th>
