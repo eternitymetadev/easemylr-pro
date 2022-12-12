@@ -185,9 +185,9 @@
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
                         
                     <?php if($authuser->role_id !=6){ ?>
-                        <!-- <li>
+                        <li>
                             <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
-                        </li> -->
+                        </li>
                         <li>
                             <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
                         </li>
