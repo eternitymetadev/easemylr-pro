@@ -650,7 +650,7 @@ class PickupRunSheetController extends Controller
 
     // get consigner on select regclient
     public function getlrItems(Request $request){
-        $getconsigners = ConsignmentNote::with('ConsignmentItems')->where(['consigner_id'=>$request->prsconsigner_id,'status'=> '5'])->orderBy('created_at', 'desc')->first();
+        $getconsigners = ConsignmentNote::with('ConsignmentItems')->where(['consigner_id'=>$request->prsconsigner_id,'status'=> '5','prsitem_status'=>'0'])->orderBy('created_at', 'desc')->get();
         // echo'<pre>'; print_r(json_decode($getconsigners)); die;
         if ($getconsigners) {
             $response['success'] = true;

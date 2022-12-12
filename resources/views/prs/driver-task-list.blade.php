@@ -80,19 +80,21 @@
                 var rows = '';
                 var i = 0;
                 console.log(response.data.consignment_items);
-                $.each(response.data.consignment_items, function (index, value) {
-                    i++;
+                $.each(response.data, function (index, consignmtvalue) {
+                    $.each(consignmtvalue.consignment_items, function (index, value) {
+                        i++;
 
-                    rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'></td>';
-                    rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][invoice_no]" value='+value.invoice_no+'></td>';
-                    rows += '<td><input type="date" class="form-control form-small orderid" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
-                    rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
-                    rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
-                    rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
-                    rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
-                    rows += '</tr>';
-                    
-                    $("#create-driver-task tbody").append(rows);
+                        rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'></td>';
+                        rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][invoice_no]" value='+value.invoice_no+'></td>';
+                        rows += '<td><input type="date" class="form-control form-small orderid" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
+                        rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
+                        rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
+                        rows += '<td><input type="text" class="form-control form-small orderid" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
+                        rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                        rows += '</tr>';
+                        
+                        $("#create-driver-task tbody").append(rows);
+                    });
                 });
                 
             },
