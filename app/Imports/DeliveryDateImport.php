@@ -25,7 +25,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $lr_no = ConsignmentNote::where('id',$row['lr_no'])->first();
         $lr_dd = ConsignmentNote::where('id',$row['lr_no'])->update(['delivery_date'=> '']);
         
-        if(empty($lr_no->delivery_date)){
+        if(empty($lr_dd->delivery_date)){
             if(!empty($delivery_date)){
                 ConsignmentNote::where('id', $row['lr_no'])->update([
                     'delivery_date'  => $delivery_date,
