@@ -339,6 +339,57 @@
             transition: all 300ms ease-in-out;
             transform: translateX(200px);
         }
+
+        /*driverTimelineSummary*/
+        .driverTimelineSummary {
+            background: #ffffffd4;
+            border-radius: 18px;
+            flex-flow: column;
+            padding: 2px;
+        }
+
+        .driverTimelineSummary .driverTimingCount {
+            background: #494949;
+            display: flex;
+            gap: 1rem;
+            border-radius: 17px;
+            width: 100%;
+            height: auto;
+            padding: 4px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .driverTimelineSummary .timeCount {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #00800057;
+            padding: 5px;
+            font-size: 11px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #23ff23;
+            flex: 1;
+        }
+
+        .driverTimelineSummary .timeCount.movingTime {
+            background: #00800057;
+            color: #23ff23;
+        }
+
+        .driverTimelineSummary .timeCount.stopTime {
+            background: rgba(128, 0, 0, 0.34);
+            color: #ff1313;
+        }
+
+        .driverTimelineSummary .distanceTravel {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 700;
+            color: #343434;
+        }
+
     </style>
 
     <div class="layout-px-spacing" style="padding: 0 !important;">
@@ -368,12 +419,12 @@
                     </div>
 
                     <span class="hiddenTitle hiddenTitleRight" onclick="toggleDriverView()">
-                        Drivers
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                              stroke-linejoin="round" class="feather pointer feather-chevron-left">
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
+                        Drivers
                     </span>
 
                 </div>
@@ -437,13 +488,13 @@
                             <div class="tab-pane fade" id="acknowledgedTab" role="tabpanel"
                                  aria-labelledby="acknowledgedTaskTab">
                                 <div class="taskContainer">
-                                    @for($demoSr = 0; $demoSr < 7; $demoSr++)
+                                    @for($demoSr = 0; $demoSr < 3; $demoSr++)
                                         <div class="taskBlock d-flex align-items-center justify-content-between">
                                             <div class="driverInfo">
                                                 <img
                                                     src="https://media.istockphoto.com/id/623278438/photo/like-father-like-son.jpg?b=1&s=170667a&w=0&k=20&c=LFXnrYbOREo-68MyKCjNHOS9PgSSDqwA9HBAbSDDs48="/>
                                                 <span>Driver Name</span>
-                                                <span class="taskDone">Completed: 0/3</span>
+                                                <span class="vehicleNo">HR20AJ7830</span>
                                             </div>
 
                                             <div style="flex:1; overflow: hidden; align-self: flex-start;">
@@ -499,7 +550,9 @@
                                                     </div>
                                                 </div>
 
-                                                <div style="width: 100%;text-align: right; font-size: 10px;">
+                                                <div class="d-flex justify-content-between align-items-center"
+                                                     style="width: 100%; font-size: 10px;">
+                                                    <span class="taskDone">Completed: 0/3</span>
                                                     <a onclick="showTaskInfo()">Details >></a>
                                                 </div>
                                             </div>
@@ -589,13 +642,13 @@
                             <div class="tab-pane fade" id="completedTab" role="tabpanel"
                                  aria-labelledby="completedTaskTab">
                                 <div class="taskContainer">
-                                    @for($demoSr = 0; $demoSr < 7; $demoSr++)
+                                    @for($demoSr = 0; $demoSr < 1; $demoSr++)
                                         <div class="taskBlock d-flex align-items-center justify-content-between">
                                             <div class="driverInfo">
                                                 <img
                                                     src="https://media.istockphoto.com/id/623278438/photo/like-father-like-son.jpg?b=1&s=170667a&w=0&k=20&c=LFXnrYbOREo-68MyKCjNHOS9PgSSDqwA9HBAbSDDs48="/>
                                                 <span>Driver Name</span>
-                                                <span class="taskDone">Completed: 0/3</span>
+                                                <span class="vehicleNo">HR20AJ7830</span>
                                             </div>
 
                                             <div style="flex:1; overflow: hidden; align-self: flex-start;">
@@ -651,7 +704,9 @@
                                                     </div>
                                                 </div>
 
-                                                <div style="width: 100%;text-align: right; font-size: 10px;">
+                                                <div class="d-flex justify-content-between align-items-center"
+                                                     style="width: 100%; font-size: 10px;">
+                                                    <span class="taskDone">Completed: 0/3</span>
                                                     <a onclick="showTaskInfo()">Details >></a>
                                                 </div>
                                             </div>
@@ -849,12 +904,43 @@
                         <div class="tab-content" id="driverListContent">
                             <div class="tab-pane fade" id="freeTab" role="tabpanel"
                                  aria-labelledby="freeDriversTab">
+                                <div class="taskContainer">
+                                    @for($demoSr = 0; $demoSr < 4; $demoSr++)
+                                        <div class="taskBlock d-flex align-items-center justify-content-between">
+                                            <div class="driverInfo flex-row">
+                                                <div
+                                                    style="width: 8px; height: 18px; border-radius: 20px; margin-right: 10px; background: green"></div>
+                                                <img
+                                                    src="https://media.istockphoto.com/id/623278438/photo/like-father-like-son.jpg?b=1&s=170667a&w=0&k=20&c=LFXnrYbOREo-68MyKCjNHOS9PgSSDqwA9HBAbSDDs48="/>
+                                            </div>
 
+                                            <div class="d-flex align-items-center"
+                                                 style="flex:1; overflow: hidden; align-self: flex-start;">
+                                                <p class="mb-0 textWrap" style="flex: 1; max-width: 150px">
+                                                    <span class="consignerName swan-tooltip-right"
+                                                          style="font-size: 13px"
+                                                          title="Consigner Name">
+                                                        Driver NameDriver NameDriver NameDriver Name
+                                                    </span><br/>
+                                                    <span class="consignerAddress"
+                                                          style="font-size: 11px">+91-7394387928</span>
+                                                </p>
+                                                <div
+                                                    class="pendingTaskCount d-flex justify-content-center align-items-center flex-column">
+                                                    03
+                                                    <span style="font-size: 10px">Pending Tasks</span>
+                                                </div>
+                                                <a class="viewDetailLink" onclick="showDriverInfo()">></a>
+                                            </div>
+
+                                        </div>
+                                    @endfor
+                                </div>
                             </div>
                             <div class="tab-pane fade show active" id="busyTab" role="tabpanel"
                                  aria-labelledby="busyDriversTab">
                                 <div class="taskContainer">
-                                    @for($demoSr = 0; $demoSr < 7; $demoSr++)
+                                    @for($demoSr = 0; $demoSr < 5; $demoSr++)
                                         <div class="taskBlock d-flex align-items-center justify-content-between">
                                             <div class="driverInfo flex-row">
                                                 <div
@@ -889,7 +975,38 @@
 
                             <div class="tab-pane fade" id="inactiveTab" role="tabpanel"
                                  aria-labelledby="inactiveDriversTab">
+                                <div class="taskContainer">
+                                    @for($demoSr = 0; $demoSr < 2; $demoSr++)
+                                        <div class="taskBlock d-flex align-items-center justify-content-between">
+                                            <div class="driverInfo flex-row">
+                                                <div
+                                                    style="width: 8px; height: 18px; border-radius: 20px; margin-right: 10px; background: red"></div>
+                                                <img
+                                                    src="https://media.istockphoto.com/id/623278438/photo/like-father-like-son.jpg?b=1&s=170667a&w=0&k=20&c=LFXnrYbOREo-68MyKCjNHOS9PgSSDqwA9HBAbSDDs48="/>
+                                            </div>
 
+                                            <div class="d-flex align-items-center"
+                                                 style="flex:1; overflow: hidden; align-self: flex-start;">
+                                                <p class="mb-0 textWrap" style="flex: 1; max-width: 150px">
+                                                    <span class="consignerName swan-tooltip-right"
+                                                          style="font-size: 13px"
+                                                          title="Consigner Name">
+                                                        Driver NameDriver NameDriver NameDriver Name
+                                                    </span><br/>
+                                                    <span class="consignerAddress"
+                                                          style="font-size: 11px">+91-7394387928</span>
+                                                </p>
+                                                <div
+                                                    class="pendingTaskCount d-flex justify-content-center align-items-center flex-column">
+                                                    03
+                                                    <span style="font-size: 10px">Pending Tasks</span>
+                                                </div>
+                                                <a class="viewDetailLink" onclick="showDriverInfo()">></a>
+                                            </div>
+
+                                        </div>
+                                    @endfor
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -968,16 +1085,36 @@
                             </div>
                             <div class="tab-pane fade" id="driverTimelineTab" role="tabpanel"
                                  aria-labelledby="timelineTab">
-                                <div class="taskContainer taskDetailContainer">
-                                    <h5>Customer Details</h5>
-                                    <p><span class="dHeading">Name:</span><span
-                                            class="dDescription">Customer Name</span></p>
-                                    <p><span class="dHeading">Email:</span><span class="dDescription">emailaddress@company.domain</span>
-                                    </p>
-                                    <p><span class="dHeading">Mobile:</span><span
-                                            class="dDescription">+91-9898989898</span></p>
-                                    <p><span class="dHeading">Address:</span><span class="dDescription">City Name, State -122121</span>
-                                    </p>
+                                <div class="d-flex align-items-center m-3 driverTimelineSummary">
+                                    <div class="driverTimingCount">
+                                        <span class="timeCount movingTime">Moving<span style="font-size: 13px">00:22:30 hrs</span></span>
+                                        <span class="timeCount stopTime">Stopped<span style="font-size: 13px">00:22:30 hrs</span></span>
+                                    </div>
+                                    <div class="distanceTravel">
+                                        Distance Travel: 219km
+                                    </div>
+                                </div>
+
+                                <div class="historyTimeLineContainer taskContainer taskDetailContainer"
+                                     style="max-height: 300px">
+
+                                    @for($i = 0; $i < 2; $i++)
+                                        <div class="historyTimeline">
+                                            <div class="d-flex align-items-center flex-wrap" style="gap: 1rem">
+                                                <span class="marker"></span>
+                                                <span class="status">Stopped</span><br/>
+
+                                            </div>
+                                            <div class="d-flex align-items-center flex-wrap">
+                                                <div class="historyTimeLineDetail">
+                                                    <span
+                                                        style="font-size: 14px; font-weight: 700">12 Dec 2022, 10:30pm</span><br/>
+                                                    Last moving time 00:20:30
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endfor
+
                                 </div>
                             </div>
                             <div class="tab-pane fade " id="driverTasksTab" role="tabpanel"
