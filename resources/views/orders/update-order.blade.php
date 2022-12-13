@@ -271,7 +271,7 @@
 
         <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder" style="margin: auto; ">
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
-    <input type="text" name="booked_drs" value="{{$getconsignments->booked_drs}}">
+    <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
             {{--bill to info--}} 
             <div class="form-row">
                 <h6 class="col-12">Bill To Information</h6>
@@ -410,7 +410,7 @@
                             <input type="text" class="form-control" value="Case/s"
                                    name="packing_type">
                         </div>
-                        <div class="col-md-2">
+                        <!-- <div class="col-md-2">
                             <label>Total Quantity</label>
                             <span id="tot_qty">
                                 <?php echo "0";?>
@@ -427,7 +427,7 @@
                             <span id="total_gt_wt">
                                 <?php echo "0";?>
                             </span> Kgs.
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -498,7 +498,7 @@
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control qty" name="" value="{{$subitem->quantity}}">
+                                                            <input type="number" class="form-control qty" name="" value="{{$subitem->quantity}}" readonly >
                                                             <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]" value="{{$subitem->quantity}}" readonly>
                                                         </div>
                                                     </td>
@@ -526,7 +526,7 @@
                                                 @endforeach
                                                 </tbody>
                                             </table>
-                                            <span style="margin-right: 8%" class="addItem">+ Add Item</span>
+                                            <!-- <span style="margin-right: 8%" class="addItem">+ Add Item</span> -->
                                         </td>
                                     </tr>
                                     </tbody>
@@ -537,7 +537,7 @@
                         </tbody>
                     </table>
                 </div>
-                <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>
+                <!-- <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span> -->
             </div>
 
 
