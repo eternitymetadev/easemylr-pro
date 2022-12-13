@@ -268,14 +268,14 @@ class ConsigneeController extends Controller
                 return response()->json($response);
             }
 
-            // $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('id','!=',$request->consignee_id)->get();
+            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('id','!=',$request->consignee_id)->get();
 
-            // if(!$check_nickname_exist->isEmpty()){
-            //     $response['success'] = false;
-            //     $response['error_message'] = "Nick name already exists.";
-            //     $response['cnee_nickname_duplicate_error'] = true;
-            //     return response()->json($response);
-            // }
+            if(!$check_nickname_exist->isEmpty()){
+                $response['success'] = false;
+                $response['error_message'] = "Nick name already exists.";
+                $response['cnee_nickname_duplicate_error'] = true;
+                return response()->json($response);
+            }
 
             $consigneesave['nick_name']           = $request->nick_name;
             $consigneesave['legal_name']          = $request->legal_name;
