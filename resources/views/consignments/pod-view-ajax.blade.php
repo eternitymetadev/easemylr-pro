@@ -157,16 +157,23 @@ $invoice['amt'] = implode(',', $inv_amt);
                 }?>
 
                 <?php if ($consignment->lr_mode == 0) {
-                     $img = URL::to('/drs/Image/' . $consignment->signed_drs)
+                     $img = URL::to('/drs/Image/' . $consignment->signed_drs);
+                    $pdfcheck = explode('.',$consignment->signed_drs);
                 ?>
 
                 <td style="max-width: 260px; vertical-align: middle">
                     @if (!empty($consignment->signed_drs))
                     <div class="d-flex align-items-center">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
-                            <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
+                        @if($pdfcheck[1] == 'pdf')
+                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab" data-toggle="modal"
+                                data-target="#exampleModalPdf"
+                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                        @else
+                        <img src="{{$img}}"  class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                        @endif
                         </div>
                         <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
                             data-id="{{$consignment->id}}">

@@ -81,6 +81,11 @@ label.statusLabel {
 .viewAllInvoices:hover .moreInvoicesView {
     display: flex;
 }
+
+#exampleModal img {
+    max-height: 100% !important;
+    max-width: 100% !important;
+}
 </style>
 
 <div class="layout-px-spacing">
@@ -131,11 +136,24 @@ label.statusLabel {
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: max-content">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center">
-                    <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
+                <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalPdf" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-center align-items-center">
+                    <iframe src="#" id="toggledPdfView" style="height: 90vh; width: 90vw; max-height: 90vh; max-width: 90vw" ></iframe>
                 </div>
             </div>
         </div>
@@ -229,6 +247,9 @@ label.statusLabel {
 @endsection
 @section('js')
 <script>
+
+
+
 $("#update_image_pod").submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
@@ -377,9 +398,13 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
 });
 
 jQuery(document).on('click', '.viewImageInNewTab', function() {
-
     let toggledImage = $(this).attr('src');
     $('#toggledImageView').attr('src', toggledImage);
+});
+
+jQuery(document).on('click', '.viewpdfInNewTab', function() {
+    let toggledImage = $(this).attr('pdf-nm');
+    $('#toggledPdfView').attr('src', toggledImage);
 });
 
 jQuery(document).on('click', '.editButtonimg', function() {
