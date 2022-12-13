@@ -208,7 +208,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
-
+    Route::any('driver-map', [DriverController::class,'driverMapView']);
 
 });
 

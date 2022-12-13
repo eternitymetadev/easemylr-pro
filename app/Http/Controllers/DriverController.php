@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Location;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Driver;
@@ -294,4 +296,10 @@ class DriverController extends Controller
         return Excel::download(new DriverExport, 'drivers.csv');
     }
 
+     public function driverMapView(Request $request)
+     {
+         $this->prefix = request()->route()->getPrefix();
+
+         return view('driver-map-view.driver-map-view', ['prefix' => $this->prefix ]);
+     }
 }

@@ -273,6 +273,9 @@
                         <li>
                             <a href="{{$prefixurl.'clients'}}"> Clients</a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'driver-map'}}"> Driver Map</a>
+                        </li>
                         <!-- <li>
                             <a href="{{url('roles')}}"> Roles</a>
                         </li> -->
