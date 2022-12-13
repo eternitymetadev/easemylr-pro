@@ -245,9 +245,9 @@ class OrderController extends Controller
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;
-            $consignmentsave['total_quantity'] = $request->total_quantity;
-            $consignmentsave['total_weight'] = $request->total_weight;
-            $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+            // $consignmentsave['total_quantity'] = $request->total_quantity;
+            // $consignmentsave['total_weight'] = $request->total_weight;
+            // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
             // $consignmentsave['total_freight'] = $request->total_freight;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
@@ -275,6 +275,7 @@ class OrderController extends Controller
                 if (!empty($request->data)) {
                     $get_data = $request->data;
                     foreach ($get_data as $key => $save_data) {
+
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
 
                         $save_data['consignment_id'] = $saveconsignment->id;
@@ -306,6 +307,8 @@ class OrderController extends Controller
                                 $chargewt_sum = array_sum($chargewt_array);
                                 
                                 ConsignmentItem::where('id',$savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+
+                                ConsignmentNote::where('id',$saveconsignment->id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
                             }
                         }
                     }
