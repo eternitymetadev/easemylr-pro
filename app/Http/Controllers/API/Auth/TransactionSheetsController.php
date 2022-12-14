@@ -360,7 +360,8 @@ class TransactionSheetsController extends Controller
 
     public function update(Request $request, $id)
     {
-        try {
+        try
+         {
             $update_status = ConsignmentNote::find(1118713);
             $res = $update_status->update(['delivery_status' => 'Successful']);
             if ($res) {
@@ -646,8 +647,14 @@ class TransactionSheetsController extends Controller
 
     public function updateDeliveryDetails(Request $request, $id)
     {
+         
+          ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes, 'delivery_status' => 'Successful']);
 
-          ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
+          $currentdate = date("d-m-y h:i:sa");
+          $respons = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
+          $respons_data = json_encode($respons);
+          
+          $create = Job::create(['consignment_id' => $id ,'response_data' => $respons_data,'status' => 'Successful','type'=> '2']);
 
           //update latitudes and longitude
           $getconsignee_id = ConsignmentNote::where('id', $id)->first();
