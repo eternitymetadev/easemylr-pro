@@ -245,7 +245,7 @@ class TransactionSheetsController extends Controller
         try {
             
           
-             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia')->where('driver_id', $id)
+             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia','Jobs')->where('driver_id', $id)
             ->get();
             // echo'<pre>'; print_r($consignments); die;
          
@@ -254,6 +254,7 @@ class TransactionSheetsController extends Controller
                     $order = array();
                     $invoices = array();
                     $pod_img = array();
+                    $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
                    
                    foreach($value->ConsignmentItems as $orders){
                            $order[] = $orders->order_id;
@@ -263,6 +264,12 @@ class TransactionSheetsController extends Controller
                    foreach($value->AppMedia as $pod){
                     $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
                    );
+                }
+                $deliverystatus = array();
+               
+                foreach($value->Jobs as $jobdata){
+                    $deliverystatus[] = array('status' => $jobdata->status,'timestamp' => $jobdata->created_at);
+                  
                 }
                             $order_item['orders'] = implode(',', $order);
                             $order_item['invoices'] = implode(',', $invoices);
@@ -285,7 +292,8 @@ class TransactionSheetsController extends Controller
                        'invoice_no'                => $order_item['invoices'],
                        'delivery_status'           => $value->delivery_status,
                        'delivery_notes'            =>  $value->delivery_notes,
-                       'img'                        => $pod_img
+                       'img'                        => $pod_img,
+                       'status_time'               => @$deliverystatus,
                   ];
             }   
             if ($consignments) {
@@ -572,14 +580,18 @@ class TransactionSheetsController extends Controller
 
         try {
 
-             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia')->where('id',$id)
+             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia','Jobs')->where('id',$id)
             ->get();
+           
+            // echo'<pre>'; print_r(json_decode($consignments)); die;
          
             foreach($consignments as $value){
                     $order = array();
                     $invoices = array();
                     $pod_img = array();
-                   
+
+                    $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
+
                    foreach($value->ConsignmentItems as $orders){
                            $order[] = $orders->order_id;
                            $invoices[] = $orders->invoice_no;
@@ -587,6 +599,13 @@ class TransactionSheetsController extends Controller
                    foreach($value->AppMedia as $pod){
                     $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
                    );
+                }
+                
+                $deliverystatus = array();
+               
+                foreach($value->Jobs as $jobdata){
+                    $deliverystatus[] = array('status' => $jobdata->status,'timestamp' => $jobdata->created_at);
+                  
                 }
 
                             $order_item['orders'] = implode(',', $order);
@@ -609,8 +628,9 @@ class TransactionSheetsController extends Controller
                        'order_id'                  => $order_item['orders'],
                        'invoice_no'                => $order_item['invoices'],
                        'delivery_status'           => $value->delivery_status,
-                       'delivery_notes'            =>  $value->delivery_notes,
-                       'img'                       => $pod_img
+                       'delivery_notes'            => $value->delivery_notes,
+                       'img'                       => $pod_img,
+                       'time_line'               => @$deliverystatus,
                   ];
             }
             if ($consignments) {
@@ -651,10 +671,13 @@ class TransactionSheetsController extends Controller
           ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes, 'delivery_status' => 'Successful']);
 
           $currentdate = date("d-m-y h:i:sa");
-          $respons = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
-          $respons_data = json_encode($respons);
+          $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
+          $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
+          $st = json_decode($lastjob->response_data);
+          array_push($st, $respons3);
+          $sts = json_encode($st); 
           
-          $create = Job::create(['consignment_id' => $id ,'response_data' => $respons_data,'status' => 'Successful','type'=> '2']);
+          $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
 
           //update latitudes and longitude
           $getconsignee_id = ConsignmentNote::where('id', $id)->first();

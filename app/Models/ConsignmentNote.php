@@ -116,4 +116,8 @@ class ConsignmentNote extends Model
         return $this->hasMany('App\Models\AppMedia','consignment_no','id');
     }
 
+     public function jobs()
+    {
+        return $this->hasMany('App\Models\Job','consignment_id','id');
+    }
 }
