@@ -293,7 +293,7 @@ class TransactionSheetsController extends Controller
                        'delivery_status'           => $value->delivery_status,
                        'delivery_notes'            =>  $value->delivery_notes,
                        'img'                        => $pod_img,
-                       'timeline'               => @$deliverystatus,
+                       'timeline'                  => @$deliverystatus,
                   ];
             }   
             if ($consignments) {
@@ -630,7 +630,7 @@ class TransactionSheetsController extends Controller
                        'delivery_status'           => $value->delivery_status,
                        'delivery_notes'            => $value->delivery_notes,
                        'img'                       => $pod_img,
-                       'timeline'               => @$deliverystatus,
+                       'timeline'                  => @$deliverystatus,
                   ];
             }
             if ($consignments) {
