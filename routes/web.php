@@ -297,6 +297,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']); 
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
     
 
     Route::resource('locations', LocationController::class);
@@ -427,6 +431,10 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
 
     Route::resource('locations', LocationController::class);
@@ -559,6 +567,10 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
 
     Route::resource('locations', LocationController::class);
