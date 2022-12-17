@@ -51,7 +51,17 @@ div.relative {
                         @csrf
                         <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                             <div class="btn-group relative">
-                                <a href="{{'orders/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Order</a>
+                                <a href="{{'orders/create'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Order</a> || <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-upload-cloud mr-1">
+                        <polyline points="16 16 12 12 8 16"></polyline>
+                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                        <polyline points="16 16 12 12 8 16"></polyline>
+                    </svg>
+                    upload
+                </button>
                             </div>
                             <thead>
                                 <tr>
@@ -100,6 +110,33 @@ div.relative {
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form id="upload_order" class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Order Upload</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="formGroupExampleInput">Excel File*</label>
+                                <input required type="file" class="form-control form-control-sm"
+                                       id="formGroupExampleInput" name="order_file" placeholder="Example input">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary"><span class="indicator-label">Upload</span>
+                        <span class="indicator-progress" style="display: none;">Please wait...
+            	        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 @include('models.delete-user')
 @include('models.common-confirm')
 @endsection
@@ -149,5 +186,33 @@ div.relative {
             });
         });
     });
+
+    $('#upload_order').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "import-ordre-booking",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                    swal("success!", data.success_message, "success");
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+           
+        }
+    });
+});
 </script>
 @endsection

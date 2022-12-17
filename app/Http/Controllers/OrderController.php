@@ -14,12 +14,14 @@ use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\ItemMaster;
+use App\Imports\OrderBookedImport;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
 use Storage;
 use URL;
 use Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -683,6 +685,48 @@ class OrderController extends Controller
         //echo "<pre>";print_r($response);echo "</pre>";die;
         return $response;
 
+    } 
+    public function rewrap(array $input)
+    {
+        $key_names = array_shift($input);
+        $output = array();
+        foreach ($input as $index => $inner_array) {
+            $output[] = array_combine($key_names, $inner_array);
+        }
+        return $output;
+    }
+
+    public function importOrderBooking(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+               $rows = Excel::toArray([], request()->file('order_file'));
+               $data = $rows[0];
+               $excelarray = $this->rewrap($data);
+               $datas = array();
+
+                // first, group the influencer_user_id
+                foreach ($excelarray as $element) {
+                     
+                
+                }
+
+               echo'<pre>';print_r($result);die;
+        $data = Excel::import(new OrderBookedImport, request()->file('order_file'));
+
+        die;
+        $message = "Data imported Successfully";
+
+        if ($data) {
+            $response['success'] = true;
+            $response['error'] = false;
+            $response['success_message'] = $message;
+        } else {
+            $response['success'] = false;
+            $response['error'] = true;
+            $response['error_message'] = "Can not import consignees please try again";
+        }
+        return response()->json($response);
     }
 
 }
