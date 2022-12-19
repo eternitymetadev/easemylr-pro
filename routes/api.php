@@ -34,7 +34,7 @@ Route::put('/task-start/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsC
 Route::put('/task-ack/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskAcknowledge')->name('api.auth.taskAcknowledge.transaction_sheets');
 Route::get('/single-task/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@singleTask')->name('api.auth.singleTask.transaction_sheets');
 Route::post('/update-deliveryDetails/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@updateDeliveryDetails')->name('api.auth.updateDeliveryData.transaction_sheets');
-Route::put('task-success/{id}', [TransactionSheetsController::class, 'taskSuccessful']);
+Route::post('task-success/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskSuccessful')->name('api.auth.taskSuccessful.transaction_sheets');
 });
 
 

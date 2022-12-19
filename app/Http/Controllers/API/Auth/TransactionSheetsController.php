@@ -679,38 +679,54 @@ class TransactionSheetsController extends Controller
 
     }
 
-    public function updateDeliveryDetails(Request $request, $id)
-    {
+    // public function updateDeliveryDetails(Request $request, $id)
+    // {
          
-          ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
+    //       ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
 
-        //   $currentdate = date("d-m-y h:i:sa");
-        //   $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
-        //   $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
-        //   $st = json_decode($lastjob->response_data);
-        //   array_push($st, $respons3);
-        //   $sts = json_encode($st); 
+    //     //   $currentdate = date("d-m-y h:i:sa");
+    //     //   $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
+    //     //   $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
+    //     //   $st = json_decode($lastjob->response_data);
+    //     //   array_push($st, $respons3);
+    //     //   $sts = json_encode($st); 
           
-        //   $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
+    //     //   $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
 
-          //update latitudes and longitude
-          $getconsignee_id = ConsignmentNote::where('id', $id)->first();
-          $consignee_id = $getconsignee_id->consignee_id;
+    //       //update latitudes and longitude
+    //       $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+    //       $consignee_id = $getconsignee_id->consignee_id;
            
-          Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+    //       Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
 
-         return response([
-            'success' =>'Data Updated Successfully',
-        ], 200);
-    }
+    //      return response([
+    //         'success' =>'Data Updated Successfully',
+    //     ], 200);
+    // }
 
     public function taskSuccessful(Request $request, $id)
     {
         try {
-            $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['delivery_status' => 'Successful']);
-            
             $currentdate = date("d-m-y h:i:sa");
+            $update_status = ConsignmentNote::find($id);
+            if(empty($request->delivery_notes)){
+                return response([
+                    'status' => 'error',
+                    'message' => 'Please Enter a delivery note'
+                ], 201);
+            }
+             
+            $checkimg = DB::table('app_media')->where('consignment_no', $id)->first();
+            if(empty($checkimg)){
+                return response([
+                    'status' => 'error',
+                    'message' => 'Please upload pod_img'
+                ], 201);
+            }
+            
+            $res = $update_status->update(['delivery_notes' => $request->delivery_notes, 'delivery_status' => 'Successful','delivery_date' => date('Y-m-d')]);
+            
+            
             $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
@@ -718,6 +734,12 @@ class TransactionSheetsController extends Controller
             $sts = json_encode($st); 
             
             $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
+           
+            //update latitudes and longitude
+            $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+            $consignee_id = $getconsignee_id->consignee_id;
+            
+            Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
 
             if ($res) {
                 return response([
