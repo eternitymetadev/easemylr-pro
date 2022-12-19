@@ -704,14 +704,21 @@ class OrderController extends Controller
                $data = $rows[0];
                $excelarray = $this->rewrap($data);
                $datas = array();
+               $orderId = array();
 
-                // first, group the influencer_user_id
                 foreach ($excelarray as $element) {
-                     
-                
+                    
+                     $orderId[] = $element['Order ID'];
+
+                    $datas[] = ([
+                        'billing_client' =>    $element['Billing Client'],
+                        'consigoner' =>        $element['Consigner Id'],
+
+                    ]);
+
                 }
 
-               echo'<pre>';print_r($result);die;
+               echo'<pre>';print_r($excelarray);die;
         $data = Excel::import(new OrderBookedImport, request()->file('order_file'));
 
         die;
