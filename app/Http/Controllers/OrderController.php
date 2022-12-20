@@ -722,6 +722,7 @@ class OrderController extends Controller
                         $consignmentsave['consignee_id'] = $element['consignee_id'];
                         $consignmentsave['consignment_date'] = $today;
                         $consignmentsave['payment_type'] = $element['payment_term'];
+                        $consignmentsave['branch_id'] = $authuser->branch_id;
                         $consignmentsave['status'] = 5;
                        
                          $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -783,6 +784,7 @@ class OrderController extends Controller
                             $consignmentsave['consignee_id'] = $element['consignee_id'];
                             $consignmentsave['consignment_date'] = $today;
                             $consignmentsave['payment_type'] = $element['payment_term'];
+                            $consignmentsave['branch_id'] = $authuser->branch_id;
                             $consignmentsave['status'] = 5;
                              $saveconsignment = ConsignmentNote::create($consignmentsave);
                              $consignment_id = $saveconsignment->id;
@@ -815,9 +817,9 @@ class OrderController extends Controller
                             
                             $checkquantity = ConsignmentItem::where('id',$consignment_item)->latest('id')->first();
                             if(!empty($checkquantity)){
-                                $finalquantity = $checkquantity->quantity +  $qty;
-                                $finalweight = $checkquantity->weight +  $weight;
-                                $finalgross = $checkquantity->gross_weight +  $gross;
+                                $finalquantity = $checkquantity->quantity + $qty;
+                                $finalweight = $checkquantity->weight + $weight;
+                                $finalgross = $checkquantity->gross_weight + $gross;
                             }else{
                                 $finalquantity = $qty;
                                 $finalweight = $weight;
@@ -829,7 +831,6 @@ class OrderController extends Controller
                         }
                 }
         $message = "Data imported Successfully";
-
         if ($data) {
             $response['success'] = true;
             $response['error'] = false;
