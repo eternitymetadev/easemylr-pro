@@ -2,6 +2,323 @@
 @section('content')
 
     <style>
+        .consignmentItem {
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0px 2px 11px 0px #83838370;
+            padding: 0.5rem 1rem;
+            width: 98%;
+            margin: 0 auto 12px;
+        }
+
+        .consignmentItem .statusBadge {
+            border-radius: 50vh;
+            background: #00e3cb;
+            padding: 0px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px !important;
+            line-height: 16px;
+            font-weight: 500;
+            min-width: 100px;
+            color: #fff;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .consignmentItem .statusBadge svg {
+            height: 14px;
+            width: 14px;
+        }
+
+        .consignmentItem .lrDetailBlock {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+            flex: 1;
+            max-width: 220px;
+        }
+
+        .consignmentItem .lrDetailBlock p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #000;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .consignmentItem .lrDetailBlock p span {
+            font-size: 15px;
+        }
+
+        .orderAndInvoice {
+            align-self: flex-start;
+            border-radius: 8px;
+            padding: 2px;
+            gap: 4px;
+            font-weight: 600;
+            background: #efefef;
+            color: #000;
+        }
+
+        .orderAndInvoice div span {
+            background: #ffffff;
+            padding: 2px 4px;
+            width: 148px;
+            max-height: 56px;
+            overflow-y: auto;
+            border-radius: 6px;
+            font-size: 13px;
+            display: flex;
+            color: #646464;
+            justify-content: center;
+        }
+
+        .actionIcon {
+            flex-direction: column;
+            height: 45px !important;
+            width: 60px !important;
+            font-size: 11px;
+        }
+
+        .actionIcon svg {
+            height: 18px;
+            width: 18px;
+        }
+
+        .actionIcon:hover span {
+            color: #fff !important;
+        }
+
+
+        .datesBlock {
+            box-shadow: 0 0 9px -2px inset #83838370;
+            border-radius: 8px;
+            padding: 2px 6px;
+        }
+
+        .datesBlock .dateItem {
+            margin-bottom: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4b4b4b;
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+
+        .datesBlock .dateItem span {
+            color: #919191;
+            font-weight: 500;
+        }
+
+
+        .green {
+            background: #009217 !important;
+        }
+
+        .orange {
+            background: #f9b808 !important;
+        }
+
+        .red {
+            background: #e70404 !important;
+        }
+
+        .extra {
+            background: #0087e3 !important;
+        }
+
+        .extra2 {
+            background: #00e3cb !important;
+        }
+
+        .extra3 {
+            background: #b400e3 !important;
+        }
+
+        .extra4 {
+            background: #009be3 !important;
+        }
+
+        .notAllowed {
+            cursor: not-allowed !important;
+            /*pointer-events: none;*/
+        }
+
+        /* tabs */
+        .consignmentDetailBlock {
+            background: #f0f0f0;
+            min-height: 300px;
+            border-radius: 12px;
+            margin-block: 10px;
+            padding: 6px;
+        }
+
+        .consignmentDetailBlock .nav-item {
+            flex: 1;
+        }
+
+        .consignmentDetailBlock .nav-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            padding: 4px 10px;
+            transition: all 250ms ease-in-out;
+        }
+
+        .consignmentDetailBlock .nav-link:not(.active):hover {
+            font-weight: 600;
+            color: #000 !important;
+        }
+
+        .consignmentDetailBlock .nav-link.active {
+            color: #fff !important;
+            background-color: #ffb100;
+            transition: all 250ms ease-in-out;
+        }
+
+        .tabContainer {
+            border-radius: 9px;
+            padding: 3px;
+            background: #fff;
+        }
+
+        .taskDetailContainer {
+            /*background: #ffffff20;*/
+            margin: 1rem;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid;
+        }
+
+        .taskDetailContainer p {
+            display: flex;
+            gap: 6px;
+            justify-content: space-between;
+        }
+
+        .taskDetailContainer p span.dHeading {
+            width: 95px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .taskDetailContainer p span.dDescription {
+            font-weight: 700;
+            flex: 1;
+            word-break: break-all;
+            color: #282828;
+        }
+
+        .otherDetailsBlock {
+            width: 80%;
+            min-width: 300px;
+            margin: 1rem auto;
+        }
+
+        .otherDetailsBlock .detailsCol {
+            width: 50%;
+            gap: 6px;
+        }
+
+        .otherDetailsBlock .detailsCol span {
+            text-align: center;
+            width: 100%;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .otherDetailsBlock .detailsCol span.heading {
+            border-bottom: 1px solid;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .timelineBlock:hover {
+            background: linear-gradient(180deg, #a4a4a412, #00000008);
+            border-radius: 12px;
+        }
+
+        .timelineBlock:first-child .statusMarker {
+            animation: pulseMarker 1000ms linear infinite;
+        }
+
+        @keyframes pulseMarker {
+            from {
+                outline: 1px solid var(--status);
+                outline-offset: 0;
+            }
+            to {
+                outline-offset: 6px;
+            }
+        }
+
+        .statusMarker {
+            height: 20px;
+            width: 20px;
+            border-radius: 50vh;
+            background: var(--status);
+        }
+
+        .timelineBlock .timelineStatus {
+            padding: 1px 12px;
+            border: 1.5px solid var(--status);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--status);
+            font-weight: 600;
+            width: 105px;
+        }
+
+        .timelineBlock .timelineTime {
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .timelineBlock .timeLineDescription {
+            margin-left: 10px;
+            padding: 0.3rem 1.5rem 1.5rem;
+            margin-bottom: 0;
+            border-left: 2px dashed var(--status);
+        }
+
+        .timelineBlock:last-child .timeLineDescription {
+            border-left: none;
+            padding: 0.3rem 1.5rem 0.5rem;
+        }
+
+        .timelineBlock .timeLineDescription a {
+            background: #fffcf2;
+            border-radius: 8px;
+            padding: 0 8px;
+            color: #ffb100;
+            border: 1px solid;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 1rem;
+            font-weight: 500;
+        }
+
+
+        #get-delvery-dateLR input[type=date]{
+            border-radius: 12px;
+            border: 1px solid #838383;
+            padding: 4px 10px;
+        }
+
+        {{--  new list css ends here      --}}
+
+        .inlineHead {
+            color: #3d3d3d;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+
         .clearIcon {
             visibility: hidden;
             color: darkred;
@@ -345,6 +662,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
             text-transform: capitalize;
+            font-size: 13px;
+            font-weight: 700;
+            color: #2f2f2f;
         }
 
         .css-16pld73 {
@@ -412,7 +732,7 @@
         .ant-timeline-item {
             position: relative;
             margin: 0;
-            padding: 0 0 5px;
+            padding: 0;
             font-size: 14px;
             list-style: none;
         }
@@ -421,6 +741,7 @@
             position: absolute;
             width: 10px;
             height: 10px;
+            border-radius: 50vh;
         }
 
         .bg-cust {
@@ -464,23 +785,23 @@
             </div>
         </div>
 
-        <div class="widget-content widget-content-area br-6" style="box-shadow: 0 0 4px #83838370; padding: 20px 0">
+        <div class="widget-content widget-content-area br-6" style="padding: 20px 0">
             <div class="col-12 d-flex justify-content-end align-items-center" style="gap: 8px;">
                 <div class="inputDiv d-flex justify-content-center align-items-center"
                      style="flex: 1;max-width: 300px; border-radius: 12px; position: relative">
                     <input type="text" class="form-control" placeholder="Search" id="search"
-                           style="width: 100%; height: 38px; border-radius: 12px;" data-action="<?php echo url()->current(); ?>">
+                           style="width: 100%; height: 38px; border-radius: 12px;"
+                           data-action="<?php echo url()->current(); ?>">
                     <span class="reset_filter clearIcon" data-action="<?php echo url()->current(); ?>">x</span>
                 </div>
             </div>
             <div class="mb-4 mt-4">
                 @csrf
-                <div class="main-table table-responsive">
+                <div class="main-table">
                     @include('consignments.consignment-list-ajax')
                 </div>
             </div>
         </div>
-
 
 
     </div>
@@ -522,76 +843,126 @@
                         var trackinglink = '';
 
                         console.log(response);
-                        // return false;
+
                         if (response.job_data) {
-                            var modal_container = '<div class="container" oncontextmenu="return true;"><div class="row"><div class="col-md-10"><ul class="cbp_tmtimeline">';
+                            let timelineBlockHtml = '';
+
                             $.each(response.job_data, function (index, task) {
-                                var timestamp = task.creation_datetime;
-                                var type = task.type;
-                                var des_data = '';
-                                var result = '';
+                                let type = task.type;
+
+                                let timelineTime = task.creation_datetime.replace("T", " ");
+                                timelineTime = timelineTime.replace("Z", "");
+                                timelineTime = timelineTime.split('.')[0];
+
+
+                                if (type == 'state_changed') {
+                                    let timelineStatus = task.description.replace(" at", "");
+
+                                    if (task.description.includes('Successful')) {
+                                        timelineBlockHtml += `<div class="d-flex flex-column justify-content-center align-items-center timelineBlock" style="--status: green">`;
+                                    }
+                                    if (task.description.includes('Started')) {
+                                        timelineBlockHtml += `<div class="d-flex flex-column justify-content-center align-items-center timelineBlock" style="--status: #00c2c9">`;
+                                    }
+                                    if (task.description.includes('Accepted')) {
+                                        timelineBlockHtml += `<div class="d-flex flex-column justify-content-center align-items-center timelineBlock" style="--status: #0087c4">`;
+                                    }
+                                    if (task.description.includes('Created')) {
+                                        timelineBlockHtml += `<div class="d-flex flex-column justify-content-center align-items-center timelineBlock" style="--status: #ffc000">`;
+                                    }
+
+                                    timelineBlockHtml += `<div class="d-flex align-items-center" style="width: 100%">
+                                                                <span class="statusMarker"></span>
+                                                                <p class="mb-0 px-3">`;
+                                    if (task.description.includes('Created')) {
+                                        timelineBlockHtml += `<button class="timelineStatus">Created</button>`;
+                                    } else {
+                                        timelineBlockHtml += `<button class="timelineStatus">${timelineStatus}</button>`;
+                                    }
+
+                                    timelineBlockHtml += `<span class="timelineTime">${timelineTime}</span></p></div>
+                                                           <div class="d-flex align-items-center" style="width: 100%">`;
+
+                                    if (task.description.includes('Created')) {
+                                        timelineBlockHtml += `<p class="timeLineDescription d-flex align-items-center flex-wrap"
+                                                                   style="gap: 8px">
+                                                               By <strong>${timelineStatus.replace("Created By", "")}</strong>
+                                                           </p>`;
+                                    } else {
+                                        timelineBlockHtml += `<p class="timeLineDescription d-flex align-items-center flex-wrap"
+                                                                   style="gap: 8px">
+                                                               By <strong>${task.fleet_name}</strong>
+                                                           </p>`;
+                                    }
+
+                                    timelineBlockHtml += `</div></div>`;
+                                }
+
+                                if (type == 'image_deleted') {
+                                    timelineBlockHtml += ``;
+                                }
 
                                 if (type == 'image_added') {
-                                    var uploaded_by = 'Attachment uploaded by';
-                                    var view_text = 'View Attachment';
-                                    var title = 'Attachment';
-                            var image = task.description;
-                            // var image = '<img src="'+ task.description +'" width="100%" seamless="">';
-                                } else if (type == 'signature_image_added') {
-                                    var uploaded_by = 'Signature Added by';
-                                    var view_text = 'View Signatures';
-                                    var title = 'Signature';
-                            // var image = '<img src="'+ task.description +'" width="100%" height="298" seamless="" />';
-                            var image = task.description;
+                                    let status = 'POD Uploaded';
+
+                                    timelineBlockHtml += `<div
+                                        class="d-flex flex-column justify-content-center align-items-center timelineBlock"
+                                        style="--status: #00d496">
+                                        <div class="d-flex align-items-center" style="width: 100%">
+                                            <span class="statusMarker"></span>
+                                            <p class="mb-0 px-3">
+                                                <button class="timelineStatus" style="width: auto">
+                                                    ${status}
+                                                </button>
+                                                <span class="timelineTime">${task.creation_datetime}</span>
+                                            </p>
+                                        </div>
+                                        <div class="d-flex align-items-center" style="width: 100%">
+                                            <p class="timeLineDescription d-flex align-items-center flex-wrap"
+                                               style="gap: 8px">
+                                                Uploaded by
+                                                <strong>${task.fleet_name}</strong>
+                                                <a href="${task.description}" target="_blank">View Attachment</a>
+                                            </p>
+                                        </div>
+                                    </div>`;
                                 }
 
-                                if (type == 'image_added' || type == 'signature_image_added') {
-                                    modal_html += '<span style="padding-left:245px; font-size: 12px;">' + uploaded_by + ' ' + task.fleet_name + '</span><br />';
-                            modal_html += "<a style='margin-left:245px;' href='"+image+"' target='_blank' class='btn btn-warning mt-3'>"+ view_text +"</a>";
-                            // modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
+                                if (type == 'signature_image_added') {
+                                    let status = 'Signature Added';
 
-                                    //  Modal start //
-                            modal_html += '<div class="modal fade" id="mod_'+task.id+'" tabindex="-1" role="dialog">';
-                                    modal_html += '<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header">';
-                                    modal_html += '<h5 class="modal-title" id="exampleModalLabel">' + title + '</h5>';
-                                    modal_html += '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
-                                    modal_html += '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"> <line x1="18" y1="6" x2="6" y2="18"> </line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-                                    modal_html += '</button></div>';
-                                    modal_html += '<div class="modal-body">' + image + '</div>';
-                                    modal_html += '<div class="modal-footer"><button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Close</button></div></div></div></div>';
-                                } else {
-                                    var text = task.label_description;
-                                    var label_text = text.replace("at", " by");
-                                    var result = label_text + ' ' + task.fleet_name;
-                                    // var result = task.label_description.replace(/^\s+|\s+$/gm,'at');+ ' by ' + task.fleet_name;
-                                    // var str = trim(task.label_description, 'at') + ' by ' + task.fleet_name;
-                                    // if (str_contains(str, 'CREATED')) {
-                                    //     var deresults_data += "LR Created";
-                                    // } else {
-                                    // var des_data += str;
-                                    // }
+                                    timelineBlockHtml += `<div
+                                        class="d-flex flex-column justify-content-center align-items-center timelineBlock"
+                                        style="--status: #00d748">
+                                        <div class="d-flex align-items-center" style="width: 100%">
+                                            <span class="statusMarker"></span>
+                                            <p class="mb-0 px-3">
+                                                <button class="timelineStatus" style="width: auto">
+                                                    ${status}
+                                                </button>
+                                                <span class="timelineTime">${task.creation_datetime}</span>
+                                            </p>
+                                        </div>
+                                        <div class="d-flex align-items-center" style="width: 100%">
+                                            <p class="timeLineDescription d-flex align-items-center flex-wrap"
+                                               style="gap: 8px">
+                                                By
+                                                <strong>${task.fleet_name}</strong>
+                                                <a href="${task.description}" target="_blank">View Signature</a>
+                                            </p>
+                                        </div>
+                                    </div>`;
                                 }
-                                var text_date = task.creation_datetime;
-                                var creation_datetime = text_date.replace("T", " ");
-                                var creation_datetime = creation_datetime.replace("Z", "");
-                                var creation_datetime = creation_datetime.split('.')[0];
-
-                                modal_html += '<li><time class="cbp_tmtime" datetime="' + creation_datetime + '"><span class="hidden">' + creation_datetime + '</span></time>';
-                                if (result) {
-                                    modal_html += '<div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span>' + result + '</span></div>';
-                                }
-
                             });
 
-                            modal_container += '</li></ul></div></div></div>';
-
-                            $('.append-modal').append(modal_container);
-                            $('.cbp_tmtimeline').append(modal_html);
+                            $('.append-modal').append(timelineBlockHtml);
 
                         } else {
-                            var modal_html1 = 'No data available';
-                            $('.append-modal').html(modal_html1);
+                            var no_data_view = `<p style="padding: 5rem 1rem; text-align: center; font-weight: 600; font-size: 1.2rem">No data available</p>`;
+                            $('.append-modal').html(no_data_view);
                         }
+
+
                         if ((response.job_id != '') && (response.delivery_status != 'Successful')) {
                             var trackinglink = '<iframe id="iGmap-' + row_id + '" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + response.tracking_link + '" ></iframe>';
                             $("#mapdiv-" + row_id).html(trackinglink);
