@@ -480,4 +480,69 @@
         $("#pageloader").fadeIn();
     });
 </script>
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJZt0W33qqsCNO77I_qKDuF0DJAR9plk&callback=initMap&v=weekly">
+</script>
+
+
+<script>
+    let marker;
+
+    function initMap(positions) {
+
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 5,
+            center: positions[0],
+            // mapTypeId: "terrain",
+        });
+
+        for (var i = 0; i < positions.length; i++) {
+            marker = new google.maps.Marker({
+                position: positions[i],
+                map,
+                animation: google.maps.Animation.DROP,
+                label: {
+                    // text: `Driver ${i + 1}`,
+                    fontFamily: "Material Icons",
+                    color: "#000",
+                    fontSize: "18px",
+                },
+                title: "Material Icon Font Marker",
+            });
+            // marker.addListener("click", toggleBounce);
+            marker.addListener("click", function () {
+                alert(i)
+            });
+        }
+    }
+
+    function toggleBounce() {
+        if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+        } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+    }
+
+    function trackDriver() {
+        const positions = [
+            {lat: 32.646486, lng: 76.818466},
+            {lat: 31.646486, lng: 102.818466},
+        ];
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 5,
+            center: positions[0],
+            // mapTypeId: "terrain",
+        });
+
+        for (var i = 0; i < positions.length; i++) {
+            new google.maps.Marker({
+                position: positions[i],
+                map,
+            });
+        }
+    }
+
+</script>
 <!-- END PAGE LEVEL SCRIPTS -->

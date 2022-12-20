@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
     <style>
         .driversTaskBlock.shrinked, .driversListBlock.shrinked {
@@ -396,6 +397,7 @@
 
 
         <div class="widget-content widget-content-area br-6 p-0">
+
             <div class="d-flex flex-wrap align-content-start driverMapContainer"
                  style="min-height: min(90vh, 600px); background: #2f2f2f">
 
@@ -814,7 +816,7 @@
                                 </div>
 
                                 <div class="historyTimeLineContainer taskContainer taskDetailContainer"
-                                     style="max-height: 300px">
+                                     style="max-height: 300px; padding-top: 2rem">
 
                                     @for($i = 0; $i < 2; $i++)
                                         <div class="historyTimeline">
@@ -840,11 +842,15 @@
 
                 </div>
 
-                <div class="d-flex" style="flex: 1; background: #fff; border-radius: 12px 12px 0 0; overflow: hidden">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9933.03090712429!2d76.74728258404285!3d30.68056108090217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fec06a86ddf67%3A0x74b5e9c7ee9369ba!2sBestech%20Business%20Tower!5e1!3m2!1sen!2sin!4v1670919542995!5m2!1sen!2sin"
-                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="d-flex"
+                     style="flex: 1; background: #fff; border-radius: 12px 12px 0 0; overflow: hidden; position: relative">
+                    <div id="map" style="height: 100%; width: 100%; background: #000"></div>
+                    <div id="mapButtonBox" style="height: 100%; width: 100%; background: #70707033;
+position: absolute; z-index: 999; inset: 0; display: flex; justify-content: center; align-items: center">
+                        <button class="mapButton btn btn-primary" style="height: 60px;width: 200px;font-size: 1rem;">
+                            Show Drivers on Map
+                        </button>
+                    </div>
                 </div>
 
                 <div class="driversListBlock">
@@ -1210,17 +1216,14 @@
             $('#driverSearchInput').blur();
             $('#driverSearchInput').val('');
         });
-
-
         $('.taskSelection').change(function (event) {
             $(this).siblings('.taskStatus').html('Delivered');
             $(this).parent().siblings().children().children('.consignerName').html('New Consigner Name');
             $(this).parent().siblings().children().children('.consignerAddress').html('Hamirpir, Himachal');
             $(this).parent().siblings().children().children('.estimateTaskTime').html('07:30 pm');
             $(this).parent().siblings().children().children('.timeStatus').html('On Time');
+
         });
-
-
         $('.driverStatusSwitch').change(function (event) {
             if (this.prop("checked", true))
                 alert('sss');
@@ -1235,11 +1238,20 @@
         function showTaskInfo() {
             $('#tasks').toggle();
             $('#taskDetails').toggle();
+            let locations = [
+                {lat: 30.646486, lng: 76.818466},
+                {lat: 28.6692, lng: 77.4538},
+            ];
+            initMap(locations);
+            $('#mapButtonBox').hide();
         }
 
         function showDriverInfo() {
             $('#drivers').toggle();
             $('#driverDetail').toggle();
+            let hubLocation = [{lat: 32.646486, lng: 76.818466}];
+            initMap(hubLocation);
+            $('#mapButtonBox').hide();
         }
 
         function toggleTaskView() {
@@ -1253,6 +1265,16 @@
         }
 
 
+        $('.mapButton').click(function (event) {
+            let locations = [
+                {lat: 32.646486, lng: 76.818466},
+                {lat: 31.646486, lng: 76.818466},
+                {lat: 30.646486, lng: 76.818466},
+                {lat: 28.6692, lng: 77.4538},
+            ];
+            initMap(locations);
+            $('#mapButtonBox').hide();
+        });
     </script>
 
 @endsection
