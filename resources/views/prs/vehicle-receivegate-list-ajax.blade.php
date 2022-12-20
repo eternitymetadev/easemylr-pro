@@ -31,7 +31,7 @@
                 $consinger_ids = implode(",",$consinger_ids);
                 
                 $disable = Helper::DriverTaskStatusCheck($value->id);
-            ?>    
+            ?>
             <tr>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>

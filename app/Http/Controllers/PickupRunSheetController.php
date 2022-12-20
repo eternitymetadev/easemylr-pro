@@ -614,7 +614,7 @@ class PickupRunSheetController extends Controller
 
             if($savevehiclereceive){
                 PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
-
+                PickupRunSheet::where('id', $request->prs_id)->update(['status' => 2]);
                 $url = URL::to($this->prefix.'/vehicle-receivegate');
                     $response['success'] = true;
                     $response['success_message'] = "PRS vehicle receive successfully";
