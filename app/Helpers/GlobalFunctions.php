@@ -57,11 +57,11 @@ class GlobalFunctions {
             $status = 'Acknowledged';
         }
         else if($status == 3){      //2
-            $status = 'Started';
+            $status = 'Completed';
         }
-        else if($status == 4){       //3
-            $status = 'Complete';
-        }
+        // else if($status == 4){       //3
+        //     $status = 'Completed';
+        // }
     
         return $status;
     }

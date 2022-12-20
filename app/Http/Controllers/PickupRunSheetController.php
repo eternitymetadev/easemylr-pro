@@ -459,25 +459,13 @@ class PickupRunSheetController extends Controller
                     $save_data['status'] = 1;
                     $save_data['user_id'] = $authuser->id;
                     $save_data['branch_id'] = $authuser->branch_id;
+
                     // upload invoice image
-                    //dd($save_data['invc_img']);
-                    // $file = $request->file('file');$save_data['invc_img']
-                    // if (!empty($file)) {
-                    //     $filename = $file->getClientOriginalName();
-                    //     $file->move(public_path('drs/Image'), $filename);
-                    // }
                     if($save_data['invc_img']){
                         $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
                         $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
                     }
 
-                    // if($save_data['invc_img']){
-                    //     dd($save_data[file('invc_img')]);
-                    //     $file = $request->file('invoice_image');
-                    //     $path = 'public/images/invoice_images';
-                    //     $name = Helper::uploadImage($file,$path);
-                    //     $save_data['invoice_image']  = $name;
-                    // }
                     $savetaskitems = PrsTaskItem::create($save_data);
                     
                     // create order start
