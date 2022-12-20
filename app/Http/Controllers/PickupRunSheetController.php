@@ -497,6 +497,7 @@ class PickupRunSheetController extends Controller
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
                     }else{
                         ConsignmentNote::where(['id'=> $save_data['lr_id']])->update(['prsitem_status'=>1]);
+                        $saveconsignment = '';
                     }
                     
                     if($saveconsignment){
