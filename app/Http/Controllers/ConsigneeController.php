@@ -372,5 +372,4 @@ class ConsigneeController extends Controller
         return response()->json($response);
     }
 
-    
 }
