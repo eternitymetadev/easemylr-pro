@@ -21,18 +21,23 @@
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->city ?? "-" }}</td>
-                <td>{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</td>
-
                 <?php if($value->status == 1 ) { 
+                    $disable_text = ''; 
+                } else{
+                    $disable_text = 'disable_n';
+                } ?>
+                <td><span class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span></td>
+
+                <?php if($value->status == 2 ) { 
                     $disable = ''; 
                 } else{
                     $disable = 'disable_n';
                 } ?>
 
                 <td>
-                <?php if($value->status == 1 ) { ?>
+                <?php if($value->status == 1 || $value->status == 2 ) { ?>
                     <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
-                    <?php } else if($value->status == 2){ ?>
+                    <?php } else if($value->status == 3){ ?>
                     <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
                     <?php }else{ ?>
                         <span></span>

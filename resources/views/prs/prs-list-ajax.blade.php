@@ -23,6 +23,8 @@
             $consigners = $value->consigner_id;
             $consinger_ids  = explode(',',$consigners);
             $consigner_count = count($consinger_ids);
+
+            // $disable_count = Helper::PrsStatusCheck($value->id);
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>

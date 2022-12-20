@@ -8,6 +8,7 @@
             <!-- Modal body -->
             <form method="POST" action="{{url($prefix.'/driver-tasks/create-taskitem')}}" id="createprstaskitem">
                 @csrf
+                <input type="hidden" id="consigner_id" value="" name="consigner_id">
                 <input type="hidden" id="drivertask_id" value="" name="drivertask_id">
                 <input type="hidden" id="prs_id" value="" name="prs_id">
                 <div class="modal-body">
@@ -26,6 +27,7 @@
                                     <th>Quantity</th>
                                     <th>Net Weight</th>
                                     <th>Gross Weight</th>
+                                    <th>Invoice Image</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

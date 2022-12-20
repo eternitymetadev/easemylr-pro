@@ -15,6 +15,10 @@ use App\Models\VehicleType;
 use App\Models\PrsReceiveVehicle;
 use App\Models\PrsRegClient;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentItem;
+use App\Models\ConsignmentSubItem;
+use App\Models\Location;
+use Carbon\Carbon;
 use Helper;
 use Validator;
 use Config;
@@ -217,7 +221,7 @@ class PickupRunSheetController extends Controller
                 if (!empty($request->data)) {
                     $get_data = $request->data;
                     foreach ($get_data as $key => $save_data) {
-                        dd($save_data);
+                        // dd($save_data);
                         if(!empty($save_data->consigner_id)){
                             $consigners = $save_data->consigner_id;
                             $save_data['consigner_id'] = implode(',', $consigners);
@@ -280,7 +284,14 @@ class PickupRunSheetController extends Controller
         if ($request->ajax()) { 
 
             if (isset($request->prsdrivertask_status)) {
-                PrsDrivertask::where('id', $request->id)->update(['status' => '3']);
+                if($request->prs_taskstatus == 1){
+                    // update click on assigned status to acknowleged in driver task list
+                    PrsDrivertask::where('id', $request->id)->update(['status' => '2']);
+                }
+                else{
+                    // update on statuschange action btn in driver task list 
+                    PrsDrivertask::where('id', $request->id)->update(['status' => '4']);
+                }
 
                 $url = $this->prefix . '/driver-tasks';
                 $response['success'] = true;
@@ -348,7 +359,6 @@ class PickupRunSheetController extends Controller
         $drivertasks  = $drivertasks->appends($request->query());
         
         return view('prs.driver-task-list', ['drivertasks' => $drivertasks, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
-
     }
 
     // get list vehicle receive gate
@@ -403,7 +413,6 @@ class PickupRunSheetController extends Controller
             $vehiclereceives = $prsdata->appends($request->query());
             
             $html =  view('prs.vehicle-receivegate-list-ajax',['prefix'=>$this->prefix,'vehiclereceives' => $vehiclereceives,'peritem'=>$peritem])->render();
-            
 
             return response()->json(['html' => $html]);
         }
@@ -421,82 +430,132 @@ class PickupRunSheetController extends Controller
         try {
             DB::beginTransaction();
 
-        $this->prefix = request()->route()->getPrefix();
-        $rules = array(
-            // 'regclient_id' => 'required',
-        );
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'regclient_id' => 'required',
+            );
 
-        $validator = Validator::make($request->all(),$rules);
-    
-        if($validator->fails())
-        {
-            $errors                  = $validator->errors();
-            $response['success']     = false;
-            $response['validation']  = false;
-            $response['formErrors']  = true;
-            $response['errors']      = $errors;
-            return response()->json($response);
-        }
-
-        $authuser = Auth::user();
-
-        // insert prs driver task items
-        if (!empty($request->data)) {
-            $get_data = $request->data;
-            foreach ($get_data as $key => $save_data) {
-                $save_data['drivertask_id'] = $request->drivertask_id;
-                $save_data['status'] = 1;
-                $save_data['user_id'] = $authuser->id;
-                $save_data['branch_id'] = $authuser->branch_id;
-                $savetaskitems = PrsTaskItem::create($save_data);
-
-                if($savetaskitems){
-                    //// create order
-                    // $consignmentsave['regclient_id'] = $request->regclient_id;
-                    // $consignmentsave['consigner_id'] = $request->consigner_id;
-                    // $consignmentsave['consignee_id'] = $request->consignee_id;
-                    // $consignmentsave['ship_to_id'] = $request->ship_to_id;
-                    // $consignmentsave['consignment_date'] = $request->consignment_date;
-                    // $consignmentsave['dispatch'] = $request->dispatch;
-                    // $consignmentsave['payment_type'] = $request->payment_type;
-                    // $consignmentsave['freight'] = $request->freight;
-                    // $consignmentsave['user_id'] = $authuser->id;
-                    // $consignmentsave['branch_id'] = $authuser->branch_id;
-                    // $consignmentsave['status'] = 5;
+            $validator = Validator::make($request->all(),$rules);
         
-                    // if (!empty($request->vehicle_id)) {
-                    //     $consignmentsave['delivery_status'] = "Started";
-                    // } else {
-                    //     $consignmentsave['delivery_status'] = "Unassigned";
-                    // }
-                    // $saveconsignment = ConsignmentNote::create($consignmentsave);
-                    ////
-                    PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 2]);
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['validation']  = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+            
+            
+            // insert prs driver task items
+            if (!empty($request->data)) {
+                $authuser = Auth::user();
+                $getRegclient = Consigner::select('id', 'regionalclient_id')->where('id', $request->consigner_id)->first();
 
-                    $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
-                    $countdrivertask_status = PrsDrivertask::where('status',2)->count();
-                    if($countdrivertask_id == $countdrivertask_status){
-                        PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
+                $get_data = $request->data;
+                foreach ($get_data as $key => $save_data) {
+                    $save_data['drivertask_id'] = $request->drivertask_id;
+                    $save_data['status'] = 1;
+                    $save_data['user_id'] = $authuser->id;
+                    $save_data['branch_id'] = $authuser->branch_id;
+                    // upload invoice image
+                    //dd($save_data['invc_img']);
+                    // $file = $request->file('file');$save_data['invc_img']
+                    // if (!empty($file)) {
+                    //     $filename = $file->getClientOriginalName();
+                    //     $file->move(public_path('drs/Image'), $filename);
+                    // }
+                    if($save_data['invc_img']){
+                        $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
+                        $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
                     }
 
-                    $url    =   URL::to($this->prefix.'/driver-tasks');
-                    $response['success'] = true;
-                    $response['success_message'] = "PRS task item Added successfully";
-                    $response['error'] = false;
-                    $response['page'] = 'create-prstaskitem';
-                    $response['redirect_url'] = $url;
-                }else{
-                    $response['success'] = false;
-                    $response['error_message'] = "Can not created PRS task item please try again";
-                    $response['error'] = true;
+                    // if($save_data['invc_img']){
+                    //     dd($save_data[file('invc_img')]);
+                    //     $file = $request->file('invoice_image');
+                    //     $path = 'public/images/invoice_images';
+                    //     $name = Helper::uploadImage($file,$path);
+                    //     $save_data['invoice_image']  = $name;
+                    // }
+                    $savetaskitems = PrsTaskItem::create($save_data);
+                    
+                    // create order start
+                    $today_date = Carbon::now();
+                    $consignment_date = $today_date->format('Y-m-d');
+
+                    $consignmentsave['regclient_id'] = $getRegclient->regionalclient_id;
+                    $consignmentsave['consigner_id'] = $request->consigner_id;
+                    $consignmentsave['consignment_date'] = $consignment_date;
+                    $consignmentsave['user_id'] = $authuser->id;
+
+                    if($authuser->role_id == 3){
+                        $consignmentsave['branch_id'] = $request->branch_id;
+                    }else{
+                        $consignmentsave['branch_id'] = $authuser->branch_id;
+                    }
+                    $consignmentsave['status'] = 5;
+
+                    if (!empty($request->vehicle_id)) {
+                        $consignmentsave['delivery_status'] = "Started";
+                    } else {
+                        $consignmentsave['delivery_status'] = "Unassigned";
+                    }
+                    $consignmentsave['total_quantity'] = $savetaskitems->quantity;
+                    $consignmentsave['total_weight'] = $savetaskitems->net_weight;
+                    $consignmentsave['total_gross_weight'] = $savetaskitems->gross_weight;
+                    $consignmentsave['prsitem_status'] = 1;
+                    if(empty($save_data['lr_id'])){
+                        $saveconsignment = ConsignmentNote::create($consignmentsave);
+                    }else{
+                        ConsignmentNote::where(['id'=> $save_data['lr_id']])->update(['prsitem_status'=>1]);
+                    }
+                    
+                    if($saveconsignment){
+                        $save_data['consignment_id']    = $saveconsignment->id;
+                        $save_data['quantity']          = $savetaskitems->quantity;
+                        $save_data['weight']            = $savetaskitems->net_weight;
+                        $save_data['gross_weight']      = $savetaskitems->gross_weight;
+                        $save_data['chargeable_weight'] = $savetaskitems->chargeable_weight;
+                        $save_data['order_id']          = $savetaskitems->order_id;
+                        $save_data['invoice_no']        = $savetaskitems->invoice_no;
+                        $save_data['invoice_date']      = $savetaskitems->invoice_date;
+                        $save_data['status']            = 1;
+                        $saveconsignmentitems = ConsignmentItem::create($save_data);                        
+
+                        if($saveconsignmentitems){
+                            $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                            $save_itemdata['quantity'] = $saveconsignmentitems->quantity;
+                            $save_itemdata['net_weight'] = $saveconsignmentitems->weight;
+                            $save_itemdata['gross_weight'] = $saveconsignmentitems->gross_weight;
+                            $save_itemdata['status'] = 1;
+                            $savesubitems = ConsignmentSubItem::create($save_itemdata);
+                        }
+                    }
                 }
+
+                PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 3]);
+
+                $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
+                $countdrivertask_status = PrsDrivertask::where('status',2)->count();
+                if($countdrivertask_id == $countdrivertask_status){
+                    PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
+                }
+                // end create order
+                   
+                $url    =   URL::to($this->prefix.'/driver-tasks');
+                $response['success'] = true;
+                $response['success_message'] = "PRS task item Added successfully";
+                $response['error'] = false;
+                $response['page'] = 'create-prstaskitem';
+                $response['redirect_url'] = $url;
+                  
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not created PRS task item please try again";
+                $response['error'] = true;
             }
-        }else{
-            $response['success'] = false;
-            $response['error_message'] = "Can not created PRS task item please try again";
-            $response['error'] = true;
-        }
-        DB::commit();
+            DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;
             $response['error_message'] = $e;
@@ -560,28 +619,29 @@ class PickupRunSheetController extends Controller
                 $save_data['status'] = 1;
                 $save_data['user_id'] = $authuser->id;
                 $save_data['branch_id'] = $authuser->branch_id;
+
                 $savevehiclereceive = PrsReceiveVehicle::create($save_data);
             }
 
-        if($savevehiclereceive){
-            PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
+            if($savevehiclereceive){
+                PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
 
-            $url = URL::to($this->prefix.'/vehicle-receivegate');
+                $url = URL::to($this->prefix.'/vehicle-receivegate');
                     $response['success'] = true;
                     $response['success_message'] = "PRS vehicle receive successfully";
                     $response['error'] = false;
                     $response['page'] = 'create-vehiclereceive';
                     $response['redirect_url'] = $url;
-                }else{
-                    $response['success'] = false;
-                    $response['error_message'] = "Can not PRS vehicle receive please try again";
-                    $response['error'] = true;
-                }
             }else{
                 $response['success'] = false;
-                $response['error_message'] = "Can not created PRS task item please try again";
+                $response['error_message'] = "Can not PRS vehicle receive please try again";
                 $response['error'] = true;
             }
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not created PRS task item please try again";
+            $response['error'] = true;
+        }
         
         return response()->json($response);
     }

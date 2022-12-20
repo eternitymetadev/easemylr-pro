@@ -885,7 +885,7 @@ jQuery(document).ready(function () {
                 var tds = "<tr>";
 
                 tds +=
-                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
+                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"><input type="hidden" name="data['+item_no+'][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data['+
                     item_no +'][invoice_no]" id="'+item_no+'" value=""></td>';
@@ -897,10 +897,11 @@ jQuery(document).ready(function () {
                     item_no +'][quantity]"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small net" name="data[' +
-                    item_no +'][weight]"></td>';
+                    item_no +'][net_weight]"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small gross" name="data[' +
                     item_no +'][gross_weight]"></td>';
+                tds += '<td><input type="file" class="form-control form-small invc_img" name="data['+item_no+'][invc_img]" accept="image/*"/></td>';
                 tds += '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
             }
@@ -2512,10 +2513,11 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
     event.stopPropagation();
     let id = jQuery(this).attr("data-drivertaskid");
     var prsdrivertask_status = "prsdrivertask_status";
-
+    var prs_taskstatus = jQuery(this).attr("data-prstaskstatus");
+    
     // jQuery("#prs-commonconfirm").modal("show");
     jQuery(".commonconfirmclick").one("click", function () {
-        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+        var data = { id: id, prsdrivertask_status: prsdrivertask_status, prs_taskstatus: prs_taskstatus };
 
         jQuery.ajax({
             url: "driver-tasks",

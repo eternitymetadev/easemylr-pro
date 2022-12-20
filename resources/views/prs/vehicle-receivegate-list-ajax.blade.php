@@ -45,7 +45,7 @@
                     }else{
                     $disablebtn = "";
                     } ?>
-                    <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                    <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount="" data-prstaskstatus=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                 </td>
             </tr>
             
