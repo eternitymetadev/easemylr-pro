@@ -490,8 +490,12 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
-                                                            <option value="" disabled selected>Select</option>
+                                                            <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);" disabled >
+                                                        @foreach($itemlists as $item_list)
+                                                                <option value="{{$item_list->id}}"{{ $item_list->id == $subitem->item ? 'selected' : ''}}>{{$item_list->brand_name}}</option>
+                                                               @endforeach
+
+                                                        </select>
                                                              
                                                         </div>
                                                     </td>
