@@ -560,7 +560,7 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $get_drivertasks = PrsDrivertask::where('prs_id',$request->prs_id)->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
-// dd($get_drivertasks);
+        
         $consinger_ids = explode(',',$request->consinger_ids);
         $consigners = Consigner::select('nick_name')->whereIn('id',$consinger_ids)->get();
         $cnr_data =json_decode(json_encode($consigners));

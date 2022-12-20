@@ -74,7 +74,7 @@ class GlobalFunctions {
           $status = 'Received';
         }
         else if($status == 3){
-          $status = 'Complete';
+          $status = 'Completed';
         }
     
         return $status;
