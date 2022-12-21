@@ -2494,10 +2494,10 @@ $(document).on("click", ".receive-vehicle", function () {
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
                     
                     rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+index+'][consigner_id]" value="'+ value.consigner_detail.nick_name +'" readonly></td>';
-                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]" value="'+ inv_total +'"></td>';
-                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"  value="'+ qty_sum +'"></td>';
+                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]" value="'+ inv_total +'" readonly></td>';
+                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"  value="'+ qty_sum +'" readonly></td>';
                     rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+index+'][receive_qty]"></td>';
-                    rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+index+'][remaining_qty]"></td>';
+                    rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+index+'][remaining_qty]" readonly></td>';
                     rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+index+'][remarks]"></td></tr>';
                 });
                 

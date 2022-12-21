@@ -109,7 +109,7 @@ foreach ($consignments as $key => $consignment) {
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
-                                <td>{{ $consignment->ConsigneeDetail->nick_name}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
                                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>

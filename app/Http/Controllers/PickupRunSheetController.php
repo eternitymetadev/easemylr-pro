@@ -459,25 +459,13 @@ class PickupRunSheetController extends Controller
                     $save_data['status'] = 1;
                     $save_data['user_id'] = $authuser->id;
                     $save_data['branch_id'] = $authuser->branch_id;
+
                     // upload invoice image
-                    //dd($save_data['invc_img']);
-                    // $file = $request->file('file');$save_data['invc_img']
-                    // if (!empty($file)) {
-                    //     $filename = $file->getClientOriginalName();
-                    //     $file->move(public_path('drs/Image'), $filename);
-                    // }
                     if($save_data['invc_img']){
                         $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
                         $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
                     }
 
-                    // if($save_data['invc_img']){
-                    //     dd($save_data[file('invc_img')]);
-                    //     $file = $request->file('invoice_image');
-                    //     $path = 'public/images/invoice_images';
-                    //     $name = Helper::uploadImage($file,$path);
-                    //     $save_data['invoice_image']  = $name;
-                    // }
                     $savetaskitems = PrsTaskItem::create($save_data);
                     
                     // create order start
@@ -509,6 +497,7 @@ class PickupRunSheetController extends Controller
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
                     }else{
                         ConsignmentNote::where(['id'=> $save_data['lr_id']])->update(['prsitem_status'=>1]);
+                        $saveconsignment = '';
                     }
                     
                     if($saveconsignment){
@@ -571,7 +560,7 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $get_drivertasks = PrsDrivertask::where('prs_id',$request->prs_id)->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
-// dd($get_drivertasks);
+        
         $consinger_ids = explode(',',$request->consinger_ids);
         $consigners = Consigner::select('nick_name')->whereIn('id',$consinger_ids)->get();
         $cnr_data =json_decode(json_encode($consigners));
@@ -625,7 +614,7 @@ class PickupRunSheetController extends Controller
 
             if($savevehiclereceive){
                 PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
-
+                PickupRunSheet::where('id', $request->prs_id)->update(['status' => 2]);
                 $url = URL::to($this->prefix.'/vehicle-receivegate');
                     $response['success'] = true;
                     $response['success_message'] = "PRS vehicle receive successfully";

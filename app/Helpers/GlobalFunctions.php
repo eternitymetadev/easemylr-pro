@@ -33,16 +33,16 @@ class GlobalFunctions {
         if($status == 1){
             $status = 'Assigned';
         }
+        // else if($status == 2){
+        //     $status = 'Acknowledged';
+        // }
+        // else if($status == 3){
+        //     $status = 'Started';
+        // }
+        // else if($status == 4){
+        //     $status = 'Pickup done';
+        // }
         else if($status == 2){
-            $status = 'Acknowledged';
-        }
-        else if($status == 3){
-            $status = 'Started';
-        }
-        else if($status == 4){
-            $status = 'Pickup done';
-        }
-        else if($status == 5){
             $status = 'Received at HUB';
         }
     
@@ -57,11 +57,11 @@ class GlobalFunctions {
             $status = 'Acknowledged';
         }
         else if($status == 3){      //2
-            $status = 'Started';
+            $status = 'Completed';
         }
-        else if($status == 4){       //3
-            $status = 'Complete';
-        }
+        // else if($status == 4){       //3
+        //     $status = 'Completed';
+        // }
     
         return $status;
     }
@@ -74,7 +74,7 @@ class GlobalFunctions {
           $status = 'Received';
         }
         else if($status == 3){
-          $status = 'Complete';
+          $status = 'Completed';
         }
     
         return $status;

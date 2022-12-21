@@ -37,11 +37,13 @@
                 <td>
                 <?php if($value->status == 1 || $value->status == 2 ) { ?>
                     <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
-                    <?php } else if($value->status == 3){ ?>
-                    <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
-                    <?php }else{ ?>
-                        <span></span>
                     <?php } ?>
+                    <!-- <?php //else if($value->status == 3){ ?>
+                    <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
+                    <?php //} ?>
+                    <?php //else{ ?>
+                        <span></span>
+                    <?php //} ?> -->
                     </td>
             </tr>
             @endforeach
