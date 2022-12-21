@@ -442,6 +442,18 @@ class OrderController extends Controller
 
                     $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
                 }
+            }else if($request->booked_drs == 1){
+
+                $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
+                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                ->leftjoin('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+                ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                ->where('consignment_notes.id', $consignment_id)
+                ->first(['consignees.city']);
+            $simplyfy = json_decode(json_encode($consignmentdrs), true);
+
+            $transaction = DB::table('transaction_sheets')->where('consignment_no',$simplyfy['id'])->update(['total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'delivery_status' => 'Assigned']);
             }
             //===========================End drs lr ================================= //
             if ($saveconsignment) {

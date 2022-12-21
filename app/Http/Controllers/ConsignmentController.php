@@ -31,6 +31,7 @@ use Storage;
 use URL;
 use Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use DateTime;
 
 class ConsignmentController extends Controller
 {
@@ -2060,7 +2061,11 @@ class ConsignmentController extends Controller
         $details = $simplyfy[0];
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
-        $drsDate = date('d-m-Y', strtotime($details['created_at']));
+        $date = new DateTime($details['created_at'], new \DateTimeZone('GMT-7'));
+        $date->setTimezone(new \DateTimeZone('IST'));
+        $drsDate = $date->format('d-m-Y');
+
+        // $drsDate = date('d-m-Y', strtotime($newdate));
          
         $html = '<html>
         <head>
