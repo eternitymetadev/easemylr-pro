@@ -240,6 +240,7 @@ $('#upload_order').submit(function(e) {
             $(".indicator-label").show();
             if (data.success == true) {
                 swal("success!", data.success_message, "success");
+                window.location.reload();
             } else {
                 swal('error', data.error_message, 'error');
             }
