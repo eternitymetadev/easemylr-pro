@@ -343,6 +343,18 @@ class GlobalFunctions {
         return $disable;
     }
 
+    public static function PrsTotalQty($prs_id){
+        $driver_tasks = PrsDrivertask::whereIn('prs_id',[$prs_id])->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
+        // echo "<pre>"; print_r(json_decode($driver_tasks)); die;
+        foreach($driver_tasks as $value) {
+            foreach($value->PrsTaskItems as $item_value) {
+                $total_qty = $item_value->sum('quantity');
+            }
+        }
+        
+        return $total_qty;
+    }
+
     // public static function PrsStatusCheck($prs_id)
     // {
     //     $countids = PickupRunSheet::where('id',$prs_id)->count();

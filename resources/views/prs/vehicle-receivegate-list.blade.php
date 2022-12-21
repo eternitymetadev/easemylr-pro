@@ -61,7 +61,7 @@
         var pending_receive = parseInt(total_qty) - parseInt(receive_qty);
         console.log(pending_receive);
 
-        if (parseInt(total_qty) > parseInt(receive_qty)) {
+        if (parseInt(total_qty) >= parseInt(receive_qty)) {
             $(this).parent().next().children().val(pending_receive);
         } else {
             $(this).val("");

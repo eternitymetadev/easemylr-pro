@@ -15,11 +15,15 @@
 
             @if(count($vehiclereceives)>0)
             @foreach($vehiclereceives as $value)
-           
+            <?php 
+            $total_itemqty = Helper::PrsTotalQty($value->id);
+           ?>
             @if(count($value->PrsDriverTask->PrsTaskItems)>0)
-            <?php $qty_value = [];  ?>
+            
             @foreach($value->PrsDriverTask->PrsTaskItems as $taskitem)
-            <?php $qty_value[] = $taskitem->quantity; 
+            <?php 
+            // echo "<pre>"; print_r(json_decode($taskitem)); die;
+            $qty_value[] = $taskitem->quantity; 
                 $task_status = $taskitem->status;
                 $taskitem_id = $taskitem->id;
                 $drivertask_id = $taskitem->drivertask_id;
@@ -36,7 +40,7 @@
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
-                <td>{{$total_qty}}</td>
+                <td>{{$total_itemqty}}</td>
                 <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
