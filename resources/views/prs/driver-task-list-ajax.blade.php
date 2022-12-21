@@ -8,7 +8,7 @@
                 <th>Consigner </th>
                 <th>City</th>
                 <th>Status </th>
-                <th>Action</th>
+                <!-- <th>Action</th> -->
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -26,17 +26,16 @@
                 } else{
                     $disable_text = 'disable_n';
                 } ?>
-                <td><span class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span></td>
 
                 <?php if($value->status == 2 ) { 
                     $disable = ''; 
                 } else{
                     $disable = 'disable_n';
                 } ?>
+                <td><span style="cursor:pointer" class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span>
 
-                <td>
                 <?php if($value->status == 1 || $value->status == 2 ) { ?>
-                    <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
+                    || <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
                     <?php } ?>
                     <!-- <?php //else if($value->status == 3){ ?>
                     <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
@@ -44,7 +43,8 @@
                     <?php //else{ ?>
                         <span></span>
                     <?php //} ?> -->
-                    </td>
+                </td>
+
             </tr>
             @endforeach
             @else
