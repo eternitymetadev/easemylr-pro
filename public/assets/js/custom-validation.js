@@ -1442,7 +1442,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-dateLR").dataTable().fnDestroy();
                 $("#lr_status").empty();
             },
-            complete: function () {},
+            complete: function () { },
 
             success: function (data) {
                 var consignmentID = [];
@@ -1466,6 +1466,7 @@ jQuery(document).ready(function () {
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
+
                     if(value.lr_mode == 0){
                     if (value.signed_drs == null) {
                         if(data.role_id == 7){
@@ -1477,39 +1478,41 @@ jQuery(document).ready(function () {
                             "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                        if (img_api == null || img_api == "") {
-                            var field =
-                                "<input type='file' name='img' data-id='" +
-                                value.id +
-                                "' placeholder='Choose image' class='drs_image'>";
-                        } else {
-                            var field1 = [];
-                            var img_length = img_api.length;
-                            var i = 0;
-                            $.each(img_api, function (index, img) {
-                                i++;
-                                img_group =
-                                    "<a href='" +
-                                    img +
-                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
-                                    i +
-                                    "</a> ";
-                                field1.push(img_group);
-                            });
-                            var field = field1.join(" ");
-                        }
+                         var field = 
+                        "<a href='" +
+                        storage_img +
+                        "' target='_blank' class='btn btn-warning'>view</a>";
                     }
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field =
+                        "<input type='file' name='img' data-id='" +
+                        value.id +
+                        "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                         var field1 = [];
+                        var img_length = img_api.length;
+                        var i = 0;
+                        $.each(img_api, function (index, img) {
+                            i++
+                            img_group  = "<a href='"+img+
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             field1.push(img_group);
+                        });
+                       var field = (field1.join(' '));
+                    }
+                }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7) {
-                            var deliverydat = "-";
-                        } else {
-                            var deliverydat =
-                                "<input type='date' name='delivery_date[]' data-id=" +
-                                value.id +
-                                " class='delivery_d' value='" +
-                                value.delivery_date +
-                                "' Required>";
+                        if(data.role_id == 7){
+                            var deliverydat = '-';
+                        }else{
+                        var deliverydat =
+                            "<input type='date' name='delivery_date[]' data-id=" +
+                            value.id +
+                            " class='delivery_d' value='" +
+                            value.delivery_date +
+                            "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1526,7 +1529,6 @@ jQuery(document).ready(function () {
                             value.consignment_no +
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
-
 
                      row =   "<tr><td>" +
                     value.id +
@@ -1548,6 +1550,7 @@ jQuery(document).ready(function () {
                     row += "</tr>";
 
                     $("#get-delvery-dateLR tbody").append(row);
+
                 });
             },
         });
