@@ -1448,42 +1448,33 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
 
                 $.each(data.fetch, function (index, value) {
-                    var trail_history = jQuery.parseJSON(value.trail);
+                   
+                   var trail_history = jQuery.parseJSON(value.trail);
 
-                    if (value.job_id != null) {
-                        var img_api = [];
-
-                        $.each(
-                            trail_history.task_history,
-                            function (index, history) {
-                                if (history.type == "image_added") {
-                                    img_api.push(history.description);
-                                }
-                            }
-                        );
-                    }
-                    //   console.log(img_api); return false;
+                   if(value.lr_mode == 1){
+                    var img_api = [];
+                   
+                    $.each(trail_history.task_history, function (index, history) {
+                        if(history.type == "image_added"){
+                            img_api.push(history.description)
+                        }
+                    });
+                }
+            //   console.log(img_api); return false;
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
-
-                    if (value.job_id == null || value.job_id == "") {
-                        if (value.signed_drs == null) {
-                            if (data.role_id == 7) {
-                                var field = "-";
-                            } else {
-                                var field =
-                                    "<input type='file' name='img' data-id='" +
-                                    value.id +
-                                    "' placeholder='Choose image' class='drs_image'>";
-                            }
-                        } else {
-                            var field =
-                                "<a href='" +
-                                storage_img +
-                                "' target='_blank' class='btn btn-warning'>view</a>";
+                    if(value.lr_mode == 0){
+                    if (value.signed_drs == null) {
+                        if(data.role_id == 7){
+                            var field = '-';
+                        }else{
+                        var field =
+                            "<input type='file' name='img' data-id='" +
+                            value.id +
+                            "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
                         if (img_api == null || img_api == "") {
@@ -1536,23 +1527,22 @@ jQuery(document).ready(function () {
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
 
-                    row =
-                        "<tr><td>" +
-                        value.id +
-                        "</td><td>" +
-                        value.consignee_nick +
-                        "</td><td>" +
-                        value.conee_city +
-                        "</td><td>" +
-                        deliverydat +
-                        "</td><td>" +
-                        field +
-                        "</td>";
-                    if (value.job_id == "" || value.job_id == null) {
-                        if (data.role_id != 7) {
-                            row += "<td>" + buton + "</td>";
-                        }
-                    } else {
+
+                     row =   "<tr><td>" +
+                    value.id +
+                    " <input type='hidden' name='delivery_date' value='"+value.consignment_date+"'</td><td>" +
+                    value.consignee_nick +
+                    "</td><td>" +
+                    value.conee_city +
+                    "</td><td>" +
+                    deliverydat +
+                    "</td><td>" +
+                    field +
+                    "</td>";
+                    if(value.lr_mode == 0){
+                    if(data.role_id != 7){
+                    row += "<td>" + buton +"</td>";
+                    }}else{
                         row += "<td>Update from shadow</td>";
                     }
                     row += "</tr>";

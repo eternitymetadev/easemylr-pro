@@ -277,6 +277,7 @@
                     $jobid = $consignment->job_id;
                 } else {
                     $jobid = "Manual";
+
                 } ?>
 
                 <ul class="tabContainer nav nav-pills" id="driverList" role="tablist">

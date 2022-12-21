@@ -185,8 +185,12 @@
 
                     <?php if($authuser->role_id !=6){ ?>
                         <li>
+                            <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
+                        </li>
+                        <li>
                             <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
                         </li>
+
                         <li>
                             <a href="{{$prefixurl.'custom-reports'}}"> Custom Report</a>
                         </li>
@@ -206,6 +210,10 @@
                         </li>
                         <li>
                             <a href="{{$prefixurl.'admin-report2'}}"> Admin Report 2</a>
+                        </li>
+                       
+                        <li>
+                            <a href="{{$prefixurl.'postal-code'}}"> Postal Code Edit</a>
                         </li>
                         <?php } ?>
                     </ul>

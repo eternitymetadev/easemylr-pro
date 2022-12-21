@@ -563,6 +563,7 @@
                         EDD<span class="text-danger">*</span>
                     </label>
                     <Input type="date" class="form-control form-small" name="edd"/>
+
                 </div>
 
                 <div class="form-group col-12 mt-2">

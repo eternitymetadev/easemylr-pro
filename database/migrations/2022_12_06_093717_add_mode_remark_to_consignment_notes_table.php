@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBookedDrsToConsignmentNotesTable extends Migration
+class AddModeRemarkToConsignmentNotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddBookedDrsToConsignmentNotesTable extends Migration
     public function up()
     {
         Schema::table('consignment_notes', function (Blueprint $table) {
-            $table->string('booked_drs')->after('status')->default(0)->nullable();
+            $table->string('change_mode_remarks')->after('job_id')->nullable();
+            $table->string('lr_mode')->after('change_mode_remarks')->default(0)->nullable();
         });
     }
 
