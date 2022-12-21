@@ -723,6 +723,7 @@ class OrderController extends Controller
                         $consignmentsave['consignment_date'] = $today;
                         $consignmentsave['payment_type'] = $element['payment_term'];
                         $consignmentsave['branch_id'] = $authuser->branch_id;
+                        $consignmentsave['user_id'] = $authuser->id;
                         $consignmentsave['status'] = 5;
                        
                          $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -784,6 +785,7 @@ class OrderController extends Controller
                             $consignmentsave['consignee_id'] = $element['consignee_id'];
                             $consignmentsave['consignment_date'] = $today;
                             $consignmentsave['payment_type'] = $element['payment_term'];
+                            $consignmentsave['user_id'] = $authuser->id;
                             $consignmentsave['branch_id'] = $authuser->branch_id;
                             $consignmentsave['status'] = 5;
                              $saveconsignment = ConsignmentNote::create($consignmentsave);
