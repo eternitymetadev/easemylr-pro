@@ -2317,16 +2317,20 @@ $('#create_request_form').submit(function (e) {
         beforeSend: function () {
             $(".indicator-progress").show();
             $(".indicator-label").hide();
+            $('.disableme').prop('disabled', true);
         },
         success: (data) => {
+            $('.disableme').prop('disabled', true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
             if(data.success == true){
-
             swal('success', data.message, 'success')
             window.location.href = data.redirect_url;
-
-            }else{
+            }
+            else if(data.error == false){
+                swal('error', data.success_message ,'error');
+            }
+            else{
                 swal('error', data.message ,'error');
             }
 

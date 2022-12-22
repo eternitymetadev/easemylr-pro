@@ -1718,7 +1718,7 @@ function formSubmitRedirect(form)
             $('.disableme').prop('disabled', true);
 
              $("input[type=submit]").attr("enabled", "enabled");
-        	 $("button[type=submit]").attr("enabled", "enabled");
+        	$("button[type=submit]").attr("enabled", "enabled");
             $(".loader").hide();
         },
         success: function (response)

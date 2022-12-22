@@ -803,7 +803,7 @@ class VendorController extends Controller
 
                 $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             } else {
-                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                $getadvanced = PaymentRequest::select('advanced','balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->pay_amt;
                 } else {
@@ -821,6 +821,9 @@ class VendorController extends Controller
         
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
+
+        $checkduplicateRequest = PaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+        if(empty($checkduplicateRequest)){
         // ============== Sent to finfect
         $pfu = 'ETF';
         $curl = curl_init();
@@ -944,11 +947,13 @@ class VendorController extends Controller
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
         }
-
         $url = $this->prefix . '/request-list';
         $new_response['redirect_url'] = $url;
         $new_response['success_message'] = "Data Imported successfully";
-
+    }else{
+        $new_response['error'] = false ;
+        $new_response['success_message'] = "Request Already Sent";
+    }
         return response()->json($new_response);
 
     }
