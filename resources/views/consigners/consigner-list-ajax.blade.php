@@ -17,8 +17,8 @@
                 <td>{{$consigner->id}}</td>
                 <td valign="middle" style="max-width: 350px">
                     <p class="consigner">
-                        <span class="legalName" title="{{$consigner->RegClient->name}}">
-                            {{$consigner->RegClient->name ?? '-'}}
+                        <span class="legalName" title="{{@$consigner->RegClient->name}}">
+                            {{@$consigner->RegClient->name ?? '-'}}
                         </span>
                         <span title="{{$consigner->nick_name}}">
                            {{$consigner->nick_name}}
