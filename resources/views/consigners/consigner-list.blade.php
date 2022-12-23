@@ -1,11 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
-    <!-- END PAGE LEVEL CUSTOM STYLES -->
-    <style>
+<style>
         td p {
             display: flex;
             flex-direction: column;
@@ -78,11 +73,26 @@
 
 
     </style>
-    <div class="layout-px-spacing">
+<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
+<!-- END PAGE LEVEL CUSTOM STYLES -->
 
-        <div class="page-header layout-spacing">
-            <h2 class="pageHeading">Consigner List</h2>
-            <div class="d-flex align-content-center" style="gap: 1rem;">
+<div class="layout-px-spacing">
+    <div class="row layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="page-header">
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="widget-content widget-content-area br-6">
+                <div class="mb-4 mt-4">
+                <div class="d-flex align-content-center" style="gap: 1rem;">
                 <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
                    class="downloadEx btn btn-primary pull-right"
                    data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
@@ -107,101 +117,274 @@
                     Consigner
                 </button>
             </div>
-        </div>
-        <div class="widget-content widget-content-area br-6 px-3">
-
-            <div class="mb-4 mt-4" style="min-height: 350px">
-                @csrf
-                <table id="consignerstable" class="table table-hover" style="width:100%;">
-                    <thead>
-                    <tr>
-                        <th>Cnr ID</th>
-                        <th>Client Name</th>
-                        <th>Location</th>
-                        <th>Contact Person</th>
-                        <th>Mobile No.</th>
-                        {{--                        <th>PIN Code</th>--}}
-                        {{--                        <th>City</th>--}}
-                        {{--                        <th>District</th>--}}
-                        {{--                        <th>State</th>--}}
-                        <th style="text-align: center">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
+                    
+                    @csrf
+                    <div class="main-table table-responsive">
+                        @include('consigners.consigner-list-ajax')
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-@include('models.delete-consigner')
+</div>
+@include('models.delete-user')
 @include('consigners.crud-models')
 @endsection
 @section('js')
-    <script>
-        $(".consignerView").click(function () {
-            alert('sfds');
-
-        }); 
-     
-        var table = $('#consignerstable').DataTable({
-            processing: true,
-            serverSide: true,
-
-            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-                "<'table-responsive'tr>" +
-                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-            "oLanguage": {
-                "oPaginate": {
-                    "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                    "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                },
-                "sInfo": "Showing page _PAGE_ of _PAGES_",
-                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                "sSearchPlaceholder": "Search...",
-                "sLengthMenu": "Results :  _MENU_",
-            },
-
-
-            "stripeClasses": [],
-            "pageLength": 30,
-            drawCallback: function () {
-                $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered');
-            },
-
-            columns: [
-                {data: 'id', name: 'id', defaultContent: '-'},
-                {data: 'regclient', name: 'regclient', defaultContent: '-'},
-                {data: 'location', name: 'location', defaultContent: '-'},
-                {data: 'contact_name', name: 'contact_name', defaultContent: '-'},
-                {data: 'phone', name: 'phone', defaultContent: '-'},
-                {data: 'action', name: 'action', orderable: false, searchable: false}
-            ]
-
-            // columns: [
-            //     {data: 'id', name: 'id', defaultContent: '-'},
-            //     {data: 'regclient', name: 'regclient', defaultContent: '-'},
-            //     {data: 'nick_name', name: 'nick_name', defaultContent: '-'},
-            //     {data: 'contact_name', name: 'contact_name', defaultContent: '-'},
-            //     {data: 'phone', name: 'phone', defaultContent: '-'},
-            //     {data: 'postal_code', name: 'postal_code', defaultContent: '-'},
-            //     {data: 'city', name: 'city', defaultContent: '-'},
-            //     {data: 'district', name: 'district', defaultContent: '-'},
-            //     {data: 'state', name: 'state', defaultContent: '-'},
-            //     {data: 'action', name: 'action', orderable: false, searchable: false}
-            // ]
-
-        });
-
-
-        function closeConsignerDetaislModal() {
-            $('#consignerDetailsModal').modal('hide');
-            setTimeout(() => {
-                $('#editConsignerIcon').click();
-            }, 400)
+<script>
+jQuery(document).on('click', '#filter_reportall', function() {
+    var startdate = $("#startdate").val();
+    var enddate = $("#enddate").val();
+    var search = jQuery('#search').val();
+    
+    jQuery.ajax({
+        type: 'get',
+        url: 'consignment-report2',
+        data: {
+            startdate: startdate,
+            enddate: enddate,
+            search: search
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.html) {
+                jQuery('.main-table').html(response.html);
+            }
         }
-// 
+    });
+    return false;
+});
 
-    </script>
+jQuery(document).on('change', '.report_perpage', function() {
+    var startdate = jQuery('#startdate').val();
+    var enddate = jQuery('#enddate').val();
+    if (startdate == enddate) {
+        startdate = "";
+        enddate = "";
+    }
+    var url = jQuery(this).attr('data-action');
+    var peritem = jQuery(this).val();
+    var search  = jQuery('#search').val();
+        jQuery.ajax({
+            type      : 'get', 
+            url       : url,
+            data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate},
+            headers   : {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.html) {
+                if (response.page == 'lead_note') {
+                    jQuery('#Note .main-table').html(response.html);
+                } else {
+                    jQuery('.main-table').html(response.html);
+                }
+            }
+        }
+    });
+    return false;
+});
+
+jQuery(document).on('click', '.consignmentReportEx', function(event) {
+    event.preventDefault();
+
+    var totalcount = jQuery('.totalcount').text();
+    if (totalcount > 30000) {
+        jQuery('.limitmessage').show();
+        setTimeout(function() {
+            jQuery('.limitmessage').fadeOut();
+        }, 5000);
+        return false;
+    }
+
+    var geturl = jQuery(this).attr('data-action');
+    var startdate = jQuery('#startdate').val();
+    var enddate = jQuery('#enddate').val();
+
+    var search = jQuery('#search').val();
+    var url = jQuery('#search').attr('data-url');
+    if (startdate)
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+    else if (search)
+        geturl = geturl + '?search=' + search;
+
+    jQuery.ajax({
+        url: url,
+        type: 'get',
+        cache: false,
+        data: {
+            startdate: startdate,
+            enddate: enddate
+        },
+        headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+        },
+        processData: true,
+        beforeSend: function() {
+            //jQuery(".load-main").show();
+        },
+        complete: function() {
+            //jQuery(".load-main").hide();
+        },
+        success: function(response) {
+            // jQuery(".load-main").hide();
+            setTimeout(() => {
+                window.location.href = geturl
+            }, 10);
+        }
+    });
+});
+// 
+jQuery(document).on('click', '.consignerView', function(event) {
+    event.preventDefault();
+
+    var consigner_id = $(this).attr('data-id');
+    $('#consignerDetailsModal').modal('show');
+    $.ajax({
+                type: "GET",
+                url: "consigners/show",
+                data: {
+                    consigner_id: consigner_id
+                },
+                beforeSend: //reinitialize Datatables
+                    function () {
+                        $('#legal_name').empty()
+                        $('#nick_name').empty()
+                        $('#regional_client').empty()
+                        $('#contact_person').empty()
+                        $('#cong_email').empty()
+                        $('#cnr_phone').empty()
+                        $('#cnr_gst').empty()
+                        $('#cnr_pin').empty()
+                        $('#cnr_city').empty()
+                        $('#cnr_district').empty()
+                        $('#cnr_state').empty()
+                        $('#cnr_address').empty()
+                        
+                    },
+                success: function (data) {
+
+                    var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+
+                    $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
+                    $('#nick_name').html(data.getconsigner.nick_name)
+                    $('#regional_client').html(data.getconsigner.get_reg_client.name)
+                    $('#contact_person').html(data.getconsigner.contact_name)
+                     $('#cnr_email').html(data.getconsigner.email)
+                     $('#cnr_phone').html(data.getconsigner.phone)
+                     $('#cnr_gst').html(data.getconsigner.gst_number)
+                    $('#cnr_pin').html(data.getconsigner.postal_code)
+                    $('#cnr_city').html(data.getconsigner.city)
+                    $('#cnr_district').html(data.getconsigner.district)
+                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
+                    $('#cnr_address').html(address)
+                }
+
+            });
+
+});
+
+jQuery(document).on('click', '.consignerView', function(event) {
+    event.preventDefault();
+
+    var consigner_id = $(this).attr('data-id');
+    $('#consignerDetailsModal').modal('show');
+    $.ajax({
+                type: "GET",
+                url: "consigners/show",
+                data: {
+                    consigner_id: consigner_id
+                },
+                beforeSend: //reinitialize Datatables
+                    function () {
+                        $('#legal_name').empty()
+                        $('#nick_name').empty()
+                        $('#regional_client').empty()
+                        $('#contact_person').empty()
+                        $('#cong_email').empty()
+                        $('#cnr_phone').empty()
+                        $('#cnr_gst').empty()
+                        $('#cnr_pin').empty()
+                        $('#cnr_city').empty()
+                        $('#cnr_district').empty()
+                        $('#cnr_state').empty()
+                        $('#cnr_address').empty()
+                        
+                    },
+                success: function (data) {
+
+                    var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+
+                    $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
+                    $('#nick_name').html(data.getconsigner.nick_name)
+                    $('#regional_client').html(data.getconsigner.get_reg_client.name)
+                    $('#contact_person').html(data.getconsigner.contact_name)
+                     $('#cnr_email').html(data.getconsigner.email)
+                     $('#cnr_phone').html(data.getconsigner.phone)
+                     $('#cnr_gst').html(data.getconsigner.gst_number)
+                    $('#cnr_pin').html(data.getconsigner.postal_code)
+                    $('#cnr_city').html(data.getconsigner.city)
+                    $('#cnr_district').html(data.getconsigner.district)
+                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
+                    $('#cnr_address').html(address)
+                }
+
+            });
+
+});
+
+jQuery(document).on('click', '.editconsigner', function(event) {
+    event.preventDefault();
+
+    var consigner_id = $(this).attr('data-id');
+    $('#consignerDetailsEditModal').modal('show');
+    $.ajax({
+                type: "GET",
+                url: "consigners/consigners/edit",
+                data: {
+                    consigner_id: consigner_id
+                },
+                beforeSend: //reinitialize Datatables
+                    function () {
+                        $('#legal_name').empty()
+                        $('#nick_name').empty()
+                        $('#regional_client').empty()
+                        $('#contact_person').empty()
+                        $('#cong_email').empty()
+                        $('#cnr_phone').empty()
+                        $('#cnr_gst').empty()
+                        $('#cnr_pin').empty()
+                        $('#cnr_city').empty()
+                        $('#cnr_district').empty()
+                        $('#cnr_state').empty()
+                        $('#cnr_address').empty()
+                        
+                    },
+                success: function (data) {
+
+                    var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+
+                    $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
+                    $('#nick_name').html(data.getconsigner.nick_name)
+                    $('#regional_client').html(data.getconsigner.get_reg_client.name)
+                    $('#contact_person').html(data.getconsigner.contact_name)
+                     $('#cnr_email').html(data.getconsigner.email)
+                     $('#cnr_phone').html(data.getconsigner.phone)
+                     $('#cnr_gst').html(data.getconsigner.gst_number)
+                    $('#cnr_pin').html(data.getconsigner.postal_code)
+                    $('#cnr_city').html(data.getconsigner.city)
+                    $('#cnr_district').html(data.getconsigner.district)
+                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
+                    $('#cnr_address').html(address)
+                }
+
+            });
+
+});
+
+</script>
 @endsection

@@ -174,55 +174,55 @@
                             <div class="d-flex flex-wrap col-md-7 detailsBlock">
                                 <p>
                                     <span class="detailKey">Legal Name: </span>
-                                    <span class="detailValue text-uppercase">FRONTIER AGROTECH PRIVATE LIMITED</span>
+                                    <span class="detailValue text-uppercase" id="legal_name">FRONTIER AGROTECH PRIVATE LIMITED</span>
                                 </p>
                                 <p>
                                     <span class="detailKey">Nick Name: </span>
-                                    <span class="detailValue text-capitalize">Agrotech DD GZB</span>
+                                    <span class="detailValue text-capitalize" id="nick_name">Agrotech DD GZB</span>
                                 </p>
                                 <p>
                                     <span class="detailKey">Regional Client: </span>
-                                    <span class="detailValue text-capitalize">Agrotech SD-1 GZB</span>
+                                    <span class="detailValue text-capitalize" id="regional_client">Agrotech SD-1 GZB</span>
                                 </p>
                                 <p>
                                     <span class="detailKey">Contact Person: </span>
-                                    <span class="detailValue text-uppercase">ABHISHEK SHARMA</span>
+                                    <span class="detailValue text-uppercase" id="contact_person">ABHISHEK SHARMA</span>
                                 </p>
                             </div>
                             <div class="d-flex flex-wrap align-items-center detailsBlock contactDetails">
                                 <p>
                                     <span class="detailKey">EMAIL: </span>
-                                    <span class="detailValue">ghaiabadstc@frontierag.com</span>
+                                    <span class="detailValue" id="cnr_email">ghaiabadstc@frontierag.com</span>
                                 </p>
                                 <p>
                                     <span class="detailKey">PHONE: </span>
-                                    <span class="detailValue text-uppercase">9115115604</span>
+                                    <span class="detailValue text-uppercase" id="cnr_phone">9115115604</span>
                                 </p>
                                 <p>
                                     <span class="detailKey">GSTIN: </span>
-                                    <span class="detailValue text-uppercase">09AACCF3772B1ZU</span>
+                                    <span class="detailValue text-uppercase" id="cnr_gst">09AACCF3772B1ZU</span>
                                 </p>
                             </div>
                             <div class="d-flex flex-wrap col-md-12 detailsBlock addressBlock py-4">
                                 <p style="flex: 1;">
                                     <span class="detailKey">Pincode: </span>
-                                    <span class="detailValue text-uppercase">201003</span>
+                                    <span class="detailValue text-uppercase" id="cnr_pin">201003</span>
                                 </p>
                                 <p style="flex: 1;">
                                     <span class="detailKey">City: </span>
-                                    <span class="detailValue text-uppercase">GHAZIABAD</span>
+                                    <span class="detailValue text-uppercase" id="cnr_city">GHAZIABAD</span>
                                 </p>
                                 <p style="flex: 1;">
                                     <span class="detailKey">District: </span>
-                                    <span class="detailValue text-uppercase">GHAZIABAD</span>
+                                    <span class="detailValue text-uppercase" id="cnr_district">GHAZIABAD</span>
                                 </p>
                                 <p style="flex: 1;">
                                     <span class="detailKey">State: </span>
-                                    <span class="detailValue text-uppercase">Uttar Pradesh</span>
+                                    <span class="detailValue text-uppercase" id="cnr_state">Uttar Pradesh</span>
                                 </p>
                                 <p class="mt-2" style="width:  100%;">
                                     <span class="detailKey">Address: </span>
-                                    <span class="detailValue text-capitalize">
+                                    <span class="detailValue text-capitalize" id="cnr_address">
                                         KHASRA NO. 938, MORTA, MEERUT ROAD, Ghaziabad - 201003, Uttar Pradesh
                                     </span>
                                 </p>
@@ -304,13 +304,13 @@
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Consigner Nick Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" name="nick_name"
+                                    <input type="text" class="form-control form-control-sm" name="nick_name" id="edit_nick_name"
                                            placeholder="" required>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Consigner Legal Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" name="legal_name"
+                                    <input type="text" class="form-control form-control-sm" name="legal_name" id="edit_legal_name"
                                            placeholder="" required>
                                 </div>
 

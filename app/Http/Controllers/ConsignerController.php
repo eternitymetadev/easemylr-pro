@@ -16,6 +16,8 @@ use Auth;
 use Crypt;
 use Helper;
 use Validator;
+use Config;
+use Session;
 
 class ConsignerController extends Controller
 {
@@ -34,78 +36,103 @@ class ConsignerController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Consigner::query();
+
         if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
 
 
-            $query = Consigner::query();
             $query = $query->with('RegClient', 'Zone');
 
             if ($authuser->role_id == 1) {
                 $query = $query;
             } else if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-                // $query = $query->whereIn('branch_id', $cc);
                 $query = $query->WhereHas('RegClient', function ($regclientquery) use ($cc) {
                     $regclientquery->whereIn('location_id', $cc);
                 });
             } else {
                 $query = $query->whereIn('regionalclient_id', $regclient);
             }
+      
 
-            $consigners = $query->orderby('created_at', 'DESC')->get();
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        });
+                    });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
 
-            return datatables()->of($consigners)
-                ->addIndexColumn()
-                ->addColumn('regclient', function ($row) {
-                    if (isset($row->RegClient)) {
-                        $regional = $row->RegClient->name;
-                    } else {
-                        $regional = '-';
-                    }
-                    $regnl_row = '<td valign="middle" style="max-width: 350px">
-                            <p class="consigner">
-                                <span class="legalName" title="'.$regional.'">
-                                    '.$regional.'
-                                </span>
-                                <span title="'.$row->nick_name.'">
-                                    '.$row->nick_name.'
-                                </span>
-                            </p>
-                        </td>';
-                    return $regnl_row;
-                })
-                ->addColumn('location', function ($row) {
-                    if (isset($row->Zone)) {
-                        $city = $row->Zone->city;
-                    } else {
-                        $city = '-';
-                    }
-                    $location = '<td valign="middle"><p><span class="legalName">'.@$row->Zone->district.'</span>
-                                <span>'.@$row->Zone->state.' - '.@$row->Zone->postal_code.'</span></p></td>';
-                    return $location;
-                })
-                ->addColumn('state', function ($row) {
-                    if (isset($row->Zone)) {
-                        $state = $row->Zone->state;
-                    } else {
-                        $state = '';
-                    }
-                    return $state;
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="d-flex align-content-center justify-content-center" style="gap: 6px"><a id="editConsignerIcon" href="#" data-toggle="modal" data-target="#consignerDetailsEditModal" class="edit editIcon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"> <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path> <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path> </svg></a>';
-                    $btn .= '<a href="#" class="view viewIcon consignerView"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>';
-                    $btn .= '<a class="delete deleteIcon delete_consigner" data-id="' . $row->id . '" data-action="' . URL::to($this->prefix . '/' . $this->segment . '/delete-consigner') . '"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"                                                  viewBox="0 0 24 24"                                                  fill="none" stroke="currentColor" stroke-width="2"                                                  stroke-linecap="round"                                                  stroke-linejoin="round" class="feather feather-trash-2">                                                 <polyline points="3 6 5 6 21 6"></polyline>                                                 <path                                                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>                                                 <line x1="10" y1="11" x2="10" y2="17"></line>                                                 <line x1="14" y1="11" x2="14" y2="17"></line>                                             </svg></a></div>';
-                    return $btn;
-                })
-                ->rawColumns(['action', 'regclient', 'location', 'state'])
-                ->make(true);
+                // });
+            }
 
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $consigners = $query->orderby('created_at', 'DESC')->paginate($peritem);
+            $consigners = $consigners->appends($request->query());
+            
+            $html =  view('consigners.consigner-list-ajax',['prefix'=>$this->prefix,'consigners' => $consigners,'peritem'=>$peritem])->render();
+
+            return response()->json(['html' => $html]);
         }
 
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = $query->with('RegClient', 'Zone');
+
+        if ($authuser->role_id == 1) {
+            $query = $query;
+        } else if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+            $query = $query->WhereHas('RegClient', function ($regclientquery) use ($cc) {
+                $regclientquery->whereIn('location_id', $cc);
+            });
+        } else {
+            $query = $query->whereIn('regionalclient_id', $regclient);
+        }
+
+            $consigners = $query->orderby('created_at', 'DESC')->paginate($peritem);
+            $consigners = $consigners->appends($request->query());
+
+        // 
         if ($authuser->role_id != 1) {
             if ($authuser->role_id == 2 || $role_id->id == 3) {
                 $regclients = RegionalClient::whereIn('location_id', $cc)->orderby('name', 'ASC')->get();
@@ -116,7 +143,7 @@ class ConsignerController extends Controller
             $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         }
 
-        return view('consigners.consigner-list', ['prefix' => $this->prefix, 'segment' => $this->segment, 'regclients' => $regclients,]);
+        return view('consigners.consigner-list', ['consigners' => $consigners, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment, 'regclients' => $regclients]);
     }
 
     /**
@@ -206,12 +233,16 @@ class ConsignerController extends Controller
      * @param \App\Models\Consigner $consigner
      * @return \Illuminate\Http\Response
      */
-    public function show($consigner)
+    public function show(Request $request)
     {
+        
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($consigner);
-        $getconsigner = Consigner::where('id', $id)->with('GetRegClient', 'GetZone')->first();
-        return view('consigners.view-consigner', ['prefix' => $this->prefix, 'title' => $this->title, 'pagetitle' => 'View Details', 'getconsigner' => $getconsigner]);
+        $getconsigner = Consigner::where('id', $request->consigner_id)->with('GetRegClient', 'GetZone')->first();
+
+        $response['getconsigner'] = $getconsigner;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
     }
 
     /**
@@ -220,10 +251,10 @@ class ConsignerController extends Controller
      * @param \App\Models\Consigner $consigner
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
+        
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($id);
         $authuser = Auth::user();
 
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -239,10 +270,18 @@ class ConsignerController extends Controller
             $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         }
 
-        $getconsigner = Consigner::with('GetZone')->where('id', $id)->first();
-        return view('consigners.update-consigner')->with(['prefix' => $this->prefix, 'getconsigner' => $getconsigner, 'regclients' => $regclients, 'title' => $this->title, 'pagetitle' => 'Update']);
+        $getconsigner = Consigner::with('GetZone')->where('id', $request->consigner_id)->first();
+
+        $this->prefix = request()->route()->getPrefix();
+        $getconsigner = Consigner::where('id', $request->consigner_id)->with('GetRegClient', 'GetZone')->first();
+
+        $response['getconsigner'] = $getconsigner;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
     }
 
+   
     /**
      * Update the specified resource in storage.
      *
@@ -352,5 +391,7 @@ class ConsignerController extends Controller
         }
         return response()->json($response);
     }
+
+    
 
 }
