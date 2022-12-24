@@ -270,9 +270,6 @@ class ConsignerController extends Controller
             $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         }
 
-        $getconsigner = Consigner::with('GetZone')->where('id', $request->consigner_id)->first();
-
-        $this->prefix = request()->route()->getPrefix();
         $getconsigner = Consigner::where('id', $request->consigner_id)->with('GetRegClient', 'GetZone')->first();
 
         $response['getconsigner'] = $getconsigner;
@@ -291,6 +288,7 @@ class ConsignerController extends Controller
      */
     public function updateConsigner(Request $request)
     {
+       
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(

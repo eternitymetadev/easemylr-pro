@@ -350,36 +350,47 @@ jQuery(document).on('click', '.editconsigner', function(event) {
                 },
                 beforeSend: //reinitialize Datatables
                     function () {
-                        $('#legal_name').empty()
-                        $('#nick_name').empty()
-                        $('#regional_client').empty()
-                        $('#contact_person').empty()
-                        $('#cong_email').empty()
-                        $('#cnr_phone').empty()
-                        $('#cnr_gst').empty()
-                        $('#cnr_pin').empty()
-                        $('#cnr_city').empty()
-                        $('#cnr_district').empty()
-                        $('#cnr_state').empty()
-                        $('#cnr_address').empty()
+                        $('#edit_nick_name').empty()
+                        $('#edit_legal_name').empty()
+                        $('.edit_gst').empty()
+                        $('#edit_contact_person').empty()
+                        $('#edit_phone').empty()
+                        $('#edit_email').empty()
+                        $('.edit_pin').empty()
+                        $('.edit_city').empty()
+                        $('.edit_district').empty()
+                        $('.edit_state').empty()
+                        $('#edit_address1').empty()
+                        $('#edit_address2').empty()
+                        $('#edit_address3').empty()
+                        $('#edit_address4').empty()
+                        $('#edit_cnr_id').empty()
+                       
                         
                     },
                 success: function (data) {
 
-                    var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+                    // var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+                    console.log(data.getconsigner.regionalclient_id);
 
-                    $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
-                    $('#nick_name').html(data.getconsigner.nick_name)
-                    $('#regional_client').html(data.getconsigner.get_reg_client.name)
-                    $('#contact_person').html(data.getconsigner.contact_name)
-                     $('#cnr_email').html(data.getconsigner.email)
-                     $('#cnr_phone').html(data.getconsigner.phone)
-                     $('#cnr_gst').html(data.getconsigner.gst_number)
-                    $('#cnr_pin').html(data.getconsigner.postal_code)
-                    $('#cnr_city').html(data.getconsigner.city)
-                    $('#cnr_district').html(data.getconsigner.district)
-                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
-                    $('#cnr_address').html(address)
+                    $('#edit_legal_name').val(data.getconsigner.legal_name ? data.getconsigner.legal_name : '')
+                    $('#edit_nick_name').val(data.getconsigner.nick_name)
+                    $('#regional_client').val(data.getconsigner.get_reg_client.name)
+                    $('#edit_contact_person').val(data.getconsigner.contact_name)
+                     $('#edit_email').val(data.getconsigner.email)
+                     $('#edit_phone').val(data.getconsigner.phone)
+                     $('.edit_gst').val(data.getconsigner.gst_number)
+                    $('.edit_pin').val(data.getconsigner.postal_code)
+                    $('.edit_city').val(data.getconsigner.city)
+                    $('.edit_district').val(data.getconsigner.district)
+                    $('.edit_state').val(data.getconsigner.state ? data.getconsigner.state : '')
+                    $('#edit_address1').val(data.getconsigner.address_line1 ? data.getconsigner.address_line1 : '')
+                    $('#edit_address2').val(data.getconsigner.address_line2 ? data.getconsigner.address_line2 : '')
+                    $('#edit_address3').val(data.getconsigner.address_line3 ? data.getconsigner.address_line3 : '')
+                    $('#edit_address4').val(data.getconsigner.address_line4 ? data.getconsigner.address_line4 : '')
+                    $(".edit_regin").val(data.getconsigner.regionalclient_id).change();
+                    $('#edit_cnr_id').val(data.getconsigner.id)
+
                 }
 
             });

@@ -259,8 +259,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/consigners')}}"
-                              id="createconsigner">
+                    <form class="general_form" method="POST" action="{{url($prefix.'/consigners/update-consigner')}}" id="updateconsigner">
+                    @csrf
+                    <input type="hidden" name="consigner_id" id="edit_cnr_id" value="">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlSelect1">Regional Client<span
@@ -268,7 +269,7 @@
                                     <?php $authuser = Auth::user();
                                     if($authuser->role_id == 4){
                                     ?>
-                                    <select class="form-control form-control-sm" id="regionalclient_id"
+                                    <select class="form-control form-control-sm edit_regin" id="regionalclient_id"
                                             name="regionalclient_id">
                                         <option value="">Select</option>
                                         <?php
@@ -284,9 +285,9 @@
                                     </select>
                                     <input type="hidden" name="branch_id" value="{{$client->location_id}}">
                                     <?php } else { ?>
-                                    <select class="form-control form-control-sm" id="regionalclient_id"
+                                       
+                                    <select class="form-control form-control-sm edit_regin" id="regionalclient_id"
                                             name="regionalclient_id">
-                                        <option value="">Select</option>
                                         <?php
                                         if(count($regclients) > 0) {
                                         foreach ($regclients as $key => $client) {
@@ -317,52 +318,52 @@
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">GST No.<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="gst_number"
+                                    <input type="text" class="form-control form-control-sm edit_gst" id="gst_number"
                                            name="gst_number"
                                            placeholder="" maxlength="15" required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">Contact Person Name</label>
-                                    <input type="text" class="form-control form-control-sm" name="contact_name"
+                                    <input type="text" class="form-control form-control-sm" name="contact_name" id="edit_contact_person"
                                            placeholder="Contact Name">
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">Mobile No.<span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-sm mbCheckNm" name="phone"
-                                           placeholder="Enter 10 digit mobile no" maxlength="10" required>
-                                </div>
+                                           placeholder="Enter 10 digit mobile no" id="edit_phone" maxlength="10" required>
+                                </div> 
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">Email ID</label>
-                                    <input type="email" class="form-control form-control-sm" name="email"
+                                    <input type="email" class="form-control form-control-sm" name="email" id="edit_email"
                                            placeholder="">
                                 </div>
 
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">Pincode<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="postal_code"
+                                    <input type="text" class="form-control form-control-sm edit_pin" id="postal_code"
                                            name="postal_code"
                                            placeholder="" maxlength="6" required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">City<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="city" name="city"
+                                    <input type="text" class="form-control form-control-sm edit_city" id="city" name="city"
                                            placeholder=""
                                            required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlInput2">District<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="district"
+                                    <input type="text" class="form-control form-control-sm edit_district" id="district"
                                            name="district" placeholder=""
                                            required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="exampleFormControlSelect1">State<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-sm" id="state" name="state_id"
+                                    <input type="text" class="form-control form-control-sm edit_state" id="state" name="state_id"
                                            placeholder=""
                                            readonly required>
                                 </div>
@@ -370,21 +371,21 @@
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Address Line 1</label>
                                     <input type="text" class="form-control form-control-sm" name="address_line1"
-                                           placeholder="">
+                                           id="edit_address1" placeholder="">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Address Line 2</label>
-                                    <input type="text" class="form-control form-control-sm" name="address_line2"
+                                    <input type="text" class="form-control form-control-sm" id="edit_address2" name="address_line2"
                                            placeholder="">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Address Line 3</label>
-                                    <input type="text" class="form-control form-control-sm" name="address_line3"
+                                    <input type="text" class="form-control form-control-sm" id="edit_address3" name="address_line3"
                                            placeholder="">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Address Line 4</label>
-                                    <input type="text" class="form-control form-control-sm" name="address_line4"
+                                    <input type="text" class="form-control form-control-sm" id="edit_address4" name="address_line4"
                                            placeholder="">
                                 </div>
 
@@ -396,10 +397,11 @@
                                         data-dismiss="modal">
                                     Close
                                 </button>
-                                <button type="submit" style="min-width: 80px" class="btn btn-primary"
+                                <!-- <button type="submit" style="min-width: 80px" class="btn btn-primary"
                                         data-dismiss="modal">
                                     Update
-                                </button>
+                                </button> -->
+                                <input type="submit" class="mt-4 mb-4 btn btn-primary">
                             </div>
 
                         </form>

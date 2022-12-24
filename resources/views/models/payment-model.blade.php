@@ -228,7 +228,7 @@
                 <h4 class="modal-title">Update Purchase Price</h4>
             </div>
             <!-- Modal body -->
-            <div class="modal-body">
+            <div class="modal-body"> 
                 <input type="hidden" class="form-control" id="drs_num_edit" name="drs_no" value=""/>
                 <div class="form-row mb-0">
                     <div class="form-group col-12">
