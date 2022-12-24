@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePrsRegClientsTable extends Migration
+class CreatePrsRegConsignersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreatePrsRegClientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('prs_reg_clients', function (Blueprint $table) {
+        Schema::create('prs_reg_consigners', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('prs_id')->nullable();
-            $table->string('regclient_id')->nullable();
+            $table->string('prs_regclientid')->nullable();
+            $table->string('consigner_id')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreatePrsRegClientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prs_reg_clients');
+        Schema::dropIfExists('prs_reg_consigners');
     }
 }

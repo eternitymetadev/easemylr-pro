@@ -346,12 +346,19 @@ class GlobalFunctions {
     public static function PrsTotalQty($prs_id){
         $driver_tasks = PrsDrivertask::whereIn('prs_id',[$prs_id])->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
         // echo "<pre>"; print_r(json_decode($driver_tasks)); die;
-        foreach($driver_tasks as $value) {
-            foreach($value->PrsTaskItems as $item_value) {
-                $total_qty = $item_value->sum('quantity');
+        if(count($driver_tasks)>0){
+            foreach($driver_tasks as $value) {
+                if(count($value->PrsTaskItems) > 0){
+                    foreach($value->PrsTaskItems as $item_value) {
+                        $total_qty = $item_value->sum('quantity');
+                    }
+                }else{
+                    $total_qty = '0';
+                }
             }
+        }else{
+            $total_qty = '0';
         }
-        
         return $total_qty;
     }
 

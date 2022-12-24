@@ -49,8 +49,7 @@ tbody tr:last-child .rowAddButton {
                                                 <td valign="middle" class="p-2">
                                                     <?php $authuser = Auth::user();
                                                         ?>
-                                                    <select class="form-control tagging select_prsregclient"
-                                                        id="select_prsregclient" name="regclient_id">
+                                                    <select class="form-control tagging select_prsregclient" onchange="onChangePrsRegClient(this)" id="select_prsregclient" name="data[1][regclient_id]">
                                                         <option selected="selected" disabled>
                                                             Select client..
                                                         </option>
@@ -63,17 +62,18 @@ tbody tr:last-child .rowAddButton {
                                                         <?php 
                                                                 } 
                                                             ?>
+                                                            <input type="hidden" name="data[1][branch_id]" value="{{$client->location_id}}" />
                                                     </select>
-                                                    <input type="hidden" name="branch_id" value="{{$client->location_id}}" />
+                                                    
                                                 </td>
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple" name="consigner_id[]">
+                                                    <select class="form-control consigner_prs tagging" id="select_consigner" multiple="multiple"  name="data[1][consigner_id][]">
                                                         <option disabled>Select</option>
                                                     </select>
                                                 </td>
-                                                <!-- <td valign="middle" class="p-2" width="24px">
+                                                <td valign="middle" class="p-2" width="24px">
                                                 <button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
-                                                </td> -->
+                                                </td>
                                             </tr>
 
                                         </tbody>
@@ -132,6 +132,7 @@ tbody tr:last-child .rowAddButton {
 @endsection
 @section('js')
 <script>
+    
 // add prs date
 $('#prsDate').val(new Date().toJSON().slice(0, 10));
 
@@ -146,29 +147,32 @@ function addrow() {
     console.log(i);
     i = i + 1;
     var rows = '';
-    // 
+
     rows += '<tr class="rrow">';
     rows += '<td valign="middle" class="p-2">';
-    rows += '<select class="form-control tagging select_prsregclient" id="" name="data['+i+'][regclient_id]">';
+    rows += '<select class="form-control tagging select_prsregclient" id="" onchange="onChangePrsRegClient(this)" name="data['+i+'][regclient_id]">';
     rows += '<option selected="selected" disabled>Select client..</option>';
     <?php  
         foreach ($regclients as $key => $client) {
     ?>
-    rows += '<option value="{{ $client->id }}">{{ucwords($client->name)}}</option>';
+    rows += '<option value="{{ $client->id }}">{{ucwords($client->name)}}</option>';    
     <?php 
         }
     ?>
-    rows += '</select>';
-    rows += '<input type="hidden" name="branch_id" value="{{$client->location_id}}" /></td>';
+    rows += '<input type="hidden" name="data['+i+'][branch_id]" value="{{$client->location_id}}" />';
+    rows += '</select></td>';
     rows += '<td valign="middle" class="p-2">';
-    rows += '<select class="form-control consigner_prs tagging" multiple="multiple" name="data['+i+'][consigner_id[]]">';
+    rows += '<select class="form-control consigner_prs tagging" multiple="multiple" name="data['+i+'][consigner_id][]">';
     rows += '<option disabled>Select</option></select></td>';
     rows += '<td valign="middle" class="p-2" width="24px">';
     rows += '<button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>';
     rows += '<button type="button" class="btn btn-danger rowClearButton"><i class="fa fa-minus-circle"></i></button>';
     rows += '</td></tr>';
+    // 
+    
 
     $('#participantTable tbody').append(rows);
+    $('.tagging').select2();
 }
 
 $(document).on('click', '.rowClearButton', function() {

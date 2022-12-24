@@ -23,7 +23,7 @@
             @foreach($value->PrsDriverTask->PrsTaskItems as $taskitem)
             <?php 
             // echo "<pre>"; print_r(json_decode($taskitem)); die;
-            $qty_value[] = $taskitem->quantity; 
+                $qty_value[] = $taskitem->quantity; 
                 $task_status = $taskitem->status;
                 $taskitem_id = $taskitem->id;
                 $drivertask_id = $taskitem->drivertask_id;
@@ -52,7 +52,6 @@
                     <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount="" data-prstaskstatus=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                 </td>
             </tr>
-            
             @endif
 
             @endforeach

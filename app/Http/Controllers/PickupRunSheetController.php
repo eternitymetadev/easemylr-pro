@@ -182,89 +182,72 @@ class PickupRunSheetController extends Controller
             }
             
             $prssave['pickup_id'] = $pickup_id;
-            // if(!empty($request->regclient_id)){
-            //     $regclients = $request->regclient_id;
-            //     $prssave['regclient_id'] = implode(',', $regclients);
-            // }
-
-            if(!empty($request->regclient_id)){
-                $prssave['regclient_id'] = $request->regclient_id;
-            }
             
-            if(!empty($request->consigner_id)){
-                $consigners = $request->consigner_id;
+            foreach($request->data as $key => $save_data){
+                $prssave['regclient_id'] = $save_data['regclient_id'];
+
+                $consigners =array();
+                foreach($save_data['consigner_id'] as $key => $cnr_data){
+                    $consigners[] = $cnr_data;
+                }
                 $prssave['consigner_id'] = implode(',', $consigners);
-            }
-            
-            if(!empty($request->vehicletype_id)){
-                $prssave['vehicletype_id'] = $request->vehicletype_id;
-            }
-            if(!empty($request->vehicle_id)){
-                $prssave['vehicle_id'] = $request->vehicle_id;
-            }
-            if(!empty($request->driver_id)){
-                $prssave['driver_id'] = $request->driver_id;
-            }
 
-            $prssave['prs_date'] = $request->prs_date;
+                if(!empty($request->vehicletype_id)){
+                    $prssave['vehicletype_id'] = $request->vehicletype_id;
+                }
+                if(!empty($request->vehicle_id)){
+                    $prssave['vehicle_id'] = $request->vehicle_id;
+                }
+                if(!empty($request->driver_id)){
+                    $prssave['driver_id'] = $request->driver_id;
+                }
+    
+                $prssave['prs_date'] = $request->prs_date;
+    
+                $prssave['user_id'] = $authuser->id;
+                $prssave['branch_id'] = $authuser->branch_id;
+                
+                $prssave['status'] = "1";
 
-            $prssave['user_id'] = $authuser->id;
-            $prssave['branch_id'] = $authuser->branch_id;
-            
-            $prssave['status'] = "1";
-            
-            $saveprs = PickupRunSheet::create($prssave);
+                // dd($prssave);
+                $saveprs = PickupRunSheet::create($prssave);
 
-            if($saveprs)
-            {
-                // insert prs regclient items
-                if (!empty($request->data)) {
-                    $get_data = $request->data;
-                    foreach ($get_data as $key => $save_data) {
-                        // dd($save_data);
-                        if(!empty($save_data->consigner_id)){
-                            $consigners = $save_data->consigner_id;
-                            $save_data['consigner_id'] = implode(',', $consigners);
-                        }
-
-                        $save_data['prs_id'] = $saveprs->id;
-                        $save_data['status'] = 1;
-                        $saveprsregclient = PrsRegClient::create($save_data);
+                if($saveprs)
+                {
+                    $task_id = DB::table('prs_drivertasks')->select('task_id')->latest('task_id')->first();
+                    $task_id = json_decode(json_encode($task_id), true);
+                    if (empty($task_id) || $task_id == null) {
+                        $task_id = 3800001;
+                    } else {
+                        $task_id = $task_id['task_id'] + 1;
                     }
-                }
 
-                $task_id = DB::table('prs_drivertasks')->select('task_id')->latest('task_id')->first();
-                $task_id = json_decode(json_encode($task_id), true);
-                if (empty($task_id) || $task_id == null) {
-                    $task_id = 3800001;
-                } else {
-                    $task_id = $task_id['task_id'] + 1;
-                }
+                    $consigners = $saveprs->consigner_id;
+                    $consinger_ids  = explode(',',$consigners);
+                    
+                    foreach($consinger_ids as $consigner){
+                        $prstask['task_id'] = $task_id;
+                        $prstask['prs_date'] = $saveprs->prs_date;
+                        $prstask['prs_id'] = $saveprs->id;
+                        $prstask['prsconsigner_id'] = $consigner;
+                        $prstask['status'] = "1";
+                        $saveprsdrivertasks = PrsDrivertask::create($prstask);
+                        $task_id = $saveprsdrivertasks['task_id'] + 1;
+                    }
 
-                $consigners = $saveprs->consigner_id;
-                $consinger_ids  = explode(',',$consigners);
-                // $consigner_count = count($consinger_ids);
-                foreach($consinger_ids as $consigner){
-                    $prstask['task_id'] = $task_id;
-                    $prstask['prs_date'] = $saveprs->prs_date;
-                    $prstask['prs_id'] = $saveprs->id;
-                    $prstask['prsconsigner_id'] = $consigner;
-                    $prstask['status'] = "1";
-                    $saveprsdrivertasks = PrsDrivertask::create($prstask);
-                    $task_id = $saveprsdrivertasks['task_id'] + 1;
+                    $url    =   URL::to($this->prefix.'/prs');
+                    $response['success'] = true;
+                    $response['success_message'] = "PRS Added successfully";
+                    $response['error'] = false;
+                    $response['page'] = 'prs-create';
+                    $response['redirect_url'] = $url;
+                }else{
+                    $response['success'] = false;
+                    $response['error_message'] = "Can not created PRS please try again";
+                    $response['error'] = true;
                 }
-
-                $url    =   URL::to($this->prefix.'/prs');
-                $response['success'] = true;
-                $response['success_message'] = "PRS Added successfully";
-                $response['error'] = false;
-                $response['page'] = 'prs-create';
-                $response['redirect_url'] = $url;
-            }else{
-                $response['success'] = false;
-                $response['error_message'] = "Can not created PRS please try again";
-                $response['error'] = true;
-            }
+            }      
+            
             DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;
@@ -281,8 +264,7 @@ class PickupRunSheetController extends Controller
         $peritem = Config::get('variable.PER_PAGE');
         $query = PrsDrivertask::query();
         
-        if ($request->ajax()) { 
-
+        if ($request->ajax()) {
             if (isset($request->prsdrivertask_status)) {
                 if($request->prs_taskstatus == 1){
                     // update click on assigned status to acknowleged in driver task list
@@ -327,7 +309,6 @@ class PickupRunSheetController extends Controller
                             $cneequery->where('nick_name', 'like', '%' . $search . '%');
                         });
                     });
-
                 });
             }
 
@@ -347,8 +328,7 @@ class PickupRunSheetController extends Controller
             $drivertasks = $query->orderBy('id', 'DESC')->paginate($peritem);
             $drivertasks = $prsdata->appends($request->query());
 
-            $html =  view('prs.driver-task-list-ajax',['prefix'=>$this->prefix,'drivertasks' => $drivertasks,'peritem'=>$peritem])->render();
-            
+            $html =  view('prs.driver-task-list-ajax',['prefix'=>$this->prefix,'drivertasks' => $drivertasks,'peritem'=>$peritem])->render();            
 
             return response()->json(['html' => $html]);
         }
@@ -465,7 +445,6 @@ class PickupRunSheetController extends Controller
                         $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
                         $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
                     }
-
                     $savetaskitems = PrsTaskItem::create($save_data);
                     
                     // create order start
@@ -526,10 +505,16 @@ class PickupRunSheetController extends Controller
                 PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 3]);
 
                 $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
-                $countdrivertask_status = PrsDrivertask::where('status',2)->count();
+                $countdrivertask_status = PrsDrivertask::where('status',3)->count();
                 if($countdrivertask_id == $countdrivertask_status){
-                    PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
+                    // PickupRunSheet::where('id', $request->prs_id)->update(['status' => 2]);
                 }
+
+                // $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
+                // $countdrivertask_status = PrsDrivertask::where('status',3)->count();
+                // if($countdrivertask_id == $countdrivertask_status){
+                //     PickupRunSheet::where('id', $request->prs_id)->update(['status' => 2]);
+                // }
                 // end create order
                    
                 $url    =   URL::to($this->prefix.'/driver-tasks');
@@ -587,7 +572,6 @@ class PickupRunSheetController extends Controller
         $rules = array(
             // 'regclient_id' => 'required',
         );
-
         $validator = Validator::make($request->all(),$rules);
     
         if($validator->fails())
@@ -611,9 +595,9 @@ class PickupRunSheetController extends Controller
 
                 $savevehiclereceive = PrsReceiveVehicle::create($save_data);
             }
-
             if($savevehiclereceive){
                 PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
+
                 PickupRunSheet::where('id', $request->prs_id)->update(['status' => 2]);
                 $url = URL::to($this->prefix.'/vehicle-receivegate');
                     $response['success'] = true;
