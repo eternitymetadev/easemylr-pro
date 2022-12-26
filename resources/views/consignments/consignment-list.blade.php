@@ -467,6 +467,7 @@ function row_click(row_id, job_id, url)
 
     var job_id = job_id;
     var url =url;
+    // alert(url)
     jQuery.ajax({
         url: url,
         type: "get",
@@ -576,12 +577,18 @@ function row_click(row_id, job_id, url)
 var map;
 function initMap(response, row_id)
 {
+    // alert(row_id)
     var map = new google.maps.Map(document.getElementById('map-'+row_id), {zoom: 8, center: 'Changigarh',});
+    // console.log(map)
     var directionsDisplay = new google.maps.DirectionsRenderer({'draggable': false});
     var directionsService = new google.maps.DirectionsService();
     var travel_mode = 'DRIVING';
     var origin = response.cnr_pincode;
     var destination = response.cne_pincode;
+    // var origin = "140603";
+    // var destination = "140602";
+    // alert(origin)
+    // alert(destination)
     directionsService.route({
         "origin": origin,
         "destination": destination,

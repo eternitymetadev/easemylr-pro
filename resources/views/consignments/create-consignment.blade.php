@@ -2,7 +2,6 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
-  
 <style>
          @media only screen and (max-width: 600px) {
 		.checkbox-round {
@@ -159,7 +158,7 @@ span.round-tab:hover {
         overflow: auto;
     }
 </style>
-<div class="layout-px-spacing">
+<div class="layout-px-spacing" id="divbox">
     <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment" style="margin: auto; ">
         <div class="row">
             <div class="col-lg-12 layout-spacing">
@@ -211,8 +210,7 @@ span.round-tab:hover {
                                 </div>
                             </div>                             
                         </div>
-
-                        
+                        <button @click="test()">submit</button>
                     </div>
                 </div>
               <!-- </div> --> 
@@ -447,6 +445,7 @@ span.round-tab:hover {
 
 @endsection
 @section('js')
+
 <script>
     // $(function() {
     //     $('.basic').selectpicker();
@@ -527,6 +526,50 @@ $('.invc_no').blur(function() {
 });
 
  
+</script>
+<script>
+    new Vue({
+        el: '#divbox',
+        // components: {
+        //   ValidationProvider
+        // },
+        data: {
+            flag:"false"
+
+
+        },
+        created: function() {
+            //   alert('hello');
+            // var table=$('#html5-extension');
+            // table.dataTable({dom : 'lrt'});
+            // $('table').dataTable({bFilter: false, bInfo: false});
+        },
+        methods: {
+            test: function() {
+
+              alert("dsd")
+            },
+            hand_shake_report: function() {
+                axios.get('/hand_shake_report', {
+
+
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        if (response.data == 1) {
+                            this.url = '/download_handshake_report';
+                            window.location.href = this.url;
+                        }
+
+                    }).catch(error => {
+
+                        console.log(response)
+                        this.apply_offer_btn = 'Apply';
+
+                    })
+            }
+        }
+    })
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script> 
 @endsection
