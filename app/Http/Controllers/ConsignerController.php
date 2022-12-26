@@ -69,20 +69,8 @@ class ConsignerController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cnrquery) use ($search, $searchT) {
-                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cneequery) use ($search, $searchT) {
-                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        });
+                    $query->where('nick_name', 'like', '%' . $search . '%');
+                        
                     });
                     // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
                     //     $query->where(function ($invcquery)use($search,$searchT) {
@@ -107,8 +95,7 @@ class ConsignerController extends Controller
             $consigners = $query->orderby('created_at', 'DESC')->paginate($peritem);
             $consigners = $consigners->appends($request->query());
             
-            $html =  view('consigners.consigner-list-ajax',['prefix'=>$this->prefix,'consigners' => $consigners,'peritem'=>$peritem])->render();
-
+            $html =  view('consigners.consigner-list-ajax',['prefix'=>$this->prefix,'consigners' => $consigners,'peritem'=>$peritem, 'segment' => $this->segment])->render();
             return response()->json(['html' => $html]);
         }
 

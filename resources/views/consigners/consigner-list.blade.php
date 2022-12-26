@@ -104,7 +104,7 @@
                         <line x1="12" y1="12" x2="12" y2="21"></line>
                         <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
                     </svg>
-                    Excel
+                    Excel 
                 </a>
                 <button class="btn btn-primary" id="add_role" data-toggle="modal" data-target="#createConsigner">
                     {{--                <a class="btn btn-primary" id="add_role" href="{{'consigners/create'}}">--}}
@@ -116,6 +116,13 @@
                     </svg>
                     Consigner
                 </button>
+                <div class="inputDiv d-flex justify-content-center align-items-center"
+                     style="flex: 1;max-width: 300px; border-radius: 12px; position: relative">
+                    <input type="text" class="form-control" placeholder="Search" id="search"
+                           style="width: 100%; height: 38px; border-radius: 12px;"
+                           data-action="<?php echo url()->current(); ?>">
+                    <span class="reset_filter clearIcon" data-action="<?php echo url()->current(); ?>">x</span>
+                </div>
             </div>
                     
                     @csrf
@@ -128,6 +135,7 @@
     </div>
 </div>
 @include('models.delete-user')
+@include('models.delete-consigner')
 @include('consigners.crud-models')
 @endsection
 @section('js')
@@ -280,7 +288,7 @@ jQuery(document).on('click', '.consignerView', function(event) {
                     $('#cnr_pin').html(data.getconsigner.postal_code)
                     $('#cnr_city').html(data.getconsigner.city)
                     $('#cnr_district').html(data.getconsigner.district)
-                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
+                    $('#cnr_state').html(data.getconsigner.state_id ? data.getconsigner.state_id : '-NA-')
                     $('#cnr_address').html(address)
                 }
 
@@ -288,54 +296,6 @@ jQuery(document).on('click', '.consignerView', function(event) {
 
 });
 
-jQuery(document).on('click', '.consignerView', function(event) {
-    event.preventDefault();
-
-    var consigner_id = $(this).attr('data-id');
-    $('#consignerDetailsModal').modal('show');
-    $.ajax({
-                type: "GET",
-                url: "consigners/show",
-                data: {
-                    consigner_id: consigner_id
-                },
-                beforeSend: //reinitialize Datatables
-                    function () {
-                        $('#legal_name').empty()
-                        $('#nick_name').empty()
-                        $('#regional_client').empty()
-                        $('#contact_person').empty()
-                        $('#cong_email').empty()
-                        $('#cnr_phone').empty()
-                        $('#cnr_gst').empty()
-                        $('#cnr_pin').empty()
-                        $('#cnr_city').empty()
-                        $('#cnr_district').empty()
-                        $('#cnr_state').empty()
-                        $('#cnr_address').empty()
-                        
-                    },
-                success: function (data) {
-
-                    var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
-
-                    $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
-                    $('#nick_name').html(data.getconsigner.nick_name)
-                    $('#regional_client').html(data.getconsigner.get_reg_client.name)
-                    $('#contact_person').html(data.getconsigner.contact_name)
-                     $('#cnr_email').html(data.getconsigner.email)
-                     $('#cnr_phone').html(data.getconsigner.phone)
-                     $('#cnr_gst').html(data.getconsigner.gst_number)
-                    $('#cnr_pin').html(data.getconsigner.postal_code)
-                    $('#cnr_city').html(data.getconsigner.city)
-                    $('#cnr_district').html(data.getconsigner.district)
-                    $('#cnr_state').html(data.getconsigner.state ? data.getconsigner.state : '-NA-')
-                    $('#cnr_address').html(address)
-                }
-
-            });
-
-});
 
 jQuery(document).on('click', '.editconsigner', function(event) {
     event.preventDefault();
@@ -369,10 +329,7 @@ jQuery(document).on('click', '.editconsigner', function(event) {
                         
                     },
                 success: function (data) {
-
-                    // var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
-                    console.log(data.getconsigner.regionalclient_id);
-
+                    
                     $('#edit_legal_name').val(data.getconsigner.legal_name ? data.getconsigner.legal_name : '')
                     $('#edit_nick_name').val(data.getconsigner.nick_name)
                     $('#regional_client').val(data.getconsigner.get_reg_client.name)
@@ -383,7 +340,7 @@ jQuery(document).on('click', '.editconsigner', function(event) {
                     $('.edit_pin').val(data.getconsigner.postal_code)
                     $('.edit_city').val(data.getconsigner.city)
                     $('.edit_district').val(data.getconsigner.district)
-                    $('.edit_state').val(data.getconsigner.state ? data.getconsigner.state : '')
+                    $('.edit_state').val(data.getconsigner.state_id ? data.getconsigner.state_id : '')
                     $('#edit_address1').val(data.getconsigner.address_line1 ? data.getconsigner.address_line1 : '')
                     $('#edit_address2').val(data.getconsigner.address_line2 ? data.getconsigner.address_line2 : '')
                     $('#edit_address3').val(data.getconsigner.address_line3 ? data.getconsigner.address_line3 : '')
