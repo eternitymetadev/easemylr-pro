@@ -274,7 +274,26 @@
 
             {{--bill to info--}}
             <div class="form-row">
-                <h6 class="col-12">Bill To Information</h6>
+                <h6 class="col-6">Bill To Information</h6>
+
+                <div class="d-flex align-items-center px-2 pt-2 col-6">
+                        <label class="mr-4">
+                            LR Type<span class="text-danger">*</span>
+                        </label>
+                        <div class="checkbox radio">
+                            <label class="check-label">FTL
+                                <input type="radio" name="lr_type" value="0" class="" checked>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox radio ml-3">
+                            <label class="check-label">PTL
+                                <input type="radio" name="lr_type" value="1" >
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+
 
                 <div class="form-group col-md-4">
                     <label for="exampleFormControlSelect1">

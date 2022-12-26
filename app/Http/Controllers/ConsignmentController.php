@@ -317,6 +317,16 @@ class ConsignmentController extends Controller
             $consignmentsave['branch_id'] = $authuser->branch_id;
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
+
+            $consignee = Consignee::where('id', $request->consignee_id)->first();
+            $consignee_pincode = $consignee->postal_code;
+
+            $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+            $get_zonebranch = $getpin_transfer->hub_transfer;
+
+            if($authuser->branch_id == $get_zonebranch){
+            }
+
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
             } else {
@@ -376,6 +386,7 @@ class ConsignmentController extends Controller
                     }
                 }
                 // insert consignment items
+                
                 if (!empty($request->data)) {
                     $get_data = $request->data;
                     foreach ($get_data as $key => $save_data) {
