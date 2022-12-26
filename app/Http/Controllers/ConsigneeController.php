@@ -17,6 +17,8 @@ use Auth;
 use Crypt;
 use Helper;
 use Validator;
+use Config;
+use Session;
 
 class ConsigneeController extends Controller
 {
@@ -32,16 +34,25 @@ class ConsigneeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    { 
         $this->prefix = request()->route()->getPrefix();
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        if ($request->ajax()) {
-            $query = Consignee::query();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Consignee::query();
 
-            $query = Consignee::with('Consigner.RegClient', 'Zone');
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+
+
+            $query = $query->with('Consigner.RegClient', 'Zone');
 
             if ($authuser->role_id == 2 || $authuser->role_id == 3) {
                 if ($authuser->role_id == $role_id->id) {
@@ -66,60 +77,77 @@ class ConsigneeController extends Controller
             } else {
                 $query = $query;
             }
-            $consignees = $query->get();
-            return datatables()->of($consignees)
-                ->addIndexColumn()
-                ->addColumn('consignee', function ($row) {
-//                    echo "<pre>"; print_r($row);die;
-                    $consigneeNames = '<td valign="middle" style="max-width: 350px">
-                            <p class="consigner">
-                                <span class="legalName" title="' . $row->legal_name . '">
-                                    ' . $row->legal_name . '
-                                </span>
-                                <span title="' . $row->nick_name . '">
-                                    ' . $row->nick_name . '
-                                </span>
-                            </p>
-                        </td>';
-                    return $consigneeNames;
-                })
-                ->addColumn('consigner', function ($row) {
-                    if (isset($row->Consigner)) {
-                        $consigner = $row->Consigner->nick_name;
-                    } else {
-                        $consigner = '';
-                    }
-                    return $consigner;
-                })
-                ->addColumn('location', function ($row) {
-                    $location = '<td valign="middle"><p><span class="legalName">' . @$row->Zone->district . '</span>
-                                <span>' . @$row->Zone->state . ' - ' . @$row->Zone->postal_code . '</span></p></td>';
-                    return $location;
-                })
+      
 
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="d-flex align-content-center justify-content-center" style="gap: 6px"><a id="editConsigneeIcon" href="#" class="edit editIcon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"> <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path> <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path> </svg></a>';
-//                    $btn = '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                    $btn .= '<a href="#" data-toggle="modal" data-target="#consigneeDetailsModal" class="view viewIcon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>';
-//                                        $btn .= '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id)).'" class="view btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
-                    $btn .= '<a class="delete deleteIcon delete_consignee" data-id="' . $row->id . '" data-action="' . URL::to($this->prefix . '/' . $this->segment . '/delete-consigner') . '"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"                                                  viewBox="0 0 24 24"                                                  fill="none" stroke="currentColor" stroke-width="2"                                                  stroke-linecap="round"                                                  stroke-linejoin="round" class="feather feather-trash-2">                                                 <polyline points="3 6 5 6 21 6"></polyline>                                                 <path                                                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>                                                 <line x1="10" y1="11" x2="10" y2="17"></line>                                                 <line x1="14" y1="11" x2="14" y2="17"></line>                                             </svg></a></div>';
-                    //                    $btn .= '<a class="delete btn btn-sm btn-danger delete_consignee" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consignee').'"><i class="fa fa-trash"></i></a>';
-                    return $btn;
-                })
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('nick_name', 'like', '%' . $search . '%');
+                        
+                    });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
 
-//                ->addColumn('action', function($row){
-//                    $btn = '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-//                    $btn .= '&nbsp;&nbsp;';
-//                    $btn .= '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id)).'" class="view btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
-//                    $btn .= '&nbsp;&nbsp;';
-//                    $btn .= '<a class="delete btn btn-sm btn-danger delete_consignee" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consignee').'"><i class="fa fa-trash"></i></a>';
-//
-//                    return $btn;
-//                })
+                // });
+            }
 
-                ->rawColumns(['action', 'location', 'consignee', 'consigner'])
-                ->make(true);
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $consignees = $query->orderby('created_at', 'DESC')->paginate($peritem);
+            $consignees = $consignees->appends($request->query());
+            
+            $html =  view('consignees.consignee-list-ajax',['prefix'=>$this->prefix,'consignees' => $consignees,'peritem'=>$peritem, 'segment' => $this->segment])->render();
+            return response()->json(['html' => $html]);
         }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = $query->with('Consigner.RegClient', 'Zone');
+
+            if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+                if ($authuser->role_id == $role_id->id) {
+                    $query = $query->whereHas('Consigner.RegClient', function ($regclientquery) use ($cc) {
+                        $regclientquery->whereIn('location_id', $cc);
+                    });
+                } else {
+                    $query = $query;
+                }
+            } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+                if ($authuser->role_id == $role_id->id) {
+                    if ($authuser->role_id != 1) {
+                        $query = $query->whereHas('Consigner', function ($query) use ($regclient) {
+                            $query->whereIn('regionalclient_id', $regclient);
+                        });
+                    } else {
+                        $query = $query;
+                    }
+                } else {
+                    $query = $query;
+                }
+            } else {
+                $query = $query;
+            }
+
+            $consignees = $query->orderby('created_at', 'DESC')->paginate($peritem);
+            $consignees = $consignees->appends($request->query());
+
+        // 
         if ($authuser->role_id == 2 || $authuser->role_id == 3) {
             if ($authuser->role_id == $role_id->id) {
                 $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
@@ -130,7 +158,7 @@ class ConsigneeController extends Controller
             $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         }
 
-        return view('consignees.consignee-list', ['prefix' => $this->prefix, 'segment' => $this->segment, 'consigners' => $consigners,]);
+        return view('consignees.consignee-list', ['consignees' => $consignees, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment, 'consigners' => $consigners]);
     }
 
     /**
@@ -227,12 +255,14 @@ class ConsigneeController extends Controller
      * @param \App\Models\Consigner $consigner
      * @return \Illuminate\Http\Response
      */
-    public function show($consignee)
+    public function show(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($consignee);
-        $getconsignee = Consignee::where('id', $id)->with('GetConsigner', 'GetBranch', 'GetZone')->first();
-        return view('consignees.view-consignee', ['prefix' => $this->prefix, 'title' => $this->title, 'getconsignee' => $getconsignee, 'pagetitle' => 'View Details']);
+        $getconsignee = Consignee::where('id', $request->consignee_id)->with('GetConsigner', 'GetBranch', 'GetZone')->first();
+        $response['getconsignee'] = $getconsignee;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
     }
 
     /**
@@ -241,8 +271,9 @@ class ConsigneeController extends Controller
      * @param \App\Models\Consigner $consigner
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
+       $id=$request->consignee_id;
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
         $branches = Helper::getLocations();
@@ -261,7 +292,12 @@ class ConsigneeController extends Controller
             $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         }
         $getconsignee = Consignee::with('GetZone')->where('id', $id)->first();
-        return view('consignees.update-consignee')->with(['prefix' => $this->prefix, 'getconsignee' => $getconsignee, 'branches' => $branches, 'consigners' => $consigners, 'title' => $this->title, 'pagetitle' => 'Update']);
+
+        $response['getconsigner'] = $consigners;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
+        // return view('consignees.update-consignee')->with(['prefix' => $this->prefix, 'getconsignee' => $getconsignee, 'branches' => $branches, 'consigners' => $consigners, 'title' => $this->title, 'pagetitle' => 'Update']);
     }
 
     /**
