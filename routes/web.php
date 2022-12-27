@@ -203,6 +203,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
     Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
@@ -212,9 +217,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+
+    Route::any('driver-map', [DriverController::class,'driverMapView']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
@@ -222,7 +230,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
-
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -300,6 +307,11 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']); 
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
     
 
     Route::resource('locations', LocationController::class);
@@ -335,7 +347,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('import-vendor', [VendorController::class, 'importVendor']);
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
-    
+
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
@@ -354,9 +366,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
 
-    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
-    
 
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
+    Route::any('custom-reports', [ReportController::class,'customReport']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -431,6 +443,12 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -561,6 +579,12 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -644,6 +668,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -708,6 +734,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
 
 });
 

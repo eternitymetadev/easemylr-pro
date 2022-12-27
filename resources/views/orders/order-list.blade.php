@@ -4,7 +4,6 @@
 .dt--top-section {
     margin: none;
 }
-
 div.relative {
     position: absolute;
     left: 110px;
@@ -13,7 +12,6 @@ div.relative {
     width: 145px;
     height: 38px;
 }
-
 /* .table > tbody > tr > td {
     color: #4361ee;
 } */
@@ -22,18 +20,14 @@ div.relative {
     height: 38px;
     font-size: 13px;
 }
-
 .btn-group>.btn,
 .btn-group .btn {
     padding: 0px 0px;
     padding: 10px;
 }
-
 .btn {
-
     font-size: 10px;
 }
-
 .myButtonExtra {
     border-radius: 8px !important;
     width: 120px;
@@ -43,7 +37,6 @@ div.relative {
     justify-content: center;
     gap: 4px;
 }
-
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -169,16 +162,12 @@ foreach ($consignments as $key => $consignment) {
 // Order list status change onchange
 jQuery(document).on('click', '.orderstatus', function(event) {
     event.stopPropagation();
-
     let order_id = jQuery(this).attr('data-id');
     var dataaction = jQuery(this).attr('data-action');
     var updatestatus = 'updatestatus';
     var status = 0;
-
-
     jQuery('#commonconfirm').modal('show');
     jQuery(".commonconfirmclick").one("click", function() {
-
         var reason_to_cancel = jQuery('#reason_to_cancel').val();
         var data = {
             id: order_id,
@@ -186,7 +175,6 @@ jQuery(document).on('click', '.orderstatus', function(event) {
             status: status,
             reason_to_cancel: reason_to_cancel
         };
-
         jQuery.ajax({
             url: dataaction,
             type: 'get',
@@ -203,7 +191,6 @@ jQuery(document).on('click', '.orderstatus', function(event) {
             complete: function() {
                 //jQuery("#loader-section").css('display','none');
             },
-
             success: function(response) {
                 if (response.success) {
                     jQuery('#commonconfirm').modal('hide');
@@ -217,11 +204,9 @@ jQuery(document).on('click', '.orderstatus', function(event) {
         });
     });
 });
-
 $('#upload_order').submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
-
     $.ajax({
         url: "import-ordre-booking",
         headers: {
@@ -243,7 +228,6 @@ $('#upload_order').submit(function(e) {
             } else {
                 swal('error', data.error_message, 'error');
             }
-
         }
     });
 });

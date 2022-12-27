@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\ItemMaster;
+use App\Exports\PodExport;
 use Auth;
 use Config;
 use DB;
@@ -31,6 +32,7 @@ use Session;
 use Storage;
 use URL;
 use Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ConsignmentController extends Controller
 {
@@ -83,7 +85,7 @@ class ConsignmentController extends Controller
 
             $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1) {  
                 $query;
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
@@ -320,6 +322,16 @@ class ConsignmentController extends Controller
             $consignmentsave['branch_id'] = $authuser->branch_id;
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
+
+            $consignee = Consignee::where('id', $request->consignee_id)->first();
+            $consignee_pincode = $consignee->postal_code;
+
+            $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+            $get_zonebranch = $getpin_transfer->hub_transfer;
+
+            if($authuser->branch_id == $get_zonebranch){
+            }
+
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
             } else {
@@ -375,10 +387,11 @@ class ConsignmentController extends Controller
                         $json = json_decode($createTask[0], true);
                         $job_id = $json['data']['job_id'];
                         $tracking_link = $json['data']['tracking_link'];
-                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                     }
                 }
                 // insert consignment items
+                
                 if (!empty($request->data)) {
                     $get_data = $request->data;
                     foreach ($get_data as $key => $save_data) {
@@ -1889,7 +1902,7 @@ class ConsignmentController extends Controller
                     $job_id = $res['job_id'];
                     $orderId = $res['order_id'];
                     $tracking_link = $res['result_tracking_link'];
-                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                     $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
                 }
                  }else{
@@ -2256,6 +2269,7 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $drsDate = date('d-m-Y', strtotime($details['created_at']));
+         
         $html = '<html>
         <head>
         <title>Document</title>
@@ -4312,7 +4326,9 @@ class ConsignmentController extends Controller
             {
                 $query = $query;            
             }elseif($authuser->role_id == 4){
-                $query = $query->whereIn('regclient_id', $regclient);   
+                $query = $query->whereIn('regclient_id', $regclient);
+            }elseif ($authuser->role_id == 7) {
+                    $query = $query->whereIn('regclient_id', $regclient);
             }else{
                 $query = $query->whereIn('branch_id', $cc);
             }
@@ -4320,7 +4336,7 @@ class ConsignmentController extends Controller
             if(!empty($request->search)){
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
+                $query->where(function ($query)use($search,$searchT) { 
                     $query->where('id', 'like', '%' . $search . '%');
                 });
             }
@@ -4367,7 +4383,9 @@ class ConsignmentController extends Controller
         {
             $query = $query;            
         }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
+            $query = $query->whereIn('regclient_id', $regclient);  
+         } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
         }else{
             $query = $query->whereIn('branch_id', $cc);
         }
@@ -4378,4 +4396,66 @@ class ConsignmentController extends Controller
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
 
+
+    public function exportPodFile(Request $request)
+    {
+        return Excel::download(new PodExport($request->startdate,$request->enddate), 'Pod.xlsx');
+    }
+
+       public function updatePod(Request $request)
+       {
+        try {
+
+            $lr_no = $request->lr_no;
+            $file = $request->file('pod');
+            if (!empty($file)) {
+                $filename = $file->getClientOriginalName();
+                $file->move(public_path('drs/Image'), $filename);
+            } else {
+                $filename = null;
+            }
+                ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date'=> $request->delivery_date]);
+
+                $response['success'] = true;
+                $response['messages'] = 'POD uploaded successfully';
+                return Response::json($response);
+
+        } catch (\Exception $e) {
+            $bug = $e->getMessage();
+            $response['success'] = false;
+            $response['messages'] = $bug;
+            return Response::json($response);
+        }
+       }
+
+       public function changePodMode(Request $request)
+       {
+         $lr_no = $request->lr_id;
+         $mode = ConsignmentNote::where('id', $lr_no)->update(['change_mode_remarks' => $request->reason_to_change_mode, 'lr_mode' => 0, 'delivery_status' => 'Started' , 'delivery_date' => NULL]);
+
+         if($mode){
+            $response['success'] = true;
+            $response['messages'] = 'Mode Change successfully';
+         }else{
+            $response['success'] = false;
+            $response['messages'] = 'Mode Change failed';
+         }
+         return Response::json($response);
+       }
+
+       public function deletePodStatus(Request $request)
+       {
+
+        $lr_no = $request->lr_id;
+         $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => NULL, 'delivery_status' => 'Started' , 'signed_drs' => NULL]);
+
+         if($mode){
+            $response['success'] = true;
+            $response['messages'] = 'POD Remove';
+         }else{
+            $response['success'] = false;
+            $response['messages'] = 'failed';
+         }
+         return Response::json($response);
+       }
 }

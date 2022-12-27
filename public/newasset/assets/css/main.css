@@ -210,7 +210,6 @@ span.red {
   padding: 8px 10px;
   letter-spacing: 1px;
   height: calc(1.4em + 1.4rem + 2px);
-  padding: .75rem 1.25rem;
   border-radius: 6px; }
   .form-control[type="range"] {
     padding: 0; }
