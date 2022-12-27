@@ -17,6 +17,9 @@ use Helper;
 use Validator;
 use Image;
 use Storage;
+use Config;
+use Session;
+use Auth;
 
 class DriverController extends Controller
 {
@@ -34,32 +37,71 @@ class DriverController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        if ($request->ajax()) {
-            $data = Driver::orderBy('id', 'DESC')->get();
+        $peritem = Config::get('variable.PER_PAGE');
 
-            return datatables()->of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="d-flex align-content-center justify-content-center" style="gap: 6px"><a id="editDriverModalIcon" href="#" data-toggle="modal" data-target="#editDriverModal" class="edit editIcon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"> <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path> <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path> </svg></a>';
-//                        $btn = '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>';
-                    $btn .= '<a href="#" data-toggle="modal" data-target="#driverDetailsModal" class="view viewIcon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>';
-//                        $btn .= '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id)).'" class="view btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
-                    $btn .= '<a class="delete deleteIcon delete_driver" data-id="' . $row->id . '" data-action="' . URL::to($this->prefix . '/' . $this->segment . '/delete-driver') . '"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"                                                  viewBox="0 0 24 24"                                                  fill="none" stroke="currentColor" stroke-width="2"                                                  stroke-linecap="round"                                                  stroke-linejoin="round" class="feather feather-trash-2">                                                 <polyline points="3 6 5 6 21 6"></polyline>                                                 <path                                                     d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>                                                 <line x1="10" y1="11" x2="10" y2="17"></line>                                                 <line x1="14" y1="11" x2="14" y2="17"></line>                                             </svg></a></div>';
-                    return $btn;
-                })
-                ->addColumn('licence', function ($data) {
-                    if ($data->license_image == null) {
-                        $licence = '-';
-                    } else {
-                        $licence = '<a href="#" data-toggle="modal" data-target="#dlViewModal" style="text-align: center">view</a>';
-//                        $licence = '<a href="' . URL::to('/storage/images/driverlicense_images/' . $data->license_image) . ' " target="_blank" style="text-align: center">view</a>';
-                    }
-                    return $licence;
-                })
-                ->rawColumns(['action', 'licence'])
-                ->make(true);
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+
+
+            $data = Driver::query();
+            $query=$data;
+      
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                        
+                    });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
+
+                // });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $drivers = $data->orderby('created_at', 'DESC')->paginate($peritem);
+            $drivers = $drivers->appends($request->query());
+            
+            $html =  view('drivers.driver-list-ajax',['prefix'=>$this->prefix,'drivers' => $drivers,'peritem'=>$peritem, 'segment' => $this->segment])->render();
+            return response()->json(['html' => $html]);
         }
-        return view('drivers.driver-list', ['prefix' => $this->prefix, 'segment' => $this->segment]);
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $data = Driver::query();
+
+            $drivers = $data->orderby('created_at', 'DESC')->paginate($peritem);
+            $drivers = $drivers->appends($request->query());
+       
+
+        return view('drivers.driver-list', ['drivers' => $drivers, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     /**
@@ -149,14 +191,18 @@ class DriverController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($driver)
+    public function show(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($driver);
-        $getdriver = Driver::where('id', $id)->with(['BankDetail' => function ($query) {
+        // $id = decrypt($driver);
+        $getdriver = Driver::where('id', $request->driver_id)->with(['BankDetail' => function ($query) {
             $query->where('status', 1);
         }])->first();
-        return view('drivers.view-driver', ['prefix' => $this->prefix, 'title' => $this->title, 'getdriver' => $getdriver]);
+        $response['getdriver'] = $getdriver;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
+        // return view('drivers.view-driver', ['prefix' => $this->prefix, 'title' => $this->title, 'getdriver' => $getdriver]);
     }
 
     /**
