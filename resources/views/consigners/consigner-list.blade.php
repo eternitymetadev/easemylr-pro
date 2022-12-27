@@ -6,7 +6,6 @@
             flex-direction: column;
             margin-bottom: 0;
         }
-
         p.consigner {
             border-radius: 6px;
             padding: 2px 6px;
@@ -15,29 +14,24 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
         td p.consigner span {
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
         td p.consigner span.legalName {
             font-weight: 700;
             font-size: 14px;
         }
-
         .textOverflow {
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 200px;
             white-space: nowrap;
         }
-
         .detailsBlock {
             padding: 1rem;
             gap: 0.5rem;
         }
-
         .detailsBlock p {
             width: 100%;
             display: flex;
@@ -48,30 +42,24 @@
             font-weight: 600;
             margin-bottom: 0;
         }
-
         .detailsBlock p .detailKey {
             font-size: 14px;
             line-height: 17px;
             font-weight: 400;
         }
-
         .contactDetails {
             min-width: 250px;
             flex: 1;
             border-radius: 12px;
             border: 1px solid;
         }
-
         .contactDetails p .detailKey {
             min-width: 50px;
         }
-
         .addressBlock {
             border-radius: 12px;
             background: #f9b80820;
         }
-
-
     </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -165,7 +153,6 @@ jQuery(document).on('click', '#filter_reportall', function() {
     });
     return false;
 });
-
 jQuery(document).on('change', '.report_perpage', function() {
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
@@ -196,10 +183,8 @@ jQuery(document).on('change', '.report_perpage', function() {
     });
     return false;
 });
-
 jQuery(document).on('click', '.consignmentReportEx', function(event) {
     event.preventDefault();
-
     var totalcount = jQuery('.totalcount').text();
     if (totalcount > 30000) {
         jQuery('.limitmessage').show();
@@ -208,18 +193,15 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         }, 5000);
         return false;
     }
-
     var geturl = jQuery(this).attr('data-action');
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
-
     var search = jQuery('#search').val();
     var url = jQuery('#search').attr('data-url');
     if (startdate)
         geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
     else if (search)
         geturl = geturl + '?search=' + search;
-
     jQuery.ajax({
         url: url,
         type: 'get',
@@ -249,7 +231,6 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
 // 
 jQuery(document).on('click', '.consignerView', function(event) {
     event.preventDefault();
-
     var consigner_id = $(this).attr('data-id');
     $('#consignerDetailsModal').modal('show');
     $.ajax({
@@ -275,9 +256,7 @@ jQuery(document).on('click', '.consignerView', function(event) {
                         
                     },
                 success: function (data) {
-
                     var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
-
                     $('#legal_name').html(data.getconsigner.legal_name ? data.getconsigner.legal_name : '-NA-')
                     $('#nick_name').html(data.getconsigner.nick_name)
                     $('#regional_client').html(data.getconsigner.get_reg_client.name)
@@ -291,15 +270,10 @@ jQuery(document).on('click', '.consignerView', function(event) {
                     $('#cnr_state').html(data.getconsigner.state_id ? data.getconsigner.state_id : '-NA-')
                     $('#cnr_address').html(address)
                 }
-
             });
-
 });
-
-
 jQuery(document).on('click', '.editconsigner', function(event) {
     event.preventDefault();
-
     var consigner_id = $(this).attr('data-id');
     $('#consignerDetailsEditModal').modal('show');
     $.ajax({
@@ -347,12 +321,8 @@ jQuery(document).on('click', '.editconsigner', function(event) {
                     $('#edit_address4').val(data.getconsigner.address_line4 ? data.getconsigner.address_line4 : '')
                     $(".edit_regin").val(data.getconsigner.regionalclient_id).change();
                     $('#edit_cnr_id').val(data.getconsigner.id)
-
                 }
-
             });
-
 });
-
 </script>
 @endsection

@@ -2438,7 +2438,6 @@ label {
 .editIcon:hover {
     background-color: #f9b808;
 }
-
 .viewIcon:hover {
     background-color: #002ac4;
 }
@@ -2450,7 +2449,6 @@ label {
 .editIcon svg {
     color: #c48e00;
 }
-
 .viewIcon svg {
     color: #002ac4;
 }
@@ -2458,8 +2456,8 @@ label {
 .deleteIcon {
     color: #dc3545;
 }
-
 .deleteAlertIcon {
+
     height: 3rem;
     width: 3rem;
     color: chocolate;
@@ -2473,7 +2471,6 @@ label {
 .layout-spacing {
     padding-bottom: 0 !important;
 }
-
 .dt-buttons .dt-button {
     min-width: 83px;
     height: 38px;

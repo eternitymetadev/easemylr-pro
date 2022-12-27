@@ -8,15 +8,10 @@
             .checkbox-round {
                 margin-left: 1px;
             }
-
         }
-
         h4 {
             font-size: 18px;
-
         }
-
-
         .checkbox-round {
             width: 2.3em;
             height: 2.3em;
@@ -24,19 +19,15 @@
             border: 1px solid #ddd;
             margin-left: 103px;
         }
-
         p {
             font-size: 11px;
             font-weight: 500;
         }
-
-
         th, td {
             text-align: left;
             padding: 8px;
             color: black;
         }
-
         .cont {
             background: white;
             height: 240px;
@@ -44,45 +35,35 @@
             width: 390px;
             border-radius: 17px;
         }
-
         .mini_container {
             margin-top: 8px;
         }
-
         .wizard {
             background: #fff;
         }
-
         .wizard .nav-tabs {
             position: relative;
             margin: 40px auto;
             margin-bottom: 0;
         }
-
         .wizard > div.wizard-inner {
             position: relative;
         }
-
         .connecting-line {
             height: 2px;
             background: #e0e0e0;
             position: absolute;
             width: 80%;
-
             top: 42%;
-
         }
-
         .nav-tabs {
             border-bottom: none;
         }
-
         .wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
             color: #555555;
             cursor: default;
             border: none;
         }
-
         span.round-tab {
             width: 50px;
             height: 50px;
@@ -97,64 +78,51 @@
             text-align: center;
             font-size: 25px;
         }
-
         span.round-tab i {
             color: #555555;
         }
-
         .wizard li.active span.round-tab {
             background: #fff;
             border: 2px solid #5bc0de;
-
         }
-
         .wizard li.active span.round-tab i {
             color: #5bc0de;
         }
-
         span.round-tab:hover {
             color: #333;
             border: 2px solid #333;
         }
-
         .wizard .nav-tabs > li {
             width: 25%;
         }
-
         .wizard .nav-tabs > li a {
             width: 48px;
             height: 70px;
             border-radius: 100%;
             padding: 0;
         }
-
         @media ( max-width: 585px ) {
-
             .wizard {
                 width: 90%;
                 height: auto !important;
             }
-
             span.round-tab {
                 font-size: 16px;
                 width: 50px;
                 height: 50px;
                 line-height: 50px;
             }
-
             .wizard .nav-tabs > li a {
                 width: 50px;
                 height: 50px;
                 line-height: 50px;
             }
-
             .wizard li.active:after {
                 content: " ";
                 position: absolute;
                 left: 35%;
             }
         }
-
         /* / ////////////////////////////////////////////////////////////////////end wizard / */
         .select2-results__options {
             list-style: none;
@@ -164,43 +132,35 @@
             /* scroll-margin: 38px; */
             overflow: auto;
         }
-
         /*.form-group {*/
         /*    margin-bottom: 0;*/
         /*}*/
-
         .form-row > .col, .form-row > [class*=col-] {
             padding-inline: 10px !important;
         }
-
         span.select2.select2-container.mb-4 {
             margin-bottom: 0 !important;
         }
-
         .form-row {
             padding: 1rem;
             border-radius: 12px;
             box-shadow: 0 0 3px #83838360;
             margin-bottom: 1rem;
         }
-
         .form-row h6 {
             margin-bottom: 1rem;
             font-weight: 700;
         }
-
         .mainTr {
             outline: 1px solid #838383;
             background: #f4f4f4;
             border-radius: 12px;
             width: 100%;
         }
-
         .childTable {
             background: #F9B60030;
             border-radius: 12px;
         }
-
         .addRowButton {
             text-align: right;
             width: 100%;
@@ -209,7 +169,6 @@
             margin-right: 10px;
             cursor: pointer;
         }
-
         .addItem {
             float: right;
             font-weight: 800;
@@ -217,21 +176,16 @@
             margin-right: 10px;
             cursor: pointer;
         }
-
         .items_table_body tr {
             position: relative;
         }
-
-
         .main_table_body td {
             min-width: 150px;
         }
-
         .main_table_body td:has(div.removeIcon) {
             min-width: 50px;
             width: 50px;
         }
-
         .main_table_body td div.removeIcon:has(span) {
             cursor: pointer;
             height: 20px;
@@ -250,7 +204,6 @@
             background: darkred;
             color: white;
         }
-
         .appendedAddress:has(br) {
             padding: 1rem;
             border-radius: 12px;
@@ -258,7 +211,6 @@
             background: #f9b60024;
             color: #000;
         }
-
     </style>
 
 
@@ -710,7 +662,6 @@
                                                             <label>Chargeable Weight</label>
                                                             <input type="number" class="form-control" name="cWeight">
                                                         </div>
-
                                                     </td>
                                                     <td width="50px"><div class="removeIcon"></div></td>
                                                 </tr>
@@ -725,16 +676,12 @@
                             </td>
                             <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
                         </tr>`;
-
                 $(this).append(tds);
             });
         };
-
         $(document).on("click", ".removeInvoice", function () {
             $(this).closest("tr").remove();
         });
-
-
         $(document).on("click", ".addItem", function () {
             var itemTds = `<tr>
                                                     <td width="200px">
@@ -772,15 +719,11 @@
                                                             <label>Chargeable Weight</label>
                                                             <input type="number" class="form-control" name="cWeight">
                                                         </div>
-
                                                     </td>
                                                     <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
                                                 </tr>`
-
             $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
         });
-
-
         $(document).on("click", ".removeItem", function () {
             $(this).closest("tr").remove();
         });
@@ -794,7 +737,6 @@
         // $(document).ready(function () {
         //     $('.insert-more').attr('disabled', true);
         // });
-
         jQuery(function () {
             $('.my-select2').each(function () {
                 $(this).select2({
@@ -802,7 +744,6 @@
                     dropdownParent: $(this).parent(), // fix select2 search input focus bug
                 })
             })
-
             // fix select2 bootstrap modal scroll bug
             $(document).on('select2:close', '.my-select2', function (e) {
                 var evt = "scroll.select2"
@@ -810,10 +751,8 @@
                 $(window).off(evt)
             })
         })
-
         // add consignment date
         $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
-
         function showResult(str) {
             if (str.length == 0) {
                 $(".search-suggestions").empty();
@@ -829,11 +768,9 @@
                 $('#json-datalist').html(options);
             }
         }
-
         $('#chek').click(function () {
             $('#veh').toggle();
         });
-
         function myMap() {
             var mapProp = {
                 center: new google.maps.LatLng(51.508742, -0.120850),
@@ -841,7 +778,6 @@
             };
             var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
         }
-
         // invoice no duplicate validate
         $('.invc_no').blur(function () {
             var invc_no = $(this).val();
@@ -865,8 +801,6 @@
                 }
             })
         });
-
-
     </script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>

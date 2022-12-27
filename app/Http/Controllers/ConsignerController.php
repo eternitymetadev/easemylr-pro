@@ -133,6 +133,7 @@ class ConsignerController extends Controller
         return view('consigners.consigner-list', ['consigners' => $consigners, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment, 'regclients' => $regclients]);
     }
 
+
     /**
      * Show the form for creating a new resource.
      *
@@ -275,7 +276,6 @@ class ConsignerController extends Controller
      */
     public function updateConsigner(Request $request)
     {
-       
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(

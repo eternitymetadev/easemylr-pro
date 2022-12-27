@@ -1775,6 +1775,8 @@ function formSubmitRedirect(form)
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-prstaskitem'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-vehiclereceive'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             
             if(response.formErrors)

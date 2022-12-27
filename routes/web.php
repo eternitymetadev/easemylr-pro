@@ -210,9 +210,18 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
+    Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
+    Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
+    Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
+    
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+
     Route::any('driver-map', [DriverController::class,'driverMapView']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
@@ -220,6 +229,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -262,6 +272,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -354,6 +365,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+
+
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     Route::any('custom-reports', [ReportController::class,'customReport']);
 
 });
@@ -739,6 +753,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
+    Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
 });
 

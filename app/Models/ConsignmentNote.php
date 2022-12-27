@@ -43,6 +43,7 @@ class ConsignmentNote extends Model
         'order_id',
         'status',
         'booked_drs',
+        'prsitem_status',
         'job_id',
         'change_mode_remarks',
         'lr_mode',

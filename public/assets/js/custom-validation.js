@@ -892,7 +892,9 @@ jQuery(document).ready(function () {
                 tds +=
                     ' <td><input type="text" class="form-control form-small orderid" name="data[' +
                     item_no +
-                    '][order_id]"></td>';
+                    '][order_id]"><input type="hidden" name="data[' +
+                    item_no +
+                    '][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
@@ -910,11 +912,15 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="number" class="form-control form-small net" name="data[' +
                     item_no +
-                    '][weight]"></td>';
+                    '][net_weight]"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small gross" name="data[' +
                     item_no +
                     '][gross_weight]"></td>';
+                tds +=
+                    '<td><input type="file" class="form-control form-small invc_img" name="data[' +
+                    item_no +
+                    '][invc_img]" accept="image/*"/></td>';
                 tds +=
                     '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
@@ -1267,7 +1273,7 @@ jQuery(document).ready(function () {
                         var remove_disable = "";
                     }
 
-                    $("#get-delvery-date tbody").append(
+                  $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
                             i +
                             "][lrno]' class='delivery_d' value='" +
@@ -1442,7 +1448,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-dateLR").dataTable().fnDestroy();
                 $("#lr_status").empty();
             },
-            complete: function () { },
+            complete: function () {},
 
             success: function (data) {
                 var consignmentID = [];
@@ -1555,7 +1561,6 @@ jQuery(document).ready(function () {
             },
         });
     });
-
     //for setting branch address edit
     jQuery(document).on("click", ".editBranchadd", function () {
         jQuery(".submitBtn").css("display", "block");
@@ -1818,6 +1823,8 @@ $("#allsave").submit(function (e) {
             if (data.success == true) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
+            } else if (data.error == "date_less") {
+                swal("error", data.messages, "error");
             } else {
                 swal("error", data.messages, "error");
             }
@@ -2429,8 +2436,65 @@ function closeGetDeliveryDateLR() {
     $("#close_get_delivery_dateLR").click();
 }
 
-/*====== In create PRS  get consigner on click regional client =====*/
+//////////
+$("#upload_techical").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
 
+    $.ajax({
+        url: "import-technical-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+////
+$("#item_master").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        url: "import-item-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+
+/*====== In create PRS  get consigner on click regional client =====*/
 $("#select_prsregclient").change(function (e) {
     var selected = $(e.target).val();
     console.dir(selected);
@@ -2536,15 +2600,21 @@ $(document).on("click", ".receive-vehicle", function () {
     });
 });
 
+
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {
     event.stopPropagation();
     let id = jQuery(this).attr("data-drivertaskid");
     var prsdrivertask_status = "prsdrivertask_status";
+    var prs_taskstatus = jQuery(this).attr("data-prstaskstatus");
 
     // jQuery("#prs-commonconfirm").modal("show");
     jQuery(".commonconfirmclick").one("click", function () {
-        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+        var data = {
+            id: id,
+            prsdrivertask_status: prsdrivertask_status,
+            prs_taskstatus: prs_taskstatus,
+        };
 
         jQuery.ajax({
             url: "driver-tasks",
@@ -2576,5 +2646,4 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
         });
     });
 });
-
 
