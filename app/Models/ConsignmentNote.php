@@ -43,6 +43,8 @@ class ConsignmentNote extends Model
         'status',
         'booked_drs',
         'job_id',
+        'change_mode_remarks',
+        'lr_mode',
         'tracking_link',
         'delivery_status',
         'delivery_date',
@@ -105,6 +107,10 @@ class ConsignmentNote extends Model
     public function DrsDetail()
     {
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    }
+
+    public function Branch(){
+        return $this->belongsTo('App\Models\Location','branch_id');
     }
 
 }

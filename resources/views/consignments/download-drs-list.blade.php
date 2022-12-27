@@ -353,61 +353,64 @@
             printData();
 
         })
-        ////////////////////////////
-        $('#updt_vehicle').submit(function (e) {
-            e.preventDefault();
+ 
+////////////////////////////
+$('#updt_vehicle').submit(function(e) {
+    e.preventDefault();
 
-            var consignmentID = [];
-            $('input[name="edd[]"]').each(function () {
-                if (this.value == '') {
-                    swal('error', 'Please enter EDD', 'error');
-                    exit;
-                }
-                consignmentID.push(this.value);
-            });
+    var consignmentID = [];
+    $('input[name="edd[]"]').each(function() {
+        if (this.value == '') {
+            swal('error', 'Please enter EDD', 'error');
+            exit;
+        }
+        consignmentID.push(this.value);
+    });
 
-            var ct = consignmentID.length;
-            var rowCount = $("#save-DraftSheet tbody tr").length;
+    var ct = consignmentID.length;
+    var rowCount = $("#save-DraftSheet tbody tr").length;
 
-            var vehicle = $('#vehicle_no').val();
-            var driver = $('#driver_id').val();
-            if (vehicle == '') {
-                swal('error', 'Please select vehicle', 'error');
-                return false;
-            }
-            if (driver == '') {
-                swal('error', 'Please select driver', 'error');
-                return false;
-            }
+    var vehicle = $('#vehicle_no').val();
+    var driver = $('#driver_id').val();
+    if (vehicle == '') {
+        swal('error', 'Please select vehicle', 'error');
+        return false;
+    }
+    if (driver == '') {
+        swal('error', 'Please select driver', 'error');
+        return false;
+    }
 
-            $.ajax({
-                url: "update_unverifiedLR",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function () {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
+    $.ajax({
+        url: "update_unverifiedLR",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $('.indicator-progress').prop('disabled', true);
+            $('.indicator-label').prop('disabled', true);
 
-                    $(".indicator-progress").show();
-                    $(".indicator-label").hide();
-                },
-                complete: function (response) {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if (data.success == true) {
-                        alert('Data Updated Successfully');
-                        location.reload();
-                    } else {
-                        alert('something wrong');
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        complete: function(response) {
+            $('.indicator-progress').prop('disabled', true);
+            $('.indicator-label').prop('disabled', true);
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                alert('Data Updated Successfully');
+                location.reload();
+            } else if(data.success == false){
+                alert(data.error_message);
+                } else {
+                alert('something wrong');
                     }
                 }
             });

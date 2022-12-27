@@ -211,6 +211,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('driver-map', [DriverController::class,'driverMapView']);
 
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+
     Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
 
 
