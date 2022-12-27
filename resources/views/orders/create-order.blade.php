@@ -222,7 +222,7 @@
 
 
         <form class="general_form" method="POST" action="{{url($prefix.'/orders')}}" id="createorder" style="margin: auto; ">
-
+ 
             {{--bill to info--}} 
             <div class="form-row">
                 <h6 class="col-12">Bill To Information</h6>

@@ -16,6 +16,7 @@ use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\TransactionSheet;
 use App\Models\User;
+use App\Models\Zone;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\ItemMaster;
@@ -323,14 +324,6 @@ class ConsignmentController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
 
-            $consignee = Consignee::where('id', $request->consignee_id)->first();
-            $consignee_pincode = $consignee->postal_code;
-
-            $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
-            $get_zonebranch = $getpin_transfer->hub_transfer;
-
-            if($authuser->branch_id == $get_zonebranch){
-            }
 
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
@@ -424,7 +417,6 @@ class ConsignmentController extends Controller
 
     public function storeLRItem(Request $request)
     {
-        // echo'<pre>'; print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
@@ -497,6 +489,22 @@ class ConsignmentController extends Controller
             $consignmentsave['branch_id'] = $authuser->branch_id;
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
+
+            $consignee = Consignee::where('id', $request->consignee_id)->first();
+            $consignee_pincode = $consignee->postal_code;
+           
+
+            $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+            $get_zonebranch = $getpin_transfer->hub_transfer;
+            
+            $location_name = Location::where('id', $authuser->branch_id)->first();
+            $location_name = $location_name->name;
+
+            if($location_name == $get_zonebranch){
+
+            }
+
+
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
             } else {
