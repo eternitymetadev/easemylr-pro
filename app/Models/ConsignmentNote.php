@@ -10,6 +10,7 @@ class ConsignmentNote extends Model
     use HasFactory;
     protected $fillable = [
         'lr_type',
+        'h2h_check',
         'regclient_id',
         'consigner_id',
         'consignee_id',
