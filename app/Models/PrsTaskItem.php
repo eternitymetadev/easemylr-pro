@@ -9,6 +9,6 @@ class PrsTaskItem extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'drivertask_id', 'order_id', 'invoice_no', 'invoice_date', 'quantity', 'net_weight', 'gross_weight', 'user_id', 'branch_id', 'status', 'created_at', 'updated_at'
+        'drivertask_id', 'order_id', 'invoice_no', 'invoice_date', 'quantity', 'net_weight', 'gross_weight', 'invoice_image', 'user_id', 'branch_id', 'status', 'created_at', 'updated_at'
     ];
 }

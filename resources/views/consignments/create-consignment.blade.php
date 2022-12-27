@@ -8,15 +8,10 @@
             .checkbox-round {
                 margin-left: 1px;
             }
-
         }
-
         h4 {
             font-size: 18px;
-
         }
-
-
         .checkbox-round {
             width: 2.3em;
             height: 2.3em;
@@ -24,19 +19,15 @@
             border: 1px solid #ddd;
             margin-left: 103px;
         }
-
         p {
             font-size: 11px;
             font-weight: 500;
         }
-
-
         th, td {
             text-align: left;
             padding: 8px;
             color: black;
         }
-
         .cont {
             background: white;
             height: 240px;
@@ -44,45 +35,35 @@
             width: 390px;
             border-radius: 17px;
         }
-
         .mini_container {
             margin-top: 8px;
         }
-
         .wizard {
             background: #fff;
         }
-
         .wizard .nav-tabs {
             position: relative;
             margin: 40px auto;
             margin-bottom: 0;
         }
-
         .wizard > div.wizard-inner {
             position: relative;
         }
-
         .connecting-line {
             height: 2px;
             background: #e0e0e0;
             position: absolute;
             width: 80%;
-
             top: 42%;
-
         }
-
         .nav-tabs {
             border-bottom: none;
         }
-
         .wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
             color: #555555;
             cursor: default;
             border: none;
         }
-
         span.round-tab {
             width: 50px;
             height: 50px;
@@ -96,65 +77,52 @@
             left: 0;
             text-align: center;
             font-size: 25px;
-        }
-
+        } 
         span.round-tab i {
             color: #555555;
         }
-
         .wizard li.active span.round-tab {
             background: #fff;
             border: 2px solid #5bc0de;
-
         }
-
         .wizard li.active span.round-tab i {
             color: #5bc0de;
         }
-
         span.round-tab:hover {
             color: #333;
             border: 2px solid #333;
         }
-
         .wizard .nav-tabs > li {
             width: 25%;
         }
-
         .wizard .nav-tabs > li a {
             width: 48px;
             height: 70px;
             border-radius: 100%;
             padding: 0;
         }
-
         @media ( max-width: 585px ) {
-
             .wizard {
                 width: 90%;
                 height: auto !important;
             }
-
             span.round-tab {
                 font-size: 16px;
                 width: 50px;
                 height: 50px;
                 line-height: 50px;
             }
-
             .wizard .nav-tabs > li a {
                 width: 50px;
                 height: 50px;
                 line-height: 50px;
             }
-
             .wizard li.active:after {
                 content: " ";
                 position: absolute;
                 left: 35%;
             }
         }
-
         /* / ////////////////////////////////////////////////////////////////////end wizard / */
         .select2-results__options {
             list-style: none;
@@ -164,43 +132,35 @@
             /* scroll-margin: 38px; */
             overflow: auto;
         }
-
         /*.form-group {*/
         /*    margin-bottom: 0;*/
         /*}*/
-
         .form-row > .col, .form-row > [class*=col-] {
             padding-inline: 10px !important;
         }
-
         span.select2.select2-container.mb-4 {
             margin-bottom: 0 !important;
         }
-
         .form-row {
             padding: 1rem;
             border-radius: 12px;
             box-shadow: 0 0 3px #83838360;
             margin-bottom: 1rem;
         }
-
         .form-row h6 {
             margin-bottom: 1rem;
             font-weight: 700;
         }
-
         .mainTr {
             outline: 1px solid #838383;
             background: #f4f4f4;
             border-radius: 12px;
             width: 100%;
         }
-
         .childTable {
             background: #F9B60030;
             border-radius: 12px;
         }
-
         .addRowButton {
             text-align: right;
             width: 100%;
@@ -209,7 +169,6 @@
             margin-right: 10px;
             cursor: pointer;
         }
-
         .addItem {
             float: right;
             font-weight: 800;
@@ -217,21 +176,16 @@
             margin-right: 10px;
             cursor: pointer;
         }
-
         .items_table_body tr {
             position: relative;
         }
-
-
         .main_table_body td {
             min-width: 150px;
         }
-
         .main_table_body td:has(div.removeIcon) {
             min-width: 50px;
             width: 50px;
         }
-
         .main_table_body td div.removeIcon:has(span) {
             cursor: pointer;
             height: 20px;
@@ -250,7 +204,6 @@
             background: darkred;
             color: white;
         }
-
         .appendedAddress:has(br) {
             padding: 1rem;
             border-radius: 12px;
@@ -258,7 +211,6 @@
             background: #f9b60024;
             color: #000;
         }
-
     </style>
 
 
@@ -269,12 +221,30 @@
         </div>
 
 
-        <form class="general_form" method="POST" action="{{url($prefix.'/consignments')}}" id="createconsignment"
-              style="margin: auto; ">
+        <form class="general_form" method="POST" action="{{url($prefix.'/consignments/createlritem')}}" id="createconsignment" style="margin: auto; ">
 
             {{--bill to info--}}
             <div class="form-row">
-                <h6 class="col-12">Bill To Information</h6>
+                <h6 class="col-6">Bill To Information</h6>
+
+                <div class="d-flex align-items-center px-2 pt-2 col-6">
+                        <label class="mr-4">
+                            LR Type<span class="text-danger">*</span>
+                        </label>
+                        <div class="checkbox radio">
+                            <label class="check-label">FTL
+                                <input type="radio" name="lr_type" value="0" class="" checked>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox radio ml-3">
+                            <label class="check-label">PTL
+                                <input type="radio" name="lr_type" value="1" >
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+
 
                 <div class="form-group col-md-4">
                     <label for="exampleFormControlSelect1">
@@ -396,13 +366,13 @@
                         </div>
                         <div class="col-md-2">
                             <label>Total Net Weight</label>
-                            <span id="tot_nt_wt">
+                            <span id="total_nt_wt">
                                 <?php echo "0";?>
                             </span> Kgs.
                         </div>
                         <div class="col-md-2">
                             <label>Total Gross Weight</label>
-                            <span id="tot_gt_wt">
+                            <span id="total_gt_wt">
                                 <?php echo "0";?>
                             </span> Kgs.
                         </div>
@@ -410,95 +380,95 @@
                 </div>
 
 
-                <div style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
-                    <table style="width: 100%; border-collapse: collapse;" id="items_table">
+                <div class="maindiv" style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse;" id="items_table" class="items_table">
                         <tbody class="main_table_body">
+                            <input type="hidden" id="tid" name="tid" value="1" >
                         <tr>
                             <td>
-                                <table class="mainTr">
+                                <table class="mainTr" id="1">
                                     <tbody>
                                     <tr>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="order_id">
+                                                <input type="text" class="form-control orderid" name="data[1][order_id]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Number</label>
                                                 <input type="text" class="form-control invc_no" id="1"
-                                                       name="invoice_no">
+                                                       name="data[1][invoice_no]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="invoice_date">
+                                                <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Amount</label>
                                                 <input type="number" class="form-control invc_amt"
-                                                       name="invoice_amount">
+                                                       name="data[1][invoice_amount]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="e_way_bill">
+                                                <input type="number" class="form-control ew_bill" name="data[1][e_way_bill]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="e_way_bill_date">
+                                                <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-                                            <table id="childTable" class="childTable"
+                                            <table id="" class="childTable"
                                                    style="width: 85%; min-width: 500px; margin-inline: auto;">
                                                 <tbody class="items_table_body">
                                                 <tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                            <option value="" disabled selected>Select</option>
+                                                              @foreach($itemlists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
+                                                            <input type="number" class="form-control qty" name="">
+                                                            <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
+                                                            <input type="number" class="form-control net" name="data[1][item_data][0][net_weight]" readonly>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="grossWeight">
+                                                            <input type="number" class="form-control gross" name="data[1][item_data][0][gross_weight]" readonly>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
+                                                            <input type="number" class="form-control charge_wt" name="data[1][item_data][0][chargeable_weight]" readonly>
                                                         </div>
-
                                                     </td>
                                                     <td><div class="removeIcon"></div></td>
                                                 </tr>
@@ -517,12 +487,9 @@
                 </div>
                 <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>
             </div>
-
-
             {{--vehicle info--}}
             <div class="form-row">
                 <h6 class="col-12">Vehicle Information</h6>
-
                 <div class="form-group col-md-4">
                     <label>
                         Vehicle Number<span class="text-danger">*</span>
@@ -556,14 +523,11 @@
                     </label>
                     <Input type="date" class="form-control form-small" name="edd"/>
                 </div>
-
                 <div class="form-group col-12">
                     <input type="checkbox" id="chek" style="margin-left:19px;">
                     <label for="chek">Vehicle Purchase Information</label>
                 </div>
-
                 <div class="row flex-wrap align-items-center" style="display:none; width: 100%;" id="veh">
-
                     <div class="form-group col-md-4">
                         <label>Vehicle Name<span class="text-danger">*</span></label>
                         <Input type="text" class="form-control form-small" name="transporter_name"/>
@@ -587,195 +551,343 @@
                         </label>
                         <Input type="number" class="form-control form-small" name="purchase_price"/>
                     </div>
-
                 </div>
-
             </div>
-
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
-{{--                <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
+        {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
                 <button type="submit" class="mt-2 btn btn-primary disableme" style="height: 40px; width: 200px">Submit</button>
             </div>
-
         </form>
     </div>
     <!-- widget-content-area -->
-
 @endsection
 @section('js')
     <script>
         function insertMaintableRow() {
-            $("#items_table").each(function () {
+            var tid = $("#tid").val();
+            $(".items_table").each(function () {
+                var item_no = parseInt(tid)+1;
+                $("#tid").val(item_no);
                 var tds = `<tr>
                             <td>
-                                <table class="mainTr">
+                                <table class="mainTr" id="`+item_no+`">
                                     <tbody>
                                     <tr>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="order_id">
+                                                <input type="text" class="form-control orderid" name="data[`+ item_no + `][order_id]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Number</label>
                                                 <input type="text" class="form-control invc_no" id="1"
-                                                       name="invoice_no">
+                                                       name="data[` + item_no + `][invoice_no]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="invoice_date">
+                                                <input type="date" class="form-control invc_date" name="data[` + item_no + `][invoice_date]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Amount</label>
-                                                <input type="number" class="form-control invc_amt"
-                                                       name="invoice_amount">
+                                                <input type="number" class="form-control invc_amt" name="data[` + item_no + `][invoice_amount]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="e_way_bill">
+                                                <input type="number" class="form-control ew_bill" name="data[` + item_no + `][e_way_bill]">
                                             </div>
                                         </td>
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="e_way_bill_date">
+                                                <input type="date" class="form-control ewb_date" name="data[` + item_no + `][e_way_bill_date]">
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="7">
-                                            <table id="childTable" class="childTable"
-                                                   style="width: 85%; min-width: 500px; margin-inline: auto;">
-                                                <tbody class="items_table_body">
-                                                <tr>
+                                            <table id="" class="childTable" style="width: 85%; min-width: 500px; margin-inline: auto;">
+                                                <tbody class="items_table_body"><tr>
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
+                                                            <select class="form-control select_item" name="data[`+ item_no +`][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                            <option value="" disabled selected>Select</option>
+                                                              @foreach($itemlists as $item_list)
+                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
+                                                            <input type="number" class="form-control qty" name="">
+                                                            <input type="hidden" class="form-control" name="data[`+ item_no +`][item_data][0][quantity]">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
+                                                            <input type="number" class="form-control net" name="data[`+ item_no +`][item_data][0][net_weight]" readonly>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="grossWeight">
+                                                            <input type="number" class="form-control gross" name="data[`+ item_no +`][item_data][0][gross_weight]" readonly>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="form-group form-group-sm">
                                                             <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
+                                                            <input type="number" class="form-control charge_wt" name="data[`+ item_no +`][item_data][0][chargeable_weight]" readonly>
                                                         </div>
-
                                                     </td>
                                                     <td width="50px"><div class="removeIcon"></div></td>
-                                                </tr>
-                                                </tbody>
+                                                </tr></tbody>
                                             </table>
-                                            <span style="margin-right: 8%" class="addItem"
-                                                  onclick="insertItemTableRow()">+ Add Item</span>
+                                            <span style="margin-right: 8%" class="addItem" onclick="insertItemTableRow()">+ Add Item</span>
                                         </td>
                                     </tr>
-                                    </tbody>
+                                  </tbody>
                                 </table>
                             </td>
                             <td width="50px"><div class="removeIcon removeInvoice"><span>x</span></div></td>
                         </tr>`;
-
                 $(this).append(tds);
             });
         };
-
-        $(document).on("click", ".removeInvoice", function () {
-            $(this).closest("tr").remove();
-        });
-
-
+        // $(document).on("click", ".removeInvoice", function () {
+        //     $(this).closest("tr").remove();
+        // });
+       
+        //Reassign the Ids of the row
+        function reassign_ids() {
+            var i = 0;
+            var t = document.getElementsByClassName("mainTr");
+            var totalMainTr = document.getElementsByClassName("mainTr").length;
+            alert(totalMainTr);
+            $(".mainTr tr").each(function () {
+                var srno = $(t.rows[i].cells[0]).text();
+                if (totalMainTr == 1) {
+                    i++;
+                }
+                if (parseInt(totalMainTr) >= 2) {
+                    alert(i+"jk");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".orderid")
+                        .attr("name", "data[" + i + "][orderid]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".invc_no")
+                        .attr("name", "data[" + i + "][invoice_no]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".invc_date")
+                        .attr("name", "data[" + i + "][invoice_date]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".invc_amt")
+                        .attr("name", "data[" + i + "][invoice_amount]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".ew_bill")
+                        .attr("name", "data[" + i + "][e_way_bill]");
+                    // $(t.rows[i]).closest('tr').find('.frei').attr('name', 'data['+i+'][freight]');
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".ewb_date")
+                        .attr("name", "data[" + i + "][e_way_bill_date]");
+                   
+                    i++;
+                }
+            });
+        }
+        //Reassign the Ids of the row items
+        function reassign_itemids(_this) {
+            var i = 0;
+            // var tid = $(_this).closest("#tid").val();
+            var tid = document.getElementById("tid");
+            // alert(tid+" ll");
+            var t = document.getElementsByClassName("childTable");
+            // var totalChildTr = document.getElementsByClassName("childTable tr").length;
+            var totalChildTr = $(".removeItem").closest('.items_table_body').find('tr').length;
+            // console.log(totalChildTr);
+            $(".childTable tr").each(function () {
+                // var srno = $(t.rows[i].cells[0]).text();
+                if (totalChildTr == 1) {
+                    i++;
+                }
+                if (parseInt(totalChildTr) >= 2) {
+                    // alert(i+"kk");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".select_item")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][item]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".qty")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][quantity]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".net")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][net_weight]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".gross")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][gross_weight]");
+                    $(t.rows[i])
+                        .closest("tr")
+                        .find(".charge_wt")
+                        .attr("name", "data[" + i + "][item_data]["+ i +"][chargeable_weight]");
+                                       
+                    i++;
+                }
+            });
+        }
+        
+        // add item row btn
         $(document).on("click", ".addItem", function () {
+            // var cc = $(this).siblings('.childTable').find('.charge_wt').length;
+            // var itemrows = cc;
+            var mainrows = $(this).closest('table').attr('id');
+            $(this).siblings(".childTable").each(function () {
+            var itemrows = $(this).parents('.mainTr').children().children().eq(1).children().children('.childTable').children().children().length;
             var itemTds = `<tr>
-                                                    <td width="200px">
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Item</label>
-                                                            <select class="form-control">
-                                                                <option>Option 1</option>
-                                                                <option>Option 2</option>
-                                                                <option>Option 3</option>
-                                                                <option>Option 4</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Quantity</label>
-                                                            <input type="number" class="form-control" name="quantity">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Net Weight</label>
-                                                            <input type="number" class="form-control" name="netWeight">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Gross Weight</label>
-                                                            <input type="number" class="form-control"
-                                                                   name="grossWeight">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control" name="cWeight">
-                                                        </div>
-
-                                                    </td>
-                                                    <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
-                                                </tr>`
-
-            $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
+                            <td width="200px">
+                                <div class="form-group form-group-sm">
+                                    <label>Item</label>
+                                    <select class="form-control select_item" name="data[`+mainrows+`][item_data][`+itemrows+`][item]" data-action="get-items" onchange="getItem(this);">
+                                    <option value="" disabled selected>Select</option>
+                                        @foreach($itemlists as $item_list)
+                                        <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group form-group-sm">
+                                    <label>Quantity</label>
+                                    <input type="number" class="form-control qty" name="">
+                                    <input type="hidden" class="form-control" name="data[`+mainrows+`][item_data][`+itemrows+`][quantity]">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group form-group-sm">
+                                    <label>Net Weight</label>
+                                    <input type="number" class="form-control net" name="data[`+mainrows+`][item_data][`+itemrows+`][net_weight]" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group form-group-sm">
+                                    <label>Gross Weight</label>
+                                    <input type="number" class="form-control gross" name="data[`+mainrows+`][item_data][`+itemrows+`][gross_weight]" readonly>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group form-group-sm">
+                                    <label>Chargeable Weight</label>
+                                    <input type="number" class="form-control charge_wt" name="data[`+mainrows+`][item_data][`+itemrows+`][chargeable_weight]" readonly>
+                                </div>
+                            </td>
+                            <td width="50px"><div class="removeIcon removeItem"><span>x</span></div></td>
+                        </tr>`;
+                // $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
+                $(this).closest('.childTable').children('.items_table_body').append(itemTds);
+            });
         });
-
-
+        
         $(document).on("click", ".removeItem", function () {
             $(this).closest("tr").remove();
+            var _this = $(this);
+            // reassign_itemids(_this);            
+            calculate_totals(_this);
         });
-    </script>
-
-
-    <script>
-        // $(function() {
-        //     $('.basic').selectpicker();
-        // });
-        // $(document).ready(function () {
-        //     $('.insert-more').attr('disabled', true);
-        // });
-
+    
+        // calculation total
+        $(document).on("blur", ".qty", function() {
+            // var _this = $(this);
+            var qty_sum = 0;
+            $("input[class *= 'qty']").each(function(){
+                qty_sum += +$(this).val();
+            });
+            $("#tot_qty").html(qty_sum);
+            var qty_val = $(this).val();
+            $(this).siblings().val(qty_val);
+            var netwt_val = $(this).closest('tr').find('td').eq(2).find('input').val();
+            var netwt_cal = parseInt(netwt_val) *  parseInt(qty_val);
+            var grosswt_val = $(this).closest('tr').find('td').eq(3).find('input').val();
+            var grosswt_cal = parseInt(grosswt_val) *  parseInt(qty_val);
+            
+            var chargewt_val = $(this).closest('tr').find('td').eq(4).find('input').val();
+            var chargewt_cal = parseInt(chargewt_val) *  parseInt(qty_val);
+            var check_netwt = $(this).closest('tr').find('td').eq(2).find('input').val(netwt_cal);
+            var check_grosswt = $(this).closest('tr').find('td').eq(3).find('input').val(grosswt_cal);
+            var check_chargewt = $(this).closest('tr').find('td').eq(4).find('input').val(chargewt_cal);
+            var net_sum = 0;
+            $("input[class *= 'net']").each(function(){
+                net_sum += +$(this).val();
+            });
+            $("#total_nt_wt").html(net_sum);
+            var gross_sum = 0;
+            $("input[class *= 'gross']").each(function(){
+                gross_sum += +$(this).val();
+            });
+            $("#total_gt_wt").html(gross_sum);
+            
+             $(this).prop('disabled', true);
+        });
+         //Remove the current invoice row
+         $(document).on("click", ".removeInvoice", function () {
+            var current_val = $(this).parent().siblings(":first").text();
+            $(this).closest("tr").remove();
+            // reassign_ids();
+            var _this = $(this);
+            calculate_totals(_this);
+        });
+        // Calculate all totals
+        function calculate_totals(_this) {
+            var qty_sum = 0;
+            $("input[class *= 'qty']").each(function(){
+                qty_sum += +$(this).val();
+            });          
+             
+            $("#tot_qty").html(qty_sum);
+            var qty_val = $(_this).val();
+            var netwt_val = $(_this).closest('tr').find('td').eq(2).find('input').val();
+            var netwt_cal = parseInt(netwt_val) *  parseInt(qty_val);
+            var grosswt_val = $(_this).closest('tr').find('td').eq(3).find('input').val();
+            var grosswt_cal = parseInt(grosswt_val) *  parseInt(qty_val);
+            
+            var chargewt_val = $(_this).closest('tr').find('td').eq(4).find('input').val();
+            var chargewt_cal = parseInt(chargewt_val) *  parseInt(qty_val);
+            var check_netwt = $(_this).closest('tr').find('td').eq(2).find('input').val(netwt_cal);
+            var check_grosswt = $(_this).closest('tr').find('td').eq(3).find('input').val(grosswt_cal);
+            var check_chargewt = $(_this).closest('tr').find('td').eq(4).find('input').val(chargewt_cal);
+            var net_sum = 0;
+            $("input[class *= 'net']").each(function(){
+                net_sum += +$(this).val();
+            });
+            $("#total_nt_wt").html(net_sum);
+            var gross_sum = 0;
+            $("input[class *= 'gross']").each(function(){
+                gross_sum += +$(this).val();
+            });
+            $("#total_gt_wt").html(gross_sum);
+            
+            $(_this).prop('disabled', true);
+        }
+        
+    
         jQuery(function () {
             $('.my-select2').each(function () {
                 $(this).select2({
@@ -783,7 +895,6 @@
                     dropdownParent: $(this).parent(), // fix select2 search input focus bug
                 })
             })
-
             // fix select2 bootstrap modal scroll bug
             $(document).on('select2:close', '.my-select2', function (e) {
                 var evt = "scroll.select2"
@@ -791,10 +902,8 @@
                 $(window).off(evt)
             })
         })
-
         // add consignment date
         $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
-
         function showResult(str) {
             if (str.length == 0) {
                 $(".search-suggestions").empty();
@@ -847,8 +956,35 @@
             })
         });
 
+        // select item onchange
+        function getItem(item)
+        {
+            var item_val = item.value;
+            $.ajax({
+                url: '/get-items',
+                method: "get",
+                data: {
+                    item_val: item_val
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    if (res.success == true) {
+                        ($(item).closest('tr').find('td').eq(1).find('input').prop('disabled', false));
+                        ($(item).closest('tr').find('td').eq(1).find('input').val(''));
+
+                        ($(item).closest('tr').find('td').eq(2).find('input').val(res.item.net_weight));
+                        ($(item).closest('tr').find('td').eq(3).find('input').val(res.item.gross_weight));
+                        ($(item).closest('tr').find('td').eq(4).find('input').val(res.item.chargable_weight));
+                    }
+                }
+            });
+        }
+        
 
     </script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>
 @endsection

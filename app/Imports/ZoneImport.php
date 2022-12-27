@@ -17,8 +17,9 @@ class ZoneImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        // $zone = DB::table('zones')->select('license_number')->where('license_number', $row['license_number'])->first();
-        // if(empty($zone)){
+     
+         $zone = DB::table('zones')->select('postal_code')->where('postal_code', $row['postal_code'])->first();
+        if(empty($zone)){
             return new Zone([
                 'primary_zone'  => $row['primary_zone'],
                 'postal_code'   => (float)$row['postal_code'],
@@ -27,7 +28,12 @@ class ZoneImport implements ToModel,WithHeadingRow
                 'status'        => "1",
                 'created_at'    => time(),
             ]);
-        // }
+        }else{
+            $consigner = Zone::where('postal_code', $row['postal_code'])->update([
+                'hub_transfer'    => $row['hub_transfer'],
+                'updated_at'    => time(),
+            ]);
+        }
 
     }
 }
