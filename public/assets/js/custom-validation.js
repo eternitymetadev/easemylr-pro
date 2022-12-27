@@ -892,7 +892,9 @@ jQuery(document).ready(function () {
                 tds +=
                     ' <td><input type="text" class="form-control form-small orderid" name="data[' +
                     item_no +
-                    '][order_id]"></td>';
+                    '][order_id]"><input type="hidden" name="data[' +
+                    item_no +
+                    '][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
@@ -910,11 +912,15 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="number" class="form-control form-small net" name="data[' +
                     item_no +
-                    '][weight]"></td>';
+                    '][net_weight]"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small gross" name="data[' +
                     item_no +
                     '][gross_weight]"></td>';
+                tds +=
+                    '<td><input type="file" class="form-control form-small invc_img" name="data[' +
+                    item_no +
+                    '][invc_img]" accept="image/*"/></td>';
                 tds +=
                     '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
@@ -1267,7 +1273,7 @@ jQuery(document).ready(function () {
                         var remove_disable = "";
                     }
 
-                    $("#get-delvery-date tbody").append(
+                  $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
                             i +
                             "][lrno]' class='delivery_d' value='" +
@@ -1466,6 +1472,7 @@ jQuery(document).ready(function () {
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
+
                     if(value.lr_mode == 0){
                     if (value.signed_drs == null) {
                         if(data.role_id == 7){
@@ -1477,39 +1484,41 @@ jQuery(document).ready(function () {
                             "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                        if (img_api == null || img_api == "") {
-                            var field =
-                                "<input type='file' name='img' data-id='" +
-                                value.id +
-                                "' placeholder='Choose image' class='drs_image'>";
-                        } else {
-                            var field1 = [];
-                            var img_length = img_api.length;
-                            var i = 0;
-                            $.each(img_api, function (index, img) {
-                                i++;
-                                img_group =
-                                    "<a href='" +
-                                    img +
-                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
-                                    i +
-                                    "</a> ";
-                                field1.push(img_group);
-                            });
-                            var field = field1.join(" ");
-                        }
+                         var field = 
+                        "<a href='" +
+                        storage_img +
+                        "' target='_blank' class='btn btn-warning'>view</a>";
                     }
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field =
+                        "<input type='file' name='img' data-id='" +
+                        value.id +
+                        "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                         var field1 = [];
+                        var img_length = img_api.length;
+                        var i = 0;
+                        $.each(img_api, function (index, img) {
+                            i++
+                            img_group  = "<a href='"+img+
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             field1.push(img_group);
+                        });
+                       var field = (field1.join(' '));
+                    }
+                }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7) {
-                            var deliverydat = "-";
-                        } else {
-                            var deliverydat =
-                                "<input type='date' name='delivery_date[]' data-id=" +
-                                value.id +
-                                " class='delivery_d' value='" +
-                                value.delivery_date +
-                                "' Required>";
+                        if(data.role_id == 7){
+                            var deliverydat = '-';
+                        }else{
+                        var deliverydat =
+                            "<input type='date' name='delivery_date[]' data-id=" +
+                            value.id +
+                            " class='delivery_d' value='" +
+                            value.delivery_date +
+                            "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1526,7 +1535,6 @@ jQuery(document).ready(function () {
                             value.consignment_no +
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
-
 
                      row =   "<tr><td>" +
                     value.id +
@@ -1548,11 +1556,11 @@ jQuery(document).ready(function () {
                     row += "</tr>";
 
                     $("#get-delvery-dateLR tbody").append(row);
+
                 });
             },
         });
     });
-
     //for setting branch address edit
     jQuery(document).on("click", ".editBranchadd", function () {
         jQuery(".submitBtn").css("display", "block");
@@ -1815,6 +1823,8 @@ $("#allsave").submit(function (e) {
             if (data.success == true) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
+            } else if (data.error == "date_less") {
+                swal("error", data.messages, "error");
             } else {
                 swal("error", data.messages, "error");
             }
@@ -2426,8 +2436,65 @@ function closeGetDeliveryDateLR() {
     $("#close_get_delivery_dateLR").click();
 }
 
-/*====== In create PRS  get consigner on click regional client =====*/
+//////////
+$("#upload_techical").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
 
+    $.ajax({
+        url: "import-technical-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+////
+$("#item_master").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        url: "import-item-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+
+/*====== In create PRS  get consigner on click regional client =====*/
 $("#select_prsregclient").change(function (e) {
     var selected = $(e.target).val();
     console.dir(selected);
@@ -2533,15 +2600,21 @@ $(document).on("click", ".receive-vehicle", function () {
     });
 });
 
+
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {
     event.stopPropagation();
     let id = jQuery(this).attr("data-drivertaskid");
     var prsdrivertask_status = "prsdrivertask_status";
+    var prs_taskstatus = jQuery(this).attr("data-prstaskstatus");
 
     // jQuery("#prs-commonconfirm").modal("show");
     jQuery(".commonconfirmclick").one("click", function () {
-        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+        var data = {
+            id: id,
+            prsdrivertask_status: prsdrivertask_status,
+            prs_taskstatus: prs_taskstatus,
+        };
 
         jQuery.ajax({
             url: "driver-tasks",
@@ -2573,3 +2646,4 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
         });
     });
 });
+

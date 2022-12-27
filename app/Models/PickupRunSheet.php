@@ -12,6 +12,10 @@ class PickupRunSheet extends Model
         'pickup_id', 'regclient_id', 'location_id', 'consigner_id', 'prs_type', 'vehicletype_id', 'vehicle_id', 'driver_id', 'prs_date','user_id', 'branch_id', 'status', 'created_at', 'updated_at'
     ];
 
+    public function PrsRegClients(){
+        return $this->hasMany('App\Models\PrsRegClient','prs_id');
+    }
+
     public function VehicleDetail()
     {
         return $this->hasOne('App\Models\Vehicle','id','vehicle_id');
@@ -38,7 +42,7 @@ class PickupRunSheet extends Model
 
     public function PrsDriverTasks()
     {
-        return $this->hasMany('App\Models\PrsDrivertask','prs_id','id');
+        return $this->hasMany('App\Models\PrsDrivertask','prs_id');
     }
 
     public function PrsDriverTask()

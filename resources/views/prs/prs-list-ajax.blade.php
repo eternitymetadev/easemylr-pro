@@ -4,7 +4,7 @@
             <tr>
                 <th>Pickup ID</th>
                 <th>Regional Client</th>
-                <th>Tasks</th>
+                <th>Pickup Points</th>
                 <th>Date</th>
                 <!-- <th>PRS Type </th> -->
                 <th>Vehicle No.</th>
@@ -16,6 +16,7 @@
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <?php 
+            // echo'<pre>'; print_r(json_decode($value)); die;
             $regclients = $value->regclient_id;
             $regclient_ids  = explode(',',$regclients);
             $regclient_count = count($regclient_ids);
@@ -26,8 +27,40 @@
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>
-                <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td>
-                <td><a href="{{url($prefix.'/driver-tasks')}}" title="{{ $consigner_count ?? '-' }}">{{ $consigner_count ?? "-" }}</a>
+                <!-- <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td> -->
+                <td>
+                
+                @if(count($value->PrsRegClients)>0)
+                <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
+                    <span class="viewAllInvoices">
+                        <span class="moreInvoicesView">
+                            <ul style="padding: 0; margin-bottom: 0;">
+                            <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
+                                @foreach($value->PrsRegClients as $regclients)
+                                <li style="margin-bottom: 8px">{{$regclients->RegClient->name ?? "-"}}</li>
+                                @endforeach
+                            </ul>
+                        </span>
+                    </span>
+                    @endif
+                    <!-- <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?> -->
+                </td>
+                <td>
+                @if(count($value->PrsRegClients)>0)
+                    <span class="viewAllInvoices">
+                        <span class="moreInvoicesView">
+                            <ul style="padding: 0; margin-bottom: 0;">
+                            <?php //echo'<pre>';print_r(json_decode($value->PrsRegClients)); die;?>
+                                @foreach($value->PrsRegClients as $regcnrs)
+                                @foreach($regcnrs->RegConsigner as $regcnr)
+                                
+                                <li style="margin-bottom: 8px">{{$regcnr->Consigner->nick_name ?? "-"}}</li>
+                                @endforeach
+                                @endforeach
+                            </ul>
+                        </span>
+                    </span>
+                    @endif
                 </td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>

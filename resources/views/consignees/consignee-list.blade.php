@@ -531,7 +531,7 @@
     </div>
 
 
-    @include('models.delete-consignee')
+@include('models.delete-consignee')
 @endsection
 @section('js')
     <script>

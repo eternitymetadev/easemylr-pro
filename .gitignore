@@ -17,3 +17,5 @@ composer.lock
 /public/all.pdf
 /public/consignment-pdf/congn.pdf
 /public/drs
+/public/images
+
