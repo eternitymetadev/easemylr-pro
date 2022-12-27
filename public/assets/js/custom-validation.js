@@ -2543,19 +2543,25 @@ $(document).on("click", ".receive-vehicle", function () {
                 $.each(res.data, function (index, value) {
                     var inv_total = value.prs_task_items.length;
                     var qtyarr = [];
+                    var ids_arr = [];
                     $.each(value.prs_task_items, function (index, qtyval) {
                         var qty = qtyval.quantity;
                         qtyarr.push(qty);
+
+                        var item_ids = qtyval.id;
+                        ids_arr.push(item_ids);
+
                     });
                     var toNumbers = qtyarr.map(Number);
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
 
                     rows +=
-                        '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data[' +
-                        index +
-                        '][consigner_id]" value="' +
+                        '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="" value="' +
                         value.consigner_detail.nick_name +
-                        '" readonly></td>';
+                        '" readonly><input type="hidden" name="data[' +
+                        index +'][consigner_id]" value="' +value.consigner_detail.id+
+                        '" readonly"><input type="hidden" name="data['+index +'][item_id]" value="'+ids_arr +
+                        '" readonly"></td>';
                     rows +=
                         '<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data[' +
                         index +

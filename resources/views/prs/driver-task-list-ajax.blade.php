@@ -13,8 +13,7 @@
         </thead>
         <tbody id="accordion" class="accordion">
             @if(count($drivertasks)>0)
-            @foreach($drivertasks as $value)
-            
+            @foreach($drivertasks as $value)            
             <tr>
                 <td>{{ $value->task_id ?? "-" }}</td>
                 <td>{{ $value->PickupId->pickup_id ?? "-" }}</td>
@@ -37,14 +36,7 @@
                 <?php if($value->status == 1 || $value->status == 2 ) { ?>
                     || <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
                     <?php } ?>
-                    <!-- <?php //else if($value->status == 3){ ?>
-                    <a href="javascript:void();" class="taskstatus_change " data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-toggle="modal" data-target="#prs-commonconfirm">Status Change</a>
-                    <?php //} ?>
-                    <?php //else{ ?>
-                        <span></span>
-                    <?php //} ?> -->
                 </td>
-
             </tr>
             @endforeach
             @else

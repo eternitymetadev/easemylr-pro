@@ -11,4 +11,8 @@ class PrsRegConsigner extends Model
     protected $fillable = [
         'prs_regclientid', 'consigner_id', 'status', 'created_at', 'updated_at'
     ];
+
+    public function Consigner(){
+        return $this->hasOne('App\Models\Consigner','id','consigner_id');
+    }
 }
