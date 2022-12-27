@@ -24,6 +24,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
+use App\Http\Controllers\HubtoHubController;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,6 +210,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('driver-map', [DriverController::class,'driverMapView']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+
 
 });
 
