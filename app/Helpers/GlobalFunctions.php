@@ -39,10 +39,10 @@ class GlobalFunctions {
         // else if($status == 3){
         //     $status = 'Started';
         // }
-        // else if($status == 4){
-        //     $status = 'Pickup done';
-        // }
         else if($status == 2){
+            $status = 'Pickup done';
+        }
+        else if($status == 3){
             $status = 'Received at HUB';
         }
     
@@ -71,7 +71,7 @@ class GlobalFunctions {
             $status = 'Incoming';
         }
         else if($status == 2){
-          $status = 'Received';
+          $status = 'Pickup done';   //Received
         }
         else if($status == 3){
           $status = 'Completed';
