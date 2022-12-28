@@ -1,6 +1,19 @@
 @extends('layouts.main')
 @section('content')
 
+<style>
+.moreInvoicesView ul {
+    padding: 0;
+    margin-bottom: 0;
+    display: inline-flex;
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    gap: 2rem;
+    text-overflow: ellipsis;
+}
+</style>
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -8,7 +21,8 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">PRS List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">PRS
+                                List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -36,7 +50,8 @@
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         href="{{'prs/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a>
-                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px;"
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                                        style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span><i
                                                 class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>

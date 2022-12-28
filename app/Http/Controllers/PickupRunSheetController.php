@@ -59,12 +59,17 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
 
+            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail');
+
             if(!empty($request->search)){
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
+                    $query->where('pickup_id', 'like', '%' . $search . '%')
+                    ->orWhereHas('PrsRegClients.RegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('PrsRegClients.RegConsigner.Consigner',function( $query ) use($search,$searchT){
                         $query->where(function ($cnrquery)use($search,$searchT) {
                             $cnrquery->where('nick_name', 'like', '%' . $search . '%');
                         });
@@ -283,6 +288,8 @@ class PickupRunSheetController extends Controller
                 return response()->json($response);
             }
 
+            $query = $query->with('ConsignerDetail:id,nick_name,city');
+
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
                 $url = URL::to($this->prefix.'/'.$this->segment);
@@ -293,24 +300,18 @@ class PickupRunSheetController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    $query->where('task_id', 'like', '%' . $search . '%')
+                    ->orWhereHas('PickupId', function ($regclientquery) use ($search) {
+                        $regclientquery->where('pickup_id', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
                             $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%')
+                            ->orWhere('city', 'like', '%' . $search . '%');
                         });
                     });
                 });
             }
-
-            $query = $query->with('ConsignerDetail:id,nick_name,city');
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -324,7 +325,7 @@ class PickupRunSheetController extends Controller
             }
 
             $drivertasks = $query->orderBy('id', 'DESC')->paginate($peritem);
-            $drivertasks = $prsdata->appends($request->query());
+            $drivertasks = $drivertasks->appends($request->query());
 
             $html =  view('prs.driver-task-list-ajax',['prefix'=>$this->prefix,'drivertasks' => $drivertasks,'peritem'=>$peritem])->render();            
 
@@ -351,29 +352,29 @@ class PickupRunSheetController extends Controller
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
+            $query = $query->with('PrsDriverTasks','PrsDriverTasks.PrsTaskItems');
 
             if(!empty($request->search)){
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
                     $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    ->orWhereHas('VehicleDetail', function ($vehiclequery) use ($search) {
+                        $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('DriverDetail', function ($driverquery) use ($search) {
+                        $driverquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('VehicleType', function ($vehtypequery) use ($search) {
+                        $vehtypequery->where('name', 'like', '%' . $search . '%');
                     })
                     ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
                             $query->where(function ($cnrquery)use($search,$searchT) {
                             $cnrquery->where('nick_name', 'like', '%' . $search . '%');
                         });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        });
                     });
                 });
             }
-
-            $query = $query->with('PrsDriverTasks,PrsTaskItems');
 
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
@@ -387,7 +388,7 @@ class PickupRunSheetController extends Controller
             }
 
             $vehiclereceives = $query->orderBy('id', 'ASC')->paginate($peritem);
-            $vehiclereceives = $prsdata->appends($request->query());
+            $vehiclereceives = $vehiclereceives->appends($request->query());
             
             $html =  view('prs.vehicle-receivegate-list-ajax',['prefix'=>$this->prefix,'vehiclereceives' => $vehiclereceives,'peritem'=>$peritem])->render();
 
@@ -404,6 +405,7 @@ class PickupRunSheetController extends Controller
 
     public function createTaskItem(Request $request)
     {
+        // echo "<pre>"; print_r($request->all());die;
         try {
             DB::beginTransaction();
 
@@ -413,7 +415,6 @@ class PickupRunSheetController extends Controller
             );
 
             $validator = Validator::make($request->all(),$rules);
-        
             if($validator->fails())
             {
                 $errors                  = $validator->errors();
@@ -422,9 +423,7 @@ class PickupRunSheetController extends Controller
                 $response['formErrors']  = true;
                 $response['errors']      = $errors;
                 return response()->json($response);
-            }
-            
-            
+            }            
             // insert prs driver task items
             if (!empty($request->data)) {
                 $authuser = Auth::user();
@@ -438,7 +437,8 @@ class PickupRunSheetController extends Controller
                     $save_data['branch_id'] = $authuser->branch_id;
 
                     // upload invoice image
-                    if($save_data['invc_img']){
+                    if (isset($save_data['invc_img'])){
+                    // if($save_data['invc_img']){
                         $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
                         $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
                     }

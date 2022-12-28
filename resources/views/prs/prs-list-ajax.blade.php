@@ -29,15 +29,15 @@
                 <td>{{ $value->pickup_id ?? "-" }}</td>
                 <!-- <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td> -->
                 <td>
-                
-                @if(count($value->PrsRegClients)>0)
-                <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
+
+                    @if(count($value->PrsRegClients)>0)
+                    <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
                     <span class="viewAllInvoices">
                         <span class="moreInvoicesView">
                             <ul style="padding: 0; margin-bottom: 0;">
-                            <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
+                                <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
                                 @foreach($value->PrsRegClients as $regclients)
-                                <li style="margin-bottom: 8px">{{$regclients->RegClient->name ?? "-"}}</li>
+                                <li style="margin-bottom: 8px" title="{{$regclients->RegClient->name ?? '-'}}">{{$regclients->RegClient->name ?? "-"}}</li>
                                 @endforeach
                             </ul>
                         </span>
@@ -46,18 +46,20 @@
                     <!-- <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?> -->
                 </td>
                 <td>
-                @if(count($value->PrsRegClients)>0)
+                    @if(count($value->PrsRegClients)>0)
                     <span class="viewAllInvoices">
                         <span class="moreInvoicesView">
-                            <ul style="padding: 0; margin-bottom: 0;">
-                            <?php //echo'<pre>';print_r(json_decode($value->PrsRegClients)); die;?>
-                                @foreach($value->PrsRegClients as $regcnrs)
-                                @foreach($regcnrs->RegConsigner as $regcnr)
-                                
-                                <li style="margin-bottom: 8px">{{$regcnr->Consigner->nick_name ?? "-"}}</li>
-                                @endforeach
-                                @endforeach
-                            </ul>
+                        <a href="{{url($prefix.'/driver-tasks')}}" target="_blank">
+                                <ul style="padding: 0; margin-bottom: 0;">
+                                    <?php //echo'<pre>';print_r(json_decode($value->PrsRegClients)); die;?>
+                                    @foreach($value->PrsRegClients as $regcnrs)
+                                    @foreach($regcnrs->RegConsigner as $regcnr)
+
+                                    <li style="margin-bottom: 8px" title="{{ $regcnr->Consigner->nick_name ?? '-' }}">{{$regcnr->Consigner->nick_name ?? "-"}}</li>
+                                    @endforeach
+                                    @endforeach
+                                </ul>
+                            </a>
                         </span>
                     </span>
                     @endif

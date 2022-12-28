@@ -13,7 +13,10 @@
         </thead>
         <tbody id="accordion" class="accordion">
             @if(count($drivertasks)>0)
-            @foreach($drivertasks as $value)            
+            @foreach($drivertasks as $value)
+            <?php 
+            $prs_data = DB::table('pickup_run_sheets')->select('id','vehicle_id')->where('id',$value->prs_id)->first(); 
+            ?>    
             <tr>
                 <td>{{ $value->task_id ?? "-" }}</td>
                 <td>{{ $value->PickupId->pickup_id ?? "-" }}</td>
@@ -34,7 +37,7 @@
                 <td><span style="cursor:pointer" class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span>
 
                 <?php if($value->status == 1 || $value->status == 2 ) { ?>
-                    || <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
+                    || <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-vehicleid="{{$prs_data->vehicle_id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
                     <?php } ?>
                 </td>
             </tr>
