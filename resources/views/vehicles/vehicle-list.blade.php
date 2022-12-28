@@ -1,12 +1,6 @@
 @extends('layouts.main')
 @section('content')
-    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
-    <!-- END PAGE LEVEL CUSTOM STYLES -->
-
-    <style>
+<style>
         .wrapText {
             white-space: nowrap;
             overflow: hidden;
@@ -181,14 +175,31 @@
         }
     </style>
 
+<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
+<!-- END PAGE LEVEL CUSTOM STYLES -->
 
-    <div class="layout-px-spacing">
-        <div class="page-header layout-spacing">
-            <h2 class="pageHeading">Vehicle List</h2>
-            <div class="d-flex align-content-center" style="gap: 1rem;">
-                <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
+<div class="layout-px-spacing">
+    <div class="row layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="page-header">
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Drivers</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Driver List</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="widget-content widget-content-area br-6">
+                <div class="mb-4 mt-4">
+                    
+                    <div class="d-flex align-content-center" style="gap: 1rem;">
+                    <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
                    class="downloadEx btn btn-primary pull-right"
-                   data-action="<?php echo URL::to($prefix . 'vehicles/export/excel'); ?>" download>
+                   data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
+                   download>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-download-cloud">
@@ -198,7 +209,7 @@
                     </svg>
                     Excel
                 </a>
-                <button class="btn btn-primary" id="add_role" data-toggle="modal" data-target="#createVehicleModal">
+                <button class="btn btn-primary" data-target="#createVehicleModal" data-toggle="modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                          stroke-linejoin="round" class="feather feather-plus">
@@ -207,568 +218,242 @@
                     </svg>
                     Vehicle
                 </button>
-            </div>
-        </div>
-
-
-        <div class="widget-content widget-content-area br-6">
-            <div class="table-responsive mb-4 mt-4" style="min-height: min(60vh, 600px)">
-                @csrf
-                <table id="vehicletable" class="table table-hover" style="width:100%">
-                    <thead>
-                    <tr>
-                        <th>Vehicle Number</th>
-                        <th>Reg. Date</th>
-                        <th>Manufacture</th>
-                        <th>Make</th>
-                        <th>Body Type</th>
-                        <th>Loading Cap.</th>
-                        <th>RC Image</th>
-                        <th style="text-align: center">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-
-    {{--    Create Vehicle Modal--}}
-    <div class="modal fade" id="createVehicleModal" tabindex="-1" role="dialog"
-         aria-labelledby="createVehicleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 1100px);">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createVehicleModalLabel">Add Vehicle</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body py-4">
-
-                    <form class="general_form" method="POST"
-                          action="{{url($prefix.'/vehicles')}}"
-                          id="createvehicle">
-
-                        <div class="form-row align-items-end" style="box-shadow: none">
-                            <div class="d-flex flex-wrap justify-content-center col-md-3">
-                                <div class="image_upload" style="position:relative;">
-                                    <img src="{{url("/assets/img/upload-img.png")}}"
-                                         class="rcshow image-fluid" id="img-tag" width="140"
-                                         height="100" style="border-radius: 8px; object-fit: contain;">
-
-                                    <div class="imageUploadInput">
-                                        <label class="d-flex justify-content-center align-items-center" style="height: 100%;
-                                    width: 100%;" for="rc_image">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 class="feather feather-edit">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
-                                                </path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
-                                                </path>
-                                            </svg>
-                                        </label>
-
-                                        <input type="file"
-                                               class="form-control form-control-sm form-control form-control-sm-sm rc_image"
-                                               id="rc_image" name="rc_image" hidden accept="image/*">
-                                    </div>
-                                </div>
-                                <label class="text-center" style="width: 100%">RC Image</label>
-
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlInput2">Registration No.<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="regn_no" name="regn_no" placeholder=""
-                                       maxlength="12">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlSelect1">Engine No.<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="engine_no" placeholder="">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlSelect1">Chassis No.</label>
-                                <input type="text" class="form-control" name="chassis_no" placeholder="">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <h6 class="col-12">Vehicle Details</h6>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Manufacturer<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="mfg" placeholder="Mahindra, Tata, etc.">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlSelect1">Make<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="make"
-                                       placeholder="407, Supro Maxi, Truck, Pickup, Ace, etc.">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Body Type</label>
-                                <select class="form-control" name="body_type">
-                                    <option value="Container">Container</option>
-                                    <option value="Open Body">Open Body</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Gross Vehicle Weight</label>
-                                <input type="text" class="form-control" id="gross_vehicle_weight"
-                                       name="gross_vehicle_weight" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Unladen Weight</label>
-                                <input type="text" class="form-control" id="unladen_weight" name="unladen_weight"
-                                       placeholder="" readonly>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Tonnage Capacity</label>
-                                <input type="text" class="form-control" id="tonnage_capacity" name="tonnage_capacity"
-                                       value="" placeholder="" readonly>
-                            </div>
-                        </div>
-
-                        <div class="form-row mb-0">
-                            <h6 class="col-12">Registration Details</h6>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">State(Regd)</label>
-                                <select class="form-control" name="state_id">
-                                    <option value="">Select</option>
-                                    {{--                                    @if(count($states) > 0)--}}
-                                    {{--                                        @foreach($states as $key => $state)--}}
-                                    {{--                                            <option value="{{ $key }}">{{ucwords($state)}}</option>--}}
-                                    {{--                                        @endforeach--}}
-                                    {{--                                    @endif--}}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlSelect1">Regn. Date</label>
-                                <input type="date" class="form-control" name="regndate" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Hypothecation</label>
-                                <input type="text" class="form-control" name="hypothecation"
-                                       placeholder="Name of Financer | N/A">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Ownership</label>
-                                <select class="form-control" name="ownership">
-                                    <option value="Self Owned">Self Owned</option>
-                                    <option value="Company Owned">Company Owned</option>
-                                    <option value="Transporter Owned">Transporter Owned</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Owner Name</label>
-                                <input type="text" class="form-control" name="owner_name" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Owner Mobile No.</label>
-                                <input type="text" class="form-control" name="owner_phone" placeholder="">
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-12 d-flex justify-content-end align-items-center"
-                             style="gap: 1rem; margin-top: 3rem;">
-                            <button type="button" style="width: 80px" class="btn btn-outline-primary"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" style="width: 80px" class="btn btn-primary">
-                                Submit
-                            </button>
-                        </div>
-
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--    view Vehicle Modal--}}
-    <div class="modal fade" id="vehicleDetailsModal" tabindex="-1" role="dialog"
-         aria-labelledby="vehicleDetailsModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 700px);">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="vehicleDetailsModalLabel">Vehicle Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body py-4" style="min-height: 320px">
-
-                    <div class="vehicleDetails mb-3 d-flex align-items-center justify-content-between flex-wrap"
-                         style="width: 100%;">
-                        <img src="s" alt="RC photo"/>
-
-                        <div class="flex-grow-1">
-                            <p>
-                                <span class="textHeading">Registration No:</span>
-                                <span class="textValue">HR20AJ7830</span>
-                            </p>
-                            <p>
-                                <span class="textHeading">Registration Date:</span>
-                                <span class="textValue">27-07-2017</span>
-                            </p>
-                            <p>
-                                <span class="textHeading">Engine No:</span>
-                                <span class="textValue">R32456DC</span>
-                            </p>
-                            <p>
-                                <span class="textHeading">Chassis No:</span>
-                                <span class="textValue">REWDCV5632456DC</span>
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div class="vehicleMoreDetails">
-                        <p style="width: 100%">
-                            <span class="textHeading">Regd. State :</span>
-                            <span class="textValue text-uppercase">Haryana</span>
-                        </p>
-                        <p>
-                            <span class="textHeading">Ownership:</span>
-                            <span class="textValue">Transporter Owned</span>
-                        </p>
-                        <p>
-                            <span class="textHeading">Owner Name:</span>
-                            <span class="textValue">Owner Fullname</span>
-                        </p>
-                        <p>
-                            <span class="textHeading">Owner Mobile:</span>
-                            <span class="textValue">+91-8989876909</span>
-                        </p>
-                        <p>
-                            <span class="textHeading">Hypothecation:</span>
-                            <span class="textValue">Bajaj Finserve</span>
-                        </p>
-                    </div>
-
-                    <div class="vehicleMoreDetails mt-4">
-                        <p style="width: 100%">
-                            <span class="textHeading">Manufacturar:</span>
-                            <span class="textValue text-uppercase">TATA MOTORS LIMITED</span>
-                        </p>
-                        <p style="min-width: 40%; flex: 1">
-                            <span class="textHeading">Model:</span>
-                            <span class="textValue">LPT 3118</span>
-                        </p>
-                        <p>
-                            <span class="textHeading">Body Type:</span>
-                            <span class="textValue">Open Body</span>
-                        </p>
-                        <div class="d-flex flex-wrap justify-content-between align-items-center flex-grow-1">
-                            <p>
-                                <span class="textHeading">Gross Weight:</span>
-                                <span class="textValue">3500kg</span>
-                            </p>
-                            <p>
-                                <span class="textHeading">Unladen Weight:</span>
-                                <span class="textValue">1500kg</span>
-                            </p>
-                            <p>
-                                <span class="textHeading">Tonnage Weight:</span>
-                                <span class="textValue">2000kg</span>
-                            </p>
+                        <div class="inputDiv d-flex justify-content-center align-items-center" style="flex: 1;max-width: 300px; border-radius: 12px; position: relative">
+                            <input type="text" class="form-control" placeholder="Search" id="search" style="width: 100%; height: 38px; border-radius: 12px;" data-action="<?php echo url()->current(); ?>">
+                            <span class="reset_filter clearIcon" data-action="<?php echo url()->current(); ?>">x</span>
                         </div>
                     </div>
 
-                </div>
-                <div class="modal-footer col-md-12 d-flex justify-content-end align-items-center" style="gap: 1rem;">
-                    <button type="button" style="width: 80px" class="btn btn-outline-primary" onclick="clickEditDriverModal()">
-                        Edit
-                    </button>
-                    <button type="button" style="width: 80px" class="btn btn-outline-primary" data-dismiss="modal">
-                        Close
-                    </button>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {{--    Edit Vehicle Modal--}}
-    <div class="modal fade" id="editVehicleModal" tabindex="-1" role="dialog"
-         aria-labelledby="editVehicleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 1100px);">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editVehicleModalLabel">Edit Vehicle</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body py-4">
-
-                    <form class="general_form" method="POST"
-                          action="{{url($prefix.'/vehicles')}}"
-                          id="createvehicle">
-
-                        <div class="form-row align-items-end" style="box-shadow: none">
-                            <div class="d-flex flex-wrap justify-content-center col-md-3">
-                                <div class="image_upload" style="position:relative;">
-                                    <img src="{{url("/assets/img/upload-img.png")}}"
-                                         class="rcshow image-fluid" id="img-tag" width="140"
-                                         height="100" style="border-radius: 8px; object-fit: contain;">
-
-                                    <div class="imageUploadInput">
-                                        <label class="d-flex justify-content-center align-items-center" style="height: 100%;
-                                    width: 100%;" for="rc_image">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                 class="feather feather-edit">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
-                                                </path>
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
-                                                </path>
-                                            </svg>
-                                        </label>
-
-                                        <input type="file"
-                                               class="form-control form-control-sm form-control form-control-sm-sm rc_image"
-                                               id="rc_image" name="rc_image" hidden accept="image/*">
-                                    </div>
-                                </div>
-                                <label class="text-center" style="width: 100%">RC Image</label>
-
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlInput2">Registration No.<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="regn_no" name="regn_no" placeholder=""
-                                       maxlength="12">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlSelect1">Engine No.<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="engine_no" placeholder="">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="exampleFormControlSelect1">Chassis No.</label>
-                                <input type="text" class="form-control" name="chassis_no" placeholder="">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <h6 class="col-12">Vehicle Details</h6>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Manufacturer<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="mfg" placeholder="Mahindra, Tata, etc.">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlSelect1">Make<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="make"
-                                       placeholder="407, Supro Maxi, Truck, Pickup, Ace, etc.">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Body Type</label>
-                                <select class="form-control" name="body_type">
-                                    <option value="Container">Container</option>
-                                    <option value="Open Body">Open Body</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Gross Vehicle Weight</label>
-                                <input type="text" class="form-control" id="gross_vehicle_weight"
-                                       name="gross_vehicle_weight" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Unladen Weight</label>
-                                <input type="text" class="form-control" id="unladen_weight" name="unladen_weight"
-                                       placeholder="" readonly>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Tonnage Capacity</label>
-                                <input type="text" class="form-control" id="tonnage_capacity" name="tonnage_capacity"
-                                       value="" placeholder="" readonly>
-                            </div>
-                        </div>
-
-                        <div class="form-row mb-0">
-                            <h6 class="col-12">Registration Details</h6>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">State(Regd)</label>
-                                <select class="form-control" name="state_id">
-                                    <option value="">Select</option>
-                                    {{--                                    @if(count($states) > 0)--}}
-                                    {{--                                        @foreach($states as $key => $state)--}}
-                                    {{--                                            <option value="{{ $key }}">{{ucwords($state)}}</option>--}}
-                                    {{--                                        @endforeach--}}
-                                    {{--                                    @endif--}}
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlSelect1">Regn. Date</label>
-                                <input type="date" class="form-control" name="regndate" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Hypothecation</label>
-                                <input type="text" class="form-control" name="hypothecation"
-                                       placeholder="Name of Financer | N/A">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Ownership</label>
-                                <select class="form-control" name="ownership">
-                                    <option value="Self Owned">Self Owned</option>
-                                    <option value="Company Owned">Company Owned</option>
-                                    <option value="Transporter Owned">Transporter Owned</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Owner Name</label>
-                                <input type="text" class="form-control" name="owner_name" placeholder="">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Owner Mobile No.</label>
-                                <input type="text" class="form-control" name="owner_phone" placeholder="">
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-12 d-flex justify-content-end align-items-center"
-                             style="gap: 1rem; margin-top: 3rem;">
-                            <button type="button" style="width: 80px" class="btn btn-outline-primary"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" style="width: 80px" class="btn btn-primary">
-                                Submit
-                            </button>
-                        </div>
-
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--    RC view modal--}}
-    <div class="modal fade" id="rcViewModal" tabindex="-1" role="dialog"
-         aria-labelledby="rcViewModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 500px);">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rcViewModalLabel">Registeration Certificate</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body" style="min-height: 240px">
-                    <div class="col-md-12 bg-black">
-                        <img id="view-src"
-                             src="view_file_name"
-                             alt="sample image"
-                             style="width: 100%; max-height: 300px; border-radius: 12px;"/>
+                    @csrf
+                    <div class="main-table table-responsive">
+                        @include('vehicles.vehicle-list-ajax')
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <a class="btn btn-outline-primary" href="view_file_name" target="_blank"
-                       style="border-radius: 8px; display: flex;align-items: center;gap: 6px;">
-                        Open in New Tab
-                        <svg xmlns="http://www.w3.org/2000/svg" width="4" height="14"
-                             viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                             stroke-linejoin="round"
-                             class="feather feather-external-link" style="height: 14px; width: 14px">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                    </a>
-                </div>
-
             </div>
         </div>
     </div>
-
-
-    @include('models.delete-vehicle')
-
-
+</div>
+@include('models.delete-user')
+@include('models.delete-vehicle')
+@include('vehicles.crud-models')
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function () {
-            var table = $('#vehicletable').DataTable({
-                processing: true,
-                serverSide: true,
-                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-                    "<'table-responsive'tr>" +
-                    "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-                "oLanguage": {
-                    "oPaginate": {
-                        "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                        "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                    },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
+<script>
+    
+    jQuery(document).on('click', '#filter_reportall', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var search = jQuery('#search').val();
 
-                "stripeClasses": [],
-                // "pageLength": 30,
-
-                "pageLength": 100,
-                ajax: "{{ url('vehicles/list') }}",
-
-                columns: [
-                    {data: 'regn_no', name: 'regn_no'},
-                    {data: 'regndate', name: 'regndate'},
-                    {data: 'mfg', name: 'mfg', orderable: false},
-                    {data: 'make', name: 'make', orderable: false},
-                    {data: 'body_type', name: 'body_type', orderable: false},
-                    {data: 'tonnage_capacity', name: 'tonnage_capacity', orderable: false},
-                    {data: 'rc_image', name: 'rc_image', orderable: false},
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
-
-                ]
-            });
-        });
-
-
-        function readURL1(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('.rcshow').attr('src', e.target.result);
-                    // $(".remove_licensefield").css("display", "block");
+        jQuery.ajax({
+            type: 'get',
+            url: 'consignment-report2',
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    jQuery('.main-table').html(response.html);
                 }
-                reader.readAsDataURL(input.files[0]);
             }
+        });
+        return false;
+    });
+
+    jQuery(document).on('change', '.report_perpage', function() {
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+        if (startdate == enddate) {
+            startdate = "";
+            enddate = "";
+        }
+        var url = jQuery(this).attr('data-action');
+        var peritem = jQuery(this).val();
+        var search = jQuery('#search').val();
+        jQuery.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                peritem: peritem,
+                search: search,
+                startdate: startdate,
+                enddate: enddate
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    if (response.page == 'lead_note') {
+                        jQuery('#Note .main-table').html(response.html);
+                    } else {
+                        jQuery('.main-table').html(response.html);
+                    }
+                }
+            }
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '.consignmentReportEx', function(event) {
+        event.preventDefault();
+
+        var totalcount = jQuery('.totalcount').text();
+        if (totalcount > 30000) {
+            jQuery('.limitmessage').show();
+            setTimeout(function() {
+                jQuery('.limitmessage').fadeOut();
+            }, 5000);
+            return false;
         }
 
-        $(document).on("change", '.rc_image', function (e) {
-            var fileName = this.files[0].name;
-            readURL1(this);
+        var geturl = jQuery(this).attr('data-action');
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+
+        var search = jQuery('#search').val();
+        var url = jQuery('#search').attr('data-url');
+        if (startdate)
+            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+        else if (search)
+            geturl = geturl + '?search=' + search;
+
+        jQuery.ajax({
+            url: url,
+            type: 'get',
+            cache: false,
+            data: {
+                startdate: startdate,
+                enddate: enddate
+            },
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend: function() {
+                //jQuery(".load-main").show();
+            },
+            complete: function() {
+                //jQuery(".load-main").hide();
+            },
+            success: function(response) {
+                // jQuery(".load-main").hide();
+                setTimeout(() => {
+                    window.location.href = geturl
+                }, 10);
+            }
+        });
+    });
+
+    // view
+    jQuery(document).on('click', '.VehicleView', function(event) {
+        event.preventDefault();
+
+        var vehicle_id = $(this).attr('data-id');
+        // alert(vehicle_id)
+        var myarr = {};
+        $('#vehicleDetailsModal').modal('show');
+        var url = window.location.origin;
+        $.ajax({
+            type: "GET",
+            url: "vehicles/show",
+            data: {
+                vehicle_id: vehicle_id
+            },
+            beforeSend: //reinitialize Datatables
+                function() {
+                    myarr = {};
+
+                },
+            success: function(data) {
+
+                // console.log(data)
+                // var address = data.getconsigner.address_line1+', '+data.getconsigner.address_line2+', '+data.getconsigner.address_line3;
+                myarr = data.getvehicle;
+                // console.log(myarr)
+                var pic_url = url+'/storage/images/vehicle_rc_images/'+myarr.rc_image;
+                // alert(myarr.tonnage_capacity);
+                $('#vehicle_reg_no').html(myarr.regn_no ? myarr.regn_no : '-NA-')
+                $('#vehicle_reg_date').html(myarr.regndate)
+                $('#vehicle_eng_no').html(myarr.engine_no)
+                $('#vehicle_chassis_no').html(myarr.chassis_no)
+                $('#vehicle_ownership').html(myarr.ownership)
+                $('#vehicle_owner_name').html(myarr.owner_name)
+                $('#vehicle_owner_phone').html(myarr.owner_phone)
+                $('#vehicle_hypothecation').html(myarr.hypothecation)
+                $('#vehicle_manufacturar').html(myarr.mfg)
+                $('#vehicle_model').html(myarr.make)
+                $('#vehicle_body').html(myarr.body_type)
+                $('#vehicle_gross_wt').html(myarr.gross_vehicle_weight)
+                $('#vehicle_unladen_wt').html(myarr.unladen_weight ? myarr.unladen_weight : '-' )
+                $('#vehicle_tonnage_capacity').html(myarr.tonnage_capacity ? myarr.tonnage_capacity : '-')
+                $('#view_src_pc').attr('src', pic_url);
+                $('#vehicle_state_name').html(data.get_state.name)
+                
+            }
+
         });
 
-        function clickEditDriverModal() {
-            $('#vehicleDetailsModal').modal('hide');
-            setTimeout(()=>{
-                $('#editVehicleModalIcon').click();
-            }, 400)
-        }
-    </script>
+    });
 
+
+    jQuery(document).on('click', '.editVehicleBtn', function(event) {
+        event.preventDefault();
+
+        var vehicle_id = $(this).attr('data-id');
+        var myarr = {};
+        var url = window.location.origin;
+        // alert(driver_id)
+        $('#VehicleDetailsEditModal').modal('show');
+        
+        $.ajax({
+            type: "GET",
+            url: "vehicles/edit",
+            data: {
+                vehicle_id: vehicle_id
+            },
+            beforeSend: //reinitialize Datatables
+                function() {
+                    myarr = {};
+
+                },
+            success: function(data) {
+                myarr = data.getvehicle;
+                console.log(myarr);
+                var pic_url = url+'/storage/images/vehicle_rc_images/'+myarr.rc_image;
+// alert(myarr.state_id)
+                $('#edit_vehicle_reg_no').val(myarr.regn_no ? myarr.regn_no : '-NA-')
+                $('#edit_vehicle_reg_date').val(myarr.regndate)
+                $('#edit_vehicle_eng_no').val(myarr.engine_no)
+                $('#edit_vehicle_chassis_no').val(myarr.chassis_no)
+                $('#edit_vehicle_reg_state').val(myarr.state_id)
+                $('#edit_vehicle_ownership').val(myarr.ownership)
+                $('#edit_vehicle_owner_name').val(myarr.owner_name)
+                $('#edit_vehicle_owner_phone').val(myarr.owner_phone)
+                $('#edit_vehicle_hypothecation').val(myarr.hypothecation)
+                $('#edit_vehicle_manufacturar').val(myarr.mfg)
+                $('#edit_vehicle_model').val(myarr.make)
+                $('#edit_vehicle_body').val(myarr.body_type)
+                $('#edit_vehicle_gross_wt').val(myarr.gross_vehicle_weight)
+                $('#edit_vehicle_unladen_wt').val(myarr.unladen_weight ? myarr.unladen_weight : '-' )
+                $('#edit_vehicle_tonnage_capacity').val(myarr.tonnage_capacity ? myarr.tonnage_capacity : '-')
+                $('#edit_view_src_pc').attr('src', pic_url);
+                $('#edit_vehicle_id').val(myarr.id)
+                $('#edit_state_id').val(myarr.state_id)
+                
+                
+                
+            }
+
+        });
+
+    });
+</script>
 @endsection

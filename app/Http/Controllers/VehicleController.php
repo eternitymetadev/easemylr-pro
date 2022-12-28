@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use App\Models\Driver;
+use App\Models\State;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\VehicleExport;
 use DB;
@@ -17,6 +18,8 @@ use Validator;
 use DataTables;
 use Storage;
 use Auth;
+use Config;
+use Session;
 
 class VehicleController extends Controller
 {
@@ -37,9 +40,70 @@ class VehicleController extends Controller
      */
     public function index(Request $request)
     {
+       
         $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
 
-        return view('vehicles.vehicle-list', ['prefix' => $this->prefix, 'title' => $this->title, 'segment' => $this->segment]);
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+          
+
+           
+            $data = Vehicle::query();
+            $states = State::query();
+            $query=$data;
+      
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('regn_no', 'like', '%' . $search . '%');
+                        
+                    });
+                    // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                    //     $query->where(function ($invcquery)use($search,$searchT) {
+                    //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                    //     });
+                    // });
+
+                // });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehicles = $data->orderby('created_at', 'DESC')->paginate($peritem);
+            $vehicles = $vehicles->appends($request->query());
+            
+            $html =  view('vehicles.vehicle-list-ajax',['prefix'=>$this->prefix,'vehicles' => $vehicles,'states' => $states,'peritem'=>$peritem, 'segment' => $this->segment])->render();
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+    
+
+        $data = Vehicle::query();
+        $states = State::get();
+
+            $vehicles = $data->orderby('created_at', 'DESC')->paginate($peritem);
+            $vehicles = $vehicles->appends($request->query());
+       
+        return view('vehicles.vehicle-list', ['vehicles' => $vehicles,'states' => $states, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function getData(Request $request)
@@ -121,6 +185,7 @@ class VehicleController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $vehicles = Vehicle::all();
         $states = Helper::getStates();
+        // return $states;
         return view('vehicles.create-vehicle', ['vehicles' => $vehicles, 'states' => $states, 'prefix' => $this->prefix]);
     }
 
@@ -195,12 +260,18 @@ class VehicleController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($vehicle)
+    public function show(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($vehicle);
+        $id = $request->vehicle_id;
         $getvehicle = Vehicle::where('id', $id)->first();
-        return view('vehicles.view-vehicle', ['prefix' => $this->prefix, 'getvehicle' => $getvehicle]);
+        
+        $get_state= State::where('id',$getvehicle->state_id)->first();
+        $response['getvehicle'] = $getvehicle;
+        $response['get_state'] = $get_state;
+        $response['success'] = true;
+        $response['message'] = "verified account";
+        return response()->json($response);
     }
 
     /**
