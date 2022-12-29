@@ -19,6 +19,8 @@ use App\Models\ConsignmentNote;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentSubItem;
 use App\Models\Location;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PrsExport;
 use Carbon\Carbon;
 use Helper;
 use Validator;
@@ -144,7 +146,11 @@ class PickupRunSheetController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
 
-        return view('prs.create-prs',['prefix'=>$this->prefix, 'regclients'=>$regclients, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
+        $locations = Location::select('id','name')->get();
+        $hub_locations = Location::where('is_hub', '1')->select('id','name')->get();
+        // dd($hub_locations);
+
+        return view('prs.create-prs',['prefix'=>$this->prefix, 'regclients'=>$regclients,'locations'=>$locations,'hub_locations'=>$hub_locations, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
     }
 
     /**
@@ -162,7 +168,6 @@ class PickupRunSheetController extends Controller
             $rules = array(
                 // 'regclient_id' => 'required',
             );
-
             $validator = Validator::make($request->all(),$rules);
         
             if($validator->fails())
@@ -174,9 +179,7 @@ class PickupRunSheetController extends Controller
                 $response['errors']      = $errors;
                 return response()->json($response);
             }
-
             $authuser = Auth::user();
-
             $pickup_id = DB::table('pickup_run_sheets')->select('pickup_id')->latest('pickup_id')->first();
             $pickup_id = json_decode(json_encode($pickup_id), true);
             if (empty($pickup_id) || $pickup_id == null) {
@@ -197,9 +200,12 @@ class PickupRunSheetController extends Controller
             }
 
             $prssave['prs_date'] = $request->prs_date;
+            $prssave['location_id'] = $request->location_id;
+            $prssave['hub_location_id'] = $request->hub_location_id;
             $prssave['user_id'] = $authuser->id;
             $prssave['branch_id'] = $authuser->branch_id;
             $prssave['status'] = "1";
+            
             $saveprs = PickupRunSheet::create($prssave);
             if($saveprs)
             {
@@ -692,5 +698,12 @@ class PickupRunSheetController extends Controller
         }
         return response()->json($response);
     }
+
+      //download excel/csv
+      public function exportExcel()
+      {
+        
+          return Excel::download(new PrsExport, 'prs.csv');
+      }
 
 }

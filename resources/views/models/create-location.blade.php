@@ -1,5 +1,4 @@
-<div class="modal fade" id="location-modal" tabindex="-1"
-     role="dialog" aria-labelledby="location-modal-title" aria-hidden="true">
+<div class="modal fade" id="location-modal" tabindex="-1" role="dialog" aria-labelledby="location-modal-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(70%, 700px)">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,8 +20,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="location_name">Location City</label>
-                                <input class="form-control form-control-sm" id="nick_name" name="nick_name"
-                                       placeholder="">
+                                <input class="form-control form-control-sm" id="nick_name" name="nick_name" placeholder="">
                             </div>
                         </div>
                         <div class="form-row mb-0">
@@ -32,8 +30,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="location_name">Mobile No.</label>
-                                <input class="form-control form-control-sm" id="phone" name="phone" placeholder=""
-                                       maxlength="10">
+                                <input class="form-control form-control-sm" id="phone" name="phone" placeholder="" maxlength="10">
                             </div>
                         </div>
                         <div class="form-row mb-0">
@@ -41,11 +38,28 @@
                                 <label for="location_name">Team ID</label>
                                 <input class="form-control form-control-sm" id="team_id" name="team_id" placeholder="">
                             </div>
-                            <!-- <div class="form-group col-md-6">
-                                <label for="location_name"> Consignment No.</label>
-                                <input class="form-control form-control-sm" id="consignment_no" name="consignment_no" placeholder="" maxlength="4">
-                            </div> -->
+                            <div class="form-group col-md-6">
+                            <label for="location_name">&nbsp;</label>
+                                <div class="check-box d-flex align-content-center align-items-center ml-2" style="gap: 8px; height: 42px">
+                                <!-- <span style="color: #000"><strong>Is HUB?</strong></span> -->
+                                    <div class="checkbox radio">
+                                        <label class="check-label">
+                                            <input type="radio" value='1' name="isHub">
+                                            <span class="checkmark"></span>
+                                            HUB
+                                        </label>
+                                    </div>
+                                    <div class="checkbox radio">
+                                        <label class="check-label">
+                                            <input type="radio" name="isHub" value='0' checked>
+                                            <span class="checkmark"></span>
+                                            Not a HUB
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    
                         <div class="form-row mb-0">
                             <span style="color: #000"><strong>Allow LR without vehicle no. :</strong></span>
                             <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">

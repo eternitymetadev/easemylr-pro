@@ -95,6 +95,7 @@ class LocationController extends Controller
             $addlocation['phone'] = $request->phone;
         }
         $addlocation['with_vehicle_no'] = $request->with_vehicle_no;
+        $addlocation['is_hub'] = $request->isHub;
         $addlocation['status'] = 1;
 
         $savelocation = Location::create($addlocation);
@@ -151,6 +152,7 @@ class LocationController extends Controller
             $locationsave['phone']  = $request->phone;
         }
         $locationsave['with_vehicle_no'] = $request->with_vehicle_no;
+        $locationsave['is_hub'] = $request->is_hub;
 
         $locationsave['status']     = 1;
         $location = Location::where('id',$request->id)->update($locationsave);

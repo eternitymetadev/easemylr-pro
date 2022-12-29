@@ -1050,6 +1050,10 @@ jQuery(document).ready(function () {
         var locationid = jQuery(this).attr("data-id");
         jQuery(".locationid").val(locationid);
         var action = jQuery(this).attr("data-action");
+        jQuery('.is_hub_yes').attr("checked", false);
+        jQuery('.is_hub_no').attr("checked", false);
+        jQuery(".radio_vehicleno_yes").attr("checked", false);
+        jQuery(".radio_vehicleno_no").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1074,6 +1078,16 @@ jQuery(document).ready(function () {
                     jQuery(".radio_vehicleno_no").attr("checked", true);
                     jQuery(".radio_vehicleno_yes").attr("checked", false);
                 }
+
+                // alert(response.newcata.is_hub)
+                if (response.newcata.is_hub == 1) {
+                    jQuery('.is_hub_yes').attr("checked", true);
+                    jQuery('.is_hub_no').attr("checked", false);
+                } else {
+                    jQuery('.is_hub_yes').attr("checked", false);
+                    jQuery('.is_hub_no').attr("checked", true);
+                }
+            
             },
         });
     });

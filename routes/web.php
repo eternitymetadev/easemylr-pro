@@ -210,6 +210,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
     
     Route::resource('prs', PickupRunSheetController::class);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
@@ -349,6 +350,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
