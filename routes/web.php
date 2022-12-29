@@ -362,6 +362,12 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     Route::any('custom-reports', [ReportController::class,'customReport']);
 
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+
 
 
 });
