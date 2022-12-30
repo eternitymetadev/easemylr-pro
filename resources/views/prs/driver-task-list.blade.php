@@ -60,10 +60,12 @@
         var prs_id = jQuery(this).attr("data-prsid");
         var drivertask_id = jQuery(this).attr("data-drivertaskid");
         var prsconsigner_id = jQuery(this).attr("data-prsconsignerid");
-
+        var vehicle_id = jQuery(this).attr("data-vehicleid");
+        
         $("#consigner_id").val(prsconsigner_id);
         $("#drivertask_id").val(drivertask_id);
         $("#prs_id").val(prs_id);
+        $("#vehicle_id").val(vehicle_id);
 
         jQuery.ajax({
             type: "get",
@@ -81,23 +83,39 @@
                 var rows = '';
                 var i = 0;
                 console.log(response.data);
-                if(response.data != ''){
+                if((response.data).length != 0){
                     $.each(response.data, function (index, consignmtvalue) {
-                        $.each(consignmtvalue.consignment_items, function (index, value) {
+                        if((consignmtvalue.consignment_items).length !=0){
+                            $.each(consignmtvalue.consignment_items, function (index, value) {
+                                i++;
+
+                                rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
+                                rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'></td>';
+                                rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
+                                rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
+                                rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
+                                rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
+                                rows += '<td><input type="file" class="form-control form-small invc_img" name="data['+i+'][invc_img]" accept="image/*"/></td>';
+                                rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>';
+                                rows += '</tr>';
+                                
+                                $("#create-driver-task tbody").append(rows);
+                            });
+                        }else{
                             i++;
 
-                            rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
-                            rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'></td>';
-                            rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
-                            rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
-                            rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
-                            rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
+                            rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
+                            rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""></td>';
+                            rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value=""></td>';
+                            rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
+                            rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
+                            rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                             rows += '<td><input type="file" class="form-control form-small invc_img" name="data['+i+'][invc_img]" accept="image/*"/></td>';
                             rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>';
                             rows += '</tr>';
                             
                             $("#create-driver-task tbody").append(rows);
-                        });
+                        }
                     });
                 }else{
                     i++;

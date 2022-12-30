@@ -11,6 +11,7 @@
                 <input type="hidden" id="consigner_id" value="" name="consigner_id">
                 <input type="hidden" id="drivertask_id" value="" name="drivertask_id">
                 <input type="hidden" id="prs_id" value="" name="prs_id">
+                <input type="hidden" id="vehicle_id" value="" name="vehicle_id">
                 <div class="modal-body">
                 
                     <div class="Delt-content text-center">

@@ -288,7 +288,12 @@
                             <a href="{{$prefixurl.'clients'}}"> Clients</a>
                         </li>
                         <li>
+                            <a href="{{$prefixurl.'technical-master'}}"> Technical Master </a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'item-view'}}"> Item Upload</a>
                             <a href="{{$prefixurl.'driver-map'}}"> Driver Map</a>
+
                         </li>
                         <!-- <li>
                             <a href="{{url('roles')}}"> Roles</a>
