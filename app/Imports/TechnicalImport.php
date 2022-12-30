@@ -14,7 +14,7 @@ class TechnicalImport implements ToModel, WithHeadingRow//ToCollection
     /**
      * @param Collection $collection
      */
-    public function model(array $row)
+    public function model(array $row)  
     {
        
         return new TechnicalMaster([
