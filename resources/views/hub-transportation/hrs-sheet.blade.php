@@ -1,6 +1,18 @@
 @extends('layouts.main')
 @section('content')
 <style>
+     .select2-results__options {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 160px;
+            /* scroll-margin: 38px; */
+            overflow: auto;
+        }
+
+        .move {
+            cursor: move;
+        }
         td p {
             display: flex;
             flex-direction: column;
@@ -104,6 +116,31 @@
 @endsection
 @section('js')
 <script>
+     $(document).ready(function () {
+
+jQuery(function () {
+    $('.my-select2').each(function () {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function (e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
+
+$('#sheet').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+        'print'
+    ]
+});
+});
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
@@ -208,6 +245,7 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
 $(document).on('click', '.save_hrs', function () {
             var hrs_id = $(this).val();
             $('#save_hrs_details_model').modal('show');
+            $("#hrs_id").val(hrs_id);
             $.ajax({
                 type: "GET",
                 url: "view-hrsdetails/" + hrs_id,
@@ -216,12 +254,215 @@ $(document).on('click', '.save_hrs', function () {
                 },
                 beforeSend: //reinitialize Datatables
                     function () {
-                        $('#save-DraftSheet').dataTable().fnClearTable();
-                        $('#save-DraftSheet').dataTable().fnDestroy();
+                        $('#save-HrsDraftSheet').dataTable().fnClearTable();
+                        $('#save-HrsDraftSheet').dataTable().fnDestroy();
                     },
                 success: function (data) {
+                    var re = jQuery.parseJSON(data)
+                    console.log(re);
+                 var consignmentID = [];
+                    // var totalBoxes = 0;
+                    // var totalweights = 0;
+                    var i = 0;
+                    $.each(re.fetch, function (index, value) {
+                        i++;
+                        var alldata = value;
+                        consignmentID.push(alldata.consignment_id);
+                        // totalBoxes += parseInt(value.consignment_detail.total_quantity);
+                        // totalweights += parseInt(value.consignment_detail.total_weight);
+
+                        $('#save-HrsDraftSheet tbody').append(
+                            "<tr><td>" +
+                            value.consignment_id +
+                            "</td><td>" +
+                            value.consignment_detail.consignee_detail.nick_name +
+                            "</td><td>" +
+                            value.consignment_detail.consignee_detail.city +
+                            "</td><td>" +
+                            value.consignment_detail.total_quantity +
+                            "</td><td>" +
+                            value.consignment_detail.total_weight +
+                            "</td></tr>"
+                        );
+                    });
+                     $("#transaction_id").val(consignmentID);
+                    // var rowCount = $("#save-DraftSheet tbody tr").length;
+                    // $("#total_boxes").append("Boxes: " + totalBoxes);
+                    // $("#totalweights").append("Net Weight: " + totalweights + "Kg");
+                    // $("#totallr").append("LR's: " + rowCount);
                 }
             });
+        });
+
+    ///////////////////////////
+$('#updt_hrs_details').submit(function(e) {
+    e.preventDefault();
+
+    var vehicle = $('#vehicle_no').val();
+    var driver = $('#driver_id').val();
+    if (vehicle == '') {
+        swal('error', 'Please select vehicle', 'error');
+        return false;
+    }
+    if (driver == '') {
+        swal('error', 'Please select driver', 'error');
+        return false;
+    }
+
+    $.ajax({
+        url: "update_vehicle_hrs",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $('.indicator-progress').prop('disabled', true);
+            $('.indicator-label').prop('disabled', true);
+
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        complete: function(response) {
+            $('.indicator-progress').prop('disabled', true);
+            $('.indicator-label').prop('disabled', true);
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                alert('Data Updated Successfully');
+                location.reload();
+            } else if(data.success == false){
+                alert(data.error_message);
+                } else {
+                alert('something wrong');
+                    }
+                }
+            });
+        });
+    ////
+    $(document).on('click', '.view-sheet', function () {
+            var hrs_id = $(this).val();
+            $('#draft_hrs').modal('show');
+            $('#current_hrs').val(hrs_id);
+            $.ajax({
+                type: "GET",
+                url: "view-hrsSheetDetails/" + hrs_id,
+                data: {
+                    hrs_id: hrs_id
+                },
+                beforeSend: //reinitialize Datatables
+                    function () {
+                        $('.hrs_details_table').dataTable().fnClearTable();
+                        $('.hrs_details_table').dataTable().fnDestroy();
+                        $("#sss").empty();
+                        $("#ppp").empty();
+                        $("#nnn").empty();
+                        $("#drsdate").empty();
+                    },
+                success: function (data) {
+                    var re = jQuery.parseJSON(data)
+                    // var drs_no = re.fetch[0]['drs_no'];
+                    // $('#current_drs').val(drs_no);
+
+                    // var totalBox = 0;
+                    // var totalweight = 0;
+                    $.each(re.fetch, function (index, value) {
+                        var alldata = value;
+                        // totalBox += parseInt(value.total_quantity);
+                        // totalweight += parseInt(value.total_weight);
+
+                        $('.hrs_details_table tbody').append("<tr id=" + value.id + " class='move'><td>" + value
+                                .consignment_id + "</td><td>" + value.consignment_detail.consignee_detail.nick_name + "</td><td>" + value.consignment_detail.consignee_detail.city +
+                            "</td><td>" + value.consignment_detail.consignee_detail.postal_code + "</td><td style='text-align: right'>" + value.consignment_detail.total_quantity +
+                            "</td><td style='text-align: right'>" + value.consignment_detail.total_weight +
+                            "</td><td style='text-align: center'><button type='button'  data-id=" + value.consignment_no +
+                            " style='border: none; margin-inline: auto;' class='delete deleteIcon remover_lr'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-trash-2\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path><line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"17\"></line><line x1=\"14\" y1=\"11\" x2=\"14\" y2=\"17\"></line></svg></button></td></tr>"
+                        );
+                    });
+                    // var rowCount = $("#sheet tbody tr").length;
+                    // $("#total_box").html("Total Boxes: " + totalBox);
+                    // $("#totalweight").html("Net Weight: " + totalweight);
+                    // $("#total").html("Total LR's: " + rowCount);
+                }
+            });
+        });
+    /////
+    $(document).on('click', '#addlr_in_hrs', function () {
+            $(this).hide();
+            // $(this).css("display", "none");
+            $('#unverifiedlist').show();
+            $.ajax({
+                type: "post",
+                url: "get-add-lr-hrs",
+                data: {
+                    add_drs: 'add_drs'
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: //reinitialize Datatables
+                    function () {
+                        $('#unverifiedlrlist_hrs').dataTable().fnClearTable();
+                        $('#unverifiedlrlist_hrs').dataTable().fnDestroy();
+                    },
+                success: function (data) {
+
+                    $.each(data.lrlist, function (index, value) {
+                        console.log(value);
+                        $('#unverifiedlrlist_hrs tbody').append(
+                            "<tr><td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value=" +
+                            value.id + " style='width: 16px; height:16px;'></td><td>" +
+                            value.id+
+                            "</td><td>" +
+                            value.consigner_detail.nick_name+
+                            "</td><td>" +
+                            value.consignee_detail.nick_name+
+                            "</td><td>" +
+                            value.consignee_detail.city+
+                            "</td></tr>");
+                    });
+                }
+            });
+        });
+
+        ////
+        $('#add_unverified_lr_hrs').click(function () {
+            var hrs_no = $('#current_hrs').val();
+            var consignmentID = [];
+            $(':checkbox[name="checked_consign[]"]:checked').each(function () {
+                consignmentID.push(this.value);
+            });
+            
+            $.ajax({
+                url: "created-lr-hrs",
+                method: "POST",
+                data: {
+                    consignmentID: consignmentID,
+                    hrs_no: hrs_no
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    $('.disableDrs').prop('disabled', true);
+                },
+                complete: function (response) {
+                    $('.disableDrs').prop('disabled', true);
+                },
+                success: function (data) {
+                    if (data.success == true) {
+                        swal('success', 'Drs Created Successfully', 'success');
+                        window.location.href = "hrs-sheet";
+                    } else {
+                        swal('error', 'something wrong', 'error');
+                    }
+                }
+            })
         });
 
 </script>

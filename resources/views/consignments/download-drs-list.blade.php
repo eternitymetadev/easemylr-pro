@@ -575,7 +575,7 @@ $('#updt_vehicle').submit(function(e) {
         $(document).on('click', '#addlr', function () {
             $(this).hide();
             // $(this).css("display", "none");
-            $('#unverifiedlist').show();
+            $('#unverifiedlrlist_hrs').show();
             $.ajax({
                 type: "post",
                 url: "get-add-lr",
@@ -587,12 +587,12 @@ $('#updt_vehicle').submit(function(e) {
                 },
                 beforeSend: //reinitialize Datatables
                     function () {
-                        $('#unverifiedlrlist').dataTable().fnClearTable();
-                        $('#unverifiedlrlist').dataTable().fnDestroy();
+                        $('#unverifiedlrlist_hrs').dataTable().fnClearTable();
+                        $('#unverifiedlrlist_hrs').dataTable().fnDestroy();
                     },
                 success: function (data) {
                     $.each(data.lrlist, function (index, value) {
-                        $('#unverifiedlrlist tbody').append(
+                        $('#unverifiedlrlist_hrs tbody').append(
                             "<tr><td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value=" +
                             value.id + " style='width: 16px; height:16px;'></td><td>" + value
                                 .id + "</td><td>" + value.consignment_date + "</td><td>" + value

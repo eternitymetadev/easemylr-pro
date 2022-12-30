@@ -510,7 +510,8 @@ class ConsignmentController extends Controller
                 } else {
                     $consignmentsave['delivery_status'] = "Unassigned";
                 }
-    
+       
+                $consignmentsave['hrs_status'] = 2;
                 $consignmentsave['h2h_check'] = 'lm';
                 $saveconsignment = ConsignmentNote::create($consignmentsave);
                 $consignment_id = $saveconsignment->id;

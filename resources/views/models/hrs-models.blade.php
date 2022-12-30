@@ -11,7 +11,8 @@
             <div class="modal-body">
                 <form id="updt_hrs_details" method="post">
 
-                    <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="">
+                    <input type="hidden" class="form-control" id="transaction_id" name="lr_id" value="">
+                    <input type="hidden" class="form-control" id="hrs_id" name="hrs_id" value="">
                     <div class="form-row mb-4">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle No.</label>
@@ -61,7 +62,7 @@
 
 
                     <div class="table-responsive">
-                        <table id="save-DraftSheet" class="table table-hover"
+                        <table id="save-HrsDraftSheet" class="table table-hover"
                                style="width: 100%;text-align: left; border-radius: 12px; overflow: hidden; box-shadow: 0 0 2px #83838370 inset;">
                             <thead>
                             <tr>
@@ -70,9 +71,6 @@
                                 <th>Location</th>
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
-                                <th>EDD</th>
-                                <th>E-Way</th>
-
                             </tr>
                             </thead>
                             <tbody>
@@ -101,6 +99,87 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+<!-- =====================================================================================-->
+
+<div class="modal fade bd-example-modal-xl" id="draft_hrs" tabindex="-1" role="dialog"
+     aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myExtraLargeModalLabel">Hub Run Sheet</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table id="hrs_details_table" class="table hrs_details_table"
+                                       style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                                    <thead>
+                                    <tr>
+                                        <th>LR No</th>
+                                        <th>Consignee Name</th>
+                                        <th>city</th>
+                                        <th>Pin Code</th>
+                                        <th style='text-align: right'>Boxes</th>
+                                        <th style='text-align: right'>Net Weight</th>
+                                        <th style='text-align: center'>Action</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+
+                                <button type="button" class="btn btn-primary" id="addlr_in_hrs"
+                                        style=" float: right; font-size: 12px;">
+                                    Add LR
+                                </button>
+
+                                <div style="display: none; width: 100%;" id="unverifiedlist">
+                                    <input type="hidden" class="form-control" id="current_hrs" name="" value="">
+                                    <button type="button" class="mb-2 btn btn-warning disableDrs" id="add_unverified_lr_hrs"
+                                            style="font-size: 11px;">
+                                        Create DSR
+                                    </button>
+                                    <table id="unverifiedlrlist_hrs" class="table table-hover"
+                                           style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" name="" id="ckbCheckAll"
+                                                       style="width: 16px; height:16px;">
+                                            </th>
+                                            <th>LR No</th>
+                                            <th>Consigner Name</th>
+                                            <th>Consignee</th>
+                                            <th>Location</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+            </div>
+
         </div>
     </div>
 </div>

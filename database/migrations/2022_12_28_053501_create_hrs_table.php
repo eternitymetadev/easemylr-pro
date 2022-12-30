@@ -19,6 +19,9 @@ class CreateHrsTable extends Migration
             $table->string('consignment_id')->nullable();
             $table->string('vehicle_id')->nullable();
             $table->string('driver_id')->nullable();
+            $table->string('vehicle_type_id')->nullable();
+            $table->string('transporter_name')->nullable();
+            $table->string('purchase_price')->nullable();
             $table->string('branch_id')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();

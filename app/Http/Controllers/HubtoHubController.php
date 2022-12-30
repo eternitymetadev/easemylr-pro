@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Driver;
+use Response;
 
 class HubtoHubController extends Controller
 {
@@ -206,18 +207,114 @@ class HubtoHubController extends Controller
     public function view_saveHrsDetails(Request $request)
     {
         $id = $_GET['hrs_id'];
-        
-         $hrsview = Hrs::with('ConsignmentDetail')->where('hrs_no', $id)->get();
+
+         $hrsview = Hrs::with('ConsignmentDetail.ConsigneeDetail')->where('hrs_no', $id)->get();
         //  ->whereHas('ConsignmentDetail', function ($query){
         //     $query->where('status', '1');
         // })
          
         $result = json_decode(json_encode($hrsview), true);
-        echo'<pre>'; print_r($result); die;
 
         $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
+    }
+
+    public function updateVehicleHrs(Request $request)
+    {
+
+        $consignerId = $request->transaction_id;
+        $cc = explode(',', $consignerId);
+        $addvechileNo = $request->vehicle_id;
+        $adddriverId = $request->driver_id;
+        $vehicleType = $request->vehicle_type;
+        $transporterName = $request->transporter_name;
+        $purchasePrice = $request->purchase_price;
+        $hrs_id = $request->hrs_id;
+
+        $transaction = DB::table('hrs')->where('hrs_no', $hrs_id)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'vehicle_type_id' => $vehicleType, 'transporter_name' => $transporterName, 'purchase_price' => $purchasePrice]);
+        
+
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+    }
+
+    public function getHrsSheetDetails(Request $request)
+    {
+        $id = $_GET['hrs_id'];
+        $query = Hrs::query();
+        $query = $query->where('hrs_no', $id)
+            ->with('ConsignmentDetail.ConsigneeDetail')
+            ->get();
+        $result = json_decode(json_encode($query), true);
+
+        $response['fetch'] = $result;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        echo json_encode($response);
+
+    }
+
+    public function addmoreLrHrs(Request $request)
+    {
+
+           $this->prefix = request()->route()->getPrefix();
+             $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $query = ConsignmentNote::query();
+
+            $query = $query->where(['h2h_check'=>'h2h','hrs_status'=>"2"])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
+
+            if ($authuser->role_id == 1) {  
+                $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                
+                $query = $query->whereIn('branch_id', $cc);
+            }
+            
+            $consignments = $query->orderBy('id', 'DESC')->get();
+       
+   
+
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        $response['lrlist'] = $consignments;
+        $response['success'] = true;
+        $response['messages'] = 'successfully';
+        return Response::json($response);
+
+    }
+
+    public function createdLrHrs(Request $request)
+    {
+        
+        $hrs_no = $_POST['hrs_no'];
+        $consignmentId = $_POST['consignmentID'];
+        $authuser = Auth::user();
+        $cc = $authuser->branch_id;
+
+        foreach($consignmentId as $consignment){
+            $savehrs = Hrs::create(['hrs_no' => $hrs_no, 'consignment_id' => $consignment, 'branch_id' => $cc,'status' => 1]);
+
+        }
+        
+        ConsignmentNote::whereIn('id', $consignmentId )->update(['hrs_status' => 1]);
+
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
     }
 }
