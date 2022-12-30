@@ -1,25 +1,29 @@
 <div class="modal fade" id="deleteconsignee" tabindex="-1" role="dialog" aria-hidden="true">
-   <div class="modal-dialog">
-     <div class="modal-content">
-       <!-- <button type="button" class="close" data-dismiss="modal"><img src="{{asset('assets/img/close-bottle.png')}}" class="img-fluid"></button> -->
-       <!-- Modal Header -->
-       <div class="modal-header text-center">
-        <h4 class="modal-title">Delete</h4>
-       </div>
-       <!-- Modal body -->
-       <div class="modal-body">
-          <div class="Delt-content text-center">
-             <img src="{{asset('assets/img/delte.png')}}" class="img-fluid mb-2">
-             <h5 class="my-2">Are you sure you want to delete this consignee?</h5>
-          </div>
-       </div>
-       <!-- Modal footer -->
-       <div class="modal-footer">
-           <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal deleteconsigneeconfirm">Yes</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">No</a>
-           </div>
-       </div>
-     </div>
-   </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="Delt-content text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-alert-circle deleteAlertIcon">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h5 class="my-2">Delete Consignee</h5>
+                    <span>Are you sure you want to delete this consignee?</span>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="d-flex justify-content-end align-content-center mt-4" style="gap: 1rem;">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                <button type="submit" id="location_savebtn"
+                        class="btn btn-cstm btn-danger btn-modal delete-btn-modal deleteconsigneeconfirm">Yeah! Sure
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

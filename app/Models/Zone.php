@@ -9,6 +9,6 @@ class Zone extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'primary_zone', 'postal_code', 'district', 'state', 'status', 'created_at', 'updated_at'
+        'primary_zone', 'postal_code', 'district', 'state','hub_transfer', 'status', 'created_at', 'updated_at'
     ];
 }

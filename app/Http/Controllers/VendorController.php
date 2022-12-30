@@ -56,6 +56,7 @@ class VendorController extends Controller
 
         return view('vendors.vendor-list', ['prefix' => $this->prefix, 'vendors' => $vendors]);
     }
+
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
@@ -553,6 +554,7 @@ class VendorController extends Controller
         return response()->json($response);
 
     }
+
     public function update_purchase_price(Request $request)
     {
         try {
@@ -818,7 +820,7 @@ class VendorController extends Controller
         }
         $unique = array_unique($sent_vehicle);
         $sent_venicle_no = implode(',', $unique);
-        
+
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
         // ============== Sent to finfect
@@ -928,6 +930,20 @@ class VendorController extends Controller
 
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
+
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id_new;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                $paymentresponse['payment_status'] = 4;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
 
         }
 
@@ -1194,7 +1210,7 @@ class VendorController extends Controller
             $query = $query;
         }
         $drswiseReports = $query->where('payment_status', '!=', 0)->get();
-            
+
         return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
     }
 

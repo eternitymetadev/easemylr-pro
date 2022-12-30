@@ -9,6 +9,9 @@ class ConsignmentNote extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'lr_type',
+        'h2h_check',
+        'hrs_status',
         'regclient_id',
         'consigner_id',
         'consignee_id',
@@ -44,6 +47,8 @@ class ConsignmentNote extends Model
         'booked_drs',
         'prsitem_status',
         'job_id',
+        'change_mode_remarks',
+        'lr_mode',
         'tracking_link',
         'delivery_status',
         'delivery_date',

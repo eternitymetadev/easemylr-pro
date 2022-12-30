@@ -24,6 +24,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
+use App\Http\Controllers\HubtoHubController;
 
 /*
 |--------------------------------------------------------------------------
@@ -212,17 +213,21 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+
+    Route::any('driver-map', [DriverController::class,'driverMapView']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
-    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
 
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -264,8 +269,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
 
-    Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
+    Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -300,7 +305,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
-    
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -335,7 +339,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('import-vendor', [VendorController::class, 'importVendor']);
     Route::any('export-vendor', [VendorController::class, 'exportVendor']);
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
-    
+
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
@@ -354,8 +358,21 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
 
+
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
-    
+    Route::any('custom-reports', [ReportController::class,'customReport']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+
+
 
 
 });

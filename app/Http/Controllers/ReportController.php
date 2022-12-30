@@ -22,7 +22,7 @@ use App\Exports\Report1Export;
 use App\Exports\Report2Export;
 use Session;
 use Config;
-use Auth; 
+use Auth;
 use DB;
 use QrCode;
 use Storage;
@@ -57,14 +57,14 @@ class ReportController extends Controller
         }
 
         $query = ConsignmentNote::query();
-        
+
         if($request->ajax()){
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
-            
+
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
@@ -79,9 +79,9 @@ class ReportController extends Controller
 
             if($authuser->role_id ==1)
             {
-                $query = $query;            
+                $query = $query;
             }elseif($authuser->role_id == 4){
-                $query = $query->whereIn('regclient_id', $regclient);   
+                $query = $query->whereIn('regclient_id', $regclient);
             }else{
                 $query = $query->whereIn('branch_id', $cc);
             }
@@ -111,14 +111,14 @@ class ReportController extends Controller
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
-      
+
             $peritem = Session::get('peritem');
             if(!empty($peritem)){
                 $peritem = $peritem;
             }else{
                 $peritem = Config::get('variable.PER_PAGE');
             }
-            
+
             $startdate = $request->startdate;
             $enddate = $request->enddate;
 
@@ -146,18 +146,18 @@ class ReportController extends Controller
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
 
-        if($authuser->role_id ==1) 
+        if($authuser->role_id ==1)
         {
-            $query = $query;            
+            $query = $query;
         }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
+            $query = $query->whereIn('regclient_id', $regclient);
         }else{
             $query = $query->whereIn('branch_id', $cc);
         }
-        
+
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-        
+
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
 
@@ -175,14 +175,14 @@ class ReportController extends Controller
         }
 
         $query = ConsignmentNote::query();
-        
+
         if($request->ajax()){
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
-            
+
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
@@ -191,7 +191,7 @@ class ReportController extends Controller
 
             $query = $query->where('status', '!=', 5)
             ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail','ConsignerDetail.GetRegClient.BaseClient','vehicletype');
-               
+
             if($authuser->role_id ==1){
                 $query;
             }
@@ -229,14 +229,14 @@ class ReportController extends Controller
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
-      
+
             $peritem = Session::get('peritem');
             if(!empty($peritem)){
                 $peritem = $peritem;
             }else{
                 $peritem = Config::get('variable.PER_PAGE');
             }
-            
+
             $startdate = $request->startdate;
             $enddate = $request->enddate;
 
@@ -274,25 +274,25 @@ class ReportController extends Controller
         else{
             $query = $query->whereIn('branch_id', $cc);
         }
-        
+
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-        
+
         return view('consignments.mis-report-list', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
     }
-    
+
     // =============================Admin Report ============================= //
-       
+
     public function adminReport1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-      
+
             $query = Consigner::query();
             $authuser = Auth::user();
             $role_id = Role::where('id','=',$authuser->role_id)->first();
-            $regclient = explode(',',$authuser->regionalclient_id); 
+            $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
-          
+
                 $consigners = DB::table('consigners')->select('consigners.*', 'regional_clients.name as regional_clientname','base_clients.client_name as baseclient_name', 'zones.state as consigner_state','consignees.nick_name as consignee_nick_name', 'consignees.contact_name as consignee_contact_name', 'consignees.phone as consignee_phone', 'consignees.postal_code as consignee_postal_code', 'consignees.district as consignee_district','consigne_stat.state as consignee_state')
                 ->join('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
                 ->join('base_clients', 'base_clients.id', '=', 'regional_clients.baseclient_id')
@@ -300,7 +300,7 @@ class ReportController extends Controller
                 ->leftjoin('zones', 'zones.postal_code', '=', 'consigners.postal_code')
                 ->leftjoin('zones as consigne_stat', 'consigne_stat.postal_code', '=', 'consignees.postal_code')
                 ->get();
-                
+
 
         return view('consignments.admin-report1',["prefix" => $this->prefix,'adminrepo' => $consigners]);
     }
@@ -308,7 +308,7 @@ class ReportController extends Controller
     public function adminReport2(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        
+
         $lr_data = DB::table('consignment_notes')->select('consignment_notes.*','consigners.nick_name as consigner_nickname','regional_clients.name as regional_client_name','base_clients.client_name as base_client_name', 'locations.name as locations_name')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->leftjoin('regional_clients', 'regional_clients.id', '=', 'consigners.regionalclient_id')
@@ -328,5 +328,11 @@ class ReportController extends Controller
         return Excel::download(new Report2Export($request->startdate,$request->enddate), 'mis_report2.csv');
     }
 
+    public function customReport()
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        return view('reports.custom-report', ['prefix' => $this->prefix]);
+    }
 
 }

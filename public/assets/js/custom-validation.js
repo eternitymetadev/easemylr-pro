@@ -1,5 +1,3 @@
-// const { each } = require("lodash");
-
 jQuery(document).ready(function () {
     /* check box checked create/update user permission page  */
     jQuery(document).on("click", "#ckbCheckAll", function () {
@@ -497,6 +495,7 @@ jQuery(document).ready(function () {
             },
         });
     }
+
     /*===== End get driver detail on create vehicle page =====*/
 
     /*======get consigner on regional client =====*/
@@ -532,6 +531,7 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
+
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -1008,6 +1008,7 @@ jQuery(document).ready(function () {
             }
         });
     }
+
     //Call the calculate total function
     $(document).on("keyup", ".qnt, .net, .gross, .frei", function () {
         calculate_totals();
@@ -1226,18 +1227,22 @@ jQuery(document).ready(function () {
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
                     if (value.signed_drs == null) {
                         var field =
-                            "<input type='file' name='data[" +
+                            "<div class='d-flex align-items-center justify-content-center'><label for='data[" +
+                            i +
+                            '][img]\'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></label><input type=\'file\' name=\'data[' +
                             i +
                             "][img]' data-id='" +
                             value.consignment_no +
-                            "' placeholder='Choose image' class='drs_image value='" +
+                            "' placeholder='Choose image' style='width: 120px;' class='drs_image value=' id='data[" +
+                            i +
+                            "][img]'" +
                             value.signed_drs +
-                            "'>";
+                            "'></div>";
                     } else {
                         var field =
                             "<a href='" +
                             storage_img +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
+                            "' target='_blank' class='imageLink'>View Image</a>";
                     }
                     // delivery date//
                     if (value.dd == null) {
@@ -1262,7 +1267,13 @@ jQuery(document).ready(function () {
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
-                    $("#get-delvery-date tbody").append(
+                    if (value.dd != null) {
+                        var remove_disable = "disabled";
+                    } else {
+                        var remove_disable = "";
+                    }
+
+                  $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
                             i +
                             "][lrno]' class='delivery_d' value='" +
@@ -1275,21 +1286,28 @@ jQuery(document).ready(function () {
                             value.consignment_date +
                             "'>" +
                             value.consignee_id +
-                            " </td><td><input type='hidden' name='data[" +
+                            "</td><td><p style='width: 100px' class='textWrap' title='" +
+                            value.city +
+                            "'>" +
+                            " <input type='hidden' name='data[" +
                             i +
                             "][job_id]' class='c_date' value='" +
                             value.job_id +
                             "'>" +
                             value.city +
-                            "</td><td>" +
+                            "</p></td><td>" +
                             edd_date +
                             "</td><td>" +
                             deliverydate +
                             "</td><td>" +
                             field +
-                            "</td><td><button type='button'  data-id=" +
+                            "</td><td><button " +
+                            remove_disable +
+                            " type='button'  data-id=" +
                             value.consignment_no +
-                            " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                            " style='border: none;' class='delete " +
+                            remove_disable +
+                            '  deleteIcon remover_lr\'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td></tr>'
                     );
                     i++;
                 });
@@ -1436,77 +1454,71 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
 
                 $.each(data.fetch, function (index, value) {
-                    var trail_history = jQuery.parseJSON(value.trail);
+                   
+                   var trail_history = jQuery.parseJSON(value.trail);
 
-                    if (value.job_id != null) {
-                        var img_api = [];
-
-                        $.each(
-                            trail_history.task_history,
-                            function (index, history) {
-                                if (history.type == "image_added") {
-                                    img_api.push(history.description);
-                                }
-                            }
-                        );
-                    }
-                    //   console.log(img_api); return false;
+                   if(value.lr_mode == 1){
+                    var img_api = [];
+                   
+                    $.each(trail_history.task_history, function (index, history) {
+                        if(history.type == "image_added"){
+                            img_api.push(history.description)
+                        }
+                    });
+                }
+            //   console.log(img_api); return false;
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if (value.job_id == null || value.job_id == "") {
-                        if (value.signed_drs == null) {
-                            if (data.role_id == 7) {
-                                var field = "-";
-                            } else {
-                                var field =
-                                    "<input type='file' name='img' data-id='" +
-                                    value.id +
-                                    "' placeholder='Choose image' class='drs_image'>";
-                            }
-                        } else {
-                            var field =
-                                "<a href='" +
-                                storage_img +
-                                "' target='_blank' class='btn btn-warning'>view</a>";
+                    if(value.lr_mode == 0){
+                    if (value.signed_drs == null) {
+                        if(data.role_id == 7){
+                            var field = '-';
+                        }else{
+                        var field =
+                            "<input type='file' name='img' data-id='" +
+                            value.id +
+                            "' placeholder='Choose image' class='drs_image'>";
                         }
                     } else {
-                        if (img_api == null || img_api == "") {
-                            var field =
-                                "<input type='file' name='img' data-id='" +
-                                value.id +
-                                "' placeholder='Choose image' class='drs_image'>";
-                        } else {
-                            var field1 = [];
-                            var img_length = img_api.length;
-                            var i = 0;
-                            $.each(img_api, function (index, img) {
-                                i++;
-                                img_group =
-                                    "<a href='" +
-                                    img +
-                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
-                                    i +
-                                    "</a> ";
-                                field1.push(img_group);
-                            });
-                            var field = field1.join(" ");
-                        }
+                         var field = 
+                        "<a href='" +
+                        storage_img +
+                        "' target='_blank' class='btn btn-warning'>view</a>";
                     }
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field =
+                        "<input type='file' name='img' data-id='" +
+                        value.id +
+                        "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                         var field1 = [];
+                        var img_length = img_api.length;
+                        var i = 0;
+                        $.each(img_api, function (index, img) {
+                            i++
+                            img_group  = "<a href='"+img+
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             field1.push(img_group);
+                        });
+                       var field = (field1.join(' '));
+                    }
+                }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7) {
-                            var deliverydat = "-";
-                        } else {
-                            var deliverydat =
-                                "<input type='date' name='delivery_date[]' data-id=" +
-                                value.id +
-                                " class='delivery_d' value='" +
-                                value.delivery_date +
-                                "' Required>";
+                        if(data.role_id == 7){
+                            var deliverydat = '-';
+                        }else{
+                        var deliverydat =
+                            "<input type='date' name='delivery_date[]' data-id=" +
+                            value.id +
+                            " class='delivery_d' value='" +
+                            value.delivery_date +
+                            "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1524,35 +1536,31 @@ jQuery(document).ready(function () {
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
 
-                    row =
-                        "<tr><td>" +
-                        value.id +
-                        " <input type='hidden' name='delivery_date' value='" +
-                        value.consignment_date +
-                        "'</td><td>" +
-                        value.consignee_nick +
-                        "</td><td>" +
-                        value.conee_city +
-                        "</td><td>" +
-                        deliverydat +
-                        "</td><td>" +
-                        field +
-                        "</td>";
-                    if (value.job_id == "" || value.job_id == null) {
-                        if (data.role_id != 7) {
-                            row += "<td>" + buton + "</td>";
-                        }
-                    } else {
+                     row =   "<tr><td>" +
+                    value.id +
+                    " <input type='hidden' name='delivery_date' value='"+value.consignment_date+"'</td><td>" +
+                    value.consignee_nick +
+                    "</td><td>" +
+                    value.conee_city +
+                    "</td><td>" +
+                    deliverydat +
+                    "</td><td>" +
+                    field +
+                    "</td>";
+                    if(value.lr_mode == 0){
+                    if(data.role_id != 7){
+                    row += "<td>" + buton +"</td>";
+                    }}else{
                         row += "<td>Update from shadow</td>";
                     }
                     row += "</tr>";
 
                     $("#get-delvery-dateLR tbody").append(row);
+
                 });
             },
         });
     });
-
     //for setting branch address edit
     jQuery(document).on("click", ".editBranchadd", function () {
         jQuery(".submitBtn").css("display", "block");
@@ -1689,6 +1697,7 @@ jQuery(document).ready(function () {
         }
     });
 });
+
 /* End document ready function */
 
 function get_delivery_date() {
@@ -1713,6 +1722,7 @@ function get_delivery_date() {
         });
     });
 }
+
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
@@ -2459,7 +2469,6 @@ $("#upload_techical").submit(function (e) {
 $("#item_master").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-
     $.ajax({
         url: "import-item-master",
         headers: {
@@ -2486,13 +2495,11 @@ $("#item_master").submit(function (e) {
 });
 
 /*====== In create PRS  get consigner on click regional client =====*/
-
-// $(".select_prsregclient").change(function (e) {
-function onChangePrsRegClient(_this) {
-    // var selected = $(_this).val();
-    // console.dir(selected);
-    var regclient_id = $(_this).val();
-    $(_this).parents().siblings("td").find(".consigner_prs").empty();
+$("#select_prsregclient").change(function (e) {
+    var selected = $(e.target).val();
+    console.dir(selected);
+    var regclient_id = $(this).val();
+    $("#select_consigner").empty();
     $.ajax({
         url: "/get-consignerprs",
         type: "get",
@@ -2503,20 +2510,25 @@ function onChangePrsRegClient(_this) {
             "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
         },
         beforeSend: function () {
-            $(_this).parents().siblings("td").find(".consigner_prs").empty();
+            $("#select_consigner").empty();
         },
         success: function (res) {
-            console.log(res.data);
+            $("#select_consigner").append(
+                '<option value="">select consigner</option>'
+            );
+
             $.each(res.data, function (index, value) {
-                console.log($(_this).html());
-                $(_this).parents().siblings("td").find(".consigner_prs")
-                    .append(
-                        `<option value="${value.id}">${value.nick_name}</option>`
-                    );
+                $("#select_consigner").append(
+                    '<option value="' +
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
+                );
             });
         },
     });
-}
+});
 
 $(document).on("click", ".receive-vehicle", function () {
     var prs_id = jQuery(this).attr("data-prsid");
@@ -2543,37 +2555,31 @@ $(document).on("click", ".receive-vehicle", function () {
                 $.each(res.data, function (index, value) {
                     var inv_total = value.prs_task_items.length;
                     var qtyarr = [];
-                    var ids_arr = [];
                     $.each(value.prs_task_items, function (index, qtyval) {
                         var qty = qtyval.quantity;
                         qtyarr.push(qty);
-
-                        var item_ids = qtyval.id;
-                        ids_arr.push(item_ids);
-
                     });
                     var toNumbers = qtyarr.map(Number);
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
 
                     rows +=
-                        '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="" value="' +
+                        '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data[' +
+                        index +
+                        '][consigner_id]" value="' +
                         value.consigner_detail.nick_name +
-                        '" readonly><input type="hidden" name="data[' +
-                        index +'][consigner_id]" value="' +value.consigner_detail.id+
-                        '" readonly"><input type="hidden" name="data['+index +'][item_id]" value="'+ids_arr +
-                        '" readonly"></td>';
+                        '" readonly></td>';
                     rows +=
                         '<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data[' +
                         index +
                         '][invoice_no]" value="' +
                         inv_total +
-                        '" readonly></td>';
+                        '"></td>';
                     rows +=
                         '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
                         index +
                         '][total_qty]"  value="' +
                         qty_sum +
-                        '" readonly></td>';
+                        '"></td>';
                     rows +=
                         '<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data[' +
                         index +
@@ -2581,7 +2587,7 @@ $(document).on("click", ".receive-vehicle", function () {
                     rows +=
                         '<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data[' +
                         index +
-                        '][remaining_qty]" readonly></td>';
+                        '][remaining_qty]"></td>';
                     rows +=
                         '<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data[' +
                         index +
@@ -2593,6 +2599,7 @@ $(document).on("click", ".receive-vehicle", function () {
         },
     });
 });
+
 
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {
@@ -2639,3 +2646,4 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
         });
     });
 });
+
