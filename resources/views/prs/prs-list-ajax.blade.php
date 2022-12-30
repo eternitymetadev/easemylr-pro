@@ -3,9 +3,9 @@
         <thead>
             <tr>
                 <th>Pickup ID</th>
+                <th>Date</th>
                 <th>Regional Client</th>
                 <th>Pickup Points</th>
-                <th>Date</th>
                 <!-- <th>PRS Type </th> -->
                 <th>Vehicle No.</th>
                 <th>Driver Name </th>
@@ -27,15 +27,13 @@
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>
-                <!-- <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td> -->
+                <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>
 
                     @if(count($value->PrsRegClients)>0)
-                    <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
                     <span class="viewAllInvoices">
                         <span class="moreInvoicesView">
                             <ul style="padding: 0; margin-bottom: 0;">
-                                <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?>
                                 @foreach($value->PrsRegClients as $regclients)
                                 <li style="margin-bottom: 8px" title="{{$regclients->RegClient->name ?? '-'}}">{{$regclients->RegClient->name ?? "-"}}</li>
                                 @endforeach
@@ -43,15 +41,13 @@
                         </span>
                     </span>
                     @endif
-                    <!-- <?php //echo '<pre>'; print_r(json_decode($value->PrsRegClients)); die;?> -->
                 </td>
                 <td>
                     @if(count($value->PrsRegClients)>0)
                     <span class="viewAllInvoices">
                         <span class="moreInvoicesView">
-                        <a href="{{url($prefix.'/driver-tasks')}}" target="_blank">
+                        <a href="{{url($prefix.'/driver-tasks')}}" target="">
                                 <ul style="padding: 0; margin-bottom: 0;">
-                                    <?php //echo'<pre>';print_r(json_decode($value->PrsRegClients)); die;?>
                                     @foreach($value->PrsRegClients as $regcnrs)
                                     @foreach($regcnrs->RegConsigner as $regcnr)
 
@@ -64,7 +60,6 @@
                     </span>
                     @endif
                 </td>
-                <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
                 <td>{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>

@@ -57,7 +57,7 @@ class GlobalFunctions {
             $status = 'Acknowledged';
         }
         else if($status == 3){      //2
-            $status = 'Completed';
+            $status = 'Material Picked up';
         }
         // else if($status == 4){       //3
         //     $status = 'Completed';

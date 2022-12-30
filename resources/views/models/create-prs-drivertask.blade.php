@@ -22,12 +22,12 @@
                         <table id="create-driver-task" class="table table-hover" style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
+                                    <!-- <th>Order ID</th> -->
                                     <th>Invoice No</th>
                                     <th>Invoice Date</th>
-                                    <th>Quantity</th>
+                                    <!-- <th>Quantity</th>
                                     <th>Net Weight</th>
-                                    <th>Gross Weight</th>
+                                    <th>Gross Weight</th> -->
                                     <th>Invoice Image</th>
                                     <th>Action</th>
                                 </tr>

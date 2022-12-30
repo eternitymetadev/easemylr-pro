@@ -36,7 +36,7 @@ tbody tr:last-child .rowAddButton {
                                 
                                 <div class="col-md-6">
                                     <label>Locations</label>
-                                    <select name="location_id" class="form-control" id="location_id">
+                                    <select name="location_id" class="form-control tagging" id="location_id">
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($locations)>0) {
@@ -52,7 +52,7 @@ tbody tr:last-child .rowAddButton {
                                
                                 <div class="col-md-6">
                                     <label>Hub Locations</label>
-                                    <select name="hub_location_id" class="form-control" id="hub_location_id">
+                                    <select name="hub_location_id" class="form-control tagging" id="hub_location_id">
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($hub_locations)>0) {
@@ -117,7 +117,7 @@ tbody tr:last-child .rowAddButton {
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Type</label>
-                                    <select class="form-control my-select2" id="vehicle_type" name="vehicletype_id" tabindex="-1">
+                                    <select class="form-control tagging my-select2" id="vehicle_type" name="vehicletype_id" tabindex="-1">
                                         <option value="">Select vehicle type</option>
                                         @foreach($vehicletypes as $vehicletype)
                                         <option value="{{$vehicletype->id}}">{{$vehicletype->name}}
@@ -128,7 +128,7 @@ tbody tr:last-child .rowAddButton {
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
-                                    <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                                    <select class="form-control tagging my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
                                         <option value="">Select vehicle</option>
                                         @foreach($vehicles as $vehicle)
                                         <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
@@ -138,7 +138,7 @@ tbody tr:last-child .rowAddButton {
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Driver Name</label>
-                                    <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
+                                    <select class="form-control tagging my-select2" id="driver_id" name="driver_id" tabindex="-1">
                                         <option value="">Select driver</option>
                                         @foreach($drivers as $driver)
                                         <option value="{{$driver->id}}">

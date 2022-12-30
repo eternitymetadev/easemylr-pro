@@ -89,12 +89,12 @@
                             $.each(consignmtvalue.consignment_items, function (index, value) {
                                 i++;
 
-                                rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
-                                rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'></td>';
+                                // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'></td>';
+                                rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
                                 rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
-                                rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
-                                rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
-                                rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
+                                // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
+                                // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
+                                // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
                                 rows += '<td><input type="file" class="form-control form-small invc_img" name="data['+i+'][invc_img]" accept="image/*"/></td>';
                                 rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>';
                                 rows += '</tr>';
@@ -104,12 +104,12 @@
                         }else{
                             i++;
 
-                            rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
-                            rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""></td>';
+                            // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""></td>';
+                            rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
                             rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value=""></td>';
-                            rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
-                            rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
-                            rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
+                            // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
+                            // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
+                            // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                             rows += '<td><input type="file" class="form-control form-small invc_img" name="data['+i+'][invc_img]" accept="image/*"/></td>';
                             rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>';
                             rows += '</tr>';
@@ -120,12 +120,12 @@
                 }else{
                     i++;
 
-                    rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
-                    rows += '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""></td>';
+                    // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""></td>';
+                    rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
                     rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value=""></td>';
-                    rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
-                    rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
-                    rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
+                    // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
+                    // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
+                    // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                     rows += '<td><input type="file" class="form-control form-small invc_img" name="data['+i+'][invc_img]" accept="image/*"/></td>';
                     rows += '<td> <button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button></td>';
                     rows += '</tr>';

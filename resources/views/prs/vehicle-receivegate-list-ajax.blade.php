@@ -3,6 +3,7 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
+                <th>Pickup ID</th>
                 <th>Vehicle No</th>
                 <th>Driver Name</th>
                 <th>Vehicle Type</th>
@@ -55,6 +56,7 @@
                 $disable = Helper::DriverTaskStatusCheck($value->id);
             ?>
             <tr>
+                <td>{{ $value->pickup_id ?? "-" }}</td>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>

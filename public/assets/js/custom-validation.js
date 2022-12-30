@@ -889,34 +889,34 @@ jQuery(document).ready(function () {
             if (item_no <= 6) {
                 var tds = "<tr>";
 
-                tds +=
-                    ' <td><input type="text" class="form-control form-small orderid" name="data[' +
-                    item_no +
-                    '][order_id]"><input type="hidden" name="data[' +
-                    item_no +
-                    '][lr_id]" value=""></td>';
+                // tds +=
+                //     ' <td><input type="text" class="form-control form-small orderid" name="data[' +
+                //     item_no +
+                //     '][order_id]"></td>';
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
                     '][invoice_no]" id="' +
                     item_no +
-                    '" value=""></td>';
+                    '" value=""><input type="hidden" name="data[' +
+                    item_no +
+                    '][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
                     '][invoice_date]"></td>';
-                tds +=
-                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
-                    item_no +
-                    '][quantity]"></td>';
-                tds +=
-                    '<td><input type="number" class="form-control form-small net" name="data[' +
-                    item_no +
-                    '][net_weight]"></td>';
-                tds +=
-                    '<td><input type="number" class="form-control form-small gross" name="data[' +
-                    item_no +
-                    '][gross_weight]"></td>';
+                // tds +=
+                //     '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                //     item_no +
+                //     '][quantity]"></td>';
+                // tds +=
+                //     '<td><input type="number" class="form-control form-small net" name="data[' +
+                //     item_no +
+                //     '][net_weight]"></td>';
+                // tds +=
+                //     '<td><input type="number" class="form-control form-small gross" name="data[' +
+                //     item_no +
+                //     '][gross_weight]"></td>';
                 tds +=
                     '<td><input type="file" class="form-control form-small invc_img" name="data[' +
                     item_no +
