@@ -581,9 +581,6 @@ class PickupRunSheetController extends Controller
                 $save_data['status'] = 1;
                 $save_data['user_id'] = $authuser->id;
                 $save_data['branch_id'] = $authuser->branch_id;
-
-                $save_data['is_verify'] = $save_data->is_verify;
-
                 $saveitem_data = $save_data['item_id'];
                 $saveitem_ids = explode(',', $saveitem_data);
 
