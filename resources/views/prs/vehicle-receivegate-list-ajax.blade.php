@@ -7,7 +7,7 @@
                 <th>Vehicle No</th>
                 <th>Driver Name</th>
                 <th>Vehicle Type</th>
-                <th>Quantity (In Pieces) </th>
+                <!-- <th>Quantity (In Pieces) </th> -->
                 <th>Status </th>
                 <th>Action </th>
             </tr>
@@ -59,7 +59,7 @@
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
-                <td>{{$total_qty}}</td>
+                <!-- <td>{{$total_qty}}</td> -->
                 <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>

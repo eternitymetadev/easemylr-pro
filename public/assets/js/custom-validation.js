@@ -2582,24 +2582,28 @@ $(document).on("click", ".receive-vehicle", function () {
                         '][invoice_no]" value="' +
                         inv_total +
                         '" readonly></td>';
-                    rows +=
-                        '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
-                        index +
-                        '][total_qty]"  value="' +
-                        qty_sum +
-                        '" readonly></td>';
-                    rows +=
-                        '<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data[' +
-                        index +
-                        '][receive_qty]"></td>';
-                    rows +=
-                        '<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data[' +
-                        index +
-                        '][remaining_qty]" readonly></td>';
+                    // rows +=
+                    //     '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
+                    //     index +
+                    //     '][total_qty]"  value="' +
+                    //     qty_sum +
+                    //     '" readonly></td>';
+                    // rows +=
+                    //     '<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data[' +
+                    //     index +
+                    //     '][receive_qty]"></td>';
+                    // rows +=
+                    //     '<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data[' +
+                    //     index +
+                    //     '][remaining_qty]" readonly></td>';
                     rows +=
                         '<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data[' +
                         index +
-                        '][remarks]"></td></tr>';
+                        '][remarks]"></td>';
+                    rows +=
+                        '<td><input type="checkbox" id="" name="data[' +
+                        index +
+                        '][is_verify]" value="1"></td></tr>';
                 });
 
                 $("#vehicleitems_table tbody").append(rows);

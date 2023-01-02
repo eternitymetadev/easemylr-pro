@@ -29,10 +29,11 @@
                                 <tr>
                                     <th width="200px">Consignor name</th>
                                     <th width="150px">Number of Invoices</th>
-                                    <th width="150px">Quantity (in Pieces)</th>
+                                    <!-- <th width="150px">Quantity (in Pieces)</th>
                                     <th width="150px">Received quantity</th>
-                                    <th width="150px">Less Received (Auto)</th>
+                                    <th width="150px">Less Received (Auto)</th> -->
                                     <th style="flex: 1;">Remarks</th>
+                                    <th style="flex: 1;">Verify</th>
                                 </tr>
                             </thead>
                             <tbody>

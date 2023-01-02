@@ -364,7 +364,7 @@ class PickupRunSheetController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'","",$search);
                 $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
+                    $query->where('pickup_id', 'like', '%' . $search . '%')
                     ->orWhereHas('VehicleDetail', function ($vehiclequery) use ($search) {
                         $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
                     })
@@ -373,12 +373,7 @@ class PickupRunSheetController extends Controller
                     })
                     ->orWhereHas('VehicleType', function ($vehtypequery) use ($search) {
                         $vehtypequery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    });
+                    });                    
                 });
             }
 
@@ -503,10 +498,8 @@ class PickupRunSheetController extends Controller
                             $savesubitems = ConsignmentSubItem::create($save_itemdata);
                         }
                     }
-                    
                 // end create order
                 }
-
                 PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 3]);
 
                 $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
@@ -521,7 +514,6 @@ class PickupRunSheetController extends Controller
                 $response['error'] = false;
                 $response['page'] = 'create-prstaskitem';
                 $response['redirect_url'] = $url;
-                  
             }else{
                 $response['success'] = false;
                 $response['error_message'] = "Can not created PRS task item please try again";
@@ -534,7 +526,6 @@ class PickupRunSheetController extends Controller
             $response['success'] = false;
             $response['redirect_url'] = $url;
         }
-            
         return response()->json($response);
     }
 
@@ -547,7 +538,6 @@ class PickupRunSheetController extends Controller
         $consinger_ids = explode(',',$request->consinger_ids);
         $consigners = Consigner::select('nick_name')->whereIn('id',$consinger_ids)->get();
         $cnr_data =json_decode(json_encode($consigners));
-        // $get_prs= PickupRunSheet::where('id',$request->prs_id)->get();
 
         if ($cnr_data) {
             $response['success'] = true;
@@ -585,11 +575,15 @@ class PickupRunSheetController extends Controller
         $authuser = Auth::user();
         if (!empty($request->data)) {
             $get_data = $request->data;
+            // echo "<pre>"; print_r($get_data); die;
             foreach ($get_data as $key => $save_data) {
                 $save_data['prs_id'] = $request->prs_id;
                 $save_data['status'] = 1;
                 $save_data['user_id'] = $authuser->id;
                 $save_data['branch_id'] = $authuser->branch_id;
+
+                $save_data['is_verify'] = $save_data->is_verify;
+
                 $saveitem_data = $save_data['item_id'];
                 $saveitem_ids = explode(',', $saveitem_data);
 
@@ -601,11 +595,11 @@ class PickupRunSheetController extends Controller
 
                 PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
                 $url = URL::to($this->prefix.'/vehicle-receivegate');
-                    $response['success'] = true;
-                    $response['success_message'] = "PRS vehicle receive successfully";
-                    $response['error'] = false;
-                    $response['page'] = 'create-vehiclereceive';
-                    $response['redirect_url'] = $url;
+                $response['success'] = true;
+                $response['success_message'] = "PRS vehicle receive successfully";
+                $response['error'] = false;
+                $response['page'] = 'create-vehiclereceive';
+                $response['redirect_url'] = $url;
             }else{
                 $response['success'] = false;
                 $response['error_message'] = "Can not PRS vehicle receive please try again";
@@ -616,7 +610,6 @@ class PickupRunSheetController extends Controller
             $response['error_message'] = "Can not created PRS task item please try again";
             $response['error'] = true;
         }
-        
         return response()->json($response);
     }
 
@@ -665,7 +658,8 @@ class PickupRunSheetController extends Controller
         //
     }
     // get consigner on select regclient
-    public function getConsigner(Request $request){
+    public function getConsigner(Request $request)
+    {
         $getconsigners = Consigner::select('id','nick_name')->where('regionalclient_id', $request->regclient_id)->get();
 
         if ($getconsigners) {
@@ -673,7 +667,6 @@ class PickupRunSheetController extends Controller
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
-
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consigner list please try again";
@@ -683,7 +676,8 @@ class PickupRunSheetController extends Controller
     }
 
     // get consigner on select regclient
-    public function getlrItems(Request $request){
+    public function getlrItems(Request $request)
+    {
         $getconsigners = ConsignmentNote::with('ConsignmentItems')->where(['consigner_id'=>$request->prsconsigner_id,'status'=> '5','prsitem_status'=>'0'])->orderBy('created_at', 'desc')->get();
         // echo'<pre>'; print_r(json_decode($getconsigners)); die;
         if ($getconsigners) {
@@ -699,11 +693,10 @@ class PickupRunSheetController extends Controller
         return response()->json($response);
     }
 
-      //download excel/csv
-      public function exportExcel()
-      {
-        
-          return Excel::download(new PrsExport, 'prs.csv');
-      }
+    //download excel/csv
+    public function exportExcel()
+    {
+        return Excel::download(new PrsExport, 'prs.csv');
+    }
 
 }
