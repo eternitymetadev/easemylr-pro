@@ -535,12 +535,14 @@ jQuery(document).ready(function () {
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
-                            value.id +
-                            '">' +
-                            value.nick_name +
-                            "</option>"
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
                     );
                 });
+
+                console.log(res.data_items);
 
                 if (res.data_regclient == null) {
                     var multiple_invoice = "";
@@ -556,9 +558,246 @@ jQuery(document).ready(function () {
                     }
                 }
 
-                if (multiple_invoice == 1) {
-                    $(".insert-more").attr("disabled", false);
+                if (multiple_invoice == 1 || multiple_invoice == 2) {
+                    console.log('start appending1');
+                    let isInsertabelMore = (multiple_invoice == 1);
+                    let blockToAppend = `<div class="form-row">
+                    <h6 class="col-12">Order Information</h6>
+    
+                    <div style="width: 100%">
+                        <div class="d-flex flex-wrap align-items-center form-group form-group-sm">
+                            <div class="col-md-3">
+                                <label>Item Description</label>
+                                <input type="text" class="form-control" value="Pesticide"
+                                       name="description" list="json-datalist" onkeyup="showResult(this.value)">
+                                <datalist id="json-datalist"></datalist>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Mode of Packing</label>
+                                <input type="text" class="form-control" value="Case/s"
+                                       name="packing_type">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Quantity</label>
+                                <span id="tot_qty">
+                                    <?php echo "0";?>
+                                </span>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Net Weight</label>
+                                <span id="total_nt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Gross Weight</label>
+                                <span id="total_gt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.
+                            </div>
+                        </div>
+                    </div>
+    
+                    
+                    <div class="maindiv" style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse;" id="items_table" class="items_table">
+                            <tbody class="main_table_body">
+                                <input type="hidden" id="tid" name="tid" value="1" >
+                            <tr>
+                                <td>
+                                    <table class="mainTr" id="1">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Order ID</label>
+                                                    <input type="text" class="form-control orderid" name="data[1][order_id]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Number</label>
+                                                    <input type="text" class="form-control invc_no" id="1"
+                                                           name="data[1][invoice_no]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Date</label>
+                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Amount</label>
+                                                    <input type="number" class="form-control invc_amt"
+                                                           name="data[1][invoice_amount]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>E-way Bill Number</label>
+                                                    <input type="number" class="form-control ew_bill" name="data[1][e_way_bill]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>E-Way Bill Date</label>
+                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">
+                                                <table id="" class="childTable"
+                                                       style="width: 85%; min-width: 500px; margin-inline: auto;">
+                                                    <tbody class="items_table_body">
+                                                    <tr>
+                                                        <td width="200px">
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Item</label>
+                                                                <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                                <option value="" disabled selected>Select</option>`;
+                    $.each(res.data_items, function (index, value) {
+                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
+                    });
+                    blockToAppend += `</select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Quantity</label>
+                                                                <input type="number" class="form-control qty" name="">
+                                                                <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Net Weight</label>
+                                                                <input type="number" class="form-control net" name="data[1][item_data][0][net_weight]" readonly>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Gross Weight</label>
+                                                                <input type="number" class="form-control gross" name="data[1][item_data][0][gross_weight]" readonly>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Chargeable Weight</label>
+                                                                <input type="number" class="form-control charge_wt" name="data[1][item_data][0][chargeable_weight]" readonly>
+                                                            </div>
+    
+                                                        </td>
+                                                        <td><div class="removeIcon"></div></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <span style="margin-right: 8%" class="addItem">+ Add Item</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td><div class="removeIcon"></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>`;
+                    blockToAppend += (!isInsertabelMore) ? `<span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>` : '';
+                    blockToAppend += `</div> `;
+
+
+                    $('.orderInfoBlock').html(blockToAppend);
+                    console.log('end appending1');
                 } else {
+                    let blockToAppend = `<div class="col-lg-12 layout-spacing">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-sm-12 ">
+                                <h4><b>Order Information</b></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <table border="1" width="100%">
+                        <div class="row">
+                            <tr>
+                                <th>Item Description</th>
+                                <th>Mode of packing</th>
+                                <th>Total Quantity</th>
+                                <th>Total Net Weight</th>
+                                <th>Total Gross Weight</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
+                                <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                                <td align="center"><span id="tot_qty">
+                                        <?php echo "0";?>
+                                    </span></td>
+                                <td align="center"><span id="tot_nt_wt">
+                                        <?php echo "0";?>
+                                    </span> Kgs.</td>
+                                <td align="center"><span id="tot_gt_wt">
+                                        <?php echo "0";?>
+                                    </span> Kgs.</td>
+    
+                                <input type="hidden" name="total_quantity" id="total_quantity" value="">
+                                <input type="hidden" name="total_weight" id="total_weight" value="">
+                                <input type="hidden" name="total_gross_weight" id="total_gross_weight" value="">
+                                <input type="hidden" name="total_freight" id="total_freight" value="">
+                                <!-- <td><input type="number" class="form-control form-small" name="total_quantity"></td>
+                                <td><input type="number" class="form-control form-small" name="total_weight"></td>
+                                <td><input type="number" class="form-control form-small" name="total_gross_weight"></td> -->
+                            </tr>
+                        </div>
+                    </table>
+    
+                </div>
+                <div class="col-lg-12 layout-spacing">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-sm-12 ">
+                                <div style="overflow-x:auto;">
+                                    <table>
+                                        <tr>
+                                            <th style="width: 160px">Order ID</th>
+                                            <th style="width: 180px">Invoice Number</th>
+                                            <th style="width: 160px">Invoice Date</th>
+                                            <th style="width: 180px">Invoice Amount</th>
+                                            <th style="width: 210px">E-way Bill Number</th>
+                                            <th style="width: 200px">E-Way Bill Date</th>
+                                            <th style="width: 160px">Quantity</th>
+                                            <th style="width: 160px">Net Weight</th>
+                                            <th style="width: 160px">Gross Weight</th>
+    
+                                        </tr>
+                                    </table>
+                                    <table style=" border-collapse: collapse;" border='1' id="items_table" >
+                                        <tbody>
+                                    <tr></tr>
+                                            <tr>
+                                                <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
+                                                <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
+                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                                <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
+                                                <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
+                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                                <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
+                                                <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
+                                                <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
+                                                <td> <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>`;
+                    $('.orderInfoBlock').html(blockToAppend);
                     $(".insert-more").attr("disabled", true);
                 }
             },
@@ -596,10 +835,10 @@ jQuery(document).ready(function () {
                 $.each(res.consignee, function (key, value) {
                     $("#select_consignee, #select_ship_to").append(
                         '<option value="' +
-                            value.id +
-                            '">' +
-                            value.nick_name +
-                            "</option>"
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
                     );
                 });
                 if (res.data) {
@@ -640,17 +879,17 @@ jQuery(document).ready(function () {
 
                     $("#consigner_address").append(
                         address_line1 +
-                            " " +
-                            address_line2 +
-                            "" +
-                            address_line3 +
-                            " " +
-                            address_line4 +
-                            " " +
-                            gst_number +
-                            " " +
-                            phone +
-                            ""
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
                     );
 
                     $("#dispatch").val(res.data.city);
@@ -712,17 +951,17 @@ jQuery(document).ready(function () {
 
                     $("#consignee_address").append(
                         address_line1 +
-                            " " +
-                            address_line2 +
-                            "" +
-                            address_line3 +
-                            " " +
-                            address_line4 +
-                            " " +
-                            gst_number +
-                            " " +
-                            phone +
-                            ""
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
                     );
                 }
             },
@@ -780,17 +1019,17 @@ jQuery(document).ready(function () {
 
                     $("#ship_to_address").append(
                         address_line1 +
-                            " " +
-                            address_line2 +
-                            "" +
-                            address_line3 +
-                            " " +
-                            address_line4 +
-                            " " +
-                            gst_number +
-                            " " +
-                            phone +
-                            ""
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
                     );
                 }
             },
@@ -1087,7 +1326,7 @@ jQuery(document).ready(function () {
                     jQuery('.is_hub_yes').attr("checked", false);
                     jQuery('.is_hub_no').attr("checked", true);
                 }
-            
+
             },
         });
     });
@@ -1230,7 +1469,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-date").dataTable().fnClearTable();
                 $("#get-delvery-date").dataTable().fnDestroy();
             },
-            complete: function () {},
+            complete: function () { },
 
             success: function (data) {
                 var consignmentID = [];
@@ -1278,32 +1517,32 @@ jQuery(document).ready(function () {
 
                     $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
-                            i +
-                            "][lrno]' class='delivery_d' value='" +
-                            value.consignment_no +
-                            "'>" +
-                            value.consignment_no +
-                            "</td><td><input type='hidden' name='data[" +
-                            i +
-                            "][lr_date]' class='c_date' value='" +
-                            value.consignment_date +
-                            "'>" +
-                            value.consignee_id +
-                            " </td><td><input type='hidden' name='data[" +
-                            i +
-                            "][job_id]' class='c_date' value='" +
-                            value.job_id +
-                            "'>" +
-                            value.city +
-                            "</td><td>" +
-                            edd_date +
-                            "</td><td>" +
-                            deliverydate +
-                            "</td><td>" +
-                            field +
-                            "</td><td><button type='button'  data-id=" +
-                            value.consignment_no +
-                            " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                        i +
+                        "][lrno]' class='delivery_d' value='" +
+                        value.consignment_no +
+                        "'>" +
+                        value.consignment_no +
+                        "</td><td><input type='hidden' name='data[" +
+                        i +
+                        "][lr_date]' class='c_date' value='" +
+                        value.consignment_date +
+                        "'>" +
+                        value.consignee_id +
+                        " </td><td><input type='hidden' name='data[" +
+                        i +
+                        "][job_id]' class='c_date' value='" +
+                        value.job_id +
+                        "'>" +
+                        value.city +
+                        "</td><td>" +
+                        edd_date +
+                        "</td><td>" +
+                        deliverydate +
+                        "</td><td>" +
+                        field +
+                        "</td><td><button type='button'  data-id=" +
+                        value.consignment_no +
+                        " class='btn btn-primary remover_lr'>remove</button></td></tr>"
                     );
                     i++;
                 });
@@ -1444,7 +1683,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-dateLR").dataTable().fnDestroy();
                 $("#lr_status").empty();
             },
-            complete: function () {},
+            complete: function () { },
 
             success: function (data) {
                 var consignmentID = [];
@@ -1723,7 +1962,7 @@ function get_delivery_date() {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             dataType: "json",
-            success: function (result) {},
+            success: function (result) { },
         });
     });
 }
@@ -1790,7 +2029,7 @@ $(document).on("click", ".onelrupdate", function () {
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
-        beforeSend: function () {},
+        beforeSend: function () { },
         success: function (data) {
             // alert(data.success);
             if (data.success == true) {
@@ -1885,18 +2124,18 @@ $("#all_inv_save").submit(function (e) {
                     }
                     $("#view_invoices tbody").append(
                         "<tr><input type='hidden' name='data[" +
-                            i +
-                            "][id]' value=" +
-                            value.id +
-                            " ><td>" +
-                            value.consignment_id +
-                            "</td><td>" +
-                            value.invoice_no +
-                            "</td><td>" +
-                            billno +
-                            "</td><td>" +
-                            billdate +
-                            "</td></tr>"
+                        i +
+                        "][id]' value=" +
+                        value.id +
+                        " ><td>" +
+                        value.consignment_id +
+                        "</td><td>" +
+                        value.invoice_no +
+                        "</td><td>" +
+                        billno +
+                        "</td><td>" +
+                        billdate +
+                        "</td></tr>"
                     );
 
                     i++;
@@ -2073,7 +2312,7 @@ $("#vendor-master").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {},
+        beforeSend: function () { },
         success: (data) => {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
@@ -2141,7 +2380,7 @@ $("#purchase_amt_form").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {},
+        beforeSend: function () { },
         success: (data) => {
             if (data.success == true) {
                 swal("success", data.success_message, "success");
@@ -2171,7 +2410,7 @@ $("#vendor_import").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {},
+        beforeSend: function () { },
         success: (data) => {
             if (data.success == true) {
                 if (data.ignorecount > 0) {
@@ -2182,7 +2421,7 @@ $("#vendor_import").submit(function (e) {
                     swal(
                         "success",
                         data.ignorecount +
-                            " ignored, These Vendor Ifsc code is less than 11 digit",
+                        " ignored, These Vendor Ifsc code is less than 11 digit",
                         "success"
                     );
                 } else {
@@ -2269,10 +2508,10 @@ $(".searchclientreport").click(function (e) {
             $.each(res.data, function (index, value) {
                 $("#select_consigner").append(
                     '<option value="' +
-                        value.id +
-                        '">' +
-                        value.nick_name +
-                        "</option>"
+                    value.id +
+                    '">' +
+                    value.nick_name +
+                    "</option>"
                 );
             });
 
@@ -2351,18 +2590,18 @@ $("#all_inv_save").submit(function (e) {
 
                     $("#view_invoices tbody").append(
                         "<tr><input type='hidden' name='data[" +
-                            i +
-                            "][id]' value=" +
-                            value.id +
-                            " ><td>" +
-                            value.consignment_id +
-                            "</td><td>" +
-                            value.invoice_no +
-                            "</td><td>" +
-                            billno +
-                            "</td><td>" +
-                            billdate +
-                            "</td></tr>"
+                        i +
+                        "][id]' value=" +
+                        value.id +
+                        " ><td>" +
+                        value.consignment_id +
+                        "</td><td>" +
+                        value.invoice_no +
+                        "</td><td>" +
+                        billno +
+                        "</td><td>" +
+                        billdate +
+                        "</td></tr>"
                     );
 
                     i++;
@@ -2424,7 +2663,7 @@ $("#update_purchase_amt_form").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {},
+        beforeSend: function () { },
         success: (data) => {
             if (data.success == true) {
                 swal("success", data.success_message, "success");
@@ -2573,8 +2812,8 @@ $(document).on("click", ".receive-vehicle", function () {
                         '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="" value="' +
                         value.consigner_detail.nick_name +
                         '" readonly><input type="hidden" name="data[' +
-                        index +'][consigner_id]" value="' +value.consigner_detail.id+
-                        '" readonly"><input type="hidden" name="data['+index +'][item_id]" value="'+ids_arr +
+                        index + '][consigner_id]" value="' + value.consigner_detail.id +
+                        '" readonly"><input type="hidden" name="data[' + index + '][item_id]" value="' + ids_arr +
                         '" readonly"></td>';
                     rows +=
                         '<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data[' +

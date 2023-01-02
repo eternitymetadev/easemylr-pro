@@ -67,13 +67,23 @@
                                         <td>
                                             <div class="check-box d-flex">
                                                 <div class="checkbox radio">
-                                                    <label class="check-label">Yes
+                                                    <label class="check-label">1
                                                         <input type="radio" value="1" name="data[1][is_multiple_invoice]" class=""  checked="">
                                                     </label>
                                                 </div>
                                                 <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="data[1][is_multiple_invoice]" value="0">
+                                                    <label class="check-label">2
+                                                        <input type="radio" name="data[1][is_multiple_invoice]" value="2">
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">3
+                                                        <input type="radio" value="3" name="data[1][is_multiple_invoice]" class=""  checked="">
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">4
+                                                        <input type="radio" name="data[1][is_multiple_invoice]" value="4">
                                                     </label>
                                                 </div>
                                             </div>

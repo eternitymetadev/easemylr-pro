@@ -271,27 +271,69 @@
 
         <form class="general_form" method="POST" action="{{url($prefix.'/orders')}}" id="createorder" style="margin: auto; ">
 
-            {{--bill to info--}} 
-            <div class="form-row">
-                <h6 class="col-12">Bill To Information</h6>
-
+        {{--Branch Location--}}
+        <div class="form-row">
+            <h6 class="col-12">Branch</h6>
+             
+            <?php $authuser = Auth::user();
+            if($authuser->role_id == 2 || $authuser->role_id == 4)
+            {
+            ?>
+            <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Branch <span class="text-danger">*</span>
+                </label>
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                    @foreach($branchs as $branch)
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <?php } else { ?>
                 <div class="form-group col-md-4">
-                    <label for="exampleFormControlSelect1">
-                        Select Bill to Client<span class="text-danger">*</span>
-                    </label>
-                    <select class="form-control form-control-sm my-select2" id="select_regclient"
-                            name="regclient_id">
-                        <option selected="selected" disabled>select client..</option>
-                        @foreach($regionalclient as $client)
-                            <option value="{{$client->id}}">{{$client->name}}</option>
-                        @endforeach
-                    </select>
-                    <?php $authuser = Auth::user();
-                                if($authuser->role_id ==3) { ?>
-                                <input id="location_id" type="hidden" name="branch_id" value="">
-                            <?php } ?> 
-                </div>
+                <label for="exampleFormControlSelect1">
+                    Select Branch <span class="text-danger">*</span>
+                </label>
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                    <option value="">Select..</option>
+                    @foreach($branchs as $branch)
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    @endforeach
+                </select>
+            </div>
 
+                <?php } ?>
+
+        </div>
+
+        {{--bill to info--}}
+        <div class="form-row">
+            <h6 class="col-12">Bill To Information</h6>
+            <?php $authuser = Auth::user();
+            if($authuser->role_id == 2 || $authuser->role_id == 4)
+            {
+            ?>
+            <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Bill to Client<span class="text-danger">*</span>
+                </label>
+                <select class="form-control form-control-sm my-select2" id="select_regclient" name="regclient_id">
+                    <option selected="selected" disabled>select client..</option>
+                    @foreach($regionalclient as $client)
+                    <option value="{{$client->id}}">{{$client->name}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <?php } else { ?>
+                <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Bill to Client<span class="text-danger">*</span>
+                </label>
+                <select class="form-control form-control-sm my-select2" id="select_regclient" name="regclient_id">
+                    <option selected="selected" disabled>select client..</option>
+                </select>
+            </div>
+            <?php } ?>
                 <div class="form-group col-md-3">
                     <label for="exampleFormControlSelect1">
                         Payment Term<span class="text-danger">*</span>
@@ -331,7 +373,7 @@
             </div>
 
             <input type="hidden" class="form-seteing date-picker" id="consignDate" name="consignment_date"
-                   placeholder="" value="<?php echo date('d-m-Y'); ?>">
+                   placeholder="" value="<?php echo date('d-m-Y'); ?>" />
 
 
             {{--pickup & drop info--}}
@@ -375,152 +417,13 @@
 
 
             {{--order info--}}
-            <div class="form-row">
-                <h6 class="col-12">Order Information</h6>
-
-                <div style="width: 100%">
-                    <div class="d-flex flex-wrap align-items-center form-group form-group-sm">
-                        <div class="col-md-3">
-                            <label>Item Description</label>
-                            <input type="text" class="form-control" value="Pesticide"
-                                   name="description" list="json-datalist" onkeyup="showResult(this.value)">
-                            <datalist id="json-datalist"></datalist>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Mode of Packing</label>
-                            <input type="text" class="form-control" value="Case/s"
-                                   name="packing_type">
-                        </div>
-                        <div class="col-md-2">
-                            <label>Total Quantity</label>
-                            <span id="tot_qty">
-                                <?php echo "0";?>
-                            </span>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Total Net Weight</label>
-                            <span id="total_nt_wt">
-                                <?php echo "0";?>
-                            </span> Kgs.
-                        </div>
-                        <div class="col-md-2">
-                            <label>Total Gross Weight</label>
-                            <span id="total_gt_wt">
-                                <?php echo "0";?>
-                            </span> Kgs.
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="maindiv" style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
-                    <table style="width: 100%; border-collapse: collapse;" id="items_table" class="items_table">
-                        <tbody class="main_table_body">
-                            <input type="hidden" id="tid" name="tid" value="1" >
-                        <tr>
-                            <td>
-                                <table class="mainTr" id="1">
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>Order ID</label>
-                                                <input type="text" class="form-control orderid" name="data[1][order_id]">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>Invoice Number</label>
-                                                <input type="text" class="form-control invc_no" id="1"
-                                                       name="data[1][invoice_no]">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>Invoice Amount</label>
-                                                <input type="number" class="form-control invc_amt"
-                                                       name="data[1][invoice_amount]">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>E-way Bill Number</label>
-                                                <input type="number" class="form-control ew_bill" name="data[1][e_way_bill]">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group form-group-sm">
-                                                <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="7">
-                                            <table id="" class="childTable"
-                                                   style="width: 85%; min-width: 500px; margin-inline: auto;">
-                                                <tbody class="items_table_body">
-                                                <tr>
-                                                    <td width="200px">
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Item</label>
-                                                            <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
-                                                            <option value="" disabled selected>Select</option>
-                                                              @foreach($itemlists as $item_list)
-                                                                <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
-                                                               @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Quantity</label>
-                                                            <input type="number" class="form-control qty" name="">
-                                                            <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Net Weight</label>
-                                                            <input type="number" class="form-control net" name="data[1][item_data][0][net_weight]" readonly>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Gross Weight</label>
-                                                            <input type="number" class="form-control gross" name="data[1][item_data][0][gross_weight]" readonly>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group form-group-sm">
-                                                            <label>Chargeable Weight</label>
-                                                            <input type="number" class="form-control charge_wt" name="data[1][item_data][0][chargeable_weight]" readonly>
-                                                        </div>
-
-                                                    </td>
-                                                    <td><div class="removeIcon"></div></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            <span style="margin-right: 8%" class="addItem">+ Add Item</span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td><div class="removeIcon"></div></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>
+            <div class="orderInfoBlock">
             </div>
+
+         
+
+
+            
 
 
             <!-- {{--vehicle info--}}
@@ -1058,7 +961,40 @@
                 }
             });
         }
-        
+    ////
+$("#branch_id").change(function (e) {
+
+var branch_id = $(this).val();
+$("#select_regclient").empty();
+$.ajax({
+    url: "/get-bill-client",
+    type: "get",
+    cache: false,
+    data: { branch_id: branch_id },
+    dataType: "json",
+    headers: {
+        "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+    },
+    beforeSend: function () {
+        $("#select_regclient").empty();
+    },
+    success: function (res) {
+        $("#select_regclient").append(
+            '<option value="">select..</option>'
+        );
+
+        $.each(res.data, function (index, value) {
+            $("#select_regclient").append(
+                '<option value="' +
+                    value.id +
+                    '">' +
+                    value.name +
+                    "</option>"
+            );
+        });
+    },
+});
+});
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"></script>

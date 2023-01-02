@@ -723,6 +723,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
     Route::get('/get-consignerprs', [PickupRunSheetController::class, 'getConsigner']);
+    Route::get('/get-bill-client', [OrderController::class, 'getBillClient']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);
