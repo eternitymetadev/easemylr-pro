@@ -17,9 +17,12 @@ class TechnicalImport implements ToModel, WithHeadingRow//ToCollection
     public function model(array $row)
     {
        
+        $check_technical_name = TechnicalMaster::where('technical_formula', $row['technical_formula'])->first();
+        if(empty($check_technical_name)){
         return new TechnicalMaster([
             'technical_formula'      => $row['technical_formula'],
        
         ]);
+    }
     }
 }

@@ -40,7 +40,7 @@
         <div class="page-header layout-spacing">
             <h2 class="pageHeading">Technical Master</h2>
             <div class="d-flex align-content-center" style="gap: 1rem;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#manual_form">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-upload-cloud mr-1">
@@ -135,10 +135,10 @@
             </div>
 
             {{--modal for Manual Form--}}
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="manual_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                    <form id="upload_techical" class="modal-content">
+                    <form id="technical_manual_form" class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Upload Technical Master</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -147,8 +147,8 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="formGroupExampleInput">Excel File*</label>
-                                <input required type="text" class="form-control form-control-sm" name="technical_file"
+                                <label for="formGroupExampleInput">Technical Name*</label>
+                                <input required type="text" class="form-control form-control-sm" name="technical_name"
                                        id="formGroupExampleInput" placeholder="Example input">
                             </div>
                         </div>
@@ -165,4 +165,40 @@
         </div>
     </div>
 
+@endsection
+@section('js')
+<script>
+$("#technical_manual_form").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "add-technical-name",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+                window.location.href = "technical-master";
+            }else if(data.success_message == false){
+                swal("error!", data.error_message, "error");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+</script>
+////
 @endsection

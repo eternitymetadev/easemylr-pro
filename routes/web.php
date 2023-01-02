@@ -209,6 +209,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
     Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
     Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
+    Route::any('add-technical-name', [TechnicalMasterController::class, 'addTechnicalName']);
+    Route::any('add-items-name', [TechnicalMasterController::class, 'addItems']);
+    Route::any('edit-items-name', [TechnicalMasterController::class, 'editItemName']);
+    Route::any('update-items-name', [TechnicalMasterController::class, 'updateItemName']);
     
     Route::resource('prs', PickupRunSheetController::class);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
@@ -738,6 +742,7 @@ Route::middleware(['auth'])->group(function () {
     Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
     Route::get('/get-consignerprs', [PickupRunSheetController::class, 'getConsigner']);
+    Route::get('/get-bill-client', [OrderController::class, 'getBillClient']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);

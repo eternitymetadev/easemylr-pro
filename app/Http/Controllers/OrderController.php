@@ -137,26 +137,22 @@ class OrderController extends Controller
             $con_series = '';
         }
 
-        $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
-        if ($cn) {
-            if (!empty($cn->consignment_no)) {
-                $cc = explode('-', $cn->consignment_no);
-                $getconsignmentno = @$cc[1] + 1;
-                $consignmentno = $cc[0] . '-' . $getconsignmentno;
-            } else {
-                $consignmentno = $con_series . '-1';
-            }
-        } else {
-            $consignmentno = $con_series . '-1';
-        }
-
-        if (empty($consignmentno)) {
-            $consignmentno = "";
-        }
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
+
+        if ($authuser->role_id == 1) {
+            $branchs = Location::select('id', 'name')->get();
+        } elseif ($authuser->role_id == 2) {
+            $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+        } elseif ($authuser->role_id == 5) {
+            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        } else {
+            $branchs = Location::select('id', 'name')->get();
+        }
+
+        
 
 
         /////////////////////////////Bill to regional clients //////////////////////////
@@ -177,7 +173,8 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name','location_id')->get();
         }
 
-        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient,'itemlists' => $itemlists]);
+
+        return view('orders.create-order', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient,'itemlists' => $itemlists, 'branchs' => $branchs]);
     }
 
     /**
@@ -188,6 +185,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        
         try {
             DB::beginTransaction();
 
@@ -257,11 +255,8 @@ class OrderController extends Controller
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            if($authuser->role_id == 3){
-                $consignmentsave['branch_id'] = $request->branch_id;
-            }else{
-                $consignmentsave['branch_id'] = $authuser->branch_id;
-            }
+
+            $consignmentsave['branch_id'] = $request->branch_id;
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = 5;
             if (!empty($request->vehicle_id)) {
@@ -839,6 +834,25 @@ class OrderController extends Controller
             $response['success'] = false;
             $response['error'] = true;
             $response['error_message'] = "Can not import consignees please try again";
+        }
+        return response()->json($response);
+    }
+
+    public function getBillClient(Request $request)
+    {
+
+        $getregionals = RegionalClient::where('location_id', $request->branch_id)->get();
+
+        if ($getregionals) {
+            $response['success'] = true;
+            $response['success_message'] = "Regional Client list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getregionals;
+
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch Regional list please try again";
+            $response['error'] = true;
         }
         return response()->json($response);
     }
