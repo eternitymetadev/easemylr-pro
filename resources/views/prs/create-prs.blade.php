@@ -35,7 +35,7 @@ tbody tr:last-child .rowAddButton {
                             <div class="d-flex align-items-center justify-content-center flex-wrap mb-4">
                                 
                                 <div class="col-md-6">
-                                    <label>Locations</label>
+                                    <label>Pickup From Branch</label>
                                     <select name="location_id" class="form-control tagging" id="location_id">
                                         <option value="">Select</option>
                                         <?php 
@@ -51,7 +51,7 @@ tbody tr:last-child .rowAddButton {
                                 </div>
                                
                                 <div class="col-md-6">
-                                    <label>Hub Locations</label>
+                                    <label>Pickup Drop Hub</label>
                                     <select name="hub_location_id" class="form-control tagging" id="hub_location_id">
                                         <option value="">Select</option>
                                         <?php 

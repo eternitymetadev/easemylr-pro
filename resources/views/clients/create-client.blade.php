@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
 <style>
-     .row.layout-top-spacing {
+.row.layout-top-spacing {
     width: 80%;
     margin: auto;
 
@@ -15,7 +15,8 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Clients</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Client</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
+                                Client</a></li>
                     </ol>
                 </nav>
             </div>
@@ -36,57 +37,55 @@
                                     <input type="text" class="form-control" name="client_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    
+
                                 </div>
                             </div>
                             <table id="myTable">
                                 <tbody>
                                     <tr>
-                                        <th><label for="exampleFormControlInput2">Regional Client Name<span class="text-danger">*</span></label></th>
-                                        <th><label for="exampleFormControlInput2">Location<span class="text-danger">*</span></label></th>
+                                        <th><label for="exampleFormControlInput2">Regional Client Name<span
+                                                    class="text-danger">*</span></label></th>
+                                        <th><label for="exampleFormControlInput2">Location<span
+                                                    class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
                                     </tr>
                                     <tr class="rowcls">
                                         <td>
-                                            <input type="text" class="form-control name" name="data[1][name]" placeholder="">
+                                            <input type="text" class="form-control name" name="data[1][name]"
+                                                placeholder="">
                                         </td>
                                         <td>
                                             <select class="form-control location_id" name="data[1][location_id]">
                                                 <option value="">Select</option>
-                                                <?php 
-                                                if(count($locations)>0) {
+                                                <?php
+                                                if (count($locations) > 0) {
                                                     foreach ($locations as $key => $location) {
-                                                ?>
-                                                    <option value="{{ $key }}">{{ucwords($location)}}</option>
-                                                    <?php 
-                                                    }
+                                                        ?>
+                                                <option value="{{ $key }}">{{ucwords($location)}}</option>
+                                                <?php
+                                                }
                                                 }
                                                 ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <div class="check-box d-flex">
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">Yes
-                                                        <input type="radio" value="1" name="data[1][is_multiple_invoice]" class=""  checked="">
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="data[1][is_multiple_invoice]" value="0">
-                                                    </label>
-                                                </div>
-                                            </div>
+                                            <select class="form-control is_multiple_invoice"
+                                                name="data[1][is_multiple_invoice]">
+                                                <option value="">Select</option>
+                                                <option value="1">Per invoice-Item wise</option>
+                                                <option value="2">Multiple Invoice-Item wise</option>
+                                                <option value="3">per invoice-Without Item</option>
+                                                <option value="4">LR Multiple invoice-Without item</option>
+                                            </select>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
-                                            <!-- <a onclick="addrow()" class="fa fa-plus-circle" href="#"></a> -->
-                                            
+                                            <button type="button" class="btn btn-primary" id="addRow"
+                                                onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            
+
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/clients') }}"> Back</a>
                         </form>
@@ -100,55 +99,43 @@
 @endsection
 @section('js')
 <script>
-    // $("a").click(function(){
-    function addrow(){
-        var i = $('.rowcls').length;
-        i  = i + 1;
-        var rows = '';
+// $("a").click(function(){
+function addrow() {
+    var i = $('.rowcls').length;
+    i = i + 1;
+    var rows = '';
 
-        rows+= '<tr class="rowcls">';
-        rows+= '<td>';
-        rows+= '<input type="text" class="form-control name" name="data['+i+'][name]" placeholder="">';
-        rows+= '</td>';
-        rows+= '<td>';
-        rows+= '<select class="form-control location_id" name="data['+i+'][location_id]">';
-        rows+= '<option value="">Select</option>';
-        <?php if(count($locations)>0) {
-            foreach ($locations as $key => $location) {
+    rows += '<tr class="rowcls">';
+    rows += '<td>';
+    rows += '<input type="text" class="form-control name" name="data[' + i + '][name]" placeholder="">';
+    rows += '</td>';
+    rows += '<td>';
+    rows += '<select class="form-control location_id" name="data[' + i + '][location_id]">';
+    rows += '<option value="">Select</option>';
+    <?php if (count($locations) > 0) {
+    foreach ($locations as $key => $location) {
         ?>
-            rows+= '<option value="{{ $key }}">{{ucwords($location)}}</option>';
-            <?php 
-            }
-        }
-        ?>
-        rows+= '</select>';
-        rows+= '</td>';
-        rows+= '<td>';
-        rows+= '<div class="check-box d-flex">';
-        rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label">Yes';
-        rows+= '<input type="radio" value="1" name="data['+i+'][is_multiple_invoice]" class=""  checked="">';
-        rows+= '</label>';
-        rows+= '</div>';
-        rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label">No';
-        rows+= '<input type="radio" name="data['+i+'][is_multiple_invoice]" value="0">';
-        rows+= '</label>';
-        rows+= '</div>';
-        rows+= '</div>';
-        rows+= '</td>';
-        rows+= '<td>';
-        rows+= '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
-        rows+= '</td>';
-        rows+= '</tr>';
-
-        $('#myTable tbody').append(rows);
-
+    rows += '<option value="{{ $key }}">{{ucwords($location)}}</option>';
+    <?php
     }
-    
-    $(document).on('click', '.removeRow', function(){
-        $(this).closest('tr').remove();
-    });
+    }
+    ?>
+    rows += '</select>';
+    rows += '</td>';
+    rows += '<td>';
+    rows  += '<select class="form-control is_multiple_invoice" name="data['+ i + '][is_multiple_invoice]"> <option value="">Select..</option> <option value="1">Per invoice-Item wise</option> <option value="2">Multiple Invoice-Item wise</option> <option value="3">per invoice-Without Item</option> <option value="4">LR Multiple invoice-Without item</option> </select>';
+    rows += '</td>';
+    rows += '<td>';
+    rows += '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
+    rows += '</td>';
+    rows += '</tr>';
 
+    $('#myTable tbody').append(rows);
+
+}
+
+$(document).on('click', '.removeRow', function() {
+    $(this).closest('tr').remove();
+});
 </script>
 @endsection
