@@ -263,7 +263,7 @@
 
 
     <div class="layout-px-spacing">
-        {{--        page title--}}
+        {{--page title--}}
         <div class="page-header layout-spacing">
             <h2 class="pageHeading">Create Consignment</h2>
         </div>
@@ -322,7 +322,9 @@
                     @foreach($regionalclient as $client)
                     <option value="{{$client->id}}">{{$client->name}}</option>
                     @endforeach
+                    <input type="hidden" name="client_invctype" value="">
                 </select>
+
             </div>
             <?php } else { ?>
                 <div class="form-group col-md-4">
