@@ -658,10 +658,10 @@ jQuery(document).ready(function () {
                                                                 <label>Item</label>
                                                                 <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
                                                                 <option value="" disabled selected>Select</option>`;
-                    $.each(res.data_items, function (index, value) {
-                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
-                    });
-                    blockToAppend += `</select>
+                                    $.each(res.data_items, function (index, value) {
+                                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
+                                    });
+                                    blockToAppend += `</select>
                                                             </div>
                                                         </td>
                                                         <td>
