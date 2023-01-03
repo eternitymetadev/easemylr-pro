@@ -656,7 +656,7 @@ jQuery(document).ready(function () {
                                                         <td width="200px">
                                                             <div class="form-group form-group-sm">
                                                                 <label>Item</label>
-                                                                <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                                <select class="form-control my-select2 select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
                                                                 <option value="" disabled selected>Select</option>`;
                     $.each(res.data_items, function (index, value) {
                         blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
@@ -710,6 +710,7 @@ jQuery(document).ready(function () {
 
 
                     $('.orderInfoBlock').html(blockToAppend);
+                    $('.my-select2').select2();
                 } else {
                     let isInsertabelMore = (multiple_invoice == 4);
                     let blockToAppend = `<div class="col-lg-12 layout-spacing">
@@ -799,6 +800,7 @@ jQuery(document).ready(function () {
     
                 </div>`;
                     $('.orderInfoBlock').html(blockToAppend);
+                
                     // $(".insert-more").attr("disabled", true);
                 }
             },

@@ -633,6 +633,7 @@ jQuery(function() {
                         </tr>`;
 
                 $(this).append(tds);
+                $(this).find('.my-select2').select2();
             });
         };
 
@@ -783,6 +784,7 @@ jQuery(function() {
                 // $(this).siblings(".childTable").children('.items_table_body').append(itemTds);
                 $(this).closest('.childTable').children('.items_table_body').append(itemTds);
             });
+            $('.my-select2').select2();
         });
 
         
@@ -792,7 +794,6 @@ jQuery(function() {
             // reassign_itemids(_this);            
             calculate_totals(_this);
         });
-    
         // calculation total
         $(document).on("blur", ".qty", function() {
             // var _this = $(this);
