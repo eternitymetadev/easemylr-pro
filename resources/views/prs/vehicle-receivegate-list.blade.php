@@ -67,9 +67,7 @@
             $(this).val("");
             $(this).parent().next().children().val("");
         }
-
     });
-
     
 </script>
 

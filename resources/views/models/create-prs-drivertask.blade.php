@@ -25,8 +25,8 @@
                                     <!-- <th>Order ID</th> -->
                                     <th>Invoice No</th>
                                     <th>Invoice Date</th>
-                                    <!-- <th>Quantity</th>
-                                    <th>Net Weight</th>
+                                    <th>Quantity</th>
+                                    <!-- <th>Net Weight</th>
                                     <th>Gross Weight</th> -->
                                     <th>Invoice Image</th>
                                     <th>Action</th>

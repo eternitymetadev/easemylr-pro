@@ -905,10 +905,10 @@ jQuery(document).ready(function () {
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
                     '][invoice_date]"></td>';
-                // tds +=
-                //     '<td><input type="number" class="form-control form-small qnt" name="data[' +
-                //     item_no +
-                //     '][quantity]"></td>';
+                tds +=
+                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                    item_no +
+                    '][quantity]"></td>';
                 // tds +=
                 //     '<td><input type="number" class="form-control form-small net" name="data[' +
                 //     item_no +
@@ -918,7 +918,7 @@ jQuery(document).ready(function () {
                 //     item_no +
                 //     '][gross_weight]"></td>';
                 tds +=
-                    '<td><input type="file" class="form-control form-small invc_img" name="data[' +
+                    '<td style="width: 165px;"><input type="file" class="form-control form-small invc_img" name="data[' +
                     item_no +
                     '][invc_img]" accept="image/*"/></td>';
                 tds +=
@@ -2570,14 +2570,14 @@ $(document).on("click", ".receive-vehicle", function () {
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
 
                     rows +=
-                        '<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="" value="' +
+                        '<tr><td><input class="dialogInput form-control-sm cnr_id" style="width: 170px;" type="text" name="" value="' +
                         value.consigner_detail.nick_name +
                         '" readonly><input type="hidden" name="data[' +
                         index +'][consigner_id]" value="' +value.consigner_detail.id+
                         '" readonly"><input type="hidden" name="data['+index +'][item_id]" value="'+ids_arr +
                         '" readonly"></td>';
                     rows +=
-                        '<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data[' +
+                        '<td><input class="dialogInput form-control-sm invc_no" style="width: 120px;" type="text" name="data[' +
                         index +
                         '][invoice_no]" value="' +
                         inv_total +
@@ -2596,14 +2596,14 @@ $(document).on("click", ".receive-vehicle", function () {
                     //     '<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data[' +
                     //     index +
                     //     '][remaining_qty]" readonly></td>';
+                   
+                    rows += `<td style="text-align: center"><div class="d-flex align-items-center justify-content-center"><input class="verify_status form-control-sm" type="radio" id="verified${index}" name="data[${index}][is_verify]" checked value="1"><label style="margin-right: 1rem;" for="verified${index}">Verified</label>`;
+                    rows += `<input class="verify_status form-control-sm" type="radio" id="unverified${index}" name="data[${index}][is_verify]" value="0"><label for="unverified${index}">UnvVerified</label> </div></td>`;
+
                     rows +=
-                        '<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data[' +
+                        '<td><input class="dialogInput form-control-sm remarks" style="width: 300px; visibility: hidden" type="text" name="data[' +
                         index +
-                        '][remarks]"></td>';
-                    rows +=
-                        '<td><input type="checkbox" id="" name="data[' +
-                        index +
-                        '][is_verify]" value="1"></td></tr>';
+                        '][remarks]"></td></tr>';
                 });
 
                 $("#vehicleitems_table tbody").append(rows);
@@ -2611,6 +2611,19 @@ $(document).on("click", ".receive-vehicle", function () {
         },
     });
 });
+
+jQuery(document).on("click", ".verify_status", function (event) {
+    $(this).closest('td').next('td').find('input').val('');
+    verify_val = $(this).val();
+    if(verify_val == '1'){
+        $(this).closest('td').next('td').find('input').css('visibility', 'hidden');
+        
+    }else{
+        $(this).closest('td').next('td').find('input').css('visibility', 'visible');
+    }
+
+});
+
 
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {

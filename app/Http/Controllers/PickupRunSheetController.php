@@ -480,10 +480,10 @@ class PickupRunSheetController extends Controller
                     if($saveconsignment){
                         $save_data['consignment_id']    = $saveconsignment->id;
                         $save_data['quantity']          = $savetaskitems->quantity;
-                        $save_data['weight']            = $savetaskitems->net_weight;
-                        $save_data['gross_weight']      = $savetaskitems->gross_weight;
-                        $save_data['chargeable_weight'] = $savetaskitems->chargeable_weight;
-                        $save_data['order_id']          = $savetaskitems->order_id;
+                        // $save_data['weight']            = $savetaskitems->net_weight;
+                        // $save_data['gross_weight']      = $savetaskitems->gross_weight;
+                        // $save_data['chargeable_weight'] = $savetaskitems->chargeable_weight;
+                        // $save_data['order_id']          = $savetaskitems->order_id;
                         $save_data['invoice_no']        = $savetaskitems->invoice_no;
                         $save_data['invoice_date']      = $savetaskitems->invoice_date;
                         $save_data['status']            = 1;
@@ -492,8 +492,8 @@ class PickupRunSheetController extends Controller
                         if($saveconsignmentitems){
                             $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
                             $save_itemdata['quantity'] = $saveconsignmentitems->quantity;
-                            $save_itemdata['net_weight'] = $saveconsignmentitems->weight;
-                            $save_itemdata['gross_weight'] = $saveconsignmentitems->gross_weight;
+                            // $save_itemdata['net_weight'] = $saveconsignmentitems->weight;
+                            // $save_itemdata['gross_weight'] = $saveconsignmentitems->gross_weight;
                             $save_itemdata['status'] = 1;
                             $savesubitems = ConsignmentSubItem::create($save_itemdata);
                         }

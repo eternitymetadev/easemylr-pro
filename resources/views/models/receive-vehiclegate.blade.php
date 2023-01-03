@@ -8,6 +8,11 @@
     border-radius: 6px;
     border: 1px solid #838383;
 }
+
+#vehicleitems_table td {
+    padding: 1px 6px;
+}
+
 </style>
 
 <div class="modal fade" id="receive-vehicle" tabindex="-1" role="dialog" aria-hidden="true">
@@ -28,12 +33,12 @@
                             <thead>
                                 <tr>
                                     <th width="200px">Consignor name</th>
-                                    <th width="150px">Number of Invoices</th>
+                                    <th width="200px">Number of Invoices</th>
                                     <!-- <th width="150px">Quantity (in Pieces)</th>
                                     <th width="150px">Received quantity</th>
                                     <th width="150px">Less Received (Auto)</th> -->
-                                    <th style="flex: 1;">Remarks</th>
-                                    <th style="flex: 1;">Verify</th>
+                                    <th style="flex: 1; text-align: center">Status</th>
+                                    <th style="flex: 1;"><span id="remarksTitle">Remarks</span></th>
                                 </tr>
                             </thead>
                             <tbody>

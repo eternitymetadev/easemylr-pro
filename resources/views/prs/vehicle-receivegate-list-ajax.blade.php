@@ -52,7 +52,6 @@
             ?>
             @endif
             <?php $total_qty = array_sum($qty_value);
-            $disable = Helper::DriverTaskStatusCheck($value->id);
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>
@@ -63,11 +62,14 @@
                 <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
-                    <?php if($task_status == 3){ 
+                    <?php 
+                    $disable = Helper::DriverTaskStatusCheck($value->id);
+                    if($task_status == 3){ 
                         $disablebtn = 'disable_n';
                     }else{
                         $disablebtn = "";
-                    } if($disablebtn != 'disable_n'){ ?>
+                    }
+                    if($disablebtn != 'disable_n' && $disable == ''){ ?>
                     <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount="" data-prstaskstatus=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
                     <?php } ?>
                 </td>
