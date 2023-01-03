@@ -1601,15 +1601,15 @@ jQuery(document).ready(function(){
         }
     });
 
-    $(".remarks").each(function()
-    {
-        $(this).rules('add', {
-            required: true,
-            messages: {
-                required: "Enter remarks."
-            },
-        });
-    });
+    // $(".remarks").each(function()
+    // {
+    //     $(this).rules('add', {
+    //         required: true,
+    //         messages: {
+    //             required: "Enter remarks."
+    //         },
+    //     });
+    // });
 
 
 
