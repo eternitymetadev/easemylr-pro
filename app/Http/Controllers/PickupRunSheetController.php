@@ -586,8 +586,10 @@ class PickupRunSheetController extends Controller
 
                 $savevehiclereceive = PrsReceiveVehicle::create($save_data);
                 PrsTaskItem::whereIn('drivertask_id', $saveitem_ids)->update(['status' => 2]);
+                
             }
             if($savevehiclereceive){
+                PrsDriverTask::where('prs_id', $savevehiclereceive->prs_id)->update(['status' => 4]);
                 // PrsTaskItem::where('drivertask_id', $request->prs_id)->update(['status' => 2]);
 
                 PickupRunSheet::where('id', $request->prs_id)->update(['status' => 3]);
