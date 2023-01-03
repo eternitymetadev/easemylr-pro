@@ -90,7 +90,7 @@
                                 i++;
 
                                 // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value='+value.order_id+'></td>';
-                                rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
+                                rows = '<tr><td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value='+value.invoice_no+'><input type="hidden" name="data['+i+'][lr_id]" value='+value.consignment_id+'></td>';
                                 rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value='+value.invoice_date+'></td>';
                                 // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value='+value.quantity+'></td>';
                                 // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
@@ -105,7 +105,7 @@
                             i++;
 
                             // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""></td>';
-                            rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
+                            rows = '<tr><td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
                             rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value=""></td>';
                             // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
                             // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
@@ -121,7 +121,7 @@
                     i++;
 
                     // rows = '<tr><td><input type="text" class="form-control form-small orderid" name="data['+i+'][order_id]" value=""></td>';
-                    rows = '<td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
+                    rows = '<tr><td><input type="text" class="form-control form-small invc_no" name="data['+i+'][invoice_no]" value=""><input type="hidden" name="data['+i+'][lr_id]" value=""></td>';
                     rows += '<td><input type="date" class="form-control form-small invc_date" name="data['+i+'][invoice_date]" value=""></td>';
                     // rows += '<td><input type="text" class="form-control form-small qnt" name="data['+i+'][quantity]" value=""></td>';
                     // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
