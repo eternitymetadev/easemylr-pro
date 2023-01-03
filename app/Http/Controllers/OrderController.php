@@ -250,11 +250,9 @@ class OrderController extends Controller
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            if ($authuser->role_id == 3) {
-                $consignmentsave['branch_id'] = $request->branch_id;
-            } else {
-                $consignmentsave['branch_id'] = $authuser->branch_id;
-            }
+
+            $consignmentsave['branch_id'] = $request->branch_id;
+          
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = 5;
             if (!empty($request->vehicle_id)) {
@@ -267,11 +265,13 @@ class OrderController extends Controller
 
             // if ($saveconsignment) {
             // insert consignment items
+            if($request->invoice_check == 1 || $request->invoice_check == 2){
+                $saveconsignment = ConsignmentNote::create($consignmentsave);
             if (!empty($request->data)) {
                 $get_data = $request->data;
                 foreach ($get_data as $key => $save_data) {
 
-                    $saveconsignment = ConsignmentNote::create($consignmentsave);
+                    
 
                     $save_data['consignment_id'] = $saveconsignment->id;
                     $save_data['status'] = 1;
@@ -309,6 +309,23 @@ class OrderController extends Controller
                 }
 
             }
+        }else{
+
+             $consignmentsave['total_quantity'] = $request->total_quantity;
+             $consignmentsave['total_weight'] = $request->total_weight;
+             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+             $consignmentsave['total_freight'] = $request->total_freight;
+             $saveconsignment = ConsignmentNote::create($consignmentsave);
+
+            if (!empty($request->data)) {
+                $get_data = $request->data;
+                foreach ($get_data as $key => $save_data) {
+                    $save_data['consignment_id'] = $saveconsignment->id;
+                    $save_data['status'] = 1;
+                    $saveconsignmentitems = ConsignmentItem::create($save_data);
+                }
+            }
+        }
             $url = $this->prefix . '/orders';
             $response['success'] = true;
             $response['success_message'] = "Order Created successfully";
