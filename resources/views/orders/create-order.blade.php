@@ -322,7 +322,6 @@
                     @foreach($regionalclient as $client)
                     <option value="{{$client->id}}">{{$client->name}}</option>
                     @endforeach
-                    <input type="hidden" name="client_invctype" value="">
                 </select>
 
             </div>
