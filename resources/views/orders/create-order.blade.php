@@ -265,7 +265,7 @@
     <div class="layout-px-spacing">
         {{--page title--}}
         <div class="page-header layout-spacing">
-            <h2 class="pageHeading">Create Consignment</h2>
+            <h2 class="pageHeading">Create Order</h2>
         </div>
 
 
@@ -336,6 +336,7 @@
                 </select>
             </div>
             <?php } ?>
+            <input type="hidden" name="invoice_check" id="inv_check" />
                 <div class="form-group col-md-3">
                     <label for="exampleFormControlSelect1">
                         Payment Term<span class="text-danger">*</span>
@@ -513,6 +514,25 @@
 @endsection
 @section('js')
     <script>
+    $(document).ready(function() {
+
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
+
+});
         function insertMaintableRow() {
             var tid = $("#tid").val();
             $(".items_table").each(function () {
@@ -568,7 +588,7 @@
                                                     <td width="200px">
                                                         <div class="form-group form-group-sm">
                                                             <label>Item</label>
-                                                            <select class="form-control select_item" name="data[`+ item_no +`][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                            <select class="form-control select_item my-select2" name="data[`+ item_no +`][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
                                                             <option value="" disabled selected>Select</option>
                                                               @foreach($itemlists as $item_list)
                                                                 <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>
@@ -725,7 +745,7 @@
                             <td width="200px">
                                 <div class="form-group form-group-sm">
                                     <label>Item</label>
-                                    <select class="form-control select_item" name="data[`+mainrows+`][item_data][`+itemrows+`][item]" data-action="get-items" onchange="getItem(this);">
+                                    <select class="form-control select_item my-select2" name="data[`+mainrows+`][item_data][`+itemrows+`][item]" data-action="get-items" onchange="getItem(this);">
                                     <option value="" disabled selected>Select</option>
                                         @foreach($itemlists as $item_list)
                                         <option value="{{$item_list->id}}">{{$item_list->brand_name}}</option>

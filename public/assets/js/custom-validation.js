@@ -557,9 +557,9 @@ jQuery(document).ready(function () {
                             res.data_regclient.is_multiple_invoice;
                     }
                 }
+                $('#inv_check').val(multiple_invoice);
 
                 if (multiple_invoice == 1 || multiple_invoice == 2) {
-                    console.log('start appending1');
                     let isInsertabelMore = (multiple_invoice == 1);
                     let blockToAppend = `<div class="form-row">
                     <h6 class="col-12">Order Information</h6>
@@ -658,10 +658,10 @@ jQuery(document).ready(function () {
                                                                 <label>Item</label>
                                                                 <select class="form-control select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
                                                                 <option value="" disabled selected>Select</option>`;
-                                    $.each(res.data_items, function (index, value) {
-                                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
-                                    });
-                                    blockToAppend += `</select>
+                    $.each(res.data_items, function (index, value) {
+                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
+                    });
+                    blockToAppend += `</select>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -710,8 +710,8 @@ jQuery(document).ready(function () {
 
 
                     $('.orderInfoBlock').html(blockToAppend);
-                    console.log('end appending1');
                 } else {
+                    let isInsertabelMore = (multiple_invoice == 4);
                     let blockToAppend = `<div class="col-lg-12 layout-spacing">
                     <div class="widget-header">
                         <div class="row">
@@ -786,8 +786,9 @@ jQuery(document).ready(function () {
                                                 <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
                                                 <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
                                                 <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
-                                                <td> <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
-                                                </td>
+                                                <td>`;
+                    blockToAppend += (isInsertabelMore) ? `<button type="button" class="btn btn-default btn-rounded insert-more"> + </button>` : ``;
+                    blockToAppend += `</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -798,7 +799,7 @@ jQuery(document).ready(function () {
     
                 </div>`;
                     $('.orderInfoBlock').html(blockToAppend);
-                    $(".insert-more").attr("disabled", true);
+                    // $(".insert-more").attr("disabled", true);
                 }
             },
         });

@@ -88,6 +88,7 @@ div.relative {
                                 <!-- <th> </th> -->
                                 <th>LR No</th>
                                 <th>LR Date</th>
+                                <th>Branch</th>
                                 <th>Billing Client</th>
                                 <th>Consigner Name</th>
                                 <th>Consignee Name</th>
@@ -107,6 +108,7 @@ foreach ($consignments as $key => $consignment) {
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
+                                <td>{{ $consignment->Branch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
@@ -124,9 +126,9 @@ foreach ($consignments as $key => $consignment) {
                                                 class="fa fa-edit"></i></span></a>
                                 </td>
                             </tr>
-                            <?php
-}
-?>
+                        <?php
+                        }
+                        ?>
                         </tbody>
                     </table>
                 </div>
@@ -146,6 +148,39 @@ foreach ($consignments as $key => $consignment) {
                 </button>
             </div>
             <div class="modal-body">
+            <div class="form-row">
+            <h6 class="col-12">Branch</h6>
+             
+            <?php $authuser = Auth::user();
+            if($authuser->role_id == 2 || $authuser->role_id == 4)
+            {
+            ?>
+            <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Branch <span class="text-danger">*</span>
+                </label>
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                    @foreach($branchs as $branch)
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <?php } else { ?>
+                <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Branch <span class="text-danger">*</span>
+                </label>
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                    <option value="">Select..</option>
+                    @foreach($branchs as $branch)
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    @endforeach
+                </select>
+            </div>
+
+                <?php } ?>
+
+        </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">Excel File*</label>
                     <input required type="file" class="form-control form-control-sm" id="formGroupExampleInput"

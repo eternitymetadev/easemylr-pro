@@ -208,6 +208,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
     Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
     Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
+    Route::any('add-technical-name', [TechnicalMasterController::class, 'addTechnicalName']);
+    Route::any('add-items-name', [TechnicalMasterController::class, 'addItems']);
+    Route::any('edit-items-name', [TechnicalMasterController::class, 'editItemName']);
+    Route::any('update-items-name', [TechnicalMasterController::class, 'updateItemName']);
     
     Route::resource('prs', PickupRunSheetController::class);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
