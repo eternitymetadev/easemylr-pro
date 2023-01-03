@@ -263,7 +263,7 @@
 
 
     <div class="layout-px-spacing">
-        {{--        page title--}}
+        {{--page title--}}
         <div class="page-header layout-spacing">
             <h2 class="pageHeading">Create Order</h2>
         </div>
@@ -323,6 +323,7 @@
                     <option value="{{$client->id}}">{{$client->name}}</option>
                     @endforeach
                 </select>
+
             </div>
             <?php } else { ?>
                 <div class="form-group col-md-4">

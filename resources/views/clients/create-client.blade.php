@@ -58,14 +58,14 @@
                                             <select class="form-control location_id" name="data[1][location_id]">
                                                 <option value="">Select</option>
                                                 <?php
-if (count($locations) > 0) {
-    foreach ($locations as $key => $location) {
-        ?>
+                                                if (count($locations) > 0) {
+                                                    foreach ($locations as $key => $location) {
+                                                        ?>
                                                 <option value="{{ $key }}">{{ucwords($location)}}</option>
                                                 <?php
-}
-}
-?>
+                                                }
+                                                }
+                                                ?>
                                             </select>
                                         </td>
                                         <td>
@@ -77,13 +77,10 @@ if (count($locations) > 0) {
                                                 <option value="3">per invoice-Without Item</option>
                                                 <option value="4">LR Multiple invoice-Without item</option>
                                             </select>
-                                         
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" id="addRow"
                                                 onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
-                                            <!-- <a onclick="addrow()" class="fa fa-plus-circle" href="#"></a> -->
-
                                         </td>
                                     </tr>
                                 </tbody>
@@ -120,24 +117,13 @@ function addrow() {
         ?>
     rows += '<option value="{{ $key }}">{{ucwords($location)}}</option>';
     <?php
-}
-}
-?>
+    }
+    }
+    ?>
     rows += '</select>';
     rows += '</td>';
     rows += '<td>';
-    rows += '<div class="check-box d-flex">';
-    rows += '<div class="checkbox radio">';
-    rows += '<label class="check-label">Yes';
-    rows += '<input type="radio" value="1" name="data[' + i + '][is_multiple_invoice]" class=""  checked="">';
-    rows += '</label>';
-    rows += '</div>';
-    rows += '<div class="checkbox radio">';
-    rows += '<label class="check-label">No';
-    rows += '<input type="radio" name="data[' + i + '][is_multiple_invoice]" value="0">';
-    rows += '</label>';
-    rows += '</div>';
-    rows += '</div>';
+    rows  += '<select class="form-control is_multiple_invoice" name="data['+ i + '][is_multiple_invoice]"> <option value="">Select..</option> <option value="1">Per invoice-Item wise</option> <option value="2">Multiple Invoice-Item wise</option> <option value="3">per invoice-Without Item</option> <option value="4">LR Multiple invoice-Without item</option> </select>';
     rows += '</td>';
     rows += '<td>';
     rows += '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
