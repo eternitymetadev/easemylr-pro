@@ -4564,6 +4564,7 @@ class ConsignmentController extends Controller
 
                                     $savesubitems = ConsignmentSubItem::create($save_itemdata);
                                 }
+                                
                                 $quantity_sum = array_sum($qty_array);
                                 $netwt_sum = array_sum($netwt_array);
                                 $grosswt_sum = array_sum($grosswt_array);
