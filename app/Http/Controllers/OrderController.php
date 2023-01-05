@@ -494,7 +494,7 @@ class OrderController extends Controller
 
             // if ($saveconsignment) {
             // insert consignment items
-            if ($request->invoice_check == 1 || $request->invoice_check == 2) {                
+            if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                 $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
                 // if (!empty($request->data)) {
                 //     $get_data = $request->data;

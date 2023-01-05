@@ -598,7 +598,6 @@ span.select2.select2-container.mb-4 {
                                                             <?php $j++; } ?>
                                                         </tbody>
                                                     </table>
-                                                    <!-- <span style="margin-right: 8%" class="addItem">+ Add Item</span> -->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -612,7 +611,6 @@ span.select2.select2-container.mb-4 {
                         </tbody>
                     </table>
                 </div>
-                <!-- <span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span> -->
             </div>
 
             <?php }else{ ?>
@@ -659,9 +657,6 @@ span.select2.select2-container.mb-4 {
                                 value="{{$getconsignments->total_gross_weight}}">
                             <input type="hidden" name="total_freight" id="total_freight"
                                 value="{{$getconsignments->total_freight}}">
-                            <!-- <td><input type="number" class="form-control form-small" name="total_quantity"></td>
-                            <td><input type="number" class="form-control form-small" name="total_weight"></td>
-                            <td><input type="number" class="form-control form-small" name="total_gross_weight"></td> -->
                         </tr>
                     </div>
                 </table>
@@ -690,49 +685,48 @@ span.select2.select2-container.mb-4 {
                                     <tbody>
                                         <tr></tr>
                                         <?php 
+                                        $i=1;
                                         foreach($getconsignments->ConsignmentItems as $item){ 
-                                            $i=1;
                                             ?>
-
                                         <tr>
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
-                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}">
+                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}" readonly>
                                             </td>
                                             <td><input type="text" class="form-control form-small invc_no" id="1"
                                                     name="data[{{$i}}][invoice_no]"
-                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}">
+                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}" readonly>
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
-                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}">
+                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}" readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[{{$i}}][invoice_amount]"
-                                                    value="{{old('invoice_amount',isset($item->invoice_amount)?$item->invoice_amount:'')}}">
+                                                    value="{{old('invoice_amount',isset($item->invoice_amount)?$item->invoice_amount:'')}}" readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[{{$i}}][e_way_bill]"
-                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}">
+                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}" readonly>
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
-                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}">
+                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}" readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[{{$i}}][quantity]"
-                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}">
+                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}" readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small net"
                                                     name="data[{{$i}}][weight]"
-                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}">
+                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}" readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small gross"
                                                     name="data[{{$i}}][gross_weight]"
-                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}">
+                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}" readonly>
                                             </td>
-                                            <td> <button type="button" class="btn btn-default btn-rounded insert-more">
-                                                    + </button>
+                                            <td> 
+                                                <!-- <button type="button" class="btn btn-default btn-rounded insert-more" readonly> + </button> -->
                                             </td>
                                         </tr>
 
@@ -746,7 +740,6 @@ span.select2.select2-container.mb-4 {
 
             </div>
             <?php } ?>
-
 
             {{--vehicle info--}}
             <div class="form-row" style="width: 100%">
