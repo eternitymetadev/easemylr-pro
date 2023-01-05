@@ -726,7 +726,7 @@ span.select2.select2-container.mb-4 {
                                                     value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}" readonly>
                                             </td>
                                             <td> 
-                                                <!-- <button type="button" class="btn btn-default btn-rounded insert-more" readonly> + </button> -->
+                                                <button type="button" class="btn btn-default btn-rounded insert-more" readonly> + </button>
                                             </td>
                                         </tr>
 
