@@ -4507,6 +4507,7 @@ class ConsignmentController extends Controller
 
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
+            $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
             } else {
@@ -4523,7 +4524,7 @@ class ConsignmentController extends Controller
             $chk_h2h_branch = $location_name->with_h2h;
             $location_name = $location_name->name;
 
-
+            if($request->lr_type == 1){
             if($chk_h2h_branch == 1){
                 ///h2h branch check
                 if($location_name == $get_zonebranch){
@@ -4731,9 +4732,72 @@ class ConsignmentController extends Controller
                 }
             }
     
-
- 
              }
+            }else{
+                 //regular same flow 
+             //h2h branch check
+             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
+                $saveconsignment = ConsignmentNote::create($consignmentsave);
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+    
+                        $save_data['consignment_id'] = $saveconsignment->id;
+                        $save_data['status'] = 1;
+                        $saveconsignmentitems = ConsignmentItem::create($save_data);
+    
+                        if ($saveconsignmentitems) {
+                            // dd($save_data['item_data']);
+                            if (!empty($save_data['item_data'])) {
+                                $qty_array = array();
+                                $netwt_array = array();
+                                $grosswt_array = array();
+                                $chargewt_array = array();
+                                foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                    // echo "<pre>"; print_r($save_itemdata); die;
+                                    $qty_array[] = $save_itemdata['quantity'];
+                                    $netwt_array[] = $save_itemdata['net_weight'];
+                                    $grosswt_array[] = $save_itemdata['gross_weight'];
+                                    $chargewt_array[] = $save_itemdata['chargeable_weight'];
+    
+                                    $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                                    $save_itemdata['status'] = 1;
+    
+                                    $savesubitems = ConsignmentSubItem::create($save_itemdata);
+                                }
+                                
+                                $quantity_sum = array_sum($qty_array);
+                                $netwt_sum = array_sum($netwt_array);
+                                $grosswt_sum = array_sum($grosswt_array);
+                                $chargewt_sum = array_sum($chargewt_array);
+    
+                                ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+    
+                                ConsignmentNote::where('id', $saveconsignment->id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
+                            }
+                        }
+                    }
+    
+                }
+            } else {
+    
+                $consignmentsave['total_quantity'] = $request->total_quantity;
+                $consignmentsave['total_weight'] = $request->total_weight;
+                $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+                $consignmentsave['total_freight'] = $request->total_freight;
+                $saveconsignment = ConsignmentNote::create($consignmentsave);
+    
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        $save_data['consignment_id'] = $saveconsignment->id;
+                        $save_data['status'] = 1;
+                        $saveconsignmentitems = ConsignmentItem::create($save_data);
+                    }
+                }
+            }
+    
+            }
 /////////////////// ///////////////////////////////////////// drs api push/////////////////////////////////////////////
 
              $consignment_id = $saveconsignment->id;
