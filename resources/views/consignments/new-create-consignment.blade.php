@@ -265,54 +265,16 @@
     <div class="layout-px-spacing">
         {{--page title--}}
         <div class="page-header layout-spacing">
-            <h2 class="pageHeading">Create Order</h2>
+            <h2 class="pageHeading">Create Consignment</h2>
         </div>
 
 
-        <form class="general_form" method="POST" action="{{url($prefix.'/orders')}}" id="createorder" style="margin: auto; ">
-
-        {{--Branch Location--}}
-        <div class="form-row">
-            <h6 class="col-12">Branch</h6>
-             
-            <?php $authuser = Auth::user();
-            if($authuser->role_id == 2 || $authuser->role_id == 4)
-            {
-            ?>
-            <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <?php } else { ?>
-                <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    <option value="">Select..</option>
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
-
-                <?php } ?>
-
-        </div>
+        <form class="general_form" method="POST" action="{{url($prefix.'/consignments/new-lr-create')}}" id="createconsignment" style="margin: auto;">
 
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>
-            <?php $authuser = Auth::user();
-            if($authuser->role_id == 2 || $authuser->role_id == 4)
-            {
-            ?>
+          
             <div class="form-group col-md-4">
                 <label for="exampleFormControlSelect1">
                     Select Bill to Client<span class="text-danger">*</span>
@@ -325,16 +287,7 @@
                 </select>
 
             </div>
-            <?php } else { ?>
-                <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Bill to Client<span class="text-danger">*</span>
-                </label>
-                <select class="form-control form-control-sm my-select2" id="select_regclient" name="regclient_id">
-                    <option selected="selected" disabled>select client..</option>
-                </select>
-            </div>
-            <?php } ?>
+            
             <input type="hidden" name="invoice_check" id="inv_check" />
                 <div class="form-group col-md-3">
                     <label for="exampleFormControlSelect1">
@@ -388,6 +341,10 @@
                     </label>
                     <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                         <option value="">Select Consignor</option>
+                        {{--                        @foreach($consigners as $consigner)--}}
+                        {{--                            <option value="{{$consigner->id}}">{{$consigner->nick_name}}--}}
+                        {{--                            </option>--}}
+                        {{--                        @endforeach--}}
                     </select>
                     <div class="appendedAddress" id="consigner_address"></div>
                 </div>
@@ -418,13 +375,7 @@
             <div class="orderInfoBlock">
             </div>
 
-         
-
-
-            
-
-
-            <!-- {{--vehicle info--}}
+            {{--vehicle info--}}
             <div class="form-row">
                 <h6 class="col-12">Vehicle Information</h6>
 
@@ -495,7 +446,7 @@
 
                 </div>
 
-            </div> -->
+            </div>
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
         {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
