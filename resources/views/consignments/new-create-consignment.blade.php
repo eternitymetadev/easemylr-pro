@@ -270,7 +270,23 @@
 
 
         <form class="general_form" method="POST" action="{{url($prefix.'/consignments/new-lr-create')}}" id="createconsignment" style="margin: auto;">
-
+        <div class="d-flex align-items-center px-2 pt-2 col-6">
+                        <label class="mr-4">
+                            LR Type<span class="text-danger">*</span>
+                        </label>
+                        <div class="checkbox radio">
+                            <label class="check-label">FTL
+                                <input type="radio" name="lr_type" value="0" class="" checked>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="checkbox radio ml-3">
+                            <label class="check-label">PTL
+                                <input type="radio" name="lr_type" value="1" >
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>

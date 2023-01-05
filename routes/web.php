@@ -24,6 +24,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
+use App\Http\Controllers\HubtoHubController;
 
 /*
 |--------------------------------------------------------------------------
@@ -367,6 +368,15 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
 
 
 });

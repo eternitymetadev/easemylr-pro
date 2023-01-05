@@ -142,7 +142,12 @@
                         <li>
                             <a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
                         </li>
-                       
+                        <li>
+                            <a href="{{$prefixurl.'hrs-list'}}"> Create HRS </a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'hrs-sheet'}}"> Hrs Sheet </a>
+                        </li>
                     </ul>
                 </li>
                 <?php }
