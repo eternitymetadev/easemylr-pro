@@ -128,6 +128,9 @@
                             <a href="{{$prefixurl.'consignments/create'}}">Create Consignment </a>
                         </li>
                         <li>
+                            <a href="{{$prefixurl.'create-lr-form'}}">New Create Consignment </a>
+                        </li>
+                        <li>
                             <a href="{{$prefixurl.'consignments'}}"> Consignments List </a>
                         </li>
                         <li>

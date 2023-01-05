@@ -159,6 +159,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -302,6 +304,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
@@ -575,6 +580,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
