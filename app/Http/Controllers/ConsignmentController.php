@@ -4503,6 +4503,7 @@ class ConsignmentController extends Controller
             $location_name = $get_location->name;
 
             if($request->lr_type == 1){
+                
                 if($chk_h2h_branch == 1){
                     ///h2h branch check
                     if($location_name == $get_zonebranch){
@@ -4574,6 +4575,7 @@ class ConsignmentController extends Controller
                             }
                         }
                     }else{
+                     
                         $consignmentsave['h2h_check'] = 'h2h';
                         $consignmentsave['hrs_status'] = 2;
 

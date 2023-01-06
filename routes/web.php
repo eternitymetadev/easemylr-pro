@@ -377,6 +377,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
     Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
     Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
 
 
 });

@@ -13,8 +13,13 @@ class Hrs extends Model
         'consignment_id',
         'vehicle_id',
         'driver_id',
+        'total_hrs_quantity',
+        'total_receive_quantity',
+        'remarks',
         'branch_id',
+        'to_branch_id',
         'status',
+        'receving_status',
         'created_at',
         'updated_at'
     ];
@@ -30,5 +35,12 @@ class Hrs extends Model
     public function DriverDetail()
     {
         return $this->hasOne('App\Models\Driver','id','driver_id');
+    }
+
+    public function Branch(){
+        return $this->belongsTo('App\Models\Location','branch_id');
+    }
+    public function ToBranch(){
+        return $this->belongsTo('App\Models\Location','to_branch_id');
     }
 }

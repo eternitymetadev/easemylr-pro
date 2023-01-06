@@ -115,5 +115,8 @@ class ConsignmentNote extends Model
     public function Branch(){
         return $this->belongsTo('App\Models\Location','branch_id');
     }
+    public function ToBranch(){
+        return $this->belongsTo('App\Models\Location','to_branch_id');
+    }
 
 }

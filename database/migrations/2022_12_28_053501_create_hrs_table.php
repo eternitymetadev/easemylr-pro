@@ -22,8 +22,13 @@ class CreateHrsTable extends Migration
             $table->string('vehicle_type_id')->nullable();
             $table->string('transporter_name')->nullable();
             $table->string('purchase_price')->nullable();
+            $table->string('total_hrs_quantity')->nullable();
+            $table->string('total_receive_quantity')->nullable();
+            $table->string('remarks')->nullable();
             $table->string('branch_id')->nullable();
+            $table->string('to_branch_id')->nullable();
             $table->string('status')->nullable();
+            $table->string('receving_status')->default(1)->comment('1=>incoming 2=>received');
             $table->timestamps();
         });
     }

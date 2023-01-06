@@ -5,44 +5,36 @@
             <tr>
                 <th>Hrs No</th>
                 <th>Hrs Date</th>
-                <th>Hub Transfer</th>
-                <th>Vehicle No</th>
-                <th>Driver Name</th>
-                <th>Driver Phone</th>
+                <th>Branch</th>
+                <th>To Branch</th>
                 <th style="text-align: center">Action</th>
-                <th style="text-align: center">Status</th>
+
             </tr>
         </thead>
         <tbody>
             @foreach($hrssheets as $hrssheet)
             <?php
-              $date = new DateTime($hrssheet->created_at, new DateTimeZone('GMT-7'));
-              $date->setTimezone(new DateTimeZone('IST'));
-                
+        $date = new DateTime($hrssheet->created_at, new DateTimeZone('GMT-7'));
+        $date->setTimezone(new DateTimeZone('IST'));
             ?>
             <tr>
                 <td>HRS-{{$hrssheet->hrs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
-                <td>{{$hrssheet->ToBranch->name}}</td>
-                <td>{{$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
-                <td>{{$hrssheet->DriverDetail->name ?? '-'}}</td>
-                <td>{{$hrssheet->DriverDetail->phone ?? '-'}}</td>
-                <td> <button class="flex1 btn btn-warning view-sheet" value="{{$hrssheet->hrs_no}}"
-                        style="margin-right:4px;">Draft
-                    </button> || <button class="flex1 btn btn-success save_hrs" value="{{$hrssheet->hrs_no}}"
-                        style="margin-right:4px;">Save
-                    </button></td>
-                <td>
-                    @if($hrssheet->receving == 1)
-                     <button class="flex1 btn btn-warning " value="{{$hrssheet->hrs_no}}"
-                        style="margin-right:4px;">Outgoing
+                <td>{{$hrssheet->Branch->name ?? '-'}}</td>
+                <td>{{$hrssheet->ToBranch->name ?? '-'}}</td>
+                <td> <button class="flex1 btn btn-warning view-lr" value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">View
+                    </button> ||
+                    @if($hrssheet->receving_status == 1)
+                     <button class="flex1 btn btn-success receive_hrs" value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Incoming Hrs
                     </button>
                     @else
-                    <button class="flex1 btn btn-warning" value="{{$hrssheet->hrs_no}}"
-                        style="margin-right:4px;">Received Hub
+                    <button class="flex1 btn btn-success" value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Received
                     </button>
                     @endif
-                </td>
+                    </td>
             </tr>
             @endforeach
         </tbody>

@@ -148,6 +148,9 @@
                         <li>
                             <a href="{{$prefixurl.'hrs-sheet'}}"> Hrs Sheet </a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'incoming-hrs'}}"> Incoming Hrs </a>
+                        </li>
                     </ul>
                 </li>
                 <?php }

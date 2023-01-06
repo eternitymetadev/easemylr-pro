@@ -71,7 +71,7 @@
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="page-header layout-spacing">
-                    <h2 class="pageHeading">Unverified Lr</h2>
+                    <h2 class="pageHeading">Create Hrs</h2>
                 </div>
 
 
@@ -102,6 +102,7 @@
                                 </th>
                                 <th>LR No</th>
                                 <th>CN Date</th>
+                                <th>Hub Transfer</th>
                                 <th>Consigner Name</th>
                                 <th>Consignee Name</th>
                                 <th>Location</th>
@@ -121,6 +122,7 @@
                                 </td>
                                 <td>{{ $consignment->id ?? "-" }}</td>
                                 <td>{{ $consignment->consignment_date}}</td>
+                                <td>{{ $consignment->ToBranch->name ?? "-"}}</td>
                                 <td title="{{ $consignment->ConsignerDetail->nick_name}}"><p
                                         class="textWrap">{{ $consignment->ConsignerDetail->nick_name}}</p></td>
                                 <td title="{{ $consignment->ConsigneeDetail->nick_name}}"><p
