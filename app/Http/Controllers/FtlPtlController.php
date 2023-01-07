@@ -92,7 +92,7 @@ class FtlPtlController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('ftl.create-ftl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
+        return view('Ftl.create-ftl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
     }
 
     public function storeFtlLr(Request $request)
@@ -342,7 +342,7 @@ class FtlPtlController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         }
 
-        return view('ftl.create-ptl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
+        return view('Ftl.create-ptl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
     }
 
     public function storePtlLr(Request $request)
