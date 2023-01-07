@@ -105,7 +105,6 @@ div.relative {
                                 <td>-</td>
                                 @endif
                                 @endif
-                              
                                     <td>{{ $consignment->id ?? "-" }}</td>
                                     <td>{{ $consignment->consignment_date}}</td>
                                     <td>{{ $consignment->consigner_id}}</td>
@@ -116,7 +115,6 @@ div.relative {
                                     <td>{{ $consignment->zone ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                  
                                 </tr>
                                
                                 <?php  $i++; } ?>
