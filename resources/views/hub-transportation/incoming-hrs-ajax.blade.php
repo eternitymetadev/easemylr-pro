@@ -5,8 +5,8 @@
             <tr>
                 <th>Hrs No</th>
                 <th>Hrs Date</th>
-                <th>Branch</th>
-                <th>To Branch</th>
+                <th>Transfer Branch</th>
+                <th>Received Branch</th>
                 <th style="text-align: center">Action</th>
 
             </tr>

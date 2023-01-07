@@ -456,7 +456,7 @@ $('#updt_hrs_details').submit(function(e) {
                 },
                 success: function (data) {
                     if (data.success == true) {
-                        swal('success', 'Drs Created Successfully', 'success');
+                        swal('success', 'Hrs Added Successfully', 'success');
                         window.location.href = "hrs-sheet";
                     } else {
                         swal('error', 'something wrong', 'error');

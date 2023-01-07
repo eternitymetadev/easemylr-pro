@@ -1723,7 +1723,7 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            //alert(response);
+            // alert('kk');
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){
@@ -1738,6 +1738,19 @@ function formSubmitRedirect(form)
 		          position            : 'top-right'
 		    	});
 	        }
+            if(response.success == false){
+                $.toast({
+                    heading             : 'Error',
+                    text                : response.error_message,
+                    loader              : true,
+                    loaderBg            : '#fff',
+                    showHideTransition  : 'fade',
+                    icon                : 'error',
+                    hideAfter           : delayTime,
+                    position            : 'top-right'
+                  });
+            }
+
 	        if(response.resetform)
             {
                 $('#'+form.id).trigger('reset');
@@ -1857,7 +1870,9 @@ function formSubmitRedirect(form)
             $("input[type=submit]").removeAttr("disabled");
             $("button[type=submit]").removeAttr("disabled");
 		},
+        
         error:function(response){
+          
             $.toast({
                 heading             : 'Error',
                 text                : "Server Error",

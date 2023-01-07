@@ -152,7 +152,7 @@
                                     <input type="hidden" class="form-control" id="current_hrs" name="" value="">
                                     <button type="button" class="mb-2 btn btn-warning disableDrs" id="add_unverified_lr_hrs"
                                             style="font-size: 11px;">
-                                        Create DSR
+                                        Add Hrs
                                     </button>
                                     <table id="unverifiedlrlist_hrs" class="table table-hover"
                                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">

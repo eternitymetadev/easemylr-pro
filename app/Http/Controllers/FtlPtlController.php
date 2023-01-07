@@ -409,6 +409,15 @@ class FtlPtlController extends Controller
 
             $consignee = Consignee::where('id', $request->consignee_id)->first();
             $consignee_pincode = $consignee->postal_code;
+            if(empty($consignee_pincode))
+            {
+                $response['success'] = false;
+                $response['error_message'] = "Postal Code Not Found";
+                $response['error'] = true;
+                return response()->json($response);
+            }
+
+
            
             $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
             $get_zonebranch = $getpin_transfer->hub_transfer;
