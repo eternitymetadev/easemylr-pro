@@ -382,11 +382,13 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
     Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
     Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+    
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()

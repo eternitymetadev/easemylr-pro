@@ -43,4 +43,10 @@ class Hrs extends Model
     public function ToBranch(){
         return $this->belongsTo('App\Models\Location','to_branch_id');
     }
+
+    public function ConsignmentItem(){
+        return $this->hasMany('App\Models\ConsignmentItem','consignment_id','consignment_id');
+    }
+
+    
 }

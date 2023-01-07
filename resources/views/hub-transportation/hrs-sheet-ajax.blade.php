@@ -35,9 +35,8 @@
                         style="margin-right:4px;">Save
                     </button>
                     @endif
-                    <button class="flex1 btn btn-primary" value="{{$hrssheet->hrs_no}}"
-                        style="margin-right:4px;">print
-                    </button></td>
+                    <a class="btn btn-primary" target="_blank" href="{{url($prefix.'/print-hrs/'.$hrssheet->hrs_no)}}"
+                        role="button">Print</a></td>
                 <td>
                     @if($hrssheet->receving_status == 1)
                      <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"

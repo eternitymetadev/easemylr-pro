@@ -1833,7 +1833,11 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
+            if(!empty('consignment_notes.to_branch_id')){
+                $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
+            }else{
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
+            }
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
