@@ -25,6 +25,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
 use App\Http\Controllers\HubtoHubController;
+use App\Http\Controllers\FtlPtlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -382,6 +383,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
     Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
 
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()

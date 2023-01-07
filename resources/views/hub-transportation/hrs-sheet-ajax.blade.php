@@ -27,14 +27,20 @@
                 <td>{{$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
                 <td>{{$hrssheet->DriverDetail->name ?? '-'}}</td>
                 <td>{{$hrssheet->DriverDetail->phone ?? '-'}}</td>
-                <td> <button class="flex1 btn btn-warning view-sheet" value="{{$hrssheet->hrs_no}}"
+                <td>
+                    @if(empty($hrssheet->vehicle_id) || empty($hrssheet->driver_id))
+                    <button class="flex1 btn btn-warning view-sheet" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Draft
-                    </button> || <button class="flex1 btn btn-success save_hrs" value="{{$hrssheet->hrs_no}}"
+                    </button>  <button class="flex1 btn btn-success save_hrs" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Save
+                    </button>
+                    @endif
+                    <button class="flex1 btn btn-primary" value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">print
                     </button></td>
                 <td>
-                    @if($hrssheet->receving == 1)
-                     <button class="flex1 btn btn-warning " value="{{$hrssheet->hrs_no}}"
+                    @if($hrssheet->receving_status == 1)
+                     <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Outgoing
                     </button>
                     @else
