@@ -19,6 +19,7 @@ use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use App\Models\Vehicle;
 use App\Models\PrsDrivertask;
+use App\Models\Hrs;
 use URL;
 use Crypt;
 use Storage;
@@ -374,5 +375,46 @@ class GlobalFunctions {
 
     //     return $prs_status;
     // }
+
+    // ============================ HRS HELPER ========================== //
+
+    public static function counthrslr($hrs_number)
+    {
+        $data = Hrs::
+        with('ConsignmentDetai')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('hrs_no', $hrs_number)
+        ->count();
+        return $data;
+    }
+
+    public static function totalQuantityHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_quantity');
+      
+        return $total_quantity;
+    }
+
+    public static function totalGrossWeightHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_gross_weight');
+      
+        return $total_gross;
+    }
+
+    public static function totalWeightHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_weight');
+      
+        return $total_weight;
+    }
 
 }

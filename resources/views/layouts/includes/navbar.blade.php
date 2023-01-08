@@ -154,6 +154,9 @@
                         <li>
                             <a href="{{$prefixurl.'incoming-hrs'}}"> Incoming Hrs </a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'hrs-payment-list'}}"> Hrs Payment list </a>
+                        </li>
                     </ul>
                 </li>
                 <?php }

@@ -48,5 +48,9 @@ class Hrs extends Model
         return $this->hasMany('App\Models\ConsignmentItem','consignment_id','consignment_id');
     }
 
+    public function vehicletype()
+    {
+        return $this->belongsTo('App\Models\VehicleType','vehicle_type_id');
+    }
     
 }
