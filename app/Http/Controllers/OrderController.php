@@ -59,7 +59,11 @@ class OrderController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
+            if(!empty('to_branch_id')){
+                $query = $query->whereIn('fall_in', $cc)->orWhere('branch_id', $cc);
+            }else{
             $query = $query->whereIn('branch_id', $cc);
+            }
         }
         // $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
         //     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -1277,7 +1281,8 @@ class OrderController extends Controller
             $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
             $get_zonebranch = $getpin_transfer->hub_transfer;
             $get_branch = Location::where('name', $get_zonebranch)->first();
-            $consignmentsave['to_branch_id'] = $get_branch->id;
+            // $consignmentsave['to_branch_id'] = $get_branch->id;
+            $consignmentsave['fall_in'] = $get_branch->id;
 
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;

@@ -39,6 +39,7 @@ class ConsignmentNote extends Model
         'user_id',
         'branch_id',
         'to_branch_id',
+        'fall_in',
         'driver_id',
         'bar_code',
         'reason_to_cancel',

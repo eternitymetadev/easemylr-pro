@@ -117,6 +117,12 @@ foreach ($consignments as $key => $consignment) {
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
+
+                                @if(!empty($consignment->fall_in))
+                                <?php  
+                                $authuser = Auth::user();
+                                ?>
+                                @if($authuser->branch_id == $consignment->fall_in)
                                 <td>
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
@@ -125,6 +131,22 @@ foreach ($consignments as $key => $consignment) {
                                         href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
                                                 class="fa fa-edit"></i></span></a>
                                 </td>
+                                @else
+                                <td>
+                                    -
+                                </td>
+                                @endif
+                                @else
+
+                                <td>
+                                    <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
+                                        data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
+                                            Cancel</span></a>
+                                    <a class="btn btn-primary"
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
+                                                class="fa fa-edit"></i></span></a>
+                                </td>
+                                @endif
                             </tr>
                         <?php
                         }
