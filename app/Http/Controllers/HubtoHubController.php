@@ -826,4 +826,22 @@ class HubtoHubController extends Controller
         return view('hub-transportation.hrs-payment-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
 
     }
+    /////////////////////// hrs payment list page ///////////////////////////
+    public function viewhrsLr(Request $request)
+    {
+
+        $id = $_GET['hrs_lr'];
+     
+        $transcationview = Hrs::select('*')->with('ConsignmentDetail.ConsigneeDetail', 'ConsignmentItem')->where('hrs_no', $id)
+            // ->whereHas('ConsignmentDetail', function ($query) {
+            //     $query->where('status', '1');
+            // })
+            ->orderby('id', 'asc')->get();
+        $result = json_decode(json_encode($transcationview), true);
+        $response['fetch'] = $result;
+        $response['success'] = true;
+        $response['success_message'] = "Data fetch successfully";
+        echo json_encode($response);
+
+    }
 }

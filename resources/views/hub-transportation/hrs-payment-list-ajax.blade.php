@@ -83,13 +83,10 @@
 
                     <td>
                         <?php $drs_status = Helper::getdeleveryStatus($hrssheet->drs_no) ?>
-                                <a class="drs_cancel drs_lr" drs-no="{{$hrssheet->hrs_no}}"
-                                   data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>">
-                                    <p class="swan-tooltip-right drsStatus pointer @if($drs_status == 'Successful')
-                                        green @elseif($drs_status == 'Partial Delivered')
-                                        orange @elseif($drs_status == 'Started')
-                                        extra2 @endif" data-tooltip="View LR's">
-                                        <span>{{ Helper::getdeleveryStatus($hrssheet->hrs_no) }}</span>
+                                <a class="drs_cancel hrs_lr" hrs-no="{{$hrssheet->hrs_no}}"
+                                   data-text="consignment" data-status="0">
+                                    <p class="swan-tooltip-right drsStatus pointer orange" data-tooltip="View LR's">
+                                        <span>Outgoing</span>
                                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                                     </p>
                                 </a>
