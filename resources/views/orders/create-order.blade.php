@@ -388,10 +388,6 @@
                     </label>
                     <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                         <option value="">Select Consignor</option>
-                        {{--                        @foreach($consigners as $consigner)--}}
-                        {{--                            <option value="{{$consigner->id}}">{{$consigner->nick_name}}--}}
-                        {{--                            </option>--}}
-                        {{--                        @endforeach--}}
                     </select>
                     <div class="appendedAddress" id="consigner_address"></div>
                 </div>

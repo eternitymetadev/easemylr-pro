@@ -370,6 +370,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
@@ -526,6 +527,13 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
 
 
 });
@@ -631,6 +639,13 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
 
 });
 
@@ -729,6 +744,14 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
