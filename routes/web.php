@@ -272,6 +272,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
@@ -468,7 +472,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
 
     Route::resource('locations', LocationController::class);
-    Route::post('/locations/update', [LocationController::class, 'updateLocation']);
+    Route::post('/locations/update', [LocationController::class, 'updateLocation']); 
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
     // Route::any('locations/delete-location', [LocationController::class, 'deleteLocation']);
 

@@ -157,6 +157,12 @@
                         <li>
                             <a href="{{$prefixurl.'hrs-payment-list'}}"> Hrs Payment list </a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'order-book-ftl'}}"> Order Book Ftl </a>
+                        </li>
+                        <li>
+                            <a href="{{$prefixurl.'order-book-ptl'}}"> Order Book Ptl </a>
+                        </li>
                     </ul>
                 </li>
                 <?php }
