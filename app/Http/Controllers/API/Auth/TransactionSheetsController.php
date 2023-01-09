@@ -740,7 +740,34 @@ class TransactionSheetsController extends Controller
             ], 500);
         }
     }
+      
+    public function taskCancel(Request $request, $id)
+    {
+        try {
+            $update_status = ConsignmentNote::find($id);
+            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel']);
+            
 
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Task Cancelled Successfully'
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update status"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
 
 }
 
