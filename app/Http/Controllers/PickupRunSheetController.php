@@ -130,18 +130,18 @@ class PickupRunSheetController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
 
-        if($authuser->role_id !=1){
-            if($authuser->role_id ==2 || $role_id->id ==3){
-                $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
-                $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
-            }else{
-                $regclients = RegionalClient::whereIn('id',$regclient)->orderby('name','ASC')->get();
-                $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
-            }
-        }else{
+        // if($authuser->role_id !=1){
+        //     if($authuser->role_id ==2 || $role_id->id ==3){
+        //         $regclients = RegionalClient::whereIn('location_id',$cc)->orderby('name','ASC')->get();
+        //         $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        //     }else{
+        //         $regclients = RegionalClient::whereIn('id',$regclient)->orderby('name','ASC')->get();
+        //         $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        //     }
+        // }else{
             $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
             $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }
+        // }
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();

@@ -43,7 +43,6 @@ div.relative {
     justify-content: center;
     gap: 4px;
 }
-
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -127,9 +126,13 @@ foreach ($consignments as $key => $consignment) {
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
                                             Cancel</span></a>
+                                    @if($consignment->prsitem_status == 1)
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
-                                                class="fa fa-edit"></i></span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Confirm</span></a>
+                                    @else
+                                    <a class="btn btn-primary"
+                                        href="#"><span>Pending Pickup</span></a>
+                                    @endif
                                 </td>
                                 @else
                                 <td>
@@ -148,7 +151,7 @@ foreach ($consignments as $key => $consignment) {
                                 </td>
                                 @endif
                             </tr>
-                        <?php
+                            <?php
                         }
                         ?>
                         </tbody>
@@ -170,39 +173,39 @@ foreach ($consignments as $key => $consignment) {
                 </button>
             </div>
             <div class="modal-body">
-            <div class="form-row">
-            <h6 class="col-12">Branch</h6>
-             
-            <?php $authuser = Auth::user();
+                <div class="form-row">
+                    <h6 class="col-12">Branch</h6>
+
+                    <?php $authuser = Auth::user();
             if($authuser->role_id == 2 || $authuser->role_id == 4)
             {
             ?>
-            <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <?php } else { ?>
-                <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    <option value="">Select..</option>
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
+                    <div class="form-group col-md-4">
+                        <label for="exampleFormControlSelect1">
+                            Select Branch <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <?php } else { ?>
+                    <div class="form-group col-md-4">
+                        <label for="exampleFormControlSelect1">
+                            Select Branch <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                            <option value="">Select..</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <?php } ?>
+                    <?php } ?>
 
-        </div>
+                </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">Excel File*</label>
                     <input required type="file" class="form-control form-control-sm" id="formGroupExampleInput"

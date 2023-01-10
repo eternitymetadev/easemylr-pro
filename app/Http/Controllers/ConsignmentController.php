@@ -160,8 +160,8 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            if(!empty('fall_in')){
-                $query = $query->whereIn('fall_in', $cc);
+            if(!empty('to_branch_id')){
+                $query = $query->whereIn('to_branch_id', $cc);
             }else{
             $query = $query->whereIn('branch_id', $cc);
             }
@@ -318,7 +318,7 @@ class ConsignmentController extends Controller
             $consignmentsave['total_quantity'] = $request->total_quantity;
             $consignmentsave['total_weight'] = $request->total_weight;
             $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            // $consignmentsave['total_freight'] = $request->total_freight;
+            //$consignmentsave['total_freight'] = $request->total_freight;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
