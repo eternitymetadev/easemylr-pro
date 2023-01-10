@@ -91,7 +91,11 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
+                if(!empty('to_branch_id')){
+                    $query = $query->whereIn('to_branch_id', $cc);
+                }else{
                 $query = $query->whereIn('branch_id', $cc);
+                }
             }
 
             if (!empty($request->search)) {
@@ -156,7 +160,11 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
+            if(!empty('fall_in')){
+                $query = $query->whereIn('fall_in', $cc);
+            }else{
             $query = $query->whereIn('branch_id', $cc);
+            }
         }
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());

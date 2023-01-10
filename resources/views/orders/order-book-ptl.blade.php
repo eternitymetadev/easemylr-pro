@@ -276,7 +276,7 @@ span.select2.select2-container.mb-4 {
     <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}"
         id="createconsignment" style="margin: auto;">
         {{--Branch Location--}}
-        <div class="form-row">
+        <!-- <div class="form-row">
             <h6 class="col-12">Branch</h6>
              
             <?php $authuser = Auth::user();
@@ -308,7 +308,7 @@ span.select2.select2-container.mb-4 {
 
                 <?php } ?>
 
-        </div>
+        </div> -->
       
         <input type="hidden" name="lr_type" value="1" />
         {{--bill to info--}}

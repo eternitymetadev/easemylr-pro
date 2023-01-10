@@ -276,8 +276,10 @@ span.select2.select2-container.mb-4 {
         style="margin: auto; ">
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
+        <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
 
-        <div class="form-row">
+
+        <!-- <div class="form-row">
             <h6 class="col-12">Branch</h6>
 
             <div class="form-group col-md-4">
@@ -294,7 +296,7 @@ span.select2.select2-container.mb-4 {
                     @endif
                 </select>
             </div>
-        </div>
+        </div> -->
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>
