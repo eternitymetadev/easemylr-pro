@@ -390,12 +390,14 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
     Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
     Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+    Route::any('postal-code', [SettingController::class,'postalCode']);
     
 
 });

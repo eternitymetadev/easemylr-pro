@@ -206,7 +206,7 @@ $(document).on('click', '.payment', function() {
             
 
         }
-
+ 
     });
 
 });

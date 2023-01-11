@@ -668,7 +668,7 @@ class VendorController extends Controller
             ->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
 
-        $response['fetch'] = $result;
+        $response['fetch'] = $result;  
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
