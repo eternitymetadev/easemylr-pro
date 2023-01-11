@@ -371,6 +371,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     

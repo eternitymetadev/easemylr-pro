@@ -698,4 +698,72 @@ class PickupRunSheetController extends Controller
         return Excel::download(new PrsExport, 'prs.csv');
     }
 
+    public function paymentList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = PickupRunSheet::query();
+        
+        if ($request->ajax()) {
+            if(isset($request->resetfilter)){
+                Session::forget('peritem');
+                $url = URL::to($this->prefix.'/'.$this->segment);
+                return response()->json(['success' => true,'redirect_url'=>$url]);
+            }
+
+            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail');
+
+            if(!empty($request->search)){
+                $search = $request->search;
+                $searchT = str_replace("'","",$search);
+                $query->where(function ($query)use($search,$searchT) {
+                    $query->where('pickup_id', 'like', '%' . $search . '%')
+                    ->orWhereHas('PrsRegClients.RegClient', function ($regclientquery) use ($search) {
+                        $regclientquery->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('PrsRegClients.RegConsigner.Consigner',function( $query ) use($search,$searchT){
+                        $query->where(function ($cnrquery)use($search,$searchT) {
+                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('DriverDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($driverquery)use($search,$searchT) {
+                            $driverquery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('phone', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('VehicleDetail',function( $query ) use($search,$searchT){
+                        $query->where(function ($vehiclequery)use($search,$searchT) {
+                            $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
+                        });
+                    });
+
+                });
+            }
+
+            if($request->peritem){
+                Session::put('peritem',$request->peritem);
+            }
+      
+            $peritem = Session::get('peritem');
+            if(!empty($peritem)){
+                $peritem = $peritem;
+            }else{
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
+            $prsdata = $prsdata->appends($request->query());
+
+            $html =  view('prs.prs-paymentlist-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem])->render();
+            
+            return response()->json(['html' => $html]);
+        }
+
+        $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $prsdata = $prsdata->appends($request->query());
+        
+        return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
+    }
+
 }
