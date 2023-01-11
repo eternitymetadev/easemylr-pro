@@ -59,11 +59,8 @@ class OrderController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            if(!empty('to_branch_id')){
-                $query = $query->whereIn('fall_in', $cc)->orWhere('branch_id', $cc);
-            }else{
-            $query = $query->whereIn('branch_id', $cc);
-            }
+
+            $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
         }
         // $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
         //     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
