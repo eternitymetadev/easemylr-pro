@@ -2824,26 +2824,29 @@ $(document).on("click", ".receive-vehicle", function () {
                         '][invoice_no]" value="' +
                         inv_total +
                         '" readonly></td>';
-                    // rows +=
-                    //     '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
-                    //     index +
-                    //     '][total_qty]"  value="' +
-                    //     qty_sum +
-                    //     '" readonly></td>';
-                    // rows +=
-                    //     '<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data[' +
-                    //     index +
-                    //     '][receive_qty]"></td>';
-                    // rows +=
-                    //     '<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data[' +
-                    //     index +
-                    //     '][remaining_qty]" readonly></td>';
-                   
+                    rows +=
+                        '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
+                        index +
+                        '][total_qty]"  value="' +
+                        qty_sum +
+                        '" readonly></td>';
+
                     rows += `<td style="text-align: center"><div class="d-flex align-items-center justify-content-center"><input class="verify_status form-control-sm" type="radio" id="verified${index}" name="data[${index}][is_verify]" checked value="1"><label style="margin-right: 1rem;" for="verified${index}">Verified</label>`;
                     rows += `<input class="verify_status form-control-sm" type="radio" id="unverified${index}" name="data[${index}][is_verify]" value="0"><label for="unverified${index}">UnvVerified</label> </div></td>`;
 
                     rows +=
-                        '<td><input class="dialogInput form-control-sm remarks" style="width: 300px; visibility: hidden" type="text" name="data[' +
+                        '<td><input class="dialogInput receive_qty" style="width: 120px; visibility: hidden" type="number" name="data[' +
+                        index +
+                        '][receive_qty]"></td>';
+                    rows +=
+                        '<td><input class="dialogInput remaining_qty" style="width: 120px; visibility: hidden" type="text" name="data[' +
+                        index +
+                        '][remaining_qty]" readonly></td>';
+                   
+                    
+
+                    rows +=
+                        '<td><input class="dialogInput form-control-sm remarks" style="min-width: 200px; visibility: hidden" type="text" name="data[' +
                         index +
                         '][remarks]"></td></tr>';
                 });
@@ -2858,10 +2861,14 @@ jQuery(document).on("click", ".verify_status", function (event) {
     $(this).closest('td').next('td').find('input').val('');
     verify_val = $(this).val();
     if(verify_val == '1'){
-        $(this).closest('td').next('td').find('input').css('visibility', 'hidden');
+        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'hidden');
+        $(this).closest('td').next('td').find('.remaining_qty').css('visibility', 'hidden');
+        $(this).closest('td').next('td').find('.remarks').css('visibility', 'hidden');
         
     }else{
-        $(this).closest('td').next('td').find('input').css('visibility', 'visible');
+        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'visible');
+        $(this).closest('td').siblings('td').find('.remaining_qty').css('visibility', 'visible');
+        $(this).closest('td').siblings('td').find('.remarks').css('visibility', 'visible');
     }
 
 });

@@ -742,7 +742,7 @@ span.select2.select2-container.mb-4 {
 
             </div>
             <?php } ?>
-
+   @if($getconsignments->lr_type == 0)
             {{--vehicle info--}}
             <div class="form-row" style="width: 100%">
                 <h6 class="col-12">Vehicle Information</h6>
@@ -813,6 +813,7 @@ span.select2.select2-container.mb-4 {
                 </div>
 
             </div>
+            @endif
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
                 {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
