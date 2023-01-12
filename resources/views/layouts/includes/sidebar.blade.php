@@ -207,6 +207,9 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="consignment" data-parent="#accordionExample">
             <li>
+                <a href="{{$prefixurl.'consignments/create'}}">Create Consignment </a>
+            </li>
+            <li>
                 <a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
             <li>
@@ -219,7 +222,7 @@
     <li class="menu">
         <a href="#ftl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'order-book-ftl') || str_contains($currentURL, 'create-ftl') || str_contains($currentURL, 'consignments')) active @endif">
+                class="@if(str_contains($currentURL, 'order-book-ftl') || str_contains($currentURL, 'create-ftl')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-users">
@@ -244,7 +247,7 @@
                 <a href="{{$prefixurl.'create-ftl'}}"> Create LR Ftl</a>
             </li>
             <li>
-                <a href="{{$prefixurl.'consignments'}}"> LR List </a>
+                <a href="#"> LR List </a>
             </li>
         </ul>
     </li>
@@ -252,7 +255,7 @@
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'create-ptl') || str_contains($currentURL, 'consignments')) active @endif">
+                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'create-ptl')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-users">
@@ -277,7 +280,7 @@
                 <a href="{{$prefixurl.'create-Ptl'}}"> Create LR Ptl</a>
             </li>
             <li>
-                <a href="{{$prefixurl.'consignments'}}"> LR List </a>
+                <a href="#"> LR List </a>
             </li>
         </ul>
     </li>
