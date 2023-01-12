@@ -273,6 +273,9 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="Ptl" data-parent="#accordionExample">
+        <li>
+                <a href="{{$prefixurl.'orders'}}"> Order list</a>
+            </li>
             <li>
                 <a href="{{$prefixurl.'order-book-ptl'}}"> Book Order </a>
             </li>
