@@ -120,6 +120,10 @@
                         <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
                     </div>
                     <div class="col-12">
+                        <label for="x">Hub Transfer</label>
+                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer" placeholder="" />
+                    </div>
+                    <div class="col-12">
                         <label for="x">Primary Zone</label>
                         <input class="form-control form-control-sm" id="primary_zone" name="primary_zone" placeholder="" />
                     </div>
@@ -155,6 +159,7 @@ $(document).on('click', '.edit_postal', function() {
             $('#district').val(data.zone_data.district);
             $('#state').val(data.zone_data.state);
             $('#zone_id').val(data.zone_data.id);
+            $('#hub_transfer').val(data.zone_data.hub_transfer);
             $('#postal_code').val(data.zone_data.postal_code);
         }
 

@@ -38,6 +38,7 @@
     </div>
 
     <!--  BEGIN CONTENT AREA  -->
+    <?php $authuser = Auth::user(); ?>
     <div id="content" class="main-content" style="min-height: calc(100% - 64px)">
         <header class="header-container header navbar navbar-expand-sm">
             <h1>@yield('page-heading')</h1>
