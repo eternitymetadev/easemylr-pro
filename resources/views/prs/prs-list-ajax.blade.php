@@ -10,6 +10,7 @@
                 <th>Vehicle No.</th>
                 <th>Driver Name </th>
                 <th>Status </th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -63,6 +64,7 @@
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
                 <td>{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>
+                <td><a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id).'/edit')}}" class="btn btn-white btn-cstm"><span><i class="fa fa-edit"></i> Edit</span></a> </td>
             </tr>
             @endforeach
             @else

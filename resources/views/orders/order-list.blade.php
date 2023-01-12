@@ -86,6 +86,7 @@ div.relative {
                             <tr>
                                 <!-- <th> </th> -->
                                 <th>LR No</th>
+                                <th>Pickup ID</th>
                                 <th>LR Date</th>
                                 <th>Branch</th>
                                 <th>Billing Client</th>
@@ -96,6 +97,8 @@ div.relative {
                                 <th>Order No</th>
                                 <th>Quantity</th>
                                 <th>Net Weight</th>
+                                <th>Booking Mode</th>
+                                <th>Pickup Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -106,6 +109,7 @@ foreach ($consignments as $key => $consignment) {
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
+                                <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
                                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
@@ -116,6 +120,23 @@ foreach ($consignments as $key => $consignment) {
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
+                                <?php 
+                                $prs_pickup_status = DB::table('prs_drivertasks')->select('id','status')->where(['prsconsigner_id'=>$consignment->ConsignerDetail->id, 'prs_id'=>$consignment->prs_id])->first();
+
+                                if(!empty($consignment->prs_id)){
+                                    $booking_mode = "Driver";
+                                    $pickup_status = Helper::PrsDriverTaskStatus($prs_pickup_status->status);
+                                }else{
+                                    $booking_mode = "Manual";
+                                    $pickup_status = "N/A";
+                                }
+                                ?>
+                                <td>{{ $booking_mode }}</td>
+                                <?php
+                                    
+                                    // echo "<pre>"; print_r($prs_pickup_status->status);die; 
+                                ?>
+                                <td>{{ $pickup_status }}</td>
 
                                 @if(!empty($consignment->fall_in))
                                 <?php  
@@ -130,8 +151,7 @@ foreach ($consignments as $key => $consignment) {
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Confirm</span></a>
                                     @else
-                                    <a class="btn btn-primary"
-                                        href="#"><span>Pending Pickup</span></a>
+                                    <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a>
                                     @endif
                                 </td>
                                 @else
@@ -146,8 +166,7 @@ foreach ($consignments as $key => $consignment) {
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
                                             Cancel</span></a>
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
-                                                class="fa fa-edit"></i></span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i class="fa fa-edit"></i></span></a>
                                 </td>
                                 @endif
                             </tr>

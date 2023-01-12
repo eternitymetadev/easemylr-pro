@@ -388,7 +388,7 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $vehiclereceives = $query->orderBy('id', 'ASC')->paginate($peritem);
+            $vehiclereceives = $query->whereNotIn('status',[3])->orderBy('id', 'ASC')->paginate($peritem);
             $vehiclereceives = $vehiclereceives->appends($request->query());
             
             $html =  view('prs.vehicle-receivegate-list-ajax',['prefix'=>$this->prefix,'vehiclereceives' => $vehiclereceives,'peritem'=>$peritem])->render();
@@ -398,7 +398,7 @@ class PickupRunSheetController extends Controller
 
         $query = $query->with('PrsDriverTasks','PrsDriverTasks.PrsTaskItems');
 
-        $vehiclereceives  = $query->orderBy('id','ASC')->paginate($peritem);
+        $vehiclereceives  = $query->whereNotIn('status',[3])->orderBy('id','ASC')->paginate($peritem);
         $vehiclereceives  = $vehiclereceives->appends($request->query());
         // echo "<pre>"; print_r($vehiclereceives); die;
         return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
@@ -469,6 +469,7 @@ class PickupRunSheetController extends Controller
                     $consignmentsave['total_quantity'] = $savetaskitems->quantity;
                     $consignmentsave['total_weight'] = $savetaskitems->net_weight;
                     $consignmentsave['total_gross_weight'] = $savetaskitems->gross_weight;
+                    $consignmentsave['prs_id'] = $request->prs_id;
                     $consignmentsave['prsitem_status'] = 1;
                     if(empty($save_data['lr_id'])){
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -629,9 +630,33 @@ class PickupRunSheetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($prs_id)
     {
-        //
+        $id = decrypt($prs_id);
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+
+        $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
+            $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        // }
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+
+        $locations = Location::select('id','name')->get();
+        $hub_locations = Location::where('is_hub', '1')->select('id','name')->get();
+        $getprs = PickupRunSheet::where('id',$id)->first();
+
+        return view('prs.update-prs',['prefix'=>$this->prefix, 'getprs'=>$getprs, 'regclients'=>$regclients,'locations'=>$locations, 'hub_locations'=>$hub_locations, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
+
+
+
+        $getprs = PickupRunSheet::where('id',$id)->with('')->first();
+
+        return view('prs.update-prs')->with(['prefix'=>$this->prefix,'title'=>$this->title,'getprs'=>$getprs,'segment'=>$this->segment]);
     }
 
     /**

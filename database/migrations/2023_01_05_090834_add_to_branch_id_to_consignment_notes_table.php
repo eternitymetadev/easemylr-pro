@@ -14,8 +14,9 @@ class AddToBranchIdToConsignmentNotesTable extends Migration
     public function up()
     {
         Schema::table('consignment_notes', function (Blueprint $table) {
+            $table->string('prs_id')->after('booked_drs')->nullable();
             $table->string('to_branch_id')->after('branch_id')->nullable(); 
-            $table->string('fall_in')->after('to_branch_id')->nullable(); 
+            $table->string('fall_in')->after('to_branch_id')->nullable();
         });
     }
 
