@@ -230,10 +230,13 @@
                         <!-- <li>
                             <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
                         </li> -->
+                        <!-- <li>
+                            <a href="{{$prefixurl.'postal-code'}}"> Postal Code Edit</a>
+                        </li> -->
+                        <?php } ?>
                         <li>
                             <a href="{{$prefixurl.'postal-code'}}"> Postal Code Edit</a>
                         </li>
-                        <?php } ?>
                     </ul>
                 </li>
 

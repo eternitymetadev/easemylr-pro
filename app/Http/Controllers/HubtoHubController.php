@@ -52,7 +52,7 @@ class HubtoHubController extends Controller
 
             $query = $query->where('h2h_check', 'h2h')->where('hrs_status',2)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
 
-            if ($authuser->role_id == 1) {  
+            if ($authuser->role_id == 1) {   
                 $query;
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
@@ -795,6 +795,8 @@ class HubtoHubController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $baseclient = explode(',', $authuser->baseclient_id);
         $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
@@ -822,8 +824,9 @@ class HubtoHubController extends Controller
         }
         $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
         $hrssheets = $hrssheets->appends($request->query());
+        $vendors = Vendor::with('Branch')->get();
 
-        return view('hub-transportation.hrs-payment-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+        return view('hub-transportation.hrs-payment-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes,'branchs' => $branchs, 'vendors' => $vendors]);
 
     }
     /////////////////////// hrs payment list page ///////////////////////////
@@ -843,5 +846,16 @@ class HubtoHubController extends Controller
         $response['success_message'] = "Data fetch successfully";
         echo json_encode($response);
 
+    }
+
+    ////
+    public function getHrsdetails(Request $request)
+    {
+        $hrs_statsu = Hrs::with('ConsignmentDetail')->whereIn('hrs_no', $request->hrs_no)->first();
+
+        $response['get_data'] = $hrs_statsu;
+        $response['success'] = true;
+        $response['error_message'] = "find data";
+        return response()->json($response);
     }
 }
