@@ -122,9 +122,9 @@ Echo.channel('events')
 <script src="{{asset('assets/js/jquery.sumoselect.js')}}"></script>
 
 <script>
-var APP_URL = {
-    !!json_encode(url('/')) !!
-};
+var APP_URL =
+{!!json_encode(url('/')) !!};
+
 
 $(document).ready(function() {
     App.init();
