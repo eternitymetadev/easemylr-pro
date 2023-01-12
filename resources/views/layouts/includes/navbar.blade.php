@@ -10,7 +10,7 @@
                 $permissions = App\Models\UserPermission::where('user_id',$authuser->id)->pluck('permisssion_id')->ToArray();
                 $submenusegment = Request::segment(3);
 
-                if($authuser->role_id == 6 || $authuser->role_id == 7) { 
+                if($authuser->role_id == 6 || $authuser->role_id == 7) {
                     $disable = 'disable_n';
                 } else{
                     $disable = '';
@@ -20,10 +20,10 @@
     <div class="nav-logo align-self-center">
     <a class="navbar-brand <?php echo $disable; ?>" href="{{$prefixurl.'dashboard'}}"><img alt="logo" src="{{asset('assets/img/LOGO_Frowarders.jpg')}}"> <span class="navbar-brand-name"></span></a>
     </div>
-   
+
 
 <ul class="navbar-item topbar-navigation">
-    
+
     <!--  BEGIN TOPBAR  -->
     <div class="topbar-nav header navbar" role="banner">
         <nav id="topbar">
@@ -39,7 +39,7 @@
             </ul>
 
             <ul class="list-unstyled menu-categories" id="topAccordion">
-            <?php 
+            <?php
             if(!empty($permissions)){
                 if(in_array('2', $permissions))
                 {
@@ -48,7 +48,7 @@
                     <a href="{{$prefixurl.'locations'}}">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                            
+
                             <span>Branch Locations</span>
                         </div>
                     </a>
@@ -62,7 +62,7 @@
                     <a href="{{$prefixurl.'consigners'}}" >
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-                            
+
                             <span>Consigners</span>
                         </div>
                     </a>
@@ -89,7 +89,7 @@
                     <a href="{{$prefixurl.'drivers'}}">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                            
+
                             <span>Drivers</span>
                         </div>
                     </a>
@@ -115,10 +115,10 @@
                    <a href="#forms" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                            
+
                             <span>Consignments</span>
                         </div>
-                        
+
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="forms"  data-parent="#topAccordion">
                         <li>
@@ -166,12 +166,12 @@
                     </ul>
                 </li>
                 <?php }
-            }}if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?> 
+            }}if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
             <li class="menu single-menu">
                     <a href="#payments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                            
+
                             <span> Payment Request</span>
                         </div>
                         <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg> -->
@@ -200,12 +200,12 @@
                     <a href="#tables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                            
+
                             <span> Reports </span>
                         </div>
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="tables"  data-parent="#topAccordion">
-                        
+
                     <?php if($authuser->role_id !=6){ ?>
                         <li>
                             <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
@@ -244,12 +244,12 @@
                     <a href="#prsnavList" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                            
+
                             <span> PRS </span>
                         </div>
                     </a>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="prsnavList"  data-parent="#topAccordion">
-                        
+
                     <?php //if($authuser->role_id ==2){ ?>
                         <li>
                             <a href="{{$prefixurl.'prs'}}"> Create Pickup</a>
@@ -282,7 +282,7 @@
                     </a>
                     <?php } ?>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="more" data-parent="#topAccordion">
-                    <?php 
+                    <?php
                     if(!empty($permissions)){
                         if(in_array('1', $permissions))
                         {
@@ -321,22 +321,23 @@
 </ul>
 
 <ul class="navbar-item flex-row ml-auto">
-    
+
 </ul>
 
 <ul class="navbar-item flex-row nav-dropdowns">
-   
+
 
     <li class="nav-item dropdown message-dropdown">
-       
+
     </li>
 
     <li class="nav-item dropdown notification-dropdown">
-       
+
     </li>
 
     <li class="nav-item dropdown user-profile-dropdown order-lg-0 order-1">
-        <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="user-profile-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="user-profile-dropdown"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="media">
                 <img src="{{asset('newasset/assets/img/90x90.jpg')}}" class="img-fluid" alt="admin-profile">
             </div>
@@ -358,17 +359,22 @@
                 <a class="" href="{{route
                 ('logout')}}" onclick="event.preventDefault
                 (); document.getElementById('logout-form').submit();">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" class="feather feather-log-out"><path
-                d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline
-                points="16 17 21 12 16 7"></polyline><line x1="21" y1="12"
-                x2="9" y2="12"></line></svg> Sign Out</a> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="feather feather-log-out">
+                        <path
+                            d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline
+                            points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12"
+                              x2="9" y2="12"></line>
+                    </svg>
+                    Sign Out</a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf </form>
             </div>
-           
+
         </div>
 
     </li>
