@@ -97,6 +97,7 @@ div.relative {
                                 <th>Quantity</th>
                                 <th>Net Weight</th>
                                 <th>Action</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -116,30 +117,24 @@ foreach ($consignments as $key => $consignment) {
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
-
-                                @if(!empty($consignment->fall_in))
-                                <?php  
+                                <!-- ---Action Button ----->
+                                <?php if(!empty($consignment->fall_in)){ 
                                 $authuser = Auth::user();
-                                ?>
-                                @if($authuser->branch_id == $consignment->fall_in)
+                               if($authuser->branch_id == $consignment->fall_in){ ?>
                                 <td>
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
                                             Cancel</span></a>
-                                    @if($consignment->prsitem_status == 1)
-                                    <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Confirm</span></a>
-                                    @else
-                                    <a class="btn btn-primary"
-                                        href="#"><span>Pending Pickup</span></a>
-                                    @endif
+
                                 </td>
-                                @else
+                                <?php }else{ ?>
                                 <td>
-                                    -
+                                    <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
+                                        data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
+                                            Cancel</span></a>
                                 </td>
-                                @endif
-                                @else
+                                <?php } 
+                            } else { ?>
 
                                 <td>
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
@@ -149,7 +144,33 @@ foreach ($consignments as $key => $consignment) {
                                         href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
                                                 class="fa fa-edit"></i></span></a>
                                 </td>
-                                @endif
+                                <?php } ?>
+                                <!-- -------- Status Button ------------>
+
+                                <?php $authuser = Auth::user();
+                                   if($authuser->branch_id == $consignment->fall_in){ 
+                                 if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
+                                <td>
+                                    <a class="btn btn-primary"
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete
+                                            Lr</span></a>
+                                </td>
+                                <?php }else{
+                                    ?>
+                                <td>
+                                    <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a>
+                                    <button type="button" class="btn btn-success prs_not_require"
+                                        value="{{$consignment->id}}">Receved Material</button>
+                                </td>
+                                <?php }
+                                }else{ 
+                                    if($consignment->prsitem_status == 0){ ?>
+                                
+                                <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
+                              <?php      }else{ ?>
+                                <td> <a class="btn btn-primary" href="#"><span>Pickup</span></a></td>
+                                    <?php } ?>
+                           <?php     }  ?>
                             </tr>
                             <?php
                         }
@@ -221,6 +242,34 @@ foreach ($consignments as $key => $consignment) {
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="receve_material" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="prs_check_form">
+                <!-- <button type="button" class="close" data-dismiss="modal"><img src="{{asset('assets/img/close-bottle.png')}}" class="img-fluid"></button> -->
+                <!-- Modal Header -->
+                <div class="modal-header text-center">
+                    <h4 class="modal-title">Prs Not Required</h4>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" name="lr_id" id="lr_id" />
+
+                    <input type="text" class="form-control" name="prs_remarks" />
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div class="btn-section w-100 P-0">
+                        <button type="submit" class="btn btn-warnimg">Save</button>
+                        <a type="" class="btn btn-modal" data-dismiss="modal">No</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @include('models.delete-user')
 @include('models.common-confirm')
 @endsection
@@ -284,6 +333,42 @@ $('#upload_order').submit(function(e) {
 
     $.ajax({
         url: "import-ordre-booking",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+///
+$(document).on('click', '.prs_not_require', function() {
+    var lr_no = $(this).val();
+    $('#receve_material').modal('show');
+    $('#lr_id').val(lr_no);
+});
+//
+$('#prs_check_form').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "prs-receive-material",
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },

@@ -276,6 +276,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
     Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
     Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);

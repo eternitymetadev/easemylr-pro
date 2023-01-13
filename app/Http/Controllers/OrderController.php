@@ -49,6 +49,7 @@ class OrderController extends Controller
         $cc = explode(',', $authuser->branch_id);
 
         $query = $query->where('status', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail');
+        
 
         if ($authuser->role_id == 1) {
             $query;
@@ -59,8 +60,10 @@ class OrderController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-
-            $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
+          
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc)->where('status', 5);
+            });
         }
         // $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
         //     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -1626,15 +1629,20 @@ class OrderController extends Controller
            
             $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
             $get_zonebranch = $getpin_transfer->hub_transfer;
-            $get_branch = Location::where('name', $get_zonebranch)->first();
-            // $consignmentsave['to_branch_id'] = $get_branch->id;
-            $consignmentsave['fall_in'] = $get_branch->id;
 
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;
             $location_name = $get_location->name;
 
-            
+            if(!empty($get_zonebranch)){
+            $get_branch = Location::where('name', $get_zonebranch)->first();
+            $get_branch_id = $get_branch->id;
+            }else{
+            $get_branch_id = $authuser->branch_id;
+            $get_zonebranch = $location_name;
+            }
+            $consignmentsave['fall_in'] = $get_branch_id;
+
              ///h2h branch check
              if($location_name == $get_zonebranch){
                 if (!empty($request->vehicle_id)) {
@@ -1782,6 +1790,25 @@ class OrderController extends Controller
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    //
+    public function prsReceiveMaterial(Request $request)
+    {
+
+        $update_receve = ConsignmentNote::where('id', $request->lr_id)->update(['prsitem_status' => 2,'prs_remarks' => $request->prs_remarks]);
+
+        if ($update_receve) {
+            $response['success'] = true;
+            $response['success_message'] = "Status updated successfully";
+            $response['error'] = false;
+
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not update  please try again";
+            $response['error'] = true;
         }
         return response()->json($response);
     }

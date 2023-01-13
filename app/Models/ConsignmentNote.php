@@ -48,6 +48,7 @@ class ConsignmentNote extends Model
         'status',
         'booked_drs',
         'prsitem_status',
+        'prs_remarks',
         'job_id',
         'tracking_link',
         'delivery_status',

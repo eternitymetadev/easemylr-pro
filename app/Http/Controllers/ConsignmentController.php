@@ -163,7 +163,7 @@ class ConsignmentController extends Controller
             
             $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
             
-        }
+        } 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 

@@ -79,18 +79,18 @@ class FtlPtlController extends Controller
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
-        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-            $branch = $authuser->branch_id;
-            $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+        //     $branch = $authuser->branch_id;
+        //     $branch_loc = explode(',', $branch);
+        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
 
-        } elseif ($authuser->role_id == 4) {
-            $reg = $authuser->regionalclient_id;
-            $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
-        } else {
+        // } elseif ($authuser->role_id == 4) {
+        //     $reg = $authuser->regionalclient_id;
+        //     $regional = explode(',', $reg);
+        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+        // } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
-        }
+        // }
 
         return view('Ftl.create-ftl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
     }
@@ -157,17 +157,17 @@ class FtlPtlController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            $consignee = Consignee::where('id', $request->consignee_id)->first();
-            $consignee_pincode = $consignee->postal_code;
+            // $consignee = Consignee::where('id', $request->consignee_id)->first();
+            // $consignee_pincode = $consignee->postal_code;
            
-            $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
-            $get_zonebranch = $getpin_transfer->hub_transfer;
-            $get_branch = Location::where('name', $get_zonebranch)->first();
-            $consignmentsave['to_branch_id'] = $get_branch->id;
+            // $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+            // $get_zonebranch = $getpin_transfer->hub_transfer;
+            // $get_branch = Location::where('name', $get_zonebranch)->first();
+            // $consignmentsave['to_branch_id'] = $get_branch->id;
 
-            $get_location = Location::where('id', $authuser->branch_id)->first();
-            $chk_h2h_branch = $get_location->with_h2h;
-            $location_name = $get_location->name;
+            // $get_location = Location::where('id', $authuser->branch_id)->first();
+            // $chk_h2h_branch = $get_location->with_h2h;
+            // $location_name = $get_location->name;
 
             
              if ($request->invoice_check == 1 || $request->invoice_check == 2) {
@@ -329,18 +329,18 @@ class FtlPtlController extends Controller
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
-        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-            $branch = $authuser->branch_id;
-            $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+        //     $branch = $authuser->branch_id;
+        //     $branch_loc = explode(',', $branch);
+        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
 
-        } elseif ($authuser->role_id == 4) {
-            $reg = $authuser->regionalclient_id;
-            $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
-        } else {
+        // } elseif ($authuser->role_id == 4) {
+        //     $reg = $authuser->regionalclient_id;
+        //     $regional = explode(',', $reg);
+        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+        // } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
-        }
+        // }
 
         return view('Ftl.create-ptl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
     }
@@ -418,17 +418,22 @@ class FtlPtlController extends Controller
             }
 
 
-           
             $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
             $get_zonebranch = $getpin_transfer->hub_transfer;
-            $get_branch = Location::where('name', $get_zonebranch)->first();
-            $consignmentsave['to_branch_id'] = $get_branch->id;
 
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;
             $location_name = $get_location->name;
 
-            
+            if(!empty($get_zonebranch)){
+            $get_branch = Location::where('name', $get_zonebranch)->first();
+            $get_branch_id = $get_branch->id;
+            }else{
+            $get_branch_id = $authuser->branch_id;
+            $get_zonebranch = $location_name;
+            }
+            $consignmentsave['to_branch_id'] = $get_branch_id;
+
              ///h2h branch check
              if($location_name == $get_zonebranch){
                 if (!empty($request->vehicle_id)) {
