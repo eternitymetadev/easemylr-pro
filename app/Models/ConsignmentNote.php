@@ -47,6 +47,7 @@ class ConsignmentNote extends Model
         'order_id',
         'status',
         'booked_drs',
+        'prs_id',
         'prsitem_status',
         'prs_remarks',
         'job_id',
@@ -119,6 +120,11 @@ class ConsignmentNote extends Model
     }
     public function ToBranch(){
         return $this->belongsTo('App\Models\Location','to_branch_id');
+    }
+
+    public function PrsDetail()
+    {
+        return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
 
 }

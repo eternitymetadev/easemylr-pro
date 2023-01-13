@@ -86,6 +86,7 @@ div.relative {
                             <tr>
                                 <!-- <th> </th> -->
                                 <th>LR No</th>
+                                <th>Pickup ID</th>
                                 <th>LR Date</th>
                                 <th>Branch</th>
                                 <th>Billing Client</th>
@@ -96,6 +97,8 @@ div.relative {
                                 <th>Order No</th>
                                 <th>Quantity</th>
                                 <th>Net Weight</th>
+                                <th>Booking Mode</th>
+                                <th>Pickup Status</th>
                                 <th>Action</th>
                                 <th>Status</th>
                             </tr>
@@ -107,6 +110,7 @@ foreach ($consignments as $key => $consignment) {
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
+                                <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
                                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
@@ -117,6 +121,21 @@ foreach ($consignments as $key => $consignment) {
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
+                                <?php 
+                                $prs_pickup_status = DB::table('prs_drivertasks')->select('id','status')->where(['prsconsigner_id'=>$consignment->ConsignerDetail->id, 'prs_id'=>$consignment->prs_id])->first();
+
+                                if(!empty($consignment->prs_id)){
+                                    $booking_mode = "Driver";
+                                    $pickup_status = Helper::PrsDriverTaskStatus($prs_pickup_status->status);
+                                }else{
+                                    $booking_mode = "Manual";
+                                    $pickup_status = "N/A";
+                                }
+                                ?>
+                                <td>{{ $booking_mode }}</td>
+                                <td>{{ $pickup_status }}</td>
+
+
                                 <!-- ---Action Button ----->
                                 <?php if(!empty($consignment->fall_in)){ 
                                 $authuser = Auth::user();

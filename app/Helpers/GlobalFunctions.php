@@ -57,10 +57,10 @@ class GlobalFunctions {
         else if($status == 2){
             $status = 'Acknowledged';
         }
-        else if($status == 3){      //2
+        else if($status == 3){
             $status = 'Material Picked up';
         }
-        else if($status == 4){       //3
+        else if($status == 4){
             $status = 'Material delivered at HUB';
         }
     

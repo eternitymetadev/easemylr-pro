@@ -260,6 +260,9 @@
                         <li>
                             <a href="{{$prefixurl.'vehicle-receivegate'}}"> HUB Receiving</a>
                         </li>
+                        <li>
+                            <a href="{{$prefixurl.'prs-paymentlist'}}"> Create Payment </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="menu single-menu menu-extras">
