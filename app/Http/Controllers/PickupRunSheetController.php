@@ -471,7 +471,7 @@ class PickupRunSheetController extends Controller
                     $consignmentsave['total_gross_weight'] = $savetaskitems->gross_weight;
                     $consignmentsave['prs_id'] = $request->prs_id;
                     $consignmentsave['prsitem_status'] = 1;
-                    if(empty($save_data['lr_id'])){
+                    if(empty($save_data['lr_id']) && (!empty($savetaskitems->invoice_no))){
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
                     }else{
                         ConsignmentNote::where(['id'=> $save_data['lr_id']])->update(['prsitem_status'=>1]);
@@ -648,7 +648,8 @@ class PickupRunSheetController extends Controller
 
         $locations = Location::select('id','name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id','name')->get();
-        $getprs = PickupRunSheet::where('id',$id)->first();
+        $getprs = PickupRunSheet::where('id',$id)->with('PrsRegClients')->first();
+        // dd($getprs);
 
         return view('prs.update-prs',['prefix'=>$this->prefix, 'getprs'=>$getprs, 'regclients'=>$regclients,'locations'=>$locations, 'hub_locations'=>$hub_locations, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
 

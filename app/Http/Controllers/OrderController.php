@@ -370,7 +370,6 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
         $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems')->where('id', $id)->first();
@@ -394,7 +393,8 @@ class OrderController extends Controller
         // } else {
             $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         // }
-        $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        // $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        $consignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $getconsignments->consigner_id])->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
@@ -435,6 +435,7 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateOrder(Request $request){
+        echo "<pre>";print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
@@ -472,13 +473,13 @@ class OrderController extends Controller
             
             // $consignmentsave['regclient_id'] = $request->regclient_id;
             // $consignmentsave['consigner_id'] = $request->consigner_id;
-            // $consignmentsave['consignee_id'] = $request->consignee_id;
-            // $consignmentsave['ship_to_id'] = $request->ship_to_id;
-            // $consignmentsave['is_salereturn'] = $request->is_salereturn;
+            $consignmentsave['consignee_id'] = $request->consignee_id;
+            $consignmentsave['ship_to_id'] = $request->ship_to_id;
+            $consignmentsave['is_salereturn'] = $request->is_salereturn;
             // $consignmentsave['consignment_date'] = $request->consignment_date;
-            // $consignmentsave['payment_type'] = $request->payment_type;
-            // $consignmentsave['description'] = $request->description;
-            // $consignmentsave['packing_type'] = $request->packing_type;
+            $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['description'] = $request->description;
+            $consignmentsave['packing_type'] = $request->packing_type;
             // $consignmentsave['dispatch'] = $request->dispatch;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;

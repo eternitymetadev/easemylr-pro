@@ -264,12 +264,18 @@ span.select2.select2-container.mb-4 {
     color: #000;
 }
 </style>
-
+<?php 
+if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
+    $disable = ''; 
+} else{
+    $disable = 'disabled';
+}
+?>
 
 <div class="layout-px-spacing">
     {{-- page title--}}
     <div class="page-header layout-spacing">
-        <h2 class="pageHeading">Update Consignment</h2>
+        <h2 class="pageHeading">Update Order</h2>
     </div>
 
     <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder"
@@ -278,25 +284,41 @@ span.select2.select2-container.mb-4 {
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
 
-
-        <!-- <div class="form-row">
+        {{--Branch Location--}}
+        <div class="form-row">
             <h6 class="col-12">Branch</h6>
-
+             
+            <?php $authuser = Auth::user();
+            if($authuser->role_id == 2 || $authuser->role_id == 4)
+            {
+            ?>
             <div class="form-group col-md-4">
                 <label for="exampleFormControlSelect1">
                     Select Branch <span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" id="branch_id" name="branch_id" disabled>
-                    <option value="">Select</option>
-                    @if(count($branchs) > 0)
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
                     @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}" {{ $branch->id == $getconsignments->branch_id ? 'selected' : ''}}>
-                        {{ucwords($branch->name)}}</option>
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
                     @endforeach
-                    @endif
                 </select>
             </div>
-        </div> -->
+            <?php } else { ?>
+                <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect1">
+                    Select Branch <span class="text-danger">*</span>
+                </label>
+                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                    <option value="">Select..</option>
+                    @foreach($branchs as $branch)
+                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    @endforeach
+                </select>
+            </div>
+
+                <?php } ?>
+
+        </div>
+
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>
@@ -325,7 +347,8 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type" disabled>
+                <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type"
+                    {{$disable}}>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         To be Billed</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
@@ -337,8 +360,8 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Freight<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight"
-                    value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}" disabled>
+                <input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight"
+                    value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}" {{$disable}}>
             </div>
             <div class="form-group d-flex col-md-3">
 
@@ -348,13 +371,15 @@ span.select2.select2-container.mb-4 {
                     </label>
                     <div class="checkbox radio">
                         <label class="check-label">Yes
-                            <input type="radio" name="is_salereturn" value="1" class="">
+                            <input type="radio" name="is_salereturn" value="1"
+                                {{ ($getconsignments->is_salereturn=="1")? "checked" : "" }} {{$disable}}>
                             <span class="checkmark"></span>
                         </label>
                     </div>
                     <div class="checkbox radio ml-3">
                         <label class="check-label">No
-                            <input type="radio" name="is_salereturn" value="0" checked="">
+                            <input type="radio" name="is_salereturn" value="0"
+                                {{ ($getconsignments->is_salereturn=="0")? "checked" : "" }} {{$disable}}>
                             <span class="checkmark"></span>
                         </label>
                     </div>
@@ -392,13 +417,12 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id"
-                    id="select_consignee" disabled>
+                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id" id="select_consignee" {{$disable}}>
                     <option value="">Select Consignee</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
-                    <option value="{{ $k }}" {{ $k == $getconsignments->consignee_id ? 'selected' : ''}}>
-                        {{ucwords($consignee)}}
+                    <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
+                        {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
                     @endif
@@ -410,13 +434,12 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id"
-                    id="select_ship_to" disabled>
+                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id" id="select_ship_to" {{$disable}}>
                     <option value="">Select Ship To</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
-                    <option value="{{ $k }}" {{ $k == $getconsignments->ship_to_id ? 'selected' : ''}}>
-                        {{ucwords($consignee)}}
+                    <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
+                        {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
                     @endif
@@ -484,7 +507,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>Order ID</label>
                                                         <input type="text" class="form-control orderid"
                                                             name="data[{{$i}}][order_id]" value="{{$item->order_id}}"
-                                                            readonly>
+                                                            {{$disable}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -492,7 +515,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>Invoice Number</label>
                                                         <input type="text" class="form-control invc_no" id="1"
                                                             name="data[{{$i}}][invoice_no]"
-                                                            value="{{$item->invoice_no}}" readonly>
+                                                            value="{{$item->invoice_no}}" {{$disable}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -500,7 +523,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>Invoice Date</label>
                                                         <input type="date" class="form-control invc_date"
                                                             name="data[{{$i}}][invoice_date]"
-                                                            value="{{$item->invoice_date}}" readonly>
+                                                            value="{{$item->invoice_date}}" {{$disable}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -508,7 +531,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>Invoice Amount</label>
                                                         <input type="number" class="form-control invc_amt"
                                                             name="data[{{$i}}][invoice_amount]"
-                                                            value="{{$item->invoice_amount}}" readonly>
+                                                            value="{{$item->invoice_amount}}" {{$disable}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -516,7 +539,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>E-way Bill Number</label>
                                                         <input type="number" class="form-control ew_bill"
                                                             name="data[{{$i}}][e_way_bill]"
-                                                            value="{{$item->e_way_bill}}" readonly>
+                                                            value="{{$item->e_way_bill}}" {{$disable}}>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -524,7 +547,7 @@ span.select2.select2-container.mb-4 {
                                                         <label>E-Way Bill Date</label>
                                                         <input type="date" class="form-control ewb_date"
                                                             name="data[{{$i}}][e_way_bill_date]"
-                                                            value="{{$item->e_way_bill_date}}" readonly>
+                                                            value="{{$item->e_way_bill_date}}" {{$disable}}>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -544,7 +567,8 @@ span.select2.select2-container.mb-4 {
                                                                         <select class="form-control select_item"
                                                                             name="data[{{$i}}][item_data][{{$j}}][item]"
                                                                             data-action="get-items"
-                                                                            onchange="getItem(this);" disabled>
+                                                                            onchange="getItem(this);" {{$disable}}>
+                                                                            <option value="">Select Item</option>
                                                                             @foreach($itemlists as $item_list)
                                                                             <option value="{{$item_list->id}}"
                                                                                 {{ $item_list->id == $subitem->item ? 'selected' : ''}}>
@@ -560,10 +584,10 @@ span.select2.select2-container.mb-4 {
                                                                         <label>Quantity</label>
                                                                         <input type="number" class="form-control qty"
                                                                             name="" value="{{$subitem->quantity}}"
-                                                                            readonly>
+                                                                            {{$disable}}>
                                                                         <input type="hidden" class="form-control"
                                                                             name="data[{{$i}}][item_data][{{$j}}][quantity]"
-                                                                            value="{{$subitem->quantity}}" readonly>
+                                                                            value="{{$subitem->quantity}}" {{$disable}}>
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -571,7 +595,7 @@ span.select2.select2-container.mb-4 {
                                                                         <label>Net Weight</label>
                                                                         <input type="number" class="form-control net"
                                                                             name="data[{{$i}}][item_data][{{$j}}][net_weight]"
-                                                                            value="{{$subitem->net_weight}}" readonly>
+                                                                            value="{{$subitem->net_weight}}" {{$disable}}>
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -579,7 +603,7 @@ span.select2.select2-container.mb-4 {
                                                                         <label>Gross Weight</label>
                                                                         <input type="number" class="form-control gross"
                                                                             name="data[{{$i}}][item_data][{{$j}}][gross_weight]"
-                                                                            value="{{$subitem->gross_weight}}" readonly>
+                                                                            value="{{$subitem->gross_weight}}" {{$disable}}>
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -589,7 +613,7 @@ span.select2.select2-container.mb-4 {
                                                                             class="form-control charge_wt"
                                                                             name="data[{{$i}}][item_data][{{$j}}][chargeable_weight]"
                                                                             value="{{$subitem->chargeable_weight}}"
-                                                                            readonly>
+                                                                            {{$disable}}>
                                                                     </div>
 
                                                                 </td>
@@ -693,42 +717,52 @@ span.select2.select2-container.mb-4 {
                                         <tr>
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
-                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}" readonly>
+                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="text" class="form-control form-small invc_no" id="1"
                                                     name="data[{{$i}}][invoice_no]"
-                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}" readonly>
+                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
-                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}" readonly>
+                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[{{$i}}][invoice_amount]"
-                                                    value="{{old('invoice_amount',isset($item->invoice_amount)?$item->invoice_amount:'')}}" readonly>
+                                                    value="{{old('invoice_amount',isset($item->invoice_amount)?$item->invoice_amount:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[{{$i}}][e_way_bill]"
-                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}" readonly>
+                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
-                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}" readonly>
+                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[{{$i}}][quantity]"
-                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}" readonly>
+                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small net"
                                                     name="data[{{$i}}][weight]"
-                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}" readonly>
+                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}"
+                                                    readonly>
                                             </td>
                                             <td><input type="number" class="form-control form-small gross"
                                                     name="data[{{$i}}][gross_weight]"
-                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}" readonly>
+                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}"
+                                                    readonly>
                                             </td>
-                                            <td> 
-                                                <button type="button" class="btn btn-default btn-rounded insert-more" readonly> + </button>
+                                            <td>
+                                                <button type="button" class="btn btn-default btn-rounded insert-more"
+                                                    readonly> + </button>
                                             </td>
                                         </tr>
 
@@ -742,7 +776,7 @@ span.select2.select2-container.mb-4 {
 
             </div>
             <?php } ?>
-   @if($getconsignments->lr_type == 0)
+            @if($getconsignments->lr_type == 0)
             {{--vehicle info--}}
             <div class="form-row" style="width: 100%">
                 <h6 class="col-12">Vehicle Information</h6>
