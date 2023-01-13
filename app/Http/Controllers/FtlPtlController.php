@@ -296,7 +296,7 @@ class FtlPtlController extends Controller
         }
         return response()->json($response);
     }
-
+    
     // ============================== Create Ptl Form ============================= //
     public function createPtlLrForm()
     {

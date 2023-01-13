@@ -165,12 +165,12 @@ foreach ($consignments as $key => $consignment) {
                                 <?php }
                                 }else{ 
                                     if($consignment->prsitem_status == 0){ ?>
-                                
+
                                 <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
-                              <?php      }else{ ?>
-                                <td> <a class="btn btn-primary" href="#"><span>Pickup</span></a></td>
-                                    <?php } ?>
-                           <?php     }  ?>
+                                <?php      }else{ ?>
+                                <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
+                                <?php } ?>
+                                <?php     }  ?>
                             </tr>
                             <?php
                         }
