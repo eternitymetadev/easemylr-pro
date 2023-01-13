@@ -282,7 +282,11 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         style="margin: auto; ">
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
-        <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
+        <?php if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){ ?>
+            <input type="hidden" name="lr_type" value="0">
+        <?php }else{ ?>
+            <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
+        <?php } ?>
 
         {{--Branch Location--}}
         <div class="form-row">
@@ -427,7 +431,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     @endforeach
                     @endif
                 </select>
-                <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
+                <!-- <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" /> -->
                 <div class="" id="consignee_address"></div>
             </div>
             <div class="form-group col-md-4">
@@ -444,7 +448,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     @endforeach
                     @endif
                 </select>
-                <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
+                <!-- <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" /> -->
                 <div id="ship_to_address">
 
                 </div>
