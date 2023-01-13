@@ -184,7 +184,7 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone]);
+            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone,'hub_transfer' => $request->hub_transfer]);
 
             $response['success'] = true;
             $response['success_message'] = "Zone Data successfully";
