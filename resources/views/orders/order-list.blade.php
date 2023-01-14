@@ -275,7 +275,7 @@ foreach ($consignments as $key => $consignment) {
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="lr_id" id="lr_id" />
 
-                    <input type="text" class="form-control" name="prs_remarks" />
+                    <input type="text" class="form-control" name="prs_remarks" placeholder="Remarks" Required/>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -404,6 +404,7 @@ $('#prs_check_form').submit(function(e) {
             $(".indicator-label").show();
             if (data.success == true) {
                 swal("success!", data.success_message, "success");
+                window.location.reload();
             } else {
                 swal('error', data.error_message, 'error');
             }
