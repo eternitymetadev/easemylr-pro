@@ -431,7 +431,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     @endforeach
                     @endif
                 </select>
-                <!-- <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" /> -->
+                <?php 
+                if(empty($getconsignments->prs_id)){ ?>
+                <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
+                <?php } ?>
                 <div class="" id="consignee_address"></div>
             </div>
             <div class="form-group col-md-4">
@@ -448,7 +451,9 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     @endforeach
                     @endif
                 </select>
-                <!-- <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" /> -->
+                <?php if(empty($getconsignments->prs_id)){ ?>
+                <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
+                <?php } ?>
                 <div id="ship_to_address">
 
                 </div>
