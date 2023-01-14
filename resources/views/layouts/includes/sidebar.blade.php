@@ -280,7 +280,7 @@
                 <a href="{{$prefixurl.'order-book-ptl'}}"> Book Order </a>
             </li>
             <li>
-                <a href="{{$prefixurl.'create-Ptl'}}"> Create LR Ptl</a>
+                <a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
             </li>
             <li>
                 <a href="#"> LR List </a>
