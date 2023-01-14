@@ -393,6 +393,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
     Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
     Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);

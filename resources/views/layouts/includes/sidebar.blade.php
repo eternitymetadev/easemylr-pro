@@ -350,6 +350,9 @@
             <li>
                 <a href="{{$prefixurl.'incoming-hrs'}}"> Incoming Hrs </a>
             </li>
+            <li>
+                <a href="{{$prefixurl.'outgoing-hrs'}}"> Outgoing Hrs </a>
+            </li>
 
         </ul>
     </li>
