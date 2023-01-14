@@ -438,7 +438,6 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateOrder(Request $request){
-        // echo "<pre>";print_r($request->all()); die;
         try {
             DB::beginTransaction();
 
@@ -495,23 +494,33 @@ class OrderController extends Controller
             $consignmentsave['edd'] = $request->edd;
             // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
-            
+             
 
            
 
             if($request->lr_type == 1){
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
                 $consignee_pincode = $consignee->postal_code;
-               
+
                 $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
                 $get_zonebranch = $getpin_transfer->hub_transfer;
-                $get_branch = Location::where('name', $get_zonebranch)->first();
-                $consignmentsave['to_branch_id'] = $get_branch->id;
-    
+
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
                 $location_name = $get_location->name;
                 
+
+                if(!empty($get_zonebranch)){
+                    $get_branch = Location::where('name', $get_zonebranch)->first();
+                    $get_branch_id = $get_branch->id;
+                    }else{
+                    $get_branch_id = $authuser->branch_id;
+                    $get_zonebranch = $location_name;
+                    }
+               
+                $consignmentsave['to_branch_id'] = $get_branch_id;
+
+
                     ///h2h branch check
                     if($location_name == $get_zonebranch){
                         if (!empty($request->vehicle_id)) {
