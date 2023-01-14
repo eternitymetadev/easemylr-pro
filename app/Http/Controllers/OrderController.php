@@ -516,7 +516,7 @@ class OrderController extends Controller
                     }else{
                     $get_branch_id = $authuser->branch_id;
                     $get_zonebranch = $location_name;
-                    }
+                    }   
                
                 $consignmentsave['to_branch_id'] = $get_branch_id;
 
