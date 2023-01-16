@@ -1,8 +1,8 @@
 <ul class="list-unstyled menu-categories" id="accordionExample">
     <div class="logoBox">
-        <img id="openSidebarLogo" class="toggleLogo" alt="logo"
+        <img id="openSidebarLogo" alt="logo"
             src="{{asset('assets/img/eternity-forwarders-logo.png')}}">
-        <img id="closeSidebarLogo" alt="logo" src="{{asset('assets/img/eternity-forwarders-logo-square.png')}}">
+        <img id="closeSidebarLogo" class="toggleLogo"  alt="logo" src="{{asset('assets/img/eternity-forwarders-logo-square.png')}}">
     </div>
 
 
@@ -87,8 +87,11 @@
     if(in_array('3', $permissions))
     {
     ?>
+    <li class="menu">
+        <a href="{{$prefixurl.'consigners'}}" data-active="<?php if($segment == 'consigners'){?>true<?php }?>"
+            class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'consigners')) active @endif">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-user">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -183,7 +186,7 @@
     ?>
     <?php }
     } ?>
-    <li class="menu">
+    <!-- li class="menu">
         <a href="#consignment" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'consignments') || str_contains($currentURL, 'bulklr-view')) active @endif">
@@ -216,7 +219,7 @@
             </li>
 
         </ul>
-    </li>
+    </li -->
 
     <li class="menu">
         <a href="#ftl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -243,6 +246,12 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create LR Ftl</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="#"> LR List </a>
@@ -278,6 +287,12 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="#"> LR List </a>
