@@ -1044,16 +1044,16 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
-            'quantity[]': {
-                required: true
-                //   lettersonly:true
-                },
-           'weight[]': {
-                  required: true
-                },
-           'gross_weight[]': {
-                  required: true
-                }
+        //     'quantity[]': {
+        //         required: true
+        //         //   lettersonly:true
+        //         },
+        //    'weight[]': {
+        //           required: true
+        //         },
+        //    'gross_weight[]': {
+        //           required: true
+        //         }
             
         },
         messages: {
@@ -1066,33 +1066,33 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: "Select ship to address"
             },
-            driver_id : {
-                required: "Select driver"
-            },
-            transporter_name : {
-                required: "Enter transporter name"
-            },
-            vehicle_type : {
-                required: "Select vehicle type"
-            },
-            vehicle_id : {
-                required: "Select vehicle no."
-            },
-            'quantity[]': {
-                required: "Enter quantity"
-            },
-            'weight[]': {
-                required: "Enter weight"
-            },
-            'gross_weight[]': {
-                required: "Enter gross weight"
-            },
-            'freight[]': {
-                required: "Enter freight"
-            },
-            'payment_type[]': {
-                required: "Select payment type"
-            }
+            // driver_id : {
+            //     required: "Select driver"
+            // },
+            // transporter_name : {
+            //     required: "Enter transporter name"
+            // },
+            // vehicle_type : {
+            //     required: "Select vehicle type"
+            // },
+            // vehicle_id : {
+            //     required: "Select vehicle no."
+            // },
+            // 'quantity[]': {
+            //     required: "Enter quantity"
+            // },
+            // 'weight[]': {
+            //     required: "Enter weight"
+            // },
+            // 'gross_weight[]': {
+            //     required: "Enter gross weight"
+            // },
+            // 'freight[]': {
+            //     required: "Enter freight"
+            // },
+            // 'payment_type[]': {
+            //     required: "Select payment type"
+            // }
         },
         submitHandler : function(form)
         {
@@ -1601,15 +1601,15 @@ jQuery(document).ready(function(){
         }
     });
 
-    $(".remarks").each(function()
-    {
-        $(this).rules('add', {
-            required: true,
-            messages: {
-                required: "Enter remarks."
-            },
-        });
-    });
+    // $(".remarks").each(function()
+    // {
+    //     $(this).rules('add', {
+    //         required: true,
+    //         messages: {
+    //             required: "Enter remarks."
+    //         },
+    //     });
+    // });
 
 
 
@@ -1723,7 +1723,7 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            //alert(response);
+            // alert('kk');
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){
@@ -1738,6 +1738,19 @@ function formSubmitRedirect(form)
 		          position            : 'top-right'
 		    	});
 	        }
+            if(response.success == false){
+                $.toast({
+                    heading             : 'Error',
+                    text                : response.error_message,
+                    loader              : true,
+                    loaderBg            : '#fff',
+                    showHideTransition  : 'fade',
+                    icon                : 'error',
+                    hideAfter           : delayTime,
+                    position            : 'top-right'
+                  });
+            }
+
 	        if(response.resetform)
             {
                 $('#'+form.id).trigger('reset');
@@ -1774,6 +1787,10 @@ function formSubmitRedirect(form)
             }else if(response.page == 'prs-create' || response.page == 'prs-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-prstaskitem'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-vehiclereceive'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'client-create' || response.page == 'client-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             
@@ -1853,7 +1870,9 @@ function formSubmitRedirect(form)
             $("input[type=submit]").removeAttr("disabled");
             $("button[type=submit]").removeAttr("disabled");
 		},
+        
         error:function(response){
+          
             $.toast({
                 heading             : 'Error',
                 text                : "Server Error",

@@ -69,18 +69,13 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <div class="check-box d-flex">
-                                                <div class="checkbox radio">
-                                                    <label class="check-label"> Yes
-                                                        <input type="radio" class="is_multiple_invoice" value="1" name="data[{{$i}}][is_multiple_invoice]" {{ ($regclientdata->is_multiple_invoice =="1")?"checked" : "" }} checked="">
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox radio">
-                                                    <label class="check-label"> No
-                                                        <input type="radio" class="is_multiple_invoice" value="0" name="data[{{$i}}][is_multiple_invoice]" {{ ($regclientdata->is_multiple_invoice =="0")?"checked" : "" }} >
-                                                    </label>
-                                                </div>
-                                            </div>
+                                            <select class="form-control" name="data[{{$i}}][is_multiple_invoice]" >
+                                                <option value="">Select..</option>
+                                                <option value="1" {{$regclientdata->is_multiple_invoice == '1' ? 'selected' : ''}}>Per invoice-Item wise</option>
+                                                <option value="2" {{$regclientdata->is_multiple_invoice == '2' ? 'selected' : ''}}>Multiple Invoice-Item wise</option>
+                                                <option value="3" {{$regclientdata->is_multiple_invoice == '3' ? 'selected' : ''}}>per invoice-Without Item</option>
+                                                <option value="4" {{$regclientdata->is_multiple_invoice == '4' ? 'selected' : ''}}>LR Multiple invoice-Without item</option>
+                                            </select>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
@@ -108,7 +103,6 @@
 @endsection
 @section('js')
 <script>
-    // $("a").click(function(){
     function addrow(){
         var i = $('.rowcls').length;
         // i  = i + 1;
@@ -132,18 +126,7 @@
         rows+= '</select>';
         rows+= '</td>';
         rows+= '<td>';
-        rows+= '<div class="check-box d-flex">';
-        rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label"> Yes';
-        rows+= '<input type="radio" class="is_multiple_invoice" name="data['+i+'][is_multiple_invoice]" value="1" checked="">';
-        rows+= '</label>';
-        rows+= '</div>';
-        rows+= '<div class="checkbox radio">';
-        rows+= '<label class="check-label"> No';
-        rows+= '<input type="radio" class="is_multiple_invoice" name="data['+i+'][is_multiple_invoice]" value="0">';
-        rows+= '</label>';
-        rows+= '</div>';
-        rows+= '</div>';
+        rows+= '<select class="form-control" name="data['+i+'][is_multiple_invoice]" ><option value="">Select..</option><option value="1">Per invoice-Item wise</option><option value="2">Multiple Invoice-Item wise</option><option value="3">per invoice-Without Item</option><option value="4">LR Multiple invoice-Without item</option></select>';
         rows+= '</td>';
         rows+= '<td>';
         rows+= '<button type="button" class="btn btn-danger removeRow" data-id="{{ $regclientdata->id }}" data-action="<?php echo URL::to($prefix.'/clients/delete-client'); ?>"><i class="fa fa-minus-circle"></i></button>';

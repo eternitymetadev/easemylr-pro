@@ -19,6 +19,7 @@ use App\Models\TransactionSheet;
 use App\Models\RegionalClient;
 use App\Models\Vehicle;
 use App\Models\PrsDrivertask;
+use App\Models\Hrs;
 use URL;
 use Crypt;
 use Storage;
@@ -33,17 +34,17 @@ class GlobalFunctions {
         if($status == 1){
             $status = 'Assigned';
         }
+        // else if($status == 2){
+        //     $status = 'Acknowledged';
+        // }
+        // else if($status == 3){
+        //     $status = 'Started';
+        // }
         else if($status == 2){
-            $status = 'Acknowledged';
+            $status = 'Pickup done';
         }
         else if($status == 3){
-            $status = 'Started';
-        }
-        else if($status == 4){
-            $status = 'Material Picked Up';
-        }
-        else if($status == 5){
-            $status = 'Material Received in HUB';
+            $status = 'Received at HUB';
         }
     
         return $status;
@@ -51,13 +52,16 @@ class GlobalFunctions {
 
     public static function PrsDriverTaskStatus($status){
         if($status == 1){
-            $status = 'Acknowledged';
+            $status = 'Assigned';
         }
         else if($status == 2){
-            $status = 'Started';
+            $status = 'Acknowledged';
         }
         else if($status == 3){
-            $status = 'Complete';
+            $status = 'Material Picked up';
+        }
+        else if($status == 4){
+            $status = 'Material delivered at HUB';
         }
     
         return $status;
@@ -68,10 +72,10 @@ class GlobalFunctions {
             $status = 'Incoming';
         }
         else if($status == 2){
-          $status = 'Received';
+          $status = 'Pickup done';   //Received
         }
         else if($status == 3){
-          $status = 'Complete';
+          $status = 'Completed';
         }
     
         return $status;
@@ -331,13 +335,86 @@ class GlobalFunctions {
     public static function DriverTaskStatusCheck($prs_id)
     {
         $countids = PrsDrivertask::where('prs_id',$prs_id)->count();
-        $countstatus = PrsDrivertask::where('prs_id',$prs_id)->where('status',2)->count();
+        $countstatus = PrsDrivertask::where('prs_id',$prs_id)->where('status',3)->count();
         if($countids == $countstatus){
             $disable = '';
         }else{
             $disable = 'disable_n';
         }
         return $disable;
+    }
+
+    public static function PrsTotalQty($prs_id){
+        $driver_tasks = PrsDrivertask::whereIn('prs_id',[$prs_id])->with('ConsignerDetail:id,nick_name','PrsTaskItems')->get();
+        // echo "<pre>"; print_r(json_decode($driver_tasks)); die;
+        if(count($driver_tasks)>0){
+            foreach($driver_tasks as $value) {
+                if(count($value->PrsTaskItems) > 0){
+                    foreach($value->PrsTaskItems as $item_value) {
+                        $total_qty = $item_value->sum('quantity');
+                    }
+                }else{
+                    $total_qty = '0';
+                }
+            }
+        }else{
+            $total_qty = '0';
+        }
+        return $total_qty;
+    }
+
+    // public static function PrsStatusCheck($prs_id)
+    // {
+    //     $countids = PickupRunSheet::where('id',$prs_id)->count();
+    //     $count_drivertaskids = PrsDrivertask::where('prs_id',$prs_id)->count();
+    //     if($count_drivertaskids){
+
+    //     }else{
+
+    //     }
+
+    //     return $prs_status;
+    // }
+
+    // ============================ HRS HELPER ========================== //
+
+    public static function counthrslr($hrs_number)
+    {
+        $data = Hrs::
+        with('ConsignmentDetai')
+        ->whereHas('ConsignmentDetail', function($q){
+            $q->where('status', '!=', 0);
+        })
+        ->where('hrs_no', $hrs_number)
+        ->count();
+        return $data;
+    }
+
+    public static function totalQuantityHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_quantity');
+      
+        return $total_quantity;
+    }
+
+    public static function totalGrossWeightHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_gross_weight');
+      
+        return $total_gross;
+    }
+
+    public static function totalWeightHrs($hrs_number)
+    {
+        $get_lrs = Hrs::select('consignment_id')->where('hrs_no',$hrs_number)->get();
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status','!=',0)->whereIn('id',$get_lrs)->sum('total_weight');
+      
+        return $total_weight;
     }
 
 }

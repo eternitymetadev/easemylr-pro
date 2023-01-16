@@ -18,12 +18,12 @@ class PrsDrivertask extends Model
     }
     public function PrsTaskItems()
     {
-        return $this->hasMany('App\Models\PrsTaskItem','drivertask_id','id');
+        return $this->hasMany('App\Models\PrsTaskItem','drivertask_id');
     }
 
     public function PickupId()
     {
-        return $this->hasOne('App\models\PickuprunSheet','id','prs_id');
+        return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
 
 

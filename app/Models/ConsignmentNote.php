@@ -9,6 +9,9 @@ class ConsignmentNote extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'lr_type',
+        'h2h_check',
+        'hrs_status',
         'regclient_id',
         'consigner_id',
         'consignee_id',
@@ -35,6 +38,8 @@ class ConsignmentNote extends Model
         'purchase_price',
         'user_id',
         'branch_id',
+        'to_branch_id',
+        'fall_in',
         'driver_id',
         'bar_code',
         'reason_to_cancel',
@@ -42,6 +47,9 @@ class ConsignmentNote extends Model
         'order_id',
         'status',
         'booked_drs',
+        'prs_id',
+        'prsitem_status',
+        'prs_remarks',
         'job_id',
         'change_mode_remarks',
         'lr_mode',
@@ -111,6 +119,14 @@ class ConsignmentNote extends Model
 
     public function Branch(){
         return $this->belongsTo('App\Models\Location','branch_id');
+    }
+    public function ToBranch(){
+        return $this->belongsTo('App\Models\Location','to_branch_id');
+    }
+
+    public function PrsDetail()
+    {
+        return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
 
 }

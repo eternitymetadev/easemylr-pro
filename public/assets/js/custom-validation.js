@@ -1,7 +1,6 @@
 // const { each } = require("lodash");
 
 jQuery(document).ready(function () {
-
     /* check box checked create/update user permission page  */
     jQuery(document).on("click", "#ckbCheckAll", function () {
         if (this.checked) {
@@ -35,36 +34,40 @@ jQuery(document).ready(function () {
 
     /// search by assign user
 
-    jQuery('#searchvehicle').SumoSelect({
+    jQuery("#searchvehicle").SumoSelect({
         search: true,
         // selectAll: true,
         okCancelInMulti: true,
-        triggerChangeCombined: false
+        triggerChangeCombined: false,
     });
 
-    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click( function () {
-        var selectedvehicles = jQuery('#searchvehicle').val();
-        //var search =  jQuery('#search').val();
-        var url =  jQuery(this).val();
-        jQuery.ajax({
-            type      : 'get',
-            url       : url,
-            data      : {searchvehicle:selectedvehicles},
-            headers   : {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            dataType  : 'json',
-            success:function(response){
-              if(response.html){
-                jQuery('.main-table').html(response.html);
-                jQuery("#search-paymentvehicle").modal("hide");
-                // jQuery('#searchvehicle').multiselect( 'reset');
-                jQuery('.assignedtoarray').val(selectedvehicles);
-              }
-            }
-        });
-        return false;
-    });
+    jQuery("#searchvehicle ~ .optWrapper .MultiControls .btnOk").click(
+        function () {
+            var selectedvehicles = jQuery("#searchvehicle").val();
+            //var search =  jQuery('#search').val();
+            var url = jQuery(this).val();
+            jQuery.ajax({
+                type: "get",
+                url: url,
+                data: { searchvehicle: selectedvehicles },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response.html) {
+                        jQuery(".main-table").html(response.html);
+                        jQuery("#search-paymentvehicle").modal("hide");
+                        // jQuery('#searchvehicle').multiselect( 'reset');
+                        jQuery(".assignedtoarray").val(selectedvehicles);
+                    }
+                },
+            });
+            return false;
+        }
+    );
 
     /*===== For create/update vehicle page =====*/
     $(document).on("keyup", "#regn_no", function () {
@@ -498,7 +501,7 @@ jQuery(document).ready(function () {
 
     /*======get consigner on regional client =====*/
     $("#select_regclient").change(function (e) {
-        $("#items_table").find("tr:gt(1)").remove();
+        // $("#items_table").find("tr:gt(1)").remove();
         var regclient_id = $(this).val();
         $("#select_consigner").empty();
         $("#select_consignee").empty();
@@ -519,7 +522,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
-                
+
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
                 );
@@ -539,6 +542,8 @@ jQuery(document).ready(function () {
                     );
                 });
 
+                console.log(res.data_items);
+
                 if (res.data_regclient == null) {
                     var multiple_invoice = "";
                 } else {
@@ -552,11 +557,251 @@ jQuery(document).ready(function () {
                             res.data_regclient.is_multiple_invoice;
                     }
                 }
+                $('#inv_check').val(multiple_invoice);
 
-                if (multiple_invoice == 1) {
-                    $(".insert-more").attr("disabled", false);
+                if (multiple_invoice == 1 || multiple_invoice == 2) {
+                    let isInsertabelMore = (multiple_invoice == 1);
+                    let blockToAppend = `<div class="form-row">
+                    <h6 class="col-12">Order Information</h6>
+    
+                    <div style="width: 100%">
+                        <div class="d-flex flex-wrap align-items-center form-group form-group-sm">
+                            <div class="col-md-3">
+                                <label>Item Description</label>
+                                <input type="text" class="form-control" value="Pesticide"
+                                       name="description" list="json-datalist" onkeyup="showResult(this.value)">
+                                <datalist id="json-datalist"></datalist>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Mode of Packing</label>
+                                <input type="text" class="form-control" value="Case/s"
+                                       name="packing_type">
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Quantity</label>
+                                <span id="tot_qty">
+                                    <?php echo "0";?>
+                                </span>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Net Weight</label>
+                                <span id="total_nt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.
+                            </div>
+                            <div class="col-md-2">
+                                <label>Total Gross Weight</label>
+                                <span id="total_gt_wt">
+                                    <?php echo "0";?>
+                                </span> Kgs.
+                            </div>
+                        </div>
+                    </div>
+    
+                    
+                    <div class="maindiv" style="overflow-x:auto; padding: 1rem 8px 0; margin-top: 1rem; width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse;" id="items_table" class="items_table">
+                            <tbody class="main_table_body">
+                                <input type="hidden" id="tid" name="tid" value="1" >
+                            <tr>
+                                <td>
+                                    <table class="mainTr" id="1">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Order ID</label>
+                                                    <input type="text" class="form-control orderid" name="data[1][order_id]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Number</label>
+                                                    <input type="text" class="form-control invc_no" id="1"
+                                                           name="data[1][invoice_no]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Date</label>
+                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>Invoice Amount</label>
+                                                    <input type="number" class="form-control invc_amt"
+                                                           name="data[1][invoice_amount]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>E-way Bill Number</label>
+                                                    <input type="number" class="form-control ew_bill" name="data[1][e_way_bill]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group form-group-sm">
+                                                    <label>E-Way Bill Date</label>
+                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">
+                                                <table id="" class="childTable"
+                                                       style="width: 85%; min-width: 500px; margin-inline: auto;">
+                                                    <tbody class="items_table_body">
+                                                    <tr>
+                                                        <td width="200px">
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Item</label>
+                                                                <select class="form-control my-select2 select_item" name="data[1][item_data][0][item]" data-action="get-items" onchange="getItem(this);">
+                                                                <option value="" disabled selected>Select</option>`;
+                    $.each(res.data_items, function (index, value) {
+                        blockToAppend += `<option value="${value.id}">${value.brand_name}</option>`;
+                    });
+                    blockToAppend += `</select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Quantity</label>
+                                                                <input type="number" class="form-control qty" name="">
+                                                                <input type="hidden" class="form-control" name="data[1][item_data][0][quantity]">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Net Weight</label>
+                                                                <input type="number" class="form-control net" name="data[1][item_data][0][net_weight]" readonly>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Gross Weight</label>
+                                                                <input type="number" class="form-control gross" name="data[1][item_data][0][gross_weight]" readonly>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group form-group-sm">
+                                                                <label>Chargeable Weight</label>
+                                                                <input type="number" class="form-control charge_wt" name="data[1][item_data][0][chargeable_weight]" readonly>
+                                                            </div>
+    
+                                                        </td>
+                                                        <td><div class="removeIcon"></div></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <span style="margin-right: 8%" class="addItem">+ Add Item</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td><div class="removeIcon"></div></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>`;
+                    blockToAppend += (!isInsertabelMore) ? `<span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>` : '';
+                    blockToAppend += `</div> `;
+
+
+                    $('.orderInfoBlock').html(blockToAppend);
+                    $('.my-select2').select2();
                 } else {
-                    $(".insert-more").attr("disabled", true);
+                    let isInsertabelMore = (multiple_invoice == 4);
+                    let blockToAppend = `<div class="col-lg-12 layout-spacing">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-sm-12 ">
+                                <h4><b>Order Information</b></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <table border="1" width="100%">
+                        <div class="row">
+                            <tr>
+                                <th>Item Description</th>
+                                <th>Mode of packing</th>
+                                <th>Total Quantity</th>
+                                <th>Total Net Weight</th>
+                                <th>Total Gross Weight</th>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
+                                <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                                <td align="center"><span id="tot_qty">
+                                        <?php echo "0";?>
+                                    </span></td>
+                                <td align="center"><span id="tot_nt_wt">
+                                        <?php echo "0";?>
+                                    </span> Kgs.</td>
+                                <td align="center"><span id="tot_gt_wt">
+                                        <?php echo "0";?>
+                                    </span> Kgs.</td>
+    
+                                <input type="hidden" name="total_quantity" id="total_quantity" value="">
+                                <input type="hidden" name="total_weight" id="total_weight" value="">
+                                <input type="hidden" name="total_gross_weight" id="total_gross_weight" value="">
+                                <input type="hidden" name="total_freight" id="total_freight" value="">
+                                <!-- <td><input type="number" class="form-control form-small" name="total_quantity"></td>
+                                <td><input type="number" class="form-control form-small" name="total_weight"></td>
+                                <td><input type="number" class="form-control form-small" name="total_gross_weight"></td> -->
+                            </tr>
+                        </div>
+                    </table>
+    
+                </div>
+                <div class="col-lg-12 layout-spacing">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-sm-12 ">
+                                <div style="overflow-x:auto;">
+                                    <table>
+                                        <tr>
+                                            <th style="width: 160px">Order ID</th>
+                                            <th style="width: 180px">Invoice Number</th>
+                                            <th style="width: 160px">Invoice Date</th>
+                                            <th style="width: 180px">Invoice Amount</th>
+                                            <th style="width: 210px">E-way Bill Number</th>
+                                            <th style="width: 200px">E-Way Bill Date</th>
+                                            <th style="width: 160px">Quantity</th>
+                                            <th style="width: 160px">Net Weight</th>
+                                            <th style="width: 160px">Gross Weight</th>
+    
+                                        </tr>
+                                    </table>
+                                    <table style=" border-collapse: collapse;" border='1' id="items_table" >
+                                        <tbody>
+                                    <tr></tr>
+                                            <tr>
+                                                <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
+                                                <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
+                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                                <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
+                                                <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
+                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                                <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
+                                                <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
+                                                <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
+                                                <td>`;
+                    blockToAppend += (isInsertabelMore) ? `<button type="button" class="btn btn-default btn-rounded insert-more"> + </button>` : ``;
+                    blockToAppend += `</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>`;
+                    $('.orderInfoBlock').html(blockToAppend);
+                
+                    // $(".insert-more").attr("disabled", true);
                 }
             },
         });
@@ -835,7 +1080,9 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="text" class="form-control form-small invc_no" name="data[' +
                     item_no +
-                    '][invoice_no]" id="'+item_no+'" value=""></td>';
+                    '][invoice_no]" id="' +
+                    item_no +
+                    '" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
@@ -884,24 +1131,40 @@ jQuery(document).ready(function () {
             if (item_no <= 6) {
                 var tds = "<tr>";
 
+                // tds +=
+                //     ' <td><input type="text" class="form-control form-small orderid" name="data[' +
+                //     item_no +
+                //     '][order_id]"></td>';
                 tds +=
-                    ' <td><input type="text" class="form-control form-small orderid" name="data['+item_no+'][order_id]"></td>';
-                tds +=
-                    '<td><input type="text" class="form-control form-small invc_no" name="data['+
-                    item_no +'][invoice_no]" id="'+item_no+'" value=""></td>';
+                    '<td><input type="text" class="form-control form-small invc_no" name="data[' +
+                    item_no +
+                    '][invoice_no]" id="' +
+                    item_no +
+                    '" value=""><input type="hidden" name="data[' +
+                    item_no +
+                    '][lr_id]" value=""></td>';
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
-                    item_no +'][invoice_date]"></td>';
+                    item_no +
+                    '][invoice_date]"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
-                    item_no +'][quantity]"></td>';
+                    item_no +
+                    '][quantity]"></td>';
+                // tds +=
+                //     '<td><input type="number" class="form-control form-small net" name="data[' +
+                //     item_no +
+                //     '][net_weight]"></td>';
+                // tds +=
+                //     '<td><input type="number" class="form-control form-small gross" name="data[' +
+                //     item_no +
+                //     '][gross_weight]"></td>';
                 tds +=
-                    '<td><input type="number" class="form-control form-small net" name="data[' +
-                    item_no +'][weight]"></td>';
+                    '<td style="width: 165px;"><input type="file" class="form-control form-small invc_img" name="data[' +
+                    item_no +
+                    '][invc_img]" accept="image/*"/></td>';
                 tds +=
-                    '<td><input type="number" class="form-control form-small gross" name="data[' +
-                    item_no +'][gross_weight]"></td>';
-                tds += '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                    '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
             }
 
@@ -983,7 +1246,6 @@ jQuery(document).ready(function () {
                     .find(".ewb_date")
                     .attr("name", "data[" + i + "][e_way_bill_date]");
 
-
                 i++;
             }
         });
@@ -1030,6 +1292,10 @@ jQuery(document).ready(function () {
         var locationid = jQuery(this).attr("data-id");
         jQuery(".locationid").val(locationid);
         var action = jQuery(this).attr("data-action");
+        jQuery('.is_hub_yes').attr("checked", false);
+        jQuery('.is_hub_no').attr("checked", false);
+        jQuery(".radio_vehicleno_yes").attr("checked", false);
+        jQuery(".radio_vehicleno_no").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1054,6 +1320,16 @@ jQuery(document).ready(function () {
                     jQuery(".radio_vehicleno_no").attr("checked", true);
                     jQuery(".radio_vehicleno_yes").attr("checked", false);
                 }
+
+                // alert(response.newcata.is_hub)
+                if (response.newcata.is_hub == 1) {
+                    jQuery('.is_hub_yes').attr("checked", true);
+                    jQuery('.is_hub_no').attr("checked", false);
+                } else {
+                    jQuery('.is_hub_yes').attr("checked", false);
+                    jQuery('.is_hub_no').attr("checked", true);
+                }
+
             },
         });
     });
@@ -1199,7 +1475,6 @@ jQuery(document).ready(function () {
             complete: function () { },
 
             success: function (data) {
-
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
@@ -1337,8 +1612,6 @@ jQuery(document).ready(function () {
                 },
             });
         });
-
-
     });
     //    Manual LR status update+++++++++++++++++++++++++++++++++++++
     jQuery(document).on("click", ".manual_updateLR", function (event) {
@@ -1419,71 +1692,79 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
 
                 $.each(data.fetch, function (index, value) {
-                   
-                   var trail_history = jQuery.parseJSON(value.trail);
+                    var trail_history = jQuery.parseJSON(value.trail);
 
-                   if(value.lr_mode == 1){
-                    var img_api = [];
-                   
-                    $.each(trail_history.task_history, function (index, history) {
-                        if(history.type == "image_added"){
-                            img_api.push(history.description)
-                        }
-                    });
-                }
-            //   console.log(img_api); return false;
+                    if (value.job_id != null) {
+                        var img_api = [];
+
+                        $.each(
+                            trail_history.task_history,
+                            function (index, history) {
+                                if (history.type == "image_added") {
+                                    img_api.push(history.description);
+                                }
+                            }
+                        );
+                    }
+                    //   console.log(img_api); return false;
+
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if(value.lr_mode == 0){
-                    if (value.signed_drs == null) {
-                        if(data.role_id == 7){
-                            var field = '-';
-                        }else{
-                        var field =
-                            "<input type='file' name='img' data-id='" +
-                            value.id +
-                            "' placeholder='Choose image' class='drs_image'>";
+                    if (value.job_id == null || value.job_id == "") {
+                        if (value.signed_drs == null) {
+                            if (data.role_id == 7) {
+                                var field = "-";
+                            } else {
+                                var field =
+                                    "<input type='file' name='img' data-id='" +
+                                    value.id +
+                                    "' placeholder='Choose image' class='drs_image'>";
+                            }
+                        } else {
+                            var field =
+                                "<a href='" +
+                                storage_img +
+                                "' target='_blank' class='btn btn-warning'>view</a>";
+
                         }
                     } else {
-                         var field = 
-                        "<a href='" +
-                        storage_img +
-                        "' target='_blank' class='btn btn-warning'>view</a>";
+                        if (img_api == null || img_api == "") {
+                            var field =
+                                "<input type='file' name='img' data-id='" +
+                                value.id +
+                                "' placeholder='Choose image' class='drs_image'>";
+                        } else {
+                            var field1 = [];
+                            var img_length = img_api.length;
+                            var i = 0;
+                            $.each(img_api, function (index, img) {
+                                i++;
+                                img_group =
+                                    "<a href='" +
+                                    img +
+                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
+                                    i +
+                                    "</a> ";
+                                field1.push(img_group);
+                            });
+                            var field = field1.join(" ");
+                        }
                     }
-                }else{
-                    if(img_api == null || img_api == ''){
-                        var field =
-                        "<input type='file' name='img' data-id='" +
-                        value.id +
-                        "' placeholder='Choose image' class='drs_image'>";
-                    }else{
-                         var field1 = [];
-                        var img_length = img_api.length;
-                        var i = 0;
-                        $.each(img_api, function (index, img) {
-                            i++
-                            img_group  = "<a href='"+img+
-                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
-                             field1.push(img_group);
-                        });
-                       var field = (field1.join(' '));
-                    }
-                }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if(data.role_id == 7){
-                            var deliverydat = '-';
-                        }else{
-                        var deliverydat =
-                            "<input type='date' name='delivery_date[]' data-id=" +
-                            value.id +
-                            " class='delivery_d' value='" +
-                            value.delivery_date +
-                            "' Required>";
+                        if (data.role_id == 7) {
+                            var deliverydat = "-";
+                        } else {
+                            var deliverydat =
+                                "<input type='date' name='delivery_date[]' data-id=" +
+                                value.id +
+                                " class='delivery_d' value='" +
+                                value.delivery_date +
+                                "' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1501,27 +1782,31 @@ jQuery(document).ready(function () {
                             " class='btn btn-primary onelrupdate'>Save</button>";
                     }
 
-                     row =   "<tr><td>" +
-                    value.id +
-                    " <input type='hidden' name='delivery_date' value='"+value.consignment_date+"'</td><td>" +
-                    value.consignee_nick +
-                    "</td><td>" +
-                    value.conee_city +
-                    "</td><td>" +
-                    deliverydat +
-                    "</td><td>" +
-                    field +
-                    "</td>";
-                    if(value.lr_mode == 0){
-                    if(data.role_id != 7){
-                    row += "<td>" + buton +"</td>";
-                    }}else{
+                    row =
+                        "<tr><td>" +
+                        value.id +
+                        " <input type='hidden' name='delivery_date' value='" +
+                        value.consignment_date +
+                        "'</td><td>" +
+                        value.consignee_nick +
+                        "</td><td>" +
+                        value.conee_city +
+                        "</td><td>" +
+                        deliverydat +
+                        "</td><td>" +
+                        field +
+                        "</td>";
+                    if (value.job_id == "" || value.job_id == null) {
+                        if (data.role_id != 7) {
+                            row += "<td>" + buton + "</td>";
+                        }
+                    } else {
+
                         row += "<td>Update from shadow</td>";
                     }
                     row += "</tr>";
 
                     $("#get-delvery-dateLR tbody").append(row);
-
                 });
             },
         });
@@ -1690,28 +1975,31 @@ function get_delivery_date() {
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
-    var consignment_date = $(this).closest("tr").find("td:eq(0) input[type='hidden']").val();
+    var consignment_date = $(this)
+        .closest("tr")
+        .find("td:eq(0) input[type='hidden']")
+        .val();
     var ddd = $(this).closest("tr").find("td:eq(3) input[type='date']").val();
-    
-    if (ddd == undefined) { 
+
+    if (ddd == undefined) {
         var delivery_date = $(this).closest("tr").find("td").eq(3).text();
     } else {
         var delivery_date = $(this)
             .closest("tr")
             .find("td:eq(3) input[type='date']")
             .val();
-    } 
+    }
 
     if (delivery_date == null || delivery_date == "") {
         alert("Please select a delivery date");
         return false;
     }
 
-    var c_date = new Date(consignment_date); //Year, Month, Date    
-    var d_date = new Date(ddd); //Year, Month, Date   
-    if (c_date > d_date) {     
+    var c_date = new Date(consignment_date); //Year, Month, Date
+    var d_date = new Date(ddd); //Year, Month, Date
+    if (c_date > d_date) {
         swal("Error", "delivery date can't be less than lr date", "error");
-        return false ; 
+        return false;
     }
 
     var files = $(this)
@@ -1720,10 +2008,10 @@ $(document).on("click", ".onelrupdate", function () {
         .eq(4)
         .children(".drs_image")[0].files;
 
-        // if (files.length == 0) {
-        //     alert("Please choose a file");
-        //     return false;
-        // }
+    // if (files.length == 0) {
+    //     alert("Please choose a file");
+    //     return false;
+    // }
 
     var form_data = new FormData();
     if (files.length != 0) {
@@ -1784,7 +2072,7 @@ $("#allsave").submit(function (e) {
             if (data.success == true) {
                 swal("success", "Status Updated successfully", "success");
                 location.reload();
-            }else if(data.error == 'date_less'){
+            } else if (data.error == "date_less") {
                 swal("error", data.messages, "error");
             } else {
                 swal("error", data.messages, "error");
@@ -1866,7 +2154,6 @@ $("#all_inv_save").submit(function (e) {
     });
 });
 
-
 // search function on keypress
 $.fn.searchtyping = function (callback) {
     var _this = $(this);
@@ -1896,7 +2183,6 @@ jQuery("#search").searchtyping(function (callback) {
         dataType: "json",
         beforeSend: function () {
             jQuery(".load-main").show();
-
         },
         complete: function () {
             jQuery(".load-main").hide();
@@ -1988,16 +2274,16 @@ jQuery(document).on("change", ".perpage", function () {
 });
 
 ///////////////////// vendor //////////
-$('#vendor-master').submit(function (e) {
+$("#vendor-master").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    var v_name = $('#vendor_name').val();
-    var trans_name = $('#transporter_name').val();
-    var vendor_type = $('#vendor_type').val();
-    var acc_holder_name = $('#acc_holder_name').val();
-    var acc_no = $('#account_no').val();
-    var ifsc = $('#ifsc').val();
-    var pan_no = $('#pan_no').val();
+    var v_name = $("#vendor_name").val();
+    var trans_name = $("#transporter_name").val();
+    var vendor_type = $("#vendor_type").val();
+    var acc_holder_name = $("#acc_holder_name").val();
+    var acc_no = $("#account_no").val();
+    var ifsc = $("#ifsc").val();
+    var pan_no = $("#pan_no").val();
 
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
@@ -2025,47 +2311,48 @@ $('#vendor-master').submit(function (e) {
     }
     $.ajax({
         url: "add-vendor",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {
-
-        },
+        beforeSend: function () { },
         success: (data) => {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
-                $('#vendor-master')[0].reset();
+                $("#vendor-master")[0].reset();
                 window.location.href = data.redirect_url;
-            }else if(data.validation === false){
-                swal('error', data.error_message.name[0], 'error');
-            }else if(data.pan_check === true){
-                swal('error', data.errors, 'error');
-            }else if(data.decl_check === true){
-                swal('error', data.errors, 'error');
+            } else if (data.validation === false) {
+                swal("error", data.error_message.name[0], "error");
+            } else if (data.pan_check === true) {
+                swal("error", data.errors, "error");
+            } else if (data.decl_check === true) {
+                swal("error", data.errors, "error");
             } else {
-                swal('error', data.error_message, 'error');
+                swal("error", data.error_message, "error");
             }
-
-        }
+        },
     });
 });
 //////////////////Drs Payment Transaction////////////
-$('#payment_form').submit(function (e) {
+$("#payment_form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    var tds_rate = $('#tds_rate').val();
+    var tds_rate = $("#tds_rate").val();
 
-    if(!tds_rate){
-        swal('Error','please add tds rate in vendor','error');
+    if (!tds_rate) {
+        swal("Error", "please add tds rate in vendor", "error");
         return false;
     }
 
     $.ajax({
         url: "create-payment",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
@@ -2076,48 +2363,45 @@ $('#payment_form').submit(function (e) {
         success: (data) => {
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            if(data.success == true){
-
-            swal('success', data.message, 'success')
-            $('#payment_form')[0].reset();
-            }else{
-                swal('error', data.message ,'error');
+            if (data.success == true) {
+                swal("success", data.message, "success");
+                $("#payment_form")[0].reset();
+            } else {
+                swal("error", data.message, "error");
             }
-
-        }
+        },
     });
 });
 //////////////////Add Purchase Price////////////
-$('#purchase_amt_form').submit(function (e) {
+$("#purchase_amt_form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
 
     $.ajax({
         url: "update-purchas-price",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {
-
-        },
+        beforeSend: function () { },
         success: (data) => {
             if (data.success == true) {
-                swal('success', data.success_message, 'success');
+                swal("success", data.success_message, "success");
                 window.location.reload();
             } else {
-                swal('error', data.error_message, 'error');
+                swal("error", data.error_message, "error");
             }
-
-        }
+        },
     });
 });
 ////////////////// Import Vendor File   ////////////
-$('#vendor_import').submit(function (e) {
+$("#vendor_import").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    var file = $('#vendor_file').val();
+    var file = $("#vendor_file").val();
     if (!file) {
         swal("Error!", "Please Select File", "error");
         return false;
@@ -2125,40 +2409,44 @@ $('#vendor_import').submit(function (e) {
 
     $.ajax({
         url: "import-vendor",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {
-
-        },
+        beforeSend: function () { },
         success: (data) => {
             if (data.success == true) {
                 if (data.ignorecount > 0) {
                     $(".ignored").show();
                     $.each(data.ignore_vendor, function (key, value) {
-                        $(".ignored").append('<li>' + value.vendor + '</li>');
+                        $(".ignored").append("<li>" + value.vendor + "</li>");
                     });
-                swal('success', data.ignorecount + " ignored, These Vendor Ifsc code is less than 11 digit", 'success');
+                    swal(
+                        "success",
+                        data.ignorecount +
+                        " ignored, These Vendor Ifsc code is less than 11 digit",
+                        "success"
+                    );
                 } else {
                     swal("success!", data.success_message, "success");
                 }
             } else {
-                swal('error', data.error_message, 'error');
+                swal("error", data.error_message, "error");
             }
-        }
+        },
     });
 });
 
 //////////////////update vendor////////////////
 
-$('#update_vendor').validate({
+$("#update_vendor").validate({
     rules: {
         name: {
-            required: true
+            required: true,
         },
-
     },
     messages: {
         name: {
@@ -2173,7 +2461,7 @@ $('#update_vendor').validate({
             contentType: false,
             cache: false,
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             processData: false,
             dataType: "json",
@@ -2181,136 +2469,173 @@ $('#update_vendor').validate({
             success: function (response) {
                 if (response.success === true) {
                     swal("success", response.success_message, "success");
-
                 } else {
-                    swal('error', data.error_message, 'error');
+                    swal("error", data.error_message, "error");
                 }
-            }
+            },
         });
-    }
+    },
 });
 
-    /*======get LR's on regional client in client report =====*/
-    $('.searchclientreport').click(function(e){
-        var regclient_id = $("#select_regclient").val();
-        var from_date = $("#select_regclient").val();
-        var to_date = $("#select_regclient").val();
+/*======get LR's on regional client in client report =====*/
+$(".searchclientreport").click(function (e) {
+    var regclient_id = $("#select_regclient").val();
+    var from_date = $("#select_regclient").val();
+    var to_date = $("#select_regclient").val();
 
-        $.ajax({
-            url         : '/consignment-regclient',
-            type        : 'get',
-            cache       : false,
-            data        :  {regclient_id:regclient_id},
-            dataType    :  'json',
-            headers     : {
-                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
-            },
-            beforeSend : function(){
-                $('#select_consigner').empty();
-            },
-            success:function(res){
-                // console.log(res.data_regclient.is_multiple_invoice);
-                $('#consigner_address').empty();
-                $('#consignee_address').empty();
-                $('#ship_to_address').empty();
+    $.ajax({
+        url: "/consignment-regclient",
+        type: "get",
+        cache: false,
+        data: { regclient_id: regclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {
+            // console.log(res.data_regclient.is_multiple_invoice);
+            $("#consigner_address").empty();
+            $("#consignee_address").empty();
+            $("#ship_to_address").empty();
 
-                $('#select_consigner').append('<option value="">select consigner</option>');
-                $('#select_consignee').append('<option value="">Select Consignee</option>');
-                $('#select_ship_to').append('<option value="">Select Ship To</option>');
+            $("#select_consigner").append(
+                '<option value="">select consigner</option>'
+            );
+            $("#select_consignee").append(
+                '<option value="">Select Consignee</option>'
+            );
+            $("#select_ship_to").append(
+                '<option value="">Select Ship To</option>'
+            );
 
-                $.each(res.data, function (index, value) {
+            $.each(res.data, function (index, value) {
+                $("#select_consigner").append(
+                    '<option value="' +
+                    value.id +
+                    '">' +
+                    value.nick_name +
+                    "</option>"
+                );
+            });
 
-                    $('#select_consigner').append('<option value="' + value.id + '">' + value.nick_name + '</option>');
-
-                });
-
-                if(res.data_regclient == null){
-                    var multiple_invoice = '';
-                }else{
-                    if(res.data_regclient.is_multiple_invoice == null || res.data_regclient.is_multiple_invoice == ''){
-                    var multiple_invoice = '';
-                    }else{
-                        var multiple_invoice = res.data_regclient.is_multiple_invoice;
-                    }
-                }
-
-                if(multiple_invoice == 1 ){
-                    $('.insert-more').attr('disabled',false);
-                }else{
-                    $('.insert-more').attr('disabled',true);
+            if (res.data_regclient == null) {
+                var multiple_invoice = "";
+            } else {
+                if (
+                    res.data_regclient.is_multiple_invoice == null ||
+                    res.data_regclient.is_multiple_invoice == ""
+                ) {
+                    var multiple_invoice = "";
+                } else {
+                    var multiple_invoice =
+                        res.data_regclient.is_multiple_invoice;
                 }
             }
-        });
+
+            if (multiple_invoice == 1) {
+                $(".insert-more").attr("disabled", false);
+            } else {
+                $(".insert-more").attr("disabled", true);
+            }
+        },
     });
+});
 
-    //////////////////////////////////
-    $('#all_inv_save').submit(function(e) {
-        e.preventDefault();
+//////////////////////////////////
+$("#all_inv_save").submit(function (e) {
+    e.preventDefault();
 
-        var formData = new FormData(this);
+    var formData = new FormData(this);
 
-            $.ajax({
-                url: "all-invoice-save",
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'POST',
-                data:new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function(){
-                    $('#view_invoices').dataTable().fnClearTable();
-                    $('#view_invoices').dataTable().fnDestroy();
-                    $(".indicator-progress").show();
-                    $(".indicator-label").hide();
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if(data.success == true){
-                        swal("success","Data Updated successfully", 'success')
+    $.ajax({
+        url: "all-invoice-save",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $("#view_invoices").dataTable().fnClearTable();
+            $("#view_invoices").dataTable().fnDestroy();
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success", "Data Updated successfully", "success");
 
-                        var i = 1;
-                     $.each(data.fetch, function(index, value) {
-
-                         if(value.e_way_bill == null || value.e_way_bill == ''){
-                            var billno = "<input type='text' name='data["+i+"][e_way_bill]' >";
-                         } else {
-                            var billno = value.e_way_bill;
-                         }
-
-                         if(value.e_way_bill_date == null || value.e_way_bill_date == ''){
-                            var billdate = "<input type='date' name='data["+i+"][e_way_bill_date]' >";
-                         }else{
-                            var billdate = value.e_way_bill_date;
-                         }
-
-                        $('#view_invoices tbody').append("<tr><input type='hidden' name='data["+i+"][id]' value="+value.id+" ><td>" + value.consignment_id + "</td><td>" + value.invoice_no + "</td><td>" + billno + "</td><td>"+ billdate + "</td></tr>");
-
-                        i++ ;
-                    });
-                        // location.reload();
-
-                    }else{
-                        swal("error","Something went wrong", 'error')
+                var i = 1;
+                $.each(data.fetch, function (index, value) {
+                    if (value.e_way_bill == null || value.e_way_bill == "") {
+                        var billno =
+                            "<input type='text' name='data[" +
+                            i +
+                            "][e_way_bill]' >";
+                    } else {
+                        var billno = value.e_way_bill;
                     }
-                }
-            });
-        });
 
-        ////////////////// reate Drs Payment Request ////////////
-$('#create_request_form').submit(function (e) {
+                    if (
+                        value.e_way_bill_date == null ||
+                        value.e_way_bill_date == ""
+                    ) {
+                        var billdate =
+                            "<input type='date' name='data[" +
+                            i +
+                            "][e_way_bill_date]' >";
+                    } else {
+                        var billdate = value.e_way_bill_date;
+                    }
+
+                    $("#view_invoices tbody").append(
+                        "<tr><input type='hidden' name='data[" +
+                        i +
+                        "][id]' value=" +
+                        value.id +
+                        " ><td>" +
+                        value.consignment_id +
+                        "</td><td>" +
+                        value.invoice_no +
+                        "</td><td>" +
+                        billno +
+                        "</td><td>" +
+                        billdate +
+                        "</td></tr>"
+                    );
+
+                    i++;
+                });
+                // location.reload();
+            } else {
+                swal("error", "Something went wrong", "error");
+            }
+        },
+    });
+});
+
+////////////////// reate Drs Payment Request ////////////
+$("#create_request_form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    var vendor = $('#vendor_id_1').val();
-    if(!vendor)
-    {
-        swal('Error!', 'Please select a vendor','error');
+    var vendor = $("#vendor_id_1").val();
+    if (!vendor) {
+        swal("Error!", "Please select a vendor", "error");
         return false;
     }
     var base_url = window.location.origin;
     $.ajax({
         url: "create-payment_request",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
@@ -2323,58 +2648,112 @@ $('#create_request_form').submit(function (e) {
             $('.disableme').prop('disabled', true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            if(data.success == true){
-            swal('success', data.message, 'success')
-            window.location.href = data.redirect_url;
+            if (data.success == true) {
+                swal("success", data.message, "success");
+                window.location.href = data.redirect_url;
+            } else {
+                swal("error", data.message, "error");
             }
-            else if(data.error == false){
-                swal('error', data.success_message ,'error');
-            }
-            else{
-                swal('error', data.message ,'error');
-            }
-
-        }
+        },
     });
 });
 //////////////////Update Purchase Price////////////
-$('#update_purchase_amt_form').submit(function (e) {
+$("#update_purchase_amt_form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
 
     $.ajax({
         url: "update-purchas-price-vehicle-type",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        type: 'POST',
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () { },
+        success: (data) => {
+            if (data.success == true) {
+                swal("success", data.success_message, "success");
+                window.location.reload();
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+
+function closeGetDeliveryDateLR() {
+    $("#close_get_delivery_dateLR").click();
+}
+
+//////////
+$("#upload_techical").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "import-technical-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
         data: new FormData(this),
         processData: false,
         contentType: false,
         beforeSend: function () {
-
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
         },
         success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
             if (data.success == true) {
-                swal('success', data.success_message, 'success');
-                window.location.reload();
+                swal("success!", data.success_message, "success");
             } else {
-                swal('error', data.error_message, 'error');
+                swal("error", data.error_message, "error");
             }
+        },
+    });
+});
+////
+$("#item_master").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
 
-        }
+    $.ajax({
+        url: "import-item-master",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success!", data.success_message, "success");
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
     });
 });
 
-function closeGetDeliveryDateLR(){
-    $('#close_get_delivery_dateLR').click();
-};
+/*====== In create PRS  get consigner on click regional client =====*/
 
- /*====== In create PRS  get consigner on click regional client =====*/
-
- $('#select_prsregclient').change(function(e) {
-    var selected = $(e.target).val();
-    console.dir(selected);
-    var regclient_id = $(this).val();
-    $("#select_consigner").empty();
+// $(".select_prsregclient").change(function (e) {
+function onChangePrsRegClient(_this) {
+    // var selected = $(_this).val();
+    // console.dir(selected);
+    var regclient_id = $(_this).val();
+    $(_this).parents().siblings("td").find(".consigner_prs").empty();
     $.ajax({
         url: "/get-consignerprs",
         type: "get",
@@ -2385,35 +2764,29 @@ function closeGetDeliveryDateLR(){
             "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
         },
         beforeSend: function () {
-            $("#select_consigner").empty();
+            $(_this).parents().siblings("td").find(".consigner_prs").empty();
         },
-        success: function (res) {            
-            $("#select_consigner").append(
-                '<option value="">select consigner</option>'
-            );
-
+        success: function (res) {
+            console.log(res.data);
             $.each(res.data, function (index, value) {
-                $("#select_consigner").append(
-                    '<option value="' +
-                    value.id +
-                    '">' +
-                    value.nick_name +
-                    "</option>"
-                );
+                console.log($(_this).html());
+                $(_this).parents().siblings("td").find(".consigner_prs")
+                    .append(
+                        `<option value="${value.id}">${value.nick_name}</option>`
+                    );
             });
-           
         },
     });
-});
+}
 
 $(document).on("click", ".receive-vehicle", function () {
     var prs_id = jQuery(this).attr("data-prsid");
     var consinger_ids = jQuery(this).attr("data-cnrid");
-    
+
     $.ajax({
         type: "get",
         url: APP_URL + "/vehicle/get-item",
-        data: { prs_id:prs_id, consinger_ids:consinger_ids },
+        data: { prs_id: prs_id, consinger_ids: consinger_ids },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -2425,43 +2798,101 @@ $(document).on("click", ".receive-vehicle", function () {
             console.log(res);
             if (res.data) {
                 $(".prs_id").val(res.data_prsid);
-                var consigner_count= res.data;
-                rows = '';
+                var consigner_count = res.data;
+                rows = "";
 
                 $.each(res.data, function (index, value) {
-                    var inv_total = (value.prs_task_items).length;
+                    var inv_total = value.prs_task_items.length;
                     var qtyarr = [];
+                    var ids_arr = [];
                     $.each(value.prs_task_items, function (index, qtyval) {
                         var qty = qtyval.quantity;
                         qtyarr.push(qty);
+
+                        var item_ids = qtyval.id;
+                        ids_arr.push(item_ids);
+
                     });
                     var toNumbers = qtyarr.map(Number);
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
+
+                    rows +=
+                        '<tr><td><input class="dialogInput form-control-sm cnr_id" style="width: 170px;" type="text" name="" value="' +
+                        value.consigner_detail.nick_name +
+                        '" readonly><input type="hidden" name="data[' +
+                        index + '][consigner_id]" value="' + value.consigner_detail.id +
+                        '" readonly"><input type="hidden" name="data[' + index + '][item_id]" value="' + ids_arr +
+                        '" readonly"></td>';
+                    rows +=
+                        '<td><input class="dialogInput form-control-sm invc_no" style="width: 120px;" type="text" name="data[' +
+                        index +
+                        '][invoice_no]" value="' +
+                        inv_total +
+                        '" readonly></td>';
+                    rows +=
+                        '<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data[' +
+                        index +
+                        '][total_qty]"  value="' +
+                        qty_sum +
+                        '" readonly></td>';
+
+                    rows += `<td style="text-align: center"><div class="d-flex align-items-center justify-content-center"><input class="verify_status form-control-sm" type="radio" id="verified${index}" name="data[${index}][is_verify]" checked value="1"><label style="margin-right: 1rem;" for="verified${index}">Verified</label>`;
+                    rows += `<input class="verify_status form-control-sm" type="radio" id="unverified${index}" name="data[${index}][is_verify]" value="0"><label for="unverified${index}">UnvVerified</label> </div></td>`;
+
+                    rows +=
+                        '<td><input class="dialogInput receive_qty" style="width: 120px; visibility: hidden" type="number" name="data[' +
+                        index +
+                        '][receive_qty]"></td>';
+                    rows +=
+                        '<td><input class="dialogInput remaining_qty" style="width: 120px; visibility: hidden" type="text" name="data[' +
+                        index +
+                        '][remaining_qty]" readonly></td>';
+                   
                     
-                    rows+='<tr><td><input class="dialogInput cnr_id" style="width: 170px;" type="text" name="data['+index+'][consigner_id]" value="'+ value.consigner_detail.nick_name +'" readonly></td>';
-                    rows+='<td><input class="dialogInput invc_no" style="width: 120px;" type="text" name="data['+index+'][invoice_no]" value="'+ inv_total +'"></td>';
-                    rows+='<td><input class="dialogInput total_qty" style="width: 120px;" type="number" name="data['+index+'][total_qty]"  value="'+ qty_sum +'"></td>';
-                    rows+='<td><input class="dialogInput receive_qty" style="width: 120px;" type="number" name="data['+index+'][receive_qty]"></td>';
-                    rows+='<td><input class="dialogInput remaining_qty" style="width: 120px;" type="text" name="data['+index+'][remaining_qty]"></td>';
-                    rows+='<td><input class="dialogInput remarks" style="width: 100%;" type="text" name="data['+index+'][remarks]"></td></tr>';
+
+                    rows +=
+                        '<td><input class="dialogInput form-control-sm remarks" style="min-width: 200px; visibility: hidden" type="text" name="data[' +
+                        index +
+                        '][remarks]"></td></tr>';
                 });
-                
-                $('#vehicleitems_table tbody').append(rows);
+
+                $("#vehicleitems_table tbody").append(rows);
             }
         },
     });
+});
+
+jQuery(document).on("click", ".verify_status", function (event) {
+    $(this).closest('td').next('td').find('input').val('');
+    verify_val = $(this).val();
+    if(verify_val == '1'){
+        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'hidden');
+        $(this).closest('td').next('td').find('.remaining_qty').css('visibility', 'hidden');
+        $(this).closest('td').next('td').find('.remarks').css('visibility', 'hidden');
+        
+    }else{
+        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'visible');
+        $(this).closest('td').siblings('td').find('.remaining_qty').css('visibility', 'visible');
+        $(this).closest('td').siblings('td').find('.remarks').css('visibility', 'visible');
+    }
 
 });
+
 
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {
     event.stopPropagation();
     let id = jQuery(this).attr("data-drivertaskid");
     var prsdrivertask_status = "prsdrivertask_status";
+    var prs_taskstatus = jQuery(this).attr("data-prstaskstatus");
 
     // jQuery("#prs-commonconfirm").modal("show");
     jQuery(".commonconfirmclick").one("click", function () {
-        var data = { id: id, prsdrivertask_status: prsdrivertask_status };
+        var data = {
+            id: id,
+            prsdrivertask_status: prsdrivertask_status,
+            prs_taskstatus: prs_taskstatus,
+        };
 
         jQuery.ajax({
             url: "driver-tasks",
@@ -2470,9 +2901,7 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
             data: data,
             dataType: "json",
             headers: {
-                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
-                    "content"
-                ),
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
             },
             processData: true,
             beforeSend: function () {
@@ -2495,4 +2924,3 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
         });
     });
 });
-

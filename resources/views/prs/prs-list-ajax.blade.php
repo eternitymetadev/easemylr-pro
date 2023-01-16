@@ -3,19 +3,21 @@
         <thead>
             <tr>
                 <th>Pickup ID</th>
-                <th>Regional Client</th>
-                <th>Tasks</th>
                 <th>Date</th>
+                <th>Regional Client</th>
+                <th>Pickup Points</th>
                 <!-- <th>PRS Type </th> -->
                 <th>Vehicle No.</th>
                 <th>Driver Name </th>
                 <th>Status </th>
+                <!-- <th>Action</th> -->
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <?php 
+            // echo'<pre>'; print_r(json_decode($value)); die;
             $regclients = $value->regclient_id;
             $regclient_ids  = explode(',',$regclients);
             $regclient_count = count($regclient_ids);
@@ -26,13 +28,43 @@
             ?>
             <tr>
                 <td>{{ $value->pickup_id ?? "-" }}</td>
-                <td><span data-toggle="tooltip" data-placement="top" title="{{ $regclient_count ?? '-' }}">{{ $value->RegClient->name ?? "-" }}</span></td>
-                <td><a href="{{url($prefix.'/driver-tasks')}}" title="{{ $consigner_count ?? '-' }}">{{ $consigner_count ?? "-" }}</a>
-                </td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
+                <td>
+
+                    @if(count($value->PrsRegClients)>0)
+                    <span class="viewAllInvoices">
+                        <span class="moreInvoicesView">
+                            <ul style="padding: 0; margin-bottom: 0;">
+                                @foreach($value->PrsRegClients as $regclients)
+                                <li style="margin-bottom: 8px" title="{{$regclients->RegClient->name ?? '-'}}">{{$regclients->RegClient->name ?? "-"}}</li>
+                                @endforeach
+                            </ul>
+                        </span>
+                    </span>
+                    @endif
+                </td>
+                <td>
+                    @if(count($value->PrsRegClients)>0)
+                    <span class="viewAllInvoices">
+                        <span class="moreInvoicesView">
+                        <a href="{{url($prefix.'/driver-tasks')}}" target="">
+                                <ul style="padding: 0; margin-bottom: 0;">
+                                    @foreach($value->PrsRegClients as $regcnrs)
+                                    @foreach($regcnrs->RegConsigner as $regcnr)
+
+                                    <li style="margin-bottom: 8px" title="{{ $regcnr->Consigner->nick_name ?? '-' }}">{{$regcnr->Consigner->nick_name ?? "-"}}</li>
+                                    @endforeach
+                                    @endforeach
+                                </ul>
+                            </a>
+                        </span>
+                    </span>
+                    @endif
+                </td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
                 <td>{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>
+                <!-- <td><a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id).'/edit')}}" class="btn btn-white btn-cstm"><span><i class="fa fa-edit"></i> Edit</span></a> </td> -->
             </tr>
             @endforeach
             @else
