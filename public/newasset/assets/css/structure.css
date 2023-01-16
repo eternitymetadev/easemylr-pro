@@ -2621,11 +2621,21 @@ input::file-selector-button {
     background-color: #f9b808;
     border-radius: 12px;
 }
+
 #sidebarBox ul li a div.active {
     color: #fff;
 }
+
+#sidebarBox ul li a div.active:hover {
+    color: #f9b808 !important;
+}
+
 #sidebarBox ul li div.active svg {
     color: #fff;
+}
+
+#sidebarBox ul li div.active:hover svg {
+    color: #f9b808 !important;
 }
 
 #sidebarBox ul li div:hover {
@@ -2633,9 +2643,6 @@ input::file-selector-button {
     border-radius: 12px;
 }
 
-/*#sidebarBox ul li div:hover svg {*/
-/*    color: #fff;*/
-/*}*/
 
 #sidebarBox.open ul li div {
     padding: 10px 1rem;
@@ -2686,10 +2693,43 @@ input::file-selector-button {
     display: flex;
 }
 
+#sidebarBox ul li .submenuArrow {
+    display: none !important;
+    transition: all 100ms ease-in-out;
+}
+
+#sidebarBox.open ul li .submenuArrow {
+    display: flex !important;
+}
+
+#sidebarBox .submenu {
+    height: 0;
+    /* transform: scaleY(0); */
+    padding: 0;
+    overflow: hidden;
+    transition: all 200ms ease-in-out;
+}
+
+#sidebarBox.open .submenu {
+    padding: 8px;
+    /* transform: scaleY(1); */
+    height: auto;
+    overflow: auto;
+}
+
+#sidebarBox .submenuArrow {
+    transform: rotate(0deg);
+}
+
+#sidebarBox .menu:has(a[aria-expanded="true"]) .submenuArrow {
+    transform: rotate(90deg);
+}
+
+
 ul.submenu {
-    background: #f9b80820;
+    box-shadow: 0 0 12px -3px #838383c7 inset;
     border-radius: 12px;
-    padding-left: 48px !important;
+    padding-left: 22px !important;
     list-style: disc;
 }
 
@@ -2697,6 +2737,16 @@ ul.submenu li {
     font-size: 15px;
     font-weight: 600;
     color: #0a0d26;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+ul.submenu li .submenuListStyle{
+    height: 8px;
+    max-width: 8px;
+    padding: 0 !important;
+    background: #f9b808;
 }
 
 #sidebarBox ul.submenu li a:hover {
@@ -2719,9 +2769,12 @@ ul.submenu li {
     box-shadow: 0 -19px 12px #fff;
 }
 
-#sidebarBox img {
-    width: 100%;
+#sidebarBox img#openSidebarLogo {
     max-width: 125px;
+}
+
+#sidebarBox img#closeSidebarLogo {
+    width: 38px;
 }
 
 .userMenu {
@@ -2790,6 +2843,11 @@ ul.submenu li {
     outline: 2px solid #f9b808;
     outline-offset: 2px;
     cursor: pointer;
+}
+
+.toggleLogo {
+    height: 0;
+    width: 0;
 }
 
 

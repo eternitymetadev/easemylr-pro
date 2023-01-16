@@ -122,8 +122,9 @@ Echo.channel('events')
 <script src="{{asset('assets/js/jquery.sumoselect.js')}}"></script>
 
 <script>
-var APP_URL =
-{!!json_encode(url('/')) !!};
+var APP_URL = {
+    !!json_encode(url('/')) !!
+};
 
 
 $(document).ready(function() {
@@ -528,6 +529,10 @@ function openSidebar() {
     const sidebar = document.getElementById('sidebarBox')
     const togglerSvg = document.getElementById('togglerSvg')
     const content = document.getElementById('content')
+    const longLogo = document.getElementById('openSidebarLogo')
+    const squareLogo = document.getElementById('closeSidebarLogo')
+    longLogo.classList.remove("toggleLogo");
+    squareLogo.classList.add("toggleLogo");
     sidebar.classList.add("open");
     togglerSvg.classList.add("open");
     content.classList.add("open");
@@ -537,6 +542,10 @@ function closeSidebar() {
     const sidebar = document.getElementById('sidebarBox')
     const togglerSvg = document.getElementById('togglerSvg')
     const content = document.getElementById('content')
+    const longLogo = document.getElementById('openSidebarLogo')
+    const squareLogo = document.getElementById('closeSidebarLogo')
+    longLogo.classList.add("toggleLogo");
+    squareLogo.classList.remove("toggleLogo");
     sidebar.classList.remove("open");
     togglerSvg.classList.remove("open");
     content.classList.remove("open");
@@ -546,16 +555,22 @@ function toggleSidebarWidth() {
     event.stopPropagation()
     const sidebar = document.getElementById('sidebarBox');
     var isTempSidebar = jQuery(sidebar).attr("data-sidebarOpen");
-    if (isTempSidebar == '0') {
-        jQuery(sidebar).attr("data-sidebarOpen", '1');
-    } else {
-        jQuery(sidebar).attr("data-sidebarOpen", '0');
-    }
+    // if (isTempSidebar == '0') {
+    //     jQuery(sidebar).attr("data-sidebarOpen", '1');
+    // } else {
+    //     jQuery(sidebar).attr("data-sidebarOpen", '0');
+    // }
+
+    // if (sidebar.classList.contains('open')) {
+    //     openSidebar();
+    // } else {
+    //     closeSidebar();
+    // }
 
     if (sidebar.classList.contains('open')) {
-        openSidebar();
-    } else {
         closeSidebar();
+    } else {
+        openSidebar();
     }
 }
 

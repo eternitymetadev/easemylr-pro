@@ -24,7 +24,8 @@
         <div class="overlay"></div>
         <div class="search-overlay"></div>
 
-        <div class="sidebarBox" id="sidebarBox" data-sidebarOpen='1' onmouseenter="openSidebarWidth()" onmouseleave="closeSidebarWidth()">
+        <div class="sidebarBox" id="sidebarBox" data-sidebarOpen='1'>
+        <!-- <div class="sidebarBox" id="sidebarBox" data-sidebarOpen='1' onmouseenter="openSidebarWidth()" onmouseleave="closeSidebarWidth()"> -->
             <nav id="sidebar">
                 <button id="sidebarToggleButton" onclick="toggleSidebarWidth()">
                     <svg id="togglerSvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
