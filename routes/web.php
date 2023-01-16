@@ -237,6 +237,30 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
 
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -677,6 +701,30 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
 
 });
 
