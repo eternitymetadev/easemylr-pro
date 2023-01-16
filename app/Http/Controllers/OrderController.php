@@ -494,9 +494,6 @@ class OrderController extends Controller
             $consignmentsave['edd'] = $request->edd;
             // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
-             
-
-           
 
             if($request->lr_type == 1){
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
@@ -509,7 +506,6 @@ class OrderController extends Controller
                 $chk_h2h_branch = $get_location->with_h2h;
                 $location_name = $get_location->name;
                 
-
                 if(!empty($get_zonebranch)){
                     $get_branch = Location::where('name', $get_zonebranch)->first();
                     $get_branch_id = $get_branch->id;
