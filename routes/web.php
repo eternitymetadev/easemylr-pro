@@ -128,6 +128,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     //Test Routes
@@ -479,6 +484,11 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
@@ -622,6 +632,11 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
@@ -765,6 +780,11 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
