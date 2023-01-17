@@ -532,10 +532,18 @@ class OrderController extends Controller
                             if (!empty($request->data)) {
                                 $get_data = $request->data;
                                 foreach ($get_data as $key => $save_data) {
-                                    $save_data['consignment_id'] = $request->consignment_id;
-                                    $save_data['status'] = 1;
-                                    $saveconsignmentitems = ConsignmentItem::where("id",$save_data['item_id'])->update($save_data);
-                
+
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                                    
                                     if ($saveconsignmentitems) {
                                         // dd($save_data['item_data']);
                                         if (!empty($save_data['item_data'])) {
@@ -597,45 +605,65 @@ class OrderController extends Controller
 
                         if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                             $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
-                            // if (!empty($request->data)) {
-                            //     $get_data = $request->data;
-                            //     foreach ($get_data as $key => $save_data) {
-                            //         $save_data['consignment_id'] = $saveconsignment->id;
-                            //         $save_data['status'] = 1;
-                            //         $saveconsignmentitems = ConsignmentItem::create($save_data);
+                            if (!empty($request->data)) {
+                                $get_data = $request->data;
+                                foreach ($get_data as $key => $save_data) {
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                                    // $save_data['consignment_id'] = $saveconsignment->id;
+                                    // $save_data['status'] = 1;
+                                    // $saveconsignmentitems = ConsignmentItem::create($save_data);
                 
-                            //         if ($saveconsignmentitems) {
-                            //             // dd($save_data['item_data']);
-                            //             if (!empty($save_data['item_data'])) {
-                            //                 $qty_array = array();
-                            //                 $netwt_array = array();
-                            //                 $grosswt_array = array();
-                            //                 $chargewt_array = array();
-                            //                 foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                            //                     // echo "<pre>"; print_r($save_itemdata); die;
-                            //                     $qty_array[] = $save_itemdata['quantity'];
-                            //                     $netwt_array[] = $save_itemdata['net_weight'];
-                            //                     $grosswt_array[] = $save_itemdata['gross_weight'];
-                            //                     $chargewt_array[] = $save_itemdata['chargeable_weight'];
+                                    if ($saveconsignmentitems) {
+                                        // dd($save_data['item_data']);
+                                        if (!empty($save_data['item_data'])) {
+                                            $qty_array = array();
+                                            $netwt_array = array();
+                                            $grosswt_array = array();
+                                            $chargewt_array = array();
+                                            foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                                // echo "<pre>"; print_r($save_itemdata); die;
+                                                $qty_array[] = $save_itemdata['quantity'];
+                                                $netwt_array[] = $save_itemdata['net_weight'];
+                                                $grosswt_array[] = $save_itemdata['gross_weight'];
+                                                $chargewt_array[] = $save_itemdata['chargeable_weight'];
+                                                
+                                                $saveitemdata['conitem_id'] = $save_data['item_id'];
+                                                $saveitemdata['item'] = $save_itemdata['item'];
+                                                $saveitemdata['quantity'] = $save_itemdata['quantity'];
+                                                $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
+                                                $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
+                                                $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
+                                                $saveitemdata['status'] = 1;
                 
-                            //                     $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
-                            //                     $save_itemdata['status'] = 1;
+                                                $savesubitems = ConsignmentSubItem::where('id',$save_itemdata['subitem_id'])->update($saveitemdata);
+
+                                                // $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
+                                                // $save_itemdata['status'] = 1;
                 
-                            //                     $savesubitems = ConsignmentSubItem::create($save_itemdata);
-                            //                 }
+                                                // $savesubitems = ConsignmentSubItem::create($save_itemdata);
+                                            }
                                             
-                            //                 $quantity_sum = array_sum($qty_array);
-                            //                 $netwt_sum = array_sum($netwt_array);
-                            //                 $grosswt_sum = array_sum($grosswt_array);
-                            //                 $chargewt_sum = array_sum($chargewt_array);
+                                            $quantity_sum = array_sum($qty_array);
+                                            $netwt_sum = array_sum($netwt_array);
+                                            $grosswt_sum = array_sum($grosswt_array);
+                                            $chargewt_sum = array_sum($chargewt_array);
                 
-                            //                 ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+                                            ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
                 
-                            //                 ConsignmentNote::where('id', $saveconsignment->id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
-                            //             }
-                            //         }
-                            //     }
-                            // }
+                                            ConsignmentNote::where('id', $request->consignment_id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
+                                        }
+                                    }
+                                }
+                            }
                         } else {
                             // $consignmentsave['total_quantity'] = $request->total_quantity;
                             // $consignmentsave['total_weight'] = $request->total_weight;
