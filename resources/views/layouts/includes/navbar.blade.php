@@ -163,6 +163,7 @@
                         <li>
                             <a href="{{$prefixurl.'order-book-ptl'}}"> Order Book Ptl </a>
                         </li>
+
                     </ul>
                 </li>
                 <?php }
@@ -208,8 +209,12 @@
 
                     <?php if($authuser->role_id !=6){ ?>
                         <li>
+                            <a href="{{$prefixurl.'pod-view'}}"> Pod View</a>
+                        </li>
+                        <li>
                             <a href="{{$prefixurl.'consignment-misreport'}}"> MIS Report 1</a>
                         </li>
+                       
                     <?php } if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                         <li>
                             <a href="{{$prefixurl.'consignment-report2'}}"> MIS Report 2</a>

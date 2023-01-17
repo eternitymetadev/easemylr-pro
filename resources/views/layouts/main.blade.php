@@ -24,25 +24,26 @@
         <div class="overlay"></div>
         <div class="search-overlay"></div>
 
-        <div class="sidebarBox" id="sidebarBox" data-sidebarOpen='1' onmouseenter="openSidebarWidth()" onmouseleave="closeSidebarWidth()">
+        <div class="sidebarBox open" id="sidebarBox" data-sidebarOpen='0'>
+        <!-- <div class="sidebarBox" id="sidebarBox" data-sidebarOpen='1' onmouseenter="openSidebarWidth()" onmouseleave="closeSidebarWidth()"> -->
             <nav id="sidebar">
-                <button id="sidebarToggleButton" onclick="toggleSidebarWidth()">
+                <!-- <button id="sidebarToggleButton" onclick="toggleSidebarWidth()">
                     <svg id="togglerSvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="feather feather-chevron-right">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
-                </button>
+                </button> -->
                 @include('layouts.includes.sidebar')
             </nav>
         </div>
 
         <!--  BEGIN CONTENT AREA  -->
         <?php $authuser = Auth::user(); ?>
-        <div id="content" class="main-content" style="min-height: calc(100% - 64px)">
+        <div id="content" class="main-content open" style="min-height: calc(100% - 64px)">
             <header class="header-container header navbar navbar-expand-sm">
                 <h1>@yield('page-heading','EasemyLr')</h1>
-                <div class="userMenu">
+                <div class="newUserMenu">
                     <img src="{{asset('newasset/assets/img/90x90.jpg')}}" class="img-fluid" alt="admin-profile" />
                     <ul>
                         <li class="userDisplayName">{{ucfirst($authuser->name ?? 'User Name')}}</li>

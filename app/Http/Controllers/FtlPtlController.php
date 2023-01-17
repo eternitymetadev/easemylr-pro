@@ -79,18 +79,18 @@ class FtlPtlController extends Controller
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
-        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-        //     $branch = $authuser->branch_id;
-        //     $branch_loc = explode(',', $branch);
-        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+            $branch = $authuser->branch_id;
+            $branch_loc = explode(',', $branch);
+            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
 
-        // } elseif ($authuser->role_id == 4) {
-        //     $reg = $authuser->regionalclient_id;
-        //     $regional = explode(',', $reg);
-        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
-        // } else {
+        } elseif ($authuser->role_id == 4) {
+            $reg = $authuser->regionalclient_id;
+            $regional = explode(',', $reg);
+            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+        } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
-        // }
+        }
 
         return view('Ftl.create-ftl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists]);
     }

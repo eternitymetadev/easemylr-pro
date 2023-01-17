@@ -1707,6 +1707,7 @@ jQuery(document).ready(function () {
                         );
                     }
                     //   console.log(img_api); return false;
+
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
@@ -1728,6 +1729,7 @@ jQuery(document).ready(function () {
                                 "<a href='" +
                                 storage_img +
                                 "' target='_blank' class='btn btn-warning'>view</a>";
+
                         }
                     } else {
                         if (img_api == null || img_api == "") {
@@ -1799,6 +1801,7 @@ jQuery(document).ready(function () {
                             row += "<td>" + buton + "</td>";
                         }
                     } else {
+
                         row += "<td>Update from shadow</td>";
                     }
                     row += "</tr>";
@@ -2639,8 +2642,10 @@ $("#create_request_form").submit(function (e) {
         beforeSend: function () {
             $(".indicator-progress").show();
             $(".indicator-label").hide();
+            $('.disableme').prop('disabled', true);
         },
         success: (data) => {
+            $('.disableme').prop('disabled', true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
             if (data.success == true) {

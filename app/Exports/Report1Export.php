@@ -191,6 +191,8 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
                         } else {
                             $pod= 'Available';
                         }
+                    }else{
+                        $pod= 'Not Available';
                     }
                 }
 
