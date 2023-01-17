@@ -2558,7 +2558,7 @@ input::file-selector-button {
 .sidebarBox {
     width: 60px;
     position: fixed;
-    z-index: 1300;
+    z-index: 999;
     min-height: 100vh;
     height: 100%;
     touch-action: none;
@@ -2777,11 +2777,11 @@ ul.submenu li .submenuListStyle{
     width: 38px;
 }
 
-.userMenu {
+.newUserMenu {
     position: relative;
 }
 
-.userMenu ul {
+.newUserMenu ul {
     list-style: none;
     /*display: none;*/
     flex-flow: column;
@@ -2794,25 +2794,25 @@ ul.submenu li .submenuListStyle{
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 0 12px -3px #83838380;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scaleY(0);
     opacity: 0;
     transition: all 250ms ease-in-out;
 }
 
-.userMenu ul li {
+.newUserMenu ul li {
     width: 100%;
     padding: 8px 1rem;
     border-radius: 12px;
     font-weight: 500;
 }
 
-.userMenu ul li svg {
+.newUserMenu ul li svg {
     height: 1rem;
     width: 1rem;
     margin-right: 1rem;
 }
 
-.userMenu ul li.userDisplayName {
+.newUserMenu ul li.userDisplayName {
     width: 100%;
     padding: 1rem;
     border-radius: 12px;
@@ -2825,18 +2825,19 @@ ul.submenu li .submenuListStyle{
     margin-bottom: 1rem;
 }
 
-.userMenu ul li:hover {
+.newUserMenu ul li:hover {
 }
 
-.userMenu:hover ul {
+.newUserMenu:hover ul {
     display: flex;
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
+    transform-origin: top;
     opacity: 1;
     transition: all 250ms ease-in-out;
 
 }
 
-.userMenu img {
+.newUserMenu img {
     height: 2.5rem;
     width: 2.5rem;
     border-radius: 50vh;

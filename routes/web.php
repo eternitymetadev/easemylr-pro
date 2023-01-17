@@ -639,6 +639,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);

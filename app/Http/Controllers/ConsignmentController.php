@@ -180,7 +180,6 @@ class ConsignmentController extends Controller
      */
     public function create()
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -420,8 +419,8 @@ class ConsignmentController extends Controller
 
     public function storeLRItem(Request $request)
     {
-        echo '<pre>';
-        print_r($request->all());die;
+        // echo '<pre>';
+        // print_r($request->all());die;
         try {
             DB::beginTransaction();
 
