@@ -422,14 +422,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id" id="select_consignee" {{$disable}}>
-                    <option value="">Select Consignee</option>
+                    <!-- <option value="">Select Consignee</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
                     <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
-                    @endif
+                    @endif -->
                 </select>
                 <?php 
                 if(empty($getconsignments->prs_id)){ ?>
@@ -442,14 +442,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id" id="select_ship_to" {{$disable}}>
-                    <option value="">Select Ship To</option>
+                    <!-- <option value="">Select Ship To</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
                     <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
-                    @endif
+                    @endif -->
                 </select>
                 <?php if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
@@ -511,6 +511,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                     <table class="mainTr" id="1">
                                         <tbody>
                                             <tr>
+                                            <input type="hidden" name="data[{{$i}}][item_id]" value="{{old('id',isset($item->id)?$item->id:'')}}">
                                                 <td>
                                                     <div class="form-group form-group-sm">
                                                         <label>Order ID</label>
@@ -570,6 +571,9 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                              foreach($getconsignments->ConsignmentItem->ConsignmentSubItems as $subitem){
                                                                 ?>
                                                             <tr>
+                                                            <input type="hidden" class="form-control subitem_id"
+                                                                            name="data[{{$i}}][item_data][{{$j}}][subitem_id]"
+                                                                            value="{{$subitem->id}}">
                                                                 <td width="200px">
                                                                     <div class="form-group form-group-sm">
                                                                         <label>Item</label>
@@ -604,7 +608,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                                         <label>Net Weight</label>
                                                                         <input type="number" class="form-control net"
                                                                             name="data[{{$i}}][item_data][{{$j}}][net_weight]"
-                                                                            value="{{$subitem->net_weight}}" {{$disable}}>
+                                                                            value="{{$subitem->net_weight}}" readonly>
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -612,7 +616,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                                         <label>Gross Weight</label>
                                                                         <input type="number" class="form-control gross"
                                                                             name="data[{{$i}}][item_data][{{$j}}][gross_weight]"
-                                                                            value="{{$subitem->gross_weight}}" {{$disable}}>
+                                                                            value="{{$subitem->gross_weight}}" readonly>
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -622,7 +626,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                                             class="form-control charge_wt"
                                                                             name="data[{{$i}}][item_data][{{$j}}][chargeable_weight]"
                                                                             value="{{$subitem->chargeable_weight}}"
-                                                                            {{$disable}}>
+                                                                            readonly>
                                                                     </div>
 
                                                                 </td>
@@ -670,10 +674,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                             <td><input type="text" class="form-control form-small"
                                     value="{{old('description',isset($getconsignments->description)?$getconsignments->description:'')}}"
                                     name="description" list="json-datalist" onkeyup="showResult(this.value)"
-                                    readonly><datalist id="json-datalist"></datalist></td>
+                                    {{$disable}}><datalist id="json-datalist"></datalist></td>
                             <td><input type="text" class="form-control form-small"
                                     value="{{old('packing_type',isset($getconsignments->packing_type)?$getconsignments->packing_type:'')}}"
-                                    name="packing_type" readonly></td>
+                                    name="packing_type" {{$disable}}></td>
                             <td align="center"><span id="tot_qty">
                                     <?php echo $getconsignments->total_quantity;?>
                                 </span></td>
@@ -724,54 +728,55 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                         foreach($getconsignments->ConsignmentItems as $item){ 
                                             ?>
                                         <tr>
+                                            <input type="hidden" name="data[{{$i}}][item_id]" value="{{old('id',isset($item->id)?$item->id:'')}}">
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
                                                     value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="text" class="form-control form-small invc_no" id="1"
                                                     name="data[{{$i}}][invoice_no]"
                                                     value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
                                                     value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[{{$i}}][invoice_amount]"
                                                     value="{{old('invoice_amount',isset($item->invoice_amount)?$item->invoice_amount:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[{{$i}}][e_way_bill]"
                                                     value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
                                                     value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[{{$i}}][quantity]"
                                                     value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="number" class="form-control form-small net"
                                                     name="data[{{$i}}][weight]"
                                                     value="{{old('weight',isset($item->weight)?$item->weight:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td><input type="number" class="form-control form-small gross"
                                                     name="data[{{$i}}][gross_weight]"
                                                     value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}"
-                                                    readonly>
+                                                    {{$disable}}>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-rounded insert-more"
-                                                    readonly> + </button>
+                                                {{$disable}}> + </button>
                                             </td>
                                         </tr>
 
@@ -881,6 +886,8 @@ function insertMaintableRow() {
                                 <table class="mainTr" id="` + item_no + `">
                                     <tbody>
                                     <tr>
+                                    <input type="hidden" class="form-control item_id" name="data[` +
+            item_no + `][item_id]">
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Order ID</label>

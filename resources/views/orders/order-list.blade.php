@@ -165,8 +165,8 @@ foreach ($consignments as $key => $consignment) {
                                 </td>
                                 <?php } ?>
                                 <!-- -------- Status Button ------------>
-
-                                <?php $authuser = Auth::user();
+                                <?php if(!empty($consignment->fall_in)){ 
+                                $authuser = Auth::user();
                                    if($authuser->branch_id == $consignment->fall_in){ 
                                  if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
                                 <td>
@@ -184,12 +184,14 @@ foreach ($consignments as $key => $consignment) {
                                 <?php }
                                 }else{ 
                                     if($consignment->prsitem_status == 0){ ?>
-
                                 <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
-                                <?php      }else{ ?>
+                                <?php }else{ ?>
                                 <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
+                                <?php } } 
+                                }else{?>
+                                <td>-</td>
                                 <?php } ?>
-                                <?php     }  ?>
+                               
                             </tr>
                             <?php
                         }
