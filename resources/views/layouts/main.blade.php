@@ -43,7 +43,7 @@
         <div id="content" class="main-content open" style="min-height: calc(100% - 64px)">
             <header class="header-container header navbar navbar-expand-sm">
                 <h1>@yield('page-heading','EasemyLr')</h1>
-                <div class="userMenu">
+                <div class="newUserMenu">
                     <img src="{{asset('newasset/assets/img/90x90.jpg')}}" class="img-fluid" alt="admin-profile" />
                     <ul>
                         <li class="userDisplayName">{{ucfirst($authuser->name ?? 'User Name')}}</li>
