@@ -1817,7 +1817,7 @@ code {
         width: 200px;
         padding: 15px 0;
         border-radius: 4px;
-        box-shadow: 0 1.5rem 4rem rgba(22, 28, 45, 0.15);
+        /* box-shadow: 0 1.5rem 4rem rgba(22, 28, 45, 0.15); */
         transform: translateY(0em);
         transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;
     }
@@ -2727,10 +2727,22 @@ input::file-selector-button {
 
 
 ul.submenu {
-    box-shadow: 0 0 12px -3px #838383c7 inset;
+    /* box-shadow: 0 0 12px -3px #838383c7 inset; */
     border-radius: 12px;
     padding-left: 22px !important;
     list-style: disc;
+    min-width: 100%;
+}
+ul.sub-submenu {
+    min-width: 100%;
+    padding: 0 0 0 22px !important;
+}
+
+ li.submenuListStyle a.dropdown-toggle{
+    background: bisque;
+    flex: 1;
+    border-radius: 8px;
+    padding: 4px 8px 4px 16px;
 }
 
 ul.submenu li {
@@ -2739,8 +2751,9 @@ ul.submenu li {
     color: #0a0d26;
     padding: 4px 8px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    column-gap: 8px;
 }
 ul.submenu li .submenuListStyle{
     height: 8px;
@@ -2824,7 +2837,6 @@ ul.submenu li .submenuListStyle{
     text-overflow: ellipsis;
     margin-bottom: 1rem;
 }
-
 .newUserMenu ul li:hover {
 }
 
@@ -2849,6 +2861,20 @@ ul.submenu li .submenuListStyle{
 .toggleLogo {
     height: 0;
     width: 0;
+}
+
+.menuHead{
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 16px;
+    border-bottom: 1px solid #83838340;
+}
+.menuHeadHidden{
+    margin-top: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 200ms ease-in-out;
 }
 
 
