@@ -409,9 +409,9 @@ span.select2.select2-container.mb-4 {
         </div>
 
 
-        {{--order info--}}
+        <!-- {{--order info--}}
         <div class="orderInfoBlock">
-        </div>
+        </div> -->
 
         <!-- {{--vehicle info--}}
         <div class="form-row" id="vehicleInformationBlock">
