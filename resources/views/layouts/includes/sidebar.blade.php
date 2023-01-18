@@ -264,7 +264,7 @@
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'create-ptl') || str_contains($currentURL, 'unverified-list') || str_contains($currentURL, 'transaction-sheet') || str_contains($currentURL, 'hrs-list') || str_contains($currentURL, 'hrs-sheet') || str_contains($currentURL, 'incoming-hrs') || str_contains($currentURL, 'outgoing-hrs')) active @endif">
+                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'create-ptl')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-trello">
@@ -297,7 +297,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
 
-            <li class="submenuListStyle">
+            <!-- <li class="submenuListStyle">
                 <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     DRS 🔻
                 </a>
@@ -317,11 +317,73 @@
                     <li>🔹 <a href="{{$prefixurl.'incoming-hrs'}}"> Incoming Hrs </a></li>
                     <li>🔹 <a href="{{$prefixurl.'outgoing-hrs'}}"> Outgoing Hrs </a></li>
                 </ul>
+            </li> -->
+        </ul>
+    </li>
+
+    <li class="menu">
+        <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <div
+                class="@if(str_contains($currentURL, 'unverified-list') || str_contains($currentURL, 'transaction-sheet')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-trello">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <rect x="7" y="7" width="3" height="9"></rect>
+                    <rect x="14" y="7" width="3" height="5"></rect>
+                </svg>
+                <span>DRS</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-chevron-right submenuArrow">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        <ul class="collapse submenu list-unstyled" id="drs" data-parent="#accordionExample">
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'unverified-list'}}"> Create Drs</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'transaction-sheet'}}">Drs List</a>
             </li>
         </ul>
     </li>
 
-
+    <li class="menu">
+        <a href="#hrs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <div
+                class="@if(str_contains($currentURL, 'hrs-list') || str_contains($currentURL, 'hrs-sheet') || str_contains($currentURL, 'incoming-hrs')  || str_contains($currentURL, 'outgoing-hrs')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-trello">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <rect x="7" y="7" width="3" height="9"></rect>
+                    <rect x="14" y="7" width="3" height="5"></rect>
+                </svg>
+                <span>HRS</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-chevron-right submenuArrow">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        <ul class="collapse submenu list-unstyled" id="hrs" data-parent="#accordionExample">
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-list'}}"> Create Hrs</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-sheet'}}">Hrs List</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'incoming-hrs'}}"> Incoming Hrs</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'outgoing-hrs'}}">Outgoing Hrs</a>
+            </li>
+        </ul>
+    </li>
 
 
     <li class="menu">
