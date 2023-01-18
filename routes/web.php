@@ -701,6 +701,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
