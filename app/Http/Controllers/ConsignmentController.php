@@ -94,11 +94,14 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                if(!empty('to_branch_id')){
-                    $query = $query->whereIn('to_branch_id', $cc);
-                }else{
-                $query = $query->whereIn('branch_id', $cc);
-                }
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                    $query->whereIn('fall_in', $cc);
+                });
+                // if(!empty('to_branch_id')){
+                //     $query = $query->whereIn('to_branch_id', $cc);
+                // }else{
+                // $query = $query->whereIn('branch_id', $cc);
+                // }
             }
 
             if (!empty($request->search)) {
@@ -163,8 +166,10 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            
-            $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc);
+            });
+            // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
             
         } 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -1841,11 +1846,15 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
-            if(!empty('consignment_notes.to_branch_id')){
-                $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
-            }else{
-            $data = $data->whereIn('consignment_notes.branch_id', $cc);
-            }
+            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
+                $data->whereIn('consignment_notes.to_branch_id', $cc);
+            });
+
+            // if(!empty('consignment_notes.to_branch_id')){
+            //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
+            // }else{
+            // $data = $data->whereIn('consignment_notes.branch_id', $cc);  
+            // }
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
