@@ -422,14 +422,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id" id="select_consignee" {{$disable}}>
-                    <!-- <option value="">Select Consignee</option>
+                    <option value="">Select Consignee</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
                     <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
-                    @endif -->
+                    @endif
                 </select>
                 <?php 
                 if(empty($getconsignments->prs_id)){ ?>
@@ -442,14 +442,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id" id="select_ship_to" {{$disable}}>
-                    <!-- <option value="">Select Ship To</option>
+                    <option value="">Select Ship To</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
                     <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
-                    @endif -->
+                    @endif
                 </select>
                 <?php if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
