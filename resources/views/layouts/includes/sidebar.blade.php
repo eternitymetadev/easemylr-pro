@@ -307,11 +307,11 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order list</a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Book Order </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create Ptl lR</a>
             </li>
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
-            </li>
+            </li> -->
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
