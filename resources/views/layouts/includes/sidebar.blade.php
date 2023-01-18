@@ -400,7 +400,7 @@
     <li class="menu">
         <a href="#hrsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'vendor-list') || str_contains($currentURL, 'drs-paymentlist') || str_contains($currentURL, 'request-list') || str_contains($currentURL, 'payment-report-view') || str_contains($currentURL, 'drswise-report')) active @endif">
+                class="@if(str_contains($currentURL, '#')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-dollar-sign">
@@ -425,7 +425,7 @@
     <li class="menu">
         <a href="#prsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'vendor-list') || str_contains($currentURL, 'drs-paymentlist') || str_contains($currentURL, 'request-list') || str_contains($currentURL, 'payment-report-view') || str_contains($currentURL, 'drswise-report')) active @endif">
+                class="@if(str_contains($currentURL, '#')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-dollar-sign">
