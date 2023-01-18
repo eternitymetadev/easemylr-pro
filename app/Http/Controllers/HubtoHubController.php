@@ -288,8 +288,7 @@ class HubtoHubController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                
-                $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('fall_in', $cc);
             }
             
             $consignments = $query->orderBy('id', 'DESC')->get();
