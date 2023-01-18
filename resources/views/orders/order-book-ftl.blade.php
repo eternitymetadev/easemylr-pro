@@ -413,7 +413,7 @@ span.select2.select2-container.mb-4 {
         <div class="orderInfoBlock">
         </div>
 
-        {{--vehicle info--}}
+        <!-- {{--vehicle info--}}
         <div class="form-row" id="vehicleInformationBlock">
             <h6 class="col-12">Vehicle Information</h6>
 
@@ -481,7 +481,7 @@ span.select2.select2-container.mb-4 {
 
             </div>
 
-        </div>
+        </div> -->
 
         <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
             {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}

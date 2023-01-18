@@ -290,7 +290,6 @@ class HubtoHubController extends Controller
             } else {
                 $query = $query->whereIn('fall_in', $cc);
             }
-            
             $consignments = $query->orderBy('id', 'DESC')->get();
        
    
