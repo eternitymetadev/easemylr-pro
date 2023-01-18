@@ -1930,21 +1930,21 @@ class OrderController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-            if ($authuser->role_id == $role_id->id) {
-                $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-            } else {
-                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-            }
-        } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
-            if ($authuser->role_id != 1) {
-                $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-            } else {
-                $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-            }
-        } else {
+        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+        //     if ($authuser->role_id == $role_id->id) {
+        //         $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        //     } else {
+        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        //     }
+        // } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
+        //     if ($authuser->role_id != 1) {
+        //         $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        //     } else {
+        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
+        //     }
+        // } else {
             $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        }
+        // }
         $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
 
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
