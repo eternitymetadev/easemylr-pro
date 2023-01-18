@@ -266,10 +266,10 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Reserve LR No </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reserve-lr'}}"> Reserve Lr List</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reserve-lr'}}"> Complete Blocked LR </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create FTL LR</a>
@@ -305,10 +305,10 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="Ptl" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order list</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order List</a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create Ptl lR</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create PTL lR</a>
             </li>
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
