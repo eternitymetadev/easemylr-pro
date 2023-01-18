@@ -128,5 +128,8 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
+    public function fallIn(){
+        return $this->belongsTo('App\Models\Location','fall_in');
+    }
 
 }

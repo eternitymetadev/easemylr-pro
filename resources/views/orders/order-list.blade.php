@@ -88,7 +88,9 @@ div.relative {
                                 <th>LR No</th>
                                 <th>Pickup ID</th>
                                 <th>LR Date</th>
-                                <th>Branch</th>
+                                <th>Booking Branch</th>
+                                <th>Pickup Branch</th>
+                                <th>Delivery Branch</th>
                                 <th>Billing Client</th>
                                 <th>Consigner Name</th>
                                 <th>Consignee Name</th>
@@ -105,14 +107,16 @@ div.relative {
                         </thead>
                         <tbody>
                             <?php
-foreach ($consignments as $key => $consignment) {
-    ?>
+                            foreach ($consignments as $key => $consignment) {
+                                ?>
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
                                 <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
                                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
+                                <td>{{ $consignment->fallIn->name ?? "-" }}</td>
+                                <td>{{ $consignment->ToBranch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
