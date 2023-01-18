@@ -89,11 +89,13 @@ div.relative {
                                 <th>Pickup ID</th>
                                 <th>LR Date</th>
                                 <th>Booking Branch</th>
-                                <th>Pickup Branch</th>
-                                <th>Delivery Branch</th>
+                                <th>Pickup Zone</th>
+                                <th>Delivery Zone</th>
                                 <th>Billing Client</th>
                                 <th>Consigner Name</th>
+                                <th>Consigner Pin Code</th>
                                 <th>Consignee Name</th>
+                                <th>Pin Code</th>
                                 <th>Delivery City</th>
                                 <th>Invoice no</th>
                                 <th>Order No</th>
@@ -119,7 +121,9 @@ div.relative {
                                 <td>{{ $consignment->ToBranch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
+                                <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
                                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
