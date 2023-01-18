@@ -67,7 +67,7 @@ div.relative {
                     @csrf
                     <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                         <div class="btn-group relative" style="width: auto">
-                            <a href="{{'orders/create'}}" class="btn btn-primary myButtonExtra"
+                            <a href="{{'order-book-ptl'}}" class="btn btn-primary myButtonExtra"
                                 style="font-size: 13px; padding: 6px 0px;">Create Order</a>
                             <button type="button" class="btn btn-primary myButtonExtra ml-2" data-toggle="modal"
                                 data-target="#exampleModal">
@@ -159,14 +159,15 @@ foreach ($consignments as $key => $consignment) {
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
                                             Cancel</span></a>
+                                        <?php if(!empty($consignment->prs_id)){ ?>
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
-                                                class="fa fa-edit"></i></span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i class="fa fa-edit"></i></span></a>
+                                        <?php } ?>
                                 </td>
                                 <?php } ?>
                                 <!-- -------- Status Button ------------>
-
-                                <?php $authuser = Auth::user();
+                                <?php if(!empty($consignment->fall_in)){ 
+                                $authuser = Auth::user();
                                    if($authuser->branch_id == $consignment->fall_in){ 
                                  if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
                                 <td>
@@ -184,12 +185,14 @@ foreach ($consignments as $key => $consignment) {
                                 <?php }
                                 }else{ 
                                     if($consignment->prsitem_status == 0){ ?>
-
                                 <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
-                                <?php      }else{ ?>
+                                <?php }else{ ?>
                                 <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
+                                <?php } } 
+                                }else{?>
+                                <td>-</td>
                                 <?php } ?>
-                                <?php     }  ?>
+                               
                             </tr>
                             <?php
                         }
