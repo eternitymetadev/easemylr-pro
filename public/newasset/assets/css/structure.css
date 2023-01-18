@@ -2837,9 +2837,8 @@ ul.submenu li .submenuListStyle{
     text-overflow: ellipsis;
     margin-bottom: 1rem;
 }
-
-/* .newUserMenu ul li:hover {
-} */
+.newUserMenu ul li:hover {
+}
 
 .newUserMenu:hover ul {
     display: flex;
