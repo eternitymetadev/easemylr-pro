@@ -67,7 +67,7 @@ div.relative {
                     @csrf
                     <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                         <div class="btn-group relative" style="width: auto">
-                            <a href="{{'orders/create'}}" class="btn btn-primary myButtonExtra"
+                            <a href="{{'order-book-ptl'}}" class="btn btn-primary myButtonExtra"
                                 style="font-size: 13px; padding: 6px 0px;">Create Order</a>
                             <button type="button" class="btn btn-primary myButtonExtra ml-2" data-toggle="modal"
                                 data-target="#exampleModal">
@@ -159,9 +159,10 @@ foreach ($consignments as $key => $consignment) {
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
                                         data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
                                             Cancel</span></a>
+                                        <?php if(!empty($consignment->prs_id)){ ?>
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i
-                                                class="fa fa-edit"></i></span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i class="fa fa-edit"></i></span></a>
+                                        <?php } ?>
                                 </td>
                                 <?php } ?>
                                 <!-- -------- Status Button ------------>
