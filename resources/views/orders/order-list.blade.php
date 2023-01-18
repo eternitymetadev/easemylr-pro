@@ -94,10 +94,8 @@ div.relative {
                                 <th>Billing Client</th>
                                 <th>Consigner Name</th>
                                 <th>Consigner Pin Code</th>
-                                <th>Last Mile Tag</th>
                                 <th>Consignee Name</th>
                                 <th>Pin Code</th>
-                                <th>Last Mile Tag</th>
                                 <th>Delivery City</th>
                                 <th>Invoice no</th>
                                 <th>Order No</th>
@@ -124,10 +122,8 @@ div.relative {
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
                                 <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
-                                <td>{{ $consignment->ConsignerDetail->GetBranch->name}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
-                                <td>{{ $consignment->ConsignerDetail->GetBranch->name}}</td>
                                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>

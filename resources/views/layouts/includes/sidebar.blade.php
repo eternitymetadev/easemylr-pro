@@ -269,6 +269,9 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Reserve LR No </a>
             </li>
             <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reserve-lr'}}"> Reserve Lr List</a>
+            </li>
+            <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create FTL LR</a>
             </li>
             <li>
@@ -277,9 +280,7 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order list</a>
-            </li>
+          
         </ul>
     </li>
 
