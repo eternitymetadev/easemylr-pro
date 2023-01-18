@@ -1976,19 +1976,19 @@ class OrderController extends Controller
 
         ////////////// Bill to regional clients //////////////
 
-        if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-            $branch = $authuser->branch_id;
-            $branch_loc = explode(',', $branch);
-            $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
+        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
+        //     $branch = $authuser->branch_id;
+        //     $branch_loc = explode(',', $branch);
+        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
 
-        } elseif ($authuser->role_id == 4) {
-            $reg = $authuser->regionalclient_id;
-            $regional = explode(',', $reg);
-            $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
+        // } elseif ($authuser->role_id == 4) {
+        //     $reg = $authuser->regionalclient_id;
+        //     $regional = explode(',', $reg);
+        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
 
-        } else {
+        // } else {
             $regionalclient = RegionalClient::select('id', 'name')->get();
-        }
+        // }
 
         return view('orders.update-reserve', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }
