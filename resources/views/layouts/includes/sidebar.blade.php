@@ -453,7 +453,7 @@
     <li class="menu">
         <a href="#misReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2') || str_contains($currentURL, 'postal-code') || str_contains($currentURL, 'pod-view')) active @endif">
+                class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-clipboard">
@@ -482,7 +482,7 @@
     <li class="menu">
         <a href="#accountReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2') || str_contains($currentURL, 'postal-code') || str_contains($currentURL, 'pod-view')) active @endif">
+                class="@if(str_contains($currentURL, 'postal-code') || str_contains($currentURL, 'pod-view') || str_contains($currentURL, 'postal-code')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-clipboard">
@@ -550,7 +550,7 @@
     <li class="menu">
         <a href="#reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2') || str_contains($currentURL, 'postal-code') || str_contains($currentURL, 'pod-view')) active @endif">
+                class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-clipboard">
