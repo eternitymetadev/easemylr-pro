@@ -316,7 +316,7 @@ class ConsignmentController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
             if (!empty($request->vehicle_id)) {
-                $consignmentsave['delivery_status'] = "Started";
+                $consignmentsave['delivery_status'] = "Assigned";
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
