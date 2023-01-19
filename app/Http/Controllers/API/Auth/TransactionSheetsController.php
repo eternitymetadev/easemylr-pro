@@ -743,16 +743,43 @@ class TransactionSheetsController extends Controller
       
     public function taskCancel(Request $request, $id)
     {
-        try {
-            $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel']);
-            
+        try { 
 
+            $update_status = ConsignmentNote::find($id);
+            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel','reason_to_cancel' => $request->reason_to_cancel]);
+            
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
                     'message' => 'Task Cancelled Successfully'
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update status"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
+
+    public function verifiedLr(Request $request, $id)
+    {
+        try { 
+            $update_status = ConsignmentNote::find($id);
+            $res = $update_status->update(['verified_lr' => $request->verified_lr]);
+            
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'verified status updated successfully'
                 ], 200);
             }
             return response([

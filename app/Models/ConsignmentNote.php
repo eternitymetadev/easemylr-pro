@@ -41,6 +41,7 @@ class ConsignmentNote extends Model
         'edd',
         'order_id',
         'status',
+        'verified_lr',
         'booked_drs',
         'job_id',
         'tracking_link',

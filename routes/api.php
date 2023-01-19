@@ -8,7 +8,7 @@ use App\Http\Controllers\API\Auth\TransactionSheetsController;
 /*
 
 |--------------------------------------------------------------------------
-
+ 
 | API Routes
 
 |--------------------------------------------------------------------------
@@ -35,8 +35,10 @@ Route::put('/task-ack/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsCon
 Route::get('/single-task/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@singleTask')->name('api.auth.singleTask.transaction_sheets');
 Route::post('/update-deliveryDetails/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@updateDeliveryDetails')->name('api.auth.updateDeliveryData.transaction_sheets');
 Route::post('task-success/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskSuccessful')->name('api.auth.taskSuccessful.transaction_sheets');
-});
+Route::post('task-cancel/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskCancel')->name('api.auth.taskCancel.transaction_sheets');
+Route::post('verified-lr/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@verifiedLr')->name('api.auth.verifiedLr.transaction_sheets');
 
+});
 
 
 Route::group([
