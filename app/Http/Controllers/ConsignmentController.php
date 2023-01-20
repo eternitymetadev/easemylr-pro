@@ -931,7 +931,7 @@ class ConsignmentController extends Controller
 
         $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
+        $generate_qrcode = QrCode::size(150)->generate(''.$cn_id.'');
         $output_file = '/qr-code/img-' . time() . '.svg';
         Storage::disk('public')->put($output_file, $generate_qrcode);
         $fullpath = storage_path('app/public/' . $output_file);

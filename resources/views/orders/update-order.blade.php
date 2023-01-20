@@ -268,7 +268,7 @@ span.select2.select2-container.mb-4 {
 if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
     $disable = ''; 
 } else{
-    $disable = 'disabled';
+    $disable = '';
 }
 ?>
 
