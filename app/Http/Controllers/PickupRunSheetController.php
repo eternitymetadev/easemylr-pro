@@ -161,6 +161,7 @@ class PickupRunSheetController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
             DB::beginTransaction();
             
@@ -640,7 +641,7 @@ class PickupRunSheetController extends Controller
         $cc = explode(',',$authuser->branch_id);
 
         $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
-            $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
         // }
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -648,16 +649,10 @@ class PickupRunSheetController extends Controller
 
         $locations = Location::select('id','name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id','name')->get();
-        $getprs = PickupRunSheet::where('id',$id)->with('PrsRegClients')->first();
-        // dd($getprs);
+        $getprs = PickupRunSheet::where('id',$id)->with('PrsRegClients','PrsRegClients.RegConsigner')->first();
+        // echo "<pre>"; print_r($consigners); die;
 
         return view('prs.update-prs',['prefix'=>$this->prefix, 'getprs'=>$getprs, 'regclients'=>$regclients,'locations'=>$locations, 'hub_locations'=>$hub_locations, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
-
-
-
-        $getprs = PickupRunSheet::where('id',$id)->with('')->first();
-
-        return view('prs.update-prs')->with(['prefix'=>$this->prefix,'title'=>$this->title,'getprs'=>$getprs,'segment'=>$this->segment]);
     }
 
     /**

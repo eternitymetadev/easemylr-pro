@@ -23,6 +23,8 @@
                             <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
                                 placeholder="" value="<?php echo date('d-m-Y'); ?>" />
 
+                            <input type="hidden" class="form-seteing" name="prs_id" placeholder=""
+                                value="{{$getprs->id}}" />
                             <div class="d-flex align-items-center justify-content-center flex-wrap mb-4">
 
                                 <div class="col-md-6">
@@ -90,7 +92,9 @@
                                                         <?php
                                                         foreach ($regclients as $key => $client) {
                                                         ?>
-                                                        <option value="{{ $client->id }}" {{$regclientdata->regclient_id == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
+                                                        <option value="{{ $client->id }}"
+                                                            {{$regclientdata->regclient_id == $client->id ? 'selected' : ''}}>
+                                                            {{ucwords($client->name)}}</option>
                                                         <?php
                                                         }
                                                         ?>
@@ -102,15 +106,25 @@
                                                 <td valign="middle" class="p-2">
                                                     <select class="form-control consigner_prs tagging"
                                                         id="select_consigner" multiple="multiple"
-                                                        name="data[{{i}}][consigner_id][]">
+                                                        name="data[{{$i}}][consigner_id][]">
                                                         <option disabled>Select</option>
-                                                        <?php
-                                                        foreach ($consigners as $key => $cnr) {
-                                                        ?>
-                                                        <option value="{{ $cnr->id }}" {{$regclientdata->RegConsigner->prs_regclientid == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
-                                                        <?php
-                                                        }
-                                                        ?>
+                                                        <?php $cnr_ids= array(); 
+                                                        foreach($getprs->PrsRegClients as $akey => $regclient){
+                                                        
+                                                        foreach($regclient->RegConsigner as $key => $regcnr){
+                                                            $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
+                                                            
+                                                            foreach($regclient_ids as $key => $clientcnr){
+                                                                $cnr_id = $clientcnr->consigner_id;
+                                                                // echo "<pre>"; print_r($cnr_id); die;
+                                                            
+                                                            
+                                                        // $cnr_id = $regcnr->consigner_id;
+                                                        
+                                                        foreach($consigners as $key => $cnr){ ?>
+                                                        <option value="{{$key}}" @if($key==$cnr_id)selected="selected"
+                                                            @endif>{{$cnr}}</option>
+                                                        <?php }}}} ?>
                                                     </select>
                                                 </td>
                                                 <td valign="middle" class="p-2" width="24px">
@@ -132,8 +146,9 @@
                                         name="vehicletype_id" tabindex="-1">
                                         <option value="">Select vehicle type</option>
                                         @foreach($vehicletypes as $vehicletype)
-                                        <option value="{{$vehicletype->id}}">{{$vehicletype->name}}
-                                        </option>
+                                        <option value="{{ $vehicletype->id }}"
+                                            {{$getprs->vehicletype_id == $vehicletype->id ? 'selected' : ''}}>
+                                            {{ucwords($vehicletype->name)}}</option>
                                         @endforeach
                                     </select>
 
@@ -144,8 +159,9 @@
                                         tabindex="-1">
                                         <option value="">Select vehicle</option>
                                         @foreach($vehicles as $vehicle)
-                                        <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                                        </option>
+                                        <option value="{{ $vehicle->id }}"
+                                            {{$getprs->vehicle_id == $vehicle->id ? 'selected' : ''}}>
+                                            {{ucwords($vehicle->regn_no)}}</option>
                                         @endforeach
                                     </select>
                                 </div>
