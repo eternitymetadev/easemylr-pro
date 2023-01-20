@@ -23,7 +23,7 @@
             <tr>
                 <td>HRS-{{$hrssheet->hrs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
-                <td>{{$hrssheet->ToBranch->name}}</td>
+                <td>{{@$hrssheet->ToBranch->name}}</td>
                 <td>{{$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
                 <td>{{$hrssheet->DriverDetail->name ?? '-'}}</td>
                 <td>{{$hrssheet->DriverDetail->phone ?? '-'}}</td>

@@ -88,10 +88,14 @@ div.relative {
                                 <th>LR No</th>
                                 <th>Pickup ID</th>
                                 <th>LR Date</th>
-                                <th>Branch</th>
+                                <th>Booking Branch</th>
+                                <th>Pickup Zone</th>
+                                <th>Delivery Zone</th>
                                 <th>Billing Client</th>
                                 <th>Consigner Name</th>
+                                <th>Consigner Pin Code</th>
                                 <th>Consignee Name</th>
+                                <th>Pin Code</th>
                                 <th>Delivery City</th>
                                 <th>Invoice no</th>
                                 <th>Order No</th>
@@ -105,17 +109,21 @@ div.relative {
                         </thead>
                         <tbody>
                             <?php
-foreach ($consignments as $key => $consignment) {
-    ?>
+                            foreach ($consignments as $key => $consignment) {
+                                ?>
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
                                 <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
                                 <td>{{ $consignment->consignment_date ?? "-" }}</td>
                                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
+                                <td>{{ $consignment->fallIn->name ?? "-" }}</td>
+                                <td>{{ $consignment->ToBranch->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
+                                <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
                                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
                                 <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>

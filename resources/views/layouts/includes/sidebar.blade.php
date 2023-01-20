@@ -187,6 +187,28 @@
     ?>
     <?php }
     } ?>
+    <?php if(!empty($permissions)){
+    if(in_array('5', $permissions))
+    {
+    ?>
+    <li class="menu">
+        <a href="{{$prefixurl.'postal-code'}}" data-active="<?php if($segment == 'postal-code'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Pin Code</span>
+            </div>
+        </a>
+    </li>
+    <?php }
+    } ?>
     <!-- li class="menu">
         <a href="#consignment" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -244,20 +266,21 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Reserve LR No </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create LR Ftl</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reserve-lr'}}"> Complete Blocked LR </a>
             </li>
-           <!--  <li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create FTL LR</a>
+            </li>
+            <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
-            </li> -->
+            </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
-            <!-- <li>
-                <div class="submenuListStyle"></div><a href="#"> LR List </a>
-            </li> -->
+          
         </ul>
     </li>
 
@@ -282,14 +305,14 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="Ptl" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order list</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order List</a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Book Order </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create PTL lR</a>
             </li>
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
-            </li>
+            </li> -->
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
@@ -547,7 +570,7 @@
     <li class="menu">
         <a href="#accountReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'postal-code') || str_contains($currentURL, 'pod-view') || str_contains($currentURL, 'postal-code')) active @endif">
+                class="@if(str_contains($currentURL, 'pod-view')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-clipboard">
@@ -563,9 +586,6 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="accountReports" data-parent="#accordionExample">
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Postal Code </a>
-            </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
@@ -632,13 +652,7 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="reports" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-misreport'}}"> Mis Report 1 </a>
-            </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report2'}}"> Mis Report 2 </a>
-            </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Postal Code </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Pin Code </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>

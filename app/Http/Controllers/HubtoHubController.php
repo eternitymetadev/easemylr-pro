@@ -50,7 +50,7 @@ class HubtoHubController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $query = ConsignmentNote::query();
 
-            $query = $query->where('h2h_check', 'h2h')->where('hrs_status',2)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
+            $query = $query->where('h2h_check', 'h2h')->where('hrs_status',2)->where('status','!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
 
             if ($authuser->role_id == 1) {   
                 $query;
@@ -288,10 +288,8 @@ class HubtoHubController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                
-                $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('fall_in', $cc);
             }
-            
             $consignments = $query->orderBy('id', 'DESC')->get();
        
    
