@@ -452,21 +452,21 @@ span.round-tab:hover {
         $('.insert-more').attr('disabled',true);
     });
 
-    jQuery(function () {
-        $('.my-select2').each(function () {
-            $(this).select2({
-                theme: "bootstrap-5",
-                dropdownParent: $(this).parent(), // fix select2 search input focus bug
-            })
-        })
+    // jQuery(function () {
+    //     $('.my-select2').each(function () {
+    //         $(this).select2({
+    //             theme: "bootstrap-5",
+    //             dropdownParent: $(this).parent(), // fix select2 search input focus bug
+    //         })
+    //     })
 
-        // fix select2 bootstrap modal scroll bug
-        $(document).on('select2:close', '.my-select2', function (e) {
-            var evt = "scroll.select2"
-            $(e.target).parents().off(evt)
-            $(window).off(evt)
-        })
-    })
+    //     // fix select2 bootstrap modal scroll bug
+    //     $(document).on('select2:close', '.my-select2', function (e) {
+    //         var evt = "scroll.select2"
+    //         $(e.target).parents().off(evt)
+    //         $(window).off(evt)
+    //     })
+    // })
 
     // add consignment date
     $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
