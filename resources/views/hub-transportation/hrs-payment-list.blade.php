@@ -244,7 +244,7 @@ $(document).on('click', '.create_hrs_payment', function() {
 
             },
         success: function(data) {
-            console.log(data.get_data.receving_status);
+            // console.log(data.get_data.receving_status);
 
             if (data.get_data.receving_status == 2) {
                 $('#p_type_1').append('<option value="Fully">Fully Payment</option>');
