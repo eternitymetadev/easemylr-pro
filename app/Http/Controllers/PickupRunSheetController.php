@@ -471,6 +471,7 @@ class PickupRunSheetController extends Controller
                     $consignmentsave['total_gross_weight'] = $savetaskitems->gross_weight;
                     $consignmentsave['prs_id'] = $request->prs_id;
                     $consignmentsave['prsitem_status'] = 1;
+                    $consignmentsave['lr_type'] = 2;
                     if(empty($save_data['lr_id']) && (!empty($savetaskitems->invoice_no))){
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
                     }else{
