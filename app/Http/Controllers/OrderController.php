@@ -48,7 +48,7 @@ class OrderController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->where('lr_type' ,1)->where('status', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+        $query = $query->whereIn('lr_type',[1,2])->where('status', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
 
         if ($authuser->role_id == 1) {
             $query;

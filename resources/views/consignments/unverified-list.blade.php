@@ -94,7 +94,7 @@ div.relative {
                                 ?> 
                                 <tr>
 
-                                @if($consignment->lr_type == 0)
+                                @if($consignment->lr_type == 0 || $consignment->lr_type == 2)
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                 @else
                                 @if($consignment->hrs_status == 3)
