@@ -562,38 +562,45 @@ function closeSidebar() {
     }
 }
 
+
 function toggleSidebarWidth() {
-    event.stopPropagation()
-    const sidebar = document.getElementById('sidebarBox');
-    var isTempSidebar = jQuery(sidebar).attr("data-sidebarOpen");
-    if (isTempSidebar == '0') {
-        jQuery(sidebar).attr("data-sidebarOpen", '1');
-    } else {
-        jQuery(sidebar).attr("data-sidebarOpen", '0');
+        event.stopPropagation()
+        const sidebar = document.getElementById('sidebarBox');
+
+        if(localStorage.getItem('isDrawerItem') === 'true'){
+            localStorage.setItem('isDrawerItem', 'false');
+            closeSidebar();
+        } else {
+            localStorage.setItem('isDrawerItem', 'true');
+            openSidebar();
+        }
+
+        if (sidebar.classList.contains('open')) {
+            openSidebar();
+        } else {
+            closeSidebar();
+        }
     }
 
-    if (sidebar.classList.contains('open')) {
-        openSidebar();
-    } else {
-        closeSidebar();
+    function openSidebarWidth() {
+        if(localStorage.getItem('isDrawerItem') !== 'true'){
+            openSidebar();
+        }
     }
-}
 
-function openSidebarWidth() {
-    const sidebar = document.getElementById('sidebarBox');
-    var isTempSidebar = jQuery(sidebar).attr("data-sidebarOpen");
-    if (isTempSidebar == '1') {
-        openSidebar();
+    function closeSidebarWidth() {
+        if(localStorage.getItem('isDrawerItem') !== 'true'){
+            closeSidebar();
+        }
     }
-}
 
-function closeSidebarWidth() {
-    const sidebar = document.getElementById('sidebarBox');
-    var isTempSidebar = jQuery(sidebar).attr("data-sidebarOpen");
-    if (isTempSidebar == '1') {
-        closeSidebar();
+    window.onload = () =>{
+        if(localStorage.getItem('isDrawerItem') === null){
+            localStorage.setItem('isDrawerItem', 'false');
+        } else if(localStorage.getItem('isDrawerItem') === 'true'){
+            openSidebar();
+        }
     }
-}
 </script>
 
 <!--- new JS---->
