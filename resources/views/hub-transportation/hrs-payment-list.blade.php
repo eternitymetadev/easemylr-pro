@@ -333,5 +333,48 @@ $('#vendor_id_1').change(function() {
 
 });
 // ===========================================================//
+$("#amt_1").keyup(function() {
+//  alert('k');
+var firstInput = document.getElementById("total_clam_amt_1").value;
+var secondInput = document.getElementById("amt_1").value;
+
+if (parseInt(firstInput) < parseInt(secondInput)) {
+    $('#amt_1').val('');
+    $('#tds_dedut_1').val('');
+    swal('error', 'amount must be greater than purchase price', 'error')
+} else if (parseInt(firstInput) == '') {
+    $('#amt_1').val('');
+    jQuery('#amt_1').prop('disabled', true);
+}
+// Calculate tds
+var tds_rate = $('#tds_rate_1').val();
+
+var cal = (tds_rate / 100) * secondInput;
+var final_amt = secondInput - cal;
+$('#tds_dedut_1').val(final_amt);
+
+});
+
+////
+$('#p_type_1').change(function() {
+    var p_type = $(this).val();
+    var total_amt = $("#total_clam_amt_1").val();
+     if(p_type == 'Fully'){
+        $('#amt_1').val(total_amt);
+
+        var amt = $('#amt_1').val();
+        var tds_rate = $('#tds_rate_1').val();
+        var cal = (tds_rate / 100) * amt;
+        var final_amt = amt - cal;
+        $('#tds_dedut_1').val(final_amt);
+        $('#amt_1').attr('readonly', true);
+
+     }else{
+        $('#amt_1').val('');
+        $('#tds_dedut_1').val('');
+        $('#amt_1').attr('readonly', false);
+     }
+
+});
 </script>
 @endsection
