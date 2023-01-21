@@ -693,6 +693,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'permissions'}}"> All Permissions </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Clients </a>
+            </li>
         </ul>
     </li>
     <?php } if($authuser->role_id == 1){ ?>
