@@ -144,7 +144,7 @@
                     <td> - </td>
                 <?php }else{?>
                 <td>{{ $tat }}</td>
-                <?php } if($consignment->job_id== ''){?>
+                <?php } if($consignment->lr_mode == 0){?>
                     <td>Manual</td>
                     <?php }else{?>
                         <td>Shadow</td>

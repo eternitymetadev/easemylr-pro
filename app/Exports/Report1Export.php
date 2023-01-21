@@ -162,7 +162,7 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
                   $status = 'Unknown';
                  }
 
-                if(!empty($consignment->job_id)){
+                if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
                   }else{
                    $deliverymode = 'Manual';
