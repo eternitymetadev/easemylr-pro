@@ -280,6 +280,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
+            </li>
           
         </ul>
     </li>
@@ -318,6 +321,9 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
 
             <!-- <li class="submenuListStyle">
@@ -564,7 +570,7 @@
     </li>
 
     
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#accountReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'pod-view')) active @endif">
@@ -587,7 +593,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 
     <!-- <li class="menu">
         <a href="#vendors" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -651,10 +657,6 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Pin Code </a>
             </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>
-
         </ul>
     </li>
     <?php if($authuser->role_id == 1){ ?>
