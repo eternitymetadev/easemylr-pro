@@ -280,6 +280,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
+            </li>
           
         </ul>
     </li>
@@ -287,7 +290,7 @@
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'create-ptl')) active @endif">
+                class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'orders') || str_contains($currentURL, 'create-ptl')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-trello">
@@ -318,6 +321,9 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
 
             <!-- <li class="submenuListStyle">
@@ -488,7 +494,7 @@
     <li class="menu">
         <a href="#hrsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, '#')) active @endif">
+                class="@if(str_contains($currentURL, 'hrs-payment-list')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-dollar-sign">
@@ -567,7 +573,7 @@
     </li>
 
     
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#accountReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'pod-view')) active @endif">
@@ -590,7 +596,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 
     <!-- <li class="menu">
         <a href="#vendors" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -654,10 +660,6 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Pin Code </a>
             </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>
-
         </ul>
     </li>
     <?php if($authuser->role_id == 1){ ?>
