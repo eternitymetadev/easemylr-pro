@@ -169,9 +169,9 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
                   }
 
                 // pod status
-                if(empty($consignment->job_id)){
+                if($consignment->lr_mode == 0){
                     if(empty($consignment->signed_drs)){
-                        $pod= 'Not Available';
+                        $pod= 'Not Available'; 
                     } else {
                         $pod= 'Available';
                     } 
