@@ -438,6 +438,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
     Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
@@ -447,6 +450,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+
     
 
 });
