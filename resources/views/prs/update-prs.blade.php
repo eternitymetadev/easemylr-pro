@@ -79,6 +79,7 @@
                                         <tbody>
                                             <?php
                                         $i=0;
+                                        
                                         foreach($getprs->PrsRegClients as $key=>$regclientdata){ 
                                         ?>
                                             <tr class="rrow">
@@ -98,40 +99,23 @@
                                                         <?php
                                                         }
                                                         ?>
-                                                        <!-- <input type="hidden" name="data[1][branch_id]"
-                                                            value="{{$client->location_id}}" /> -->
-                                                    </select>
-
-                                                </td>
-                                                <td valign="middle" class="p-2">
-                                                    <select class="form-control consigner_prs tagging"
-                                                        id="select_consigner" multiple="multiple"
-                                                        name="data[{{$i}}][consigner_id][]">
-                                                        <option disabled>Select</option>
-                                                        <?php $cnr_ids= array(); 
-                                                        foreach($getprs->PrsRegClients as $akey => $regclient){
-                                                        
-                                                        foreach($regclient->RegConsigner as $key => $regcnr){
-                                                            $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
-                                                            
-                                                            foreach($regclient_ids as $key => $clientcnr){
-                                                                $cnr_id = $clientcnr->consigner_id;
-                                                                // echo "<pre>"; print_r($cnr_id); die;
-                                                            
-                                                            
-                                                        // $cnr_id = $regcnr->consigner_id;
-                                                        
-                                                        foreach($consigners as $key => $cnr){ ?>
-                                                        <option value="{{$key}}" @if($key==$cnr_id)selected="selected"
-                                                            @endif>{{$cnr}}</option>
-                                                        <?php }}}} ?>
                                                     </select>
                                                 </td>
-                                                <td valign="middle" class="p-2" width="24px">
-                                                    <button type="button" class="btn btn-primary rowAddButton"
-                                                        id="addRowButton" onclick="addrow()"><i
-                                                            class="fa fa-plus-circle"></i></button>
+                                                <?php  
+                                                $cnr_ids= array();
+                                                    foreach($regclientdata->RegConsigner as $key => $regcnr){
+                                                        $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
+                                                        
+                                                        foreach($regclient_ids as $key => $clientcnr){
+                                                            $cnr_ids[] = $clientcnr->consigner_id;
+                                                        }
+                                                    $cnrs_name = Helper::getConsignerName($cnr_ids);
+                                                } ?>
+                                                <td style="width: 70%" valign="top" class="p-2">
+                                                    <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}">
+                                                    
                                                 </td>
+                                                
                                             </tr>
                                             <?php $i++; } ?>
                                         </tbody>
