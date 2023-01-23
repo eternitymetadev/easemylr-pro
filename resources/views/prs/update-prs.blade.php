@@ -18,10 +18,10 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}" id="createprs">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}" id="updateprs">
                             <?php $authuser = Auth::user(); ?>
-                            <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
-                                placeholder="" value="<?php echo date('d-m-Y'); ?>" />
+                            <!-- <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
+                                placeholder="" value="<?php// echo date('d-m-Y'); ?>" /> -->
 
                             <input type="hidden" class="form-seteing" name="prs_id" placeholder=""
                                 value="{{$getprs->id}}" />
@@ -84,10 +84,10 @@
                                         ?>
                                             <tr class="rrow">
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control tagging select_prsregclient"
-                                                        onchange="onChangePrsRegClient(this)" id="select_prsregclient"
-                                                        name="data[{{$i}}][regclient_id]">
-                                                        <option selected="selected" disabled>
+                                                    <select class="form-control tagging select_prsregclient disabled"
+                                                        onchange="onChangePrsRegClient(this)"
+                                                        name="data[{{$i}}][regclient_id]" readonly disabled>
+                                                        <option selected="selected">
                                                             Select client..
                                                         </option>
                                                         <?php
@@ -112,7 +112,7 @@
                                                     $cnrs_name = Helper::getConsignerName($cnr_ids);
                                                 } ?>
                                                 <td style="width: 70%" valign="top" class="p-2">
-                                                    <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}">
+                                                    <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}" readonly>
                                                     
                                                 </td>
                                                 

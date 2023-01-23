@@ -1578,6 +1578,45 @@ jQuery(document).ready(function(){
             });
     });
 
+    // update Pickup run sheet
+    jQuery('#updateprs').validate({
+        rules:
+        {
+            regclient_id: {
+                // required: true,
+            },
+            consigner_id: {
+                // required: true,
+            },
+            vehicle_id: {
+                required: true,
+            },
+            driver_id: {
+                required: true,
+            },
+
+        },
+        messages:
+        {
+            regclient_id: {
+                required: "Select regional client",
+            },
+            consigner_id: {
+                required: "Select consigner",
+            },
+            vehicle_id: {
+                required: "",
+            },
+            driver_id: {
+                required: "",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
     /*===== Create prs receive vehicle on hub gate =====*/
     jQuery('#create-receivevehicle').validate({
         rules:

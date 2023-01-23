@@ -409,6 +409,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);

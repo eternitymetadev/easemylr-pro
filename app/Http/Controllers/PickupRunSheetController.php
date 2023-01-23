@@ -932,4 +932,76 @@ class PickupRunSheetController extends Controller
         return view('prs.pickupload-list',['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'branchs'=>$branchs]);
     }
 
+    public function UpdatePrs(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'regclient_id' => 'required',
+            );
+            $validator = Validator::make($request->all(),$rules);
+        
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['validation']  = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+            $authuser = Auth::user();
+            // $pickup_id = DB::table('pickup_run_sheets')->select('pickup_id')->latest('pickup_id')->first();
+            // $pickup_id = json_decode(json_encode($pickup_id), true);
+            // if (empty($pickup_id) || $pickup_id == null) {
+            //     $pickup_id = 2900001;
+            // } else {
+            //     $pickup_id = $pickup_id['pickup_id'] + 1;
+            // }
+            
+            // $prssave['pickup_id'] = $pickup_id;
+            if(!empty($request->vehicletype_id)){
+                $prssave['vehicletype_id'] = $request->vehicletype_id;
+            }
+            if(!empty($request->vehicle_id)){
+                $prssave['vehicle_id'] = $request->vehicle_id;
+            }
+            if(!empty($request->driver_id)){
+                $prssave['driver_id'] = $request->driver_id;
+            }
+
+            // $prssave['prs_date'] = $request->prs_date;
+            $prssave['location_id'] = $request->location_id;
+            $prssave['hub_location_id'] = $request->hub_location_id;
+            $prssave['user_id'] = $authuser->id;
+            $prssave['branch_id'] = $authuser->branch_id;
+            $prssave['status'] = "1";
+            
+            $saveprs = PickupRunSheet::where('id',$request->prs_id)->update($prssave);
+            if($saveprs)
+            {
+                $url    =   URL::to($this->prefix.'/prs');
+                $response['success'] = true;
+                $response['success_message'] = "PRS Updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'prs-update';
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not updated PRS please try again";
+                $response['error'] = true;
+            }
+            
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
 }
