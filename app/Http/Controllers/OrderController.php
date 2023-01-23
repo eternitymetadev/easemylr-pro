@@ -1672,19 +1672,18 @@ class OrderController extends Controller
                 $response['error'] = true;
                 return response()->json($response);
             }
-
-
            
             $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
-            $get_zonebranch = $getpin_transfer->hub_transfer;
+            
 
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;
             $location_name = $get_location->name;
 
-            if(!empty($get_zonebranch)){
-            $get_branch = Location::where('name', $get_zonebranch)->first();
+            if(!empty($getpin_transfer->hub_transfer)){ 
+            $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
             $get_branch_id = $get_branch->id;
+            $get_zonebranch = $getpin_transfer->hub_transfer;
             }else{
             $get_branch_id = $authuser->branch_id;
             $get_zonebranch = $location_name;

@@ -877,7 +877,10 @@ class PickupRunSheetController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->whereIn('branch_id', $cc);
+                // $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                    $query->whereIn('fall_in', $cc)->where('status', 5);
+                });
             }
 
             $query = $query->where(['status'=> 5,'prsitem_status'=>0])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
@@ -915,10 +918,13 @@ class PickupRunSheetController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            $query = $query->whereIn('branch_id', $cc);
+            // $query = $query->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc)->where('status', 5);
+            });
         }
 
-        $query = $query->where(['status'=> 5,'prsitem_status'=>0])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+        $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
