@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\RegionalClient;
 use App\Models\Hrs;
 use App\Models\HrsPaymentRequest;
+use App\Models\HrsPaymentHistory;
 use DB;
 use Auth;
 use App\Models\ConsignmentNote;
@@ -1014,7 +1015,7 @@ class HubtoHubController extends Controller
                 if ($request->p_type == 'Advance') {
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
     
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 0, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'tds_deduct_balance' => $deduct_balance,'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
                 } else {
                     $getadvanced = HrsPaymentRequest::select('advanced','balance')->where('transaction_id', $transaction_id_new)->first();
                     if (!empty($getadvanced->balance)) {
@@ -1025,7 +1026,7 @@ class HubtoHubController extends Controller
                     $advance = $request->pay_amt;
                     // dd($advance);
     
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 0, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance,'current_paid_amt' => $request->final_payable_amount, 'tds_deduct_balance' => $deduct_balance,'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
                 }
     
             }
@@ -1043,15 +1044,18 @@ class HubtoHubController extends Controller
             foreach ($simplyfy as $value) {
                 
                 $i++;
-                $drs_no = $value['hrs_no'];
+                $hrs_no = $value['hrs_no'];
                 $vendor_id = $request->vendor_name;
                 $vehicle_no = $value['vehicle_detail']['regn_no'];
                 $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+           
+
     
                 if ($request->p_type == 'Advance') {
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
-    
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                    
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount,'tds_deduct_balance' => $deduct_balance,'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0,  'is_approve' => 1,'status' => '1']);
+                    
                 } else {
                     $getadvanced = HrsPaymentRequest::select('advanced','balance')->where('transaction_id', $transaction_id_new)->first();
                     if (!empty($getadvanced->balance)) {
@@ -1061,18 +1065,21 @@ class HubtoHubController extends Controller
                     }
                     $advance = $request->pay_amt;
                     // dd($advance);
+                   
     
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance,'current_paid_amt' => $request->final_payable_amount, 'tds_deduct_balance' => $deduct_balance,'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
                 }
     
             }
+            
             $unique = array_unique($sent_vehicle);
+           
             $sent_venicle_no = implode(',', $unique);
 
 
-            Hrs::whereIn('hrs_no', $drsno)->update(['request_status' => '1']);
+            Hrs::whereIn('hrs_no', $hrsno)->update(['request_status' => '1']);
 
-            $checkduplicateRequest = PaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+            $checkduplicateRequest = HrsPaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
             if(empty($checkduplicateRequest)){
             // ============== Sent to finfect
             $pfu = 'ETF';
@@ -1130,15 +1137,15 @@ class HubtoHubController extends Controller
                     }
                     $advance = $request->pay_amt;
     
-                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+                    Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
     
-                    PaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+                    HrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
     
                     $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
     
                     $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                     $paymentresponse['transaction_id'] = $transaction_id_new;
-                    $paymentresponse['drs_no'] = $request->drs_no;
+                    $paymentresponse['drs_no'] = $request->hrs_no;
                     $paymentresponse['bank_details'] = json_encode($bankdetails);
                     $paymentresponse['purchase_amount'] = $request->claimed_amount;
                     $paymentresponse['payment_type'] = $request->p_type;
@@ -1148,7 +1155,7 @@ class HubtoHubController extends Controller
                     $paymentresponse['current_paid_amt'] = $request->pay_amt;
                     $paymentresponse['payment_status'] = 2;
     
-                    $paymentresponse = PaymentHistory::create($paymentresponse);
+                    $paymentresponse = HrsPaymentHistory::create($paymentresponse);
     
                 } else {
     
@@ -1158,7 +1165,7 @@ class HubtoHubController extends Controller
     
                     $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                     $paymentresponse['transaction_id'] = $transaction_id_new;
-                    $paymentresponse['drs_no'] = $request->drs_no;
+                    $paymentresponse['drs_no'] = $request->hrs_no;
                     $paymentresponse['bank_details'] = json_encode($bankdetails);
                     $paymentresponse['purchase_amount'] = $request->claimed_amount;
                     $paymentresponse['payment_type'] = $request->p_type;
@@ -1168,10 +1175,10 @@ class HubtoHubController extends Controller
                     $paymentresponse['current_paid_amt'] = $request->pay_amt;
                     $paymentresponse['payment_status'] = 2;
     
-                    $paymentresponse = PaymentHistory::create($paymentresponse);
-                    PaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+                    $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+                    HrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
     
-                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+                    Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
                 }
     
                 $new_response['success'] = true;
@@ -1299,7 +1306,7 @@ class HubtoHubController extends Controller
 
         $query = $query->with('Branch','User')
             ->whereIn('status', ['1', '0', '3'])
-            ->groupBy('hrs_no');
+            ->groupBy('transaction_id');
 
         if ($authuser->role_id == 1) {
             $query = $query;
@@ -1323,6 +1330,27 @@ class HubtoHubController extends Controller
         $vendors = Vendor::with('Branch')->get();
 
         return view('hub-transportation.hrs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrsRequests' => $hrsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes,'branchs' => $branchs, 'vendors' => $vendors]);
+
+    }
+
+    public function getVendorReqDetailsHrs(Request $request)
+    {
+        $req_data = HrsPaymentRequest::with('VendorDetails')->where('transaction_id', $request->transaction_id)
+            ->groupBy('transaction_id')->get();
+
+        $gethrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $request->transaction_id)
+            ->get();
+        $simply = json_decode(json_encode($gethrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['hrs_no'];
+        }
+        $hrs_no = implode(',', $store);
+    
+        $response['req_data'] = $req_data;
+        $response['hrs_no'] = $hrs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Approver successfully";
+        return response()->json($response);
 
     }
 }

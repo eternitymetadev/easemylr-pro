@@ -1,19 +1,25 @@
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
         <thead>
-        <tr>
-            <th>Requesting Branch</th>
-            <th>BM Name</th>
-            <th>Purchase Amount</th>
-            <th>Transaction ID</th>
-            <th>Vehicle Type</th>
-            <th>Payment Type.</th>
-            <th>Qty</th>
-            <th>Driver Name</th>
-        </tr>
+            <tr>
+                <th>Requesting Branch</th>
+                <th>BM Name</th>
+                <th>Purchase Amount</th>
+                <th>Transaction ID</th>
+                <th>Vehicle Type</th>
+                <th>Payment Type.</th>
+                <th>Advanced</th>
+                <th>Balance</th>
+                <th>Create Payment</th>
+                <th>Status</th>
+            </tr>
         </thead>
         <tbody>
             @foreach($hrsRequests as $hrsRequest)
+            <?php 
+            $authuser = Auth::user();
+            
+            ?>
             <tr>
                 <td>{{$hrsRequest->Branch->name}}</td>
                 <td>{{$hrsRequest->User->name}}</td>
@@ -21,7 +27,52 @@
                 <td>{{$hrsRequest->transaction_id}}</td>
                 <td></td>
                 <td>{{$hrsRequest->payment_type}}</td>
-            </tr>   
+                <td>{{$hrsRequest->advanced}}</td>
+                <td>{{$hrsRequest->balance}}</td>
+                <!--------- Payment Request Status --------->
+                <?php if($hrsRequest->payment_status == 0){?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unpaid </button></td>
+                <?php } else if($hrsRequest->payment_status == 1) { ?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Paid </button></td>
+                <?php } else if($hrsRequest->payment_status == 2 ){
+                    if($hrsRequest->is_approve == 0){
+                        if($authuser->role_id == 3){?>
+                <!-- approver check -->
+                <td><button class="btn btn-warning approve" value="{{$hrsRequest->transaction_id}}"> Approve </button></td>
+                <?php } else { ?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> waiting for approver
+                    </button></td>
+                <?php } ?>
+                <?php } else {?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Sent </button></td>
+                <!-- approver check end -->
+                <?php } ?>
+                <?php } else if($hrsRequest->payment_status == 3) {?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Partial Paid </button></td>
+                <?php } else{ ?>
+                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unknown </button></td>
+                <?php } ?>
+                <!-- ------- End --------- -->
+                <!------ Payment Status ------->
+                <?php if($hrsRequest->payment_status == 0){ ?>
+                <td> <label class="badge badge-dark">Faild</label>
+                </td>
+                <?php } elseif($hrsRequest->payment_status == 1) { ?>
+                <td> <label class="badge badge-success">Paid</label> </td>
+                <?php } elseif($hrsRequest->payment_status == 2) { 
+                    if($hrsRequest->is_approve == 0){?>
+                <td> <label class="badge badge-dark">Approve Pending</label> </td>
+                <?php } else {?>
+                <td> <label class="badge badge-dark">Sent to Account</label> </td>
+                <?php } ?>
+                <?php } elseif($hrsRequest->payment_status == 3) { ?>
+                <td><label class="badge badge-primary">Partial Paid</label></td>
+                <?php } else{?>
+                <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
+                </td>
+                <?php } ?>
+
+            </tr>
             @endforeach
         </tbody>
     </table>

@@ -95,5 +95,41 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script>
+    $(document).on('click', '.approve', function() {
+    var transaction_id = $(this).val();
+    $('#approver_model').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "get-vender-req-details-hrs",
+        data: {
+            transaction_id: transaction_id
+        },
+        beforeSend: function() {
+
+        },
+        success: function(data) {
+             console.log(data);
+
+            var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
+
+                $('#hrs_num').val(data.hrs_no);
+                $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
+                $('#transaction_id_2').val(data.req_data[0].transaction_id);
+                $('#v_name').val(data.req_data[0].vendor_details.name);
+                $('#email').val(data.req_data[0].vendor_details.email);
+                $('#beneficiary_name').val(bank_details.acc_holder_name);
+                $('#bank_acc').val(bank_details.account_no);
+                $('#ifsc_code').val(bank_details.ifsc_code);
+                $('#bank_name').val(bank_details.bank_name);
+                $('#branch_name').val(bank_details.branch_name);
+                $('#total_clam_amt').val(data.req_data[0].total_amount);
+                $('#pan').val(data.req_data[0].vendor_details.pan);
+                $('#tds_deduct_balance').val(data.req_data[0].tds_deduct_balance);
+                $('#final_payable_amount').val(data.req_data[0].current_paid_amt);
+                $('#pymt_type').val(data.req_data[0].payment_type);
+
+        }
+    });
+});
 </script>
 @endsection
