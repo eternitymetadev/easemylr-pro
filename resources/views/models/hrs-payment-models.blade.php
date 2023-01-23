@@ -15,7 +15,7 @@
                 </button>
             </div>
             <div class="modal-body px-4">
-                <form id="create_request_form">
+                <form id="hrs_request_form">
                     <input type="hidden" id="hrs_no_1" name="hrs_no" value=""/>
                     <input type="hidden" id="vendor_no_1" name="vendor_no" value=""/>
                     <input type="hidden" id="transaction_id_1" name="transaction_id" value=""/>

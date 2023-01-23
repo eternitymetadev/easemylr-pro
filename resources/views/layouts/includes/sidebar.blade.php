@@ -508,9 +508,11 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="hrsPayments" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="#"> Create Payment </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-payment-list'}}"> Create Payment </a>
             </li>
-
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-request-list'}}"> Request List </a>
+            </li>
         </ul>
     </li>
     <li class="menu">
