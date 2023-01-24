@@ -8,8 +8,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update
-                                PRS</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);"> Update PRS</a></li>
                     </ol>
                 </nav>
             </div>
@@ -21,9 +20,6 @@
                         <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}"
                             id="updateprs">
                             <?php $authuser = Auth::user(); ?>
-                            <!-- <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
-                                placeholder="" value="<?php// echo date('d-m-Y'); ?>" /> -->
-
                             <input type="hidden" class="form-seteing" name="prs_id" placeholder=""
                                 value="{{$getprs->id}}" />
                             <div class="d-flex align-items-center justify-content-center flex-wrap mb-4">
@@ -63,7 +59,6 @@
                                     ?>
                                     </select>
                                 </div>
-
                             </div>
 
                             <div class="iterationRows">
@@ -140,7 +135,6 @@
                                             {{ucwords($vehicletype->name)}}</option>
                                         @endforeach
                                     </select>
-
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
@@ -160,7 +154,8 @@
                                         tabindex="-1">
                                         <option value="">Select driver</option>
                                         @foreach($drivers as $driver)
-                                        <option value="{{$driver->id}}">
+                                        <option value="{{$driver->id}}"
+                                            {{$getprs->driver_id == $driver->id ? 'selected' : ''}}>
                                             {{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ?? '-'}}
                                         </option>
                                         @endforeach
@@ -189,46 +184,5 @@ var ss = $(".basic").select2({
     tags: true,
 });
 
-
-function addrow() {
-    var i = $('.rrow').length;
-    console.log(i);
-    i = i + 1;
-    var rows = '';
-
-    rows += '<tr class="rrow">';
-    rows += '<td valign="middle" class="p-2">';
-    rows +=
-        '<select class="form-control tagging select_prsregclient" id="" onchange="onChangePrsRegClient(this)" name="data[' +
-        i + '][regclient_id]">';
-    rows += '<option selected="selected" disabled>Select client..</option>';
-    <?php
-        foreach ($regclients as $key => $client) {
-        ?>
-    rows += '<option value="{{ $client->id }}">{{ucwords($client->name)}}</option>';
-    <?php
-        }
-        ?>
-    rows += '<input type="hidden" name="data[' + i + '][branch_id]" value="{{$client->location_id}}" />';
-    rows += '</select></td>';
-    rows += '<td valign="middle" class="p-2">';
-    rows += '<select class="form-control consigner_prs tagging" multiple="multiple" name="data[' + i +
-        '][consigner_id][]">';
-    rows += '<option disabled>Select</option></select></td>';
-    rows += '<td valign="middle" class="p-2" width="24px">';
-    rows +=
-        '<button type="button" class="btn btn-primary rowAddButton" id="addRowButton" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>';
-    rows += '<button type="button" class="btn btn-danger rowClearButton"><i class="fa fa-minus-circle"></i></button>';
-    rows += '</td></tr>';
-    // 
-
-
-    $('#participantTable tbody').append(rows);
-    $('.tagging').select2();
-}
-
-$(document).on('click', '.rowClearButton', function() {
-    $(this).closest('tr').remove();
-});
 </script>
 @endsection
