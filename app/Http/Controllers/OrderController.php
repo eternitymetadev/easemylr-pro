@@ -214,32 +214,11 @@ class OrderController extends Controller
             } else {
                 $status = '1';
             }
-
-            $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
-            if (!empty($getconsignment->consignment_no)) {
-                $con_series = $getconsignment->consignment_no;
-            } else {
-                $con_series = '';
-            }
-            // $con_series = $getconsignment->consignment_no;
-            $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
-            if ($cn) {
-                if (!empty($cn->consignment_no)) {
-                    $cc = explode('-', $cn->consignment_no);
-                    $getconsignmentno = @$cc[1] + 1;
-                    $consignmentno = $cc[0] . '-' . $getconsignmentno;
-                } else {
-                    $consignmentno = $con_series . '-1';
-                }
-            } else {
-                $consignmentno = $con_series . '-1';
-            }
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
             $consignmentsave['is_salereturn'] = $request->is_salereturn;
-            $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['description'] = $request->description;
@@ -257,7 +236,6 @@ class OrderController extends Controller
             $consignmentsave['driver_id'] = $request->driver_id;
 
             $consignmentsave['branch_id'] = $request->branch_id;
-          
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = 5;
             if (!empty($request->vehicle_id)) {
@@ -265,9 +243,6 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
-            // $consignment_id = $saveconsignment->id;
-
             // if ($saveconsignment) {
             // insert consignment items
             if($request->invoice_check == 1 || $request->invoice_check == 2){
@@ -275,9 +250,6 @@ class OrderController extends Controller
             if (!empty($request->data)) {
                 $get_data = $request->data;
                 foreach ($get_data as $key => $save_data) {
-
-                    
-
                     $save_data['consignment_id'] = $saveconsignment->id;
                     $save_data['status'] = 1;
                     $saveconsignmentitems = ConsignmentItem::create($save_data);
@@ -312,7 +284,6 @@ class OrderController extends Controller
                         }
                     }
                 }
-
             }
         }else{
 
@@ -1701,19 +1672,18 @@ class OrderController extends Controller
                 $response['error'] = true;
                 return response()->json($response);
             }
-
-
            
             $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
-            $get_zonebranch = $getpin_transfer->hub_transfer;
+            
 
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;
             $location_name = $get_location->name;
 
-            if(!empty($get_zonebranch)){
-            $get_branch = Location::where('name', $get_zonebranch)->first();
+            if(!empty($getpin_transfer->hub_transfer)){ 
+            $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
             $get_branch_id = $get_branch->id;
+            $get_zonebranch = $getpin_transfer->hub_transfer;
             }else{
             $get_branch_id = $authuser->branch_id;
             $get_zonebranch = $location_name;

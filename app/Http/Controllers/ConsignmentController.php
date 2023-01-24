@@ -289,32 +289,12 @@ class ConsignmentController extends Controller
             } else {
                 $status = '1';
             }
-
-            $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
-            if (!empty($getconsignment->consignment_no)) {
-                $con_series = $getconsignment->consignment_no;
-            } else {
-                $con_series = '';
-            }
-            // $con_series = $getconsignment->consignment_no;
-            $cn = ConsignmentNote::select('id', 'consignment_no', 'branch_id')->whereIn('branch_id', $cc)->latest('id')->first();
-            if ($cn) {
-                if (!empty($cn->consignment_no)) {
-                    $cc = explode('-', $cn->consignment_no);
-                    $getconsignmentno = @$cc[1] + 1;
-                    $consignmentno = $cc[0] . '-' . $getconsignmentno;
-                } else {
-                    $consignmentno = $con_series . '-1';
-                }
-            } else {
-                $consignmentno = $con_series . '-1';
-            }
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
             $consignmentsave['is_salereturn'] = $request->is_salereturn;
-            $consignmentsave['consignment_no'] = $consignmentno;
+            // $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['description'] = $request->description;

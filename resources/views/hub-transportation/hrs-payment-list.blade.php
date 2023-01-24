@@ -376,5 +376,43 @@ $('#p_type_1').change(function() {
      }
 
 });
+////
+////////////////// create Hrs Payment Request ////////////
+$("#hrs_request_form").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var vendor = $("#vendor_id_1").val();
+    if (!vendor) {
+        swal("Error!", "Please select a vendor", "error");
+        return false;
+    }
+    var base_url = window.location.origin;
+    $.ajax({
+        url: "hrs-payment-request",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+            $('.disableme').prop('disabled', true);
+        },
+        success: (data) => {
+            $('.disableme').prop('disabled', true);
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal("success", data.message, "success");
+                window.location.href = data.redirect_url;
+            } else {
+                swal("error", data.message, "error");
+            }
+        },
+    });
+});
 </script>
 @endsection

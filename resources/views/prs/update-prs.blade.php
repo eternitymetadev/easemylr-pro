@@ -18,11 +18,13 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}" id="createprs">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}" id="updateprs">
                             <?php $authuser = Auth::user(); ?>
-                            <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
-                                placeholder="" value="<?php echo date('d-m-Y'); ?>" />
+                            <!-- <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
+                                placeholder="" value="<?php// echo date('d-m-Y'); ?>" /> -->
 
+                            <input type="hidden" class="form-seteing" name="prs_id" placeholder=""
+                                value="{{$getprs->id}}" />
                             <div class="d-flex align-items-center justify-content-center flex-wrap mb-4">
 
                                 <div class="col-md-6">
@@ -77,47 +79,43 @@
                                         <tbody>
                                             <?php
                                         $i=0;
+                                        
                                         foreach($getprs->PrsRegClients as $key=>$regclientdata){ 
                                         ?>
                                             <tr class="rrow">
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control tagging select_prsregclient"
-                                                        onchange="onChangePrsRegClient(this)" id="select_prsregclient"
-                                                        name="data[{{$i}}][regclient_id]">
-                                                        <option selected="selected" disabled>
+                                                    <select class="form-control tagging select_prsregclient disabled"
+                                                        onchange="onChangePrsRegClient(this)"
+                                                        name="data[{{$i}}][regclient_id]" readonly disabled>
+                                                        <option selected="selected">
                                                             Select client..
                                                         </option>
                                                         <?php
                                                         foreach ($regclients as $key => $client) {
                                                         ?>
-                                                        <option value="{{ $client->id }}" {{$regclientdata->regclient_id == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
-                                                        <?php
-                                                        }
-                                                        ?>
-                                                        <!-- <input type="hidden" name="data[1][branch_id]"
-                                                            value="{{$client->location_id}}" /> -->
-                                                    </select>
-
-                                                </td>
-                                                <td valign="middle" class="p-2">
-                                                    <select class="form-control consigner_prs tagging"
-                                                        id="select_consigner" multiple="multiple"
-                                                        name="data[{{i}}][consigner_id][]">
-                                                        <option disabled>Select</option>
-                                                        <?php
-                                                        foreach ($consigners as $key => $cnr) {
-                                                        ?>
-                                                        <option value="{{ $cnr->id }}" {{$regclientdata->RegConsigner->prs_regclientid == $client->id ? 'selected' : ''}}>{{ucwords($client->name)}}</option>
+                                                        <option value="{{ $client->id }}"
+                                                            {{$regclientdata->regclient_id == $client->id ? 'selected' : ''}}>
+                                                            {{ucwords($client->name)}}</option>
                                                         <?php
                                                         }
                                                         ?>
                                                     </select>
                                                 </td>
-                                                <td valign="middle" class="p-2" width="24px">
-                                                    <button type="button" class="btn btn-primary rowAddButton"
-                                                        id="addRowButton" onclick="addrow()"><i
-                                                            class="fa fa-plus-circle"></i></button>
+                                                <?php  
+                                                $cnr_ids= array();
+                                                    foreach($regclientdata->RegConsigner as $key => $regcnr){
+                                                        $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
+                                                        
+                                                        foreach($regclient_ids as $key => $clientcnr){
+                                                            $cnr_ids[] = $clientcnr->consigner_id;
+                                                        }
+                                                    $cnrs_name = Helper::getConsignerName($cnr_ids);
+                                                } ?>
+                                                <td style="width: 70%" valign="top" class="p-2">
+                                                    <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}" readonly>
+                                                    
                                                 </td>
+                                                
                                             </tr>
                                             <?php $i++; } ?>
                                         </tbody>
@@ -132,8 +130,9 @@
                                         name="vehicletype_id" tabindex="-1">
                                         <option value="">Select vehicle type</option>
                                         @foreach($vehicletypes as $vehicletype)
-                                        <option value="{{$vehicletype->id}}">{{$vehicletype->name}}
-                                        </option>
+                                        <option value="{{ $vehicletype->id }}"
+                                            {{$getprs->vehicletype_id == $vehicletype->id ? 'selected' : ''}}>
+                                            {{ucwords($vehicletype->name)}}</option>
                                         @endforeach
                                     </select>
 
@@ -144,8 +143,9 @@
                                         tabindex="-1">
                                         <option value="">Select vehicle</option>
                                         @foreach($vehicles as $vehicle)
-                                        <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
-                                        </option>
+                                        <option value="{{ $vehicle->id }}"
+                                            {{$getprs->vehicle_id == $vehicle->id ? 'selected' : ''}}>
+                                            {{ucwords($vehicle->regn_no)}}</option>
                                         @endforeach
                                     </select>
                                 </div>

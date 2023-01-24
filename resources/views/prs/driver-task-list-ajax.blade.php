@@ -4,6 +4,9 @@
             <tr>
                 <th>Task ID</th>
                 <th>Pickup ID</th>
+                <th>Driver Name</th>
+                <th>Driver Phone</th>
+                <th>Vehicle No</th>
                 <th>Date</th>
                 <th>Consigner </th>
                 <th>City</th>
@@ -20,6 +23,9 @@
             <tr>
                 <td>{{ $value->task_id ?? "-" }}</td>
                 <td>{{ $value->PickupId->pickup_id ?? "-" }}</td>
+                <td>{{ $value->PickupId->DriverDetail->name ?? "-" }}</td>
+                <td>{{ $value->PickupId->DriverDetail->phone ?? "-" }}</td>
+                <td>{{ $value->PickupId->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYear($value->prs_date) ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $value->ConsignerDetail->city ?? "-" }}</td>
