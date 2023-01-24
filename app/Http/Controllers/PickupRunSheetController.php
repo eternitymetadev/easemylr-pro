@@ -824,6 +824,39 @@ class PickupRunSheetController extends Controller
             return response()->json($response);
             }
 
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+
+            if ($authuser->role_id == 1) {
+                $branchs = Location::select('id', 'name')->get();
+            } elseif ($authuser->role_id == 2) {
+                $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+            } elseif ($authuser->role_id == 5) {
+                $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+            } else {
+                $branchs = Location::select('id', 'name')->get();
+            }
+            
+            $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+
+            if ($authuser->role_id == 1) {
+                $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } elseif ($authuser->role_id == 6) {
+                $query = $query->whereIn('base_clients.id', $baseclient);
+            } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                // $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                    $query->whereIn('fall_in', $cc);
+                });
+            }
+
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
@@ -852,39 +885,6 @@ class PickupRunSheetController extends Controller
                 // });
             }
 
-            $authuser = Auth::user();
-            $role_id = Role::where('id', '=', $authuser->role_id)->first();
-            $baseclient = explode(',', $authuser->baseclient_id);
-            $regclient = explode(',', $authuser->regionalclient_id);
-            $cc = explode(',', $authuser->branch_id);
-
-            if ($authuser->role_id == 1) {
-                $branchs = Location::select('id', 'name')->get();
-            } elseif ($authuser->role_id == 2) {
-                $branchs = Location::select('id', 'name')->where('id', $cc)->get();
-            } elseif ($authuser->role_id == 5) {
-                $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-            } else {
-                $branchs = Location::select('id', 'name')->get();
-            }
-
-            if ($authuser->role_id == 1) {
-                $query;
-            } elseif ($authuser->role_id == 4) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 6) {
-                $query = $query->whereIn('base_clients.id', $baseclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } else {
-                // $query = $query->whereIn('branch_id', $cc);
-                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                    $query->whereIn('fall_in', $cc)->where('status', 5);
-                });
-            }
-
-            $query = $query->where(['status'=> 5,'prsitem_status'=>0])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
-
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
 
@@ -908,6 +908,8 @@ class PickupRunSheetController extends Controller
         } else {
             $branchs = Location::select('id', 'name')->get();
         }
+
+        $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
         
         if ($authuser->role_id == 1) {
             $query;
@@ -920,15 +922,15 @@ class PickupRunSheetController extends Controller
         } else {
             // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                $query->whereIn('fall_in', $cc)->where('status', 5);
+                $query->whereIn('fall_in', $cc);
             });
         }
 
-        $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+        
 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-
+        
         return view('prs.pickupload-list',['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'branchs'=>$branchs]);
     }
 
