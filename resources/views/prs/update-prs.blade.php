@@ -79,7 +79,7 @@
                                         <tbody>
                                             <?php
                                         $i=0;
-                                        
+                                        if(count($getprs->PrsRegClients)>0) {
                                         foreach($getprs->PrsRegClients as $key=>$regclientdata){ 
                                         ?>
                                             <tr class="rrow">
@@ -91,33 +91,39 @@
                                                             Select client..
                                                         </option>
                                                         <?php
+                                                        if(count($regclients)>0) {
                                                         foreach ($regclients as $key => $client) {
                                                         ?>
                                                         <option value="{{ $client->id }}"
                                                             {{$regclientdata->regclient_id == $client->id ? 'selected' : ''}}>
                                                             {{ucwords($client->name)}}</option>
                                                         <?php
-                                                        }
+                                                        }}
                                                         ?>
                                                     </select>
                                                 </td>
                                                 <?php  
                                                 $cnr_ids= array();
+                                                if(count($regclientdata->RegConsigner)>0) {
                                                     foreach($regclientdata->RegConsigner as $key => $regcnr){
                                                         $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
-                                                        
+
+                                                        if(count($regclient_ids)>0) {
                                                         foreach($regclient_ids as $key => $clientcnr){
                                                             $cnr_ids[] = $clientcnr->consigner_id;
                                                         }
+                                                    }else{
+                                                        $cnr_ids[] ='';
+                                                    }
                                                     $cnrs_name = Helper::getConsignerName($cnr_ids);
-                                                } ?>
+                                                }} ?>
                                                 <td style="width: 70%" valign="top" class="p-2">
                                                     <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}" readonly>
                                                     
                                                 </td>
                                                 
                                             </tr>
-                                            <?php $i++; } ?>
+                                            <?php $i++; }} ?>
                                         </tbody>
                                     </table>
                                 </div>
