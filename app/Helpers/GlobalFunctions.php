@@ -417,7 +417,7 @@ class GlobalFunctions {
         return $total_weight;
     }
 
-    public function getConsignerName($cnr_id){
+    public static function getConsignerName($cnr_id){
         $get_cnr = Consigner::select('id','nick_name')->whereIn('id',$cnr_id)->get();
         $cnr_name = array();
         foreach($get_cnr as $key => $cnr){
