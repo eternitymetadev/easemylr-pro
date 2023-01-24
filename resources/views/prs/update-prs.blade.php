@@ -18,7 +18,8 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}" id="updateprs">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}"
+                            id="updateprs">
                             <?php $authuser = Auth::user(); ?>
                             <!-- <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
                                 placeholder="" value="<?php// echo date('d-m-Y'); ?>" /> -->
@@ -109,19 +110,17 @@
                                                         $regclient_ids = DB::table('prs_reg_consigners')->where('prs_regclientid',$regcnr->prs_regclientid)->select('prs_regclientid','id','consigner_id')->get();
 
                                                         if(count($regclient_ids)>0) {
-                                                        foreach($regclient_ids as $key => $clientcnr){
-                                                            $cnr_ids[] = $clientcnr->consigner_id;
+                                                            foreach($regclient_ids as $key => $clientcnr){
+                                                                $cnr_ids[] = $clientcnr->consigner_id;
+                                                            }
+                                                        }else{
+                                                            $cnr_ids[] ='';
                                                         }
-                                                    }else{
-                                                        $cnr_ids[] ='';
-                                                    }
                                                     $cnrs_name = Helper::getConsignerName($cnr_ids);
                                                 }} ?>
                                                 <td style="width: 70%" valign="top" class="p-2">
-                                                    <input class="form-control"  name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}" readonly>
-                                                    
+                                                    <input class="form-control" name="data[{{$i}}][consigner_id][]" value="{{$cnrs_name}}" readonly>
                                                 </td>
-                                                
                                             </tr>
                                             <?php $i++; }} ?>
                                         </tbody>
