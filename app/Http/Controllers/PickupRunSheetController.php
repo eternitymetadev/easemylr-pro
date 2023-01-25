@@ -926,8 +926,6 @@ class PickupRunSheetController extends Controller
             });
         }
 
-        
-
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
         
