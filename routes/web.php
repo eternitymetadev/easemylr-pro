@@ -704,6 +704,17 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
+    Route::resource('clients', ClientController::class);
+    Route::get('clients-list', [ClientController::class, 'clientList']);
+    Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
+    Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
+    Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+    Route::get('/reginal-clients/add-regclient-detail/{id}', [ClientController::class, 'createRegclientdetail']);
+    Route::post('/regclient-detail/update-detail', [ClientController::class, 'updateRegclientdetail']);
+    Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
+    Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
+
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
 {

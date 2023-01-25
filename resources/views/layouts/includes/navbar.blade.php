@@ -240,7 +240,7 @@
                     </ul>
                 </li> -->
                 <li class="menu single-menu menu-extras">
-                <?php if($authuser->role_id==1){ ?>
+                <?php if($authuser->role_id==1 || $authuser->role_id==5){ ?>
                     <a href="#more" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -260,6 +260,7 @@
                     <?php } ?>
                     <ul class="collapse submenu list-unstyled animated fadeInUp" id="more" data-parent="#topAccordion">
                     <?php 
+                    if($authuser->role_id!=5){
                     if(!empty($permissions)){
                         if(in_array('1', $permissions))
                         {
@@ -276,9 +277,12 @@
                         <li>
                             <a href="{{url($prefix.'/settings/branch-address')}}"> Branch Address </a>
                         </li>
+                        <?php }
+                        if($authuser->role_id==1 || $authuser->role_id==5){ ?>
                         <li>
                             <a href="{{$prefixurl.'clients'}}"> Clients</a>
                         </li>
+                        <?php } ?>
                         <!-- <li>
                             <a href="{{url('roles')}}"> Roles</a>
                         </li> -->
