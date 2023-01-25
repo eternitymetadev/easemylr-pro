@@ -161,6 +161,7 @@ class PickupRunSheetController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         try {
             DB::beginTransaction();
             
@@ -308,7 +309,18 @@ class PickupRunSheetController extends Controller
                 $query->where(function ($query)use($search,$searchT) {
                     $query->where('task_id', 'like', '%' . $search . '%')
                     ->orWhereHas('PickupId', function ($regclientquery) use ($search) {
-                        $regclientquery->where('pickup_id', 'like', '%' . $search . '%');
+                        $regclientquery->where('pickup_id', 'like', '%' . $search . '%')
+                        ->orWhereHas('DriverDetail', function ($query) use ($search) {
+                            $query->where(function ($driverquery) use ($search) {
+                                $driverquery->where('name', 'like', '%' . $search . '%')
+                                ->orWhere('phone', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('VehicleDetail', function ($query) use ($search) {
+                            $query->where(function ($vehiclequery) use ($search) {
+                                $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
+                            });
+                        });
                     })
                     ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
                             $query->where(function ($cnrquery)use($search,$searchT) {
@@ -641,7 +653,7 @@ class PickupRunSheetController extends Controller
         $cc = explode(',',$authuser->branch_id);
 
         $regclients = RegionalClient::where('status',1)->orderby('name','ASC')->get();
-            $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
         // }
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -649,16 +661,10 @@ class PickupRunSheetController extends Controller
 
         $locations = Location::select('id','name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id','name')->get();
-        $getprs = PickupRunSheet::where('id',$id)->with('PrsRegClients')->first();
-        // dd($getprs);
+        $getprs = PickupRunSheet::where('id',$id)->with('PrsRegClients','PrsRegClients.RegConsigner')->first();
+        // echo "<pre>"; print_r($consigners); die;
 
         return view('prs.update-prs',['prefix'=>$this->prefix, 'getprs'=>$getprs, 'regclients'=>$regclients,'locations'=>$locations, 'hub_locations'=>$hub_locations, 'consigners'=>$consigners, 'vehicletypes'=>$vehicletypes, 'vehicles'=>$vehicles, 'drivers'=>$drivers]);
-
-
-
-        $getprs = PickupRunSheet::where('id',$id)->with('')->first();
-
-        return view('prs.update-prs')->with(['prefix'=>$this->prefix,'title'=>$this->title,'getprs'=>$getprs,'segment'=>$this->segment]);
     }
 
     /**
@@ -791,6 +797,211 @@ class PickupRunSheetController extends Controller
         $prsdata = $prsdata->appends($request->query());
         
         return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
+    }
+
+    public function pickupLoads(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = ConsignmentNote::query();
+        
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+            if (isset($request->updatestatus)) {
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
+
+            $url = $this->prefix . '/orders';
+            $response['success'] = true;
+            $response['success_message'] = "Order updated successfully";
+            $response['error'] = false;
+            $response['page'] = 'order-statusupdate';
+            $response['redirect_url'] = $url;
+
+            return response()->json($response);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+
+            if ($authuser->role_id == 1) {
+                $branchs = Location::select('id', 'name')->get();
+            } elseif ($authuser->role_id == 2) {
+                $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+            } elseif ($authuser->role_id == 5) {
+                $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+            } else {
+                $branchs = Location::select('id', 'name')->get();
+            }
+            
+            $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+
+            if ($authuser->role_id == 1) {
+                $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } elseif ($authuser->role_id == 6) {
+                $query = $query->whereIn('base_clients.id', $baseclient);
+            } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                // $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                    $query->whereIn('fall_in', $cc);
+                });
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        });
+                });
+                // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
+                //     $query->where(function ($invcquery)use($search,$searchT) {
+                //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
+                //     });
+                // });
+
+                // });
+            }
+
+            $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $consignments = $consignments->appends($request->query());
+
+            $html = view('prs.pickupload-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'branchs'=>$branchs])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        if ($authuser->role_id == 1) {
+            $branchs = Location::select('id', 'name')->get();
+        } elseif ($authuser->role_id == 2) {
+            $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+        } elseif ($authuser->role_id == 5) {
+            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        } else {
+            $branchs = Location::select('id', 'name')->get();
+        }
+
+        $query = $query->where(['status'=> 5,'prsitem_status'=>0,'lr_type'=>1])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail','PrsDetail');
+        
+        if ($authuser->role_id == 1) {
+            $query;
+        } elseif ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } elseif ($authuser->role_id == 6) {
+            $query = $query->whereIn('base_clients.id', $baseclient);
+        } elseif ($authuser->role_id == 7) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } else {
+            // $query = $query->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc);
+            });
+        }
+
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        
+        return view('prs.pickupload-list',['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'branchs'=>$branchs]);
+    }
+
+    public function UpdatePrs(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'regclient_id' => 'required',
+            );
+            $validator = Validator::make($request->all(),$rules);
+        
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['success']     = false;
+                $response['validation']  = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+                return response()->json($response);
+            }
+            $authuser = Auth::user();
+            // $pickup_id = DB::table('pickup_run_sheets')->select('pickup_id')->latest('pickup_id')->first();
+            // $pickup_id = json_decode(json_encode($pickup_id), true);
+            // if (empty($pickup_id) || $pickup_id == null) {
+            //     $pickup_id = 2900001;
+            // } else {
+            //     $pickup_id = $pickup_id['pickup_id'] + 1;
+            // }
+            
+            // $prssave['pickup_id'] = $pickup_id;
+            if(!empty($request->vehicletype_id)){
+                $prssave['vehicletype_id'] = $request->vehicletype_id;
+            }
+            if(!empty($request->vehicle_id)){
+                $prssave['vehicle_id'] = $request->vehicle_id;
+            }
+            if(!empty($request->driver_id)){
+                $prssave['driver_id'] = $request->driver_id;
+            }
+
+            // $prssave['prs_date'] = $request->prs_date;
+            $prssave['location_id'] = $request->location_id;
+            $prssave['hub_location_id'] = $request->hub_location_id;
+            $prssave['user_id'] = $authuser->id;
+            $prssave['branch_id'] = $authuser->branch_id;
+            $prssave['status'] = "1";
+            
+            $saveprs = PickupRunSheet::where('id',$request->prs_id)->update($prssave);
+            if($saveprs)
+            {
+                $url    =   URL::to($this->prefix.'/prs');
+                $response['success'] = true;
+                $response['success_message'] = "PRS Updated successfully";
+                $response['error'] = false;
+                $response['page'] = 'prs-update';
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['error_message'] = "Can not updated PRS please try again";
+                $response['error'] = true;
+            }
+            
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
     }
 
 }

@@ -444,6 +444,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'vehicle-receivegate'}}"> Hub Receiving </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pickup-loads'}}">Pickup Load List </a>
+            </li>
 
         </ul>
     </li>

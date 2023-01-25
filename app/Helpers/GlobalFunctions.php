@@ -416,11 +416,19 @@ class GlobalFunctions {
       
         return $total_weight;
     }
-
     public static function countHrsInTransaction($trans_id)
     {
         $data = DB::table('hrs_payment_requests')->where('transaction_id',$trans_id)->count();
         return $data;
+    }
+    public static function getConsignerName($cnr_id){
+        $get_cnr = Consigner::select('id','nick_name')->whereIn('id',$cnr_id)->get();
+        $cnr_name = array();
+        foreach($get_cnr as $key => $cnr){
+            $cnr_name[] = $cnr->nick_name;
+        }
+        $cnr_nickname = implode(',', $cnr_name);
+        return $cnr_nickname;
     }
 
 }

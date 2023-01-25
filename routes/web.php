@@ -234,6 +234,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
@@ -408,12 +409,14 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
