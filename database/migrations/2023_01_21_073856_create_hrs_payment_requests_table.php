@@ -24,6 +24,7 @@ class CreateHrsPaymentRequestsTable extends Migration
             $table->string('payment_type')->nullable();
             $table->string('advanced')->nullable();
             $table->string('balance')->nullable();
+            $table->string('amt_without_tds')->nullable();
             $table->string('current_paid_amt')->nullable();
             $table->string('tds_deduct_balance')->nullable();
             $table->string('branch_id')->nullable();

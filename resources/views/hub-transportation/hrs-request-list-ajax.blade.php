@@ -4,9 +4,10 @@
             <tr>
                 <th>Requesting Branch</th>
                 <th>BM Name</th>
+                <th>Total Hrs</th>
+                <th>Vendor Name</th>
                 <th>Purchase Amount</th>
                 <th>Transaction ID</th>
-                <th>Vehicle Type</th>
                 <th>Payment Type.</th>
                 <th>Advanced</th>
                 <th>Balance</th>
@@ -23,9 +24,11 @@
             <tr>
                 <td>{{$hrsRequest->Branch->name}}</td>
                 <td>{{$hrsRequest->User->name}}</td>
+                <td class="show-hrs" data-id="{{$hrsRequest->transaction_id}}">
+                            {{ Helper::countHrsInTransaction($hrsRequest->transaction_id) ?? "" }}</td>
+                <td>{{$hrsRequest->VendorDetails->name}}</td>
                 <td>{{$hrsRequest->total_amount}}</td>
                 <td>{{$hrsRequest->transaction_id}}</td>
-                <td></td>
                 <td>{{$hrsRequest->payment_type}}</td>
                 <td>{{$hrsRequest->advanced}}</td>
                 <td>{{$hrsRequest->balance}}</td>
@@ -48,7 +51,7 @@
                 <!-- approver check end -->
                 <?php } ?>
                 <?php } else if($hrsRequest->payment_status == 3) {?>
-                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Partial Paid </button></td>
+                <td><button class="btn btn-warning second_payment" value="{{$hrsRequest->transaction_id}}"> Partial Paid </button></td>
                 <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unknown </button></td>
                 <?php } ?>

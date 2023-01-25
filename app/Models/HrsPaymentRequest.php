@@ -18,6 +18,7 @@ class HrsPaymentRequest extends Model
         'payment_type',
         'advanced',
         'balance',
+        'amt_without_tds',
         'current_paid_amt',
         'tds_deduct_balance',
         'branch_id',

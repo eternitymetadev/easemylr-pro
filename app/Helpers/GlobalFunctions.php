@@ -417,4 +417,10 @@ class GlobalFunctions {
         return $total_weight;
     }
 
+    public static function countHrsInTransaction($trans_id)
+    {
+        $data = DB::table('hrs_payment_requests')->where('transaction_id',$trans_id)->count();
+        return $data;
+    }
+
 }

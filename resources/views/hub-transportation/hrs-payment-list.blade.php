@@ -216,8 +216,8 @@ jQuery(document).on('click', '.chkBoxClass', function() {
 });
 ///
 $(document).on('click', '.create_hrs_payment', function() {
-    // $('#create_request_form')[0].reset();
-    // $('#p_type_1').empty();
+    $('#hrs_request_form')[0].reset();
+    $('#p_type_1').empty();
     $('#hrs_pymt_modal').modal('show');
     var hrs_no = [];
     var tdval = [];
@@ -241,10 +241,15 @@ $(document).on('click', '.create_hrs_payment', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
+            //     $(".indicator-progress").show();
+            // $(".indicator-label").hide();
+            // $('.disableme').prop('disabled', true);
 
             },
         success: function(data) {
-            // console.log(data.get_data.receving_status);
+            // $('.disableme').prop('disabled', true);
+            // $(".indicator-progress").hide();
+            // $(".indicator-label").show();
 
             if (data.get_data.receving_status == 2) {
                 $('#p_type_1').append('<option value="Fully">Fully Payment</option>');
@@ -414,7 +419,37 @@ $("#hrs_request_form").submit(function (e) {
         },
     });
 });
-////////
+// ====================Add Purchase Price================================== //
+$(document).on('click', '.add_purchase_price', function() {
+    var hrs_no = $(this).val();
+    $('#add_amt').modal('show');
+    $('#hrs_num').val(hrs_no);
+});
+//////////////////Add Purchase Price////////////
+$("#purchase_amt_hrs").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-purchas-price-hrs",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () { },
+        success: (data) => {
+            if (data.success == true) {
+                swal("success", data.success_message, "success");
+                window.location.reload();
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
 
 </script>
 @endsection

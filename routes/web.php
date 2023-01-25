@@ -438,6 +438,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
@@ -620,6 +623,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
     Route::any('get-vender-req-details-hrs', [HubtoHubController::class, 'getVendorReqDetailsHrs']);
+    Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
 
 
