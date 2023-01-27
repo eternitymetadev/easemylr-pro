@@ -363,7 +363,9 @@ $('#updt_vehicle').submit(function(e) {
             if (data.success == true) {
                 alert('Data Updated Successfully');
                 location.reload();
-            } else {
+            } else if(data.success == false){
+                alert(data.error_message);
+                } else {
                 alert('something wrong');
             }
         }

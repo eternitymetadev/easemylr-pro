@@ -61,7 +61,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-            'VehicleType:id,name'
+            'VehicleType:id,name',
+            'DrsDetail:consignment_no,drs_no'
         );
 
         if($authuser->role_id ==1)
@@ -157,7 +158,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                   $status = 'Unknown';
                  }
 
-                if(!empty($consignment->job_id)){
+                if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
                   }else{
                    $deliverymode = 'Manual';

@@ -9,6 +9,6 @@ class PrsReceiveVehicle extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'prs_id', 'consigner_id', 'invoice_no', 'total_qty', 'receive_qty', 'remaining_qty', 'remarks', 'user_id', 'branch_id', 'status', 'created_at', 'updated_at'
+        'prs_id', 'consigner_id', 'invoice_no', 'total_qty', 'receive_qty', 'remaining_qty', 'remarks', 'is_verify', 'user_id', 'branch_id', 'status', 'created_at', 'updated_at'
     ];
 }

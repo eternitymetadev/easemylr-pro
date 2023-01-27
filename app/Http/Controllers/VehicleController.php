@@ -76,7 +76,7 @@ class VehicleController extends Controller
                 $actionBtn .= '&nbsp;&nbsp;';
                 $actionBtn .= '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'').'" class="view btn btn-info btn-sm"><span><i class="fa fa-eye"></i></span></a>';
                 $actionBtn .= '&nbsp;&nbsp;';
-                $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
+                // $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
                 return $actionBtn;
             })
             ->rawColumns(['action', 'rc_image'])

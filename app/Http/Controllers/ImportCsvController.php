@@ -82,7 +82,7 @@ class ImportCsvController extends Controller
                 }else{
                     $message = 'Something went wrong!';
                 }
-                $message = 'Delivery dates Uploaded Successfully';
+                $message = 'PODs Uploaded Successfully';
             }else{
                 $message = 'Please select zip file';
             }

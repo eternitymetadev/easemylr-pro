@@ -22,6 +22,7 @@ class CreatePrsTaskItemsTable extends Migration
             $table->string('quantity')->nullable();
             $table->string('net_weight')->nullable();
             $table->string('gross_weight')->nullable();
+            $table->string('invoice_image')->nullable();
             $table->string('user_id')->nullable();
             $table->string('branch_id')->nullable();
             $table->tinyInteger('status')->default(0);

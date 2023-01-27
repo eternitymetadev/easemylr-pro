@@ -15,6 +15,7 @@ class ConsignmentItem extends Model
         'quantity',
         'weight',
         'gross_weight',
+        'chargeable_weight',
         'freight',
         'payment_type',
         'order_id',
@@ -27,4 +28,10 @@ class ConsignmentItem extends Model
         'created_at',
         'updated_at'
     ];
+    
+    public function ConsignmentSubItems()
+    {
+        return $this->hasMany('App\Models\ConsignmentSubItem','conitem_id','id');
+    }
+
 }
