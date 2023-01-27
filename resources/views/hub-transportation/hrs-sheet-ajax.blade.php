@@ -11,6 +11,7 @@
                 <th>Driver Phone</th>
                 <th style="text-align: center">Action</th>
                 <th style="text-align: center">Status</th>
+                <th style="text-align: center">Payment Status</th>
             </tr>
         </thead>
         <tbody>
@@ -48,6 +49,29 @@
                     @else
                     <button class="flex1 btn btn-warning" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Received Hub
+                    </button>
+                    @endif
+                </td>
+                <td>
+                @if($hrssheet->payment_status == 0)
+                <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">unpaid
+                    </button>
+                @elseif($hrssheet->payment_status == 1)
+                <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Paid
+                    </button>
+                    @elseif($hrssheet->payment_status == 2)
+                    <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Sent
+                    </button>
+                    @elseif($hrssheet->payment_status == 3)
+                    <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Partial Paid
+                    </button>
+                    @else
+                    <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"
+                        style="margin-right:4px;">Unknown
                     </button>
                     @endif
                 </td>

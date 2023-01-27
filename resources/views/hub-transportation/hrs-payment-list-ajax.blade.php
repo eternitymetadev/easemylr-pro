@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <?php $authuser = Auth::user();
-            if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
+            if ($authuser->role_id == 2) {?>
                 <th>
                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 16px; height:16px;" />
                 </th>
@@ -34,7 +34,7 @@
                 ?>
 
             <tr>
-                @if ($authuser->role_id == 2 || $authuser->role_id == 3)
+                @if ($authuser->role_id == 2)
                 @if ($hrssheet->status != 0)
                 @if (!empty($hrssheet->purchase_price))
                 <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$hrssheet->hrs_no}}"
