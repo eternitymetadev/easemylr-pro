@@ -46,6 +46,7 @@ class ConsignmentNote extends Model
         'edd',
         'order_id',
         'status',
+        'verified_lr',
         'booked_drs',
         'prs_id',
         'prsitem_status',
@@ -55,6 +56,7 @@ class ConsignmentNote extends Model
         'lr_mode',
         'tracking_link',
         'delivery_status',
+        'delivery_notes',
         'delivery_date',
         'signed_drs',
         'e_way_bill',
@@ -111,12 +113,24 @@ class ConsignmentNote extends Model
     {
         return $this->hasOne('App\Models\RegionalClient','id','regclient_id');
     }
+    public function TransactionSheet()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    }
 
     public function DrsDetail()
     {
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
+    public function AppMedia()
+    {
+        return $this->hasMany('App\Models\AppMedia','consignment_no','id');
+    }
 
+     public function jobs()
+    {
+        return $this->hasMany('App\Models\Job','consignment_id','id');
+    }
     public function Branch(){
         return $this->belongsTo('App\Models\Location','branch_id');
     }

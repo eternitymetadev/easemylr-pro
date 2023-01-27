@@ -946,6 +946,3 @@ Route::any('track-order', [TrackingController::class, 'trackOrder']);
 ///check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
 
-
-
-
