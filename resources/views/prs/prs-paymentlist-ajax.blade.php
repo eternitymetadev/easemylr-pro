@@ -17,18 +17,18 @@
             @foreach($prsdata as $value)
             <tr>
                 <td>
-                    @if(!empty($value->purchase_price))
-                    <input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$value->id}}"
-                        data-price="{{$value->purchase_price}}" style="width: 30px; height:30px;">
+                    @if(!empty($value->purchase_amount))
+                    <input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$value->pickup_id}}"
+                        data-price="{{$value->purchase_amount}}" style="width: 30px; height:30px;">
                     @else
                     -
                     @endif
                 </td>
-                @if(!empty($value->purchase_price))
-                <td class="update_purchase_price" drs-no="{{$value->id}}">{{$value->purchase_price ?? '-'}}</td>
+                @if(!empty($value->purchase_amount))
+                <td class="update_purchase_price" drs-no="{{$value->id}}">{{$value->purchase_amount ?? '-'}}</td>
                 @else
-                <td>
-                    <button type="button" class="btn btn-warning add-prs-purchase-price" value="{{$value->id}}"
+                <td> 
+                    <button type="button" class="btn btn-warning add-prs-purchase-price" value="{{$value->pickup_id}}"
                         style="margin-right:4px;">Add amount</button>
                 </td>
                 @endif

@@ -418,6 +418,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    Route::any('update-purchas-price-prs', [PickupRunSheetController::class, 'updatePurchasePricePrs']);
+    Route::any('get-prs-details', [PickupRunSheetController::class, 'getPrsdetails']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
