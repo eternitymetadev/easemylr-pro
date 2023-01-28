@@ -441,6 +441,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
     Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
@@ -601,6 +604,32 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('get-vender-req-details-hrs', [HubtoHubController::class, 'getVendorReqDetailsHrs']);
+    Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
+
 
 
 });
