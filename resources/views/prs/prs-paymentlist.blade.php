@@ -21,16 +21,17 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">PRS</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">PRS
-                                List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">PRS List</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
+                            <div class="form-group col-md-4">
+                                <button type="button" class="btn btn-warning mt-4 ml-4 payment" style="font-size: 12px;">Create Payment</button>
+                            </div>
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
@@ -64,4 +65,5 @@
     </div>
 </div>
 
+@include('models.prs-addpayment')
 @endsection

@@ -538,7 +538,7 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="prsPayments" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="#"> Create Payment </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'prs-paymentlist'}}"> Create Payment </a>
             </li>
 
         </ul>

@@ -15,6 +15,7 @@ class CreatePrsPaymentHistoriesTable extends Migration
     {
         Schema::create('prs_payment_histories', function (Blueprint $table) {
             $table->id();
+            
             $table->timestamps();
         });
     }

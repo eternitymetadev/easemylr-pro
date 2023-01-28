@@ -2,6 +2,10 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
+                </th>
+                <th>Purchase Amount</th>
                 <th>Pickup ID</th>
                 <th>Date</th>
                 <th>Vehicle No.</th>
@@ -12,6 +16,22 @@
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <tr>
+                <td>
+                    @if(!empty($value->purchase_price))
+                    <input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$value->id}}"
+                        data-price="{{$value->purchase_price}}" style="width: 30px; height:30px;">
+                    @else
+                    -
+                    @endif
+                </td>
+                @if(!empty($value->purchase_price))
+                <td class="update_purchase_price" drs-no="{{$value->id}}">{{$value->purchase_price ?? '-'}}</td>
+                @else
+                <td>
+                    <button type="button" class="btn btn-warning add-prs-purchase-price" value="{{$value->id}}"
+                        style="margin-right:4px;">Add amount</button>
+                </td>
+                @endif
                 <td>{{$value->pickup_id ?? "-"}}</td>
                 <td>{{Helper::ShowDayMonthYear($value->prs_date) ?? "-"}}</td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>

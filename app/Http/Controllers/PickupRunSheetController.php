@@ -784,19 +784,23 @@ class PickupRunSheetController extends Controller
             }else{
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+            // $vehicles = Vehicle::select('vehicle_no')->distinct()->get();
 
-            $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
+            $prsdata = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
             $prsdata = $prsdata->appends($request->query());
 
-            $html =  view('prs.prs-paymentlist-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem])->render();
+            $html =  view('prs.prs-paymentlist-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata, 'vehicles'=>$vehicles, 'peritem'=>$peritem])->render();
             
             return response()->json(['html' => $html]);
         }
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
 
-        $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
         $prsdata = $prsdata->appends($request->query());
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         
-        return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
+        return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'vehicles'=>$vehicles,'vehicletype' => $vehicletypes, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function pickupLoads(Request $request)
