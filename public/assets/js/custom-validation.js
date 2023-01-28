@@ -2924,3 +2924,32 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
         });
     });
 });
+
+/*===== add prs purchase amount =====*/
+// jQuery(document).on("click", ".add-prs-purchase-price", function () {
+//     jQuery("#add_prsamount").modal("show");
+//     var userid = jQuery(this).attr("data-id");
+//     var url = jQuery(this).attr("data-action");
+//     jQuery(document)
+//         .off("click", ".deleteuserconfirm")
+//         .on("click", ".deleteuserconfirm", function () {
+//             jQuery.ajax({
+//                 type: "post",
+//                 url: url,
+//                 data: { userid: userid },
+//                 headers: {
+//                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+//                         "content"
+//                     ),
+//                 },
+//                 dataType: "JSON",
+//                 success: function (data) {
+//                     if (data) {
+//                         jQuery("#deleteuser").modal("hide");
+//                         location.reload();
+//                     }
+//                 },
+//             });
+//         });
+// });
+/*===== End delete User =====*/
