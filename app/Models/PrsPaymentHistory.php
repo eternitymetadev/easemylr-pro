@@ -9,6 +9,6 @@ class PrsPaymentHistory extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'prs_id', '', '', 'prs_date', 'status', 'created_at', 'updated_at'
+        'prs_no','prs_date', 'status', 'created_at', 'updated_at'
     ];
 }

@@ -1436,8 +1436,8 @@ class PickupRunSheetController extends Controller
     // ============ Rm Approver Pusher =========================
     public function rmApproverRequest(Request $request)
     {
-        echo '<pre>';
-        print_r($request->all());die;
+        // echo '<pre>';
+        // print_r($request->all());die;
 
         $authuser = User::where('id', $request->user_id)->first();
         $bm_email = $authuser->email;
@@ -1516,7 +1516,7 @@ class PickupRunSheetController extends Controller
 
                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
-                $paymentresponse['hrs_no'] = $request->hrs_no;
+                $paymentresponse['prs_no'] = $request->prs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
                 $paymentresponse['payment_type'] = $request->p_type;
@@ -1526,7 +1526,7 @@ class PickupRunSheetController extends Controller
                 $paymentresponse['current_paid_amt'] = $request->payable_amount;
                 $paymentresponse['payment_status'] = 2;
 
-                $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+                $paymentresponse = PrsPaymentHistory::create($paymentresponse);
 
             } else {
 

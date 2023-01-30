@@ -112,7 +112,7 @@ $(document).on('click', '.approve', function() {
 
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
 
-            $('#hrs_number').val(data.hrs_no);
+            $('#prs_number').val(data.prs_no);
             $('#transaction_no').val(data.req_data[0].transaction_id);
             $('#vendor_num').val(data.req_data[0].vendor_details.vendor_no);
             $('#transaction_id_2').val(data.req_data[0].transaction_id);

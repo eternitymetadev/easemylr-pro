@@ -18,7 +18,7 @@
             </p>
 
                 <form id="prs_rm_aprover">
-                    <input type="text" id="hrs_number" name="hrs_no" value="" />
+                    <input type="text" id="prs_number" name="prs_no" value="" />
                     <input type="text" id="transaction_no" name="transaction_id" value="" />
                     <input type="text" id="v_name" name="name" value="" />
                     <input type="text" id="beneficiary_name" name="beneficiary_name" value="" />
