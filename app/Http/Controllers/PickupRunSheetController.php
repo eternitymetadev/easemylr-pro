@@ -1093,10 +1093,10 @@ class PickupRunSheetController extends Controller
                   if ($request->p_type == 'Advance') {
                       $balance_amt = $request->claimed_amount - $request->pay_amt;
                     
-  
+   
                       $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
   
-                      PickupRunSheet::whereIn('pickup_id', $hrsno)->update(['payment_status' => 2]);
+                      PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
                   } else {
                       $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                       if (!empty($getadvanced->balance)) {
@@ -1411,5 +1411,26 @@ class PickupRunSheetController extends Controller
           return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors,'vehicletype' => $vehicletype]);
   
       }
+      /// RM aprover 
+      public function getVendorReqDetailsPrs(Request $request)
+    {
+        $req_data = PrsPaymentRequest::with('VendorDetails')->where('transaction_id', $request->transaction_id)
+            ->groupBy('transaction_id')->get();
+
+        $gethrs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->transaction_id)
+            ->get();
+        $simply = json_decode(json_encode($gethrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['prs_no'];
+        }
+        $prs_no = implode(',', $store);
+
+        $response['req_data'] = $req_data;
+        $response['hrs_no'] = $prs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Approver successfully";
+        return response()->json($response);
+
+    }
 
 }

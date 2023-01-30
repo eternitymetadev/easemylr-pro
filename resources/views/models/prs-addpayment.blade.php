@@ -1,3 +1,61 @@
+<!-- /////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="approver_model_prs" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+            <!-- Modal Header -->
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Push To Account</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+
+            <p class='text-center'>
+            Transaction ID: #<strong class="req_trans_id"></strong>
+            </p>
+            <p class='text-center' style="padding: 0.5rem 2rem">
+            Are you sure to pay  ₹<strong class='req_amt'></strong> to <strong class="req_vendor"></strong>?
+            </p>
+
+                <form id="rm_aprover">
+                    <input type="text" id="hrs_number" name="hrs_no" value="" />
+                    <input type="text" id="transaction_no" name="transaction_id" value="" />
+                    <input type="text" id="v_name" name="name" value="" />
+                    <input type="text" id="beneficiary_name" name="beneficiary_name" value="" />
+                    <input type="text" id="branch_name" name="branch_name" value="" />
+                    <input type="text" id="bank_acc" name="acc_no" value="" />
+                    <input type="text" id="ifsc_code" name="ifsc" value="" />
+                    <input type="text" id="bank_name" name="bank_name" value="" />
+                    <input type="text" id="email" name="email" value="" />
+                    <input type="text" id="pan" name="pan" value="" />
+                    <input type="text" id="total_clam_amt" name="claimed_amount" value="" />
+                    <input type="text" id="tds_deduct_balance" name="amt_deducted" value="" />
+                    <input type="text" id="final_payable_amount" name="final_payable_amount" value="" />
+                    <input type="text" id="pymt_type" name="p_type" value="" />
+                    <input type="text" id="vendor_num" name="vendor_no" value="" />
+                    <input type="text" id="branch_id_app" name="branch_id" value="" />
+                    <input type="text" id="user_id" name="user_id" value="" />
+                    <input type="text" id="advance" name="payable_amount" value="" />
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="border-top: 0">
+                        <div style="width: 100%; justify-content: space-evenly" class="btn-section w-100 P-0 d-flex align-items-center">
+                            <a style="width: 100px" type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+                            <button type="submit" class="btn btn-primary disableme" style="width: 100px">
+                                <span class="indicator-label">Push</span>
+                                <span class="indicator-progress" style="display: none;">
+                                    Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- ----------------------------------------------------------------------  -->
 <!-- ----------------------------------------------------------------------  -->
 <div class="modal fade bd-example-modal-xl" id="prs_pymt_modal" tabindex="-1" role="dialog"
         aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
@@ -13,7 +71,7 @@
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
-                </div>
+                </div> 
                 <div class="modal-body px-4">
                     <form id="prs_request_form">
                         <input type="hidden" id="hrs_no_1" name="prs_no" value="" />

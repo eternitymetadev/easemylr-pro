@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($prsRequests as $prsRequest)
+            @foreach($prsRequests as $prsRequest)
             <?php 
             $authuser = Auth::user();
             
@@ -25,7 +25,7 @@
                 <td>{{$prsRequest->Branch->name}}</td>
                 <td>{{$prsRequest->User->name}}</td>
                 <td class="show-hrs" data-id="{{$prsRequest->transaction_id}}">
-                            {{ Helper::countHrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
+                    {{ Helper::countHrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
                 <td>{{$prsRequest->VendorDetails->name}}</td>
                 <td>{{$prsRequest->total_amount}}</td>
                 <td>{{$prsRequest->transaction_id}}</td>
@@ -41,7 +41,8 @@
                     if($prsRequest->is_approve == 0){
                         if($authuser->role_id == 3){?>
                 <!-- approver check -->
-                <td><button class="btn btn-warning approve" value="{{$prsRequest->transaction_id}}"> Approve </button></td>
+                <td><button class="btn btn-warning approve" value="{{$prsRequest->transaction_id}}"> Approve </button>
+                </td>
                 <?php } else { ?>
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> waiting for approver
                     </button></td>
@@ -51,7 +52,8 @@
                 <!-- approver check end -->
                 <?php } ?>
                 <?php } else if($prsRequest->payment_status == 3) {?>
-                <td><button class="btn btn-warning second_payment" value="{{$prsRequest->transaction_id}}"> Partial Paid </button></td>
+                <td><button class="btn btn-warning second_payment" value="{{$prsRequest->transaction_id}}"> Partial Paid
+                    </button></td>
                 <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> Unknown </button></td>
                 <?php } ?>
@@ -77,7 +79,7 @@
 
             </tr>
             @endforeach
-          
+
         </tbody>
     </table>
     <div class="perpage container-fluid">

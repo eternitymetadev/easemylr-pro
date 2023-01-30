@@ -91,16 +91,17 @@ input[readonly].styledInput {
         </div>
     </div>
 </div>
-@include('models.hrs-payment-models')
+@include('models.prs-addpayment')
 @endsection
 @section('js')
 <script>
 $(document).on('click', '.approve', function() {
     var transaction_id = $(this).val();
-    $('#approver_model').modal('show');
+    $('#approver_model_prs').modal('show');
+    alert(transaction_id);
     $.ajax({
         type: "GET",
-        url: "get-vender-req-details-hrs",
+        url: "get-vender-req-details-prs",
         data: {
             transaction_id: transaction_id
         },
