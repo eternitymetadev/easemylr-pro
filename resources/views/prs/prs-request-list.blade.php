@@ -98,7 +98,7 @@ input[readonly].styledInput {
 $(document).on('click', '.approve', function() {
     var transaction_id = $(this).val();
     $('#approver_model_prs').modal('show');
-    alert(transaction_id);
+    // alert(transaction_id);
     $.ajax({
         type: "GET",
         url: "get-vender-req-details-prs",
@@ -141,11 +141,11 @@ $(document).on('click', '.approve', function() {
 });
 ///
 ////////////////// RM Approver Request ////////////
-$("#rm_aprover").submit(function(e) {
+$("#prs_rm_aprover").submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
     $.ajax({
-        url: "rm-approver",
+        url: "prs-rm-approver",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -173,7 +173,7 @@ $("#rm_aprover").submit(function(e) {
         },
     });
 });
-//////
+
 //////////// Payment request sent model
 $(document).on('click', '.second_payment', function() {
     $("#second_payment_form")[0].reset();

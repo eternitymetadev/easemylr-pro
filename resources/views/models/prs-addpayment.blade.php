@@ -17,7 +17,7 @@
             Are you sure to pay  ₹<strong class='req_amt'></strong> to <strong class="req_vendor"></strong>?
             </p>
 
-                <form id="rm_aprover">
+                <form id="prs_rm_aprover">
                     <input type="text" id="hrs_number" name="hrs_no" value="" />
                     <input type="text" id="transaction_no" name="transaction_id" value="" />
                     <input type="text" id="v_name" name="name" value="" />

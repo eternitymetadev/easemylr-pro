@@ -1433,4 +1433,134 @@ class PickupRunSheetController extends Controller
 
     }
 
+    // ============ Rm Approver Pusher =========================
+    public function rmApproverRequest(Request $request)
+    {
+        echo '<pre>';
+        print_r($request->all());die;
+
+        $authuser = User::where('id', $request->user_id)->first();
+        $bm_email = $authuser->email;
+        $branch_name = Location::where('id', '=', $request->branch_id)->first();
+
+        //deduct balance
+        // $deduct_balance = $request->payable_amount - $request->final_payable_amount;
+
+        $get_vehicle = PrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
+        $sent_vehicle = array();
+        foreach ($get_vehicle as $vehicle) {
+            $sent_vehicle[] = $vehicle->vehicle_no;
+        }
+        $unique = array_unique($sent_vehicle);
+        $sent_vehicle_no = implode(',', $unique);
+
+        $url_header = $_SERVER['HTTP_HOST'];
+        $drs = explode(',', $request->drs_no);
+        $pfu = 'ETF';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->req_link,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$bm_email\",
+            \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->name\",
+            \"pan\": \"$request->pan\",
+            \"amt_deducted\": \"$request->amt_deducted\",
+            \"vehicle\": \"$sent_vehicle_no\",
+            \"txn_route\": \"HRS\"
+            }]",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res_data = json_decode($response);
+        // $cc = 'success';
+        // ============== Success Response
+        if ($res_data->message == 'success') {
+
+            if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
+
+                $getadvanced = HrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->payable_amount;
+                } else {
+                    $balance = 0;
+                }
+                $advance = $getadvanced->advanced;
+
+                HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['hrs_no'] = $request->hrs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $advance;
+                $paymentresponse['balance'] = $balance;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+
+            } else {
+
+                $balance_amt = $request->claimed_amount - $request->payable_amount;
+                //======== Payment History save =========//
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['hrs_no'] = $request->hrs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->payable_amount;
+                $paymentresponse['balance'] = $balance_amt;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+
+                HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+            }
+
+            $new_response['success'] = true;
+            $new_response['message'] = $res_data->message;
+
+        } else {
+            $new_response['message'] = $res_data->message;
+            $new_response['success'] = false;
+        }
+
+        return response()->json($new_response);
+
+    }
+
 }
