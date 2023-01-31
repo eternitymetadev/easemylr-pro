@@ -99,7 +99,7 @@ input[readonly].styledInput {
             </div>
         </div>
 
-        @csrf
+        @csrf 
         <div class="main-table table-responsive">
             @include('hub-transportation.hrs-payment-list-ajax')
         </div>
@@ -108,7 +108,7 @@ input[readonly].styledInput {
 @include('models.hrs-payment-models')
 @endsection
 @section('js')
-<script>
+<script>    
     
 jQuery(function() {
     $('.my-select2').each(function() {

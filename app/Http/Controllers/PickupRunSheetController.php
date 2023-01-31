@@ -1098,7 +1098,6 @@ class PickupRunSheetController extends Controller
                   if ($request->p_type == 'Advance') {
                       $balance_amt = $request->claimed_amount - $request->pay_amt;
                     
-   
                       $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
   
                       PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
@@ -1110,7 +1109,6 @@ class PickupRunSheetController extends Controller
                           $balance = 0;
                       }
                       $advance = $request->pay_amt;
-                      // dd($advance);
   
                       $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
                       PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
@@ -1121,11 +1119,10 @@ class PickupRunSheetController extends Controller
   
               $unique = array_unique($sent_vehicle);
               $sent_venicle_no = implode(',', $unique);
-              dd($prsno);
               PickupRunSheet::whereIn('pickup_id', $prsno)->update(['request_status' => '1']);
   
   
-              $url = $this->prefix . '/hrs-request-list';
+              $url = $this->prefix . '/prs-request-list';
               $new_response['success'] = true;
               $new_response['redirect_url'] = $url;
               $new_response['success_message'] = "Data Imported successfully";
@@ -1136,7 +1133,7 @@ class PickupRunSheetController extends Controller
               foreach ($simplyfy as $value) {
   
                   $i++;
-                  $hrs_no = $value['hrs_no'];
+                  $prs_no = $value['pickup_id'];
                   $vendor_id = $request->vendor_name;
                   $vehicle_no = $value['vehicle_detail']['regn_no'];
                   $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
@@ -1144,10 +1141,10 @@ class PickupRunSheetController extends Controller
                   if ($request->p_type == 'Advance') {
                       $balance_amt = $request->claimed_amount - $request->pay_amt;
   
-                      $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
   
                   } else {
-                      $getadvanced = HrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                      $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                       if (!empty($getadvanced->balance)) {
                           $balance = $getadvanced->balance - $request->pay_amt;
                       } else {
@@ -1156,16 +1153,16 @@ class PickupRunSheetController extends Controller
                       $advance = $request->pay_amt;
                       // dd($advance);
   
-                      $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
                   }
   
               }
   
               $unique = array_unique($sent_vehicle);
               $sent_venicle_no = implode(',', $unique);
-              Hrs::whereIn('hrs_no', $hrsno)->update(['request_status' => '1']);
+              PickupRunSheet::whereIn('pickup_id', $prsno)->update(['request_status' => '1']);
   
-              $checkduplicateRequest = HrsPaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+              $checkduplicateRequest = PrsPaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
               if (empty($checkduplicateRequest)) {
                   // ============== Sent to finfect
                   $pfu = 'ETF';
@@ -1221,7 +1218,7 @@ class PickupRunSheetController extends Controller
                           }
                           $advance = $request->pay_amt;
   
-                          Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
+                          PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
   
                           PrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
   
@@ -1229,7 +1226,7 @@ class PickupRunSheetController extends Controller
   
                           $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                           $paymentresponse['transaction_id'] = $transaction_id_new;
-                          $paymentresponse['hrs_no'] = $request->hrs_no;
+                          $paymentresponse['prs_no'] = $request->prs_no;
                           $paymentresponse['bank_details'] = json_encode($bankdetails);
                           $paymentresponse['purchase_amount'] = $request->claimed_amount;
                           $paymentresponse['payment_type'] = $request->p_type;
@@ -1249,7 +1246,7 @@ class PickupRunSheetController extends Controller
   
                           $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                           $paymentresponse['transaction_id'] = $transaction_id_new;
-                          $paymentresponse['hrs_no'] = $request->hrs_no;
+                          $paymentresponse['prs_no'] = $request->prs_no;
                           $paymentresponse['bank_details'] = json_encode($bankdetails);
                           $paymentresponse['purchase_amount'] = $request->claimed_amount;
                           $paymentresponse['payment_type'] = $request->p_type;
@@ -1259,10 +1256,10 @@ class PickupRunSheetController extends Controller
                           $paymentresponse['current_paid_amt'] = $request->pay_amt;
                           $paymentresponse['payment_status'] = 2;
   
-                          $paymentresponse = HrsPaymentHistory::create($paymentresponse);
-                          HrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+                          $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+                          PrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
   
-                          Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
+                          PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
                       }
   
                       $new_response['success'] = true;
@@ -1288,7 +1285,7 @@ class PickupRunSheetController extends Controller
                       $paymentresponse = HrsPaymentHistory::create($paymentresponse);
   
                   }
-                  $url = $this->prefix . '/hrs-request-list';
+                  $url = $this->prefix . '/prs-request-list';
                   $new_response['redirect_url'] = $url;
                   $new_response['success_message'] = "Request Sent Successfully";
               } else {
