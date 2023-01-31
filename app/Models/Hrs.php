@@ -20,6 +20,8 @@ class Hrs extends Model
         'to_branch_id',
         'status',
         'receving_status',
+        'payment_status',
+        'request_status',
         'created_at',
         'updated_at'
     ];

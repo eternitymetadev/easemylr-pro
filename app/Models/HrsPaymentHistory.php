@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrsPaymentHistory extends Model
+class HrsPaymentHistory extends Model
 {
     use HasFactory;
     protected $fillable = [
         'refrence_transaction_id',
         'transaction_id',
-        'prs_no',
+        'hrs_no',
         'bank_details',
         'purchase_amount',
         'payment_type',

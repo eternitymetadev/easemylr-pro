@@ -99,7 +99,7 @@ input[readonly].styledInput {
             </div>
         </div>
 
-        @csrf
+        @csrf 
         <div class="main-table table-responsive">
             @include('hub-transportation.hrs-payment-list-ajax')
         </div>
@@ -108,7 +108,7 @@ input[readonly].styledInput {
 @include('models.hrs-payment-models')
 @endsection
 @section('js')
-<script>
+<script>    
     
 jQuery(function() {
     $('.my-select2').each(function() {
@@ -216,8 +216,8 @@ jQuery(document).on('click', '.chkBoxClass', function() {
 });
 ///
 $(document).on('click', '.create_hrs_payment', function() {
-    // $('#create_request_form')[0].reset();
-    // $('#p_type_1').empty();
+    $('#hrs_request_form')[0].reset();
+    $('#p_type_1').empty();
     $('#hrs_pymt_modal').modal('show');
     var hrs_no = [];
     var tdval = [];
@@ -241,10 +241,15 @@ $(document).on('click', '.create_hrs_payment', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
+            //     $(".indicator-progress").show();
+            // $(".indicator-label").hide();
+            // $('.disableme').prop('disabled', true);
 
             },
         success: function(data) {
-            // console.log(data.get_data.receving_status);
+            // $('.disableme').prop('disabled', true);
+            // $(".indicator-progress").hide();
+            // $(".indicator-label").show();
 
             if (data.get_data.receving_status == 2) {
                 $('#p_type_1').append('<option value="Fully">Fully Payment</option>');
@@ -410,6 +415,91 @@ $("#hrs_request_form").submit(function (e) {
                 window.location.href = data.redirect_url;
             } else {
                 swal("error", data.message, "error");
+            }
+        },
+    });
+});
+// ====================Add Purchase Price================================== //
+$(document).on('click', '.add_purchase_price', function() {
+    var hrs_no = $(this).val();
+    $('#add_amt').modal('show');
+    $('#hrs_num').val(hrs_no);
+});
+//////////////////Add Purchase Price////////////
+$("#purchase_amt_hrs").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-purchas-price-hrs",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () { },
+        success: (data) => {
+            if (data.success == true) {
+                swal("success", data.success_message, "success");
+                window.location.reload();
+            } else {
+                swal("error", data.error_message, "error");
+            }
+        },
+    });
+});
+// ====================update Purchase Price================================== //
+$(document).on('click', '.update_purchase_price_hrs', function() {
+    var hrs_no = $(this).attr('hrs-no'); 
+    $('#edit_amt_hrs').modal('show');
+    $.ajax({
+        type: 'get',
+        url: 'edit-purchase-price-hrs',
+        data: {
+            hrs_no: hrs_no
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+
+        },
+        success: function(response) {
+          
+            $('#hrs_num_edit').val(response.hrs_price.hrs_no);
+            $('#purchse_edit').val(response.hrs_price.purchase_price);
+            $("#vehicle_type_edit").val(response.hrs_price.vehicle_type_id).change();
+
+            
+        }
+    });
+
+    
+});
+// ==========
+$("#update_purchase_amt_form_hrs").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-purchas-price-vehicle-type-hrs",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function () { },
+        success: (data) => {
+            if (data.success == true) {
+                swal("success", data.success_message, "success");
+                window.location.reload();
+            } else {
+                swal("error", data.error_message, "error");
             }
         },
     });

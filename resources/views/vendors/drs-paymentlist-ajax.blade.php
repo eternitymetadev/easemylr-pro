@@ -49,7 +49,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <?php }} else {?>
                 <td>-</td>
                 <?php }}?>
-                <!------- Purchase Price --------------->
+                <!------- Purchase Price ---------------> 
                 <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?>
                 <td class="update_purchase_price" drs-no="{{$list->drs_no}}">{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                 <?php } else {?>

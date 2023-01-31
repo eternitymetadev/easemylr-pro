@@ -470,7 +470,7 @@
                 class="feather feather-chevron-right submenuArrow">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-        </a>
+        </a> 
         <ul class="collapse submenu list-unstyled" id="drsPayments" data-parent="#accordionExample">
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'vendor-list'}}"> Vendor List </a>
@@ -521,7 +521,7 @@
     <li class="menu">
         <a href="#prsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, '#')) active @endif">
+                class="@if(str_contains($currentURL, 'prs-paymentlist')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-dollar-sign">
@@ -538,7 +538,10 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="prsPayments" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="#"> Create Payment </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'prs-paymentlist'}}"> Create Payment </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'prs-request-list'}}"> Request List </a>
             </li>
 
         </ul>
