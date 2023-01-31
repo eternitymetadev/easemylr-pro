@@ -967,7 +967,7 @@ class HubtoHubController extends Controller
     // ==================CreatePayment Request =================
     public function createHrsPayment(Request $request)
     {
-        //  echo '<pre>'; print_r($request->all()); die;
+       
         $this->prefix = request()->route()->getPrefix();
         $url_header = $_SERVER['HTTP_HOST'];
 

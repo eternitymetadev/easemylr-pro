@@ -81,7 +81,7 @@ input[readonly].styledInput {
                         <div class="row winery_row_n spaceing_2n mb-3">
                             <div class="form-group col-md-4">
                                 <button type="button" class="btn btn-warning mt-4 ml-4 create_prs_payment"
-                                    style="font-size: 12px;">Create Payment</button>
+                                    style="font-size: 12px;" disabled>Create Payment</button>
                             </div>
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
@@ -127,7 +127,7 @@ input[readonly].styledInput {
 ///// check box checked unverified lr page
 jQuery(document).on('click', '#ckbCheckAll', function() {
     if (this.checked) {
-        jQuery('.create_hrs_payment').prop('disabled', false);
+        jQuery('.create_prs_payment').prop('disabled', false);
         jQuery('.chkBoxClass').each(function() {
             this.checked = true;
         });
@@ -135,7 +135,7 @@ jQuery(document).on('click', '#ckbCheckAll', function() {
         jQuery('.chkBoxClass').each(function() {
             this.checked = false;
         });
-        jQuery('.create_hrs_payment').prop('disabled', true);
+        jQuery('.create_prs_payment').prop('disabled', true);
     }
 });
 
@@ -145,9 +145,9 @@ jQuery(document).on('click', '.chkBoxClass', function() {
     } else {
         var checklength = $('.chkBoxClass:checked').length;
         if (checklength < 1) {
-            jQuery('.create_hrs_payment').prop('disabled', true);
+            jQuery('.create_prs_payment').prop('disabled', true);
         } else {
-            jQuery('.create_hrs_payment').prop('disabled', false);
+            jQuery('.create_prs_payment').prop('disabled', false);
         }
 
         $('#ckbCheckAll').prop('checked', false);
