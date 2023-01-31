@@ -1456,10 +1456,10 @@ jQuery(document).ready(function () {
                     }
                 }else{
                     if(img_api == null || img_api == ''){
-                        var field =
-                        "<input type='file' name='img' data-id='" +
-                        value.id +
-                        "' placeholder='Choose image' class='drs_image'>";
+                        var field = 'No Image Found';
+                        // "<input type='file' name='img' data-id='" +
+                        // value.id +
+                        // "' placeholder='Choose image' class='drs_image'>";
                     }else{
                          var field1 = [];
                         var img_length = img_api.length;
