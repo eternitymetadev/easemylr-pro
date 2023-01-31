@@ -18,13 +18,13 @@
                 <form id="second_payment_form_prs">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="hrs_no_request" name="prs_no" value="">
+                            <input type="hidden" class="form-control" id="hrs_no_request" name="prs_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="transaction_id_2" name="transaction_id"
+                            <input type="hidden" class="form-control" id="transaction_id_2" name="transaction_id"
                                 value="">
                         </div>
                     </div>
@@ -151,24 +151,24 @@ if ($countbranch > 1) {?>
             </p>
 
                 <form id="prs_rm_aprover">
-                    <input type="text" id="prs_number" name="prs_no" value="" />
-                    <input type="text" id="transaction_no" name="transaction_id" value="" />
-                    <input type="text" id="v_name" name="name" value="" />
-                    <input type="text" id="beneficiary_name" name="beneficiary_name" value="" />
-                    <input type="text" id="branch_name" name="branch_name" value="" />
-                    <input type="text" id="bank_acc" name="acc_no" value="" />
-                    <input type="text" id="ifsc_code" name="ifsc" value="" />
-                    <input type="text" id="bank_name" name="bank_name" value="" />
-                    <input type="text" id="email" name="email" value="" />
-                    <input type="text" id="pan" name="pan" value="" />
-                    <input type="text" id="total_clam_amt" name="claimed_amount" value="" />
-                    <input type="text" id="tds_deduct_balance" name="amt_deducted" value="" />
-                    <input type="text" id="final_payable_amount" name="final_payable_amount" value="" />
-                    <input type="text" id="pymt_type" name="p_type" value="" />
-                    <input type="text" id="vendor_num" name="vendor_no" value="" />
-                    <input type="text" id="branch_id_app" name="branch_id" value="" />
-                    <input type="text" id="user_id" name="user_id" value="" />
-                    <input type="text" id="advance" name="payable_amount" value="" />
+                    <input type="hidden" id="prs_number" name="prs_no" value="" />
+                    <input type="hidden" id="transaction_no" name="transaction_id" value="" />
+                    <input type="hidden" id="v_name" name="name" value="" />
+                    <input type="hidden" id="beneficiary_name" name="beneficiary_name" value="" />
+                    <input type="hidden" id="branch_name" name="branch_name" value="" />
+                    <input type="hidden" id="bank_acc" name="acc_no" value="" />
+                    <input type="hidden" id="ifsc_code" name="ifsc" value="" />
+                    <input type="hidden" id="bank_name" name="bank_name" value="" />
+                    <input type="hidden" id="email" name="email" value="" />
+                    <input type="hidden" id="pan" name="pan" value="" />
+                    <input type="hidden" id="total_clam_amt" name="claimed_amount" value="" />
+                    <input type="hidden" id="tds_deduct_balance" name="amt_deducted" value="" />
+                    <input type="hidden" id="final_payable_amount" name="final_payable_amount" value="" />
+                    <input type="hidden" id="pymt_type" name="p_type" value="" />
+                    <input type="hidden" id="vendor_num" name="vendor_no" value="" />
+                    <input type="hidden" id="branch_id_app" name="branch_id" value="" />
+                    <input type="hidden" id="user_id" name="user_id" value="" />
+                    <input type="hidden" id="advance" name="payable_amount" value="" />
 
                     <!-- Modal footer -->
                     <div class="modal-footer" style="border-top: 0">
