@@ -1491,7 +1491,7 @@ class PickupRunSheetController extends Controller
             \"pan\": \"$request->pan\",
             \"amt_deducted\": \"$request->amt_deducted\",
             \"vehicle\": \"$sent_vehicle_no\",
-            \"txn_route\": \"HRS\"
+            \"txn_route\": \"PRS\"
             }]",
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
