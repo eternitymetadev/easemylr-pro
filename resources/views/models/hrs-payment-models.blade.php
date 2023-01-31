@@ -92,13 +92,13 @@
                 <form id="second_payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="hrs_no_request" name="hrs_no" value="">
+                            <input type="hidden" class="form-control" id="hrs_no_request" name="hrs_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="transaction_id_2" name="transaction_id"
+                            <input type="hidden" class="form-control" id="transaction_id_2" name="transaction_id"
                                 value="">
                         </div>
                     </div>
