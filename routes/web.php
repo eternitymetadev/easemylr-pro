@@ -435,6 +435,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
 
     Route::resource('locations', LocationController::class);
