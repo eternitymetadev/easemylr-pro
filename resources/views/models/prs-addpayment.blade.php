@@ -1,3 +1,136 @@
+<!-- ----------------------------------------------------------------------  -->
+<div class="modal fade bd-example-modal-xl" id="pymt_request_modal_prs" tabindex="-1" role="dialog"
+    aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myExtraLargeModalLabel">Create Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="second_payment_form_prs">
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="hrs_no_request" name="prs_no" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" id="transaction_id_2" name="transaction_id"
+                                value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Branch Location</label>
+                            <select class="form-control" id="branch_id" name="branch_id" tabindex="-1">
+                                <?php $countbranch = count($branchs);
+if ($countbranch > 1) {?>
+                                <option selected disabled>select location </option>
+                                <?php }?>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vendor Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Purchase Amount</label>
+                            <input type="text" class="form-control" id="total_clam_amt_second" name="claimed_amount"
+                                value="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display: none">
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Beneficiary Name</label>
+                            <input type="text" class="form-control" id="beneficiary_name_second" name="beneficiary_name"
+                                value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Branch Name</label>
+                            <input type="text" class="form-control" id="branch_name_second" name="branch_name" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display: none">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Account No</label>
+                            <input type="text" class="form-control" id="bank_acc_second" name="acc_no" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Ifsc Code</label>
+                            <input type="text" class="form-control" id="ifsc_code_second" name="ifsc" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display: none">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Bank Name</label>
+                            <input type="text" class="form-control" id="bank_name_second" name="bank_name" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Email</label>
+                            <input type="text" class="form-control" id="email_second" name="email" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display: none">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Pan</label>
+                            <input type="text" class="form-control" id="pan_second" name="pan" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Type</label>
+                            <select class="form-control" id="p_type_second" name="p_type" tabindex="-1">
+
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Amount</label>
+                            <input type="text" class="form-control" id="amt_second" name="payable_amount" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Tds rate</label>
+                            <input type="text" class="form-control" id="tds_rate_second" name="tds_rate" value=""
+                                readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">tds deduct amount</label>
+                            <input type="text" class="form-control" id="tds_dedut_second" name="final_payable_amount"
+                                value="" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
+                            Discard</button>
+                        <!-- <button type="submit" id="crt_pytm" class="btn btn-warning">Create Payment</button> -->
+                        <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Create
+                                Payment</span>
+                            <span class="indicator-progress" style="display: none;">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- /////////////////////////////////////////////////////////////// -->
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="approver_model_prs" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

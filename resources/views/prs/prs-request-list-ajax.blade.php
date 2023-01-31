@@ -52,7 +52,7 @@
                 <!-- approver check end -->
                 <?php } ?>
                 <?php } else if($prsRequest->payment_status == 3) {?>
-                <td><button class="btn btn-warning second_payment" value="{{$prsRequest->transaction_id}}"> Partial Paid
+                <td><button class="btn btn-warning second_payment_prs" value="{{$prsRequest->transaction_id}}"> Partial Paid
                     </button></td>
                 <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> Unknown </button></td>
