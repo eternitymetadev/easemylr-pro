@@ -470,7 +470,7 @@
                 class="feather feather-chevron-right submenuArrow">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-        </a>
+        </a> 
         <ul class="collapse submenu list-unstyled" id="drsPayments" data-parent="#accordionExample">
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'vendor-list'}}"> Vendor List </a>
