@@ -22,7 +22,7 @@ class ManualDeliveryImport implements ToModel,WithHeadingRow
         $lr_no = ConsignmentNote::where('id', $row['lr_no'])->first();
 
         if(!empty($lr_no->job_id)){
-            ConsignmentNote::where('id', $row['lr_no'])->update(['lr_mode' => 0]);
+            ConsignmentNote::where('id', $row['lr_no'])->update(['lr_mode' => 1]);
         }
     }
 }
