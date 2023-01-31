@@ -162,7 +162,7 @@ $("#prs_rm_aprover").submit(function(e) {
             $('.disableme').prop('disabled', true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            
+
             if (data.success == true) {
                 swal("success", data.message, "success");
                 window.location.reload();
@@ -268,32 +268,31 @@ $("#second_payment_form_prs").submit(function(e) {
         },
     });
 });
-////
-///////////////////////////////////////////////
-$(document).on('click', '.show-hrs', function() {
-var trans_id = $(this).attr('data-id');
-$('#show_hrs_model').modal('show');
-$.ajax({
-    type: "GET",
-    url: "show-hrs",
-    data: {
-        trans_id: trans_id
-    },
-    beforeSend: //reinitialize Datatables
-        function() {
-            $('#show_drs_table').dataTable().fnClearTable();
-            $('#show_drs_table').dataTable().fnDestroy();
+//////
+$(document).on('click', '.show-prs', function() {
+    var trans_id = $(this).attr('data-id');
+    $('#show_prs_model').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "show-prs",
+        data: {
+            trans_id: trans_id
         },
-    success: function(data) {
-        // console.log(data.)
-        $.each(data.gethrs, function(index, value) {
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#show_prs_table').dataTable().fnClearTable();
+                $('#show_prs_table').dataTable().fnDestroy();
+            },
+        success: function(data) {
+            // console.log(data.)
+            $.each(data.getprs, function(index, value) {
 
-            $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td></tr>");
+                $('#show_prs_table tbody').append("<tr><td>" + value.prs_no + "</td></tr>");
 
-        });
-    }
+            });
+        }
 
-});
+    });
 });
 /////////////////////////////////////////////////////////////////
 </script>

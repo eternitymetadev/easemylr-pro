@@ -614,6 +614,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
     Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
 
     Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
     Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
