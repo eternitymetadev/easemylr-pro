@@ -50,7 +50,7 @@
 
 #create_request_form span.select2 {
     margin-bottom: 0 !important;
-}
+} 
 
 input[readonly].styledInput {
     border: none;
@@ -175,13 +175,13 @@ $("#prs_rm_aprover").submit(function(e) {
 });
 
 //////////// Payment request sent model
-$(document).on('click', '.second_payment', function() {
-    $("#second_payment_form")[0].reset();
+$(document).on('click', '.second_payment_prs', function() {
+    // $("#second_payment_form")[0].reset();
     var trans_id = $(this).val();
-    $('#pymt_request_modal').modal('show');
+    $('#pymt_request_modal_prs').modal('show');
     $.ajax({
         type: "GET",
-        url: "get-second-pymt-details",
+        url: "get-second-pymt-details-prs",
         data: {
             trans_id: trans_id
         },
@@ -194,7 +194,7 @@ $(document).on('click', '.second_payment', function() {
 
             var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
 
-            $('#hrs_no_request').val(data.hrs_no);
+            $('#hrs_no_request').val(data.prs_no);
             $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
             $('#transaction_id_2').val(data.req_data[0].transaction_id);
             $('#name').val(data.req_data[0].vendor_details.name);
@@ -238,18 +238,13 @@ $(document).on('click', '.second_payment', function() {
 
 });
 //////Second Payment
-$("#second_payment_form").submit(function(e) {
+$("#second_payment_form_prs").submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
     var tds_rate = $("#tds_rate").val();
 
-    // if (!tds_rate) {
-    //     swal("Error", "please add tds rate in vendor", "error");
-    //     return false;
-    // }
-
     $.ajax({
-        url: "second-payment-hrs",
+        url: "second-payment-prs",
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
