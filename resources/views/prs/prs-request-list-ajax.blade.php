@@ -4,7 +4,7 @@
             <tr>
                 <th>Requesting Branch</th>
                 <th>BM Name</th>
-                <th>Total Hrs</th>
+                <th>Total Prs</th>
                 <th>Vendor Name</th>
                 <th>Purchase Amount</th>
                 <th>Transaction ID</th>

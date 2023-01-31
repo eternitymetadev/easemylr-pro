@@ -22,6 +22,7 @@ use App\Models\Vendor;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\PrsPaymentRequest;
+use App\Models\PrsPaymentHistory;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PrsExport;
 use Carbon\Carbon;
@@ -45,6 +46,7 @@ class PickupRunSheetController extends Controller
     {
         $this->title = "PRS";
         $this->segment = \Request::segment(2);
+        $this->req_link = \Config::get('req_api_link.req');
     }
     /**
      * Display a listing of the resource.
@@ -737,7 +739,7 @@ class PickupRunSheetController extends Controller
     public function paymentList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $peritem = Config::get('variable.PER_PAGE');
+        $peritem = Config::get('variable.PER_PAGE'); 
         $query = PickupRunSheet::query();
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
@@ -751,7 +753,9 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
 
-            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail');
+            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')
+            ->where('request_status', 0)
+            ->where('payment_status', 0);
 
             if(!empty($request->search)){
                 $search = $request->search;
@@ -803,7 +807,8 @@ class PickupRunSheetController extends Controller
         }
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
 
-        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->where('request_status', 0)
+        ->where('payment_status', 0)->orderBy('id','DESC')->paginate($peritem);
         $prsdata = $prsdata->appends($request->query());
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         
@@ -1116,6 +1121,7 @@ class PickupRunSheetController extends Controller
   
               $unique = array_unique($sent_vehicle);
               $sent_venicle_no = implode(',', $unique);
+              dd($prsno);
               PickupRunSheet::whereIn('pickup_id', $prsno)->update(['request_status' => '1']);
   
   
@@ -1426,7 +1432,7 @@ class PickupRunSheetController extends Controller
         $prs_no = implode(',', $store);
 
         $response['req_data'] = $req_data;
-        $response['hrs_no'] = $prs_no;
+        $response['prs_no'] = $prs_no;
         $response['success'] = true;
         $response['success_message'] = "Approver successfully";
         return response()->json($response);
@@ -1502,7 +1508,7 @@ class PickupRunSheetController extends Controller
 
             if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
 
-                $getadvanced = HrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->payable_amount;
                 } else {
@@ -1510,7 +1516,7 @@ class PickupRunSheetController extends Controller
                 }
                 $advance = $getadvanced->advanced;
 
-                HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+                PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
 
                 $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
@@ -1546,9 +1552,9 @@ class PickupRunSheetController extends Controller
                 $paymentresponse['current_paid_amt'] = $request->payable_amount;
                 $paymentresponse['payment_status'] = 2;
 
-                $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+                $paymentresponse = PrsPaymentHistory::create($paymentresponse);
 
-                HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+                PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
             }
 
             $new_response['success'] = true;
