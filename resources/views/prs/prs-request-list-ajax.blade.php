@@ -24,8 +24,8 @@
             <tr>
                 <td>{{$prsRequest->Branch->name}}</td>
                 <td>{{$prsRequest->User->name}}</td>
-                <td class="show-hrs" data-id="{{$prsRequest->transaction_id}}">
-                    {{ Helper::countHrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
+                <td class="show-prs" data-id="{{$prsRequest->transaction_id}}">
+                    {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
                 <td>{{$prsRequest->VendorDetails->name}}</td>
                 <td>{{$prsRequest->total_amount}}</td>
                 <td>{{$prsRequest->transaction_id}}</td>

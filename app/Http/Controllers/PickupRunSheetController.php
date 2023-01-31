@@ -1568,5 +1568,15 @@ class PickupRunSheetController extends Controller
         return response()->json($new_response);
 
     }
+    public function showPrs(Request $request)
+    {
+        $getprs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->trans_id)->get();
+        // dd($request->transaction_id);
+
+        $response['getprs'] = $getprs;
+        $response['success'] = true;
+        $response['success_message'] = "Prs transaction Ids";
+        return response()->json($response);
+    }
 
 }
