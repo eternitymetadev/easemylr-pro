@@ -52,7 +52,7 @@
                 <td>
                     <p class="d-flex justify-content-center align-items-center mb-0" style="gap: 6px">
                         ₹{{$hrssheet->purchase_price ?? '-'}}
-                        <span class="swan-tooltip-right update_purchase_price" drs-no="{{$hrssheet->hrs_no}}"
+                        <span class="swan-tooltip-right update_purchase_price_hrs" hrs-no="{{$hrssheet->hrs_no}}"
                             data-tooltip="Change purchase amount">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

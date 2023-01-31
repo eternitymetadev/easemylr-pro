@@ -435,5 +435,10 @@ class GlobalFunctions
         $cnr_nickname = implode(',', $cnr_name);
         return $cnr_nickname;
     }
+    public static function countPrsInTransaction($trans_id)
+    {
+        $data = DB::table('prs_payment_requests')->where('transaction_id', $trans_id)->count();
+        return $data;
+    }
 
 }

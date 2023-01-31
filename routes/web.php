@@ -418,6 +418,13 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    Route::any('update-purchas-price-prs', [PickupRunSheetController::class, 'updatePurchasePricePrs']);
+    Route::any('get-prs-details', [PickupRunSheetController::class, 'getPrsdetails']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-second-pymt-details-prs', [PickupRunSheetController::class, 'getSecondPaymentDetailsPrs']);
+    Route::any('second-payment-prs', [PickupRunSheetController::class, 'createSecondPaymentRequestPrs']); 
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
@@ -443,7 +450,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
-    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
@@ -454,8 +464,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
-
-    
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -589,7 +597,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
-    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
+    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); 
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
@@ -604,6 +612,10 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
+    Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
 
     Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
     Route::any('hrs-list', [HubtoHubController::class,'hrsList']);

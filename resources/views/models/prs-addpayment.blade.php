@@ -1,79 +1,5 @@
-<!-- /////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="edit_amt_hrs" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-            <!-- Modal Header -->
-            <div class="modal-header text-center">
-                <h4 class="modal-title">update Purchase Price</h4>
-            </div>
-            <!-- Modal body -->
-            <div class="modal-body">
-                <form id="update_purchase_amt_form_hrs">
-                    <input type="hidden" class="form-control" id="hrs_num_edit" name="hrs_no" value="">
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse_edit" name="purchase_price" value="">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Vehicle Type</label>
-                            <select class="form-control my-select2" id="vehicle_type_edit" name="vehicle_type" >
-                                @foreach($vehicletype as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <div class="btn-section w-100 P-0">
-                    <button type="submit" class="btn btn-warning">Update</button>
-                    <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
 <!-- ----------------------------------------------------------------------  -->
-<!-- /////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="show_hrs_model" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-            <!-- Modal Header -->
-            <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
-            </div>
-            <!-- Modal body -->
-            <div class="modal-body">
-           
-            <table id="show_drs_table" class="table table-hover"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
-                            <thead>
-                                <tr>
-                                    <th>Drs No</th> 
-                                 
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table> 
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
-</div>
-<!-- =========================================================================== -->
-<!-- ----------------------------------------------------------------------  -->
-<div class="modal fade bd-example-modal-xl" id="pymt_request_modal" tabindex="-1" role="dialog"
+<div class="modal fade bd-example-modal-xl" id="pymt_request_modal_prs" tabindex="-1" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -89,16 +15,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="second_payment_form">
+                <form id="second_payment_form_prs">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="hrs_no_request" name="hrs_no" value="">
+                            <input type="hidden" class="form-control" id="hrs_no_request" name="prs_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" id="transaction_id_2" name="transaction_id"
+                            <input type="hidden" class="form-control" id="transaction_id_2" name="transaction_id"
                                 value="">
                         </div>
                     </div>
@@ -205,50 +131,8 @@ if ($countbranch > 1) {?>
 
 </div>
 <!-- /////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="add_amt" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-            <!-- Modal Header -->
-            <div class="modal-header text-center">
-                <h4 class="modal-title">Add Purchase Price</h4>
-            </div>
-            <!-- Modal body -->
-            <div class="modal-body">
-                <form id="purchase_amt_hrs">
-                    <input type="text" class="form-control" id="hrs_num" name="hrs_no" value="">
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Purchase Price</label>
-                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="location_name">Vehicle Type</label>
-                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
-                                <option value="">Select vehicle type</option>
-                                @foreach($vehicletype as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <div class="btn-section w-100 P-0">
-                    <button type="submit" class="btn btn-warning">Update</button>
-                    <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- ----------------------------------------------------------------------  -->
 <!-- /////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="approver_model" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="approver_model_prs" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
@@ -266,8 +150,8 @@ if ($countbranch > 1) {?>
             Are you sure to pay  ₹<strong class='req_amt'></strong> to <strong class="req_vendor"></strong>?
             </p>
 
-                <form id="rm_aprover">
-                    <input type="hidden" id="hrs_number" name="hrs_no" value="" />
+                <form id="prs_rm_aprover">
+                    <input type="hidden" id="prs_number" name="prs_no" value="" />
                     <input type="hidden" id="transaction_no" name="transaction_id" value="" />
                     <input type="hidden" id="v_name" name="name" value="" />
                     <input type="hidden" id="beneficiary_name" name="beneficiary_name" value="" />
@@ -305,8 +189,8 @@ if ($countbranch > 1) {?>
     </div>
 </div>
     <!-- ----------------------------------------------------------------------  -->
-    <!-- ----------------------------------------------------------------------  -->
-    <div class="modal fade bd-example-modal-xl" id="hrs_pymt_modal" tabindex="-1" role="dialog"
+<!-- ----------------------------------------------------------------------  -->
+<div class="modal fade bd-example-modal-xl" id="prs_pymt_modal" tabindex="-1" role="dialog"
         aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 900px">
             <div class="modal-content">
@@ -320,10 +204,10 @@ if ($countbranch > 1) {?>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
-                </div>
+                </div> 
                 <div class="modal-body px-4">
-                    <form id="hrs_request_form">
-                        <input type="hidden" id="hrs_no_1" name="hrs_no" value="" />
+                    <form id="prs_request_form">
+                        <input type="hidden" id="hrs_no_1" name="prs_no" value="" />
                         <input type="hidden" id="vendor_no_1" name="vendor_no" value="" />
                         <input type="hidden" id="transaction_id_1" name="transaction_id" value="" />
                         <input type="hidden" id="name_1" name="v_name" value="" />
@@ -341,7 +225,7 @@ if ($countbranch > 1) {?>
                                 <label for="exampleFormControlSelect1">Branch Location</label>
                                 <select class="form-control" id="branch_id_1" name="branch_id" tabindex="-1">
                                     <?php $countbranch = count($branchs);
-if ($countbranch > 1) {?>
+                    if ($countbranch > 1) {?>
                                     <option selected disabled>select location</option>
                                     <?php }?>
                                     @foreach($branchs as $branch)
@@ -356,8 +240,8 @@ if ($countbranch > 1) {?>
                                     <option value="" selected disabled>Select Vendor</option>
                                     @foreach($vendors as $vendor)
                                     <?php
-$bank_details = json_decode($vendor->bank_details, true);
-?>
+                 $bank_details = json_decode($vendor->bank_details, true);
+                            ?>
                                     <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}
                                         -{{$vendor->Branch->name ?? '-'}}</option>
                                     @endforeach
@@ -414,63 +298,76 @@ $bank_details = json_decode($vendor->bank_details, true);
             </div>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade bd-example-modal-xl" id="view_hrs_lrmodel" tabindex="-1" role="dialog"
-        aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">View LR</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                </div>
-                <div class="modal-body">
+<!-- /////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="add_prsamount" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+            <!-- Modal Header -->
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Add Purchase Price</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="purchase_amt_prs">
+                    <input type="hidden" class="form-control" id="prs_num" name="prs_no" value="">
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Purchase Price</label>
+                            <input type="text" class="form-control" id="purchse" name="purchase_price" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vehicle Type</label>
+                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
+                                <option value="">Select vehicle type</option>
+                                @foreach($vehicletype as $vehicle)
+                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-                    <div class="table-responsive">
-                        <table id="view_hrs_lrtable" class="table"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="btn-section w-100 P-0">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                    <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="show_prs_model" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+            <!-- Modal Header -->
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Confirm</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+           
+            <table id="show_prs_table" class="table table-hover"
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
                             <thead>
                                 <tr>
-                                    <th>LR No</th>
-                                    <th>Consignment Date</th>
-                                    <th>Consignee Name</th>
-                                    <th>city</th>
-                                    <th>Pin Code</th>
-                                    <th>Number Of Boxes</th>
-                                    <th>Net Weight</th>
+                                    <th>Prs No</th> 
+                                 
                                 </tr>
                             </thead>
                             <tbody>
 
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td>Total</td>
-                                    <td id="totallr"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id="total_boxes"></td>
-                                    <td id="totalweights"></td>
-                                </tr>
-
-                            </tfoot>
-                        </table>
-                        <div class="row">
-                            <div class="col-sm-12">
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
-                        Discard</button>
-
-                    </form>
-                </div>
+                        </table> 
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
             </div>
         </div>
     </div>
+</div>

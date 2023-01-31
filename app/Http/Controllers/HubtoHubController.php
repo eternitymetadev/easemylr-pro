@@ -1686,5 +1686,39 @@ class HubtoHubController extends Controller
         $response['success_message'] = "HRS Fetched successfully";
         return response()->json($response);
     }
+    /////////////////
+    public function editPurchasePriceHrs(Request $request)
+    {
+        
+        $hrs_price = Hrs::with('ConsignmentDetail')->where('hrs_no', $request->hrs_no)->first();
+        $vehicletype = VehicleType::select('id', 'name')->get();
+
+        $response['hrs_price'] = $hrs_price;
+        $response['vehicletype'] = $vehicletype;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+    }
+    public function updatePurchasePriceVehicleTypeHrs(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+         
+            Hrs::where('hrs_no', $request->hrs_no)->update(['purchase_price' => $request->purchase_price, 'vehicle_type_id' => $request->vehicle_type]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Price Added successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
 
 }

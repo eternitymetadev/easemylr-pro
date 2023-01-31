@@ -9,7 +9,7 @@ class PickupRunSheet extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'pickup_id', 'regclient_id','hub_location_id', 'location_id', 'consigner_id', 'prs_type', 'vehicletype_id', 'vehicle_id', 'driver_id', 'prs_date','user_id', 'branch_id', 'status', 'created_at', 'updated_at'
+        'pickup_id', 'regclient_id','hub_location_id', 'location_id', 'consigner_id', 'prs_type', 'vehicletype_id', 'vehicle_id', 'driver_id', 'prs_date','user_id', 'branch_id','purchase_amount', 'status', 'created_at', 'updated_at'
     ];
 
     public function PrsRegClients(){

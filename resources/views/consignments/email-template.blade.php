@@ -9,7 +9,7 @@
 <body>
 
     <div class="container">
-        <p>{{$Lr_No}} LR Create against this Invoice No.</p> 
+        <p>{{$Lr_No}} LR Create against this Invoice</p> 
     </div>
 </body>
 </html>

@@ -18,7 +18,11 @@ use App\Models\PrsReceiveVehicle;
 use App\Models\ConsignmentNote;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentSubItem;
+use App\Models\Vendor;
 use App\Models\Location;
+use App\Models\User;
+use App\Models\PrsPaymentRequest;
+use App\Models\PrsPaymentHistory;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PrsExport;
 use Carbon\Carbon;
@@ -42,6 +46,7 @@ class PickupRunSheetController extends Controller
     {
         $this->title = "PRS";
         $this->segment = \Request::segment(2);
+        $this->req_link = \Config::get('req_api_link.req');
     }
     /**
      * Display a listing of the resource.
@@ -734,8 +739,12 @@ class PickupRunSheetController extends Controller
     public function paymentList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $peritem = Config::get('variable.PER_PAGE');
+        $peritem = Config::get('variable.PER_PAGE'); 
         $query = PickupRunSheet::query();
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        $vendors = Vendor::with('Branch')->get();
         
         if ($request->ajax()) {
             if(isset($request->resetfilter)){
@@ -744,7 +753,9 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
 
-            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail');
+            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')
+            ->where('request_status', 0)
+            ->where('payment_status', 0);
 
             if(!empty($request->search)){
                 $search = $request->search;
@@ -784,19 +795,24 @@ class PickupRunSheetController extends Controller
             }else{
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+            // $vehicles = Vehicle::select('vehicle_no')->distinct()->get();
 
-            $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
+            $prsdata = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
             $prsdata = $prsdata->appends($request->query());
 
-            $html =  view('prs.prs-paymentlist-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem])->render();
+            $html =  view('prs.prs-paymentlist-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata, 'vehicles'=>$vehicles, 'peritem'=>$peritem])->render();
             
             return response()->json(['html' => $html]);
         }
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
 
-        $prsdata = $query->where('status',3)->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->where('request_status', 0)
+        ->where('payment_status', 0)->orderBy('id','DESC')->paginate($peritem);
         $prsdata = $prsdata->appends($request->query());
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         
-        return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
+        return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'vehicles'=>$vehicles,'vehicletype' => $vehicletypes, 'branchs' => $branchs,'vendors' => $vendors,'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
     public function pickupLoads(Request $request)
@@ -1003,5 +1019,740 @@ class PickupRunSheetController extends Controller
         }
         return response()->json($response);
     }
+    // ================= ADD PURCHASE AMT ============= //
+    public function updatePurchasePricePrs(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            PickupRunSheet::where('pickup_id', $request->prs_no)->update(['purchase_amount' => $request->purchase_price, 'vehicletype_id' => $request->vehicle_type]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Price Added successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
+
+    public function getPrsdetails(Request $request)
+    {
+        $prs_statsu = PickupRunSheet::whereIn('pickup_id', $request->prs_no)->first();
+
+        $response['get_data'] = $prs_statsu;
+        $response['success'] = true;
+        $response['error_message'] = "find data";
+        return response()->json($response);
+    }
+
+      // ==================CreatePayment Request =================
+      public function createPrsPayment(Request $request)
+      {
+         
+          $this->prefix = request()->route()->getPrefix();
+          $url_header = $_SERVER['HTTP_HOST'];
+  
+          $authuser = Auth::user();
+          $role_id = Role::where('id', '=', $authuser->role_id)->first();
+          $cc = $authuser->branch_id;
+          $user = $authuser->id;
+          $bm_email = $authuser->email;
+  
+          $branch_name = Location::where('id', '=', $request->branch_id)->first();
+  
+          //deduct balance
+          $deduct_balance = $request->pay_amt - $request->final_payable_amount;
+  
+          $prsno = explode(',', $request->prs_no);
+
+          $consignment = PickupRunSheet::with('VehicleDetail')->whereIn('pickup_id', $prsno)
+              ->groupby('pickup_id')
+              ->get();
+          $simplyfy = json_decode(json_encode($consignment), true);
+          $transactionId = DB::table('prs_payment_requests')->select('transaction_id')->latest('transaction_id')->first();
+          $transaction_id = json_decode(json_encode($transactionId), true);
+          if (empty($transaction_id) || $transaction_id == null) {
+              $transaction_id_new = 90000101;
+          } else {
+              $transaction_id_new = $transaction_id['transaction_id'] + 1;
+          }
+          // ============ Check Request Permission =================
+          if ($authuser->is_payment == 0) {
+              $i = 0;
+              $sent_vehicle = array();
+              foreach ($simplyfy as $value) {
+  
+                  $i++;
+                  $prs_no = $value['pickup_id'];
+                  $vendor_id = $request->vendor_name;
+                  $vehicle_no = $value['vehicle_detail']['regn_no'];
+                  $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+                  
+  
+                  if ($request->p_type == 'Advance') {
+                      $balance_amt = $request->claimed_amount - $request->pay_amt;
+                    
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+  
+                      PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
+                  } else {
+                      $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                      if (!empty($getadvanced->balance)) {
+                          $balance = $getadvanced->balance - $request->pay_amt;
+                      } else {
+                          $balance = 0;
+                      }
+                      $advance = $request->pay_amt;
+  
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+                      PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
+  
+                  }
+  
+              }
+  
+              $unique = array_unique($sent_vehicle);
+              $sent_venicle_no = implode(',', $unique);
+              PickupRunSheet::whereIn('pickup_id', $prsno)->update(['request_status' => '1']);
+  
+  
+              $url = $this->prefix . '/prs-request-list';
+              $new_response['success'] = true;
+              $new_response['redirect_url'] = $url;
+              $new_response['success_message'] = "Data Imported successfully";
+  
+          } else {
+              $i = 0;
+              $sent_vehicle = array();
+              foreach ($simplyfy as $value) {
+  
+                  $i++;
+                  $prs_no = $value['pickup_id'];
+                  $vendor_id = $request->vendor_name;
+                  $vehicle_no = $value['vehicle_detail']['regn_no'];
+                  $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+  
+                  if ($request->p_type == 'Advance') {
+                      $balance_amt = $request->claimed_amount - $request->pay_amt;
+  
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+  
+                  } else {
+                      $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                      if (!empty($getadvanced->balance)) {
+                          $balance = $getadvanced->balance - $request->pay_amt;
+                      } else {
+                          $balance = 0;
+                      }
+                      $advance = $request->pay_amt;
+                      // dd($advance);
+  
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                  }
+  
+              }
+  
+              $unique = array_unique($sent_vehicle);
+              $sent_venicle_no = implode(',', $unique);
+              PickupRunSheet::whereIn('pickup_id', $prsno)->update(['request_status' => '1']);
+  
+              $checkduplicateRequest = PrsPaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+              if (empty($checkduplicateRequest)) {
+                  // ============== Sent to finfect
+                  $pfu = 'ETF';
+                  $curl = curl_init();
+                  curl_setopt_array($curl, array(
+                      CURLOPT_URL => $this->req_link,
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => '',
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 0,
+                      CURLOPT_FOLLOWLOCATION => true,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => 'POST',
+                      CURLOPT_POSTFIELDS => "[{
+                  \"unique_code\": \"$request->vendor_no\",
+                  \"name\": \"$request->v_name\",
+                  \"acc_no\": \"$request->acc_no\",
+                  \"beneficiary_name\": \"$request->beneficiary_name\",
+                  \"ifsc\": \"$request->ifsc\",
+                  \"bank_name\": \"$request->bank_name\",
+                  \"baddress\": \"$request->branch_name\",
+                  \"payable_amount\": \"$request->final_payable_amount\",
+                  \"claimed_amount\": \"$request->claimed_amount\",
+                  \"pfu\": \"$pfu\",
+                  \"ptype\": \"$request->p_type\",
+                  \"email\": \"$bm_email\",
+                  \"terid\": \"$transaction_id_new\",
+                  \"branch\": \"$branch_name->name\",
+                  \"vehicle\": \"$sent_venicle_no\",
+                  \"pan\": \"$request->pan\",
+                  \"amt_deducted\": \"$deduct_balance\",
+                  \"txn_route\": \"PRS\"
+                  }]",
+                      CURLOPT_HTTPHEADER => array(
+                          'Content-Type: application/json',
+                          'Access-Control-Request-Headers:' . $url_header,
+  
+                      ),
+                  ));
+  
+                  $response = curl_exec($curl);
+                  curl_close($curl);
+                  $res_data = json_decode($response);
+                  // ============== Success Response
+                  if ($res_data->message == 'success') {
+  
+                      if ($request->p_type == 'Fully') {
+                          $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                          if (!empty($getadvanced->balance)) {
+                              $balance = $getadvanced->balance - $request->pay_amt;
+                          } else {
+                              $balance = 0;
+                          }
+                          $advance = $request->pay_amt;
+  
+                          PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
+  
+                          PrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+  
+                          $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+  
+                          $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                          $paymentresponse['transaction_id'] = $transaction_id_new;
+                          $paymentresponse['prs_no'] = $request->prs_no;
+                          $paymentresponse['bank_details'] = json_encode($bankdetails);
+                          $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                          $paymentresponse['payment_type'] = $request->p_type;
+                          $paymentresponse['advance'] = $advance;
+                          $paymentresponse['balance'] = $balance;
+                          $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                          $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                          $paymentresponse['payment_status'] = 2;
+  
+                          $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+  
+                      } else {
+  
+                          $balance_amt = $request->claimed_amount - $request->pay_amt;
+                          //======== Payment History save =========//
+                          $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+  
+                          $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                          $paymentresponse['transaction_id'] = $transaction_id_new;
+                          $paymentresponse['prs_no'] = $request->prs_no;
+                          $paymentresponse['bank_details'] = json_encode($bankdetails);
+                          $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                          $paymentresponse['payment_type'] = $request->p_type;
+                          $paymentresponse['advance'] = $request->pay_amt;
+                          $paymentresponse['balance'] = $balance_amt;
+                          $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                          $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                          $paymentresponse['payment_status'] = 2;
+  
+                          $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+                          PrsPaymentRequest::where('transaction_id', $transaction_id_new)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2]);
+  
+                          PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
+                      }
+  
+                      $new_response['success'] = true;
+                      $new_response['message'] = $res_data->message;
+  
+                  } else {
+  
+                      $new_response['message'] = $res_data->message;
+                      $new_response['success'] = false;
+  
+                      $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+  
+                      //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                      $paymentresponse['transaction_id'] = $transaction_id_new;
+                      $paymentresponse['hrs_no'] = $request->hrs_no;
+                      $paymentresponse['bank_details'] = json_encode($bankdetails);
+                      $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                      $paymentresponse['payment_type'] = $request->p_type;
+                      $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                      $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                      $paymentresponse['payment_status'] = 4;
+  
+                      $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+  
+                  }
+                  $url = $this->prefix . '/prs-request-list';
+                  $new_response['redirect_url'] = $url;
+                  $new_response['success_message'] = "Request Sent Successfully";
+              } else {
+                  $new_response['error'] = false;
+                  $new_response['success_message'] = "Request Already Sent";
+              }
+  
+          }
+  
+          return response()->json($new_response);
+  
+      }
+
+      public function prsRequestList(Request $request)
+      {
+          $this->prefix = request()->route()->getPrefix();
+          $peritem = Config::get('variable.PER_PAGE');
+          $query = PrsPaymentRequest::query();
+          $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+          $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+          $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+  
+          if ($request->ajax()) {
+              if (isset($request->resetfilter)) {
+                  Session::forget('peritem');
+                  $url = URL::to($this->prefix . '/' . $this->segment);
+                  return response()->json(['success' => true, 'redirect_url' => $url]);
+              }
+  
+              $authuser = Auth::user();
+              $role_id = Role::where('id', '=', $authuser->role_id)->first();
+              $baseclient = explode(',', $authuser->baseclient_id);
+              $regclient = explode(',', $authuser->regionalclient_id);
+              $cc = explode(',', $authuser->branch_id);
+              $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+  
+              $query = $query->with('ConsignmentDetail', 'VehicleDetail', 'DriverDetail')->whereIn('status', ['1', '0', '3'])
+                  ->groupBy('hrs_no');
+  
+              if ($authuser->role_id == 1) {
+                  $query = $query;
+              } elseif ($authuser->role_id == 4) {
+                  $query = $query
+                      ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                          $query->whereIn('regclient_id', $regclient);
+                      });
+              } elseif ($authuser->role_id == 6) {
+                  $query = $query
+                      ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                          $query->whereIn('base_clients.id', $baseclient);
+                      });
+              } elseif ($authuser->role_id == 7) {
+                  $query = $query
+                      ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
+                          $query->whereIn('id', $regclient);
+                      });
+              } else {
+                  $query = $query->whereIn('branch_id', $cc);
+              }
+  
+              if (!empty($request->search)) {
+                  $search = $request->search;
+                  $searchT = str_replace("'", "", $search);
+                  $query->where(function ($query) use ($search, $searchT) {
+                      $query->where('hrs_no', 'like', '%' . $search . '%');
+                  });
+              }
+  
+              if ($request->peritem) {
+                  Session::put('peritem', $request->peritem);
+              }
+  
+              $peritem = Session::get('peritem');
+              if (!empty($peritem)) {
+                  $peritem = $peritem;
+              } else {
+                  $peritem = Config::get('variable.PER_PAGE');
+              }
+  
+              $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
+              $hrssheets = $hrssheets->appends($request->query());
+  
+              $html = view('transportation.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+  
+              return response()->json(['html' => $html]);
+          }
+  
+          $authuser = Auth::user();
+          $role_id = Role::where('id', '=', $authuser->role_id)->first();
+          $baseclient = explode(',', $authuser->baseclient_id);
+          $regclient = explode(',', $authuser->regionalclient_id);
+          $cc = explode(',', $authuser->branch_id);
+          $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+  
+          $cc = explode(',', $authuser->branch_id);
+          $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+  
+          $query = $query->with('Branch', 'User')
+              ->groupBy('transaction_id');
+  
+          if ($authuser->role_id == 1) {
+              $query = $query;
+          } elseif ($authuser->role_id == 4) {
+              $query = $query
+                  ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
+                      $query->whereIn('regclient_id', $regclient);
+                  });
+          } elseif ($authuser->role_id == 6) {
+              $query = $query
+                  ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
+                      $query->whereIn('base_clients.id', $baseclient);
+                  });
+          } elseif ($authuser->role_id == 7) {
+              $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+          } else {
+           
+              $query = $query->whereIn('branch_id', $cc);
+              
+          }
+          $prsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
+          $prsRequests = $prsRequests->appends($request->query());
+          $vendors = Vendor::with('Branch')->get();
+          $vehicletype = VehicleType::select('id', 'name')->get();
+          
+  
+          return view('prs.prs-request-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'prsRequests' => $prsRequests, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors,'vehicletype' => $vehicletype]);
+  
+      }
+      /// RM aprover 
+      public function getVendorReqDetailsPrs(Request $request)
+    {
+        $req_data = PrsPaymentRequest::with('VendorDetails')->where('transaction_id', $request->transaction_id)
+            ->groupBy('transaction_id')->get();
+
+        $gethrs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->transaction_id)
+            ->get();
+        $simply = json_decode(json_encode($gethrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['prs_no'];
+        }
+        $prs_no = implode(',', $store);
+
+        $response['req_data'] = $req_data;
+        $response['prs_no'] = $prs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Approver successfully";
+        return response()->json($response);
+
+    }
+
+    // ============ Rm Approver Pusher =========================
+    public function rmApproverRequest(Request $request)
+    {
+        // echo '<pre>';
+        // print_r($request->all());die;
+
+        $authuser = User::where('id', $request->user_id)->first();
+        $bm_email = $authuser->email;
+        $branch_name = Location::where('id', '=', $request->branch_id)->first();
+
+        //deduct balance
+        // $deduct_balance = $request->payable_amount - $request->final_payable_amount;
+
+        $get_vehicle = PrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
+        $sent_vehicle = array();
+        foreach ($get_vehicle as $vehicle) {
+            $sent_vehicle[] = $vehicle->vehicle_no;
+        }
+        $unique = array_unique($sent_vehicle);
+        $sent_vehicle_no = implode(',', $unique);
+
+        $url_header = $_SERVER['HTTP_HOST'];
+        $drs = explode(',', $request->drs_no);
+        $pfu = 'ETF';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->req_link,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$bm_email\",
+            \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->name\",
+            \"pan\": \"$request->pan\",
+            \"amt_deducted\": \"$request->amt_deducted\",
+            \"vehicle\": \"$sent_vehicle_no\",
+            \"txn_route\": \"PRS\"
+            }]",
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res_data = json_decode($response);
+        // $cc = 'success';
+        // ============== Success Response
+        if ($res_data->message == 'success') {
+
+            if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
+
+                $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->payable_amount;
+                } else {
+                    $balance = 0;
+                }
+                $advance = $getadvanced->advanced;
+
+                PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['prs_no'] = $request->prs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $advance;
+                $paymentresponse['balance'] = $balance;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+
+            } else {
+
+                $balance_amt = $request->claimed_amount - $request->payable_amount;
+                //======== Payment History save =========//
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['hrs_no'] = $request->hrs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->payable_amount;
+                $paymentresponse['balance'] = $balance_amt;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+
+                PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'is_approve' => 1]);
+            }
+
+            $new_response['success'] = true;
+            $new_response['message'] = $res_data->message;
+
+        } else {
+            $new_response['message'] = $res_data->message;
+            $new_response['success'] = false;
+        }
+
+        return response()->json($new_response);
+
+    }
+    public function showPrs(Request $request)
+    {
+        $getprs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->trans_id)->get();
+        // dd($request->transaction_id);
+
+        $response['getprs'] = $getprs;
+        $response['success'] = true;
+        $response['success_message'] = "Prs transaction Ids";
+        return response()->json($response);
+    }
+
+    public function getSecondPaymentDetailsPrs(Request $request)
+    {
+       
+        $req_data = PrsPaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)
+            ->groupBy('transaction_id')->get();
+
+        $getdrs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->trans_id)
+            ->get();
+        $simply = json_decode(json_encode($getdrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['prs_no'];
+        }
+        $prs_no = implode(',', $store);
+
+        $response['req_data'] = $req_data;
+        $response['prs_no'] = $prs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+    }
+
+     //////////////////////
+     public function createSecondPaymentRequestPrs(Request $request)
+     {
+         // echo'<pre>'; print_r($request->all()); die;
+         $authuser = Auth::user();
+         $role_id = Role::where('id', '=', $authuser->role_id)->first();
+         $cc = $authuser->branch_id;
+         $user = $authuser->id;
+         $bm_email = $authuser->email;
+         $branch_name = Location::where('id', '=', $request->branch_id)->first();
+ 
+         //deduct balance
+         $deduct_balance = $request->payable_amount - $request->final_payable_amount ;
+ 
+         $get_vehicle = PrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
+         $sent_vehicle = array();
+         foreach($get_vehicle as $vehicle){
+               $sent_vehicle[] = $vehicle->vehicle_no;
+         }
+         $unique = array_unique($sent_vehicle);
+         $sent_vehicle_no = implode(',', $unique);
+         $url_header = $_SERVER['HTTP_HOST'];
+         $prs = explode(',', $request->prs_no);
+         if($authuser->is_payment == 0){
+             
+             $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+             if (!empty($getadvanced->balance)) {
+                 $balance = $getadvanced->balance - $request->payable_amount;
+             } else {
+                 $balance = 0;
+             }
+             $advance = $getadvanced->advanced + $request->payable_amount;
+          
+ 
+             PickupRunSheet::whereIn('pickup_id', $prs)->update(['payment_status' => 2]);
+             
+ 
+             PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'amt_without_tds' => $request->payable_amount, 'tds_deduct_balance'=> $deduct_balance, 'current_paid_amt'=> $request->final_payable_amount ,'payment_status' => 2,'is_approve' => 0]);
+ 
+             $new_response['success'] = true;
+ 
+         }else{
+ 
+         
+         $pfu = 'ETF';
+ 
+         $curl = curl_init();
+         curl_setopt_array($curl, array(
+             CURLOPT_URL => $this->req_link,
+             CURLOPT_RETURNTRANSFER => true,
+             CURLOPT_ENCODING => '',
+             CURLOPT_MAXREDIRS => 10,
+             CURLOPT_TIMEOUT => 0,
+             CURLOPT_FOLLOWLOCATION => true,
+             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+             CURLOPT_CUSTOMREQUEST => 'POST',
+             CURLOPT_POSTFIELDS => "[{
+             \"unique_code\": \"$request->vendor_no\",
+             \"name\": \"$request->name\",
+             \"acc_no\": \"$request->acc_no\",
+             \"beneficiary_name\": \"$request->beneficiary_name\",
+             \"ifsc\": \"$request->ifsc\",
+             \"bank_name\": \"$request->bank_name\",
+             \"baddress\": \"$request->branch_name\",
+             \"payable_amount\": \"$request->final_payable_amount\",
+             \"claimed_amount\": \"$request->claimed_amount\",
+             \"pfu\": \"$pfu\",
+             \"ptype\": \"$request->p_type\",
+             \"email\": \"$bm_email\",
+             \"terid\": \"$request->transaction_id\",
+             \"branch\": \"$branch_name->name\",
+             \"pan\": \"$request->pan\",
+             \"amt_deducted\": \"$deduct_balance\",
+             \"vehicle\": \"$sent_vehicle_no\",
+             \"txn_route\": \"PRS\"
+             }]",
+             CURLOPT_HTTPHEADER => array(
+                 'Content-Type: application/json',
+                 'Access-Control-Request-Headers:' . $url_header,
+             ),
+         ));
+ 
+         $response = curl_exec($curl);
+         curl_close($curl);
+         $res_data = json_decode($response);
+         // $cc = 'success';
+         // ============== Success Response
+         if ($res_data->message == 'success') {
+ 
+             if ($request->p_type == 'Balance' || $request->p_type == 'Fully') {
+ 
+                 $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                 if (!empty($getadvanced->balance)) {
+                     $balance = $getadvanced->balance - $request->payable_amount;
+                 } else {
+                     $balance = 0;
+                 }
+                 $advance = $getadvanced->advanced + $request->payable_amount;
+ 
+                 PickupRunSheet::whereIn('pickup_id', $prs)->update(['payment_status' => 2]);
+ 
+                 PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'amt_without_tds' => $request->payable_amount, 'tds_deduct_balance'=> $deduct_balance, 'current_paid_amt'=> $request->final_payable_amount ,'payment_status' => 2, 'is_approve' => 1]);
+ 
+                 $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+ 
+                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                 $paymentresponse['transaction_id'] = $request->transaction_id;
+                 $paymentresponse['prs_no'] = $request->prs_no;
+                 $paymentresponse['bank_details'] = json_encode($bankdetails);
+                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                 $paymentresponse['payment_type'] = $request->p_type;
+                 $paymentresponse['advance'] = $advance;
+                 $paymentresponse['balance'] = $balance;
+                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                 $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                 $paymentresponse['payment_status'] = 2;
+ 
+                 $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+ 
+             } else {
+ 
+                 $balance_amt = $request->claimed_amount - $request->payable_amount;
+                 //======== Payment History save =========//
+                 $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+ 
+                 $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                 $paymentresponse['transaction_id'] = $request->transaction_id;
+                 $paymentresponse['prs_no'] = $request->prs_no;
+                 $paymentresponse['bank_details'] = json_encode($bankdetails);
+                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                 $paymentresponse['payment_type'] = $request->p_type;
+                 $paymentresponse['advance'] = $request->payable_amount;
+                 $paymentresponse['balance'] = $balance_amt;
+                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                 $paymentresponse['current_paid_amt'] = $request->payable_amount;
+                 $paymentresponse['payment_status'] = 2;
+ 
+                 $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+ 
+                 PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'amt_without_tds' => $request->payable_amount, 'tds_deduct_balance'=> $deduct_balance, 'current_paid_amt'=> $request->final_payable_amount ,'payment_status' => 2]);
+ 
+                 PickupRunSheet::whereIn('pickup_id', $prs)->update(['payment_status' => 2]);
+             }
+ 
+             $new_response['success'] = true;
+             $new_response['message'] = $res_data->message;
+ 
+         } else {
+ 
+             $new_response['message'] = $res_data->message;
+             $new_response['success'] = false;
+ 
+         }
+     }
+         return response()->json($new_response);
+     }
 
 }
