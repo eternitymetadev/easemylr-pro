@@ -261,7 +261,8 @@ $("#second_payment_form_prs").submit(function(e) {
             $(".indicator-label").show();
             if (data.success == true) {
                 swal("success", data.message, "success");
-                $("#second_payment_form")[0].reset();
+                $("#second_payment_form_prs")[0].reset();
+                window.location.reload();
             } else {
                 swal("error", data.message, "error");
             }
