@@ -1091,8 +1091,8 @@ class PickupRunSheetController extends Controller
                   $i++;
                   $prs_no = $value['pickup_id'];
                   $vendor_id = $request->vendor_name;
-                  $vehicle_no = $value['vehicle_detail']['regn_no'];
-                  $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+                  $vehicle_no = @$value['vehicle_detail']['regn_no'];
+                  $sent_vehicle[] = @$value['vehicle_detail']['regn_no'];
                   
   
                   if ($request->p_type == 'Advance') {
