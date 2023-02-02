@@ -1732,27 +1732,28 @@ jQuery(document).ready(function () {
 
                         }
                     } else {
-                        if (img_api == null || img_api == "") {
-                            var field =
-                                "<input type='file' name='img' data-id='" +
-                                value.id +
-                                "' placeholder='Choose image' class='drs_image'>";
-                        } else {
-                            var field1 = [];
-                            var img_length = img_api.length;
-                            var i = 0;
-                            $.each(img_api, function (index, img) {
-                                i++;
-                                img_group =
-                                    "<a href='" +
-                                    img +
-                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
-                                    i +
-                                    "</a> ";
-                                field1.push(img_group);
-                            });
-                            var field = field1.join(" ");
-                        }
+                         var field = 
+                        "<a href='" +
+                        storage_img +
+                        "' target='_blank' class='btn btn-warning'>view</a>";
+                    }
+                }else{
+                    if(img_api == null || img_api == ''){
+                        var field = 'No Image Found';
+                        // "<input type='file' name='img' data-id='" +
+                        // value.id +
+                        // "' placeholder='Choose image' class='drs_image'>";
+                    }else{
+                         var field1 = [];
+                        var img_length = img_api.length;
+                        var i = 0;
+                        $.each(img_api, function (index, img) {
+                            i++
+                            img_group  = "<a href='"+img+
+                             "' target='_blank' class='btn btn-warning mt-3'>Image "+i+"</a> "; 
+                             field1.push(img_group);
+                        });
+                       var field = (field1.join(' '));
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
