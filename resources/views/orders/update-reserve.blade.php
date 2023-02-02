@@ -159,7 +159,7 @@ span.round-tab:hover {
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Select Bill to Client</p>
-                            <select class="form-control form-small my-select2" id="select_regclient" name="regclient_id" disabled>
+                            <select class="form-control form-small" id="select_regclient" name="regclient_id" disabled>
                             <option value="">Select</option>
                             @if(count($regionalclient) > 0)
                             @foreach($regionalclient as $client)
@@ -205,7 +205,7 @@ span.round-tab:hover {
                     <div class="row">
                         <div class="col-sm-4 ">
                             <p>Select Pickup Location (Consigner)</p>
-                            <select id="select_consigner" class="my-select2 form-seteing" type="text" name="consigner_id" disabled>
+                            <select id="select_consigner" class="form-seteing" type="text" name="consigner_id" disabled>
                                 <option value="">Select Consigner</option>
                                 @if(count($consigners) > 0)
                                 @foreach($consigners as $k => $consigner)
@@ -222,7 +222,7 @@ span.round-tab:hover {
                         
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="consignee_id" id="select_consignee" disabled>
+                            <select class="form-control form-small" style="width: 328px;"  type="text" name="consignee_id" id="select_consignee" disabled>
                                 <option value="">Select Consignee</option>
                                 @if(count($consignees) > 0)
                                 @foreach($consignees as $k => $consignee)
@@ -239,7 +239,7 @@ span.round-tab:hover {
                         
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
-                            <select class="form-control form-small my-select2" style="width: 328px;"  type="text" name="ship_to_id"  id="select_ship_to" disabled>
+                            <select class="form-control form-small" style="width: 328px;"  type="text" name="ship_to_id"  id="select_ship_to" disabled>
                             <option value="">Select Ship To</option>
                             @if(count($consignees) > 0)
                             @foreach($consignees as $k => $consignee)
@@ -433,20 +433,20 @@ span.round-tab:hover {
     $(document).ready(function() {
         $('.insert-more').attr('disabled',true);
     });
-    // jQuery(function () {
-    //     $('.my-select2').each(function () {
-    //         $(this).select2({
-    //             theme: "bootstrap-5",
-    //             dropdownParent: $(this).parent(), // fix select2 search input focus bug
-    //         })
-    //     })
-    //     // fix select2 bootstrap modal scroll bug
-    //     $(document).on('select2:close', '.my-select2', function (e) {
-    //         var evt = "scroll.select2"
-    //         $(e.target).parents().off(evt)
-    //         $(window).off(evt)
-    //     })
-    // })
+    jQuery(function () {
+        $('.my-select2').each(function () {
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+            })
+        })
+        // fix select2 bootstrap modal scroll bug
+        $(document).on('select2:close', '.my-select2', function (e) {
+            var evt = "scroll.select2"
+            $(e.target).parents().off(evt)
+            $(window).off(evt)
+        })
+    })
     // add consignment date
     $('#consignDate, #date').val(new Date().toJSON().slice(0, 10));
     function showResult(str) {
