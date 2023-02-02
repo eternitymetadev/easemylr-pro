@@ -261,6 +261,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
     Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
@@ -790,6 +798,14 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
     Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
     Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
