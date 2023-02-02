@@ -17,9 +17,6 @@ class CreatePrsRegClientsTable extends Migration
             $table->increments('id');
             $table->string('prs_id')->nullable();
             $table->string('regclient_id')->nullable();
-            $table->string('consigner_id')->nullable();
-            $table->string('user_id')->nullable();
-            $table->string('branch_id')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

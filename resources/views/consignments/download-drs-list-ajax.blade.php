@@ -20,11 +20,11 @@
             @foreach($transaction as $trns)
             <?php
 
-$date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
-$date->setTimezone(new DateTimeZone('IST'));
-$getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
-$new = Helper::oldnewLr($trns->drs_no) ?? "";
-$lr = Helper::deliveryDate($trns->drs_no);
+            $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
+            $date->setTimezone(new DateTimeZone('IST'));
+            $getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
+            $new = Helper::oldnewLr($trns->drs_no) ?? "";
+            $lr = Helper::deliveryDate($trns->drs_no);
 
 ?>
             <tr>

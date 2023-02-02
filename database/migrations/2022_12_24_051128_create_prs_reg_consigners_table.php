@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreatePrsRegConsignersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('prs_reg_consigners', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('prs_regclientid')->nullable();
+            $table->string('consigner_id')->nullable();
+            $table->tinyInteger('status')->default(0);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('prs_reg_consigners');
+    }
+}
