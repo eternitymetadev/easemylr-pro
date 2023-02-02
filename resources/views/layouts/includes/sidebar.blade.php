@@ -450,7 +450,7 @@
 
         </ul>
     </li>
-
+   <?php if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
     <p class="menuHead menuHeadHidden mb-0">Payments</p>
     <li class="menu">
         <a href="{{$prefixurl.'vendor-list'}}" data-active="<?php if($segment == 'vendor-list'){?>true<?php }?>"
@@ -562,6 +562,7 @@
 
         </ul>
     </li>
+    <?php } ?>
 
     <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
