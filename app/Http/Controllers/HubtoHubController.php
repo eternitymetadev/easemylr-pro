@@ -967,7 +967,7 @@ class HubtoHubController extends Controller
     // ==================CreatePayment Request =================
     public function createHrsPayment(Request $request)
     {
-       
+
         $this->prefix = request()->route()->getPrefix();
         $url_header = $_SERVER['HTTP_HOST'];
 
@@ -979,7 +979,6 @@ class HubtoHubController extends Controller
 
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
-        //deduct balance
         $deduct_balance = $request->pay_amt - $request->final_payable_amount;
 
         $hrsno = explode(',', $request->hrs_no);
@@ -1010,7 +1009,7 @@ class HubtoHubController extends Controller
                 if ($request->p_type == 'Advance') {
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign,'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
 
                     Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
                 } else {
@@ -1023,7 +1022,7 @@ class HubtoHubController extends Controller
                     $advance = $request->pay_amt;
                     // dd($advance);
 
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id,  'user_id' => $user, 'rm_id' => $authuser->rm_assign ,'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
                     Hrs::whereIn('hrs_no', $hrsno)->update(['payment_status' => 2]);
 
                 }
@@ -1054,7 +1053,7 @@ class HubtoHubController extends Controller
                 if ($request->p_type == 'Advance') {
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
 
                 } else {
                     $getadvanced = HrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
@@ -1066,7 +1065,7 @@ class HubtoHubController extends Controller
                     $advance = $request->pay_amt;
                     // dd($advance);
 
-                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                    $transaction = HrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'hrs_no' => $hrs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
                 }
 
             }
@@ -1315,6 +1314,8 @@ class HubtoHubController extends Controller
                 });
         } elseif ($authuser->role_id == 7) {
             $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+        } elseif($authuser->role_id == 3){
+            $query = $query->where('rm_id', $authuser->id);
         } else {
             $query = $query->whereIn('branch_id', $cc);
         }
