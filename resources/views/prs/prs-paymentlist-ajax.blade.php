@@ -2,10 +2,13 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
+            <?php $authuser = Auth::user();
+            if ($authuser->role_id == 2) {?>
                 <th>
                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
                 </th>
-                <th>Purchase Amount</th>
+                <?php } ?>
+                <th>Purchase Amount</th> 
                 <th>Pickup ID</th>
                 <th>Date</th>
                 <th>Vehicle No.</th>
@@ -16,7 +19,9 @@
             @if(count($prsdata)>0)
             @foreach($prsdata as $value)
             <tr>
+            @if ($authuser->role_id == 2)
                 <td>
+                    
                     @if(!empty($value->purchase_amount))
                     <input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$value->pickup_id}}"
                         data-price="{{$value->purchase_amount}}" style="width: 30px; height:30px;">
@@ -24,6 +29,7 @@
                     -
                     @endif
                 </td>
+                @endif
                 @if(!empty($value->purchase_amount))
                 <td class="update_purchase_price" drs-no="{{$value->id}}">{{$value->purchase_amount ?? '-'}}</td>
                 @else

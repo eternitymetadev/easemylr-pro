@@ -450,7 +450,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     </option>
                     @endforeach
                     @endif
-                </select>
+                </select> 
                 <?php if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
                 <?php } ?>
