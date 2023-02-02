@@ -659,7 +659,7 @@
         </ul>
     </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2')) active @endif">
@@ -682,7 +682,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Pin Code </a>
             </li>
         </ul>
-    </li>
+    </li> -->
     <?php if($authuser->role_id == 1){ ?>
     <li class="menu">
         <a href="#users" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
