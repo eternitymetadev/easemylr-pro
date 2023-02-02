@@ -1849,7 +1849,7 @@ $("#all_inv_save").submit(function (e) {
                         value.consignment_id +
                         "</td><td>" +
                         value.invoice_no +
-                        "</td><td>" +
+                        "</td><td>" + 
                         billno +
                         "</td><td>" +
                         billdate +
