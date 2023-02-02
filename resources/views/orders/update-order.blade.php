@@ -459,7 +459,6 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </div>
             </div>
 
-
             {{--order info--}}
             <?php if($invc_data->is_multiple_invoice == 1 || $invc_data->is_multiple_invoice == 2 ){ ?>
             <div class="form-row">

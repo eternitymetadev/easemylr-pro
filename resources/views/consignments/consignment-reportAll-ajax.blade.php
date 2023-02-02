@@ -4,8 +4,9 @@
         <thead>
             <tr>
                 <th>LR No</th>
-                <th>Drs No</th>
                 <th>LR Date</th>
+                <th>Drs No</th>
+                <th>Drs Date</th>
                 <th>Order No</th>
                 <th>Base Client</th>
                 <th>Regional Client</th>
@@ -46,14 +47,24 @@
         @if(count($consignments)>0)
         @foreach($consignments as $consignment)
         <?php
+      
             $start_date = strtotime($consignment->consignment_date);
             $end_date = strtotime($consignment->delivery_date);
             $tat = ($end_date - $start_date)/60/60/24;
+            
+            if(!empty($consignment->DrsDetail->created_at)){
+             $date = new DateTime(@$consignment->DrsDetail->created_at, new DateTimeZone('GMT-7'));
+             $date->setTimezone(new DateTimeZone('IST'));
+             $drs_date = $date->format('d-m-Y');
+            }else{
+            $drs_date = '-';
+            }
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
-                <td>DRS-{{ $consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
+                <td>DRS-{{ @$consignment->DrsDetail->drs_no ?? "-" }}</td>
+                <td>{{$drs_date}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
                     $order = array();

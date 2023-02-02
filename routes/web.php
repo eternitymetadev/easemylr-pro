@@ -548,6 +548,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
 
     Route::resource('locations', LocationController::class);
@@ -899,6 +900,19 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
+    Route::resource('clients', ClientController::class);
+    Route::get('clients-list', [ClientController::class, 'clientList']);
+    Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
+    Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
+    Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+    Route::get('/reginal-clients/add-regclient-detail/{id}', [ClientController::class, 'createRegclientdetail']);
+    Route::post('/regclient-detail/update-detail', [ClientController::class, 'updateRegclientdetail']);
+    Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
+    Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
 
     Route::resource('prs', PickupRunSheetController::class);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
