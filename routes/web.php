@@ -691,6 +691,9 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
     Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
     Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
+    Route::any('reserve-lr', [OrderController::class, 'reserveLr']);
+    Route::get('reserve-lr/{id}/edit', [OrderController::class, 'editReserveLr']);
+    Route::any('reserve-lr/update-reserve-lr', [OrderController::class, 'updateReserveLr']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
