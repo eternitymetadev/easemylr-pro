@@ -57,8 +57,9 @@ class UserController extends Controller
         $branches = Helper::getLocations();
         $baseclients = BaseClient::all();
         $regionalclients = Helper::getRegionalClients();
+        $get_rms = User::where('role_id', 3)->get();
 
-        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'baseclients'=>$baseclients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
+        return view('users.create-user',['getroles'=>$getroles, 'getpermissions'=>$getpermissions, 'branches'=>$branches, 'regionalclients'=>$regionalclients, 'baseclients'=>$baseclients, 'get_rms' => $get_rms,'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>$this->pagetitle]);
     }
     
     /**
@@ -115,6 +116,9 @@ class UserController extends Controller
         }
         if(!empty($request->baseclient_id)){
             $usersave['baseclient_id'] = $request->baseclient_id;
+        }
+        if(!empty($request->rm_id)){
+            $usersave['rm_assign'] = $request->rm_id;
         }
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
@@ -198,7 +202,8 @@ class UserController extends Controller
             }
         }
         $getuser = User::where('id',$id)->first();
-        return view('users.update-user')->with(['prefix'=>$this->prefix,'title'=>$this->title, 'pagetitle'=>$this->pagetitle, 'getuser'=>$getuser,'getroles'=>$getroles,'getpermissions'=>$getpermissions,'getuserpermissions'=>$u,'allpermissioncount'=>$allpermissioncount,'branches'=>$branches,'getclients'=>$getclients]);
+        $get_rms = User::where('role_id', 3)->get();
+        return view('users.update-user')->with(['prefix'=>$this->prefix,'title'=>$this->title, 'pagetitle'=>$this->pagetitle, 'getuser'=>$getuser,'getroles'=>$getroles,'getpermissions'=>$getpermissions,'getuserpermissions'=>$u,'allpermissioncount'=>$allpermissioncount,'branches'=>$branches,'getclients'=>$getclients, 'get_rms' => $get_rms]);
     }
     
     /**
@@ -236,6 +241,7 @@ class UserController extends Controller
         $usersave['login_id']   = $request->login_id;
         $usersave['role_id']    = $request->role_id;
         $usersave['phone']      = $request->phone;
+        $usersave['rm_assign']  = $request->rm_id;
         // $usersave['branch_id']  = $request->branch_id;
         $branch = $request->branch_id;
         $usersave['branch_id']  = implode(',',$branch); 

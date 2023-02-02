@@ -29,6 +29,7 @@ class CreatePrsPaymentRequestsTable extends Migration
             $table->string('tds_deduct_balance')->nullable();
             $table->string('branch_id')->nullable();
             $table->string('user_id')->nullable();
+            $table->string('rm_id')->nullable();
             $table->string('is_approve')->default(0)->comment('0=>approved pending 1=>sent to finfect')->nullable();
             $table->string('payment_status')->default(0)->comment('0=>unpaid 1=>paid 2=>sent 3=>partial paid')->nullable();
             $table->string('status')->nullable();

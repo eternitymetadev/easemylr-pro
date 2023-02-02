@@ -23,6 +23,7 @@ class PrsPaymentRequest extends Model
         'tds_deduct_balance',
         'branch_id',
         'user_id',
+        'rm_id',
         'is_approve',
         'payment_status',
         'status',
