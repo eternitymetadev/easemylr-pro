@@ -1002,9 +1002,9 @@ class HubtoHubController extends Controller
 
                 $i++;
                 $hrs_no = $value['hrs_no'];
-                $vendor_id = $request->vendor_name;
-                $vehicle_no = $value['vehicle_detail']['regn_no'];
-                $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+                $vendor_id = @$request->vendor_name;
+                $vehicle_no = @$value['vehicle_detail']['regn_no'];
+                $sent_vehicle[] = @$value['vehicle_detail']['regn_no'];
 
                 if ($request->p_type == 'Advance') {
                     $balance_amt = $request->claimed_amount - $request->pay_amt;
@@ -1352,9 +1352,7 @@ class HubtoHubController extends Controller
     // ============ Rm Approver Pusher =========================
     public function rmApproverRequest(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());die;
-
+        
         $authuser = User::where('id', $request->user_id)->first();
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
@@ -1362,6 +1360,7 @@ class HubtoHubController extends Controller
         //deduct balance
         // $deduct_balance = $request->payable_amount - $request->final_payable_amount;
 
+       if($request->hrsAction == 1){
         $get_vehicle = HrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
         $sent_vehicle = array();
         foreach ($get_vehicle as $vehicle) {
@@ -1474,6 +1473,18 @@ class HubtoHubController extends Controller
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
         }
+
+       }else{
+        // ============ Request Rejected ================= //
+        $hrs_num = explode(',', $request->hrs_no);
+        HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['rejected_remarks' => $request->rejectedRemarks, 'payment_status' => 4 ]);
+    
+         Hrs::whereIn('hrs_no', $hrs_num)->update(['payment_status' => 0, 'request_status' => 0]);
+    
+        $new_response['message'] = 'Request Rejected';
+        $new_response['success'] = true;
+
+       }
 
         return response()->json($new_response);
 

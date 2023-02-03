@@ -82,7 +82,7 @@ input[readonly].styledInput {
                 <input class="form-control" placeholder="Vehicle Number Search" id="search"
                     data-action="<?php echo url()->current(); ?>"
                     style="height: 36px; max-width: 250px; width: 300px;" />
-            </div> 
+            </div>
         </div>
 
         @csrf
@@ -95,16 +95,17 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script>
-
 function toggleHrsAction() {
-    if ($('#rejectedSelected').is(':checked'))
+    if ($('#rejectedSelected').is(':checked')) {
         $('#rejectedRemarksBox').show();
-    else
+        $('#hrsActionButton').html('Reject');
+    } else {
         $('#rejectedRemarksBox').hide();
+        $('#hrsActionButton').html('Push');
+    }
+
 
 }
-
-
 
 $(document).on('click', '.approve', function() {
     var transaction_id = $(this).val();
@@ -172,7 +173,7 @@ $("#rm_aprover").submit(function(e) {
             $('.disableme').prop('disabled', true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
-            
+
             if (data.success == true) {
                 swal("success", data.message, "success");
                 window.location.reload();
@@ -286,29 +287,29 @@ $("#second_payment_form").submit(function(e) {
 ////
 ///////////////////////////////////////////////
 $(document).on('click', '.show-hrs', function() {
-var trans_id = $(this).attr('data-id');
-$('#show_hrs_model').modal('show');
-$.ajax({
-    type: "GET",
-    url: "show-hrs",
-    data: {
-        trans_id: trans_id
-    },
-    beforeSend: //reinitialize Datatables
-        function() {
-            $('#show_drs_table').dataTable().fnClearTable();
-            $('#show_drs_table').dataTable().fnDestroy();
+    var trans_id = $(this).attr('data-id');
+    $('#show_hrs_model').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "show-hrs",
+        data: {
+            trans_id: trans_id
         },
-    success: function(data) {
-        // console.log(data.)
-        $.each(data.gethrs, function(index, value) {
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#show_drs_table').dataTable().fnClearTable();
+                $('#show_drs_table').dataTable().fnDestroy();
+            },
+        success: function(data) {
+            // console.log(data.)
+            $.each(data.gethrs, function(index, value) {
 
-            $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td></tr>");
+                $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td></tr>");
 
-        });
-    }
+            });
+        }
 
-});
+    });
 });
 /////////////////////////////////////////////////////////////////
 </script>

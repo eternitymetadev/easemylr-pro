@@ -52,7 +52,9 @@
                 <?php } ?>
                 <?php } else if($hrsRequest->payment_status == 3) {?>
                 <td><button class="btn btn-warning second_payment" value="{{$hrsRequest->transaction_id}}"> Partial Paid </button></td>
-                <?php } else{ ?>
+                <?php } elseif($hrsRequest->payment_status == 4 ){ ?>
+                    <td><button class="btn btn-danger" value="{{$hrsRequest->transaction_id}}"> Rejected </button></td>
+               <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unknown </button></td>
                 <?php } ?>
                 <!-- ------- End --------- -->
@@ -70,7 +72,9 @@
                 <?php } ?>
                 <?php } elseif($hrsRequest->payment_status == 3) { ?>
                 <td><label class="badge badge-primary">Partial Paid</label></td>
-                <?php } else{?>
+                <?php }elseif($hrsRequest->payment_status == 4){ ?>
+                    <td><label class="badge badge-danger">Rejected</label></td>
+             <?php   } else {?>
                 <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
                 </td>
                 <?php } ?>

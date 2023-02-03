@@ -294,7 +294,7 @@ if ($countbranch > 1) {?>
 
                     <div class="form-group form-group-sm" style="width: 300px; margin-inline: auto; display: none;" id="rejectedRemarksBox" >
                         <label for="rejectedRemarks">Remarks</label>
-                        <input class="form-control form-control-sm" id="rejectedRemarks" name="rejectedRemarks" value="" required/>
+                        <input class="form-control form-control-sm" id="rejectedRemarks" name="rejectedRemarks" value="" />
                     </div>
 
 
@@ -304,7 +304,7 @@ if ($countbranch > 1) {?>
                             class="btn-section w-100 P-0 d-flex align-items-center">
                             <a style="width: 100px" type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
                             <button type="submit" class="btn btn-primary disableme" style="width: 100px">
-                                <span class="indicator-label">Push</span>
+                                <span class="indicator-label" id="hrsActionButton">Push</span>
                                 <span class="indicator-progress" style="display: none;">
                                     Please wait...
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
