@@ -98,7 +98,7 @@ class ConsignmentController extends Controller
                 // ->orWhere(function ($query) use ($cc){
                 //     $query->whereIn('fall_in', $cc);
                 // });
-                
+
                 // if(!empty('to_branch_id')){
                 //     $query = $query->whereIn('to_branch_id', $cc);
                 // }else{
