@@ -270,11 +270,6 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 } else{
     $disable = '';
 }
-if($getconsignments->RegClient->is_multiple_invoice ==3){
-    $disable_icon = ''; 
-} else if($getconsignments->RegClient->is_multiple_invoice ==4){
-    $disable_icon = 'disabled';
-}
 ?>
 
 <div class="layout-px-spacing">
@@ -763,8 +758,7 @@ if($getconsignments->RegClient->is_multiple_invoice ==3){
                                                     {{$disable}}>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-rounded insert-more"
-                                                {{$disable_icon}}> + </button>
+                                                <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
                                             </td>
                                         </tr>
 
