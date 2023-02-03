@@ -1827,8 +1827,8 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '5']);
-            // ->where('consignment_notes.booked_drs', '!=', '1');
+            ->whereIn('consignment_notes.status', ['2', '5'])
+            ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
             $data;
@@ -1840,7 +1840,7 @@ class ConsignmentController extends Controller
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
-                $data->whereIn('consignment_notes.to_branch_id', $cc);
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5']);
             });
             // if(!empty('consignment_notes.to_branch_id')){
             //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
@@ -1850,6 +1850,7 @@ class ConsignmentController extends Controller
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
+        
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
