@@ -291,36 +291,20 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         {{--Branch Location--}}
         <div class="form-row">
             <h6 class="col-12">Branch</h6>
-             
+                        
             <?php $authuser = Auth::user();
-            if($authuser->role_id == 2 || $authuser->role_id == 4)
-            {
             ?>
             <div class="form-group col-md-4">
                 <label for="exampleFormControlSelect1">
                     Select Branch <span class="text-danger">*</span>
                 </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                <select class="form-control my-select2" id="branch_id" name="branch_id" tabindex="-1" disabled>
+                <option value="">Select..</option>
                     @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    <option value="{{ $branch->id }}" {{ $branch->id == $getconsignments->branch_id ? 'selected' : ''}}>{{ucwords($branch->name)}}</option>
                     @endforeach
                 </select>
             </div>
-            <?php } else { ?>
-                <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    <option value="">Select..</option>
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
-
-                <?php } ?>
-
         </div>
 
         {{--bill to info--}}
