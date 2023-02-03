@@ -547,10 +547,10 @@ $(document).ready(function() {
                         var multiple_invoice = res.regclient.is_multiple_invoice;
                     }
                 }
-                if(multiple_invoice == 1 ){
-                    $('.insert-more').attr('disabled',false);
-                }else{  
+                if(multiple_invoice == 4 ){
                     $('.insert-more').attr('disabled',true);
+                }else{  
+                    $('.insert-more').attr('disabled',false);
                 }
             }
         }
