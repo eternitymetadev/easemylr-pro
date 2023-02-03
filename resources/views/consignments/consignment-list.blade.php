@@ -427,7 +427,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                                             New</span></a> -->
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                         style="font-size: 15px; padding: 9px;"
-                                        data-action="<?php echo url()->current(); ?>"><span><i
+                                        data-action="<?php echo url()->current(); ?>"><span><i 
                                                 class="fa fa-refresh"></i> Reset Filters</span></a>
                                 </div>
                             </div>
