@@ -431,7 +431,7 @@ span.round-tab:hover {
     //     $('.basic').selectpicker();
     // });
     $(document).ready(function() {
-        $('.insert-more').attr('disabled',true);
+        $('.insert-more').attr('disabled',false);
     });
     jQuery(function () {
         $('.my-select2').each(function () {
