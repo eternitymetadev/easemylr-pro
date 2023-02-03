@@ -270,6 +270,11 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 } else{
     $disable = '';
 }
+if($getconsignments->RegClient->is_multiple_invoice ==3){
+    $disable_icon = ''; 
+} else if($getconsignments->RegClient->is_multiple_invoice ==4){
+    $disable_icon = 'disabled';
+}
 ?>
 
 <div class="layout-px-spacing">
@@ -759,7 +764,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-rounded insert-more"
-                                                {{$disable}}> + </button>
+                                                {{$disable_icon}}> + </button>
                                             </td>
                                         </tr>
 
@@ -1406,10 +1411,10 @@ $(document).ready(function() {
                         var multiple_invoice = res.regclient.is_multiple_invoice;
                     }
                 }
-                if (multiple_invoice == 1) {
-                    $('.insert-more').attr('disabled', false);
-                } else {
+                if (multiple_invoice == 4) {
                     $('.insert-more').attr('disabled', true);
+                } else {
+                    $('.insert-more').attr('disabled', false);
                 }
             }
         }
