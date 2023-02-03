@@ -95,6 +95,17 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script>
+
+function toggleHrsAction() {
+    if ($('#rejectedSelected').is(':checked'))
+        $('#rejectedRemarksBox').show();
+    else
+        $('#rejectedRemarksBox').hide();
+
+}
+
+
+
 $(document).on('click', '.approve', function() {
     var transaction_id = $(this).val();
     $('#approver_model').modal('show');
