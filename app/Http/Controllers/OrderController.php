@@ -388,15 +388,15 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         // }
 
-        if ($authuser->role_id == 1) {
+        // if ($authuser->role_id == 1) {
+        //     $branchs = Location::select('id', 'name')->get();
+        // } elseif ($authuser->role_id == 2) {
+        //     $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+        // } elseif ($authuser->role_id == 5) {
+        //     $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        // } else {
             $branchs = Location::select('id', 'name')->get();
-        } elseif ($authuser->role_id == 2) {
-            $branchs = Location::select('id', 'name')->where('id', $cc)->get();
-        } elseif ($authuser->role_id == 5) {
-            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-        } else {
-            $branchs = Location::select('id', 'name')->get();
-        }
+        // }
 
         return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
     }
