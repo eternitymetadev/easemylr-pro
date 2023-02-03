@@ -1480,6 +1480,21 @@ class HubtoHubController extends Controller
         HrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['rejected_remarks' => $request->rejectedRemarks, 'payment_status' => 4 ]);
     
          Hrs::whereIn('hrs_no', $hrs_num)->update(['payment_status' => 0, 'request_status' => 0]);
+
+         $paymentresponse['transaction_id'] = $request->transaction_id;
+         $paymentresponse['hrs_no'] = $request->hrs_no;
+         $paymentresponse['bank_details'] = json_encode($bankdetails);
+         $paymentresponse['purchase_amount'] = $request->claimed_amount;
+         $paymentresponse['payment_type'] = $request->p_type;
+         $paymentresponse['advance'] = $request->payable_amount;
+         $paymentresponse['balance'] = $balance_amt;
+         $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+         $paymentresponse['current_paid_amt'] = $request->payable_amount;
+         $paymentresponse['payment_status'] = 4;
+
+         $paymentresponse = HrsPaymentHistory::create($paymentresponse);
+
+
     
         $new_response['message'] = 'Request Rejected';
         $new_response['success'] = true;
