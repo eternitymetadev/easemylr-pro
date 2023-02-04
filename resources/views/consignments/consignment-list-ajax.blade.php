@@ -66,11 +66,7 @@
                     $cne_nickname = $consignment->ConsignerDetail->nick_name;
                 }else{
                     $cnr_nickname = $consignment->ConsignerDetail->nick_name;
-                    if(!empty($consignment->ConsigneeDetail)){
-                    $cne_nickname = $consignment->ConsigneeDetail->nick_name;
-                    }else{
-                        $cne_nickname = '';
-                    }
+                    $cne_nickname = @$consignment->ConsigneeDetail->nick_name;
                 } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
