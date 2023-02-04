@@ -73,7 +73,14 @@
                 <?php } elseif($hrsRequest->payment_status == 3) { ?>
                 <td><label class="badge badge-primary">Partial Paid</label></td>
                 <?php }elseif($hrsRequest->payment_status == 4){ ?>
-                    <td><label class="badge badge-danger">Rejected</label></td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr"  data-text="consignment" data-status="0">
+                        <p class="swan-tooltip-left drsStatus pointer" style="background:#e7515a; margin-bottom: 0" data-tooltip="{{$hrsRequest->rejected_remarks}}">
+                            <span>Rejected</span>
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </p>
+                    </a>
+                </td>
              <?php   } else {?>
                 <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
                 </td>
