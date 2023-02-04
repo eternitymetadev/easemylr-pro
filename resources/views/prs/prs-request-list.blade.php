@@ -18,7 +18,7 @@
 .update_purchase_price svg:hover {
     color: #f9b600;
 }
-
+ 
 .pointer {
     cursor: pointer;
 }
@@ -95,10 +95,21 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script>
+function toggleHrsAction() {
+    if ($('#rejectedSelected').is(':checked')) {
+        $('#rejectedRemarksBox').show();
+        $('#hrsActionButton').html('Reject');
+    } else {
+        $('#rejectedRemarksBox').hide();
+        $('#hrsActionButton').html('Push');
+    }
+
+
+}
+
 $(document).on('click', '.approve', function() {
-    var transaction_id = $(this).val();
+    var transaction_id = $(this).attr('data-id');
     $('#approver_model_prs').modal('show');
-    // alert(transaction_id);
     $.ajax({
         type: "GET",
         url: "get-vender-req-details-prs",
@@ -177,7 +188,7 @@ $("#prs_rm_aprover").submit(function(e) {
 //////////// Payment request sent model
 $(document).on('click', '.second_payment_prs', function() {
     // $("#second_payment_form")[0].reset();
-    var trans_id = $(this).val();
+    var trans_id = $(this).attr('data-id');
     $('#pymt_request_modal_prs').modal('show');
     $.ajax({
         type: "GET",
@@ -297,4 +308,4 @@ $(document).on('click', '.show-prs', function() {
 });
 /////////////////////////////////////////////////////////////////
 </script>
-@endsection
+@endsection 

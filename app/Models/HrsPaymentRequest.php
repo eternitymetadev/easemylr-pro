@@ -24,6 +24,7 @@ class HrsPaymentRequest extends Model
         'branch_id',
         'user_id',
         'rm_id',
+        'rejected_remarks',
         'is_approve',
         'payment_status',
         'status',
