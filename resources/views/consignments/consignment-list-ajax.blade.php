@@ -308,9 +308,9 @@
                                                                             <?php }else{?>
                                                                             <div class="css-16pld72"
                                                                                 style="font-size: 12px; color: rgb(102, 102, 102);">
-                                                                                <span>{{$consignment->ConsigneeDetail->postal_code}},
-                                                                                    {{$consignment->ConsigneeDetail->city}},
-                                                                                    {{$consignment->ConsigneeDetail->district}}</span>
+                                                                                <span>{{@$consignment->ConsigneeDetail->postal_code}},
+                                                                                    {{@$consignment->ConsigneeDetail->city}},
+                                                                                    {{@$consignment->ConsigneeDetail->district}}</span>
                                                                             </div>
                                                                             <?php } ?>
                                                                         </div>
