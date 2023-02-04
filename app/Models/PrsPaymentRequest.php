@@ -26,6 +26,7 @@ class PrsPaymentRequest extends Model
         'rm_id',
         'is_approve',
         'payment_status',
+        'rejected_remarks',
         'status',
         'created_at',
         'updated_at'
