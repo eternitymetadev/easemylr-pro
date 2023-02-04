@@ -169,7 +169,7 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                $query->whereIn('fall_in', $cc);
+                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
             // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
             

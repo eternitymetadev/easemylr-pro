@@ -228,6 +228,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('update-items-name', [TechnicalMasterController::class, 'updateItemName']);
     
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
@@ -615,6 +616,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
@@ -773,6 +775,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
@@ -934,6 +937,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);

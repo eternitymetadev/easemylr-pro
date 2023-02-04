@@ -547,7 +547,7 @@ $(document).ready(function() {
                         var multiple_invoice = res.regclient.is_multiple_invoice;
                     }
                 }
-                if(multiple_invoice == 1 ){
+                if(multiple_invoice == 4 ){
                     $('.insert-more').attr('disabled',false);
                 }else{  
                     $('.insert-more').attr('disabled',true);

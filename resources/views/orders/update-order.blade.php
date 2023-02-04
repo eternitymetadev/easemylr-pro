@@ -758,8 +758,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                     {{$disable}}>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-rounded insert-more"
-                                                {{$disable}}> + </button>
+                                                <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
                                             </td>
                                         </tr>
 
@@ -1406,7 +1405,7 @@ $(document).ready(function() {
                         var multiple_invoice = res.regclient.is_multiple_invoice;
                     }
                 }
-                if (multiple_invoice == 1) {
+                if (multiple_invoice == 4) {
                     $('.insert-more').attr('disabled', false);
                 } else {
                     $('.insert-more').attr('disabled', true);
