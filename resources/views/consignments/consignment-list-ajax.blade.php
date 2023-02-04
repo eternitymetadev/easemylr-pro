@@ -83,7 +83,7 @@
                             <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                             <div class="ant-timeline-item-content">
                                 <div class="css-16pld72 ellipse">
-                                    {{ $cne_nickname ?? "-" }}
+                                    {{ @$cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
                                 <?php if($consignment->is_salereturn == '1'){ ?>
