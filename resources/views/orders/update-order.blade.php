@@ -1406,9 +1406,9 @@ $(document).ready(function() {
                     }
                 }
                 if (multiple_invoice == 4) {
-                    $('.insert-more').attr('disabled', true);
-                } else {
                     $('.insert-more').attr('disabled', false);
+                } else {
+                    $('.insert-more').attr('disabled', true);
                 }
             }
         }
