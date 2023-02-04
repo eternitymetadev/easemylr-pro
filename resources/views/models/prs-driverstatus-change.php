@@ -14,8 +14,8 @@
        <!-- Modal footer -->
        <div class="modal-footer">
            <div class="btn-section w-100 P-0">
-               <a class="btn-cstm btn-white btn btn-modal delete-btn-modal commonconfirmclick">Ok</a> 
-               <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+               <a class="btn-cstm btn-warning btn btn-modal commonconfirmclick">Ok</a> 
+               <a type="" class="btn btn-dark" data-dismiss="modal">Cancel</a>
            </div>
        </div>
      </div>
