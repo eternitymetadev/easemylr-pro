@@ -108,7 +108,7 @@ function toggleHrsAction() {
 }
 
 $(document).on('click', '.approve', function() {
-    var transaction_id = $(this).val();
+    var transaction_id = $(this).attr('data-id');
     $('#approver_model').modal('show');
     $.ajax({
         type: "GET",

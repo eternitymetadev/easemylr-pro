@@ -41,19 +41,45 @@
                     if($hrsRequest->is_approve == 0){
                         if($authuser->role_id == 3){?>
                 <!-- approver check -->
-                <td><button class="btn btn-warning approve" value="{{$hrsRequest->transaction_id}}"> Approve </button></td>
+                <td valign="middle">
+                    <a class="approve" data-text="consignment" data-status="0"
+                        data-id="{{$hrsRequest->transaction_id}}">
+                        <p class=" drsStatus pointer" style="background:#008000; margin-bottom: 0">
+                            <span>Approve</span>
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </p>
+                    </a>
+                </td>
                 <?php } else { ?>
-                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> waiting for approver
-                    </button></td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class=" drsStatus pointer" style="background:#008000; margin-bottom: 0">
+                            <span>Wait for approve</span>
+
+                        </p>
+                    </a>
+                </td>
                 <?php } ?>
                 <?php } else {?>
-                <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Sent </button></td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class="drsStatus pointer" style="background:#ffa500; margin-bottom: 0">
+                            <span>Sent</span>
+                        </p>
+                    </a>
+                </td>
                 <!-- approver check end -->
                 <?php } ?>
                 <?php } else if($hrsRequest->payment_status == 3) {?>
                 <td><button class="btn btn-warning second_payment" value="{{$hrsRequest->transaction_id}}"> Partial Paid </button></td>
                 <?php } elseif($hrsRequest->payment_status == 4 ){ ?>
-                    <td><button class="btn btn-danger" value="{{$hrsRequest->transaction_id}}"> Rejected </button></td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class="drsStatus pointer" style="background:#e7515a; margin-bottom: 0">
+                            <span>Rejected</span>
+                        </p>
+                    </a>
+                </td>
                <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unknown </button></td>
                 <?php } ?>
@@ -63,19 +89,37 @@
                 <td> <label class="badge badge-dark">Faild</label>
                 </td>
                 <?php } elseif($hrsRequest->payment_status == 1) { ?>
-                <td> <label class="badge badge-success">Paid</label> </td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class=" drsStatus pointer" style="background:#32cd32; margin-bottom: 0">
+                            <span>Paid</span>
+                        </p>
+                    </a>
+                </td>
                 <?php } elseif($hrsRequest->payment_status == 2) { 
                     if($hrsRequest->is_approve == 0){?>
-                <td> <label class="badge badge-dark">Approve Pending</label> </td>
+                 <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class=" drsStatus pointer" style="background:#800080; margin-bottom: 0">
+                            <span>Approve Pending</span>
+                        </p>
+                    </a>
+                </td>
                 <?php } else {?>
-                <td> <label class="badge badge-dark">Sent to Account</label> </td>
+                    <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class="drsStatus pointer" style="background:#6b8e23; margin-bottom: 0">
+                            <span>Sent to Account</span>
+                        </p>
+                    </a>
+                </td>
                 <?php } ?>
                 <?php } elseif($hrsRequest->payment_status == 3) { ?>
                 <td><label class="badge badge-primary">Partial Paid</label></td>
                 <?php }elseif($hrsRequest->payment_status == 4){ ?>
                     <td valign="middle">
                     <a class="drs_cancel hrs_lr"  data-text="consignment" data-status="0">
-                        <p class="swan-tooltip-left drsStatus pointer" style="background:#e7515a; margin-bottom: 0" data-tooltip="{{$hrsRequest->rejected_remarks}}">
+                        <p class="swan-tooltip drsStatus pointer" style="background:#e7515a; margin-bottom: 0" data-tooltip="{{$hrsRequest->rejected_remarks}}">
                             <span>Rejected</span>
                             <i class="fa fa-caret-down" aria-hidden="true"></i>
                         </p>

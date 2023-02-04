@@ -1442,7 +1442,6 @@ class PickupRunSheetController extends Controller
     public function rmApproverRequest(Request $request)
     {
     
-
         $authuser = User::where('id', $request->user_id)->first();
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
