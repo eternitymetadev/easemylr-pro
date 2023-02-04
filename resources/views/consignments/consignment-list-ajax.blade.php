@@ -271,7 +271,7 @@
                                                                     $cne_nickname_txn = $consignment->ConsignerDetail->nick_name;
                                                                 }else{
                                                                 $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name;
-                                                                $cne_nickname_txn = $consignment->ConsigneeDetail->nick_name;
+                                                                $cne_nickname_txn = @$consignment->ConsigneeDetail->nick_name;
                                                                 }
                                                                 ?>
                                                             <td colspan="2">
