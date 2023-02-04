@@ -19,7 +19,7 @@
             @foreach($drivertasks as $value)
             <?php 
             $prs_data = DB::table('pickup_run_sheets')->select('id','vehicle_id')->where('id',$value->prs_id)->first(); 
-            ?>    
+            ?>
             <tr>
                 <td>{{ $value->task_id ?? "-" }}</td>
                 <td>{{ $value->PickupId->pickup_id ?? "-" }}</td>
@@ -40,11 +40,33 @@
                 } else{
                     $disable = 'disable_n';
                 } ?>
-                <td><span style="cursor:pointer" class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span>
+                <td style="text-align: center">
+
+                    @if($value->status == 1)
+                    <a class="btn btn-secondary taskstatus_change" data-prsid="{{$value->prs_id}}"
+                        data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal"
+                        data-target="#prs-commonconfirm" style="min-width: 130px;">
+                        {{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status ) : "-"}}
+                    </a>
+                    @elseif($value->status == 2)
+                    <a href="javascript:void();" class="add-taskbtn btn btn-success"
+                        data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}"
+                        data-vehicleid="{{$prs_data->vehicle_id}}" data-prsconsignerid="{{$value->prsconsigner_id}}"
+                        data-toggle="modal" data-target="#add-task" style="min-width: 130px;">
+                        {{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status ) : "-"}}
+                    </a>
+                    @else
+                    <span style="font-weight: 600; text-align: center">
+                        {{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status ) : "-"}}
+                    </span>
+                    @endif
+
+                    <!--                 
+                <span style="cursor:pointer" class="taskstatus_change {{$disable_text}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-prstaskstatus="{{$value->status}}" data-toggle="modal" data-target="#prs-commonconfirm">{{ Helper::PrsDriverTaskStatus($value->status) ? Helper::PrsDriverTaskStatus($value->status) : "-"}}</span>
 
                 <?php if($value->status == 1 || $value->status == 2 ) { ?>
-                    || <a href="javascript:void();" class="add-taskbtn {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-vehicleid="{{$prs_data->vehicle_id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
-                    <?php } ?>
+                    || <a href="javascript:void();" class="add-taskbtn btn btn-success {{$disable}}" data-prsid="{{$value->prs_id}}" data-drivertaskid="{{$value->id}}" data-vehicleid="{{$prs_data->vehicle_id}}" data-prsconsignerid="{{$value->prsconsigner_id}}" data-toggle="modal" data-target="#add-task">Add Task</a> 
+                    <?php } ?> -->
                 </td>
             </tr>
             @endforeach

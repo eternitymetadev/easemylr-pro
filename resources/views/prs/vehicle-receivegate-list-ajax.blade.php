@@ -59,7 +59,7 @@
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
                 <!-- <td>{{$total_qty}}</td> -->
-                <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
+                <td style="font-weight: 600;">{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
                     <?php 
