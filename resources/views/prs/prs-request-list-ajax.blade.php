@@ -51,10 +51,13 @@
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> Sent </button></td>
                 <!-- approver check end -->
                 <?php } ?>
-                <?php } else if($prsRequest->payment_status == 3) {?>
+                <?php } else if($prsRequest->payment_status == 3) { ?>
                 <td><button class="btn btn-warning second_payment_prs" value="{{$prsRequest->transaction_id}}"> Partial Paid
                     </button></td>
-                <?php } else{ ?>
+                <?php } elseif ($prsRequest->payment_status == 4){ ?>
+                     <td><button class="btn btn-danger" value="{{$prsRequest->transaction_id}}"> Rejected
+                     </button></td>
+               <?php } else{ ?>
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> Unknown </button></td>
                 <?php } ?>
                 <!-- ------- End --------- -->
@@ -72,7 +75,9 @@
                 <?php } ?>
                 <?php } elseif($prsRequest->payment_status == 3) { ?>
                 <td><label class="badge badge-primary">Partial Paid</label></td>
-                <?php } else{?>
+                <?php } elseif($prsRequest->payment_status == 4) { ?>
+                <td><label class="badge badge-danger">Rejected</label></td>
+                <?php }else{?>
                 <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
                 </td>
                 <?php } ?>

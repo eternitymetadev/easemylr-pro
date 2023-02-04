@@ -18,7 +18,7 @@
 .update_purchase_price svg:hover {
     color: #f9b600;
 }
-
+ 
 .pointer {
     cursor: pointer;
 }
@@ -95,6 +95,18 @@ input[readonly].styledInput {
 @endsection
 @section('js')
 <script>
+function toggleHrsAction() {
+    if ($('#rejectedSelected').is(':checked')) {
+        $('#rejectedRemarksBox').show();
+        $('#hrsActionButton').html('Reject');
+    } else {
+        $('#rejectedRemarksBox').hide();
+        $('#hrsActionButton').html('Push');
+    }
+
+
+}
+
 $(document).on('click', '.approve', function() {
     var transaction_id = $(this).val();
     $('#approver_model_prs').modal('show');
@@ -297,4 +309,4 @@ $(document).on('click', '.show-prs', function() {
 });
 /////////////////////////////////////////////////////////////////
 </script>
-@endsection
+@endsection 

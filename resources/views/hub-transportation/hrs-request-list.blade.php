@@ -14,7 +14,7 @@
     margin-left: 8px;
     cursor: pointer;
 }
-
+ 
 .update_purchase_price svg:hover {
     color: #f9b600;
 }
@@ -94,7 +94,7 @@ input[readonly].styledInput {
 @include('models.hrs-payment-models')
 @endsection
 @section('js')
-<script>
+<script> 
 function toggleHrsAction() {
     if ($('#rejectedSelected').is(':checked')) {
         $('#rejectedRemarksBox').show();

@@ -285,7 +285,7 @@ if ($countbranch > 1) {?>
                         <input type="radio" id="rejectedSelected" name="hrsAction" value="0" style="margin-left:16px" onchange="toggleHrsAction()"/>
                         <label for="rejectedSelected">Reject</label>
                     </div>
-
+ 
 
                     <p class='text-center'> Transaction ID: #<strong class="req_trans_id"></strong></p>
                     <p class='text-center' style="padding: 0.5rem 2rem">Are you sure to pay ₹<strong

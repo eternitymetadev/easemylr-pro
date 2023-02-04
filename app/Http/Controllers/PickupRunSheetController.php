@@ -1441,8 +1441,7 @@ class PickupRunSheetController extends Controller
     // ============ Rm Approver Pusher =========================
     public function rmApproverRequest(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());die;
+    
 
         $authuser = User::where('id', $request->user_id)->first();
         $bm_email = $authuser->email;
@@ -1450,7 +1449,7 @@ class PickupRunSheetController extends Controller
 
         //deduct balance
         // $deduct_balance = $request->payable_amount - $request->final_payable_amount;
-
+        if($request->hrsAction == 1){
         $get_vehicle = PrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
         $sent_vehicle = array();
         foreach ($get_vehicle as $vehicle) {
@@ -1563,6 +1562,30 @@ class PickupRunSheetController extends Controller
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
         }
+    }else{
+
+           // ============ Request Rejected ================= //
+           $prs_num = explode(',', $request->prs_no);
+           PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['rejected_remarks' => $request->rejectedRemarks, 'payment_status' => 4 ]);
+       
+            PickupRunSheet::whereIn('pickup_id', $prs_num)->update(['payment_status' => 0, 'request_status' => 0]);
+   
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+   
+            $paymentresponse['transaction_id'] = $request->transaction_id;
+            $paymentresponse['prs_no'] = $request->prs_no;
+            $paymentresponse['bank_details'] = json_encode($bankdetails);
+            $paymentresponse['purchase_amount'] = $request->claimed_amount;
+            $paymentresponse['payment_type'] = $request->p_type;
+            $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+            $paymentresponse['current_paid_amt'] = $request->payable_amount;
+            $paymentresponse['payment_status'] = 4;
+   
+            $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+   
+           $new_response['message'] = 'Request Rejected';
+           $new_response['success'] = true;
+    }
 
         return response()->json($new_response);
 
