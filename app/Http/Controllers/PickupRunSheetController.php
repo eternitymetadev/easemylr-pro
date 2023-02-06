@@ -347,7 +347,6 @@ class PickupRunSheetController extends Controller
             } else {
                 $query = $query->whereHas('PickupRunSheet', function($query) use($cc){
                     $query->whereIn('branch_id', $cc);
-                    // $query->whereIn('branch_id', $cc);
                 });
                 }
 
@@ -445,18 +444,14 @@ class PickupRunSheetController extends Controller
             
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
-            $baseclient = explode(',', $authuser->baseclient_id);
-            $regclient = explode(',', $authuser->regionalclient_id);
+            // $baseclient = explode(',', $authuser->baseclient_id);
+            // $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
             
             $query = $query->with('PrsDriverTasks','PrsDriverTasks.PrsTaskItems');
 
             if ($authuser->role_id == 1) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
             } else {
                 $query = $query->whereIn('branch_id', $cc);
                 }
@@ -507,17 +502,13 @@ class PickupRunSheetController extends Controller
 
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
         } else {
             $query = $query->whereIn('branch_id', $cc);
             }
 
         $vehiclereceives  = $query->whereNotIn('status',[3])->orderBy('id','ASC')->paginate($peritem);
         $vehiclereceives  = $vehiclereceives->appends($request->query());
-        // echo "<pre>"; print_r($vehiclereceives); die;
+        
         return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
