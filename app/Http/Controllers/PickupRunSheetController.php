@@ -137,11 +137,13 @@ class PickupRunSheetController extends Controller
 
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        }
+        //  elseif ($authuser->role_id == 4) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } elseif ($authuser->role_id == 7) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } 
+        else {
             $query = $query->whereIn('branch_id', $cc);
             }
 
@@ -412,11 +414,13 @@ class PickupRunSheetController extends Controller
 
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        } 
+        // elseif ($authuser->role_id == 4) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } elseif ($authuser->role_id == 7) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } 
+        else {
             $query = $query->whereHas('PickupRunSheet', function($query) use($cc){
                 $query->whereIn('branch_id', $cc);
             });
@@ -951,17 +955,20 @@ class PickupRunSheetController extends Controller
 
             if ($authuser->role_id == 1) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } 
+            elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } elseif ($authuser->role_id == 6) {
                 $query = $query->whereIn('base_clients.id', $baseclient);
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } else {
-                // $query = $query->whereIn('branch_id', $cc);
+            } 
+            else {
                 $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
                     $query->whereIn('fall_in', $cc);
                 });
+                
+                // $query = $query->whereIn('branch_id', $cc);
             }
 
             if (!empty($request->search)) {
@@ -1020,13 +1027,15 @@ class PickupRunSheetController extends Controller
         
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } 
+        elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id == 6) {
             $query = $query->whereIn('base_clients.id', $baseclient);
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        } 
+        else {
             // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
                 $query->whereIn('fall_in', $cc);
