@@ -417,6 +417,12 @@ class VendorController extends Controller
         $user = $authuser->id;
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
+        if(empty($request->acc_no) || empty($request->ifsc)){
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
 
         //deduct balance
         $deduct_balance = $request->payable_amount - $request->final_payable_amount ;

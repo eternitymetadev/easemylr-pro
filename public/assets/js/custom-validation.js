@@ -2365,7 +2365,9 @@ $("#payment_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 $("#payment_form")[0].reset();
-            } else {
+            } else if(data.error == true){
+                swal("error", data.message, "error");
+            }else {
                 swal("error", data.message, "error");
             }
         },
