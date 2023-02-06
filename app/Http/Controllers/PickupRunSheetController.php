@@ -1091,14 +1091,14 @@ class PickupRunSheetController extends Controller
                   $i++;
                   $prs_no = $value['pickup_id'];
                   $vendor_id = $request->vendor_name;
-                  $vehicle_no = $value['vehicle_detail']['regn_no'];
-                  $sent_vehicle[] = $value['vehicle_detail']['regn_no'];
+                  $vehicle_no = @$value['vehicle_detail']['regn_no'];
+                  $sent_vehicle[] = @$value['vehicle_detail']['regn_no'];
                   
   
                   if ($request->p_type == 'Advance') {
                       $balance_amt = $request->claimed_amount - $request->pay_amt;
                     
-                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign ,'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
   
                       PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
                   } else {
@@ -1110,7 +1110,7 @@ class PickupRunSheetController extends Controller
                       }
                       $advance = $request->pay_amt;
   
-                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign ,'payment_status' => 2, 'is_approve' => 0, 'status' => '1']);
                       PickupRunSheet::whereIn('pickup_id', $prsno)->update(['payment_status' => 2]);
   
                   }
@@ -1141,7 +1141,7 @@ class PickupRunSheetController extends Controller
                   if ($request->p_type == 'Advance') {
                       $balance_amt = $request->claimed_amount - $request->pay_amt;
   
-                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'rm_id' => $authuser->rm_assign ,'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
   
                   } else {
                       $getadvanced = PrsPaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
@@ -1153,7 +1153,7 @@ class PickupRunSheetController extends Controller
                       $advance = $request->pay_amt;
                       // dd($advance);
   
-                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
+                      $transaction = PrsPaymentRequest::create(['transaction_id' => $transaction_id_new, 'prs_no' => $prs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'current_paid_amt' => $request->final_payable_amount, 'amt_without_tds' => $request->pay_amt,'tds_deduct_balance' => $deduct_balance, 'branch_id' => $request->branch_id, 'user_id' => $user,'rm_id' => $authuser->rm_assign , 'payment_status' => 0, 'is_approve' => 1, 'status' => '1']);
                   }
   
               }
@@ -1400,8 +1400,10 @@ class PickupRunSheetController extends Controller
                   });
           } elseif ($authuser->role_id == 7) {
               $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+          } elseif($authuser->role_id == 7){
+            $query = $query->where('rm_id', $authuser->id);
           } else {
-           
+
               $query = $query->whereIn('branch_id', $cc);
               
           }
@@ -1439,16 +1441,14 @@ class PickupRunSheetController extends Controller
     // ============ Rm Approver Pusher =========================
     public function rmApproverRequest(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());die;
-
+    
         $authuser = User::where('id', $request->user_id)->first();
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
         //deduct balance
         // $deduct_balance = $request->payable_amount - $request->final_payable_amount;
-
+        if($request->hrsAction == 1){
         $get_vehicle = PrsPaymentRequest::select('vehicle_no')->where('transaction_id', $request->transaction_id)->get();
         $sent_vehicle = array();
         foreach ($get_vehicle as $vehicle) {
@@ -1561,6 +1561,30 @@ class PickupRunSheetController extends Controller
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
         }
+    }else{
+
+           // ============ Request Rejected ================= //
+           $prs_num = explode(',', $request->prs_no);
+           PrsPaymentRequest::where('transaction_id', $request->transaction_id)->update(['rejected_remarks' => $request->rejectedRemarks, 'payment_status' => 4 ]);
+       
+            PickupRunSheet::whereIn('pickup_id', $prs_num)->update(['payment_status' => 0, 'request_status' => 0]);
+   
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+   
+            $paymentresponse['transaction_id'] = $request->transaction_id;
+            $paymentresponse['prs_no'] = $request->prs_no;
+            $paymentresponse['bank_details'] = json_encode($bankdetails);
+            $paymentresponse['purchase_amount'] = $request->claimed_amount;
+            $paymentresponse['payment_type'] = $request->p_type;
+            $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+            $paymentresponse['current_paid_amt'] = $request->payable_amount;
+            $paymentresponse['payment_status'] = 4;
+   
+            $paymentresponse = PrsPaymentHistory::create($paymentresponse);
+   
+           $new_response['message'] = 'Request Rejected';
+           $new_response['success'] = true;
+    }
 
         return response()->json($new_response);
 

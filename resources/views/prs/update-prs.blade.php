@@ -26,7 +26,7 @@
 
                                 <div class="col-md-6">
                                     <label>Pickup From Branch</label>
-                                    <select name="location_id" class="form-control tagging" id="location_id">
+                                    <select name="location_id" class="form-control my-select2" id="location_id">
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($locations)>0) {
@@ -44,7 +44,7 @@
 
                                 <div class="col-md-6">
                                     <label>Pickup Drop Hub</label>
-                                    <select name="hub_location_id" class="form-control tagging" id="hub_location_id">
+                                    <select name="hub_location_id" class="form-control my-select2" id="hub_location_id">
                                         <option value="">Select</option>
                                         <?php 
                                         if(count($hub_locations)>0) {
@@ -80,7 +80,7 @@
                                         ?>
                                             <tr class="rrow">
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control tagging select_prsregclient disabled"
+                                                    <select class="form-control my-select2 select_prsregclient disabled"
                                                         onchange="onChangePrsRegClient(this)"
                                                         name="data[{{$i}}][regclient_id]" readonly disabled>
                                                         <option selected="selected">
@@ -126,7 +126,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Type</label>
-                                    <select class="form-control tagging my-select2" id="vehicle_type"
+                                    <select class="form-control my-select2" id="vehicle_type"
                                         name="vehicletype_id" tabindex="-1">
                                         <option value="">Select vehicle type</option>
                                         @foreach($vehicletypes as $vehicletype)
@@ -138,7 +138,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Vehicle Number</label>
-                                    <select class="form-control tagging my-select2" id="vehicle_no" name="vehicle_id"
+                                    <select class="form-control my-select2" id="vehicle_no" name="vehicle_id"
                                         tabindex="-1">
                                         <option value="">Select vehicle</option>
                                         @foreach($vehicles as $vehicle)
@@ -150,7 +150,7 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="exampleFormControlInput2">Driver Name</label>
-                                    <select class="form-control tagging my-select2" id="driver_id" name="driver_id"
+                                    <select class="form-control my-select2" id="driver_id" name="driver_id"
                                         tabindex="-1">
                                         <option value="">Select driver</option>
                                         @foreach($drivers as $driver)
@@ -176,6 +176,23 @@
 @endsection
 @section('js')
 <script>
+
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
+
 // add prs date
 $('#prsDate').val(new Date().toJSON().slice(0, 10));
 

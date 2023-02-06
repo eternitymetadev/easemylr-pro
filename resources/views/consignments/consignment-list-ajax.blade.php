@@ -66,7 +66,7 @@
                     $cne_nickname = $consignment->ConsignerDetail->nick_name;
                 }else{
                     $cnr_nickname = $consignment->ConsignerDetail->nick_name;
-                    $cne_nickname = $consignment->ConsigneeDetail->nick_name;
+                    $cne_nickname = @$consignment->ConsigneeDetail->nick_name;
                 } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
@@ -83,7 +83,7 @@
                             <div class="ant-timeline-item-head ant-timeline-item-head-red"></div>
                             <div class="ant-timeline-item-content">
                                 <div class="css-16pld72 ellipse">
-                                    {{ $cne_nickname ?? "-" }}
+                                    {{ @$cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
                                 <?php if($consignment->is_salereturn == '1'){ ?>
@@ -267,7 +267,7 @@
                                                                     $cne_nickname_txn = $consignment->ConsignerDetail->nick_name;
                                                                 }else{
                                                                 $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name;
-                                                                $cne_nickname_txn = $consignment->ConsigneeDetail->nick_name;
+                                                                $cne_nickname_txn = @$consignment->ConsigneeDetail->nick_name;
                                                                 }
                                                                 ?>
                                                             <td colspan="2">
@@ -304,9 +304,9 @@
                                                                             <?php }else{?>
                                                                             <div class="css-16pld72"
                                                                                 style="font-size: 12px; color: rgb(102, 102, 102);">
-                                                                                <span>{{$consignment->ConsigneeDetail->postal_code}},
-                                                                                    {{$consignment->ConsigneeDetail->city}},
-                                                                                    {{$consignment->ConsigneeDetail->district}}</span>
+                                                                                <span>{{@$consignment->ConsigneeDetail->postal_code}},
+                                                                                    {{@$consignment->ConsigneeDetail->city}},
+                                                                                    {{@$consignment->ConsigneeDetail->district}}</span>
                                                                             </div>
                                                                             <?php } ?>
                                                                         </div>

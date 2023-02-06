@@ -450,13 +450,29 @@
 
         </ul>
     </li>
-
+   <?php if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
     <p class="menuHead menuHeadHidden mb-0">Payments</p>
+    <li class="menu">
+        <a href="{{$prefixurl.'vendor-list'}}" data-active="<?php if($segment == 'vendor-list'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'drivers')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Vendors</span>
+            </div>
+        </a>
+    </li>
 
     <li class="menu">
         <a href="#drsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'vendor-list') || str_contains($currentURL, 'drs-paymentlist') || str_contains($currentURL, 'request-list') || str_contains($currentURL, 'payment-report-view') || str_contains($currentURL, 'drswise-report')) active @endif">
+                class="@if(str_contains($currentURL, 'drs-paymentlist') || str_contains($currentURL, 'request-list') || str_contains($currentURL, 'payment-report-view') || str_contains($currentURL, 'drswise-report')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-dollar-sign">
@@ -472,9 +488,9 @@
             </svg>
         </a> 
         <ul class="collapse submenu list-unstyled" id="drsPayments" data-parent="#accordionExample">
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'vendor-list'}}"> Vendor List </a>
-            </li>
+            </li> -->
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'drs-paymentlist'}}"> Create Payments </a>
             </li>
@@ -546,6 +562,7 @@
 
         </ul>
     </li>
+    <?php } ?>
 
     <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
@@ -643,7 +660,7 @@
         </ul>
     </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'consignment-misreport') || str_contains($currentURL, 'consignment-report2')) active @endif">
@@ -666,7 +683,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'postal-code'}}"> Pin Code </a>
             </li>
         </ul>
-    </li>
+    </li> -->
     <?php if($authuser->role_id == 1){ ?>
     <li class="menu">
         <a href="#users" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">

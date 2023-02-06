@@ -102,6 +102,7 @@ div.relative {
 @endsection
 @section('js')
 <script>
+    
  // Order list status change onchange
  jQuery(document).on('click','.orderstatus',function(event){
         event.stopPropagation();

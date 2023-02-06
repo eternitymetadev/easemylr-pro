@@ -94,9 +94,11 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                    $query->whereIn('fall_in', $cc);
-                });
+                $query = $query->whereIn('branch_id', $cc);
+                // ->orWhere(function ($query) use ($cc){
+                //     $query->whereIn('fall_in', $cc);
+                // });
+
                 // if(!empty('to_branch_id')){
                 //     $query = $query->whereIn('to_branch_id', $cc);
                 // }else{
@@ -167,7 +169,7 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                $query->whereIn('fall_in', $cc);
+                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
             // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
             
@@ -462,6 +464,7 @@ class ConsignmentController extends Controller
             $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['freight'] = $request->freight;
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;
@@ -1828,7 +1831,7 @@ class ConsignmentController extends Controller
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
-                $data->whereIn('consignment_notes.to_branch_id', $cc);
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5']);
             });
             // if(!empty('consignment_notes.to_branch_id')){
             //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
@@ -1838,6 +1841,7 @@ class ConsignmentController extends Controller
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
+        
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();

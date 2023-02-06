@@ -30,6 +30,8 @@ class User extends Authenticatable
         'phone',
         'assign_permission',
         'assign_branch',
+        'is_payment',
+        'rm_assign',
         'status',
     ];
 

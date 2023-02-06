@@ -46,9 +46,9 @@ class GlobalFunctions
         } else if ($status == 2) {
             $status = 'Acknowledged';
         } else if ($status == 3) {
-            $status = 'Material Picked up';
+            $status = 'Picked up';
         } else if ($status == 4) {
-            $status = 'Material delivered at HUB';
+            $status = 'Delivered';
         }
 
         return $status;

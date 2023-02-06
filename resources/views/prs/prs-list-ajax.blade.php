@@ -63,7 +63,7 @@
                 </td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
-                <td>{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>
+                <td style="font-weight: 600;">{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>
                 <td>
                     <?php  
                     if($value->status == 1){

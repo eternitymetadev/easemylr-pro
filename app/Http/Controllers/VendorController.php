@@ -411,12 +411,19 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
+        if(empty($request->acc_no) || empty($request->ifsc)){
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
 
         //deduct balance
         $deduct_balance = $request->payable_amount - $request->final_payable_amount ;
@@ -763,6 +770,13 @@ class VendorController extends Controller
         $cc = $authuser->branch_id;
         $user = $authuser->id;
         $bm_email = $authuser->email;
+
+        if(empty($request->acc_no) || empty($request->ifsc)){
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
 
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 

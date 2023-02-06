@@ -291,36 +291,20 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         {{--Branch Location--}}
         <div class="form-row">
             <h6 class="col-12">Branch</h6>
-             
+                        
             <?php $authuser = Auth::user();
-            if($authuser->role_id == 2 || $authuser->role_id == 4)
-            {
             ?>
             <div class="form-group col-md-4">
                 <label for="exampleFormControlSelect1">
                     Select Branch <span class="text-danger">*</span>
                 </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
+                <select class="form-control my-select2" id="branch_id" name="branch_id" tabindex="-1" disabled>
+                <option value="">Select..</option>
                     @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                    <option value="{{ $branch->id }}" {{ $branch->id == $getconsignments->branch_id ? 'selected' : ''}}>{{ucwords($branch->name)}}</option>
                     @endforeach
                 </select>
             </div>
-            <?php } else { ?>
-                <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect1">
-                    Select Branch <span class="text-danger">*</span>
-                </label>
-                <select class="form-control  my-select2" id="branch_id" name="branch_id" tabindex="-1">
-                    <option value="">Select..</option>
-                    @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                    @endforeach
-                </select>
-            </div>
-
-                <?php } ?>
-
         </div>
 
         {{--bill to info--}}
@@ -450,7 +434,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     </option>
                     @endforeach
                     @endif
-                </select>
+                </select> 
                 <?php if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
                 <?php } ?>
@@ -458,7 +442,6 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
                 </div>
             </div>
-
 
             {{--order info--}}
             <?php if($invc_data->is_multiple_invoice == 1 || $invc_data->is_multiple_invoice == 2 ){ ?>
@@ -775,8 +758,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                     {{$disable}}>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-rounded insert-more"
-                                                {{$disable}}> + </button>
+                                                <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
                                             </td>
                                         </tr>
 
@@ -1423,7 +1405,7 @@ $(document).ready(function() {
                         var multiple_invoice = res.regclient.is_multiple_invoice;
                     }
                 }
-                if (multiple_invoice == 1) {
+                if (multiple_invoice == 4) {
                     $('.insert-more').attr('disabled', false);
                 } else {
                     $('.insert-more').attr('disabled', true);

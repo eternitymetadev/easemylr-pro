@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBmPaymentApproverToUsersTable extends Migration
+class AddRemarksToHrsPaymentRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddBmPaymentApproverToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('is_payment')->after('assign_branch')->default(0)->comment('0=>rm_approver 1=>direct finfect'); 
-            $table->string('rm_assign')->after('is_payment')->nullable(); 
+        Schema::table('hrs_payment_requests', function (Blueprint $table) {
+            $table->string('rejected_remarks')->after('rm_id')->nullable();
         });
     }
 
@@ -26,7 +25,7 @@ class AddBmPaymentApproverToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('hrs_payment_requests', function (Blueprint $table) {
             //
         });
     }

@@ -345,7 +345,7 @@ class OrderController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
-        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems')->where('id', $id)->first();
+        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems', 'RegClient')->where('id', $id)->first();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
@@ -388,15 +388,15 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name')->get();
         // }
 
-        if ($authuser->role_id == 1) {
+        // if ($authuser->role_id == 1) {
+        //     $branchs = Location::select('id', 'name')->get();
+        // } elseif ($authuser->role_id == 2) {
+        //     $branchs = Location::select('id', 'name')->where('id', $cc)->get();
+        // } elseif ($authuser->role_id == 5) {
+        //     $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        // } else {
             $branchs = Location::select('id', 'name')->get();
-        } elseif ($authuser->role_id == 2) {
-            $branchs = Location::select('id', 'name')->where('id', $cc)->get();
-        } elseif ($authuser->role_id == 5) {
-            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-        } else {
-            $branchs = Location::select('id', 'name')->get();
-        }
+        // }
 
         return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
     }
@@ -494,7 +494,7 @@ class OrderController extends Controller
                         } else {
                             $consignmentsave['delivery_status'] = "Unassigned";
                         }
-                        $consignmentsave['hrs_status'] = 2;
+                        $consignmentsave['hrs_status'] = 3;
                         $consignmentsave['h2h_check'] = 'lm';
                         ///same location check
                         if ($request->invoice_check == 1 || $request->invoice_check == 2) {
@@ -2051,6 +2051,7 @@ class OrderController extends Controller
             $consignmentsave['consignment_no'] = $consignmentno;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['freight'] = $request->freight;
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;
@@ -2154,7 +2155,7 @@ class OrderController extends Controller
                 $response['page'] = 'update-order';
                 $response['redirect_url'] = $url;
             } else {
-                $response['success'] = false;
+                $response['success'] = false; 
                 $response['error_message'] = "Can not updated consignment please try again";
                 $response['error'] = true;
             }
