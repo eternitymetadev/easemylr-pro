@@ -494,7 +494,7 @@ class OrderController extends Controller
                         } else {
                             $consignmentsave['delivery_status'] = "Unassigned";
                         }
-                        $consignmentsave['hrs_status'] = 2;
+                        $consignmentsave['hrs_status'] = 3;
                         $consignmentsave['h2h_check'] = 'lm';
                         ///same location check
                         if ($request->invoice_check == 1 || $request->invoice_check == 2) {
@@ -2155,7 +2155,7 @@ class OrderController extends Controller
                 $response['page'] = 'update-order';
                 $response['redirect_url'] = $url;
             } else {
-                $response['success'] = false;
+                $response['success'] = false; 
                 $response['error_message'] = "Can not updated consignment please try again";
                 $response['error'] = true;
             }
