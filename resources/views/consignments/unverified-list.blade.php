@@ -99,8 +99,6 @@ div.relative {
                                 @else
                                 @if($consignment->hrs_status == 3)
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
-                                @elseif($consignment->h2h_check == 'lm')
-                                <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                 @else
                                 <td>-</td>
                                 @endif
