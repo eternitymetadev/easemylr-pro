@@ -141,7 +141,7 @@
                             <input type="text" class="form-control" id="branch_name" name="branch_name" value="">
                         </div>
                     </div>
-                    <div class="form-row mb-0" >
+                    <div class="form-row mb-0" style="display: none">
                         <div class="form-group col-md-6">
                             <label for="location_name">Account No</label>
                             <input type="text" class="form-control" id="bank_acc" name="acc_no" value="">
