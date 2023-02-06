@@ -2341,11 +2341,11 @@ $("#payment_form").submit(function (e) {
     var formData = new FormData(this);
     var tds_rate = $("#tds_rate").val();
 
-    if (!tds_rate) {
+    if (!tds_rate) { 
         swal("Error", "please add tds rate in vendor", "error");
         return false;
     }
-
+ 
     $.ajax({
         url: "create-payment",
         headers: {
@@ -2365,7 +2365,9 @@ $("#payment_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 $("#payment_form")[0].reset();
-            } else {
+            } else if(data.error == true){
+                swal("error", data.message, "error");
+            }else {
                 swal("error", data.message, "error");
             }
         },
@@ -2650,7 +2652,9 @@ $("#create_request_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 window.location.href = data.redirect_url;
-            } else {
+            } else if(data.error == true){
+                swal("error", data.message, "error");
+            }else {
                 swal("error", data.message, "error");
             }
         },
