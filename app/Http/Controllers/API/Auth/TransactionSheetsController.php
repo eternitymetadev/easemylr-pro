@@ -796,6 +796,34 @@ class TransactionSheetsController extends Controller
             ], 500);
         }
     }
+        ////// Image Delete  ///
+        public function imgDelete(Request $request, $id)
+        {
+            try {
+    
+                $res = AppMedia::where('id', $id)->delete();
+    
+                if ($res) {
+                    return response([
+                        'status' => 'success',
+                        'code' => 1,
+                        'message' => 'Img Deleted successfully',
+                    ], 200);
+                }
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'data' => "Failed to delete img",
+                ], 500);
+            } catch (\Exception $exception) {
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+                ], 500);
+            }
+        }
+        //  /////////////
 
     public function storeCoordinates(Request $request, $id) 
     {
