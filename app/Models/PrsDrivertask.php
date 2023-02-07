@@ -26,5 +26,9 @@ class PrsDrivertask extends Model
         return $this->hasOne('App\Models\PickupRunSheet','id','prs_id');
     }
 
+    public function PickupRunSheet(){
+        return $this->belongsTo('App\Models\PickupRunSheet','prs_id');
+    }
+
 
 }

@@ -66,7 +66,19 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
 
-            $query = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail');
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            // $baseclient = explode(',', $authuser->baseclient_id);
+            // $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+
+            $query = $query->with('PrsRegClients.RegClient','PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail');
+
+            if ($authuser->role_id == 1) {
+                $query;
+            } else {
+                $query = $query->whereIn('branch_id', $cc);
+                }
 
             if(!empty($request->search)){
                 $search = $request->search;
@@ -107,15 +119,35 @@ class PickupRunSheetController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $prsdata = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
+            $prsdata = $query->with('PrsRegClients.RegClient','PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
             $prsdata = $prsdata->appends($request->query());
 
-            $html =  view('prs.prs-list-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem])->render();
+            $html =  view('prs.prs-list-ajax',['prefix'=>$this->prefix,'prsdata' => $prsdata,'peritem'=>$peritem,'segment' => $this->segment])->render();
             
             return response()->json(['html' => $html]);
         }
 
-        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail')->orderBy('id','DESC')->paginate($peritem);
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = $query->with('PrsRegClients.RegClient','PrsRegClients.RegConsigner.Consigner','VehicleDetail','DriverDetail');
+
+        if ($authuser->role_id == 1) {
+            $query;
+        }
+        //  elseif ($authuser->role_id == 4) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } elseif ($authuser->role_id == 7) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } 
+        else {
+            $query = $query->whereIn('branch_id', $cc);
+            }
+
+        $prsdata = $query->orderBy('id','DESC')->paginate($peritem);
         $prsdata = $prsdata->appends($request->query());
         
         return view('prs.prs-list', ['prsdata' => $prsdata, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
@@ -299,8 +331,26 @@ class PickupRunSheetController extends Controller
 
                 return response()->json($response);
             }
+            
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $baseclient = explode(',', $authuser->baseclient_id);
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('ConsignerDetail:id,nick_name,city');
+
+            if ($authuser->role_id == 1) {
+                $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } elseif ($authuser->role_id == 7) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                $query = $query->whereHas('PickupRunSheet', function($query) use($cc){
+                    $query->whereIn('branch_id', $cc);
+                });
+                }
 
             if(isset($request->resetfilter)){
                 Session::forget('peritem');
@@ -354,7 +404,27 @@ class PickupRunSheetController extends Controller
 
             return response()->json(['html' => $html]);
         }
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        
         $query = $query->with('ConsignerDetail:id,nick_name,city');
+
+        if ($authuser->role_id == 1) {
+            $query;
+        } 
+        // elseif ($authuser->role_id == 4) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } elseif ($authuser->role_id == 7) {
+        //     $query = $query->whereIn('regclient_id', $regclient);
+        // } 
+        else {
+            $query = $query->whereHas('PickupRunSheet', function($query) use($cc){
+                $query->whereIn('branch_id', $cc);
+            });
+            }
 
         $drivertasks  = $query->orderBy('id','DESC')->paginate($peritem);
         $drivertasks  = $drivertasks->appends($request->query());
@@ -375,7 +445,20 @@ class PickupRunSheetController extends Controller
                 $url = URL::to($this->prefix.'/'.$this->segment);
                 return response()->json(['success' => true,'redirect_url'=>$url]);
             }
+            
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            // $baseclient = explode(',', $authuser->baseclient_id);
+            // $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            
             $query = $query->with('PrsDriverTasks','PrsDriverTasks.PrsTaskItems');
+
+            if ($authuser->role_id == 1) {
+                $query;
+            } else {
+                $query = $query->whereIn('branch_id', $cc);
+                }
 
             if(!empty($request->search)){
                 $search = $request->search;
@@ -413,11 +496,23 @@ class PickupRunSheetController extends Controller
             return response()->json(['html' => $html]);
         }
 
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        
         $query = $query->with('PrsDriverTasks','PrsDriverTasks.PrsTaskItems');
+
+        if ($authuser->role_id == 1) {
+            $query;
+        } else {
+            $query = $query->whereIn('branch_id', $cc);
+            }
 
         $vehiclereceives  = $query->whereNotIn('status',[3])->orderBy('id','ASC')->paginate($peritem);
         $vehiclereceives  = $vehiclereceives->appends($request->query());
-        // echo "<pre>"; print_r($vehiclereceives); die;
+        
         return view('prs.vehicle-receivegate-list', ['vehiclereceives' => $vehiclereceives, 'peritem'=>$peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
 
@@ -860,17 +955,20 @@ class PickupRunSheetController extends Controller
 
             if ($authuser->role_id == 1) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } 
+            elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } elseif ($authuser->role_id == 6) {
                 $query = $query->whereIn('base_clients.id', $baseclient);
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } else {
-                // $query = $query->whereIn('branch_id', $cc);
+            } 
+            else {
                 $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
                     $query->whereIn('fall_in', $cc);
                 });
+                
+                // $query = $query->whereIn('branch_id', $cc);
             }
 
             if (!empty($request->search)) {
@@ -929,13 +1027,15 @@ class PickupRunSheetController extends Controller
         
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } 
+        elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id == 6) {
             $query = $query->whereIn('base_clients.id', $baseclient);
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        } 
+        else {
             // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
                 $query->whereIn('fall_in', $cc);

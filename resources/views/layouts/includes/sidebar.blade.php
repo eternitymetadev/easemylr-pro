@@ -414,7 +414,7 @@
         </ul>
     </li>
 
-
+    <?php if($authuser->role_id == 1 || $authuser->role_id ==2 || $authuser->role_id ==3 || $authuser->role_id ==4){ ?>
     <li class="menu">
         <a href="#prs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -450,7 +450,8 @@
 
         </ul>
     </li>
-   <?php if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
+   <?php }
+   if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
     <p class="menuHead menuHeadHidden mb-0">Payments</p>
     <li class="menu">
         <a href="{{$prefixurl.'vendor-list'}}" data-active="<?php if($segment == 'vendor-list'){?>true<?php }?>"

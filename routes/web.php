@@ -775,15 +775,6 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
-    Route::resource('prs', PickupRunSheetController::class);
-    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
-    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
-    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
-    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
-    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
-    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
-    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
-    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
@@ -819,6 +810,22 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
+    Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
+    Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
 
 });
 
@@ -937,16 +944,6 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
     Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
     Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
-
-    Route::resource('prs', PickupRunSheetController::class);
-    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
-    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
-    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
-    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
-    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
-    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
-    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
-    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
