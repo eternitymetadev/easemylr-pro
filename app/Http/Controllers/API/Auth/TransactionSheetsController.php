@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TransactionSheet;
 use App\Models\ConsignmentNote;
 use App\Models\AppMedia;
+use App\Models\Coordinate;
 use App\Models\Consignee;
 use App\Models\Job;
 use Facade\Ignition\Tabs\Tab;
