@@ -234,17 +234,17 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Vehicle No</td>
-                                                            <td>{{$consignment->regn_no ?? ''}}</td>
+                                                            <td>{{$consignment->VehicleDetail->regn_no ?? ''}}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>Driver Name</td>
-                                                            <td>{{$consignment->driver_name ?? ''}}</td>
+                                                            <td>{{ucfirst($consignment->DriverDetail->name) ?? ''}}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>Driver Phone</td>
-                                                            <td>{{$consignment->driver_phone ?? ''}}</td>
+                                                            <td>{{$consignment->DriverDetail->phone ?? ''}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>No. of Boxes</td>
