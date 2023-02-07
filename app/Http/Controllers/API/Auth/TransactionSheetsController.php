@@ -263,7 +263,7 @@ class TransactionSheetsController extends Controller
 
                    }
                    foreach($value->AppMedia as $pod){
-                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,'id' => $pod->id
                    );
                 }
                 $deliverystatus = array();
@@ -604,7 +604,7 @@ class TransactionSheetsController extends Controller
                            $invoices[] = $orders->invoice_no;
                    }
                    foreach($value->AppMedia as $pod){
-                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type, 'id' => $pod->id
                    );
                 }
                 
