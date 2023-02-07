@@ -770,7 +770,7 @@ class TransactionSheetsController extends Controller
         }
     }
 
-    public function verifiedLr(Request $request, $id)
+    public function verifiedLr(Request $request, $id) 
     {
         try { 
             $update_status = ConsignmentNote::find($id);
@@ -781,6 +781,36 @@ class TransactionSheetsController extends Controller
                     'status' => 'success',
                     'code' => 1,
                     'message' => 'verified status updated successfully'
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update status"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+            ], 500);
+        }
+    }
+
+    public function storeCoordinates(Request $request, $id) 
+    {
+        
+        try { 
+            $coordinatesave['consignment_id'] = $id;
+            $coordinatesave['latitude'] = $request->latitude;
+            $coordinatesave['longitude'] = $request->longitude;
+            $res = Coordinate::create($coordinatesave);
+            
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Coordinate saved successfully'
                 ], 200);
             }
             return response([
