@@ -279,7 +279,7 @@ class UserController extends Controller
             $response['error'] = false;
             $response['error_message'] = $e;
             $response['success'] = false;
-            $response['redirect_url'] = $url;   
+            $response['redirect_url'] = $url;    
         }
 
         return response()->json($response);
