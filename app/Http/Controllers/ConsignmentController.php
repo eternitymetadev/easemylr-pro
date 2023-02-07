@@ -172,7 +172,6 @@ class ConsignmentController extends Controller
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
             // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
-            
         } 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
@@ -1817,7 +1816,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '5'])
+            ->whereIn('consignment_notes.status', ['2', '5', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
