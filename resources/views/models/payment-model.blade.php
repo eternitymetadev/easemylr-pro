@@ -185,7 +185,7 @@
                             <input type="text" class="form-control" id="tds_rate" name="tds_rate" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="location_name">tds deduct amount</label>
+                            <label for="location_name">Payble Amount after tds Deduction </label>
                             <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value="" readonly>
                         </div>
                     </div>
@@ -433,7 +433,7 @@
                             <input type="text" class="form-control" id="tds_rate_1" name="tds_rate" value="" readonly>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="location_name">tds deduct amount</label>
+                            <label for="location_name">Payble Amount after tds Deduction </label>
                             <input type="text" class="form-control" id="tds_dedut_1" name="final_payable_amount" value="" readonly>
                         </div>
                     </div>
