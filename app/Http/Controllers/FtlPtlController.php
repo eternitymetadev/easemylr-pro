@@ -823,7 +823,7 @@ class FtlPtlController extends Controller
 
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $vn = $consignmentsave['vehicle_id'];
-            $lid = $saveconsignment->id;
+            $lid = $saveconsignment->id; 
             $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
                 ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                 ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -841,7 +841,7 @@ class FtlPtlController extends Controller
                     $json = json_decode($createTask[0], true);
                     $job_id = $json['data']['job_id'];
                     $tracking_link = $json['data']['tracking_link'];
-                    $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link]);
+                    $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                 }
             }
 
