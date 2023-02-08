@@ -529,7 +529,7 @@ class ConsignmentController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
-
+ 
                 if (($request->edd) >= $request->consignment_date) {
                     if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                         $createTask = $this->createTookanTasks($simplyfy);
@@ -3697,7 +3697,7 @@ class ConsignmentController extends Controller
             })->get();
 
         $result = json_decode(json_encode($transcationview), true);
-        //  echo '<pre>'; print_r($result); die;
+        //  echo '<pre>'; print_r($result); die; 
 
         $response['fetch'] = $result;
         $response['role_id'] = $role;
