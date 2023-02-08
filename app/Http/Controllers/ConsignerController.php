@@ -356,4 +356,36 @@ class ConsignerController extends Controller
         return response()->json($response);
     }
 
+    // get address detail from postal code api
+    public function getPostalAddress(Request $request){
+        if(!empty($request->postcode)){
+            $getZone = Zone::where('postal_code',$postcode)->first();
+        }else{
+            $getZone = '';
+        }
+            
+        $pin = URL::to('get-address-by-postcode');
+        $pin = file_get_contents('https://api.postalpincode.in/pincode/'.$postcode);
+        $pins = json_decode($pin);
+        foreach($pins as $key){
+            if($key->PostOffice == null){
+                $response['success'] = false;
+                $response['error_message'] = "Can not fetch postal address please try again";
+                $response['error'] = true;
+                
+            }else{
+                $arr['city'] = $key->PostOffice[0]->Block;
+                $arr['district'] = $key->PostOffice[0]->District;
+                $arr['state'] = $key->PostOffice[0]->State;
+
+                $response['success'] = true;
+                $response['success_message'] = "Postal Address fetch successfully";
+                $response['error'] = false;
+                $response['data'] = $arr;
+                $response['zone'] = $getZone;
+            }
+        }
+        return response()->json($response);
+    }
+
 }
