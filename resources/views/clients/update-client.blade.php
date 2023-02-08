@@ -78,6 +78,22 @@
                                             </select>
                                         </td>
                                         <td>
+                                            <div class="check-box d-flex">
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">Yes
+                                                        <input type="radio"  value='1' name="data[{{$i}}][is_prs_pickup]" {{ ($regclientdata->is_prs_pickup=="1")? "checked" : "" }}>
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">No
+                                                        <input type="radio" name="data[1][is_prs_pickup]" value='0' {{ ($regclientdata->is_prs_pickup=="0")? "checked" : "" }}>
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
                                             <button type="button" class="btn btn-primary" id="addRow" onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
                                             @if($i>0)
                                             <!-- <button type="button" class="btn btn-danger removeRow delete_client"><i class="fa fa-minus-circle"></i></button> -->

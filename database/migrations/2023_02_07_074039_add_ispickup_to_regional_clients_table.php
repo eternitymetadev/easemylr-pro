@@ -14,7 +14,7 @@ class AddIspickupToRegionalClientsTable extends Migration
     public function up()
     {
         Schema::table('regional_clients', function (Blueprint $table) {
-            $table->string('is_prs_pickup')->after('is_invoice_item_check')->default(0)->comment('0=>not required  1=>required')->nullable();
+            $table->string('is_prs_pickup')->after('is_invoice_item_check')->default(0)->comment('0=>required  1=>not required')->nullable();
         });
     }
 

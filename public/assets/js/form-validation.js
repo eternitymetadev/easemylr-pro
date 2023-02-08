@@ -1420,6 +1420,9 @@ jQuery(document).ready(function(){
             'location_id[]' : {
                 required: true,
             },
+            'is_prs_pickup[]' : {
+                required: true,
+            },
         },
         messages: {
             client_name: {
@@ -1430,6 +1433,9 @@ jQuery(document).ready(function(){
             },
             'location_id[]' : {
                 required: "Please select location",
+            },
+            'is_prs_pickup[]' : {
+                required: "Please select Prs pickup",
             },
         },
         submitHandler : function(form)
@@ -1447,6 +1453,9 @@ jQuery(document).ready(function(){
             },
             'location_id[]' : {
                 required: true,
+            },
+            'is_prs_pickup[]' : {
+                required: true,
             },      
         },
         messages: {
@@ -1458,6 +1467,9 @@ jQuery(document).ready(function(){
             },
             'location_id[]' : {
                 required: "Please select location",
+            },
+            'is_prs_pickup[]' : {
+                required: "Please select prs pickup",
             },
         },
         submitHandler : function(form)

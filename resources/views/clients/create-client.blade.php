@@ -48,6 +48,7 @@
                                         <th><label for="exampleFormControlInput2">Location<span
                                                     class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
+                                        <th><label for="exampleFormControlInput2">Pickup Rquired </label></th>
                                     </tr>
                                     <tr class="rowcls">
                                         <td>
@@ -77,6 +78,22 @@
                                                 <option value="3">per invoice-Without Item</option>
                                                 <option value="4">LR Multiple invoice-Without item</option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <div class="check-box d-flex">
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">Yes
+                                                        <input type="radio"  value='1' name="data[1][is_prs_pickup]">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">No
+                                                        <input type="radio" name="data[1][is_prs_pickup]" value='0' checked>
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-primary" id="addRow"
@@ -125,6 +142,8 @@ function addrow() {
     rows += '<td>';
     rows  += '<select class="form-control is_multiple_invoice" name="data['+ i + '][is_multiple_invoice]"> <option value="">Select..</option> <option value="1">Per invoice-Item wise</option> <option value="2">Multiple Invoice-Item wise</option> <option value="3">per invoice-Without Item</option> <option value="4">LR Multiple invoice-Without item</option> </select>';
     rows += '</td>';
+    row += '<td><div class="check-box d-flex"><div class="checkbox radio"><label class="check-label">Yes<input type="radio"  value='1' name="data['+ i + '][is_prs_pickup]"><span class="checkmark"></span></label></div>';
+    row += '<div class="checkbox radio"><label class="check-label">No<input type="radio" name="data['+ i + '][is_prs_pickup]" value='0' checked><span class="checkmark"></span></label></div></div></td>';
     rows += '<td>';
     rows += '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
     rows += '</td>';
