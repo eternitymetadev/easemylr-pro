@@ -4899,4 +4899,10 @@ class ConsignmentController extends Controller
          }
          return Response::json($response);
        }
+
+       public function trackLr()
+       {
+        $this->prefix = request()->route()->getPrefix();
+        return view('consignments.track-lr',['prefix'=>$this->prefix]);
+       }
 }
