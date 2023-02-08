@@ -369,6 +369,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+    Route::any('track-lr', [ConsignmentController::class, 'trackLr']);
     
 
     Route::resource('locations', LocationController::class);
