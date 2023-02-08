@@ -8,6 +8,7 @@ use App\Models\Branch;
 use App\Models\Location;
 use App\Models\Role;
 use App\Models\RegionalClient;
+use App\Models\Zone;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ConsignerExport;
 use DB;
@@ -353,6 +354,28 @@ class ConsignerController extends Controller
             $response['error_message'] = "Can not fetch location list please try again";
             $response['error'] = true;
         }
+        return response()->json($response);
+    }
+
+    // get address detail from postal code api
+    public function getPostalAddress(Request $request){
+        if(!empty($request->postcode)){
+            $getZone = Zone::where('postal_code',$request->postcode)->first();
+        }else{
+            $getZone = '';
+        }
+
+        if(!empty($getZone)){
+            $response['success'] = true;
+            $response['success_message'] = "Postal Address fetch successfully";
+            $response['error'] = false;
+            $response['zone'] = $getZone;
+        }else{
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch postal address please try again";
+            $response['error'] = true;
+        }
+        // dd($response);
         return response()->json($response);
     }
 

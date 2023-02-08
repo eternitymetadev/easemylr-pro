@@ -1919,7 +1919,9 @@ jQuery(document).ready(function () {
                 },
                 success: function (data) {
                     if (data.success) {
-                        $("#city").val(data.data.city);
+                        console.log(data.zone);
+                        
+                        // $("#city").val(data.data.city);
                         $("#district").val(data.zone.district);
                         $("#state").val(data.zone.state);
 
@@ -1931,7 +1933,7 @@ jQuery(document).ready(function () {
                             $("#zone_id").val(data.zone.id);
                         }
                     } else {
-                        $("#city").val("");
+                        // $("#city").val("");
                         $("#district").val("");
                         $("#state").val("");
                         $("#zone_name").val("");
@@ -1940,7 +1942,7 @@ jQuery(document).ready(function () {
                 },
             });
         } else {
-            $("#city").val("");
+            // $("#city").val("");
             $("#state").val("");
             $("#district").val("");
             $("#zone").val("");
