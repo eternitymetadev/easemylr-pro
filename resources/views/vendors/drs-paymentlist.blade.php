@@ -343,6 +343,7 @@ jQuery(document).on('click', '#ckbCheckAll', function() {
 jQuery(document).on('click', '.chkBoxClass', function() {
     if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
         $('#ckbCheckAll').prop('checked', true);
+        jQuery('.payment').prop('disabled', false);
     } else {
         var checklength = $('.chkBoxClass:checked').length;
         if (checklength < 1) {
