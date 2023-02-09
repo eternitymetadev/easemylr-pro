@@ -20,6 +20,7 @@ use App\Models\Zone;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\AppMedia;
 use App\Exports\PodExport;
 use Auth;
 use Config;
@@ -4204,7 +4205,7 @@ class ConsignmentController extends Controller
         }
     }
 
-    public function getJob(Request $request)
+    public function getJob(Request $request)    
     {
         $this->prefix = request()->route()->getPrefix();
         $job = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
@@ -4215,6 +4216,19 @@ class ConsignmentController extends Controller
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
+            ////
+            $driver_app = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
+            ->where('consignment_notes.id', $request->lr_id)
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('jobs', function ($data) {
+                $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
+                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+            })->first();
+            $app_trail = json_decode($driver_app->trail, true);
+            // ======img
+
+            $app_media = AppMedia::where('consignment_no', $request->lr_id )->get();
 
         if (!empty($job->trail)) {
             $job_data = json_decode($job->trail);
@@ -4242,6 +4256,8 @@ class ConsignmentController extends Controller
             $response['cnr_pincode'] = $job->cnr_pincode;
             $response['cne_pincode'] = $job->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
+            $response['driver_trail'] = $app_trail;
+            $response['app_media'] = $app_media;
         }
 
         return response()->json($response);

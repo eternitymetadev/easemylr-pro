@@ -245,7 +245,7 @@ class TransactionSheetsController extends Controller
                     $pod_img[] = array('img' => $pod->pod_img, 'type' => $pod->type, 'id' => $pod->id,
                     );
                 }
-                $deliverystatus = array();
+                $deliverystatus = array(); 
 
                 foreach ($value->Jobs as $jobdata) {
 
@@ -402,6 +402,7 @@ class TransactionSheetsController extends Controller
     public function taskStart(Request $request, $id)
     {
         try {
+                
 
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Started']);
@@ -409,10 +410,11 @@ class TransactionSheetsController extends Controller
             $currentdate = date("d-m-y h:i:sa");
             $respons2 = array('consignment_id' => $id, 'status' => 'Started', 'create_at' => $currentdate, 'type' => '2');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('consignment_id')->first();
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->latest('consignment_id')->first();
             $st = json_decode($lastjob->response_data);
             array_push($st, $respons2);
             $sts = json_encode($st);
+            
 
             $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
 
@@ -680,7 +682,7 @@ class TransactionSheetsController extends Controller
             $res = $update_status->update(['delivery_status' => 'Successful']);
 
             $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2']);
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
             array_push($st, $respons3);
