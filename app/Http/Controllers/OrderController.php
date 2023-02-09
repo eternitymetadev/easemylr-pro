@@ -1621,6 +1621,8 @@ class OrderController extends Controller
             if($prs_regclientcheck->is_prs_pickup ==1){
                 $prsitem_status = '2';
                 $status = '6'; //lr without pickup and without edit
+                $hrs_status = '3';
+
                 
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
                 $consignee_pincode = $consignee->postal_code;
@@ -1645,6 +1647,7 @@ class OrderController extends Controller
                 $prsitem_status = '0';
                 $status = '5';
                 $to_branch_id = NULL;
+                $hrs_status = '2';
                 
             }
 
@@ -1725,7 +1728,7 @@ class OrderController extends Controller
                 } else {
                     $consignmentsave['delivery_status'] = "Unassigned";
                 }
-                $consignmentsave['hrs_status'] = 2;
+                $consignmentsave['hrs_status'] = $hrs_status;
                 $consignmentsave['h2h_check'] = 'lm';
                 ///same location check
                 if ($request->invoice_check == 1 || $request->invoice_check == 2) {
