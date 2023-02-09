@@ -1616,10 +1616,39 @@ class OrderController extends Controller
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
-            } else {
-                $status = '1';
+            
+            $prs_regclientcheck = Regionalclient::where('id', $request->regclient_id)->first();
+            if($prs_regclientcheck->is_prs_pickup ==1){
+                $prsitem_status = '2';
+                $status = '6'; //lr without pickup and without edit
+                $hrs_status = '3';
+
+                
+                $consignee = Consignee::where('id', $request->consignee_id)->first();
+                $consignee_pincode = $consignee->postal_code;
+
+                $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+
+                $get_location = Location::where('id', $authuser->branch_id)->first();
+                $chk_h2h_branch = $get_location->with_h2h;
+                $location_name = $get_location->name;
+                
+                if(!empty($getpin_transfer->hub_transfer)){
+                    $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
+                    $get_branch_id = $get_branch->id;
+                    $get_zonebranch = $getpin_transfer->hub_transfer;
+                    }else{
+                    $get_branch_id = $authuser->branch_id;
+                    $get_zonebranch = $location_name;
+                    }
+               
+                    $to_branch_id = $get_branch_id;
+            }else{
+                $prsitem_status = '0';
+                $status = '5';
+                $to_branch_id = NULL;
+                $hrs_status = '2';
+                
             }
 
             $consignmentsave['regclient_id'] = $request->regclient_id;
@@ -1643,9 +1672,11 @@ class OrderController extends Controller
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
             $consignmentsave['branch_id'] = $authuser->branch_id;
+            $consignmentsave['prsitem_status'] = $prsitem_status;
+            $consignmentsave['to_branch_id'] = $to_branch_id;
 
             $consignmentsave['edd'] = $request->edd;
-            $consignmentsave['status'] = 5;
+            $consignmentsave['status'] = $status;
             $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
                 $consignmentsave['delivery_status'] = "Started";
@@ -1697,7 +1728,7 @@ class OrderController extends Controller
                 } else {
                     $consignmentsave['delivery_status'] = "Unassigned";
                 }
-                $consignmentsave['hrs_status'] = 2;
+                $consignmentsave['hrs_status'] = $hrs_status;
                 $consignmentsave['h2h_check'] = 'lm';
                 ///same location check
                 if ($request->invoice_check == 1 || $request->invoice_check == 2) {
@@ -1760,7 +1791,6 @@ class OrderController extends Controller
                     }
                 }
             }else{
-             
                 $consignmentsave['h2h_check'] = 'h2h';
                 $consignmentsave['hrs_status'] = 2;
 

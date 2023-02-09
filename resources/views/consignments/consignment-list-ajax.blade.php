@@ -165,7 +165,7 @@
                 <td>
                     <?php if ($consignment->status == 0) { ?>
                     <span class="alert badge alert bg-secondary shadow-sm">Cancel</span>
-                    <?php } elseif($consignment->status == 1){
+                    <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
                     <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
                         data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
