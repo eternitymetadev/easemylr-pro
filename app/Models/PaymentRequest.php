@@ -20,6 +20,7 @@ class PaymentRequest extends Model
         'tds_deduct_balance',
         'branch_id',
         'user_id',
+        'rejected_remarks',
         'payment_status',
         'status',
         'created_at',

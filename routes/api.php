@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/drivers', 'App\Http\Controllers\Api\DriversController@index')->name('api.index.drivers');
+Route::any('update-reject-status', [VendorController::class, 'updateRejectStatus']);

@@ -25,8 +25,7 @@
             $getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
             $new = Helper::oldnewLr($trns->drs_no) ?? "";
             $lr = Helper::deliveryDate($trns->drs_no);
-
-?>
+           ?>
             <tr>
                 <td>DRS-{{$trns->drs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
