@@ -148,7 +148,7 @@ class FtlPtlController extends Controller
             $consignmentsave['status'] = $status;
             $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
-                $consignmentsave['delivery_status'] = "Started";
+                $consignmentsave['delivery_status'] = "Assigned";
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
