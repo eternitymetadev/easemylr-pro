@@ -41,7 +41,7 @@ Route::any('img-delete/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsCo
 Route::post('store-coordinates/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@storeCoordinates')->name('api.auth.verifiedLr.transaction_sheets');
 
 });
-
+ 
 
 Route::group([
     'middleware' => 'api',
