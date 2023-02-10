@@ -142,7 +142,7 @@ class FtlPtlController extends Controller
             $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            $consignmentsave['branch_id'] = $authuser->branch_id;
+            $consignmentsave['branch_id'] = $authuser->branch_id;   
 
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
