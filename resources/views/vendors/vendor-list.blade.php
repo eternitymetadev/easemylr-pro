@@ -75,10 +75,10 @@
                                 <td>-</td>
                                 <?php } ?>
                                 <td><button type="button" class="btn btn-sm btn-primary view"
-                                        value="{{$vendor->id}}">View</button> </td>
-                                        <!-- <a
+                                        value="{{$vendor->id}}">View</button> <a
                                         href="{{ url($prefix.'/edit-vendor/'.$vendor->id) }}"
-                                        class="edit btn btn-sm btn-primary ml-2"><i class="fa fa-edit"></i></a> -->
+                                        class="edit btn btn-sm btn-primary ml-2"><i class="fa fa-edit"></i></a></td>
+                                        
                             </tr>
                             @endforeach
                         </tbody>
