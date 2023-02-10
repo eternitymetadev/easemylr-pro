@@ -20,6 +20,7 @@
 
             <form method="POST" action="{{url($prefix.'/consignees/upload_csv')}}" id="importfiles" enctype="multipart/form-data">
                 @csrf 
+                <?php if($authuser->role_id == 1){ ?>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse Consigners Sheet</h4>
@@ -92,6 +93,7 @@
                     </div>
                 </div>
                 <br/>
+                <?php }if($authuser->role_id == 1 || $authuser->role_id == 3){?>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse LR Type Changes</h4>
@@ -112,6 +114,7 @@
                         <input type="file" name="podsfile" id="podfile" class="podfile"> 
                     </div>
                 </div>
+                <?php } ?>
 
                 <button type="submit" name="" class="mt-4 mb-4 btn btn-primary">Submit</button>
                 <div class="spinner-border loader" style= "display:none;"></div>

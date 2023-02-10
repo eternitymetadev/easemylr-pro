@@ -721,7 +721,7 @@
             </li>
         </ul>
     </li>
-    <?php } if($authuser->role_id == 1){ ?>
+    <?php } if($authuser->role_id == 1 || $authuser->role_id == 3){ ?>
     <li class="menu">
         <a href="#forms" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -744,10 +744,12 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/bulk-import')}}"> Import Data </a>
             </li>
+            <?php if($authuser->role_id == 1){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}"> Branch
                     Address </a>
             </li>
+            <?php } ?>
 
         </ul>
     </li>
