@@ -20,6 +20,7 @@
 
             <form method="POST" action="{{url($prefix.'/consignees/upload_csv')}}" id="importfiles" enctype="multipart/form-data">
                 @csrf 
+                <?php if($authuser->role_id == 1){ ?>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse Consigners Sheet</h4>
@@ -80,18 +81,7 @@
                     </div>
                 </div>
                 <br/>
-                <div class="row">
-                    <div class="col-lg-4 col-md-3 col-sm-12">
-                        <h4 class="win-h4">Browse Delivery Date Sheet</h4>
-                    </div>
-                    <div class="col-lg-4 col-md-9 col-sm-12">
-                        <input type="file" name="deliverydatesfile" id="deliverydatefile" class="deliverydatefile"> 
-                    </div>
-                    <div class="col-lg-4 col-md-9 col-sm-12">
-                    <a class="btn btn-primary" href="{{url($prefix.'/sample-deliverydate')}}">Sample Download</a> 
-                    </div>
-                </div>
-                <br/>
+                <?php }if($authuser->role_id == 1 || $authuser->role_id == 3){?>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse LR Type Changes</h4>
@@ -106,12 +96,25 @@
                 <br/>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
+                        <h4 class="win-h4">Browse Delivery Date Sheet</h4>
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                        <input type="file" name="deliverydatesfile" id="deliverydatefile" class="deliverydatefile"> 
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                    <a class="btn btn-primary" href="{{url($prefix.'/sample-deliverydate')}}">Sample Download</a> 
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse POD Zip Folder(Image)</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
                         <input type="file" name="podsfile" id="podfile" class="podfile"> 
                     </div>
                 </div>
+                <?php } ?>
 
                 <button type="submit" name="" class="mt-4 mb-4 btn btn-primary">Submit</button>
                 <div class="spinner-border loader" style= "display:none;"></div>

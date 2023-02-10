@@ -730,7 +730,7 @@ class VendorController extends Controller
 
             $vendorsave['type'] = 'Vendor';
             // $vendorsave['vendor_no'] = $vendor_no;
-            $vendorsave['name'] = $request->name;
+            // $vendorsave['name'] = $request->name;
             $vendorsave['email'] = $request->email;
             $vendorsave['driver_id'] = $request->driver_id;
             $vendorsave['bank_details'] = json_encode($bankdetails);
