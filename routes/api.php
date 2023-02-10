@@ -43,7 +43,6 @@ Route::post('store-coordinates/{id}', 'App\Http\Controllers\Api\Auth\Transaction
 
 });
 
-
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth' 
