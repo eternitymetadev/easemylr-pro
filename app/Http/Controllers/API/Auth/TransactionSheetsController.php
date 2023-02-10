@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppMedia;
+use App\Models\Coordinate;
 use App\Models\Consignee;
 use App\Models\ConsignmentNote;
 use App\Models\Job;
@@ -228,18 +229,22 @@ class TransactionSheetsController extends Controller
             $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)
                 ->get();
             // echo'<pre>'; print_r($consignments); die;
+         
+            foreach($consignments as $value){
+            //    echo'<pre>'; print_r($value->ConsignmentItems); die;
+                    $order = array();
+                    $invoices = array();
+                    $pod_img = array();
+                    $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
+                   
+                   foreach($value->ConsignmentItems as $orders){
+                           $order[] = $orders->order_id;
+                           $invoices[] = $orders->invoice_no;
 
-            foreach ($consignments as $value) {
-                //    echo'<pre>'; print_r($value->ConsignmentItems); die;
-                $order = array();
-                $invoices = array();
-                $pod_img = array();
-                $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
-
-                foreach ($value->ConsignmentItems as $orders) {
-                    $order[] = $orders->order_id;
-                    $invoices[] = $orders->invoice_no;
-
+                   }
+                   foreach($value->AppMedia as $pod){
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,'id' => $pod->id
+                   );
                 }
                 foreach ($value->AppMedia as $pod) {
                     $pod_img[] = array('img' => $pod->pod_img, 'type' => $pod->type, 'id' => $pod->id,
@@ -563,17 +568,20 @@ class TransactionSheetsController extends Controller
                 ->get();
 
             // echo'<pre>'; print_r(json_decode($consignments)); die;
+            foreach($consignments as $value){
+                    $order = array();
+                    $invoices = array();
+                    $pod_img = array();
 
-            foreach ($consignments as $value) {
-                $order = array();
-                $invoices = array();
-                $pod_img = array();
+                    $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
 
-                $getlast = DB::table('jobs')->where('consignment_id', $value->id)->orderBy('id', 'DESC')->first();
-
-                foreach ($value->ConsignmentItems as $orders) {
-                    $order[] = $orders->order_id;
-                    $invoices[] = $orders->invoice_no;
+                   foreach($value->ConsignmentItems as $orders){
+                           $order[] = $orders->order_id;
+                           $invoices[] = $orders->invoice_no;
+                   }
+                   foreach($value->AppMedia as $pod){
+                    $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type, 'id' => $pod->id
+                   );
                 }
                 foreach ($value->AppMedia as $pod) {
                     $pod_img[] = array('img' => $pod->pod_img, 'type' => $pod->type, 'id' => $pod->id,
@@ -679,8 +687,9 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['delivery_status' => 'Successful']);
 
+            $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
+            
             $currentdate = date("d-m-y h:i:sa");
             $respons3 = array('consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
@@ -740,7 +749,7 @@ class TransactionSheetsController extends Controller
         }
     }
 
-    public function verifiedLr(Request $request, $id)
+    public function verifiedLr(Request $request, $id) 
     {
         try {
             $update_status = ConsignmentNote::find($id);
@@ -763,6 +772,64 @@ class TransactionSheetsController extends Controller
                 'status' => 'error',
                 'code' => 0,
                 'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+            ], 500);
+        }
+    }
+        ////// Image Delete  ///
+        public function imgDelete(Request $request, $id)
+        {
+            try {
+    
+                $res = AppMedia::where('id', $id)->delete();
+    
+                if ($res) {
+                    return response([
+                        'status' => 'success',
+                        'code' => 1,
+                        'message' => 'Img Deleted successfully',
+                    ], 200);
+                }
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'data' => "Failed to delete img",
+                ], 500);
+            } catch (\Exception $exception) {
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+                ], 500);
+            }
+        }
+        //  /////////////
+
+    public function storeCoordinates(Request $request, $id) 
+    {
+        
+        try { 
+            $coordinatesave['consignment_id'] = $id;
+            $coordinatesave['latitude'] = $request->latitude;
+            $coordinatesave['longitude'] = $request->longitude;
+            $res = Coordinate::create($coordinatesave);
+            
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Coordinate saved successfully'
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to update status"
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
             ], 500);
         }
     }
