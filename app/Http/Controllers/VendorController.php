@@ -1236,4 +1236,16 @@ class VendorController extends Controller
         return Excel::download(new exportDrsWiseReport, 'DrsWise-PaymentReport.xlsx');
     }
 
+    public function updateRejectStatus(Request $request)
+    {
+
+        $reject_status = PaymentRequest::where('transaction_id', '70001414')->update(['rejected_remarks' => 'wrong data' , 'payment_status' => 4 ]);
+        if($reject_status){
+        return $reject_status;
+        }else{
+            return 'not updated';
+        }
+
+    }
+
 }
