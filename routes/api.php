@@ -38,6 +38,7 @@ Route::put('task-success/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheets
 Route::post('task-cancel/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@taskCancel')->name('api.auth.taskCancel.transaction_sheets');
 Route::post('verified-lr/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@verifiedLr')->name('api.auth.verifiedLr.transaction_sheets');
 Route::any('img-delete/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@imgDelete')->name('api.auth.imgDelete.transaction_sheets');
+Route::post('store-coordinates/{id}', 'App\Http\Controllers\Api\Auth\TransactionSheetsController@storeCoordinates')->name('api.auth.verifiedLr.transaction_sheets');
 
 });
 

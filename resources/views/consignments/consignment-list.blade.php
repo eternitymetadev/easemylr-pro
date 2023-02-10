@@ -729,6 +729,7 @@ function row_click(row_id, job_id, url) {
 
                 var modal_html = '';
                 var trackinglink = '';
+                var sssss = '';
 
 
                 // return false;
@@ -812,6 +813,8 @@ function row_click(row_id, job_id, url) {
                     $('.cbp_tmtimeline').append(modal_html);
 
                 } else {
+
+                    if(response.driver_trail){
                     var cc =
                         '<div class="historyTimeLineContainer taskContainer taskDetailContainer">';
                     $.each(response.driver_trail, function(index, task) {
@@ -834,9 +837,9 @@ function row_click(row_id, job_id, url) {
                     cc += '</div>';
                     var modal_html1 = cc;
                     $('.append-modal').html(modal_html1);
-                    console.log(response.app_media);
 
                     var sssss = ``;
+
                     $.each(response.app_media, function(index, media) {
 
                         if(media.type == 'pod'){
@@ -864,7 +867,11 @@ function row_click(row_id, job_id, url) {
                         }
                     });
                     $('.append-modal-images').html(sssss);
-
+                }else{
+                    var sssss = '';
+                    var modal_html1 = 'No Data Available';
+                    $('.append-modal').html(modal_html1);
+                }
 
                 }
                 if ((response.job_id != '') && (response.delivery_status != 'Successful')) {
