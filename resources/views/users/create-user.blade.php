@@ -61,6 +61,21 @@
                                 ?>                            
                                 </select>
                             </div>
+                            <div class="form-group mb-4 rm_assign">
+                                <label for="exampleFormControlSelect1">RM Assign</label>
+                                <select name="rm_id" class="form-control" id="rm_id">
+                                    <option value="">Select</option>
+                                    <?php 
+                                    if(count($get_rms)>0) {
+                                        foreach ($get_rms as $key => $get_rm) {  
+                                    ?> 
+                                    <option value="{{ $get_rm->id }}">{{ucwords($get_rm->name)}}</option> 
+                                    <?php 
+                                    }
+                                }
+                                ?>                            
+                                </select>
+                            </div>
                             <div class="form-group mb-4 baseclient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Base Client</label>
                                 <select class="form-control" id="baseclient_id" name="baseclient_id">
@@ -179,6 +194,7 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked',true);
         $('.chkBoxClass[value="1"]').prop('checked', true)
@@ -195,9 +211,11 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').show();
     }else if(role_id == '') {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
+        $('.rm_assign').hide();
     }else if(role_id == 3) {            //role_id = 3 for regional manager
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -208,6 +226,7 @@ $('#role_id').change(function() {
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 4) {            //role_id = 4 for branch User
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -218,6 +237,7 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 6) {            //role_id = 6 for client account
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -227,6 +247,7 @@ $('#role_id').change(function() {
         $('.selectClient').hide();
         $('.singleLocation').hide();
         $('.multiLocation').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 7) {            //role_id = 7 for client user
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -236,11 +257,13 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 5) {
         $('.multiLocation').show();
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -251,6 +274,7 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)

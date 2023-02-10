@@ -54,7 +54,22 @@
                                     } ?>                           
                                 </select>
                             </div>
-                            
+
+                            <div class="form-group mb-4">
+                                <label for="exampleFormControlSelect1">RM Assign</label>
+                                <select name="rm_id" class="form-control" id="rm_id">
+                                    <option value="">Select</option>
+                                    <?php 
+                                    if(count($get_rms)>0) {
+                                        foreach ($get_rms as $key => $get_rm) {  
+                                    ?> 
+                                    <option value="{{ $get_rm->id }}" {{$getuser->rm_assign == $get_rm->id ? 'selected' : ''}}>{{ucwords($get_rm->name)}}</option> 
+                                    <?php 
+                                    }
+                                }
+                                ?>                            
+                                </select>
+                            </div>
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control" id="branch_id" name="branch_id[]">
@@ -72,7 +87,7 @@
                                     ?>
                                 </select>
                             </div>
-                            <div class="form-group mb-4 multiLocation" style="display: none;">
+                            <!-- <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
@@ -88,7 +103,7 @@
                                     }
                                     ?>
                                 </select>
-                            </div>
+                            </div> -->
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">

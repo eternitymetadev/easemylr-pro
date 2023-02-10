@@ -61,10 +61,13 @@ div.relat {
                         <div class="btn-group relative">
                             <a class="btn-primary btn-cstm btn w-100" id="add_role" href="{{'drivers/create'}}" style="font-size: 12px; padding: 8px 0px;"><span><i class="fa fa-plus" ></i> Add New</span></a>
                         </div>
+                        <?php $authuser = Auth::user();
+                        if($authuser->role_id ==1 ){ ?>
                         <div class="btn-group relat">
                             <a style="font-size: 12px; padding: 8px 0px;" href="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>" class="downloadEx btn btn-primary pull-right" data-action="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>" download>
                             <span><i class="fa fa-download"></i> Export</span></a>
                         </div>
+                        <?php } ?>
                         <thead>
                             <tr>
                                 <!-- <th>S No.</th> -->

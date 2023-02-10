@@ -20,6 +20,7 @@ use App\Models\User;
 use Session;
 use Helper;
 use Auth;
+use DateTime;
 
 class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 {
@@ -61,7 +62,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-            'VehicleType:id,name'
+            'VehicleType:id,name',
+            'DrsDetail:consignment_no,drs_no,created_at'
         );
 
         if($authuser->role_id ==1)
@@ -78,7 +80,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }else {
             $consignments = $query->orderBy('id','ASC')->get();
         }
-// echo "<pre>"; print_r($consignments); die;
+
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
@@ -157,7 +159,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                   $status = 'Unknown';
                  }
 
-                if(!empty($consignment->job_id)){
+                if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
                   }else{
                    $deliverymode = 'Manual';
@@ -169,10 +171,21 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $drs = '-';
                   }
 
+                  if(!empty($consignment->DrsDetail->created_at)){
+                    $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
+                    $date->setTimezone(new \DateTimeZone('IST'));
+                    $drs_date = $date->format('d-m-Y');
+                   }else{
+                   $drs_date = '-';
+                   }
+
+
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
-                    'drs_no'              => $drs,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
+                    'drs_no'              => $drs,
+                    'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
@@ -219,8 +232,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     {
         return [
             'LR No',
-            'DRS No',
             'LR Date',
+            'DRS No',
+            'DRS Date',
             'Order No',
             'Base Client',
             'Regional Client',

@@ -22,6 +22,18 @@
                 @csrf 
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
+                        <h4 class="win-h4">Browse Consigners Sheet</h4>
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                        <input type="file" name="consignersfile" id="consignerfile" class="consignerfile"> 
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                    <a class="btn btn-primary" href="{{url($prefix.'/sample-consigner')}}">Sample Download</a> 
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse Consignees Sheet</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
@@ -41,18 +53,6 @@
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
                     <a class="btn btn-primary" href="{{url($prefix.'/sample-vehicle')}}">Sample Download</a> 
-                    </div>
-                </div>
-                <br/>
-                <div class="row">
-                    <div class="col-lg-4 col-md-3 col-sm-12">
-                        <h4 class="win-h4">Browse Consigners Sheet</h4>
-                    </div>
-                    <div class="col-lg-4 col-md-9 col-sm-12">
-                        <input type="file" name="consignersfile" id="consignerfile" class="consignerfile"> 
-                    </div>
-                    <div class="col-lg-4 col-md-9 col-sm-12">
-                    <a class="btn btn-primary" href="{{url($prefix.'/sample-consigner')}}">Sample Download</a> 
                     </div>
                 </div>
                 <br/>

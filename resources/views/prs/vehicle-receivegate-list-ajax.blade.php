@@ -3,10 +3,11 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
+                <th>Pickup ID</th>
                 <th>Vehicle No</th>
                 <th>Driver Name</th>
                 <th>Vehicle Type</th>
-                <th>Quantity (In Pieces) </th>
+                <!-- <th>Quantity (In Pieces) </th> -->
                 <th>Status </th>
                 <th>Action </th>
             </tr>
@@ -15,42 +16,64 @@
 
             @if(count($vehiclereceives)>0)
             @foreach($vehiclereceives as $value)
+            <?php 
+            // $total_itemqty = Helper::PrsTotalQty($value->id);
+            $qty_value = array();
+            $consigners = array();
+            $task_status = $value->status;
+           ?>
            
-            @if(count($value->PrsDriverTask->PrsTaskItems)>0)
-            <?php $qty_value = [];  ?>
-            @foreach($value->PrsDriverTask->PrsTaskItems as $taskitem)
-            <?php $qty_value[] = $taskitem->quantity; 
-                $task_status = $taskitem->status;
-                $taskitem_id = $taskitem->id;
-                $drivertask_id = $taskitem->drivertask_id;
+             @if(count($value->PrsDriverTasks)>0)
+          <?php //echo "<pre>"; print_r($value->PrsDriverTasks); die; ?>
+            @foreach($value->PrsDriverTasks as $drivertask)
+            <?php 
+            $consigners[] = $drivertask->prsconsigner_id;
+            //echo "<pre>"; print_r($consigners); die;
+            ?>
+
+            @if(count($drivertask->PrsTaskItems)>0)
+            @foreach($drivertask->PrsTaskItems as $taskitem)
+            <?php 
+                $qty_value[] = $taskitem->quantity; 
+                // $task_status = $taskitem->status;
+               // echo "<pre>"; print_r($task_status); 
+                // $taskitem_id = $taskitem->id;
+                // $drivertask_id = $taskitem->drivertask_id;
+
                 ?>
             @endforeach
+            @endif
+
+            @endforeach
+            <?php
+            $consinger_ids = $consigners;
+            $consinger_ids = implode(",",$consinger_ids);
+            // echo "<pre>"; print_r($consinger_ids); die;
+            ?>
+            @endif
             <?php $total_qty = array_sum($qty_value);
-                $consigners = $value->consigner_id;
-                $consinger_ids = explode(',',$consigners);
-                $consinger_ids = implode(",",$consinger_ids);
-                
-                $disable = Helper::DriverTaskStatusCheck($value->id);
-            ?>    
+            ?>
             <tr>
+                <td>{{ $value->pickup_id ?? "-" }}</td>
                 <td>{{ $value->VehicleDetail->regn_no ?? "-" }}</td>
                 <td>{{ $value->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $value->VehicleType->name ?? "-" }}</td>
-                <td>{{$total_qty}}</td>
-                <td>{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
+                <!-- <td>{{$total_qty}}</td> -->
+                <td style="font-weight: 600;">{{ Helper::VehicleReceiveGateStatus($task_status) ? Helper::VehicleReceiveGateStatus($task_status) : "-"}}
                 </td>
                 <td>
-                <?php if($task_status == 2){ 
-                    $disablebtn = 'disable_n';
+                    <?php 
+                    $disable = Helper::DriverTaskStatusCheck($value->id);
+                    if($task_status == 3){ 
+                        $disablebtn = 'disable_n';
                     }else{
-                    $disablebtn = "";
-                    } ?>
-                    <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                        $disablebtn = "";
+                    }
+                    if($disablebtn != 'disable_n' && $disable == ''){ ?>
+                    <a class="alert btn btn-success receive-vehicle {{$disable}} {{$disablebtn}}" data-toggle="modal" href="#receive-vehicle" data-cnrid={{$consinger_ids}} data-prsid="{{$value->id}}" data-cnrcount="" data-prstaskstatus=""> <span><i class="fa fa-check-circle-o"></i> Receive Vehicle</span></a>
+                    <?php } ?>
                 </td>
             </tr>
-            
-            @endif
-
             @endforeach
             @else
             <tr>

@@ -24,6 +24,8 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
+use App\Http\Controllers\HubtoHubController;
+use App\Http\Controllers\FtlPtlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +128,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     //Test Routes
@@ -159,6 +166,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -203,13 +212,70 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
 
     Route::get('technical-master', [TechnicalMasterController::class, 'techicalMaster']);
+    Route::any('import-technical-master', [TechnicalMasterController::class, 'importTechnicalMaster']);
+    Route::get('item-view', [TechnicalMasterController::class, 'itemUploadView']);
+    Route::any('import-item-master', [TechnicalMasterController::class, 'importItems']);
+    Route::any('add-technical-name', [TechnicalMasterController::class, 'addTechnicalName']);
+    Route::any('add-items-name', [TechnicalMasterController::class, 'addItems']);
+    Route::any('edit-items-name', [TechnicalMasterController::class, 'editItemName']);
+    Route::any('update-items-name', [TechnicalMasterController::class, 'updateItemName']);
+    
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
 
-    
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
+
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -250,8 +316,17 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
+    Route::any('reserve-lr', [OrderController::class, 'reserveLr']);
+    Route::get('reserve-lr/{id}/edit', [OrderController::class, 'editReserveLr']);
+    Route::any('reserve-lr/update-reserve-lr', [OrderController::class, 'updateReserveLr']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -283,9 +358,18 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']); 
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+    
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -334,11 +418,61 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
     Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
     Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
     Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
+    Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    Route::any('update-purchas-price-prs', [PickupRunSheetController::class, 'updatePurchasePricePrs']);
+    Route::any('get-prs-details', [PickupRunSheetController::class, 'getPrsdetails']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-second-pymt-details-prs', [PickupRunSheetController::class, 'getSecondPaymentDetailsPrs']);
+    Route::any('second-payment-prs', [PickupRunSheetController::class, 'createSecondPaymentRequestPrs']); 
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
 
+    Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
+    
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
+
+
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -380,6 +514,11 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
@@ -413,9 +552,16 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+
 
     Route::resource('locations', LocationController::class);
-    Route::post('/locations/update', [LocationController::class, 'updateLocation']);
+    Route::post('/locations/update', [LocationController::class, 'updateLocation']); 
     Route::any('locations/get-location', [LocationController::class, 'getLocation']);
     // Route::any('locations/delete-location', [LocationController::class, 'deleteLocation']);
 
@@ -461,13 +607,54 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
-    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); //
+    Route::any('update-purchas-price-vehicle-type', [VendorController::class, 'updatePurchasePriceVehicleType']); 
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
+    Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
+    Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('get-vender-req-details-hrs', [HubtoHubController::class, 'getVendorReqDetailsHrs']);
+    Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
 
 
@@ -510,8 +697,17 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
+    Route::any('reserve-lr', [OrderController::class, 'reserveLr']);
+    Route::get('reserve-lr/{id}/edit', [OrderController::class, 'editReserveLr']);
+    Route::any('reserve-lr/update-reserve-lr', [OrderController::class, 'updateReserveLr']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -543,6 +739,13 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
+    Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
+    Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -572,6 +775,57 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+
+    Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
+    Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
+    Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
+    Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
+    Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
+    Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
+    Route::post('get-add-lr-hrs', [HubtoHubController::class, 'addmoreLrHrs']);
+    Route::post('created-lr-hrs', [HubtoHubController::class, 'createdLrHrs']);
+    Route::any('incoming-hrs', [HubtoHubController::class, 'incomingHrs']);
+    Route::any('view-lr-hrs/{id}', [HubtoHubController::class, 'viewLrHrs']);
+    Route::any('receving-hrs-details/{id}', [HubtoHubController::class, 'recevingHrsDetails']);
+    Route::any('update_hrs_receving_details', [HubtoHubController::class, 'updateRecevingDetails']);
+    Route::any('print-hrs/{id}', [HubtoHubController::class, 'printHrs']);
+    Route::any('hrs-payment-list', [HubtoHubController::class, 'hrsPaymentList']);
+    Route::any('view-hrslr/{id}', [HubtoHubController::class, 'viewhrsLr']);
+    Route::any('get-hrs-details', [HubtoHubController::class, 'getHrsdetails']);
+    Route::any('outgoing-hrs', [HubtoHubController::class, 'outgoingHrs']);
+    Route::any('hrs-payment-request', [HubtoHubController::class, 'createHrsPayment']);
+    Route::any('hrs-request-list', [HubtoHubController::class, 'hrsRequestList']);
+    Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
+    Route::any('get-second-pymt-details', [HubtoHubController::class, 'getSecondPaymentDetails']);
+    Route::any('show-hrs', [HubtoHubController::class, 'showHrs']); 
+    Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
+    Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
+    Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
+
+    Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
+    Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
+    Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
+    Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
+
+    Route::resource('prs', PickupRunSheetController::class);
+    Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
+    Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
+    Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
+    Route::any('driver-tasks/create-taskitem', [PickupRunSheetController::class,'createTaskItem']);
+    Route::any('vehicle-receivegate', [PickupRunSheetController::class,'vehicleReceivegate']);
+    Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
+    Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
+    Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
+    Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
+    Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
+    Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
+    Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
+    Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
+    Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
 
 });
 
@@ -612,6 +866,11 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
+    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
+    Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
+    Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);
+    Route::post('prs-receive-material', [OrderController::class, 'prsReceiveMaterial']);
 
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
@@ -626,6 +885,8 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -670,6 +931,19 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
+
+    Route::resource('clients', ClientController::class);
+    Route::get('clients-list', [ClientController::class, 'clientList']);
+    Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
+    Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
+    Route::post('/clients/delete-client', [ClientController::class, 'deleteClient']);
+    Route::get('/reginal-clients/add-regclient-detail/{id}', [ClientController::class, 'createRegclientdetail']);
+    Route::post('/regclient-detail/update-detail', [ClientController::class, 'updateRegclientdetail']);
+    Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
+    Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
@@ -690,6 +964,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
 
 });
 
@@ -703,11 +978,13 @@ Route::middleware(['auth'])->group(function () {
     Route::any('/get-address-by-postcode', [ConsigneeController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
     Route::get('/get-consignerprs', [PickupRunSheetController::class, 'getConsigner']);
+    Route::get('/get-bill-client', [OrderController::class, 'getBillClient']);
 
     Route::get('vehicles/list',[VehicleController::class, "getData"]);
     Route::any('add-vendor', [VendorController::class, 'store']);
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
+    Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
 });
 

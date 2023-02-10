@@ -3,21 +3,17 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\TransactionSheet;
-use App\Models\ConsignmentNote;
 use App\Models\AppMedia;
 use App\Models\Coordinate;
 use App\Models\Consignee;
+use App\Models\ConsignmentNote;
 use App\Models\Job;
-use Facade\Ignition\Tabs\Tab;
+use App\Models\TransactionSheet;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\Filesystem;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use DB;
 
 class TransactionSheetsController extends Controller
-
 {
 
     /**
@@ -31,15 +27,14 @@ class TransactionSheetsController extends Controller
      */
 
     public function index(Request $request)
-
     {
 
         try {
 
-            $transaction_sheets = TransactionSheet::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function($q){
+            $transaction_sheets = TransactionSheet::with('ConsignmentNote.ConsigneeDetail')->whereHas('ConsignmentNote', function ($q) {
                 $q->where('driver_id', 2);
             })
-            ->get();
+                ->get();
 
             if ($transaction_sheets) {
 
@@ -49,7 +44,7 @@ class TransactionSheetsController extends Controller
 
                     'code' => 1,
 
-                    'data' => $transaction_sheets
+                    'data' => $transaction_sheets,
 
                 ], 200);
 
@@ -61,7 +56,7 @@ class TransactionSheetsController extends Controller
 
                     'code' => 0,
 
-                    'data' => "No record found"
+                    'data' => "No record found",
 
                 ], 404);
 
@@ -75,15 +70,13 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to get transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to get transaction_sheets, please try again. {$exception->getMessage()}",
 
             ], 500);
 
         }
 
     }
-
-
 
     /**
 
@@ -96,16 +89,9 @@ class TransactionSheetsController extends Controller
      */
 
     public function create(Request $request)
-
     {
 
     }
-
-
-
-
-
-
 
     /**
 
@@ -120,7 +106,6 @@ class TransactionSheetsController extends Controller
      */
 
     public function store(Request $request)
-
     {
 
         try {
@@ -129,15 +114,13 @@ class TransactionSheetsController extends Controller
 
             $transaction_sheets->save();
 
-
-
             return response([
 
                 'status' => 'success',
 
                 'code' => 1,
 
-                'data' => $transaction_sheets
+                'data' => $transaction_sheets,
 
             ], 200);
 
@@ -149,7 +132,7 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to store transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to store transaction_sheets, please try again. {$exception->getMessage()}",
 
             ], 500);
 
@@ -168,20 +151,19 @@ class TransactionSheetsController extends Controller
      */
 
     public function search($search, Request $request)
-
     {
 
         try {
 
             $searchQuery = trim($search);
 
-            $requestData = ['id','drs_no','consignment_no','consignee_id','consignment_date','city','pincode','total_quantity','total_weight','order_no','vehicle_no','driver_name','driver_no','branch_id','delivery_status','delivery_date','job_id','status','created_at','updated_at'];
+            $requestData = ['id', 'drs_no', 'consignment_no', 'consignee_id', 'consignment_date', 'city', 'pincode', 'total_quantity', 'total_weight', 'order_no', 'vehicle_no', 'driver_name', 'driver_no', 'branch_id', 'delivery_status', 'delivery_date', 'job_id', 'status', 'created_at', 'updated_at'];
 
             $transaction_sheets = TransactionSheet::where(function ($q) use ($requestData, $searchQuery) {
 
-                foreach ($requestData as $field)
-
+                foreach ($requestData as $field) {
                     $q->orWhere($field, 'like', "%{$searchQuery}%");
+                }
 
             })->paginate($request->paginator, ['*'], 'page', $request->page);
 
@@ -193,7 +175,7 @@ class TransactionSheetsController extends Controller
 
                     'code' => 1,
 
-                    'data' => $transaction_sheets
+                    'data' => $transaction_sheets,
 
                 ], 200);
 
@@ -205,7 +187,7 @@ class TransactionSheetsController extends Controller
 
                     'code' => 0,
 
-                    'data' => "No record found"
+                    'data' => "No record found",
 
                 ], 404);
 
@@ -219,7 +201,7 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to get transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to get transaction_sheets, please try again. {$exception->getMessage()}",
 
             ], 500);
 
@@ -240,14 +222,12 @@ class TransactionSheetsController extends Controller
      */
 
     public function show($id)
-
     {
-        
+
         try {
-            
-          
-             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia','Jobs')->where('driver_id', $id)
-            ->get();
+
+            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)
+                ->get();
             // echo'<pre>'; print_r($consignments); die;
          
             foreach($consignments as $value){
@@ -266,54 +246,57 @@ class TransactionSheetsController extends Controller
                     $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type,'id' => $pod->id
                    );
                 }
-                $deliverystatus = array();
-               
-                foreach($value->Jobs as $jobdata){
-                    
-                    if($jobdata->status == 'Successful'){
-                        $successtime =  date('Y-m-d',strtotime($jobdata->created_at));
-                    }else{
+                foreach ($value->AppMedia as $pod) {
+                    $pod_img[] = array('img' => $pod->pod_img, 'type' => $pod->type, 'id' => $pod->id,
+                    );
+                }
+                $deliverystatus = array(); 
+
+                foreach ($value->Jobs as $jobdata) {
+
+                    if ($jobdata->status == 'Successful') {
+                        $successtime = date('Y-m-d', strtotime($jobdata->created_at));
+                    } else {
                         $successtime = '';
                     }
-                    $deliverystatus[] = array('status' => $jobdata->status,'timestamp' => $jobdata->created_at);
-                  
-                }
-                            $order_item['orders'] = implode(',', $order);
-                            $order_item['invoices'] = implode(',', $invoices);
+                    $deliverystatus[] = array('status' => $jobdata->status, 'timestamp' => $jobdata->created_at);
 
-                    
-                  $data[] =[
-                       'lr_no'                     => $value->id,
-                       'lr_date'                   => $value->consignment_date,
-                       'edd'                       => $value->edd,
-                       'total_gross_weight'        => $value->total_gross_weight,
-                       'total_quantity'            => $value->total_quantity,
-                       'drs_no'                    => @$value->TransactionSheet->drs_no,
-                       'consignee_name'            => $value->ConsigneeDetail->nick_name,
-                       'consignee_mobile'          => $value->ConsigneeDetail->phone, 
-                       'consignee_address'         => $value->ConsigneeDetail->address_line1.','.@$value->ConsigneeDetail->address_line2.','.        @$value->ConsigneeDetail->address_line3.','.@$value->ConsigneeDetail->address_line4,
-                       'consignee_pincode'         => $value->ConsigneeDetail->postal_code,
-                       'latitude'                  => $value->ConsigneeDetail->latitude,
-                       'longitude'                 => $value->ConsigneeDetail->longitude,
-                       'order_id'                  => $order_item['orders'],
-                       'invoice_no'                => $order_item['invoices'],
-                       'delivery_status'           => $value->delivery_status,
-                       'delivery_notes'            =>  $value->delivery_notes,
-                       'img'                        => $pod_img,
-                       'success_time'              => @$successtime,
-                  ];
-            }   
+                }
+                $order_item['orders'] = implode(',', $order);
+                $order_item['invoices'] = implode(',', $invoices);
+
+                $data[] = [
+                    'lr_no' => $value->id,
+                    'lr_date' => $value->consignment_date,
+                    'edd' => $value->edd,
+                    'total_gross_weight' => $value->total_gross_weight,
+                    'total_quantity' => $value->total_quantity,
+                    'drs_no' => @$value->TransactionSheet->drs_no,
+                    'consignee_name' => $value->ConsigneeDetail->nick_name,
+                    'consignee_mobile' => $value->ConsigneeDetail->phone,
+                    'consignee_address' => $value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
+                    'consignee_pincode' => $value->ConsigneeDetail->postal_code,
+                    'latitude' => $value->ConsigneeDetail->latitude,
+                    'longitude' => $value->ConsigneeDetail->longitude,
+                    'order_id' => $order_item['orders'],
+                    'invoice_no' => $order_item['invoices'],
+                    'delivery_status' => $value->delivery_status,
+                    'delivery_notes' => $value->delivery_notes,
+                    'img' => $pod_img,
+                    'success_time' => @$successtime,
+                ];
+            }
             if ($consignments) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'data' => $data
+                    'data' => $data,
                 ], 200);
             } else {
                 return response([
                     'status' => 'error',
                     'code' => 0,
-                    'message' => "No record found"
+                    'message' => "No record found",
 
                 ], 404);
 
@@ -327,15 +310,13 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to get transaction_sheets data, please try again. {$exception->getMessage()}"
+                'message' => "Failed to get transaction_sheets data, please try again. {$exception->getMessage()}",
 
             ], 500);
 
         }
 
     }
-
-
 
     /**
 
@@ -350,14 +331,11 @@ class TransactionSheetsController extends Controller
      */
 
     public function edit($id)
-
     {
 
         //
 
     }
-
-
 
     /**
 
@@ -376,26 +354,26 @@ class TransactionSheetsController extends Controller
     public function update(Request $request, $id)
     {
         try
-         {
+        {
             $update_status = ConsignmentNote::find(1118713);
             $res = $update_status->update(['delivery_status' => 'Successful']);
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'data' => $update_status
+                    'data' => $update_status,
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
@@ -409,58 +387,60 @@ class TransactionSheetsController extends Controller
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'data' => $update_status
+                    'data' => $update_status,
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update transaction_sheets"
+                'data' => "Failed to update transaction_sheets",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
-          
+
     public function taskStart(Request $request, $id)
     {
         try {
+                
 
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Started']);
-            
-            $currentdate = date("d-m-y h:i:sa");
-              $respons2 = array('consignment_id' => $id, 'status' => 'Started','create_at' => $currentdate, 'type' => '2');
-                        
-                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('consignment_id')->first();
-                        $st = json_decode($lastjob->response_data);
-                        array_push($st, $respons2);
-                        $sts = json_encode($st); 
 
-                        $start = Job::create(['consignment_id' => $id ,'response_data' => $sts, 'status' => 'Started','type'=> '2']);
+            $currentdate = date("d-m-y h:i:sa");
+            $respons2 = array('consignment_id' => $id, 'status' => 'Started', 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->latest('consignment_id')->first();
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
+            
+
+            $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
 
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'message' => 'Status Updated Successfully'
+                    'message' => 'Status Updated Successfully',
                     // 'data' => $update_status
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
@@ -471,13 +451,12 @@ class TransactionSheetsController extends Controller
 
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Acknowledge']);
-            
+
             $currentdate = date("d-m-y h:i:sa");
-            $respons = array(['consignment_id' => $id, 'status' => 'Acknowledge', 'create_at' => $currentdate,'type' => '2']);
+            $respons = array(['consignment_id' => $id, 'status' => 'Acknowledge', 'create_at' => $currentdate, 'type' => '2']);
             $respons_data = json_encode($respons);
-            
-            $create = Job::create(['consignment_id' => $id ,'response_data' => $respons_data,'status' => 'Acknowledge','type'=> '2']);
-            
+
+            $create = Job::create(['consignment_id' => $id, 'response_data' => $respons_data, 'status' => 'Acknowledge', 'type' => '2']);
 
             if ($res) {
                 return response([
@@ -490,17 +469,16 @@ class TransactionSheetsController extends Controller
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
-
 
     /**
 
@@ -515,7 +493,6 @@ class TransactionSheetsController extends Controller
      */
 
     public function destroy($id)
-
     {
         try {
 
@@ -524,13 +501,13 @@ class TransactionSheetsController extends Controller
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'message' => "Deleted successfully"
+                    'message' => "Deleted successfully",
                 ], 200);
             } else {
                 return response([
                     'status' => 'error',
                     'code' => 0,
-                  'data' => "Failed to delete transaction_sheets"
+                    'data' => "Failed to delete transaction_sheets",
                 ], 500);
 
             }
@@ -541,16 +518,16 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to delete transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to delete transaction_sheets, please try again. {$exception->getMessage()}",
 
             ], 500);
 
         }
 
     }
-    public function uploadImage(Request $request,$id)
+    public function uploadImage(Request $request, $id)
     {
-          
+
         $get_data = $request->data;
         $img_path = array();
         foreach ($get_data as $key => $save_data) {
@@ -558,40 +535,39 @@ class TransactionSheetsController extends Controller
             $type = @$save_data['type'];
 
             $path = Storage::disk('s3')->put('images', $images);
-          
+
             $img_path[] = Storage::disk('s3')->url($path);
             $img_path_save = Storage::disk('s3')->url($path);
 
             $appmedia['consignment_no'] = $id;
             $appmedia['pod_img'] = $img_path_save;
             $appmedia['type'] = $type;
-            
+
             $savedata = AppMedia::create($appmedia);
 
         }
-         //update latitudes and longitude
-          $getconsignee_id = ConsignmentNote::where('id', $id)->first();
-          $consignee_id = $getconsignee_id->consignee_id;
-           
-          Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+        //update latitudes and longitude
+        $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+        $consignee_id = $getconsignee_id->consignee_id;
 
-         return response([
-            'success' =>'You have successfully upload image.',
-            'image' => $img_path
+        Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+
+        return response([
+            'success' => 'You have successfully upload image.',
+            'image' => $img_path,
         ], 200);
 
     }
- 
+
     public function singleTask($id)
     {
 
         try {
 
-             $consignments = ConsignmentNote::with('TransactionSheet','ConsigneeDetail','ConsignmentItems','AppMedia','Jobs')->where('id',$id)
-            ->get();
-           
+            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('id', $id)
+                ->get();
+
             // echo'<pre>'; print_r(json_decode($consignments)); die;
-         
             foreach($consignments as $value){
                     $order = array();
                     $invoices = array();
@@ -607,58 +583,60 @@ class TransactionSheetsController extends Controller
                     $pod_img[] = array('img' => $pod->pod_img,'type' => $pod->type, 'id' => $pod->id
                    );
                 }
-                
-                $deliverystatus = array();
-               
-                foreach($value->Jobs as $jobdata){
-
-                    if($jobdata->status == 'Successful'){
-                        $successtime =  date('Y-m-d',strtotime($jobdata->created_at));
-                        // $successtime = $jobdata->created_at;
-                    }else{
-                        $successtime = '';
-                    }
-                    $deliverystatus[] = array('status' => $jobdata->status,'timestamp' => $jobdata->created_at);
-
-                  
+                foreach ($value->AppMedia as $pod) {
+                    $pod_img[] = array('img' => $pod->pod_img, 'type' => $pod->type, 'id' => $pod->id,
+                    );
                 }
 
-                            $order_item['orders'] = implode(',', $order);
-                            $order_item['invoices'] = implode(',', $invoices);
+                $deliverystatus = array();
 
-                    
-                  $data[] =[
-                       'lr_no'                     => $value->id,
-                       'lr_date'                   => $value->consignment_date,
-                       'edd'                       => $value->edd,
-                       'total_gross_weight'        => $value->total_gross_weight,
-                       'total_quantity'            => $value->total_quantity,
-                       'drs_no'                    => @$value->TransactionSheet->drs_no,
-                       'consignee_name'            => $value->ConsigneeDetail->nick_name,
-                       'consignee_mobile'          => $value->ConsigneeDetail->phone, 
-                       'consignee_address'         => $value->ConsigneeDetail->address_line1.','.@$value->ConsigneeDetail->address_line2.','.        @$value->ConsigneeDetail->address_line3.','.@$value->ConsigneeDetail->address_line4,
-                       'consignee_pincode'         => $value->ConsigneeDetail->postal_code,
-                       'latitude'                  => $value->ConsigneeDetail->latitude,
-                       'longitude'                 => $value->ConsigneeDetail->longitude,
-                       'order_id'                  => $order_item['orders'],
-                       'invoice_no'                => $order_item['invoices'],
-                       'delivery_status'           => $value->delivery_status,
-                       'delivery_notes'            => $value->delivery_notes,
-                       'img'                       => $pod_img,
-                       'success_time'              => @$successtime,
-                  ];
+                foreach ($value->Jobs as $jobdata) {
+
+                    if ($jobdata->status == 'Successful') {
+                        $successtime = date('Y-m-d', strtotime($jobdata->created_at));
+                        // $successtime = $jobdata->created_at;
+                    } else {
+                        $successtime = '';
+                    }
+                    $deliverystatus[] = array('status' => $jobdata->status, 'timestamp' => $jobdata->created_at);
+
+                }
+
+                $order_item['orders'] = implode(',', $order);
+                $order_item['invoices'] = implode(',', $invoices);
+
+                $data[] = [
+                    'lr_no' => $value->id,
+                    'lr_date' => $value->consignment_date,
+                    'edd' => $value->edd,
+                    'total_gross_weight' => $value->total_gross_weight,
+                    'total_quantity' => $value->total_quantity,
+                    'drs_no' => @$value->TransactionSheet->drs_no,
+                    'consignee_name' => $value->ConsigneeDetail->nick_name,
+                    'consignee_mobile' => $value->ConsigneeDetail->phone,
+                    'consignee_address' => $value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
+                    'consignee_pincode' => $value->ConsigneeDetail->postal_code,
+                    'latitude' => $value->ConsigneeDetail->latitude,
+                    'longitude' => $value->ConsigneeDetail->longitude,
+                    'order_id' => $order_item['orders'],
+                    'invoice_no' => $order_item['invoices'],
+                    'delivery_status' => $value->delivery_status,
+                    'delivery_notes' => $value->delivery_notes,
+                    'img' => $pod_img,
+                    'success_time' => @$successtime,
+                ];
             }
             if ($consignments) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'data' => $data
+                    'data' => $data,
                 ], 200);
             } else {
                 return response([
                     'status' => 'error',
                     'code' => 0,
-                    'message' => "No record found"
+                    'message' => "No record found",
 
                 ], 404);
 
@@ -672,7 +650,7 @@ class TransactionSheetsController extends Controller
 
                 'code' => 0,
 
-                'message' => "Failed to get transaction_sheets data, please try again. {$exception}"
+                'message' => "Failed to get transaction_sheets data, please try again. {$exception}",
 
             ], 500);
 
@@ -682,26 +660,26 @@ class TransactionSheetsController extends Controller
 
     public function updateDeliveryDetails(Request $request, $id)
     {
-         
-          ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
+
+        ConsignmentNote::where('id', $id)->update(['delivery_notes' => $request->delivery_notes]);
 
         //   $currentdate = date("d-m-y h:i:sa");
         //   $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
         //   $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
         //   $st = json_decode($lastjob->response_data);
         //   array_push($st, $respons3);
-        //   $sts = json_encode($st); 
-          
+        //   $sts = json_encode($st);
+
         //   $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
 
-          //update latitudes and longitude
-          $getconsignee_id = ConsignmentNote::where('id', $id)->first();
-          $consignee_id = $getconsignee_id->consignee_id;
-           
-          Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+        //update latitudes and longitude
+        $getconsignee_id = ConsignmentNote::where('id', $id)->first();
+        $consignee_id = $getconsignee_id->consignee_id;
 
-         return response([
-            'success' =>'Data Updated Successfully',
+        Consignee::where('id', $consignee_id)->update(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+
+        return response([
+            'success' => 'Data Updated Successfully',
         ], 200);
     }
 
@@ -709,90 +687,91 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
+
             $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
             
             $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
             array_push($st, $respons3);
-            $sts = json_encode($st); 
-            
-            $create = Job::create(['consignment_id' => $id ,'response_data' => $sts,'status' => 'Successful','type'=> '2']);
+            $sts = json_encode($st);
+
+            $create = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
 
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'message' => 'Status Updated Successfully'
+                    'message' => 'Status Updated Successfully',
                     // 'data' => $update_status
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
-      
+
     public function taskCancel(Request $request, $id)
     {
-        try { 
+        try {
 
             $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel','reason_to_cancel' => $request->reason_to_cancel]);
-            
+            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel', 'reason_to_cancel' => $request->reason_to_cancel]);
+
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'message' => 'Task Cancelled Successfully'
+                    'message' => 'Task Cancelled Successfully',
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
 
     public function verifiedLr(Request $request, $id) 
     {
-        try { 
+        try {
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['verified_lr' => $request->verified_lr]);
-            
+
             if ($res) {
                 return response([
                     'status' => 'success',
                     'code' => 1,
-                    'message' => 'verified status updated successfully'
+                    'message' => 'verified status updated successfully',
                 ], 200);
             }
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status"
+                'data' => "Failed to update status",
             ], 500);
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}"
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
@@ -855,7 +834,58 @@ class TransactionSheetsController extends Controller
         }
     }
 
+    ////// Image Delete  ///
+    public function imgDelete(Request $request, $id)
+    {
+        try {
+
+            $res = AppMedia::where('id', $id)->delete();
+
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Img Deleted successfully',
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to delete img",
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+            ], 500);
+        }
+    }
+    //  /////////////
+    public function storeCoordinates(Request $request, $id)
+    {
+        try {
+
+            $res = AppMedia::where('id', $id)->delete();
+
+            if ($res) {
+                return response([
+                    'status' => 'success',
+                    'code' => 1,
+                    'message' => 'Img Deleted successfully',
+                ], 200);
+            }
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'data' => "Failed to delete img",
+            ], 500);
+        } catch (\Exception $exception) {
+            return response([
+                'status' => 'error',
+                'code' => 0,
+                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+            ], 500);
+        }
+    }
 }
-
-
-

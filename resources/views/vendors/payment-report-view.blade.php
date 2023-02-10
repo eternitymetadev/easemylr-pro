@@ -100,9 +100,11 @@ div.relative {
                         <th>Tds Amount</th>
                         <th>Balance Due</th>
                         <th>Advance</th>
+                        <th>Blance Amount</th>
                         <th>Payment Date</th>
                         <th>Ref. No</th>
                         <th>Blance Amount</th>
+                        <th>Tds Deduct</th>
                         <th>payment date</th>
                         <th>Ref. No</th>
                     </tr>
@@ -228,18 +230,22 @@ div.relative {
                         <td>{{$payment_list->tds_deduct_balance ?? '-'}}</td>
                         <?php }else{ ?>
                         <td>{{$payment_list->tds_deduct_balance ?? '-'}}</td>
-                        <?php } ?>
+                        <?php } $tds_cut = $payment_list->current_paid_amt - $payment_list->tds_deduct_balance?>
+                        <td>{{$tds_cut}}</td>
                         <td>{{$payment_list->payment_date ?? '-'}}</td>
                         <td>{{$payment_list->bank_refrence_no ?? '-'}}</td>
                         <?php
                         $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
                         $histrycount = count($trans_id);
                         if($histrycount > 1){
+                            $tds_cut1 = $trans_id[1]->current_paid_amt - $trans_id[1]->tds_deduct_balance ;
                         ?>
                         <td>{{$trans_id[1]->tds_deduct_balance ?? '-'}}</td>
+                        <td>{{$tds_cut1}}</td>
                         <td>{{$trans_id[1]->payment_date ?? '-'}}</td>
                         <td>{{$trans_id[1]->bank_refrence_no ?? '-'}}</td>
                         <?php }else{ ?>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

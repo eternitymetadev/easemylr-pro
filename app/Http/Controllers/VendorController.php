@@ -257,7 +257,9 @@ class VendorController extends Controller
                         $query->whereIn('id', $regclient);
                     });
             } else {
-                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc)->whereHas('ConsignmentDetail', function ($query) {
+                    $query->where('status', '!=' , 0);
+                });
             }
 
             if (!empty($request->search)) {
@@ -346,7 +348,9 @@ class VendorController extends Controller
                 });
         } else {
 
-            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->whereHas('ConsignmentDetail', function ($query) {
+                $query->where('status', '!=' , 0);
+            });
         }
 
         $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
@@ -407,12 +411,19 @@ class VendorController extends Controller
 
     public function createPaymentRequest(Request $request)
     {
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = $authuser->branch_id;
         $user = $authuser->id;
         $bm_email = $authuser->email;
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
+        if(empty($request->acc_no) || empty($request->ifsc)){
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
 
         //deduct balance
         $deduct_balance = $request->payable_amount - $request->final_payable_amount ;
@@ -452,7 +463,7 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$bm_email\",
             \"terid\": \"$request->transaction_id\",
-            \"branch\": \"$branch_name->nick_name\",
+            \"branch\": \"$branch_name->name\",
             \"pan\": \"$request->pan\",
             \"amt_deducted\": \"$deduct_balance\",
             \"vehicle\": \"$sent_vehicle_no\",
@@ -664,7 +675,7 @@ class VendorController extends Controller
             ->orderby('order_no', 'asc')->get();
         $result = json_decode(json_encode($transcationview), true);
 
-        $response['fetch'] = $result;
+        $response['fetch'] = $result;  
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
@@ -760,6 +771,13 @@ class VendorController extends Controller
         $user = $authuser->id;
         $bm_email = $authuser->email;
 
+        if(empty($request->acc_no) || empty($request->ifsc)){
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
+
         $branch_name = Location::where('id', '=', $request->branch_id)->first();
 
         //deduct balance
@@ -799,7 +817,7 @@ class VendorController extends Controller
 
                 $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
             } else {
-                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
+                $getadvanced = PaymentRequest::select('advanced','balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
                     $balance = $getadvanced->balance - $request->pay_amt;
                 } else {
@@ -817,6 +835,9 @@ class VendorController extends Controller
         
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
+
+        $checkduplicateRequest = PaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+        if(empty($checkduplicateRequest)){
         // ============== Sent to finfect
         $pfu = 'ETF';
         $curl = curl_init();
@@ -843,7 +864,7 @@ class VendorController extends Controller
             \"ptype\": \"$request->p_type\",
             \"email\": \"$bm_email\",
             \"terid\": \"$transaction_id_new\",
-            \"branch\": \"$branch_name->nick_name\",
+            \"branch\": \"$branch_name->name\",
             \"vehicle\": \"$sent_venicle_no\",
             \"pan\": \"$request->pan\",
             \"amt_deducted\": \"$deduct_balance\",
@@ -925,12 +946,28 @@ class VendorController extends Controller
             $new_response['message'] = $res_data->message;
             $new_response['success'] = false;
 
-        }
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
+                //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $transaction_id_new;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                $paymentresponse['payment_status'] = 4;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
+        }
         $url = $this->prefix . '/request-list';
         $new_response['redirect_url'] = $url;
         $new_response['success_message'] = "Data Imported successfully";
-
+    }else{
+        $new_response['error'] = false ;
+        $new_response['success_message'] = "Request Already Sent";
+    }
         return response()->json($new_response);
 
     }

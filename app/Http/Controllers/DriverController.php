@@ -41,7 +41,7 @@ class DriverController extends Controller
                         $btn .= '&nbsp;&nbsp;';
                         $btn .= '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id)).'" class="view btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
                         $btn .= '&nbsp;&nbsp;';
-                        $btn .= '<a class="delete btn btn-sm btn-danger delete_driver" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-driver').'"><i class="fa fa-trash"></i></a>';
+                        // $btn .= '<a class="delete btn btn-sm btn-danger delete_driver" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-driver').'"><i class="fa fa-trash"></i></a>';
                         return $btn;
                     })
                     ->addColumn('licence', function ($data) {

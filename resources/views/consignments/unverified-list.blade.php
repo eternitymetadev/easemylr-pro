@@ -92,9 +92,17 @@ div.relative {
                             $i = 1;
                                 foreach ($consignments as $key => $consignment) {       
                                 ?> 
-                                <tr>
+                                <tr> 
 
+                                @if($consignment->lr_type == 0 || $consignment->lr_type == 2)
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                                @else
+                                @if($consignment->hrs_status == 3)
+                                <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                                @else
+                                <td>-</td>
+                                @endif
+                                @endif
                                     <td>{{ $consignment->id ?? "-" }}</td>
                                     <td>{{ $consignment->consignment_date}}</td>
                                     <td>{{ $consignment->consigner_id}}</td>
@@ -105,7 +113,6 @@ div.relative {
                                     <td>{{ $consignment->zone ?? "-" }}</td>
                                     <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                     <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                  
                                 </tr>
                                
                                 <?php  $i++; } ?>

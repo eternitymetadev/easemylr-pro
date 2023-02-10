@@ -44,7 +44,7 @@
                 <td>{{ $consignment['id'] ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment['consignment_date'] ?? "-" )}}</td>
                 <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->consignment_items)){
+                    if(!empty($consignment->ConsignmentItems)){
                     $order = array();
                     $invoices = array();
                     $inv_date = array();
@@ -144,13 +144,13 @@
                     <td> - </td>
                 <?php }else{?>
                 <td>{{ $tat }}</td>
-                <?php } if($consignment->job_id== ''){?>
+                <?php } if($consignment->lr_mode == 0){?>
                     <td>Manual</td>
                     <?php }else{?>
                         <td>Shadow</td>
                     <?php } ?>
 
-                <?php if(empty($consignment->job_id)){
+                <?php if($consignment->lr_mode == 0){
             if(empty($consignment->signed_drs)){
             ?>
                 <td>Not Available</td>

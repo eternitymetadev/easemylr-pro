@@ -78,16 +78,16 @@ class ConsigneeController extends Controller
                     return $consigner;
                 })
                 ->addColumn('district', function($row){
-                    if(isset($row->Zone)){
-                        $district = $row->Zone->district;
+                    if(isset($row->district)){
+                        $district = $row->district;
                     }else{
                         $district = '';
                     }
                     return $district;
                 })
                 ->addColumn('state', function($row){
-                    if(isset($row->Zone)){
-                        $state = $row->Zone->state;
+                    if(isset($row->state_id)){
+                        $state = $row->state_id;
                     }else{
                         $state = '';
                     }
@@ -98,7 +98,7 @@ class ConsigneeController extends Controller
                     $btn .= '&nbsp;&nbsp;';
                     $btn .= '<a href="'.URL::to($this->prefix.'/'.$this->segment.'/'.Crypt::encrypt($row->id)).'" class="view btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>';
                     $btn .= '&nbsp;&nbsp;';
-                    $btn .= '<a class="delete btn btn-sm btn-danger delete_consignee" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consignee').'"><i class="fa fa-trash"></i></a>';
+                    // $btn .= '<a class="delete btn btn-sm btn-danger delete_consignee" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/'.$this->segment.'/delete-consignee').'"><i class="fa fa-trash"></i></a>';
 
                     return $btn;
                 })
@@ -267,8 +267,7 @@ class ConsigneeController extends Controller
                 $response['errors']      = $errors;
                 return response()->json($response);
             }
-
-            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('id','!=',$request->consignee_id)->get();
+            $check_nickname_exist = Consignee::where(['nick_name'=>$request['nick_name']])->where('consigner_id',$request->consigner_id)->where('id','!=',$request->consignee_id)->get();
 
             if(!$check_nickname_exist->isEmpty()){
                 $response['success'] = false;
@@ -372,5 +371,4 @@ class ConsigneeController extends Controller
         return response()->json($response);
     }
 
-    
 }
