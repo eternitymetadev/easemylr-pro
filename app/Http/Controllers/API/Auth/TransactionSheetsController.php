@@ -709,7 +709,7 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['delivery_status' => 'Successful']);
+            $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
             
             $currentdate = date("d-m-y h:i:sa");
             $respons3 = array(['consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate,'type' => '2']);
