@@ -9,6 +9,14 @@
 tbody tr:last-child .rowAddButton {
     display: flex;
 } */
+.select2-results__options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 160px;
+    /*  scroll-margin: 38px;  */
+    overflow: auto;
+}
 </style>
 
 <div class="layout-px-spacing">
