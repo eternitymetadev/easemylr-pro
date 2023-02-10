@@ -173,7 +173,6 @@ class ConsignmentController extends Controller
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
             // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
-            
         } 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
@@ -530,7 +529,7 @@ class ConsignmentController extends Controller
                 $simplyfy = json_decode(json_encode($lrdata), true);
                 //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
-
+ 
                 if (($request->edd) >= $request->consignment_date) {
                     if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                         $createTask = $this->createTookanTasks($simplyfy);
@@ -1819,7 +1818,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->whereIn('consignment_notes.status', ['2', '5'])
+            ->whereIn('consignment_notes.status', ['2', '5', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
@@ -3699,7 +3698,7 @@ class ConsignmentController extends Controller
             })->get();
 
         $result = json_decode(json_encode($transcationview), true);
-        //  echo '<pre>'; print_r($result); die;
+        //  echo '<pre>'; print_r($result); die; 
 
         $response['fetch'] = $result;
         $response['role_id'] = $role;

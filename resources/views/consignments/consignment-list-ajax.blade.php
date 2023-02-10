@@ -169,7 +169,7 @@
                 <td>
                     <?php if ($consignment->status == 0) { ?>
                     <span class="alert badge alert bg-secondary shadow-sm">Cancel</span>
-                    <?php } elseif($consignment->status == 1){
+                    <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
                     <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
                         data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
@@ -238,17 +238,17 @@
                                                         </tr>
                                                         <tr>
                                                             <td>Vehicle No</td>
-                                                            <td>{{$consignment->regn_no ?? ''}}</td>
+                                                            <td>{{@$consignment->VehicleDetail->regn_no ?? ''}}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>Driver Name</td>
-                                                            <td>{{$consignment->driver_name ?? ''}}</td>
+                                                            <td>{{ucfirst(@$consignment->DriverDetail->name) ?? ''}}</td>
                                                         </tr>
 
                                                         <tr>
                                                             <td>Driver Phone</td>
-                                                            <td>{{$consignment->driver_phone ?? ''}}</td>
+                                                            <td>{{@$consignment->DriverDetail->phone ?? ''}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td>No. of Boxes</td>

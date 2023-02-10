@@ -527,9 +527,9 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="hrsPayments" data-parent="#accordionExample">
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-payment-list'}}"> Create Payment </a>
-            </li>
+            </li> -->
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-request-list'}}"> Request List </a>
             </li>
@@ -554,9 +554,9 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="prsPayments" data-parent="#accordionExample">
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'prs-paymentlist'}}"> Create Payment </a>
-            </li>
+            </li> -->
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'prs-request-list'}}"> Request List </a>
             </li>
