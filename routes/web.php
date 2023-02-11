@@ -417,6 +417,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+    Route::any('get-vender-repay-details', [VendorController::class, 'rePayRequest']);
 
     Route::resource('prs', PickupRunSheetController::class);
     Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);

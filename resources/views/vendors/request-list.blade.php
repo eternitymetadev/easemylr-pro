@@ -140,9 +140,12 @@ div.relative {
                         <?php } else if($requestlist->payment_status == 0){ ?>
                         <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
                                 Payment</button></td>
-                        <?php }else{ ?>
-                        <td><button class="btn btn-warning payment_button"
+                        <?php } else if($requestlist->payment_status == 3){ ?>
+                            <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                        <?php }else{ ?>
+                        <td><button class="btn btn-warning repay_payment"
+                                value="{{$requestlist->transaction_id}}">RePay</button></td>
                         <?php } ?>
 
                         <!-- payment Status -->
@@ -423,6 +426,95 @@ $('#unverified-table').DataTable({
     "ordering": true,
     "paging": true,
     "pageLength": 100,
+
+});
+
+$(document).on('click', '.repay_payment', function() {
+    // $("#payment_form")[0].reset();
+    var trans_id = $(this).val();
+    
+
+    $.ajax({
+        type: "GET",
+        url: "get-vender-req-details",
+        data: {
+            trans_id: trans_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#p_type').empty();
+
+            },
+        success: function(data) {
+           
+            if (data.status == 'Successful') {
+                
+                $('#pymt_request_modal').modal('show');
+                var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
+
+                $('#drs_no_request').val(data.drs_no);
+                $('#vendor_no_request').val(data.req_data[0].vendor_details.vendor_no);
+                $('#transaction_id_2').val(data.req_data[0].transaction_id);
+                $('#name').val(data.req_data[0].vendor_details.name);
+                $('#email').val(data.req_data[0].vendor_details.email);
+                $('#beneficiary_name').val(bank_details.acc_holder_name);
+                $('#bank_acc').val(bank_details.account_no);
+                $('#ifsc_code').val(bank_details.ifsc_code);
+                $('#bank_name').val(bank_details.bank_name);
+                $('#branch_name').val(bank_details.branch_name);
+                $('#total_clam_amt').val(data.req_data[0].total_amount);
+                $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
+                $('#pan').val(data.req_data[0].vendor_details.pan);
+
+                $('#p_type').append('<option value="Fully">Fully Payment</option>');
+                //check balance if null or delevery successful
+                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
+                    $('#amt').val(data.req_data[0].total_amount);
+                    var amt = $('#amt').val();
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
+                    $('#amt').attr('readonly', true);
+
+                } else {
+                    $('#amt').val(data.req_data[0].balance);
+                    var amt = $('#amt').val();
+                    //calculate
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
+                    // $('#amt').attr('disabled', 'disabled');
+                    $('#amt').attr('readonly', true);
+
+                }
+            } else {
+                // $('#pymt_request_modal').modal('hide');
+                swal('error', 'Please update delivey status','error');
+                return false;
+                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
+                    $('#p_type').append(
+                        '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'
+                    );
+                } else {
+                    $('#p_type').append(
+                        '<option value=""  disabled>Select</option><option value="Advance">Advance</option><option value="Balance" selected>Balance</option><option value="Fully">Fully Payment</option>'
+                    );
+                    var amt = $('#amt').val(data.req_data[0].balance);
+                    var amt = $('#amt').val();
+                    var tds_rate = $('#tds_rate').val();
+                    var cal = (tds_rate / 100) * amt;
+                    var final_amt = amt - cal;
+                    $('#tds_dedut').val(final_amt);
+                    // $('#amt').attr('disabled', 'disabled');
+                    $('#amt').attr('readonly', true);
+
+                }
+            }
+        }
+
+    });
 
 });
 </script>

@@ -1249,5 +1249,26 @@ class VendorController extends Controller
         } 
 
     } 
+    ////
+    public function rePayRequest(Request $request)
+    {
+        $req_data = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)
+            ->groupBy('transaction_id')->get();
+
+        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)
+            ->get();
+        $simply = json_decode(json_encode($getdrs), true);
+        foreach ($simply as $value) {
+            $store[] = $value['drs_no'];
+        }
+        $drs_no = implode(',', $store);
+        
+        $response['req_data'] = $req_data;
+        $response['drs_no'] = $drs_no;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        return response()->json($response);
+
+    }
 
 }
