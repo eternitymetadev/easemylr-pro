@@ -466,7 +466,7 @@ class OrderController extends Controller
             // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
 
-            if($request->lr_type == 1){  
+            if($request->lr_type == 1 || $request->lr_type == 2){  
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
                 $consignee_pincode = $consignee->postal_code;
 

@@ -283,7 +283,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <?php if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){ ?>
-            <input type="hidden" name="lr_type" value="0">
+            <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
         <?php }else{ ?>
             <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
         <?php } ?>
