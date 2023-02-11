@@ -568,8 +568,10 @@ class PickupRunSheetController extends Controller
 
                     if($authuser->role_id == 3){
                         $consignmentsave['branch_id'] = $request->branch_id;
+                        $consignmentsave['fall_in'] = $request->branch_id;
                     }else{
                         $consignmentsave['branch_id'] = $authuser->branch_id;
+                        $consignmentsave['fall_in'] = $authuser->branch_id;
                     }
                     $consignmentsave['status'] = 5;
 

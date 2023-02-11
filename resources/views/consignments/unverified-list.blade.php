@@ -90,12 +90,21 @@ div.relative {
                             <tbody>
                             <?php 
                             $i = 1;
-                                foreach ($consignments as $key => $consignment) {       
+                                foreach ($consignments as $key => $consignment) {     
+                                    $authuser = Auth::user();  
                                 ?> 
                                 <tr> 
 
                                 @if($consignment->lr_type == 0 || $consignment->lr_type == 2)
+                                @if($authuser->branch_id == $consignment->fall_in)
+                                <td>-</td>
+                                @else
+                                @if($consignment->hrs_status == 3)
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                                @else
+                                <td>-</td>
+                                @endif
+                                @endif
                                 @else
                                 @if($consignment->hrs_status == 3)
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
