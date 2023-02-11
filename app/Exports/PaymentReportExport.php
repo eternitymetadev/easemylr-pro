@@ -137,6 +137,18 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     $advan = $payment_list->tds_deduct_balance;
                     $tds_cut = $payment_list->current_paid_amt - $payment_list->tds_deduct_balance ;
                 }
+                if(!empty($payment_list->payment_date)){
+                $payment_date_1 = date('d-m-Y', strtotime($payment_list->payment_date));
+                }else{
+                    $payment_date_1 = ' ';
+                }
+
+                if(!empty($paymt_date_2)){
+                    $payment_date_2 = date('d-m-Y', strtotime($paymt_date_2));
+                }else{
+                    $payment_date_2 = '';
+                }
+
 
                 $arr[] = [
                     'Sr_no' => $i,
@@ -167,11 +179,11 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'balance_due' => @$balance_due,
                     'advance' => @$advan,
                     'tds_deduct1' => @$tds_cut,
-                    'payment_date' => @$payment_list->payment_date,
+                    'payment_date' => @$payment_date_1,
                     'ref_no' => @$payment_list->bank_refrence_no,
                     'balance_amt' => @$curr_paid_amt,
                     'tds_deduct2' => @$tds_cut1,
-                    'payment_date_2' => @$paymt_date_2,
+                    'payment_date_2' => @$payment_date_2,
                     'ref_no_2' => @$ref_no_2,
 
                 ];
