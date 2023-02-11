@@ -43,6 +43,34 @@ div.relative {
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+.pointer {
+    cursor: pointer;
+}
+
+.drsStatus {
+    user-select: none;
+    cursor: default;
+    text-align: center;
+    width: 110px;
+    border-radius: 50vh;
+    padding: 6px 8px;
+    font-size: 11px;
+    line-height: 11px;
+    font-size: 11px;
+    color: #ffffff;
+}
+
+.green {
+    background: #148b00;
+}
+
+.orange {
+    background: #e2a03f;
+}
+
+.extra2 {
+    background: #1abc9c;
+}
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -122,13 +150,31 @@ div.relative {
                         <td> <label class="badge badge-dark">Faild</label>
                         </td>
                         <?php } elseif($requestlist->payment_status == 1) { ?>
-                        <td> <label class="badge badge-success">Paid</label> </td>
+                            <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class=" drsStatus pointer" style="background:#32cd32; margin-bottom: 0">
+                            <span>Paid</span>
+                        </p>
+                    </a>
+                </td>
                         <?php } elseif($requestlist->payment_status == 2) { ?>
-                        <td> <label class="badge badge-dark">Sent to Account</label>
-                        </td>
+                            <td valign="middle">
+                    <a class="drs_cancel hrs_lr" data-text="consignment" data-status="0">
+                        <p class="drsStatus pointer" style="background:#6b8e23; margin-bottom: 0">
+                            <span>Sent to Account</span>
+                        </p>
+                    </a>
+                </td>
                         <?php } elseif($requestlist->payment_status == 3) { ?>
                         <td><label class="badge badge-primary">Partial Paid</label></td>
-                        <?php } else{?>
+                        <?php } elseif($requestlist->payment_status == 4) { ?>
+                        <td valign="middle"> <a class="drs_cancel"  data-text="consignment" data-status="0">
+                        <p class="swan-tooltip drsStatus pointer" style="background:#e7515a; margin-bottom: 0" data-tooltip="{{$requestlist->rejected_remarks}}">
+                            <span>Rejected</span>
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </p>
+                    </a></td> 
+                        <?php }else{?>
                         <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
                         </td>
                         <?php } ?>
@@ -375,7 +421,7 @@ $('#unverified-table').DataTable({
     },
 
     "ordering": true,
-    "paging": false,
+    "paging": true,
     "pageLength": 100,
 
 });

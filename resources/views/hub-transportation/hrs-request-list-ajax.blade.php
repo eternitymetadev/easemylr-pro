@@ -116,7 +116,7 @@
                 <?php } ?>
                 <?php } elseif($hrsRequest->payment_status == 3) { ?>
                 <td><label class="badge badge-primary">Partial Paid</label></td>
-                <?php }elseif($hrsRequest->payment_status == 4){ ?>
+                <?php }elseif($hrsRequest->payment_status == 4){ ?>  
                     <td valign="middle">
                     <a class="drs_cancel hrs_lr"  data-text="consignment" data-status="0">
                         <p class="swan-tooltip drsStatus pointer" style="background:#e7515a; margin-bottom: 0" data-tooltip="{{$hrsRequest->rejected_remarks}}">
