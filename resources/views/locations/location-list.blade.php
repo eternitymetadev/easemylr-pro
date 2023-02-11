@@ -59,6 +59,7 @@
                     <thead>
                     <tr>
                         <th>Sr No.</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>City</th>
                         <th>Team Id</th>
@@ -73,6 +74,7 @@
                         @foreach($locations as $key => $value)
                             <tr>
                                 <td>{{ ++$i }}</td>
+                                <td>{{ $value->id ?? '-' }}</td>
                                 <td>{{ ucwords($value->name ?? '-') }}</td>
                                 <td>{{ ucwords($value->nick_name ?? '-') }}</td>
                                 <td>{{ $value->team_id ?? '-' }}</td>

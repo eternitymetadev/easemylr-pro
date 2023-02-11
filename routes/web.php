@@ -241,6 +241,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+    Route::get('postal-code/export/excel', [SettingController::class, 'exportExcel']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
 

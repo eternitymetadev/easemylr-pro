@@ -31,10 +31,10 @@ class LocationController extends Controller
         $authuser = Auth::user();
         $cc = explode(',',$authuser->branch_id);
         if($authuser->role_id == 2){
-            $locations = $query->whereIn('id',$cc)->orderBy('id','DESC')->get();
+            $locations = $query->whereIn('id',$cc)->orderBy('id','ASC')->get();
         }
         else{
-            $locations = $query->orderBy('id','DESC')->get();
+            $locations = $query->orderBy('id','ASC')->get();
         }
         return view('locations.location-list',['locations'=>$locations,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
