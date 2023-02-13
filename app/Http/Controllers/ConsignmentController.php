@@ -1829,7 +1829,7 @@ class ConsignmentController extends Controller
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5']);
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5','6']);
             });
             // if(!empty('consignment_notes.to_branch_id')){
             //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
