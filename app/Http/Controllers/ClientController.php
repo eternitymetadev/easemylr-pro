@@ -114,6 +114,8 @@ class ClientController extends Controller
                         $save_data['location_id'] = $save_data['location_id'];
                         $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $save_data['is_prs_pickup'] = $save_data['is_prs_pickup'];
+                        $save_data['email'] = $save_data['email'];
+                        $save_data['is_email_sent'] = $save_data['is_email_sent'];
                         $save_data['status'] = "1";
                         $saveregclients = RegionalClient::create($save_data);
                     }
@@ -225,6 +227,8 @@ class ClientController extends Controller
                         $updatedata['location_id'] = $save_data['location_id'];
                         $updatedata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $updatedata['is_prs_pickup'] = $save_data['is_prs_pickup'];
+                        $updatedata['email'] = $save_data['email'];
+                        $updatedata['is_email_sent'] = $save_data['is_email_sent'];
                         $hidden_id = $save_data['hidden_id'];                      
                         $saveregclients = RegionalClient::where('id',$hidden_id)->update($updatedata);
                       
@@ -234,6 +238,8 @@ class ClientController extends Controller
                         $insertdata['name'] = $save_data['name'];
                         $insertdata['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
                         $insertdata['is_prs_pickup'] = $save_data['is_prs_pickup'];
+                        $insertdata['email'] = $save_data['email'];
+                        $insertdata['is_email_sent'] = $save_data['is_email_sent'];
                         $insertdata['status'] = "1";
                         unset($save_data['hidden_id']);
                         $saveregclients = RegionalClient::create($insertdata);
