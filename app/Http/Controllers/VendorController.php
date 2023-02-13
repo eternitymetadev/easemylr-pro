@@ -1238,15 +1238,20 @@ class VendorController extends Controller
 
     public function updateRejectStatus(Request $request)
     {
+          $get_requests = PaymentRequest::where('transaction_id', 70001495)->where('payment_status', 2)->get();
+          foreach($get_requests as $get_request){
+                 if($get_request->payment_type == 'Advance'){
+                    
+                    TransactionSheet::where('drs_no', $get_request->drs_no)->update(['payment_status' => 0, 'request_status' => 0]);
+                    $reject_status = PaymentRequest::where('transaction_id', 70001495)->update(['rejected_remarks' => 'testing' , 'payment_status' => 4 ]);
 
-        $reject_status = PaymentRequest::where('transaction_id', $request->unid)->update(['rejected_remarks' => $request->finfect_response , 'payment_status' => 4 ]);
+                    PaymentHistory::where('transaction_id', $request->unid)->update(['payment_status' => 4 ]);
+                 }else{
 
-        PaymentHistory::where('transaction_id', $request->unid)->update(['payment_status' => 4 ]);
-        if($reject_status){
-        return $reject_status;
-        }else{
-            return 0;
-        } 
+
+                 }
+          }
+           return 1;
 
     } 
     ////

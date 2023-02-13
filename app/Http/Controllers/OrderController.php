@@ -1706,7 +1706,6 @@ class OrderController extends Controller
            
             $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
             
-
             $get_location = Location::where('id', $authuser->branch_id)->first();
             $chk_h2h_branch = $get_location->with_h2h;
             $location_name = $get_location->name;

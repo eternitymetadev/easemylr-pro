@@ -144,8 +144,8 @@ div.relative {
                             <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
                         <?php }else{ ?>
-                        <td><button class="btn btn-warning repay_payment"
-                                value="{{$requestlist->transaction_id}}">RePay</button></td>
+                        <td><button class="btn btn-danger"
+                                value="{{$requestlist->transaction_id}}">Rejected</button></td>
                         <?php } ?>
 
                         <!-- payment Status -->
@@ -433,10 +433,9 @@ $(document).on('click', '.repay_payment', function() {
     // $("#payment_form")[0].reset();
     var trans_id = $(this).val();
     
-
     $.ajax({
         type: "GET",
-        url: "get-vender-req-details",
+        url: "get-vender-repay-details",
         data: {
             trans_id: trans_id
         },
@@ -447,7 +446,6 @@ $(document).on('click', '.repay_payment', function() {
             },
         success: function(data) {
            
-            if (data.status == 'Successful') {
                 
                 $('#pymt_request_modal').modal('show');
                 var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
@@ -466,32 +464,34 @@ $(document).on('click', '.repay_payment', function() {
                 $('#tds_rate').val(data.req_data[0].vendor_details.tds_rate);
                 $('#pan').val(data.req_data[0].vendor_details.pan);
 
-                $('#p_type').append('<option value="Fully">Fully Payment</option>');
-                //check balance if null or delevery successful
-                if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
-                    $('#amt').val(data.req_data[0].total_amount);
-                    var amt = $('#amt').val();
-                    var tds_rate = $('#tds_rate').val();
-                    var cal = (tds_rate / 100) * amt;
-                    var final_amt = amt - cal;
-                    $('#tds_dedut').val(final_amt);
-                    $('#amt').attr('readonly', true);
+                // $('#p_type').append('<option value="Fully">Fully Payment</option>');
+                // //check balance if null or delevery successful
+                // if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
+                //     $('#amt').val(data.req_data[0].total_amount);
+                //     var amt = $('#amt').val();
+                //     var tds_rate = $('#tds_rate').val();
+                //     var cal = (tds_rate / 100) * amt;
+                //     var final_amt = amt - cal;
+                //     $('#tds_dedut').val(final_amt);
+                //     $('#amt').attr('readonly', true);
 
-                } else {
-                    $('#amt').val(data.req_data[0].balance);
-                    var amt = $('#amt').val();
-                    //calculate
-                    var tds_rate = $('#tds_rate').val();
-                    var cal = (tds_rate / 100) * amt;
-                    var final_amt = amt - cal;
-                    $('#tds_dedut').val(final_amt);
-                    // $('#amt').attr('disabled', 'disabled');
-                    $('#amt').attr('readonly', true);
+                // } else {
+                //     $('#amt').val(data.req_data[0].balance);
+                //     var amt = $('#amt').val();
+                //     //calculate
+                //     var tds_rate = $('#tds_rate').val();
+                //     var cal = (tds_rate / 100) * amt;
+                //     var final_amt = amt - cal;
+                //     $('#tds_dedut').val(final_amt);
+                //     // $('#amt').attr('disabled', 'disabled');
+                //     $('#amt').attr('readonly', true);
 
-                }
-            } else {
+                // }
+         
+
+
                 // $('#pymt_request_modal').modal('hide');
-                swal('error', 'Please update delivey status','error');
+                // swal('error', 'Please update delivey status','error');
                 return false;
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                     $('#p_type').append(
@@ -511,7 +511,7 @@ $(document).on('click', '.repay_payment', function() {
                     $('#amt').attr('readonly', true);
 
                 }
-            }
+            
         }
 
     });
