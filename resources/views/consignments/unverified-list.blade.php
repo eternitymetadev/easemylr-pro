@@ -97,11 +97,9 @@ div.relative {
                                 <?php if($consignment->lr_type == 0){?>
                                     <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                 <?php }elseif($consignment->lr_type == 1 || $consignment->lr_type == 2){
-                                 if(($authuser->branch_id == $consignment->fall_in) && ($authuser->branch_id == $authuser->to_branch_id))   
-                                {?>
+                                 if(($consignment->h2h_check=='lm')){?>
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd" value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
                                 <?php }elseif($authuser->branch_id == $consignment->fall_in){?>
-                                    
                                     <td>-</td>
                                    <?php }else{
                                 if($consignment->hrs_status == 3){?>
