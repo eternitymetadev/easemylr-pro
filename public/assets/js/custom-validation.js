@@ -2284,6 +2284,8 @@ $("#vendor-master").submit(function (e) {
     var acc_holder_name = $("#acc_holder_name").val();
     var acc_no = $("#account_no").val();
     var ifsc = $("#ifsc").val();
+    var bank_name = $("#bank_name").val();
+    var branch_name = $("#branch_name").val();
     var pan_no = $("#pan_no").val();
 
     if (!v_name) {
@@ -2304,6 +2306,14 @@ $("#vendor-master").submit(function (e) {
     }
     if (!ifsc) {
         swal("Error!", "Please Enter Ifsc Code", "error");
+        return false;
+    }
+    if (!bank_name) {
+        swal("Error!", "Please Enter Bank Name", "error");
+        return false;
+    }
+    if (!branch_name) {
+        swal("Error!", "Please Enter Branch Name", "error");
         return false;
     }
     if (!pan_no) {

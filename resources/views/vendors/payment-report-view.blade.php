@@ -197,6 +197,8 @@ div.relative {
                             $sumof_paid_tds = $paid_amt + $tds_amt ;
                             $balance_due =  $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds ;
                         }
+
+                        
                     ?>
 
                     <tr>

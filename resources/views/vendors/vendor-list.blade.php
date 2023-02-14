@@ -78,6 +78,7 @@
                                         value="{{$vendor->id}}">View</button> <a
                                         href="{{ url($prefix.'/edit-vendor/'.$vendor->id) }}"
                                         class="edit btn btn-sm btn-primary ml-2"><i class="fa fa-edit"></i></a></td>
+                                        
                             </tr>
                             @endforeach
                         </tbody>

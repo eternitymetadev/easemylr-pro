@@ -143,13 +143,13 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Bank Name</label>
-                                    <input type="text" class="form-control" name="bank_name" placeholder="">
+                                    <input type="text" class="form-control" name="bank_name" placeholder="" id="bank_name" maxlength="32">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Branch Name</label>
-                                    <input type="text" class="form-control" name="branch_name" placeholder="">
+                                    <input type="text" class="form-control" name="branch_name" placeholder="" id="branch_name" maxlength="20">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Cancel Cheaque</label>

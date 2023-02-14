@@ -73,6 +73,15 @@
                                         style="font-size: 15px; padding: 9px; width: 130px"
                                         href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a> -->
+                                    <?php $authuser = Auth::user();
+                                    if($authuser->role_id ==1 ){ ?>
+                                    <div class="btn-group relat">
+                                        <a style="font-size: 15px; padding: 9px;"
+                                            href="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>"
+                                            class="downloadEx btn btn-primary pull-right" download><span><i
+                                                    class="fa fa-download"></i> Export</span></a>
+                                    </div>
+                                    <?php } ?>
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                         style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span>
@@ -106,10 +115,11 @@
 
             <div class="modal-body">
                 <div class="form-row">
-                <div class="col-12">
-                    <input type="hidden" id="zone_id" name="zone_id"/>
+                    <div class="col-12">
+                        <input type="hidden" id="zone_id" name="zone_id" />
                         <label for="x">Postal Code</label>
-                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly/>
+                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder=""
+                            readonly />
                     </div>
                     <div class="col-12">
                         <label for="x">District</label>
@@ -121,11 +131,13 @@
                     </div>
                     <div class="col-12">
                         <label for="x">Hub Transfer</label>
-                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer" placeholder="" />
+                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
+                            placeholder="" />
                     </div>
                     <div class="col-12">
                         <label for="x">Primary Zone</label>
-                        <input class="form-control form-control-sm" id="primary_zone" name="primary_zone" placeholder="" />
+                        <input class="form-control form-control-sm" id="primary_zone" name="primary_zone"
+                            placeholder="" />
                     </div>
                 </div>
             </div>
@@ -166,18 +178,20 @@ $(document).on('click', '.edit_postal', function() {
     });
 });
 
-$('#update_postal_code').submit(function (e) {
+$('#update_postal_code').submit(function(e) {
     e.preventDefault();
     var formData = new FormData(this);
 
     $.ajax({
         url: "update-postal-code",
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         type: 'POST',
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () {
+        beforeSend: function() {
 
         },
         success: (data) => {
@@ -191,6 +205,5 @@ $('#update_postal_code').submit(function (e) {
         }
     });
 });
-
 </script>
 @endsection
