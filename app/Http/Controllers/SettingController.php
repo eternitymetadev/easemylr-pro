@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BranchAddress;
 use App\Models\Zone;
+use App\Exports\ZoneExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use URL;
 use Crypt;
@@ -103,7 +105,7 @@ class SettingController extends Controller
             return view('settings.branch-address',['branchaddvalue'=>$branchaddvalue,'prefix'=>$this->prefix]);
         }
     }
-    // postal code edit
+    // postal code list
     public function postalCode(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -166,7 +168,7 @@ class SettingController extends Controller
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
         $zones = $zones->appends($request->query());
 
-        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones]);
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment]);
     }
 
     public function editPostalCode(Request $request)
@@ -199,5 +201,11 @@ class SettingController extends Controller
         }
         return response()->json($response);
 
+    }
+
+    //zone download excel/csv
+    public function exportExcel()
+    {
+        return Excel::download(new ZoneExport, 'zones.csv');
     }
 }

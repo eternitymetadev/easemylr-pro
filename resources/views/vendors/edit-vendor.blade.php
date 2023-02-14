@@ -17,7 +17,7 @@
     /* scroll-margin: 38px; */
     overflow: auto;
 }
-</style>
+</style> 
 
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -46,7 +46,7 @@
                                     <label for="exampleFormControlInput2">Vendor Name<span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="vendor_name" name="name" placeholder=""
-                                    value="{{old('name',isset($getvendor->name)?$getvendor->name:'')}}" >
+                                    value="{{old('name',isset($getvendor->name)?$getvendor->name:'')}}" readonly>
                                 </div>
                                 <?php $otherdetails = json_decode(old('other_details',isset($getvendor->other_details)?$getvendor->other_details:''));
                                 // 
@@ -54,7 +54,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Transporter Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="transporter_name" placeholder="" value="{{old('$otherdetails->transporter_name',isset($otherdetails->transporter_name)?$otherdetails->transporter_name:'')}}">
+                                    <input type="text" class="form-control" name="transporter_name" placeholder="" value="{{old('$otherdetails->transporter_name',isset($otherdetails->transporter_name)?$otherdetails->transporter_name:'')}}" readonly>
                                 </div>
                             </div>
                             <div class="form-row mb-0">

@@ -466,7 +466,7 @@ class OrderController extends Controller
             // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
 
-            if($request->lr_type == 1){  
+            if($request->lr_type == 1 || $request->lr_type == 2){  
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
                 $consignee_pincode = $consignee->postal_code;
 
@@ -1635,19 +1635,43 @@ class OrderController extends Controller
                 
                 if(!empty($getpin_transfer->hub_transfer)){
                     $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
-                    $get_branch_id = $get_branch->id;
+                    $get_branch_id_to = $get_branch->id;
                     $get_zonebranch = $getpin_transfer->hub_transfer;
                     }else{
-                    $get_branch_id = $authuser->branch_id;
+                    $get_branch_id_to = $authuser->branch_id;
                     $get_zonebranch = $location_name;
                     }
-               
-                    $to_branch_id = $get_branch_id;
+                    $to_branch_id = $get_branch_id_to;
+                    $get_branch_id = $authuser->branch_id;
             }else{
                 $prsitem_status = '0';
                 $status = '5';
                 $to_branch_id = NULL;
                 $hrs_status = '2';
+
+                $consigner = Consigner::where('id', $request->consigner_id)->first();
+            $consigner_pincode = $consigner->postal_code;
+            if(empty($consigner_pincode))
+            {
+                $response['success'] = false;
+                $response['error_message'] = "Postal Code Not Found";
+                $response['error'] = true;
+                return response()->json($response);
+            }
+            $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
+
+            $get_location = Location::where('id', $authuser->branch_id)->first();
+            $chk_h2h_branch = $get_location->with_h2h;
+            $location_name = $get_location->name;
+
+            if(!empty($getpin_transfer->hub_transfer)){ 
+            $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
+            $get_branch_id = $get_branch->id;
+            $get_zonebranch = $getpin_transfer->hub_transfer;
+            }else{
+            $get_branch_id = $authuser->branch_id;
+            $get_zonebranch = $location_name;
+            }
                 
             }
 
@@ -1694,31 +1718,6 @@ class OrderController extends Controller
             //     return response()->json($response);
             // }
 
-            $consigner = Consigner::where('id', $request->consigner_id)->first();
-            $consigner_pincode = $consigner->postal_code;
-            if(empty($consigner_pincode))
-            {
-                $response['success'] = false;
-                $response['error_message'] = "Postal Code Not Found";
-                $response['error'] = true;
-                return response()->json($response);
-            }
-           
-            $getpin_transfer = Zone::where('postal_code', $consigner_pincode)->first();
-            
-
-            $get_location = Location::where('id', $authuser->branch_id)->first();
-            $chk_h2h_branch = $get_location->with_h2h;
-            $location_name = $get_location->name;
-
-            if(!empty($getpin_transfer->hub_transfer)){ 
-            $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
-            $get_branch_id = $get_branch->id;
-            $get_zonebranch = $getpin_transfer->hub_transfer;
-            }else{
-            $get_branch_id = $authuser->branch_id;
-            $get_zonebranch = $location_name;
-            }
             $consignmentsave['fall_in'] = $get_branch_id;
 
              ///h2h branch check
