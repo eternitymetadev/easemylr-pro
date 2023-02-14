@@ -143,6 +143,9 @@ div.relative {
                         <?php } else if($requestlist->payment_status == 3){ ?>
                             <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                        <?php }else if($requestlist->payment_status == 5){ ?>
+                            <td><button class="btn btn-warning repay_payment"
+                                value="{{$requestlist->transaction_id}}">Repay</button></td>
                         <?php }else{ ?>
                         <td><button class="btn btn-danger"
                                 value="{{$requestlist->transaction_id}}">Rejected</button></td>
@@ -492,7 +495,7 @@ $(document).on('click', '.repay_payment', function() {
 
                 // $('#pymt_request_modal').modal('hide');
                 // swal('error', 'Please update delivey status','error');
-                return false;
+                // return false;
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                     $('#p_type').append(
                         '<option value="" selected disabled>Select</option><option value="Advance">Advance</option><option value="Balance">Balance</option><option value="Fully">Fully Payment</option>'

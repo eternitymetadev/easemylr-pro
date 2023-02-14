@@ -1235,7 +1235,7 @@ class VendorController extends Controller
     {
         return Excel::download(new exportDrsWiseReport, 'DrsWise-PaymentReport.xlsx');
     }
-
+ 
     public function updateRejectStatus(Request $request)
     {
           $get_requests = PaymentRequest::where('transaction_id', 70001495)->where('payment_status', 2)->get();
