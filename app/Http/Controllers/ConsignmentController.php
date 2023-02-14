@@ -938,7 +938,7 @@ class ConsignmentController extends Controller
         }
 
         // get branch address
-        if ($locations->id == 2 || $locations->id == 6 || $locations->id == 26) {
+        if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
             $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
         <b>' . $branch_add[1]->address . ',</b><br />
         <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
@@ -948,7 +948,7 @@ class ConsignmentController extends Controller
         <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
         <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
         <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        }
+        }       
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {
@@ -4898,10 +4898,10 @@ class ConsignmentController extends Controller
          }
          return Response::json($response);
        }
-
        public function trackLr()
        {
         $this->prefix = request()->route()->getPrefix();
         return view('consignments.track-lr',['prefix'=>$this->prefix]);
        }
 }
+
