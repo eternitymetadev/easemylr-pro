@@ -846,7 +846,6 @@ class FtlPtlController extends Controller
             }
 
             $app_notify = $this->sendNotification($request->driver_id);
-            echo'<pre>' ; print_r($app_notify); die;
 
             $url = $this->prefix . '/consignments';
             $response['success'] = true;
