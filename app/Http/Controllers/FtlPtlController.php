@@ -845,6 +845,9 @@ class FtlPtlController extends Controller
                 }
             }
 
+            $app_notify = $this->sendNotification($request->driver_id);
+            echo'<pre>' ; print_r($app_notify); die;
+
             $url = $this->prefix . '/consignments';
             $response['success'] = true;
             $response['success_message'] = "Consignment Added successfully";
@@ -1301,5 +1304,43 @@ class FtlPtlController extends Controller
     }
 
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
+    public function sendNotification($request)
+    {
+        $firebaseToken =["eCcnJFOBReCr8mFfgPKopr:APA91bF8Kf7Uc9Evom3wFKN55hiTg4_yX66fZwQYE-OHHBjdDx62_0MTrQCqLP73uSjd4T6wCzWS9Kyi7aodtFXBfmC8_oqxRKkK8vIjASytNYKDuArKyFO6v0LUhYoWhXMVVn0wBmia"];
+        
+        // $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
+        // echo'<pre>'; print_r($firebaseToken); die;
+       
+        $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
+        // echo'<pre>'; print_r($SERVER_API_KEY); die;
+    
+        $data = [
+            "registration_ids" => $firebaseToken,
+            "notification" => [
+                "type" => "Assigned",
+                "status" => 1,  
+            ]
+        ];
+        $dataString = json_encode($data);
+      
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+      
+        $ch = curl_init();
+        
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+                 
+        $response = curl_exec($ch);
+    
+
+        return $response ;
+    }
 
 }
