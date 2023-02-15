@@ -13,6 +13,7 @@
                 <th>Consigner</th>
                 <th>Consigner City</th>
                 <th>Consignee Name</th>
+                <th>Contact Person Name</th>
                 <th>Consignee Phone</th>
                 <th>City</th>
                 <th>Pin Code</th> 
@@ -96,6 +97,7 @@
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->nick_name ?? "-" }}</td>
+                <td>{{ $consignment->ConsigneeDetail->contact_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->phone ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
