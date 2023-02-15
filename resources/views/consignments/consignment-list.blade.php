@@ -454,6 +454,7 @@ a.badge.alert.bg-secondary.shadow-sm {
 
 @section('js')
 <script>
+    
 
 // jQuery(document).on("click", ".card-header", function () {
 function row_click(row_id, job_id, url)

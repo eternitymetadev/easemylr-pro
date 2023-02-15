@@ -179,7 +179,7 @@ label.statusLabel {
                     </div>
                     <div class="form-group col-12">
                         <label class="control-label">Delivery Date</label>
-                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" />
+                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" onkeydown="return false"/>
                     </div>
                 </div>
             </div>
@@ -247,7 +247,20 @@ label.statusLabel {
 @endsection
 @section('js')
 <script>
-
+   
+$(function(){
+    var dtToday = new Date();
+ 
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+     day = '0' + day.toString();
+    var maxDate = year + '-' + month + '-' + day;
+    $('#dlvery_date').attr('min', maxDate);
+});
 
 
 $("#update_image_pod").submit(function(e) {
