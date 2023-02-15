@@ -42,6 +42,7 @@
                 <th>Delivery Status</th>
                 <th>TAT</th>
                 <th>Delivery Mode</th>
+                <th>POD</th>
             </tr>
         </thead>
         <tbody>
@@ -133,7 +134,7 @@
                 <?php }elseif($consignment->status == 1){ ?>
                     <td>Active</td>
                     <?php }elseif($consignment->status == 2){ ?>
-                    <td>Unverified</td>
+                    <td>Unverified</td> 
                     <?php } ?>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date )}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
@@ -160,6 +161,33 @@
                     <?php }else{?>
                         <td>Shadow</td>
                     <?php } ?>
+
+                    <?php if($consignment->lr_mode == 0){
+            if(empty($consignment->signed_drs)){
+            ?>
+                <td>Not Available</td>
+                <?php } else { ?>
+                <td>Avliable</td>
+                <?php } ?>
+                <?php } else { 
+                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
+
+            if(!empty($job->response_data)){
+            $trail_decorator = json_decode($job->response_data);
+            $img_group = array();
+            foreach($trail_decorator->task_history as $task_img){
+                if($task_img->type == 'image_added'){
+                    $img_group[] = $task_img->description;
+                }
+            }
+            if(empty($img_group)){?>
+                <td>Not Available</td>
+                <?php } else{?>
+                <td>Available</td>
+                <?php }
+            }
+            ?>
+                <?php } ?>
                 
             </tr>
             @endforeach
