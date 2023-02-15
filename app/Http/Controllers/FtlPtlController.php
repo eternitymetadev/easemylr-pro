@@ -91,6 +91,7 @@ class FtlPtlController extends Controller
 
     public function storeFtlLr(Request $request)
     {
+       
         try {
             DB::beginTransaction();
 
@@ -135,7 +136,7 @@ class FtlPtlController extends Controller
             // $consignmentsave['total_quantity'] = $request->total_quantity;
             // $consignmentsave['total_weight'] = $request->total_weight;
             // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            // $consignmentsave['total_freight'] = $request->total_freight;
+            $consignmentsave['freight'] = $request->freight;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
@@ -955,7 +956,7 @@ class FtlPtlController extends Controller
             // $consignmentsave['total_quantity'] = $request->total_quantity;
             // $consignmentsave['total_weight'] = $request->total_weight;
             // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-            // $consignmentsave['total_freight'] = $request->total_freight;
+            $consignmentsave['freight'] = $request->freight;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;

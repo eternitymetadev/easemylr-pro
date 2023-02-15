@@ -189,7 +189,7 @@ span.round-tab:hover {
                             <p>Payment Term</p>
                             <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type">
                                 <option value="To be Billed" selected="selected">To be Billed</option>
-                                <option value="To Pay">To Pay</option>
+                                <option value="COD-Cash On Delivery">COD-Cash On Delivery</option>
                                 <option value="Paid">Paid</option> 
                             </select>
                         </div>

@@ -342,6 +342,7 @@
                     </label>
                     <select class="form-control my-select2" name="payment_type">
                         <option value="To be Billed" selected="selected">To be Billed</option>
+                        <option value="COD-Cash On Delivery">COD-Cash On Delivery</option>
                         <option value="To Pay">To Pay</option>
                         <option value="Paid">Paid</option>
                     </select>
