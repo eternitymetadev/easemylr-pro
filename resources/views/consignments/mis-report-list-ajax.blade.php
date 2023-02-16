@@ -15,7 +15,7 @@
                 <th>Pin Code</th>
                 <th>District</th>
                 <th>State</th>
-                <th>Invoice No</th>
+                <th>Invoice No</th> 
                 <th>Invoice Date</th>
                 <th>Invoice Amount</th>
                 <th>Vehicle No</th>

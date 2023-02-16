@@ -339,6 +339,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     {{$disable}}>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         To be Billed</option>
+                        <!-- <option value="COD-Cash On Delivery" {{$getconsignments->payment_type == 'COD-Cash On Delivery' ? 'selected' : ''}}>
+                        COD-Cash On Delivery</option> -->
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
                     </option>
                     <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>Paid</option>

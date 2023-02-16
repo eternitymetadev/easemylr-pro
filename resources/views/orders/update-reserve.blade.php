@@ -174,7 +174,9 @@ span.round-tab:hover {
                             <p>Payment Term</p>
                             <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type" disabled>
                                 <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>To be Billed</option>
-                                <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay</option>
+                                <!-- <option value="COD-Cash On Delivery" {{$getconsignments->payment_type == 'COD-Cash On Delivery' ? 'selected' : ''}}>COD-Cash On Delivery</option> -->
+                                <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
+                    </option>
                                 <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>Paid</option> 
                             </select>
                         </div>

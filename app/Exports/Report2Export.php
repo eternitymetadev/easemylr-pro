@@ -21,6 +21,7 @@ use Session;
 use Helper;
 use Auth;
 use DateTime;
+use DB;
 
 class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 {
@@ -179,6 +180,40 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $drs_date = '-';
                    }
 
+                   if($consignment->lr_mode == 1){
+                    $deliverymode = 'Shadow'; 
+                  }else{
+                   $deliverymode = 'Manual';
+                  }
+
+                // pod status
+                if($consignment->lr_mode == 0){
+                    if(empty($consignment->signed_drs)){
+                        $pod= 'Not Available'; 
+                    } else {
+                        $pod= 'Available';
+                    } 
+                } else { 
+                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
+        
+                    if(!empty($job->response_data)){
+                        $trail_decorator = json_decode($job->response_data);
+                        $img_group = array();
+                        foreach($trail_decorator->task_history as $task_img){
+                            if($task_img->type == 'image_added'){
+                                $img_group[] = $task_img->description;
+                            }
+                        }
+                        if(empty($img_group)){
+                            $pod= 'Not Available';
+                        } else {
+                            $pod= 'Available';
+                        }
+                    }else{
+                        $pod= 'Not Available';
+                    }
+                }
+
 
 
                 $arr[] = [
@@ -192,6 +227,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
                     'consigner_city'      => @$consignment->ConsignerDetail->city,
                     'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
+                    'contact_person'      => @$consignment->ConsigneeDetail->contact_name,
                     'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
                     'consignee_city'      => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
@@ -221,6 +257,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_status'     => @$consignment->delivery_status,
                     'tat'                 => $tatday,
                     'delivery_mode'       => $deliverymode,
+                    'pod'                 => $pod,
 
                 ];
             }
@@ -241,10 +278,11 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Consigner',
             'Consigner City',
             'Consignee Name',
+            'Contact Person Name',
             'Consignee Phone',
             'Consignee city',
             'Consignee Pin Code',
-            'Consignee District',
+            'Consignee District', 
             'Consignee State',
             'ShipTo Name',
             'ShipTo City', 
@@ -269,7 +307,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Date',
             'Delivery Status',
             'Tat',
-            'Delivery Mode'
+            'Delivery Mode',
+            'POD'
         ];
     }
 }
