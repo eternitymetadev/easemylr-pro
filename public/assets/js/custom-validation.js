@@ -1694,7 +1694,7 @@ jQuery(document).ready(function () {
                 $.each(data.fetch, function (index, value) {
                     var trail_history = jQuery.parseJSON(value.trail);
 
-                    if (value.lr_mode == 1) {
+                    if (value.job_id != null) {
                         var img_api = [];
 
                         $.each(
@@ -1714,7 +1714,7 @@ jQuery(document).ready(function () {
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if (value.lr_mode == 0) {
+                    if (value.job_id == null || value.job_id == "") {
                         if (value.signed_drs == null) {
                             if (data.role_id == 7) {
                                 var field = "-";
@@ -1794,7 +1794,7 @@ jQuery(document).ready(function () {
                         "</td><td>" +
                         field +
                         "</td>";
-                    if (value.lr_mode == 1) {
+                    if (value.job_id == "" || value.job_id == null) {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
