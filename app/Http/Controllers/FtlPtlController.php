@@ -1307,7 +1307,7 @@ class FtlPtlController extends Controller
     {
 
         // $firebaseToken = ["eYYS5g5IRZGbpRuISRdXl4:APA91bFchCa4pLlXRNWa10emyC8sJuKhcbu2PEgWpwHMg44Hj2IJfHr5Wt1NSXIFsd1y_YFhj8X6RUMyby6AahDV2MqkBIPSshPpKNoJ4ZXZAbLQ-kkNne4aseiufAKM3S2kZFfOEc5-"];
-         $firebaseToken = Driver::where('id', 6224)->whereNotNull('device_token')->pluck('device_token')->all();
+         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
         //  echo'<pre>'; print_r($firebaseToken); die;
 
         $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
