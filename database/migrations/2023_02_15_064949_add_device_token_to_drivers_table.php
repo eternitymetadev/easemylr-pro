@@ -15,6 +15,7 @@ class AddDeviceTokenToDriversTable extends Migration
     {
         Schema::table('drivers', function (Blueprint $table) {
             $table->string('device_token')->after('driver_password')->nullable();
+            $table->string('app_use')->after('device_token')->nullable();
         });
     }
 

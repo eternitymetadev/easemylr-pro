@@ -404,8 +404,18 @@ class TransactionSheetsController extends Controller
     public function taskStart(Request $request, $id)
     {
         try {
-                
-
+            $get_driver = ConsignmentNote::where('id', $id)->first();
+            $get_driver_id = $get_driver->driver_id; 
+            $check_status = ConsignmentNote::where('driver_id', $get_driver_id)->where('delivery_status', 'Started')->first();
+           
+            if(!empty($check_status)){
+                return response([
+                    'error' => true,
+                    'code' => 1,
+                    'message' => 'Please Complete Previous Task',
+                ], 200);
+            }      
+            
             $update_status = ConsignmentNote::find($id);
             $res = $update_status->update(['delivery_status' => 'Started']);
 

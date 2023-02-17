@@ -43,7 +43,7 @@ class AuthController extends Controller
     public function login(Request $request)
 
     {
-
+        
         $credentials = [
 
             'login_id' => $request->get('login_id'),
@@ -58,34 +58,24 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-
             return response([
-
                 'status' => 'error',
-
                 'code' => 0,
-
                 'message' => $validator->errors()
-
             ], 422);
-
         }
 
         if (!$token = auth('api')->attempt($validator->validated())) {
-
             return response([
-
                 'status' => 'error',
-
                 'code' => 0,
-
                 'message' => "Unauthorized"
-
             ], 401);
 
         }
 
-
+        $get_driver = auth('api')->user();
+        Driver::where('id', $get_driver->id)->update(['device_token' => $request->device_token]);
 
         return $this->createNewToken($token);
 
@@ -276,6 +266,7 @@ class AuthController extends Controller
     protected function createNewToken($token)
 
     {
+       
 
         return response([
 
