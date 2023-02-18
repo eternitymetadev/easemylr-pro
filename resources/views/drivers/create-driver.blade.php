@@ -131,6 +131,11 @@
                                     <input type="password" class="form-control" name="password" placeholder="">
                                 </div>
                             </div>
+                            <select class="form-control consigner_prs tagging"
+                                                        id="select_consigner" multiple="multiple"
+                                                        name="data[1][consigner_id][]">
+                                                        <option disabled>Select</option>
+                                                    </select>
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
                         </form>
