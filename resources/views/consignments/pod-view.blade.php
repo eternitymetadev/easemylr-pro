@@ -172,6 +172,7 @@ label.statusLabel {
             <div class="modal-body">
                 <div class="d-flex flex-wrap justify-content-center align-items-center">
                     <input type="hidden" name="lr_no" id="lr_no" value="" />
+                    <input type="hidden" name="dispatch_date" id="dispatch_date" value="" />
                     <div class="form-group col-12">
                         <label class="control-label">Image</label>
                         <input type="file" class="form-control" id="image-url" accept="image/*" placeholder="Image URL"
@@ -179,7 +180,7 @@ label.statusLabel {
                     </div>
                     <div class="form-group col-12">
                         <label class="control-label">Delivery Date</label>
-                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" />
+                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" onkeydown="return false"/>
                     </div>
                 </div>
             </div>
@@ -189,7 +190,7 @@ label.statusLabel {
             </div>
         </div>
     </form>
-</div>
+</div> 
 
 <!-- delete images modal -->
 <div class="modal fade" id="deleteImages" tabindex="-1" role="dialog" aria-hidden="true">
@@ -247,7 +248,20 @@ label.statusLabel {
 @endsection
 @section('js')
 <script>
-
+   
+// $(function(){
+//     var dtToday = new Date();
+ 
+//     var month = dtToday.getMonth() + 1;
+//     var day = dtToday.getDate();
+//     var year = dtToday.getFullYear();
+//     if(month < 10)
+//         month = '0' + month.toString();
+//     if(day < 10)
+//      day = '0' + day.toString();
+//     var maxDate = year + '-' + month + '-' + day;
+//     $('#dlvery_date').attr('min', maxDate);
+// });
 
 
 $("#update_image_pod").submit(function(e) {
@@ -255,6 +269,7 @@ $("#update_image_pod").submit(function(e) {
     var formData = new FormData(this);
     var files = $("#image-url")[0].files;
     var dd = $("#dlvery_date").val();
+    var consignment_date = $("#dispatch_date").val();
     if (files.length == 0) {
         alert("Please choose a file");
         return false;
@@ -263,6 +278,15 @@ $("#update_image_pod").submit(function(e) {
         alert("Please select Date");
         return false;
     }
+
+    var c_date = new Date(consignment_date); //Year, Month, Date
+    var d_date = new Date(dd); //Year, Month, Date
+    if (c_date > d_date) {
+        swal("Error", "delivery date can't be less than lr date", "error");
+        return false;
+    }
+
+     
     $.ajax({
         url: "update-poddetails",
         headers: {
@@ -409,8 +433,10 @@ jQuery(document).on('click', '.viewpdfInNewTab', function() {
 
 jQuery(document).on('click', '.editButtonimg', function() {
     var li_no = $(this).attr('data-id');
+    var date = $(this).attr('lr-date');
     $('#updateImageModal').modal('show');
     $('#lr_no').val(li_no);
+    $('#dispatch_date').val(date);
 });
 
 // lr mode change

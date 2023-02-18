@@ -1503,8 +1503,8 @@ jQuery(document).ready(function () {
                             "][delivery_date]' data-id=" +
                             value.consignment_no +
                             " class='delivery_d' value='" +
-                            value.dd +
-                            "'>";
+                            value.dd + 
+                            "' onkeydown='return false'>";
                     } else {
                         var deliverydate = value.dd;
                     }
@@ -1714,7 +1714,7 @@ jQuery(document).ready(function () {
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if (value.job_id == null || value.job_id == "") {
+                    if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
                             if (data.role_id == 7) {
                                 var field = "-";
@@ -1751,7 +1751,7 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
-                    }
+                    } 
                     // delivery date check
                     if (value.delivery_date == null) {
                         if (data.role_id == 7) {
@@ -1760,9 +1760,9 @@ jQuery(document).ready(function () {
                             var deliverydat =
                                 "<input type='date' name='delivery_date[]' data-id=" +
                                 value.id +
-                                " class='delivery_d' value='" +
+                                " class='delivery_d' id='dlvrydate' value='" +
                                 value.delivery_date +
-                                "' Required>";
+                                "' onkeydown='return false' Required>";
                         }
                     } else {
                         var deliverydat = value.delivery_date;
@@ -1794,7 +1794,7 @@ jQuery(document).ready(function () {
                         "</td><td>" +
                         field +
                         "</td>";
-                    if (value.job_id == "" || value.job_id == null) {
+                    if (value.lr_mode == 0) {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
@@ -2968,3 +2968,4 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
 //         });
 // });
 /*===== End delete User =====*/
+
