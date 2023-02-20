@@ -25,7 +25,7 @@ class Driver extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-       'name','email','phone','license_number','license_image','team_id','fleet_id','login_id','password','driver_password','app_use','device_token','status','created_at','updated_at'
+       'name','email','phone','license_number','license_image','team_id','fleet_id','login_id','password','driver_password','app_use','device_token','branch_id','status','created_at','updated_at'
     ];
 
     public function BankDetail()
