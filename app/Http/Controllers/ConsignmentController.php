@@ -2739,53 +2739,53 @@ class ConsignmentController extends Controller
 
                 $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-                if ($data['consignee_detail']['legal_name'] != null) {
+                if (@$data['consignee_detail']['legal_name'] != null) {
                     $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
-                if ($data['consignee_detail']['address_line1'] != null) {
+                if (@$data['consignee_detail']['address_line1'] != null) {
                     $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
                 } else {
                     $address_line1 = '';
                 }
-                if ($data['consignee_detail']['address_line2'] != null) {
+                if (@$data['consignee_detail']['address_line2'] != null) {
                     $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
                 } else {
                     $address_line2 = '';
                 }
-                if ($data['consignee_detail']['address_line3'] != null) {
+                if (@$data['consignee_detail']['address_line3'] != null) {
                     $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
                 } else {
                     $address_line3 = '';
                 }
-                if ($data['consignee_detail']['address_line4'] != null) {
+                if (@$data['consignee_detail']['address_line4'] != null) {
                     $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br><br>';
                 } else {
                     $address_line4 = '<br>';
                 }
-                if ($data['consignee_detail']['city'] != null) {
+                if (@$data['consignee_detail']['city'] != null) {
                     $city = $data['consignee_detail']['city'] . ',';
                 } else {
                     $city = '';
                 }
-                if ($data['consignee_detail']['get_zone'] != null) {
+                if (@$data['consignee_detail']['get_zone'] != null) {
                     $district = $data['consignee_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
                 }
-                if ($data['consignee_detail']['postal_code'] != null) {
+                if (@$data['consignee_detail']['postal_code'] != null) {
                     $postal_code = $data['consignee_detail']['postal_code'] . '<br>';
                 } else {
                     $postal_code = '';
                 }
 
-                if ($data['consignee_detail']['gst_number'] != null) {
+                if (@$data['consignee_detail']['gst_number'] != null) {
                     $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
                 } else {
                     $gst_number = '';
                 }
-                if ($data['consignee_detail']['phone'] != null) {
+                if (@$data['consignee_detail']['phone'] != null) {
                     $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
                 } else {
                     $phone = '';
@@ -2793,57 +2793,57 @@ class ConsignmentController extends Controller
 
                 $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-                if ($data['shipto_detail']['legal_name'] != null) {
+                if (@$data['shipto_detail']['legal_name'] != null) {
                     $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
                 } else {
                     $nick_name = '';
                 }
-                if ($data['shipto_detail']['address_line1'] != null) {
+                if (@$data['shipto_detail']['address_line1'] != null) {
                     $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
                 } else {
                     $address_line1 = '';
                 }
-                if ($data['shipto_detail']['address_line2'] != null) {
+                if (@$data['shipto_detail']['address_line2'] != null) {
                     $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
                 } else {
                     $address_line2 = '';
                 }
-                if ($data['shipto_detail']['address_line3'] != null) {
+                if (@$data['shipto_detail']['address_line3'] != null) {
                     $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
                 } else {
                     $address_line3 = '';
                 }
-                if ($data['shipto_detail']['address_line4'] != null) {
+                if (@$data['shipto_detail']['address_line4'] != null) {
                     $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br><br>';
                 } else {
                     $address_line4 = '<br>';
                 }
-                if ($data['shipto_detail']['city'] != null) {
+                if (@$data['shipto_detail']['city'] != null) {
                     $city = $data['shipto_detail']['city'] . ',';
                 } else {
                     $city = '';
                 }
-                if ($data['shipto_detail']['get_zone'] != null) {
+                if (@$data['shipto_detail']['get_zone'] != null) {
                     $district = $data['shipto_detail']['get_zone']['state'] . ',';
                 } else {
                     $district = '';
                 }
-                if ($data['shipto_detail']['postal_code'] != null) {
+                if (@$data['shipto_detail']['postal_code'] != null) {
                     $postal_code = $data['shipto_detail']['postal_code'] . '<br>';
                 } else {
                     $postal_code = '';
                 }
-                if ($data['shipto_detail']['gst_number'] != null) {
+                if (@$data['shipto_detail']['gst_number'] != null) {
                     $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
                 } else {
                     $gst_number = '';
                 }
-                if ($data['shipto_detail']['phone'] != null) {
+                if (@$data['shipto_detail']['phone'] != null) {
                     $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
                 } else {
                     $phone = '';
                 }
-                if ($data['is_salereturn'] != 1) {
+                if (@$data['is_salereturn'] != 1) {
                     $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
                 } else {
                     $shiptoadd = '';
