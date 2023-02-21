@@ -92,6 +92,7 @@ class FtlPtlController extends Controller
     public function storeFtlLr(Request $request)
     {
 
+
         try {
             DB::beginTransaction();
 
@@ -822,8 +823,16 @@ class FtlPtlController extends Controller
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $get_branch_detail = Location::where('id', $authuser->branch_id)->first();
+            $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
+
             // check app assign ========================================
-            if($get_branch_detail->app_use == 'Eternity'){
+            if(!empty($get_driver_details->branch_id)){
+               $driver_branch = explode(',', $get_driver_details->branch_id);
+               if (in_array("Glenn", $people))
+                {
+                echo "Match found";
+                }
+
                 if(!empty($request->driver_id)){
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 }
