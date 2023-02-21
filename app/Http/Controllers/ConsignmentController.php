@@ -1891,7 +1891,7 @@ class ConsignmentController extends Controller
         if (!empty($tooken_details[0]['fleet_id'])) {
             $createTask = $this->createTookanMultipleTasks($simplyfy);
             $json = json_decode($createTask, true);
-            if (!empty($json['data'])) {
+            if (!empty($json['data'])) { 
                 $response = $json['data']['deliveries'];
                 $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
                 foreach ($response as $res) {
