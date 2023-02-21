@@ -302,7 +302,7 @@ span.select2.select2-container.mb-4 {
                 <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
                     id="paymentType">
                     <option value="To be Billed" selected="selected">To be Billed</option>
-                    <option value="To be Billed - COD">To be Billed - COD</option>
+                    <option value="TBB With COD">TBB With COD</option>
                     <option value="To Pay">To Pay</option>
                     <option value="Paid">Paid</option>
                 </select>
@@ -311,14 +311,14 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Freight<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" name="freight">
+                <Input type="number" class="form-control" name="freight"> 
             </div>
             <div class="form-group col-md-2" id="codFreightBlock" style="display: none">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="cod">
             </div>
-            <div class="form-group d-flex col-md-3">
+            <div class="form-group d-flex col-md-3"> 
 
                 <div class="d-flex align-items-center px-2 pt-2">
                     <label class="mr-4">
@@ -1006,7 +1006,7 @@ $("#branch_id").change(function(e) {
 
 function togglePaymentAction() {
 
-    if ($('#paymentType').val() == 'To be Billed - COD') {
+    if ($('#paymentType').val() == 'TBB With COD') {
         $('#codFreightBlock').show();
         $('#codFreightBlock').attr('required', true);
 

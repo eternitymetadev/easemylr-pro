@@ -201,7 +201,7 @@ span.select2.select2-container.mb-4 {
 }
 
 .childTable {
-    background: #F9B60030;
+    background: #F9B60030; 
     border-radius: 12px;
 }
 
@@ -329,22 +329,28 @@ span.select2.select2-container.mb-4 {
             </div>
 
             <input type="hidden" name="invoice_check" id="inv_check" />
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="payment_type">
+                <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
+                    id="paymentType">
                     <option value="To be Billed" selected="selected">To be Billed</option>
-                    <!-- <option value="COD-Cash On Delivery">COD-Cash On Delivery</option> -->
+                    <option value="TBB With COD">TBB With COD</option>
                     <option value="To Pay">To Pay</option>
                     <option value="Paid">Paid</option>
                 </select>
             </div>
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-1">
                 <label for="exampleFormControlSelect1">
                     Freight<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="freight">
+            </div>
+            <div class="form-group col-md-2" id="codFreightBlock" style="display: none">
+                <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+                </label>
+                <Input type="number" class="form-control" name="cod">
             </div>
             <div class="form-group d-flex col-md-3">
 
@@ -1031,6 +1037,21 @@ $("#branch_id").change(function(e) {
         },
     });
 });
+function togglePaymentAction() {
+
+if ($('#paymentType').val() == 'TBB With COD') {
+    $('#codFreightBlock').show();
+    $('#codFreightBlock').attr('required', true);
+
+    console.log('cod shown');
+} else {
+    $('#codFreightBlock').hide();
+    $('#codFreightBlock').attr('required', false);
+    console.log('cod hide');
+}
+
+
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">
 </script>

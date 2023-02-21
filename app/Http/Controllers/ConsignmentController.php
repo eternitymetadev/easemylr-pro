@@ -1164,14 +1164,14 @@ class ConsignmentController extends Controller
                                 </td>
                             </tr>
                         </table>';
-                        if($data['payment_type'] == 'To be Billed - COD'){ 
+                        if($data['payment_type'] == 'TBB With COD'){ 
                          $html .=  ' <div class="loc">
                             <table>
                                 <tr>
                                     <td valign="middle" style="position:relative; width: 200px">
                                     <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
                                         <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.$data['cod'].'
+                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
                                         </h2>
                                     </td>
                                     <td class="width_set">

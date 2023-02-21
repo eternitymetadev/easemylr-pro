@@ -332,15 +332,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
             </div>
 
             <div class="form-group col-md-3">
-                <label for="exampleFormControlSelect1">
+                <label for="exampleFormControlSelect1"> 
                     Payment Term<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type"
-                    {{$disable}}>
+                disabled>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         To be Billed</option>
-                        <!-- <option value="COD-Cash On Delivery" {{$getconsignments->payment_type == 'COD-Cash On Delivery' ? 'selected' : ''}}>
-                        COD-Cash On Delivery</option> -->
+                        <option value="TBB With COD" {{$getconsignments->payment_type == 'TBB With COD' ? 'selected' : ''}}>TBB With COD</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
                     </option>
                     <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>Paid</option>
@@ -352,7 +351,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </label>
                 <input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight"
                     value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}" {{$disable}}>
-            </div>
+            </div> 
+            <?php if($getconsignments->payment_type == 'TBB With COD'){?>
+                            <div class="form-group col-md-2">
+                            <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+                            </label>
+                            <Input type="number" class="form-control" name="cod" value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
+                        </div>
+                       <?php } ?>
             <div class="form-group d-flex col-md-3">
 
                 <div class="d-flex align-items-center px-2 pt-2">
