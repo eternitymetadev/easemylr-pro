@@ -89,7 +89,7 @@
                                         Eternity
                                     </label>
                                 </div>
-                                <div class="checkbox radio">
+                                <div class="checkbox radio"> 
                                     <label class="check-label">
                                         <input type="radio" name="app_use" value='Shadow'>
                                         <span class="checkmark"></span>

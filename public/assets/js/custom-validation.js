@@ -1296,6 +1296,8 @@ jQuery(document).ready(function () {
         jQuery('.is_hub_no').attr("checked", false);
         jQuery(".radio_vehicleno_yes").attr("checked", false);
         jQuery(".radio_vehicleno_no").attr("checked", false);
+        jQuery(".app_use_eternity").attr("checked", false);
+        jQuery(".app_use_shadow").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1328,6 +1330,14 @@ jQuery(document).ready(function () {
                 } else {
                     jQuery('.is_hub_yes').attr("checked", false);
                     jQuery('.is_hub_no').attr("checked", true);
+                }
+
+                if (response.newcata.app_use == 'Eternity') {
+                    jQuery('.app_use_eternity').attr("checked", true); 
+                    jQuery('.app_use_shadow').attr("checked", false);
+                } else {
+                    jQuery('.app_use_eternity').attr("checked", false);
+                    jQuery('.app_use_shadow').attr("checked", true);
                 }
 
             },

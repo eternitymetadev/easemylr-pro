@@ -226,7 +226,7 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)
+            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
                 ->get();
             // echo'<pre>'; print_r($consignments); die;
          

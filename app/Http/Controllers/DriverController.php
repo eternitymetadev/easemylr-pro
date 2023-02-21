@@ -175,7 +175,8 @@ class DriverController extends Controller
         $getdriver = Driver::where('id',$id)->with(['BankDetail'=> function($query){
             $query->where('status',1);
         }])->first();
-        return view('drivers.update-driver')->with(['prefix'=>$this->prefix,'getdriver'=>$getdriver]);
+        $branchs = Location::select('id', 'name')->get();
+        return view('drivers.update-driver')->with(['prefix'=>$this->prefix,'getdriver'=>$getdriver,'branchs' => $branchs]);
     }
 
     /**
@@ -187,6 +188,7 @@ class DriverController extends Controller
      */
     public function updateDriver(Request $request)
     {
+        
         try { 
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
@@ -205,6 +207,7 @@ class DriverController extends Controller
                 $response['errors']     = $errors;
                 return response()->json($response);
             }
+            $branch = implode(',', $request->branch_id);
 
             $driversave['name']           = $request->name;
             $driversave['phone']          = $request->phone;
@@ -213,6 +216,7 @@ class DriverController extends Controller
             $driversave['fleet_id']       = $request->fleet_id;
             $driversave['login_id']       = $request->login_id;
             $driversave['driver_password']= $request->password;
+            $driversave['branch_id']      = $branch;
             $driversave['password']       = bcrypt($request->password);
 
             // upload driver_license image 
