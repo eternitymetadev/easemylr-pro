@@ -2078,7 +2078,7 @@ class OrderController extends Controller
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
             $consignmentsave['consignment_no'] = $consignmentno;
-            $consignmentsave['consignment_date'] = $request->consignment_date;
+            // $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['freight'] = $request->freight;
             $consignmentsave['description'] = $request->description;
