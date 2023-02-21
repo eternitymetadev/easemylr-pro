@@ -822,44 +822,44 @@ class FtlPtlController extends Controller
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-            $get_branch_detail = Location::where('id', $authuser->branch_id)->first();
+            // $get_branch_detail = Location::where('id', $authuser->branch_id)->first();
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
             if(!empty($get_driver_details->branch_id)){
                $driver_branch = explode(',', $get_driver_details->branch_id);
-               if (in_array("Glenn", $people))
+               if (in_array($authuser->branch_id, $driver_branch))
                 {
-                echo "Match found";
-                }
-
-                if(!empty($request->driver_id)){
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 }
-            }else{
-                $vn = $consignmentsave['vehicle_id'];
-                $lid = $saveconsignment->id;
-                $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
-                    ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-                    ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-                    ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
-                    ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-                    ->where('consignment_notes.id', $lid)
-                    ->get();
-                $simplyfy = json_decode(json_encode($lrdata), true);
-                //echo "<pre>";print_r($simplyfy);die;
-                //Send Data to API
-    
-                if (($request->edd) >= $request->consignment_date) {
-                    if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
-                        $createTask = $this->createTookanTasks($simplyfy);
-                        $json = json_decode($createTask[0], true);
-                        $job_id = $json['data']['job_id'];
-                        $tracking_link = $json['data']['tracking_link'];
-                        $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
-                    }
-                }
+                // if(!empty($request->driver_id)){
+                //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+                // }
             }
+            // }else{
+            //     $vn = $consignmentsave['vehicle_id'];
+            //     $lid = $saveconsignment->id;
+            //     $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
+            //         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            //         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            //         ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
+            //         ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+            //         ->where('consignment_notes.id', $lid)
+            //         ->get();
+            //     $simplyfy = json_decode(json_encode($lrdata), true);
+            //     //echo "<pre>";print_r($simplyfy);die;
+            //     //Send Data to API
+    
+            //     if (($request->edd) >= $request->consignment_date) {
+            //         if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
+            //             $createTask = $this->createTookanTasks($simplyfy);
+            //             $json = json_decode($createTask[0], true);
+            //             $job_id = $json['data']['job_id'];
+            //             $tracking_link = $json['data']['tracking_link'];
+            //             $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
+            //         }
+            //     }
+            // }
 
             $app_notify = $this->sendNotification($request->driver_id);
 
