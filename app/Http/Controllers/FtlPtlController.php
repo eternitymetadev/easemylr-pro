@@ -818,7 +818,7 @@ class FtlPtlController extends Controller
                 Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
                     $messges->to($user['to']);
                     $messges->subject('Your Order has been picked & is ready to Ship : LR No. '.$consignment_id.'');
-                    $messges->attachData($pdf->output(), "invoice.pdf");
+                    $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
 
                 });
             }
