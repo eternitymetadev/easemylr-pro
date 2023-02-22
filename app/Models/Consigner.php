@@ -9,7 +9,7 @@ class Consigner extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nick_name', 'legal_name', 'gst_number', 'contact_name', 'phone', 'regionalclient_id', 'branch_id', 'email', 'address_line1','address_line2','address_line3','address_line4', 'city', 'district', 'postal_code', 'state_id', 'status', 'created_at', 'updated_at'
+        'nick_name', 'legal_name', 'gst_number', 'contact_name', 'phone', 'regionalclient_id', 'branch_id', 'email', 'address_line1','address_line2','address_line3','address_line4', 'city', 'district', 'postal_code', 'state_id', 'is_email_sent','status', 'created_at', 'updated_at'
     ];
 
     public function Branch(){
