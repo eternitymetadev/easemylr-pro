@@ -341,12 +341,12 @@ span.select2.select2-container.mb-4 {
                     <option value="Paid">Paid</option> -->
                 </select>
             </div>
-            <div class="form-group col-md-2">
+            <!-- <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Purchase Freight<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="freight">
-            </div>
+            </div> -->
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Freight on Delivery

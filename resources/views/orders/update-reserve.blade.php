@@ -213,13 +213,13 @@ span.round-tab:hover {
                                 </option>
                             </select>
                         </div>
-                        <div class=" col-sm-2 ">
+                        <!-- <div class=" col-sm-2 ">
                             <p> Purchase Freight</p>
                             <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;"
                                 name="freight"
                                 value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}"
                                 disabled>
-                        </div>
+                        </div> -->
                         <div class="form-group col-md-2">
                             <label for="exampleFormControlSelect1"> 
                                 Freight on Delivery

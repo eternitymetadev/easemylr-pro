@@ -344,14 +344,14 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
                 </select>
             </div>
-            <div class="form-group col-md-2">
+            <!-- <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Freight<span class="text-danger">*</span>
                 </label>
                 <input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight"
                     value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}"
                     {{$disable}}>
-            </div>
+            </div> -->
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Freight on Delivery
