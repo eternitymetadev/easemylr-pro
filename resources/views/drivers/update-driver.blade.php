@@ -11,7 +11,7 @@
                         <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update Driver</a></li>
                     </ol>
                 </nav>
-            </div>
+            </div> 
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Update Driver</h5></div> -->
@@ -112,6 +112,18 @@
                                     <input type="text" class="form-control" name="password" value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}" placeholder="">
                                 </div> 
                             </div>
+                            <label for="exampleFormControlInput2">Select Branch</label>
+                            <select class="form-control tagging" id="select_consigner" multiple="multiple"
+                                name="branch_id[]">
+                                <option disabled>Select</option>
+                                <?php
+                                $selected = explode(",", $getdriver->branch_id);
+                                ?>
+                                @foreach($branchs as $branch)
+                           <option value="{{ $branch->id }}" {{ (in_array($branch->id, $selected)) ? 'selected' : '' }}>{{ $branch->name}}</option>
+                                 @endforeach
+                             
+                            </select>
 
                             <input type="submit" class="mt-4 mb-4 btn btn-primary">
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>

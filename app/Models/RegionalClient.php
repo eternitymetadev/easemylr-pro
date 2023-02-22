@@ -9,7 +9,7 @@ class RegionalClient extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'baseclient_id', 'location_id', 'name', 'email', 'phone', 'is_multiple_invoice', 'is_prs_pickup', 'status', 'created_at', 'updated_at'
+        'baseclient_id', 'location_id', 'name', 'email', 'phone', 'is_multiple_invoice', 'is_prs_pickup', 'status','is_email_sent', 'created_at', 'updated_at'
     ];
 
 

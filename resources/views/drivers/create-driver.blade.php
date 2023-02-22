@@ -88,8 +88,8 @@
                                 </div>
 
                             </div>
-                            <div class="form-group d-flex col-md-3">
-
+                            <!-- <div class="form-group d-flex col-md-3">
+ 
                                 <div class="d-flex align-items-center px-2 pt-2">
                                     <label class="mr-4">
                                         APP USE<span class="text-danger">*</span>
@@ -107,7 +107,7 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <h5 class="form-row mb-2">Shadow Details</h5>
                             <div class="form-row mb-0">
@@ -127,10 +127,18 @@
                                     <input type="text" class="form-control" name="login_id" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Password</label>
+                                    <label for="exampleFormControlInput2">Password</label> 
                                     <input type="password" class="form-control" name="password" placeholder="">
                                 </div>
                             </div>
+                            <label for="exampleFormControlInput2">Select Branch</label>
+                            <select class="form-control tagging" id="select_consigner" multiple="multiple"
+                                name="branch_id[]">
+                                <option disabled>Select</option>
+                                @foreach($branchs as $branch)
+                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                        @endforeach
+                            </select>
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
                         </form>

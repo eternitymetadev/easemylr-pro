@@ -1296,6 +1296,8 @@ jQuery(document).ready(function () {
         jQuery('.is_hub_no').attr("checked", false);
         jQuery(".radio_vehicleno_yes").attr("checked", false);
         jQuery(".radio_vehicleno_no").attr("checked", false);
+        jQuery(".app_use_eternity").attr("checked", false);
+        jQuery(".app_use_shadow").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1328,6 +1330,14 @@ jQuery(document).ready(function () {
                 } else {
                     jQuery('.is_hub_yes').attr("checked", false);
                     jQuery('.is_hub_no').attr("checked", true);
+                }
+
+                if (response.newcata.app_use == 'Eternity') {
+                    jQuery('.app_use_eternity').attr("checked", true); 
+                    jQuery('.app_use_shadow').attr("checked", false);
+                } else {
+                    jQuery('.app_use_eternity').attr("checked", false);
+                    jQuery('.app_use_shadow').attr("checked", true);
                 }
 
             },
@@ -1714,7 +1724,7 @@ jQuery(document).ready(function () {
                     /////pod img
                     var storage_img = base_url + "/drs/Image/" + drs_sign;
 
-                    if (value.job_id == null || value.job_id == "") {
+                    if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
                             if (data.role_id == 7) {
                                 var field = "-";
@@ -1794,7 +1804,7 @@ jQuery(document).ready(function () {
                         "</td><td>" +
                         field +
                         "</td>";
-                    if (value.job_id == "" || value.job_id == null) {
+                    if (value.lr_mode == 0) {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
