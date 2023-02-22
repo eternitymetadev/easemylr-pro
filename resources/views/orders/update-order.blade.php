@@ -283,15 +283,15 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <?php if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){ ?>
-            <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
+        <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
         <?php }else{ ?>
-            <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
+        <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
         <?php } ?>
 
         {{--Branch Location--}}
         <div class="form-row">
             <h6 class="col-12">Branch</h6>
-                        
+
             <?php $authuser = Auth::user();
             ?>
             <div class="form-group col-md-4">
@@ -299,9 +299,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Select Branch <span class="text-danger">*</span>
                 </label>
                 <select class="form-control my-select2" id="branch_id" name="branch_id" tabindex="-1" disabled>
-                <option value="">Select..</option>
+                    <option value="">Select..</option>
                     @foreach($branchs as $branch)
-                    <option value="{{ $branch->id }}" {{ $branch->id == $getconsignments->branch_id ? 'selected' : ''}}>{{ucwords($branch->name)}}</option>
+                    <option value="{{ $branch->id }}" {{ $branch->id == $getconsignments->branch_id ? 'selected' : ''}}>
+                        {{ucwords($branch->name)}}</option>
                     @endforeach
                 </select>
             </div>
@@ -331,18 +332,16 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <input type="hidden" name="regclient_id" value="{{$getconsignments->regclient_id}}" />
             </div>
 
-            <div class="form-group col-md-3">
-                <label for="exampleFormControlSelect1"> 
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type"
-                disabled>
+                <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type" disabled>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
-                        To be Billed</option>
-                        <option value="TBB With COD" {{$getconsignments->payment_type == 'TBB With COD' ? 'selected' : ''}}>TBB With COD</option>
+                        TBB</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
                     </option>
-                    <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>Paid</option>
+
                 </select>
             </div>
             <div class="form-group col-md-2">
@@ -350,15 +349,23 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     Freight<span class="text-danger">*</span>
                 </label>
                 <input type="number" class="form-control form-small" style="width: 160px; height: 43px;" name="freight"
-                    value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}" {{$disable}}>
-            </div> 
-            <?php if($getconsignments->payment_type == 'TBB With COD'){?>
-                            <div class="form-group col-md-2">
-                            <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
-                            </label>
-                            <Input type="number" class="form-control" name="cod" value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
-                        </div>
-                       <?php } ?>
+                    value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}"
+                    {{$disable}}>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">
+                    Freight on Delivery
+                </label>
+                <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery"
+                    value="{{old('freight_on_delivery',isset($getconsignments->freight_on_delivery)?$getconsignments->freight_on_delivery:'')}}"
+                    readonly>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+                </label>
+                <Input type="number" class="form-control" name="cod"
+                    value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
+            </div>
             <div class="form-group d-flex col-md-3">
 
                 <div class="d-flex align-items-center px-2 pt-2">
@@ -413,11 +420,13 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id" id="select_consignee" {{$disable}}>
+                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id"
+                    id="select_consignee" {{$disable}}>
                     <option value="">Select Consignee</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
-                    <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
+                    <option value="{{$consignee->id}}"
+                        {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
@@ -433,16 +442,18 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id" id="select_ship_to" {{$disable}}>
+                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id"
+                    id="select_ship_to" {{$disable}}>
                     <option value="">Select Ship To</option>
                     @if(count($consignees) > 0)
                     @foreach($consignees as $k => $consignee)
-                    <option value="{{$consignee->id}}" {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
+                    <option value="{{$consignee->id}}"
+                        {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
                         {{ucwords($consignee->nick_name)}}
                     </option>
                     @endforeach
                     @endif
-                </select> 
+                </select>
                 <?php if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
                 <?php } ?>
@@ -502,7 +513,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                     <table class="mainTr" id="1">
                                         <tbody>
                                             <tr>
-                                            <input type="hidden" name="data[{{$i}}][item_id]" value="{{old('id',isset($item->id)?$item->id:'')}}">
+                                                <input type="hidden" name="data[{{$i}}][item_id]"
+                                                    value="{{old('id',isset($item->id)?$item->id:'')}}">
                                                 <td>
                                                     <div class="form-group form-group-sm">
                                                         <label>Order ID</label>
@@ -562,9 +574,9 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                              foreach($getconsignments->ConsignmentItem->ConsignmentSubItems as $subitem){
                                                                 ?>
                                                             <tr>
-                                                            <input type="hidden" class="form-control subitem_id"
-                                                                            name="data[{{$i}}][item_data][{{$j}}][subitem_id]"
-                                                                            value="{{$subitem->id}}">
+                                                                <input type="hidden" class="form-control subitem_id"
+                                                                    name="data[{{$i}}][item_data][{{$j}}][subitem_id]"
+                                                                    value="{{$subitem->id}}">
                                                                 <td width="200px">
                                                                     <div class="form-group form-group-sm">
                                                                         <label>Item</label>
@@ -719,7 +731,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                         foreach($getconsignments->ConsignmentItems as $item){ 
                                             ?>
                                         <tr>
-                                            <input type="hidden" name="data[{{$i}}][item_id]" value="{{old('id',isset($item->id)?$item->id:'')}}">
+                                            <input type="hidden" name="data[{{$i}}][item_id]"
+                                                value="{{old('id',isset($item->id)?$item->id:'')}}">
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
                                                     value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}"
@@ -766,7 +779,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                     {{$disable}}>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-default btn-rounded insert-more"> + </button>
+                                                <button type="button" class="btn btn-default btn-rounded insert-more"> +
+                                                </button>
                                             </td>
                                         </tr>
 

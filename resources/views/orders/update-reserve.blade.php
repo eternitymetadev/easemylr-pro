@@ -206,30 +206,33 @@ span.round-tab:hover {
                             <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type"
                                 disabled>
                                 <option value="To be Billed"
-                                    {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>To be Billed
+                                    {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>TBB
                                 </option>
-                                <option value="TBB With COD" {{$getconsignments->payment_type == 'TBB With COD' ? 'selected' : ''}}>TBB With COD</option>
                                 <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>
                                     To Pay
-                                </option>
-                                <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>Paid
                                 </option>
                             </select>
                         </div>
                         <div class=" col-sm-2 ">
-                            <p>Freight</p>
+                            <p> Purchase Freight</p>
                             <Input type="number" class="form-control form-small" style="width: 160px; height: 43px;"
                                 name="freight"
                                 value="{{old('freight',isset($getconsignments->freight)?$getconsignments->freight:'')}}"
                                 disabled>
                         </div>
-                        <?php if($getconsignments->payment_type == 'TBB With COD'){?>
-                            <div class="form-group col-md-2">
+                        <div class="form-group col-md-2">
+                            <label for="exampleFormControlSelect1"> 
+                                Freight on Delivery
+                            </label>
+                            <Input type="number" class="form-control" id="freight_on_delivery"
+                                name="freight_on_delivery" value="{{old('freight_on_delivery',isset($getconsignments->freight_on_delivery)?$getconsignments->freight_on_delivery:'')}}" readonly>
+                        </div>
+                        <div class="form-group col-md-2">
                             <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                             </label>
-                            <Input type="number" class="form-control" name="cod" value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
+                            <Input type="number" class="form-control" name="cod"
+                                value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
                         </div>
-                       <?php } ?>
                     </div>
                 </div>
                 <!-- </div> -->

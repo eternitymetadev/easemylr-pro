@@ -1164,66 +1164,133 @@ class ConsignmentController extends Controller
                                 </td>
                             </tr>
                         </table>';
-                        if($data['payment_type'] == 'TBB With COD'){ 
-                         $html .=  ' <div class="loc">
-                            <table>
-                                <tr>
-                                    <td valign="middle" style="position:relative; width: 200px">
-                                    <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
-                                        <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
-                                        </h2>
-                                    </td>
-                                    <td class="width_set">
-                                        <table border="1px solid" class="table3">
-                                            <tr>
-                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>';
-                        }else{
-                         $html .= '   <div class="loc">
-                         <table>
-                             <tr>
-                                 <td class="width_set">
-                                     <div style="margin-left: 20px">
-                                 <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                     </div>
-                                 </td>
-                                 <td class="width_set">
-                                     <table border="1px solid" class="table3">
-                                         <tr>
-                                             <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                             <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                         </tr>
-                                         <tr>
-                                             <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                             <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                         </tr>
-                                         <tr>
-                                             <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                             <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                         </tr>
-                                     </table>
-                                 </td>
-                             </tr>
-                         </table>
-                     </div>';
+                        if($data['payment_type'] == 'To be Billed'){ 
+                            if(!empty($data['cod'])){
+                                $html .=  ' <div class="loc">
+                                <table>
+                                    <tr>
+                                        <td valign="middle" style="position:relative; width: 200px">
+                                        <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                            <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
+                                            </h2>
+                                        </td>
+                                        <td class="width_set">
+                                            <table border="1px solid" class="table3">
+                                                <tr>
+                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>';
+                            }else{
+                                $html .= '   <div class="loc">
+                                <table>
+                                    <tr>
+                                        <td class="width_set">
+                                            <div style="margin-left: 20px">
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                            </div>
+                                        </td>
+                                        <td class="width_set">
+                                            <table border="1px solid" class="table3">
+                                                <tr>
+                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>';
+                            }
                         }
-                      
+
+                            if($data['payment_type'] == 'To Pay'){
+                                if(!empty($data['freight_on_delivery']) || !empty($data['cod'])){
+                                    $total_cod_sum = @$data['freight_on_delivery'] + @$data['cod'];
+
+                                    $html .=  ' <div class="loc">
+                                    <table>
+                                        <tr>
+                                            <td valign="middle" style="position:relative; width: 200px">
+                                            <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                                <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                                <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.$total_cod_sum.'
+                                                </h2>
+                                            </td>
+                                            <td class="width_set">
+                                                <table border="1px solid" class="table3">
+                                                    <tr>
+                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>';
+                                }else{
+                                    $html .= '   <div class="loc">
+                                    <table>
+                                        <tr>
+                                            <td class="width_set">
+                                                <div style="margin-left: 20px">
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                </div>
+                                            </td>
+                                            <td class="width_set">
+                                                <table border="1px solid" class="table3">
+                                                    <tr>
+                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>';
+                                }
+
+                            }
+
 
                        $html .= '<div class="container">
                                 <div class="row">

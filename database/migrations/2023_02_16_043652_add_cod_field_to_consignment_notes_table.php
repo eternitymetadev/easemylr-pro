@@ -14,7 +14,8 @@ class AddCodFieldToConsignmentNotesTable extends Migration
     public function up()
     {
         Schema::table('consignment_notes', function (Blueprint $table) {
-            $table->string('cod')->after('freight')->nullable();
+            $table->string('freight_on_delivery')->after('freight')->nullable();
+            $table->string('cod')->after('freight_on_delivery')->nullable();
         });
     }
 

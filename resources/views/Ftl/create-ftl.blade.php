@@ -299,22 +299,26 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
-                    id="paymentType">
-                    <option value="To be Billed" selected="selected">To be Billed</option>
-                    <option value="TBB With COD">TBB With COD</option>
+                <select class="form-control my-select2" name="payment_type"
+                    id="paymentType" onchange="togglePaymentAction()">
+                    <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
-                    <option value="Paid">Paid</option>
                 </select>
             </div>
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
-                    Freight<span class="text-danger">*</span>
+                    Purchase Freight<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="freight"> 
             </div>
-            <div class="form-group col-md-2" id="codFreightBlock" style="display: none">
-                <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">
+                    Freight on Delivery
+                </label>
+                <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly> 
+            </div>
+            <div class="form-group col-md-2" id="codFreightBlock">
+                <label for="exampleFormControlSelect1">Cash on delivery
                 </label>
                 <Input type="number" class="form-control" name="cod">
             </div>
@@ -1006,15 +1010,11 @@ $("#branch_id").change(function(e) {
 
 function togglePaymentAction() {
 
-    if ($('#paymentType').val() == 'TBB With COD') {
-        $('#codFreightBlock').show();
-        $('#codFreightBlock').attr('required', true);
-
-        console.log('cod shown');
+    if ($('#paymentType').val() == 'To Pay') {
+        $('#freight_on_delivery').attr('readonly', false);
     } else {
-        $('#codFreightBlock').hide();
-        $('#codFreightBlock').attr('required', false);
-        console.log('cod hide');
+        $('#freight_on_delivery').attr('readonly', true);
+        $('#freight_on_delivery').val('');
     }
 
 

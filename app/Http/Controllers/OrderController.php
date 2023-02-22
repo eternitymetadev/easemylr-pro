@@ -2025,7 +2025,7 @@ class OrderController extends Controller
             $cc = explode(',', $authuser->branch_id);
 
             if (empty($request->vehicle_id)) {
-                $status = '2';
+                $status = '2'; 
             } else {
                 $status = '1';
             }
@@ -2043,6 +2043,7 @@ class OrderController extends Controller
             // $consignmentsave['total_quantity'] = $request->total_quantity;
             // $consignmentsave['total_weight'] = $request->total_weight;
             // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+            $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
             $consignmentsave['freight'] = $request->freight;
             $consignmentsave['cod'] = $request->cod;
             $consignmentsave['transporter_name'] = $request->transporter_name;
@@ -2310,6 +2311,7 @@ class OrderController extends Controller
             // $consignmentsave['total_weight'] = $request->total_weight;
             // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
             $consignmentsave['freight'] = $request->freight;
+            $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
             $consignmentsave['cod'] = $request->cod;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
@@ -2702,7 +2704,7 @@ class OrderController extends Controller
             $consignmentsave['consignment_no'] = $consignmentno;
             // $consignmentsave['consignment_date'] = $request->consignment_date;
             // $consignmentsave['payment_type'] = $request->payment_type;
-            $consignmentsave['freight'] = $request->freight;
+            // $consignmentsave['freight'] = $request->freight;
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;

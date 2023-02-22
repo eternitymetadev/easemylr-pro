@@ -335,19 +335,24 @@ span.select2.select2-container.mb-4 {
                 </label>
                 <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
                     id="paymentType">
-                    <option value="To be Billed" selected="selected">To be Billed</option>
-                    <option value="TBB With COD">TBB With COD</option>
+                    <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
-                    <option value="Paid">Paid</option>
+                    <!-- <option value="Paid">Paid</option> -->
                 </select>
             </div>
-            <div class="form-group col-md-1">
+            <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
-                    Freight<span class="text-danger">*</span>
+                   Purchase Freight<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="freight">
             </div>
-            <div class="form-group col-md-2" id="codFreightBlock" style="display: none">
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">
+                    Freight on Delivery
+                </label>
+                <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly> 
+            </div>
+            <div class="form-group col-md-2" id="codFreightBlock">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="cod">
@@ -1039,19 +1044,29 @@ $("#branch_id").change(function(e) {
 });
 function togglePaymentAction() {
 
-if ($('#paymentType').val() == 'TBB With COD') {
-    $('#codFreightBlock').show();
-    $('#codFreightBlock').attr('required', true);
-
-    console.log('cod shown');
+if ($('#paymentType').val() == 'To Pay') {
+    $('#freight_on_delivery').attr('readonly', false);
 } else {
-    $('#codFreightBlock').hide();
-    $('#codFreightBlock').attr('required', false);
-    console.log('cod hide');
+    $('#freight_on_delivery').attr('readonly', true);
 }
 
 
 }
+// function togglePaymentAction() {
+
+// if ($('#paymentType').val() == 'TBB With COD') {
+//     $('#codFreightBlock').show();
+//     $('#codFreightBlock').attr('required', true);
+
+//     console.log('cod shown');
+// } else {
+//     $('#codFreightBlock').hide();
+//     $('#codFreightBlock').attr('required', false);
+//     console.log('cod hide');
+// }
+
+
+// }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">
 </script>
