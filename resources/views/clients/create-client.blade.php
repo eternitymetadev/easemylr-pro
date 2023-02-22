@@ -43,16 +43,23 @@
                             <table id="myTable">
                                 <tbody>
                                     <tr>
-                                        <th><label for="exampleFormControlInput2">Regional Client Name<span
+                                    <th><label for="exampleFormControlInput2">Regional Client Name<span
+                                                    class="text-danger">*</span></label></th>
+                                                    <th><label for="exampleFormControlInput2">Email<span
                                                     class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Location<span
                                                     class="text-danger">*</span></label></th>
                                         <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
                                         <th><label for="exampleFormControlInput2">Pickup not Rquired </label></th>
+                                        <th><label for="exampleFormControlInput2">Email Sent </label></th>
                                     </tr>
                                     <tr class="rowcls">
                                         <td>
                                             <input type="text" class="form-control name" name="data[1][name]"
+                                                placeholder="">
+                                        </td>
+                                        <td>
+                                            <input type="email" class="form-control name" name="data[1][email]"
                                                 placeholder="">
                                         </td>
                                         <td>
@@ -97,6 +104,23 @@
                                             </div>
                                         </td>
                                         <td>
+                                            <div class="check-box d-flex">
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">Yes
+                                                        <input type="radio" value='1' name="data[1][is_email_sent]">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">No
+                                                        <input type="radio" name="data[1][is_email_sent]" value='0'
+                                                            checked>
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
                                             <button type="button" class="btn btn-primary" id="addRow"
                                                 onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
                                         </td>
@@ -128,6 +152,9 @@ function addrow() {
     rows += '<input type="text" class="form-control name" name="data[' + i + '][name]" placeholder="">';
     rows += '</td>';
     rows += '<td>';
+    rows += '<input type="email" class="form-control name" name="data[' + i + '][email]" placeholder="">';
+    rows += '</td>';
+    rows += '<td>';
     rows += '<select class="form-control location_id" name="data[' + i + '][location_id]">';
     rows += '<option value="">Select</option>';
     <?php if (count($locations) > 0) {
@@ -147,6 +174,9 @@ function addrow() {
     rows += '<td><div class="check-box d-flex"><div class="checkbox radio"><label class="check-label">Yes<input type="radio"  value="1" name="data[' + i + '][is_prs_pickup]"><span class="checkmark"></span></label></div>';
     rows += '<div class="checkbox radio"><label class="check-label">No<input type="radio" name="data[' + i +
         '][is_prs_pickup]" value="0" checked><span class="checkmark"></span></label></div></div></td>';
+        rows += '<td><div class="check-box d-flex"><div class="checkbox radio"><label class="check-label">Yes<input type="radio"  value="1" name="data[' + i + '][is_email_sent]"><span class="checkmark"></span></label></div>';
+    rows += '<div class="checkbox radio"><label class="check-label">No<input type="radio" name="data[' + i +
+        '][is_email_sent]" value="0" checked><span class="checkmark"></span></label></div></div></td>';
     rows += '<td>';
     rows += '<button type="button" class="btn btn-danger removeRow"><i class="fa fa-minus-circle"></i></button>';
     rows += '</td>';

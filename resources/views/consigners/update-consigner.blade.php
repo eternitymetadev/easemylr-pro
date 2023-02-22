@@ -155,6 +155,17 @@
                                     <input type="text" class="form-control" name="address_line4" value="{{old('address_line3',isset($getconsigner->address_line4)?$getconsigner->address_line4:'')}}" placeholder="">
                                 </div>
                             </div>
+                            <label for="exampleFormControlSelect1">Email Sent</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="is_email_sent"
+                                    value="1" {{ ($getconsigner->is_email_sent=="1")? "checked" : "" }}>
+                                <label class="form-check-label" for="inlineRadio1">Yes</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="is_email_sent" id="inlineRadio2"
+                                    value="0" {{ ($getconsigner->is_email_sent=="0")? "checked" : "" }}>
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
                             <input type="submit" class="mt-4 mb-4 btn btn-primary">
                             <a class="btn btn-primary" href="{{url($prefix.'/consigners') }}"> Back</a>
                         </form>
