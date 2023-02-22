@@ -137,6 +137,8 @@ class FtlPtlController extends Controller
             // $consignmentsave['total_weight'] = $request->total_weight;
             // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
             $consignmentsave['freight'] = $request->freight;
+            $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
+            $consignmentsave['cod'] = $request->cod;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;

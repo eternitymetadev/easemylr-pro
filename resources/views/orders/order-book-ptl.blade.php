@@ -273,8 +273,8 @@ span.select2.select2-container.mb-4 {
     </div>
 
 
-    <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}"
-        id="createconsignment" style="margin: auto;">
+    <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="createconsignment"
+        style="margin: auto;">
         {{--Branch Location--}}
         <!-- <div class="form-row">
             <h6 class="col-12">Branch</h6>
@@ -309,7 +309,7 @@ span.select2.select2-container.mb-4 {
                 <?php } ?>
 
         </div> -->
-      
+
         <input type="hidden" name="lr_type" value="1" />
         {{--bill to info--}}
         <div class="form-row">
@@ -329,22 +329,34 @@ span.select2.select2-container.mb-4 {
             </div>
 
             <input type="hidden" name="invoice_check" id="inv_check" />
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="payment_type">
-                    <option value="To be Billed" selected="selected">To be Billed</option>
-                    <!-- <option value="COD-Cash On Delivery">COD-Cash On Delivery</option> -->
+                <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
+                    id="paymentType">
+                    <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
-                    <option value="Paid">Paid</option>
+                    <!-- <option value="To Pay">To Pay</option>
+                    <option value="Paid">Paid</option> -->
                 </select>
             </div>
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
-                    Freight<span class="text-danger">*</span>
+                    Purchase Freight<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="freight">
+            </div>
+            <div class="form-group col-md-2">
+                <label for="exampleFormControlSelect1">
+                    Freight on Delivery
+                </label>
+                <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly>
+            </div>
+            <div class="form-group col-md-2" id="codFreightBlock">
+                <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+                </label>
+                <Input type="number" class="form-control" name="cod">
             </div>
             <div class="form-group d-flex col-md-3">
 
@@ -1031,6 +1043,15 @@ $("#branch_id").change(function(e) {
         },
     });
 });
+
+function togglePaymentAction() {
+    if ($('#paymentType').val() == 'To Pay') {
+        $('#freight_on_delivery').attr('readonly', false);
+    } else {
+        $('#freight_on_delivery').attr('readonly', true);
+        $('#freight_on_delivery').val('');
+    }
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">
 </script>

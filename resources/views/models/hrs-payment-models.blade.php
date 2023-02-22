@@ -268,7 +268,7 @@ if ($countbranch > 1) {?>
                     <input type="hidden" id="ifsc_code" name="ifsc" value="" />
                     <input type="hidden" id="bank_name" name="bank_name" value="" />
                     <input type="hidden" id="email" name="email" value="" />
-                    <input type="hidden" id="pan" name="pan" value="" />
+                    <input type="hidden" id="pan" name="pan" value="" /> 
                     <input type="hidden" id="total_clam_amt" name="claimed_amount" value="" />
                     <input type="hidden" id="tds_deduct_balance" name="amt_deducted" value="" />
                     <input type="hidden" id="final_payable_amount" name="final_payable_amount" value="" />
