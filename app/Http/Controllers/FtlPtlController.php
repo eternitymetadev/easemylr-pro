@@ -149,13 +149,20 @@ class FtlPtlController extends Controller
             $consignmentsave['status'] = $status;
             $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
-                $consignmentsave['delivery_status'] = "Assigned";
+                $consignmentsave['delivery_status'] = "Started";
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
+            $regional_email=[];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();
-            $regional_email = $regional_id->email;
+            if($regional_id->is_email_sent == 1){
+                $regional_email[] = $regional_id->email;
+            }
+            $consigner_id = Consigner::where('id', $request->consigner_id)->first();
+            if($consigner_id->is_email_sent == 1){
+                $regional_email[] = $consigner_id->email;
+            }
 
             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                 $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -470,7 +477,8 @@ class FtlPtlController extends Controller
             </td>';
                 }
 
-                $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+                $logo = public_path('assets/img/logo_2.png');
+                $waterMark = public_path('assets/img/eternity-forwarders-logo-square.png');
                 if (!empty($data['consigner_detail']['get_zone']['state'])) {
                     $cnr_state = $data['consigner_detail']['get_zone']['state'];
                 } else {
@@ -478,319 +486,339 @@ class FtlPtlController extends Controller
                 }
 
                 $html = '<!DOCTYPE html>
-            <html lang="en">
-                <head>
-                    <!-- Required meta tags -->
-                    <meta charset="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-                    <!-- Bootstdap CSS -->
-
-                    <style>
-                        * {
-                            box-sizing: border-box;
-                        }
-                        label {
-                            padding: 12px 12px 12px 0;
-                            display: inline-block;
-                        }
-
-                        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
-                        @media screen and (max-width: 600px) {
-                        }
-                        img {
-                            width: 120px;
-                            height: 60px;
-                        }
-                        .a {
-                            width: 290px;
-                            font-size: 11px;
-                        }
-                        td.b {
-                            width: 238px;
-                            margin: auto;
-                        }
-                        .width_set{
-                            width:200px;
-                        }
-                        img.imgu {
-                            margin-left: 58px;
-                            height:100px;
-                        }
-                        .loc {
-                                margin-bottom: -8px;
-                                margin-top: 27px;
+                <html lang="en">
+                    <head>
+                        <!-- Required meta tags -->
+                        <meta charset="utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+                        <!-- Bootstdap CSS -->
+    
+                        <style>
+                            * {
+                                box-sizing: border-box;
                             }
-                            .table3 {
-                border-collapse: collapse;
-                width: 378px;
-                height: 84px;
-                margin-left: 71px;
-            }
-                  .footer {
-               position: fixed;
-               left: 0;
-               bottom: 0;
-
-
-            }
-            .vl {
-                border-left: solid;
-                height: 18px;
-                margin-left: 3px;
-            }
-            .ff{
-              margin-top: 26px;
-            }
-            .relative {
-              position: relative;
-              left: 30px;
-            }
-            .mini-table1{
-
-                border: 1px solid;
-                border-radius: 13px;
-                width: 429px;
-                height: 72px;
-
-            }
-            .mini-th{
-              width:90px;
-              font-size: 12px;
-            }
-            .ee{
-                margin:auto;
-                margin-top:12px;
-            }
-            .nn{
-              border-bottom:1px solid;
-            }
-            .mm{
-            border-right:1px solid;
-            padding:4px;
-            }
-            html { -webkit-print-color-adjust: exact; }
-            .td_style{
-                text-align: left;
-                padding: 8px;
-                color: #627429;
-            }
-                    </style>
-                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
-                </head>
-                <body style="font-family:Arial Helvetica,sans-serif;">
-                    <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
-                        <table style="height: 70px;">
-                            <tr>
-                            <td class="a" style="font-size: 10px;">
-                            ' . $branch_address . '
-                            </td>
-
-                                <td class="a">
-                                <b>	Email & Phone</b><br />
-                                <b>	' . @$locations->email . '</b><br />
-                                ' . @$locations->phone . '<br />
-
-                                </td>
-                            </tr>
-
-                        </table>
-                        <hr />
-                        <table>
-                            <tr>
-                                <td class="b">
-                        <div class="ff" >
-                                      <img src="' . $fullpath . '" alt="" class="imgu" />
-                        </div>
-                                </td>
-                                <td>
-                                    <div style="margin-top: -15px; text-align: center">
-                                        <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
-                                        <P> Original </P>
-                                    </div>
-                       <div class="mini-table1" style="background:#C0C0C0;">
-                                    <table style=" border-collapse: collapse;" class="ee">
-                                        <tr>
-                                            <th class="mini-th mm nn">LR Number</th>
-                                            <th class="mini-th mm nn">LR Date</th>
-                                            <th class="mini-th mm nn">Dispatch</th>
-                                            <th class="mini-th nn">Delivery</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="mini-th mm" >' . $data['id'] . '</th>
-                                            <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
-                                            <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
-
-                                        </tr>
-                                    </table>
-                        </div>
-                                </td>
-                            </tr>
-                        </table>
-                        <div class="loc">
-                            <table>
+                            label {
+                                padding: 12px 12px 12px 0;
+                                display: inline-block;
+                            }
+    
+    
+                            /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+                            @media screen and (max-width: 600px) {
+                            }
+                            img {
+                                width: 120px;
+                                height: 60px;
+                            }
+                            .a {
+                                width: 290px;
+                                font-size: 11px;
+                            }
+                            td.b {
+                                width: 238px;
+                                margin: auto;
+                            }
+                            .width_set{
+                                width:200px;
+                            }
+                            img.imgu {
+                                margin-left: 58px;
+                                height:100px;
+                            }
+                            .loc {
+                                    margin-bottom: -8px;
+                                    margin-top: 27px;
+                                }
+                                .table3 {
+                    border-collapse: collapse;
+                    width: 378px;
+                    height: 84px;
+                    margin-left: 71px;
+                }
+                      .footer {
+                   position: fixed;
+                   left: 0;
+                   bottom: 50px;
+                   padding: 10px 2rem;
+    
+                }
+                .vl {
+                    border-left: solid;
+                    height: 18px;
+                    margin-left: 3px;
+                }
+                .ff{
+                  margin-top: 26px;
+                }
+                .relative {
+                  position: relative;
+                  left: 30px;
+                }
+                .mini-table1{
+    
+                    border: 1px solid;
+                    border-radius: 13px;
+                    width: 429px;
+                    height: 72px;
+    
+                }
+                .mini-th{
+                  width:90px;
+                  font-size: 12px;
+                }
+                .ee{
+                    margin:auto;
+                    margin-top:12px;
+                }
+                .nn{
+                  border-bottom:1px solid;
+                }
+                .mm{
+                border-right:1px solid;
+                padding:4px;
+                }
+                html { -webkit-print-color-adjust: exact; }
+                .td_style{
+                    text-align: left;
+                    padding: 8px;
+                    color: #627429;
+                }
+                @page {
+                  margin-bottom: 0;
+                  margin-right: 0;
+                  margin-left: 0;
+                }
+                .businessInfo{
+                    background: #F9B808;
+                    font-size: 14px;
+                    line-height: 20px;
+                    padding: 6px;
+                    text-align: center;
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    height: 50px;
+                    width: 100%;
+                    margin-inline: 2rem;
+                }
+    
+    
+                        </style>
+                    <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
+                    </head>
+                    <body style="font-family:Arial Helvetica,sans-serif;">
+                    <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
+                        <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px; padding: 0 2rem ">
+                            <table style="height: 70px; margin-inline: 1rem;">
                                 <tr>
-                                    <td class="width_set">
-                                        <div style="margin-left: 20px">
-                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                <td class="a" style="font-size: 10px;">
+                                ' . $branch_address . '
+                                </td>
+    
+                                    <td class="a">
+                                    <b>	Email & Phone</b><br />
+                                    <b>	' . @$locations->email . '</b><br />
+                                    ' . @$locations->phone . '<br />
+    
+                                    </td>
+                                     <td>
+                                     <img class="logoImg" src="' . $logo . '" style="width: 100%;"/>
+                                     </td>
+                                </tr>
+    
+                            </table>
+                            <hr />
+                            <table style="margin-inline: 1rem;">
+                                <tr>
+                                    <td class="b">
+                                        <div class="ff" >
+                                            <img src="' . $fullpath . '" alt="" class="imgu" />
                                         </div>
                                     </td>
-                                    <td class="width_set">
-                                        <table border="1px solid" class="table3">
+                                    <td>
+                                        <div style="margin-top: -15px; text-align: center">
+                                            <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
+                                            <P> Original </P>
+                                        </div>
+                                    <div class="mini-table1" style="background:#C0C0C0;">
+                                        <table style=" border-collapse: collapse;" class="ee">
                                             <tr>
-                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                <th class="mini-th mm nn">LR Number</th>
+                                                <th class="mini-th mm nn">LR Date</th>
+                                                <th class="mini-th mm nn">Dispatch</th>
+                                                <th class="mini-th nn">Delivery</th>
                                             </tr>
                                             <tr>
-                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                            </tr>
-                                            <tr>
-                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                <th class="mini-th mm" >' . $data['id'] . '</th>
+                                                <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
+                                                <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                                <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
+    
                                             </tr>
                                         </table>
+                            </div>
                                     </td>
                                 </tr>
                             </table>
-                        </div>
-
-                        <div class="container">
-                                <div class="row">
-                                    <div class="col-sm-12 ">
-                                        <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
-                                    </div>
-                                </div>
-                            <table border="1" style=" border-collapse:collapse; width: 690px; ">
-                                <tr>
-                                    <td width="30%" style="vertical-align:top; >
-                                    ' . $cnradd_heading . '
-                                    </td>
-                                    <td width="30%" style="vertical-align:top;>
-                                    ' . $cneadd_heading . '
-                                    </td>
-                                    ' . $shipto_address . '
-                                </tr>
-                            </table>
-                      </div>
-                                <div>
-                                      <div class="row">
-                                                           <div class="col-sm-12 ">
-                                                <h4 style="margin-left:19px;"><b>Order Information</b></h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
-
-                                                    <tr>
-                                                        <th>Number of invoice</th>
-                                                        <th>Item Description</th>
-                                                        <th>Mode of packing</th>
-                                                        <th>Total Quantity</th>
-                                                        <th>Total Net Weight</th>
-                                                        <th>Total Gross Weight</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>' . $no_invoive . '</th>
-                                                        <th>' . $data['description'] . '</th>
-                                                        <th>' . $data['packing_type'] . '</th>
-                                                        <th>' . $data['total_quantity'] . '</th>
-                                                        <th>' . $data['total_weight'] . ' Kgs.</th>
-                                                        <th>' . $data['total_gross_weight'] . ' Kgs.</th>
-
-
-                                                    </tr>
-                                                </table>
-                                </div>
-
-                                <div class="inputfiled">
-                                <table style="width: 690px;
-                                font-size: 10px; background-color:#e0dddc40;">
-                              <tr>
-                                  <th style="width:70px ">Order ID</th>
-                                  <th style="width: 70px">Inv No</th>
-                                  <th style="width: 70px">Inv Date</th>
-                                  <th style="width:70px " >Inv Amount</th>
-                                  <th style="width:70px ">E-way No</th>
-                                  <th style="width: 70px">E-Way Date</th>
-                                  <th style="width: 60px">Quantity</th>
-                                  <th style="width:70px ">Net Weight</th>
-                                  <th style="width:70px ">Gross Weight</th>
-
-                              </tr>
-                            </table>
-                            <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >';
-                $counter = 0;
-                foreach ($data['consignment_items'] as $k => $dataitem) {
-                    $counter = $counter + 1;
-
-                    $html .= ' <tr>
-                                <td style="width:70px ">' . $dataitem['order_id'] . '</td>
-                                <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
-                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
-                                <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
-                                <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
-                                <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
-                                <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
-                                <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
-                                <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
-
-                                </tr>';
-                }
-                $html .= '      </table>
-                                <div>
-                                    <table style="margin-top:0px;">
+    
+                            <div class="loc">
+                                <table style="margin-inline: 1rem;">
                                     <tr>
-                                    <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
-                                    <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
-                                </tr>
-                                    </table>
-
-                                </div>
+                                        <td class="width_set">
+                                            <div style="margin-left: 20px">
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+    
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                            </div>
+                                        </td>
+                                        <td class="width_set">
+                                            <table border="1px solid" class="table3">
+                                                <tr>
+                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+    
+                            <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-12 ">
+                                            <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
+                                        </div>
+                                    </div>
+                                <table border="1" style=" border-collapse:collapse; width: 690px; ">
+                                    <tr>
+                                        <td width="30%" style="vertical-align:top; >
+                                        ' . $cnradd_heading . '
+                                        </td>
+                                        <td width="30%" style="vertical-align:top;>
+                                        ' . $cneadd_heading . '
+                                        </td>
+                                        ' . $shipto_address . '
+                                    </tr>
+                                </table>
                           </div>
-
-                  <!-- <div class="footer">
-                                  <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
-                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
+                                <div class="row">
+                                <div class="col-sm-12 ">
+                                <h4 style="margin-left:19px;"><strong>Order Information</strong></h4>
+                                </div>
+                                </div>
+                                <table border="1" style=" border-collapse:collapse; width: 690px;height: 48px; font-size: 10px; background-color:#e0dddc40;">
+                                    <tr>
+                                        <th>Number of invoice</th>
+                                        <th>Item Description</th>
+                                        <th>Mode of packing</th>
+                                        <th>Total Quantity</th>
+                                        <th>Total Net Weight</th>
+                                        <th>Total Gross Weight</th>
+                                    </tr>
+                                    <tr>
+                                        <th>' . $no_invoive . '</th>
+                                        <th>' . $data['description'] . '</th>
+                                        <th>' . $data['packing_type'] . '</th>
+                                        <th>' . $data['total_quantity'] . '</th>
+                                        <th>' . $data['total_weight'] . ' Kgs.</th>
+                                        <th>' . $data['total_gross_weight'] . ' Kgs.</th>
+                                    </tr>
+                                </table>
+    
+                            <div class="inputfiled">
+                                    <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >
+                                         <tr>
+                                              <th style="width:70px ">Order ID</th>
+                                              <th style="width: 70px">Inv No</th>
+                                              <th style="width: 70px">Inv Date</th>
+                                              <th style="width:70px " >Inv Amount</th>
+                                              <th style="width:70px ">E-way No</th>
+                                              <th style="width: 70px">E-Way Date</th>
+                                              <th style="width: 60px">Quantity</th>
+                                              <th style="width:70px ">Net Weight</th>
+                                              <th style="width:70px ">Gross Weight</th>
+                                          </tr>
+                                      ';
+                                    $counter = 0;
+                                    foreach ($data['consignment_items'] as $k => $dataitem) {
+                                        $counter = $counter + 1;
+                                        $html .= ' <tr>
+                                                        <td style="width:70px ">' . $dataitem['order_id'] . '</td>
+                                                        <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
+                                                        <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
+                                                        <td style="width:70px ">' . $dataitem['invoice_amount'] . '</td>
+                                                        <td style="width: 70px">' . $dataitem['e_way_bill'] . '</td>
+                                                        <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['e_way_bill_date']) . '</td>
+                                                        <td style="width:60px "> ' . $dataitem['quantity'] . '</td>
+                                                        <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
+                                                        <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
+                                                   </tr>';
+                                    }
+                                $html .= '</table>
+                                <div>
+                                        <table style="margin-top:0px;">
+                                            <tr>
+                                                <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
+                                                <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </table>
+                            </div>
+                            </div>
+    
+                            <div class="footer">
+                                <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
+                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soilage by sun ran ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
                                 <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
                                 <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
-                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
-                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
+                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the material.</p>
+                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutions will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div> -->
-                    </div>
-                    <!-- Optional JavaScript; choose one of the two! -->
-
-                    <!-- Option 1: Bootstdap Bundle with Popper -->
-                    <script
-                        src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
-                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-                        crossorigin="anonymous"
-                    ></script>
-
-                    <!-- Option 2: Separate Popper and Bootstdap JS -->
-                    <!--
-                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-                -->
-                </body>
-            </html>
-            ';
+                           </div>
+                            <div class="businessInfo">
+                                Head Office: Plot No. B-014/03712, Prabhat, Zirakpur - 140603 | contact@eternityforwaders.com<br/>
+                                CIN: U63030PB2021PTC053388
+                           </div>
+                        </div>
+                        <!-- Optional JavaScript; choose one of the two! -->
+    
+                        <!-- Option 1: Bootstdap Bundle with Popper -->
+                        <script
+                            src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
+                            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                            crossorigin="anonymous"
+                        ></script>
+    
+                        <!-- Option 2: Separate Popper and Bootstdap JS -->
+                        <!--
+                    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+                    -->
+                    </body>
+                </html>
+                ';
 
                 $pdf = \App::make('dompdf.wrapper');
                 $pdf->loadHTML($html);
                 $pdf->setPaper('legal', 'portrait');
 
-                $data = ['Lr_No' => $consignment_id];
+                $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' =>$data['consignee_detail']['postal_code'], 'net_weigth'=> $data['total_weight'], 'cases' => $data['total_quantity'],'client' => $regional_id->name];
                 $user['to'] = $regional_email;
-                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf) {
+                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
                     $messges->to($user['to']);
-                    $messges->subject('LR Created');
-                    $messges->attachData($pdf->output(), "invoice.pdf");
+                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. '.$consignment_id.'');
+                    $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
 
                 });
             }
@@ -845,7 +873,7 @@ class FtlPtlController extends Controller
                 }
             }
 
-            $app_notify = $this->sendNotification($request->driver_id);
+            // $app_notify = $this->sendNotification($request->driver_id);
 
             $url = $this->prefix . '/consignments';
             $response['success'] = true;
@@ -1303,43 +1331,43 @@ class FtlPtlController extends Controller
     }
 
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
-    public function sendNotification($request)
-    {
+    // public function sendNotification($request)
+    // {
 
-         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
+    //      $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
 
-        $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
+    //     $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
        
 
-        $data_json = ['type' => 'Assigned', 'status' => 1];
+    //     $data_json = ['type' => 'Assigned', 'status' => 1];
 
-        $data = [
-            "registration_ids" => $firebaseToken,
-            "notification" => [
-                "title" => "LR Assigned",
-                "body" => "New LR assigned to you, please check",
-            ],
-            "data" => $data_json,
-        ];
-        $dataString = json_encode($data);
+    //     $data = [
+    //         "registration_ids" => $firebaseToken,
+    //         "notification" => [
+    //             "title" => "LR Assigned",
+    //             "body" => "New LR assigned to you, please check",
+    //         ],
+    //         "data" => $data_json,
+    //     ];
+    //     $dataString = json_encode($data);
 
-        $headers = [
-            'Authorization: key=' . $SERVER_API_KEY,
-            'Content-Type: application/json',
-        ];
+    //     $headers = [
+    //         'Authorization: key=' . $SERVER_API_KEY,
+    //         'Content-Type: application/json',
+    //     ];
 
-        $ch = curl_init();
+    //     $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+    //     curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+    //     curl_setopt($ch, CURLOPT_POST, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
-        $response = curl_exec($ch);
+    //     $response = curl_exec($ch);
 
-        return $response;
-    }
+    //     return $response;
+    // }
 
 }
