@@ -263,12 +263,16 @@ span.select2.select2-container.mb-4 {
     background: #f9b60024;
     color: #000;
 }
+select[readonly]
+{
+    pointer-events: none;
+}
 </style>
 <?php 
 if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
     $disable = ''; 
 } else{
-    $disable = '';
+    $disable = 'readonly';
 }
 ?>
 
@@ -336,7 +340,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type" disabled>
+                <select class="form-control" style="width: 160px;" name="payment_type" id="payment_type" onchange="togglePaymentAction()" {{$disable}}>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         TBB</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
@@ -358,13 +362,13 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </label>
                 <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery"
                     value="{{old('freight_on_delivery',isset($getconsignments->freight_on_delivery)?$getconsignments->freight_on_delivery:'')}}"
-                    readonly>
+                    readonly >
             </div>
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="cod"
-                    value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
+                    value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" {{$disable}}>
             </div>
             <div class="form-group d-flex col-md-3">
 
@@ -520,7 +524,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Order ID</label>
                                                         <input type="text" class="form-control orderid"
                                                             name="data[{{$i}}][order_id]" value="{{$item->order_id}}"
-                                                            {{$disable}}>
+                                                            >
                                                     </div>
                                                 </td>
                                                 <td>
@@ -528,7 +532,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Invoice Number</label>
                                                         <input type="text" class="form-control invc_no" id="1"
                                                             name="data[{{$i}}][invoice_no]"
-                                                            value="{{$item->invoice_no}}" {{$disable}}>
+                                                            value="{{$item->invoice_no}}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -536,7 +540,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Invoice Date</label>
                                                         <input type="date" class="form-control invc_date"
                                                             name="data[{{$i}}][invoice_date]"
-                                                            value="{{$item->invoice_date}}" {{$disable}}>
+                                                            value="{{$item->invoice_date}}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -544,7 +548,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Invoice Amount</label>
                                                         <input type="number" class="form-control invc_amt"
                                                             name="data[{{$i}}][invoice_amount]"
-                                                            value="{{$item->invoice_amount}}" {{$disable}}>
+                                                            value="{{$item->invoice_amount}}" >
                                                     </div>
                                                 </td>
                                                 <td>
@@ -552,7 +556,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>E-way Bill Number</label>
                                                         <input type="number" class="form-control ew_bill"
                                                             name="data[{{$i}}][e_way_bill]"
-                                                            value="{{$item->e_way_bill}}" {{$disable}}>
+                                                            value="{{$item->e_way_bill}}" >
                                                     </div>
                                                 </td>
                                                 <td>
@@ -560,7 +564,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>E-Way Bill Date</label>
                                                         <input type="date" class="form-control ewb_date"
                                                             name="data[{{$i}}][e_way_bill_date]"
-                                                            value="{{$item->e_way_bill_date}}" {{$disable}}>
+                                                            value="{{$item->e_way_bill_date}}" >
                                                     </div>
                                                 </td>
                                             </tr>
@@ -603,7 +607,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                                             {{$disable}}>
                                                                         <input type="hidden" class="form-control"
                                                                             name="data[{{$i}}][item_data][{{$j}}][quantity]"
-                                                                            value="{{$subitem->quantity}}" {{$disable}}>
+                                                                            value="{{$subitem->quantity}}">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -675,12 +679,12 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                         </tr>
                         <tr>
                             <td><input type="text" class="form-control form-small"
-                                    value="{{old('description',isset($getconsignments->description)?$getconsignments->description:'')}}"
+                                    value="{{old('description',isset($getconsignments->description)?$getconsignments->description:'Pesticide')}}"
                                     name="description" list="json-datalist" onkeyup="showResult(this.value)"
                                     {{$disable}}><datalist id="json-datalist"></datalist></td>
                             <td><input type="text" class="form-control form-small"
-                                    value="{{old('packing_type',isset($getconsignments->packing_type)?$getconsignments->packing_type:'')}}"
-                                    name="packing_type" {{$disable}}></td>
+                                    value="{{old('packing_type',isset($getconsignments->packing_type)?$getconsignments->packing_type:'Case/s')}}"
+                                    name="packing_type"></td>
                             <td align="center"><span id="tot_qty">
                                     <?php echo $getconsignments->total_quantity;?>
                                 </span></td>
@@ -736,17 +740,17 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
                                                     value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="text" class="form-control form-small invc_no" id="1"
                                                     name="data[{{$i}}][invoice_no]"
                                                     value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
                                                     value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[{{$i}}][invoice_amount]"
@@ -756,27 +760,27 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[{{$i}}][e_way_bill]"
                                                     value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
                                                     value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[{{$i}}][quantity]"
                                                     value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="number" class="form-control form-small net"
                                                     name="data[{{$i}}][weight]"
                                                     value="{{old('weight',isset($item->weight)?$item->weight:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td><input type="number" class="form-control form-small gross"
                                                     name="data[{{$i}}][gross_weight]"
                                                     value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}"
-                                                    {{$disable}}>
+                                                    >
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-rounded insert-more"> +
@@ -1535,7 +1539,18 @@ $(document).ready(function() {
         }
     });
 });
+
+function togglePaymentAction() {
+if ($('#payment_type').val() == 'To Pay') {
+    $('#freight_on_delivery').attr('readonly', false);
+} else {
+    $('#freight_on_delivery').attr('readonly', true);
+    $('#freight_on_delivery').val('');
+}
+
+
+}
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"> -->
 </script>
 @endsection

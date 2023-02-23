@@ -413,8 +413,6 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function updateOrder(Request $request){
-
-       
         try {
             DB::beginTransaction();
 
@@ -458,10 +456,13 @@ class OrderController extends Controller
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
             $consignmentsave['is_salereturn'] = $request->is_salereturn;
             // $consignmentsave['consignment_date'] = $request->consignment_date;
-            // $consignmentsave['payment_type'] = $request->payment_type;
+            $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             // $consignmentsave['dispatch'] = $request->dispatch;
+            $consignmentsave['freight'] = $request->freight;
+            $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
+            $consignmentsave['cod'] = $request->cod;
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
