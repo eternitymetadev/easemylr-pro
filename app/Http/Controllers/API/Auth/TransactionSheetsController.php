@@ -406,7 +406,7 @@ class TransactionSheetsController extends Controller
         try {
             $get_driver = ConsignmentNote::where('id', $id)->first();
             $get_driver_id = $get_driver->driver_id; 
-            $check_status = ConsignmentNote::where('driver_id', $get_driver_id)->where('delivery_status', 'Started')->first();
+            $check_status = ConsignmentNote::where('driver_id', $get_driver_id)->where('delivery_status', 'Started')->where('lr_mode',2)->first();
            
             if(!empty($check_status)){
                 return response([
