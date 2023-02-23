@@ -1502,7 +1502,7 @@ class PickupRunSheetController extends Controller
                   });
           } elseif ($authuser->role_id == 7) {
               $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-          } elseif($authuser->role_id == 7){
+          } elseif($authuser->role_id == 3){
             $query = $query->where('rm_id', $authuser->id);
           } else {
 
