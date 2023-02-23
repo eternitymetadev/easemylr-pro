@@ -812,7 +812,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
 
-    Route::resource('prs', PickupRunSheetController::class);
+    Route::resource('prs', PickupRunSheetController::class); 
     Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);
     Route::get('prs/export/excel', [PickupRunSheetController::class, 'exportExcel']);
     Route::any('driver-tasks', [PickupRunSheetController::class,'driverTasks']);
