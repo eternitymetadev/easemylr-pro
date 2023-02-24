@@ -1850,6 +1850,7 @@ class ConsignmentController extends Controller
 
     public function updateUnverifiedLr(Request $request)
     {
+        $authuser = Auth::user();
 
         $consignerId = $request->transaction_id;
         $cc = explode(',', $consignerId);
