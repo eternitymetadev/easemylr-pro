@@ -856,6 +856,7 @@ class FtlPtlController extends Controller
                if (in_array($authuser->branch_id, $driver_branch))
                 {
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+                    $app_notify = $this->sendNotification($request->driver_id);
                 }
                 // if(!empty($request->driver_id)){
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
@@ -886,7 +887,7 @@ class FtlPtlController extends Controller
             //     }
             // }
 
-            $app_notify = $this->sendNotification($request->driver_id);
+           
 
             // $app_notify = $this->sendNotification($request->driver_id);
 
