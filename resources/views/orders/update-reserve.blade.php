@@ -211,6 +211,9 @@ span.round-tab:hover {
                                 <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>
                                     To Pay
                                 </option>
+                                <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>
+                                Paid
+                                </option>
                             </select>
                         </div>
                         <!-- <div class=" col-sm-2 ">
@@ -230,7 +233,7 @@ span.round-tab:hover {
                         <div class="form-group col-md-2">
                             <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                             </label>
-                            <Input type="number" class="form-control" name="cod"
+                            <Input type="number" class="form-control" name="cod" id="cod"
                                 value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" disabled>
                         </div>
                     </div>
