@@ -1164,7 +1164,7 @@ class ConsignmentController extends Controller
                                 </td>
                             </tr>
                         </table>';
-                        if($data['payment_type'] == 'To be Billed'){ 
+                        if($data['payment_type'] == 'To be Billed' || $data['payment_type'] == NULL){ 
                             if(!empty($data['cod'])){
                                 $html .=  ' <div class="loc">
                                 <table>

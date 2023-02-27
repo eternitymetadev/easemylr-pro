@@ -60,7 +60,6 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'postal_code'   => $value->postal_code,
                     'city'          => $value->city,
                     'district'      => @$value->Zone->district,
-                    'postal_code'   => $value->postal_code,
                     'state_id'      => @$value->Zone->state,
                 ];
             }
