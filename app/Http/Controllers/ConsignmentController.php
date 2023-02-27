@@ -1005,6 +1005,8 @@ class ConsignmentController extends Controller
 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         $codStamp = public_path('assets/img/cod.png');
+        $paidStamp = public_path('assets/img/paid.png');
+        
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
             if (!empty($data['consigner_detail']['get_zone']['state'])) {
@@ -1289,6 +1291,36 @@ class ConsignmentController extends Controller
                                 </div>';
                                 }
 
+                            }
+
+                            if($data['payment_type'] == 'Paid'){
+
+                                    $html .=  ' <div class="loc">
+                                    <table>
+                                        <tr>
+                                            <td valign="middle" style="position:relative; width: 200px">
+                                            <img src="' . $paidStamp . '" style="position:absolute;left: 50%; transform: translateX(-40%); top: -2.5rem; height: 150px; width: 150px;" />
+                                            </td>
+                                            <td class="width_set">
+                                                <table border="1px solid" class="table3">
+                                                    <tr>
+                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>';
+                               
                             }
 
 

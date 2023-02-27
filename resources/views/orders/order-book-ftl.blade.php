@@ -337,7 +337,7 @@ span.select2.select2-container.mb-4 {
                     id="paymentType">
                     <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
-                    <!-- <option value="Paid">Paid</option> -->
+                    <option value="Paid">Paid</option>
                 </select>
             </div>
             <!-- <div class="form-group col-md-2">
@@ -355,7 +355,7 @@ span.select2.select2-container.mb-4 {
             <div class="form-group col-md-2" id="codFreightBlock">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" name="cod">
+                <Input type="number" class="form-control" name="cod" id="cod">
             </div>
             <div class="form-group d-flex col-md-3">
 
@@ -1046,11 +1046,15 @@ function togglePaymentAction() {
 
 if ($('#paymentType').val() == 'To Pay') {
     $('#freight_on_delivery').attr('readonly', false);
+    $('#cod').attr('readonly', false);
+} else if($('#paymentType').val() == 'Paid'){
+    $('#cod').attr('readonly', true);
+    $('#freight_on_delivery').attr('readonly', true);
 } else {
     $('#freight_on_delivery').attr('readonly', true);
+    $('#cod').attr('readonly', false);
+    $('#freight_on_delivery').val('');
 }
-
-
 }
 // function togglePaymentAction() {
 

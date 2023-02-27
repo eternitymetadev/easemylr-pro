@@ -344,8 +344,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         TBB</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
-                    </option>
-
+                    </option> 
+                    <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>
+                                Paid
+                                </option>
                 </select>
             </div>
             <!-- <div class="form-group col-md-2">
@@ -367,7 +369,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" name="cod"
+                <Input type="number" class="form-control" name="cod" id="cod"
                     value="{{old('cod',isset($getconsignments->cod)?$getconsignments->cod :'')}}" {{$disable}}>
             </div>
             <div class="form-group d-flex col-md-3">
@@ -1543,13 +1545,31 @@ $(document).ready(function() {
 function togglePaymentAction() {
 if ($('#payment_type').val() == 'To Pay') {
     $('#freight_on_delivery').attr('readonly', false);
+    $('#cod').attr('readonly', false);
+} else if($('#payment_type').val() == 'Paid'){
+    $('#cod').attr('readonly', true);
+    $('#freight_on_delivery').attr('readonly', true);
 } else {
     $('#freight_on_delivery').attr('readonly', true);
-    $('#freight_on_delivery').val('');
+    $('#cod').attr('readonly', false);
+    $('#freight_on_delivery').val(''); 
+}
 }
 
+// function togglePaymentAction() {
 
-}
+// if ($('#paymentType').val() == 'To Pay') {
+//     $('#freight_on_delivery').attr('readonly', false);
+//     $('#cod').attr('readonly', false);
+// } else if($('#paymentType').val() == 'Paid'){
+//     $('#cod').attr('readonly', true);
+//     $('#freight_on_delivery').attr('readonly', true);
+// } else {
+//     $('#freight_on_delivery').attr('readonly', true);
+//     $('#cod').attr('readonly', false);
+//     $('#freight_on_delivery').val('');
+// }
+// }
 </script>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap"> -->
 </script>
