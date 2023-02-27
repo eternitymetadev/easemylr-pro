@@ -36,6 +36,7 @@ use Session;
 use Storage;
 use URL;
 use Validator;
+use Carbon\Carbon;
 
 class ConsignmentController extends Controller
 {
@@ -1912,11 +1913,26 @@ class ConsignmentController extends Controller
         // =============new app
         $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
+        $mytime = Carbon::now('Asia/Kolkata');
+        $currentdate = $mytime->toDateTimeString(); 
         // check app assign ========================================
         if (!empty($get_driver_details->branch_id)) {
             $driver_branch = explode(',', $get_driver_details->branch_id);
             if (in_array($authuser->branch_id, $driver_branch)) {
                 $update = DB::table('consignment_notes')->whereIn('id', $cc)->update(['lr_mode' => 2]);
+                foreach($cc as $c_id){
+                     // =================== task assign 
+                     $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+
+                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$c_id)->latest('consignment_id')->first();
+                     $st = json_decode($lastjob->response_data);
+                     array_push($st, $respons2);
+                     $sts = json_encode($st);
+                     
+                     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                      // ==== end started
+                }
+                
                 $app_notify = $this->sendNotification($request->driver_id);
             }
         }

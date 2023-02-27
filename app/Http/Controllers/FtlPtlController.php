@@ -852,7 +852,6 @@ class FtlPtlController extends Controller
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-            // $get_branch_detail = Location::where('id', $authuser->branch_id)->first();
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
@@ -878,10 +877,22 @@ class FtlPtlController extends Controller
                     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
                      // ==== end started
                     $app_notify = $this->sendNotification($request->driver_id);
+                }else{
+                     // task created
+                     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                     $respons_data = json_encode($respons);
+                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                     // ==== end create
                 }
                 // if(!empty($request->driver_id)){
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
+            }else{
+                   // task created
+                   $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                   $respons_data = json_encode($respons);
+                   $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                   // ==== end create
             }
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
