@@ -216,7 +216,7 @@ if ($countbranch > 1) {?>
             <!-- Modal body -->
             <div class="modal-body">
                 <form id="purchase_amt_hrs">
-                    <input type="text" class="form-control" id="hrs_num" name="hrs_no" value="">
+                    <input type="hidden" class="form-control" id="hrs_num" name="hrs_no" value="">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Purchase Price</label>
