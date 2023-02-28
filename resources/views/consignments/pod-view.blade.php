@@ -91,37 +91,47 @@ label.statusLabel {
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-            <div class="page-header">
-                <h2>POD View</h2>
-                <input type="text" class="form-control" placeholder="Search" id="search"
-                    data-action="<?php echo url()->current(); ?>" style="width: min(100%, 250px);" />
-            </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
+
                     <h5 class="limitmessage text-danger" style="display: none;">
                         You cannot download more than 30,000 records. Please select Filters.
                     </h5>
-                    <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <div class="col-sm-3">
-                            <label>from</label>
-                            <input type="date" id="startdate" class="form-control" name="startdate">
+                    <div class="row mt-4" style="margin-inline: auto; margin-bottom:15px;">
+                        <div class="page-header flex-wrap" style="width: 100%">
+                            <h2>POD View</h2>
+                            <input type="text" class="form-control" placeholder="Search" id="search"
+                                data-action="<?php echo url()->current(); ?>" style="width: min(100%, 250px);" />
                         </div>
-                        <div class="col-sm-3">
-                            <label>To</label>
-                            <input type="date" id="enddate" class="form-control" name="enddate">
+
+                        <div class="row justify-content-center" style="width: 100%">
+                            <div class="col-sm-3">
+                                <label>from</label>
+                                <input type="date" id="startdate" class="form-control" name="startdate">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>To</label>
+                                <input type="date" id="enddate" class="form-control" name="enddate">
+                            </div>
+                            <div class="col-4 d-flex align-items-end">
+                                <button type="button" id="filter_reportall" class="btn btn-primary"
+                                    style=" font-size: 15px; padding: 9px; width: 130px">
+                                    <span class="indicator-label">Filter Data</span>
+                                </button>
+                                <a href="<?php echo URL::to($prefix.'/pod-export'); ?>"
+                                    data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
+                                    class="consignmentReportEx btn btn-white btn-cstm"
+                                    style=" font-size: 15px; padding: 9px; width: 130px"
+                                    data-action="<?php echo URL::to($prefix.'/pod-export'); ?>" download><span><i
+                                            class="fa fa-download"></i> Export</span></a>
+                                <a href="javascript:void();" style=" font-size: 15px; padding: 9px;"
+                                    class="btn btn-primary btn-cstm ml-2 reset_filter"
+                                    data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i>
+                                        Reset
+                                        Filters</span></a>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <button type="button" id="filter_reportall" class="btn btn-primary"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
-                                <span class="indicator-label">Filter Data</span>
-                            </button>
-                            <a href="<?php echo URL::to($prefix.'/pod-export'); ?>"
-                                data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
-                                class="consignmentReportEx btn btn-white btn-cstm"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                data-action="<?php echo URL::to($prefix.'/pod-export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
-                            <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
-                        </div>
+
                     </div>
                     @csrf
                     <div class="main-table table-responsive">
@@ -140,7 +150,7 @@ label.statusLabel {
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center">
-                <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
+                    <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
                 </div>
             </div>
         </div>
@@ -153,7 +163,8 @@ label.statusLabel {
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center">
-                    <iframe src="#" id="toggledPdfView" style="height: 90vh; width: 90vw; max-height: 90vh; max-width: 90vw" ></iframe>
+                    <iframe src="#" id="toggledPdfView"
+                        style="height: 90vh; width: 90vw; max-height: 90vh; max-width: 90vw"></iframe>
                 </div>
             </div>
         </div>
@@ -180,7 +191,8 @@ label.statusLabel {
                     </div>
                     <div class="form-group col-12">
                         <label class="control-label">Delivery Date</label>
-                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date" onkeydown="return false"/>
+                        <input type="date" class="form-control" id="dlvery_date" name="delivery_date"
+                            onkeydown="return false" />
                     </div>
                 </div>
             </div>
@@ -190,7 +202,7 @@ label.statusLabel {
             </div>
         </div>
     </form>
-</div> 
+</div>
 
 <!-- delete images modal -->
 <div class="modal fade" id="deleteImages" tabindex="-1" role="dialog" aria-hidden="true">
@@ -248,10 +260,9 @@ label.statusLabel {
 @endsection
 @section('js')
 <script>
-   
 // $(function(){
 //     var dtToday = new Date();
- 
+
 //     var month = dtToday.getMonth() + 1;
 //     var day = dtToday.getDate();
 //     var year = dtToday.getFullYear();
@@ -286,7 +297,7 @@ $("#update_image_pod").submit(function(e) {
         return false;
     }
 
-     
+
     $.ajax({
         url: "update-poddetails",
         headers: {
@@ -450,7 +461,7 @@ jQuery(document).on(
         jQuery("#changemodeConfirm").modal("show");
         jQuery(".confirmclick").one("click", function() {
             var reason_to_change_mode = jQuery("#reason_to_change_mode").val();
-            if(!reason_to_change_mode){
+            if (!reason_to_change_mode) {
                 alert('Please enter a reason to change mode');
                 return false;
             }
@@ -499,7 +510,7 @@ jQuery(document).on(
     ".deletePod",
     function(event) {
         event.stopPropagation();
-        $("#deleteImages").trigger( "reset" );
+        $("#deleteImages").trigger("reset");
         let lr_id = jQuery(this).attr("data-id");
         jQuery("#deleteImages").modal("show");
         jQuery(".deleteclientconfirm").one("click", function() {

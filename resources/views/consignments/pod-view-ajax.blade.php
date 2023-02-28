@@ -16,7 +16,7 @@
                 <th style="text-align: center; width: 120px;">Delivery Status</th>
                 <th style="text-align: center; width: 120px;">Delivery Date</th>
                 <th class="text-center">POD</th>
-            </tr>
+            </tr> 
         </thead>
         <tbody>
             @if(count($consignments)>0)
