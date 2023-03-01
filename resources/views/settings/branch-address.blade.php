@@ -58,11 +58,9 @@
                             <thead>
                                 <tr>
                                     <th>Sr No.</th>
-                                    <th>Branch Nick name</th>
                                     <th>GSTN No</th>
                                     <th>State</th>
                                     <th>Address</th>
-                                    <th>Tagged Branches</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -76,11 +74,9 @@
                                 ?>
                                 <tr>
                                     <td>{{$i}}</td>
-                                    <td>{{$address->Branch->nick_name}}</td>
                                     <td>{{$address->gst_no}}</td>
                                     <td>{{$address->state}}</td>
                                     <td>{{$address->address_line_1}}</td>
-                                    <td>{{$address->Branch->name}}</td>
                                     <td><button type="button" class="btn btn-warning edit_gst" value="{{$address->id}}">edit</button></td>
                                 </tr>
                                 @endforeach
@@ -297,9 +293,11 @@ $(document).on('click', '.edit_gst', function() {
             },
         success: function(data) {
 
+            var branch = data.gst_num.branch_id;
+            var branch_array = branch.split(",");
             $('#gst_id').val(data.gst_num.id);
             $('#gst_no').val(data.gst_num.gst_no);
-            $('#branch_id').val(data.gst_num.branch.id).change();
+            $('#branch_id').val(branch_array).change();
             $('#state').val(data.gst_num.state);
             $('#address_line_1').val(data.gst_num.address_line_1);
             $('#address_line_2').val(data.gst_num.address_line_2);

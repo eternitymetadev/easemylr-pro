@@ -219,6 +219,7 @@ class SettingController extends Controller
     // ===========
     public function addGstAddress(Request $request)
     {
+        
         try {
             DB::beginTransaction();
 
@@ -296,7 +297,7 @@ class SettingController extends Controller
         try {
             DB::beginTransaction();
             $branch = implode(',', $request->branch_id);
-            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'branch_id' => $request->branch_id]);
+            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'branch_id' => $branch]);
 
             $response['success'] = true;
             $response['success_message'] = "Address Data successfully";
