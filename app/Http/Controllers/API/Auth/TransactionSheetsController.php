@@ -226,7 +226,7 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
+            $consignments = ConsignmentNote::with('ConsignerDetail','TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
                 ->get();
             // echo'<pre>'; print_r($consignments); die;
          
@@ -269,6 +269,10 @@ class TransactionSheetsController extends Controller
                     'total_gross_weight' => $value->total_gross_weight,
                     'total_quantity' => $value->total_quantity,
                     'drs_no' => @$value->TransactionSheet->drs_no,
+                    'consignor_name' => $value->ConsignerDetail->nick_name,
+                    'consignor_mobile' => $value->ConsignerDetail->phone,
+                    'consignor_address' => $value->ConsignerDetail->address_line1 . ',' . @$value->ConsignerDetail->address_line2 . ',' . @$value->ConsignerDetail->address_line3 . ',' . @$value->ConsignerDetail->address_line4,
+                    'consignor_pincode' => $value->ConsignerDetail->postal_code,
                     'consignee_name' => $value->ConsigneeDetail->nick_name,
                     'consignee_mobile' => $value->ConsigneeDetail->phone,
                     'consignee_address' => $value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
@@ -571,7 +575,7 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $consignments = ConsignmentNote::with('TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('id', $id)
+            $consignments = ConsignmentNote::with('ConsignerDetail','TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('id', $id)
                 ->get();
 
             // echo'<pre>'; print_r(json_decode($consignments)); die;
@@ -615,6 +619,10 @@ class TransactionSheetsController extends Controller
                     'total_gross_weight' => $value->total_gross_weight,
                     'total_quantity' => $value->total_quantity,
                     'drs_no' => @$value->TransactionSheet->drs_no,
+                    'consignor_name' => $value->ConsignerDetail->nick_name,
+                    'consignor_mobile' => $value->ConsignerDetail->phone,
+                    'consignor_address' => $value->ConsignerDetail->address_line1 . ',' . @$value->ConsignerDetail->address_line2 . ',' . @$value->ConsignerDetail->address_line3 . ',' . @$value->ConsignerDetail->address_line4,
+                    'consignor_pincode' => $value->ConsignerDetail->postal_code,
                     'consignee_name' => $value->ConsigneeDetail->nick_name,
                     'consignee_mobile' => $value->ConsigneeDetail->phone,
                     'consignee_address' => $value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
