@@ -245,9 +245,11 @@ class SettingController extends Controller
             } else {
                 $gstfile = null;
             }
+
+            $branch = implode(',', $request->branch_id);
            
             $gstsave['gst_no'] = $request->gst_no;
-            $gstsave['branch_id'] = $request->branch_id;
+            $gstsave['branch_id'] = $branch;
             $gstsave['state'] = $request->state;
             $gstsave['address_line_1'] = $request->address_line_1;
             $gstsave['address_line_2'] = $request->address_line_2;
@@ -276,5 +278,38 @@ class SettingController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
+    }
+
+    public function editGstAddress(Request $request)
+    {
+        $id = $request->gst_id;
+        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first();
+
+        $response['gst_num'] = $gst_num;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetch";
+        return response()->json($response);
+    }
+
+    public function updateGstAddress(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $branch = implode(',', $request->branch_id);
+            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'branch_id' => $request->branch_id]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Address Data successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
     }
 }
