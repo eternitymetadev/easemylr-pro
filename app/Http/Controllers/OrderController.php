@@ -2548,7 +2548,7 @@ class OrderController extends Controller
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
             }
 
             $url = $this->prefix . '/orders';

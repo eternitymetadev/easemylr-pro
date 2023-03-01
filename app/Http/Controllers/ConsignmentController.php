@@ -63,7 +63,7 @@ class ConsignmentController extends Controller
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
-                return response()->json(['success' => true, 'redirect_url' => $url]);
+                return response()->json(['success' => true, 'redirect_url' => $url]); 
             }
             if (isset($request->updatestatus)) {
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
