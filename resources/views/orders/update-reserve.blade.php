@@ -188,7 +188,7 @@ span.round-tab:hover {
                     <div class="row">
                         <div class=" col-sm-4 ">
                             <p>Select Bill to Client</p>
-                            <select class="form-control form-small" id="select_regclient" name="regclient_id" disabled>
+                            <select class="form-control" id="select_regclient" name="regclient_id" disabled>
                                 <option value="">Select</option>
                                 @if(count($regionalclient) > 0)
                                 @foreach($regionalclient as $client)
@@ -203,7 +203,7 @@ span.round-tab:hover {
                         </div>
                         <div class=" col-sm-2 ">
                             <p>Payment Term</p>
-                            <select class="form-control form-small my-select2" style="width: 160px;" name="payment_type"
+                            <select class="form-control" style="width: 160px;" name="payment_type"
                                 disabled>
                                 <option value="To be Billed"
                                     {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>TBB
@@ -278,7 +278,7 @@ span.round-tab:hover {
 
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control form-small" style="width: 328px;" type="text"
+                            <select class="form-control" style="width: 328px;" type="text"
                                 name="consignee_id" id="select_consignee" disabled>
                                 <option value="">Select Consignee</option>
                                 @if(count($consignees) > 0)
@@ -297,7 +297,7 @@ span.round-tab:hover {
 
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
-                            <select class="form-control form-small" style="width: 328px;" type="text" name="ship_to_id"
+                            <select class="form-control" style="width: 328px;" type="text" name="ship_to_id"
                                 id="select_ship_to" disabled>
                                 <option value="">Select Ship To</option>
                                 @if(count($consignees) > 0)
