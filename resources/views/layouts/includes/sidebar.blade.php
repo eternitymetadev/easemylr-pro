@@ -746,8 +746,7 @@
             </li>
             <?php if($authuser->role_id == 1){ ?>
             <li>
-                <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}"> Branch
-                    Address </a>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}">Company Setup </a>
             </li>
             <?php } ?>
 
