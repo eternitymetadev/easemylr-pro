@@ -58,6 +58,7 @@
                             <thead>
                                 <tr>
                                     <th>Sr No.</th>
+                                    <th>Branch Nick Name</th>
                                     <th>GSTN No</th>
                                     <th>State</th>
                                     <th>Address</th>
@@ -71,9 +72,19 @@
                                 @foreach($gstaddresses as $address)
                                 <?php
                                     $i++;
+                                    $branch = explode(',', $address->branch_id);
+                                    $store_branch = array();
+                                    foreach($branch as $brnch){
+                                        $getname = DB::table('locations')->where('id', $brnch)->first();
+                                        $store_branch[] = $getname->nick_name; 
+                                        
+                                    }
+                                    $all_branch = implode(',', $store_branch);
+                                    
                                 ?>
                                 <tr>
                                     <td>{{$i}}</td>
+                                    <td>{{$all_branch}}</td>
                                     <td>{{$address->gst_no}}</td>
                                     <td>{{$address->state}}</td>
                                     <td>{{$address->address_line_1}}</td>
