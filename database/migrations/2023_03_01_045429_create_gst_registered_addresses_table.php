@@ -16,7 +16,6 @@ class CreateGstRegisteredAddressesTable extends Migration
         Schema::create('gst_registered_addresses', function (Blueprint $table) {
             $table->id();
             $table->string('gst_no')->nullable();
-            $table->string('branch_id')->nullable();
             $table->string('state')->nullable();
             $table->string('address_line_1')->nullable();
             $table->string('address_line_2')->nullable();

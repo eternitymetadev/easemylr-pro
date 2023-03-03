@@ -247,16 +247,22 @@ class SettingController extends Controller
                 $gstfile = null;
             }
 
-            $branch = implode(',', $request->branch_id);
+            // $branch = implode(',', $request->branch_id);
            
             $gstsave['gst_no'] = $request->gst_no;
-            $gstsave['branch_id'] = $branch;
+            // $gstsave['branch_id'] = $branch;
             $gstsave['state'] = $request->state;
             $gstsave['address_line_1'] = $request->address_line_1;
             $gstsave['address_line_2'] = $request->address_line_2;
             $gstsave['upload_gst'] = $gstfile;
 
             $gstsave = GstRegisteredAddress::create($gstsave);
+
+            foreach($request->branch_id as $branch){
+                Location::where('id', $branch)->update(['gst_registered_id'=> $gstsave->id]);
+            }
+
+
 
             if ($gstsave) {
                 $url = $this->prefix . '/settings/branch-address';
@@ -284,7 +290,7 @@ class SettingController extends Controller
     public function editGstAddress(Request $request)
     {
         $id = $request->gst_id;
-        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first();
+        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first(); 
 
         $response['gst_num'] = $gst_num;
         $response['success'] = true;
@@ -296,8 +302,11 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            $branch = implode(',', $request->branch_id);
-            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'branch_id' => $branch]);
+            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2]);
+
+            foreach($request->branch_id as $branch){
+                Location::where('id', $branch)->update(['gst_registered_id'=> $request->gst_id]);
+            }
 
             $response['success'] = true;
             $response['success_message'] = "Address Data successfully";

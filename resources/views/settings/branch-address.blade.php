@@ -58,7 +58,7 @@
                             <thead>
                                 <tr>
                                     <th>Sr No.</th>
-                                    <th>Branch Nick Name</th>
+                                    <!-- <th>Branch Nick Name</th> -->
                                     <th>GSTN No</th>
                                     <th>State</th>
                                     <th>Address</th>
@@ -72,19 +72,19 @@
                                 @foreach($gstaddresses as $address)
                                 <?php
                                     $i++;
-                                    $branch = explode(',', $address->branch_id);
-                                    $store_branch = array();
-                                    foreach($branch as $brnch){
-                                        $getname = DB::table('locations')->where('id', $brnch)->first();
-                                        $store_branch[] = $getname->nick_name; 
+                                    // $branch = explode(',', $address->branch_id);
+                                    // $store_branch = array();
+                                    // foreach($branch as $brnch){
+                                    //     $getname = DB::table('locations')->where('id', $brnch)->first();
+                                    //     $store_branch[] = $getname->nick_name; 
                                         
-                                    }
-                                    $all_branch = implode(',', $store_branch);
+                                    // }
+                                    // $all_branch = implode(',', $store_branch);
                                     
                                 ?>
                                 <tr>
                                     <td>{{$i}}</td>
-                                    <td>{{$all_branch}}</td>
+                            
                                     <td>{{$address->gst_no}}</td>
                                     <td>{{$address->state}}</td>
                                     <td>{{$address->address_line_1}}</td>
@@ -304,11 +304,16 @@ $(document).on('click', '.edit_gst', function() {
             },
         success: function(data) {
 
-            var branch = data.gst_num.branch_id;
-            var branch_array = branch.split(",");
+            // var branch = data.gst_num.branch_id;
+            // var branch_array = branch.split(",");
+            var branchID = [];
+            $.each(data.gst_num.branch, function (key, value) {
+                branchID.push(value.id);
+            });
+
             $('#gst_id').val(data.gst_num.id);
             $('#gst_no').val(data.gst_num.gst_no);
-            $('#branch_id').val(branch_array).change();
+            $('#branch_id').val(branchID).change();
             $('#state').val(data.gst_num.state);
             $('#address_line_1').val(data.gst_num.address_line_1);
             $('#address_line_2').val(data.gst_num.address_line_2);
@@ -343,5 +348,10 @@ $('#update_gst_address').submit(function(e) {
         }
     });
 });
+// $("#branch_id").change(function(){
+//     if("a"=="c"){
+//         alert("The text has been changed.");
+//     } 
+// });
 </script>
 @endsection
