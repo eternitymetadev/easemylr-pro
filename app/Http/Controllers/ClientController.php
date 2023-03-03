@@ -93,33 +93,73 @@ class ClientController extends Controller
                 $errors                  = $validator->errors();
                 $response['success']     = false;
                 $response['validation']  = false;
-                $response['formErrors']  = true;
+                $response['formErrors']  = true; 
                 $response['errors']      = $errors;
                 return response()->json($response);
             }
             if(!empty($request->client_name)){
                 $client['client_name']   = $request->client_name;
             }
+            $client['client_name']   = $request->tan;
+            $client['client_name']   = $request->gst_no;
+            $client['client_name']   = $request->pan;
+
+            // ======= gst upload
+            $gstupload = $request->file('upload_gst');
+            if (!empty($gstupload)) {
+                $gstfile = $gstupload->getClientOriginalName();
+                $gstupload->move(public_path('backend-images/base-client/gst'), $gstfile);
+            } else {
+                $gstfile = null;
+            }
+
+            // ======= pan upload
+            $panupload = $request->file('upload_pan');
+            if (!empty($panupload)) {
+                $panfile = $panupload->getClientOriginalName();
+                $panupload->move(public_path('backend-images/base-client/pan'), $panfile);
+            } else {
+                $panfile = null;
+            }
+
+            // ======= tan upload
+            $tanupload = $request->file('upload_tan');
+            if (!empty($tanupload)) {
+                $tanfile = $tanupload->getClientOriginalName();
+                $tanupload->move(public_path('backend-images/base-client/tan'), $tanfile);
+            } else {
+                $tanfile = null;
+            }
+
+            // ======= moa upload
+            $moaupload = $request->file('upload_moa');
+            if (!empty($moaupload)) {
+                $moafile = $moaupload->getClientOriginalName();
+                $moaupload->move(public_path('backend-images/base-client/moa'), $moafile);
+            } else {
+                $moafile = null;
+            }
+
             $client['status']     = "1";
 
             $saveclient = BaseClient::create($client); 
-            $data = $request->all();
+            // $data = $request->all();
 
-            if($saveclient)
-            {
-                if(!empty($request->data)){ 
-                    $get_data = $request->data;
-                    foreach ($get_data as $key => $save_data ) { 
-                        $save_data['baseclient_id'] = $saveclient->id;
-                        $save_data['location_id'] = $save_data['location_id'];
-                        $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
-                        $save_data['is_prs_pickup'] = $save_data['is_prs_pickup'];
-                        $save_data['email'] = $save_data['email'];
-                        $save_data['is_email_sent'] = $save_data['is_email_sent'];
-                        $save_data['status'] = "1";
-                        $saveregclients = RegionalClient::create($save_data);
-                    }
-                }
+            // if($saveclient)
+            // {
+            //     if(!empty($request->data)){ 
+            //         $get_data = $request->data;
+            //         foreach ($get_data as $key => $save_data ) { 
+            //             $save_data['baseclient_id'] = $saveclient->id;
+            //             $save_data['location_id'] = $save_data['location_id'];
+            //             $save_data['is_multiple_invoice'] = $save_data['is_multiple_invoice'];
+            //             $save_data['is_prs_pickup'] = $save_data['is_prs_pickup'];
+            //             $save_data['email'] = $save_data['email'];
+            //             $save_data['is_email_sent'] = $save_data['is_email_sent'];
+            //             $save_data['status'] = "1";
+            //             $saveregclients = RegionalClient::create($save_data);
+            //         }
+            //     }
                 
                 $url    =   URL::to($this->prefix.'/clients');
                 $response['success'] = true;
@@ -127,11 +167,11 @@ class ClientController extends Controller
                 $response['error'] = false;
                 $response['page'] = 'client-create';
                 $response['redirect_url'] = $url;
-            }else{
-                $response['success'] = false;
-                $response['error_message'] = "Can not created client please try again";
-                $response['error'] = true;
-            }
+            // }else{
+            //     $response['success'] = false;
+            //     $response['error_message'] = "Can not created client please try again";
+            //     $response['error'] = true;
+            // }
             DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;
@@ -568,6 +608,13 @@ class ClientController extends Controller
     {
         return Excel::download(new ClientReportExport($request->regclient,$request->startdate,$request->enddate), 'nurtureclient_reports.csv');
     }
+/////////
+    public function createRegionalClient()
+        {
+            $this->prefix = request()->route()->getPrefix();
+            $locations = Helper::getLocations();
 
+            return view('clients.create-regional_client',['locations'=>$locations, 'prefix'=>$this->prefix, 'title'=>$this->title]);
+        }
 
 }
