@@ -185,7 +185,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
     Route::get('/sample-vehicle',[ImportCsvController::class, 'vehicleSampleDownload']);
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
-    Route::get('/sample-zone',[ImportCsvController::class, 'zoneSampleDownload']);
+    Route::get('/sample-zone',[ImportCsvController::class, 'zoneSampleDownload']); 
     Route::get('/sample-deliverydate',[ImportCsvController::class, 'deliverydateSampleDownload']);
     Route::get('/sample-manualdelivery',[ImportCsvController::class, 'manualdeliverySampleDownload']);
 
@@ -200,6 +200,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
     Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
     Route::get('create-regional-client', [ClientController::class, 'createRegionalClient']);
+    Route::any('generate-regional', [ClientController::class, 'generateRegionalName']);
+    Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);

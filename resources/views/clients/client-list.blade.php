@@ -74,6 +74,9 @@ div.relat {
                                 <tr>
                                     <th>Sr No.</th>
                                     <th>Name</th>
+                                    <th>Gst</th>
+                                    <th>Pan</th>
+                                    <th>Tan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -85,6 +88,9 @@ div.relat {
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ ucwords($value->client_name ?? "-")}}</td>
+                                    <td>{{$value->gst_no ?? "-"}}</td>
+                                    <td>{{$value->pan ?? "-"}}</td>
+                                    <td>{{$value->tan ?? "-"}}</td>
                                     <td>
                                         <a class="btn btn-primary" href="{{url($prefix.'/clients/'.Crypt::encrypt($value->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                     </td>   
