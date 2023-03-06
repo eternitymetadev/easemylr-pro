@@ -654,6 +654,9 @@ class ClientController extends Controller
             $client['phone'] = $request->phone;
             $client['gst_no'] = $request->gst_no;
             $client['pan'] = $request->pan;
+            $client['is_multiple_invoice'] = $request->is_multiple_invoice;
+            $client['is_prs_pickup'] = $request->is_prs_pickup;
+            $client['is_email_sent'] = $request->is_email_sent;
             $client['location_id'] = $request->branch_id;
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;

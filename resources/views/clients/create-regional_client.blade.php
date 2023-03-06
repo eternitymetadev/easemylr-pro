@@ -25,7 +25,8 @@
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/create-regional')}}" id="createclient">
+                        <form class="general_form" method="POST" action="{{url($prefix.'/create-regional')}}"
+                            id="createclient">
                             <!-- <div class="form-group mb-4">
                                 <label for="exampleFormControlInput2">Client Name<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="client_name" id="client_name" placeholder="">
@@ -34,11 +35,12 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Client Name<span
                                             class="text-danger">*</span></label>
-                                            <select class="form-control  my-select2" id="base_client_id" name="base_client_id"
+                                    <select class="form-control  my-select2" id="base_client_id" name="base_client_id"
                                         tabindex="-1">
                                         <option selected disabled>select..</option>
                                         @foreach($base_clients as $base_client)
-                                        <option value="{{ $base_client->id }}">{{ucwords($base_client->client_name)}}</option>
+                                        <option value="{{ $base_client->id }}">{{ucwords($base_client->client_name)}}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -56,25 +58,27 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Regional Client Name</label>
-                                    <input type="text" class="form-control" id="regional_client_name" name="name" placeholder="" readonly>
+                                    <input type="text" class="form-control" id="regional_client_name" name="name"
+                                        placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Regional Client Nick Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="regional_client_nick_name" placeholder="">
+                                    <input type="text" class="form-control" name="regional_client_nick_name"
+                                        placeholder="">
                                 </div>
-                            </div> 
+                            </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Email</label>
-                                    <input type="email" class="form-control" id="" name="email" placeholder="" >
+                                    <input type="email" class="form-control" id="" name="email" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Phone<span
                                             class="text-danger">*</span></label>
                                     <input type="number" class="form-control" name="phone" placeholder="">
                                 </div>
-                            </div> 
+                            </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">GST Number<span
@@ -82,8 +86,7 @@
                                     <input type="text" class="form-control" name="gst_no" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">PAN<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">PAN<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="pan" placeholder="">
                                 </div>
                             </div>
@@ -99,7 +102,58 @@
                                     <input type="file" class="form-control" name="upload_pan" placeholder="">
                                 </div>
                             </div>
-                      
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Multiple Invoice<span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-control is_multiple_invoice" name="is_multiple_invoice">
+                                        <option value="">Select</option>
+                                        <option value="1">Per invoice-Item wise</option>
+                                        <option value="2">Multiple Invoice-Item wise</option>
+                                        <option value="3">per invoice-Without Item</option>
+                                        <option value="4">LR Multiple invoice-Without item</option>
+                                    </select>
+                                </div> 
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Pickup not Rquired<span
+                                            class="text-danger">*</span></label>
+                                    <div class="check-box d-flex">
+                                        <div class="checkbox radio">
+                                            <label class="check-label">Yes
+                                                <input type="radio" value='1' name="is_prs_pickup">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox radio">
+                                            <label class="check-label">No
+                                                <input type="radio" name="is_prs_pickup" value='0' checked>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Email Sent<span
+                                            class="text-danger">*</span></label>
+                                            <div class="check-box d-flex">
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">Yes
+                                                        <input type="radio" value='1' name="is_email_sent">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox radio">
+                                                    <label class="check-label">No
+                                                        <input type="radio" name="is_email_sent" value='0'
+                                                            checked>
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                </div>
+                            </div>
 
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/clients') }}"> Back</a>
@@ -167,7 +221,7 @@ $(document).on('click', '.removeRow', function() {
     $(this).closest('tr').remove();
 });
 
-$("#branch_id").change(function(){
+$("#branch_id").change(function() {
     var base_client = $('#base_client_id').val();
     var branch_id = $(this).val();
     $.ajax({
@@ -176,19 +230,21 @@ $("#branch_id").change(function(){
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         type: "POST",
-        data: { base_client: base_client, branch_id:branch_id },
-     
-        beforeSend: function () {
-            
+        data: {
+            base_client: base_client,
+            branch_id: branch_id
+        },
+
+        beforeSend: function() {
+
         },
         success: (data) => {
             // console.log(data.generate_regional);
             $('#regional_client_name').val(data.generate_regional);
-       
+
         },
     });
-   
-});
 
+});
 </script>
 @endsection
