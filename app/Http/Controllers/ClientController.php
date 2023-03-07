@@ -171,7 +171,7 @@ class ClientController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $query = RegionalClient::query();
-        $regclients = $query->orderby('id', 'DESC')->get();
+        $regclients = $query->with('Location')->orderby('id', 'DESC')->get();
         return view('clients.regional-client-list', ['regclients' => $regclients, 'prefix' => $this->prefix, 'segment' => $this->segment])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
@@ -647,6 +647,8 @@ class ClientController extends Controller
             $pan_path = Storage::disk('s3')->put('clients', $panupload);
             $pan_img_path_save = Storage::disk('s3')->url($pan_path);
 
+            $payment_term = implode(',', $request->payment_term);
+
             $client['baseclient_id'] = $request->base_client_id;
             $client['name'] = $request->name;
             $client['regional_client_nick_name'] = $request->regional_client_nick_name;
@@ -660,6 +662,7 @@ class ClientController extends Controller
             $client['location_id'] = $request->branch_id;
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;
+            $client['payment_term'] = $payment_term;
             $client['status'] = "1";
 
             $saveclient = RegionalClient::create($client);

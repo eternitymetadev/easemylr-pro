@@ -348,10 +348,10 @@ $('#update_gst_address').submit(function(e) {
         }
     });
 });
-// $("#branch_id").change(function(){
-//     if("a"=="c"){
-//         alert("The text has been changed.");
-//     } 
-// });
+$("#branch_id").change(function(){
+     if("a"=="c"){
+         alert("The text has been changed.");
+     }  
+});
 </script>
 @endsection

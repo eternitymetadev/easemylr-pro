@@ -757,6 +757,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Clients </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-regional-client'}}"> Create Regional Client </a>
+            </li>
             <?php } ?>
 
         </ul>

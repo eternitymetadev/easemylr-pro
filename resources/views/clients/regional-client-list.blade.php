@@ -61,12 +61,13 @@ div.relative {
                     <table id="clienttable" class="table table-hover get-datatable" style="width:100%">
                         <div class="btn-group relative">
 
-                        </div>
+                        </div> 
                         <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Location Id</th>
+                                <th>Gst</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -81,7 +82,8 @@ div.relative {
                                     <a
                                         href="{{url($prefix.'/'.$segment.'/add-regclient-detail/'.Crypt::encrypt($value->id))}}">{{ ucwords($value->name ?? "-")}}</a>
                                 </td>
-                                <td>{{$value->location_id ?? "-"}}</td>
+                                <td>{{$value->Location->name ?? "-"}}</td>
+                                <td>{{$value->gst_no ?? "-"}}</td>
                                 <td>
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i

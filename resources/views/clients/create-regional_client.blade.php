@@ -113,7 +113,7 @@
                                         <option value="3">per invoice-Without Item</option>
                                         <option value="4">LR Multiple invoice-Without item</option>
                                     </select>
-                                </div> 
+                                </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pickup not Rquired<span
                                             class="text-danger">*</span></label>
@@ -137,21 +137,48 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Email Sent<span
                                             class="text-danger">*</span></label>
-                                            <div class="check-box d-flex">
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">Yes
-                                                        <input type="radio" value='1' name="is_email_sent">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="is_email_sent" value='0'
-                                                            checked>
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
+                                    <div class="check-box d-flex">
+                                        <div class="checkbox radio">
+                                            <label class="check-label">Yes
+                                                <input type="radio" value='1' name="is_email_sent">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox radio">
+                                            <label class="check-label">No
+                                                <input type="radio" name="is_email_sent" value='0' checked>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+ 
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Select Payment Terms<span
+                                            class="text-danger">*</span></label>
+                                    <div class="check-box d-flex" style="margin: 6px 0 0 6px">
+                                        <div class="checkbox radio">
+                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
+                                                <span class="checkmark"></span>
+                                                <input type="checkbox" value='To be Billed' name="payment_term[]" />
+                                                TBB
+                                            </label>
+                                        </div>
+                                        <div class="checkbox radio">
+                                        <label class="check-label d-flex align-items-center" style="gap: 6px">
+                                                <span class="checkmark"></span>
+                                                <input type="checkbox" name="payment_term[]" value='To Pay' checked />
+                                                To Pay
+                                            </label>    
+                                        </div>
+                                        <div class="checkbox radio">
+                                        <label class="check-label d-flex align-items-center" style="gap: 6px">
+                                                <span class="checkmark"></span>
+                                                <input type="checkbox" name="payment_term[]" value='Paid' checked />
+                                                Paid
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -189,9 +216,9 @@ function addrow() {
         ?>
     rows += '<option value="{{ $key }}">{{ucwords($location)}}</option>';
     <?php
-    }
-    }
-    ?>
+} 
+}
+?>
     rows += '</select>';
     rows += '</td>';
     rows += '<td>';
@@ -221,6 +248,12 @@ $(document).on('click', '.removeRow', function() {
     $(this).closest('tr').remove();
 });
 
+$("#base_client_id").change(function() {
+    $('#regional_client_name').val('');
+    $('#branch_id').val('');
+
+});
+
 $("#branch_id").change(function() {
     var base_client = $('#base_client_id').val();
     var branch_id = $(this).val();
@@ -239,7 +272,6 @@ $("#branch_id").change(function() {
 
         },
         success: (data) => {
-            // console.log(data.generate_regional);
             $('#regional_client_name').val(data.generate_regional);
 
         },

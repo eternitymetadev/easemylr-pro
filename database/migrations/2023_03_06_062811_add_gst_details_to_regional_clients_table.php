@@ -19,6 +19,7 @@ class AddGstDetailsToRegionalClientsTable extends Migration
             $table->string('pan')->after('gst_no')->nullable();
             $table->string('upload_gst')->after('pan')->nullable();
             $table->string('upload_pan')->after('upload_gst')->nullable();
+            $table->string('payment_term')->after('upload_pan')->nullable();
         });
     }
 
