@@ -522,6 +522,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
+                $("#paymentType").empty();
 
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
@@ -532,6 +533,7 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
+
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -542,7 +544,21 @@ jQuery(document).ready(function () {
                     );
                 });
 
-                console.log(res.data_items);
+                var payment_term = res.data_regclient.payment_term;
+                var payment_array = payment_term.split(",");
+                $("#paymentType").append(
+                    `<option selected disabled>select..
+                    </option>`
+                );
+                $.each(payment_array, function (index, term) {
+                    $("#paymentType").append(
+                        '<option value="' +
+                        term +
+                        '">' +
+                        term +
+                        "</option>"
+                    );
+                });
 
                 if (res.data_regclient == null) {
                     var multiple_invoice = "";

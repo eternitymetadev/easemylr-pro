@@ -407,14 +407,17 @@ class ClientController extends Controller
 
     public function editRegClientDetail($id)
     {
+        
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
-
-        $regclient_name = RegionalClient::where('id', $id)->select('id', 'name')->first();
+        $regclient_name = RegionalClient::where('id', $id)->first();
         $zonestates = Zone::all()->unique('state')->pluck('state', 'id');
-        $getClientDetail = RegionalClientDetail::where('regclient_id', $id)->with('RegClient', 'ClientPriceDetails.ZoneFromState')->first();
+        $locations = Location::all();
+        $base_clients = BaseClient::all();
 
-        return view('clients.update-regclientdetails', ['prefix' => $this->prefix, 'zonestates' => $zonestates, 'regclient_name' => $regclient_name, 'getClientDetail' => $getClientDetail]);
+
+
+        return view('clients.update-regclientdetails', ['prefix' => $this->prefix, 'zonestates' => $zonestates, 'regclient_name' => $regclient_name, 'locations' => $locations, 'base_clients' => $base_clients]);
     }
 
     public function updateRegclientdetail(Request $request)
@@ -435,44 +438,33 @@ class ClientController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
+            
+            $payment_term = implode(',', $request->payment_term);
 
-            $saveClientDetail = RegionalClientDetail::where('id', $request->regclientdetail_id)->update(['docket_price' => $request->docket_price]);
+            $regionalupdate['baseclient_id'] = $request->base_client_id;
+            $regionalupdate['name'] = $request->name;
+            $regionalupdate['regional_client_nick_name'] = $request->regional_client_nick_name;
+            $regionalupdate['email'] = $request->email;
+            $regionalupdate['phone'] = $request->phone;
+            $regionalupdate['gst_no'] = $request->gst_no;
+            $regionalupdate['pan'] = $request->pan;
+            $regionalupdate['is_multiple_invoice'] = $request->is_multiple_invoice;
+            $regionalupdate['is_prs_pickup'] = $request->is_prs_pickup;
+            $regionalupdate['is_email_sent'] = $request->is_email_sent;
+            $regionalupdate['location_id'] = $request->branch_id;
+            // $regionalupdate['upload_gst'] = $gst_img_path_save;
+            // $regionalupdate['upload_pan'] = $pan_img_path_save;
+            $regionalupdate['payment_term'] = $payment_term;
+            // $regionalupdate['status']       = $request->status;
 
-            if (!empty($request->data)) {
-                $get_data = $request->data;
+            RegionalClient::where('id', $request->regclientdetail_id)->update($regionalupdate);
+            $url = URL::to($this->prefix . '/reginal-clients');
 
-                foreach ($get_data as $key => $save_data) {
-                    if (!empty($save_data['hidden_id'])) {
-                        $updatedata['regclientdetail_id'] = $request->regclientdetail_id;
-                        $updatedata['status'] = "1";
-                        $updatedata['from_state'] = $save_data['from_state'];
-                        $updatedata['to_state'] = $save_data['to_state'];
-                        $updatedata['price_per_kg'] = $save_data['price_per_kg'];
-                        $updatedata['open_delivery_price'] = $save_data['open_delivery_price'];
-                        $hidden_id = $save_data['hidden_id'];
-                        $saveregclients = ClientPriceDetail::where('id', $hidden_id)->update($updatedata);
-                    } else {
-                        $insertdata['regclientdetail_id'] = $request->regclientdetail_id;
-                        $insertdata['status'] = "1";
-                        $insertdata['from_state'] = $save_data['from_state'];
-                        $insertdata['to_state'] = $save_data['to_state'];
-                        $insertdata['price_per_kg'] = $save_data['price_per_kg'];
-                        $insertdata['open_delivery_price'] = $save_data['open_delivery_price'];
-                        unset($save_data['hidden_id']);
-                        $saveclientPriceDeatil = ClientPriceDetail::create($insertdata);
-                    }
-                }
-                $url = URL::to($this->prefix . '/reginal-clients');
-                $response['page'] = 'clientdetail-update';
-                $response['success'] = true;
-                $response['success_message'] = "Client detail Updated Successfully";
-                $response['error'] = false;
-                $response['redirect_url'] = $url;
-            } else {
-                $response['success'] = false;
-                $response['error_message'] = "Can not updated client detial please try again";
-                $response['error'] = true;
-            }
+            $response['success'] = true;
+            $response['success_message'] = "Regional Client Updated Successfully";
+            $response['error'] = false;
+            $response['redirect_url'] = $url;
+
 
             DB::commit();
         } catch (Exception $e) {
@@ -484,6 +476,74 @@ class ClientController extends Controller
 
         return response()->json($response);
     }
+
+    // public function updateRegclientdetail(Request $request)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $this->prefix = request()->route()->getPrefix();
+    //         $rules = array(
+    //             //   'client_name' => 'required',
+    //         );
+    //         $validator = Validator::make($request->all(), $rules);
+
+    //         if ($validator->fails()) {
+    //             $errors = $validator->errors();
+    //             $response['success'] = false;
+    //             $response['formErrors'] = true;
+    //             $response['errors'] = $errors;
+    //             return response()->json($response);
+    //         }
+
+    //         $saveClientDetail = RegionalClientDetail::where('id', $request->regclientdetail_id)->update(['docket_price' => $request->docket_price]);
+
+    //         if (!empty($request->data)) {
+    //             $get_data = $request->data;
+
+    //             foreach ($get_data as $key => $save_data) {
+    //                 if (!empty($save_data['hidden_id'])) {
+    //                     $updatedata['regclientdetail_id'] = $request->regclientdetail_id;
+    //                     $updatedata['status'] = "1";
+    //                     $updatedata['from_state'] = $save_data['from_state'];
+    //                     $updatedata['to_state'] = $save_data['to_state'];
+    //                     $updatedata['price_per_kg'] = $save_data['price_per_kg'];
+    //                     $updatedata['open_delivery_price'] = $save_data['open_delivery_price'];
+    //                     $hidden_id = $save_data['hidden_id'];
+    //                     $saveregclients = ClientPriceDetail::where('id', $hidden_id)->update($updatedata);
+    //                 } else {
+    //                     $insertdata['regclientdetail_id'] = $request->regclientdetail_id;
+    //                     $insertdata['status'] = "1";
+    //                     $insertdata['from_state'] = $save_data['from_state'];
+    //                     $insertdata['to_state'] = $save_data['to_state'];
+    //                     $insertdata['price_per_kg'] = $save_data['price_per_kg'];
+    //                     $insertdata['open_delivery_price'] = $save_data['open_delivery_price'];
+    //                     unset($save_data['hidden_id']);
+    //                     $saveclientPriceDeatil = ClientPriceDetail::create($insertdata);
+    //                 }
+    //             }
+    //             $url = URL::to($this->prefix . '/reginal-clients');
+    //             $response['page'] = 'clientdetail-update';
+    //             $response['success'] = true;
+    //             $response['success_message'] = "Client detail Updated Successfully";
+    //             $response['error'] = false;
+    //             $response['redirect_url'] = $url;
+    //         } else {
+    //             $response['success'] = false;
+    //             $response['error_message'] = "Can not updated client detial please try again";
+    //             $response['error'] = true;
+    //         }
+
+    //         DB::commit();
+    //     } catch (Exception $e) {
+    //         $response['error'] = false;
+    //         $response['error_message'] = $e;
+    //         $response['success'] = false;
+    //         $response['redirect_url'] = $url;
+    //     }
+
+    //     return response()->json($response);
+    // }
 
     //nurture client report
     public function clientReport(Request $request)

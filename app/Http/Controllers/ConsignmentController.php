@@ -684,7 +684,7 @@ class ConsignmentController extends Controller
     {
         $getconsigners = Consigner::select('id', 'nick_name')->where('regionalclient_id', $request->regclient_id)->get();
 
-        $getregclients = RegionalClient::select('id', 'location_id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
+        $getregclients = RegionalClient::where('id', $request->regclient_id)->first();
 
         $itemlists = ItemMaster::where('status', '1')->get();
 

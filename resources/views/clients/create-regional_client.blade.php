@@ -152,7 +152,7 @@
                                         </div>
                                     </div>
                                 </div>
- 
+
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Select Payment Terms<span
                                             class="text-danger">*</span></label>
@@ -165,14 +165,14 @@
                                             </label>
                                         </div>
                                         <div class="checkbox radio">
-                                        <label class="check-label d-flex align-items-center" style="gap: 6px">
+                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
                                                 <span class="checkmark"></span>
                                                 <input type="checkbox" name="payment_term[]" value='To Pay' checked />
                                                 To Pay
-                                            </label>    
+                                            </label>
                                         </div>
                                         <div class="checkbox radio">
-                                        <label class="check-label d-flex align-items-center" style="gap: 6px">
+                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
                                                 <span class="checkmark"></span>
                                                 <input type="checkbox" name="payment_term[]" value='Paid' checked />
                                                 Paid

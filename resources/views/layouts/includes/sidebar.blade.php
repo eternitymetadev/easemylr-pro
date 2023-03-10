@@ -755,10 +755,10 @@
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'locations')}}">Branches </a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Clients </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-regional-client'}}"> Create Regional Client </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reginal-clients'}}"> Regional Client </a>
             </li>
             <?php } ?>
 
