@@ -349,9 +349,13 @@ $('#update_gst_address').submit(function(e) {
     });
 });
 $("#branch_id").change(function(){
-     if("a"=="c"){
-         alert("The text has been changed.");
-     }  
+    
+    var on_click_branch = $(this).val();
+    var branch_id = $('#branch_id').val();
+    
+    // var check_arr = on_click_branch.split(',');
+    console.log(on_click_branch);
+
 });
 </script>
 @endsection
