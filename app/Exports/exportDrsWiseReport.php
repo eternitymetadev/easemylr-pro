@@ -14,7 +14,16 @@ use DB;
 
 class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
 {
-    /**
+    protected $startdate;
+    protected $enddate;
+    // protected $search;
+
+    function __construct($startdate,$enddate) {
+        $this->startdate = $startdate;
+        $this->enddate = $enddate;
+        // $this->search = $search;
+    }
+    /**  
      * @return \Illuminate\Support\Collection
      */
     public function collection()
@@ -23,17 +32,26 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         set_time_limit(6000);
         $arr = array();
 
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
+        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
             $query = $query;
         }
-        $drswiseReports = $query->where('payment_status', '!=', 0)->get();
 
+        
+        if(isset($startdate) && isset($enddate)){
+            $drswiseReports = $query->whereBetween('created_at',[$startdate,$enddate])->where('payment_status', '!=', 0)->orderby('created_at','ASC')->get();
+        }else {
+            $drswiseReports = $query->orderBy('id','ASC')->where('payment_status', '!=', 0)->get();
+        }
+      
         if ($drswiseReports->count() > 0) {
             $i = 0;
             foreach ($drswiseReports as $key => $drswiseReport) {
