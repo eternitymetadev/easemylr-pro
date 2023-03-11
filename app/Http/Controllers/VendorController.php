@@ -1287,7 +1287,7 @@ class VendorController extends Controller
         } else {
             $query = $query;
         }
-        $drswiseReports = $query->where('payment_status', '!=', 0)->get();
+        $drswiseReports = $query->where('payment_status', '!=', 0)->paginate(80);
             
         return view('vendors.drswise-payment-report', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports]);
     }

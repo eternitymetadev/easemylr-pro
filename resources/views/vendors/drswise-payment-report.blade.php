@@ -68,7 +68,7 @@ div.relative {
                 <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-drswise-report') }}">Export
                     data</a>
                     @csrf
-                    <table id="unverified-table" class="table table-hover" style="width:100%">
+                    <table id="" class="table table-responsive" style="width:100%">
 
                 </div>
                 <thead>
@@ -146,6 +146,7 @@ div.relative {
                     @endforeach
                 </tbody>
                 </table>
+                {!! $drswiseReports->links() !!}
             </div>
         </div>
     </div>
