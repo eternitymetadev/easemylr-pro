@@ -15,7 +15,7 @@ use App\Models\Location;
 use App\Models\TransactionSheet;
 use App\Models\Vehicle;
 use App\Models\Role;
-use App\Models\VehicleType;
+use App\Models\VehicleType; 
 use App\Models\User;
 use Session;
 use Helper;
@@ -65,7 +65,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        );
+        ); 
 
         if($authuser->role_id ==1)
         {
