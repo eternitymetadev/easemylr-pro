@@ -322,7 +322,7 @@ span.select2.select2-container.mb-4 {
             <div class="form-group col-md-2" id="codFreightBlock">
                 <label for="exampleFormControlSelect1">Cash on delivery
                 </label>
-                <Input type="number" class="form-control" name="cod" id="cod">
+                <Input type="number" class="form-control" name="cod" id="cod" readonly>
             </div>
             <div class="form-group d-flex col-md-3"> 
 
