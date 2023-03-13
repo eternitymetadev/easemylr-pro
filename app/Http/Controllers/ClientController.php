@@ -827,7 +827,7 @@ class ClientController extends Controller
 
             $url = URL::to($this->prefix . '/clients');
             $response['success'] = true;
-            $response['success_message'] = "Clients Added successfully";
+            $response['success_message'] = "Clients Updated successfully";
             $response['error'] = false;
             $response['page'] = 'client-create';
             $response['redirect_url'] = $url;
