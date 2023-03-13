@@ -34,7 +34,7 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
             $query = $query->whereIn('branch_id', $cc);
         }
        
-        $prs_report = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->get();
+        $prs_report = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail','Consignment')->orderBy('id', 'DESC')->get();
 //  echo "<pre>"; print_r($prs_report);exit;
 
         if($prs_report->count() > 0){
@@ -66,6 +66,9 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
                     'date' => $value->prs_date,
                     'vehicle_no' => @$value->VehicleDetail->regn_no,
                     'driver_name' => @$value->DriverDetail->name,
+                    'quantity' => @$value->Consignment->total_quantity,
+                    'net_weight' => @$value->Consignment->total_weight,
+                    'gross_weight' => @$value->Consignment->total_gross_weight,
                     // 'status' => $value->status,
                 ];
             }
@@ -81,7 +84,9 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
             'Date',
             'Vehicle Number',
             'Driver Name',
-            // 'Status',
+            'Quantity',
+            'Net Weight',
+            'Gross Weight',
         ];
     }
 }
