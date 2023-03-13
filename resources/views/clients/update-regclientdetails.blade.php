@@ -204,5 +204,30 @@
 $(document).on('click', '.removeRow', function() {
     $(this).closest('tr').remove();
 });
+
+$("#branch_id").change(function() {
+    var base_client = $('#base_client_id').val();
+    var branch_id = $(this).val();
+    $.ajax({
+        url: "update-generate-regional",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        type: "POST",
+        data: {
+            base_client: base_client,
+            branch_id: branch_id
+        },
+
+        beforeSend: function() {
+
+        },
+        success: (data) => {
+            $('#regional_client_name').val(data.generate_regional);
+
+        },
+    });
+
+});
 </script>
 @endsection

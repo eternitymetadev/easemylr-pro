@@ -673,9 +673,24 @@ class ClientController extends Controller
         return response()->json($response);
 
     }
+    public function updateGenerateRegionalName(Request $request)
+    {
+
+        $getBaseClient = BaseClient::where('id', $request->base_client)->first();
+        $getlocation = Location::where('id', $request->branch_id)->first();
+
+        $generate_regional = $getBaseClient->client_name . '-' . $getlocation->name;
+
+        $response['success'] = true;
+        $response['generate_regional'] = $generate_regional;
+
+        return response()->json($response);
+
+    }
 
     public function storeRegionalClient(Request $request)
     {
+        
 
         try {
             DB::beginTransaction();

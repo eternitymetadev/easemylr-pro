@@ -84,11 +84,12 @@
                                 ?>
                                 <tr>
                                     <td>{{$i}}</td>
-                            
+
                                     <td>{{$address->gst_no}}</td>
                                     <td>{{$address->state}}</td>
                                     <td>{{$address->address_line_1}}</td>
-                                    <td><button type="button" class="btn btn-warning edit_gst" value="{{$address->id}}">edit</button></td>
+                                    <td><button type="button" class="btn btn-warning edit_gst"
+                                            value="{{$address->id}}">edit</button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -189,7 +190,8 @@
             </div>
             <div class="modal-body">
                 <form id="update_gst_address">
-                <input type="hidden" id="gst_id" name="gst_id" />
+                    <input type="hidden" id="gst_id" name="gst_id" />
+                    <input type="hidden" id="old_branch" name="old_branch" />
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">GST NO.</label>
@@ -289,6 +291,7 @@ $('#new_gst_address').submit(function(e) {
 // ===========
 $(document).on('click', '.edit_gst', function() {
     var gst_id = $(this).val();
+
     $('#edit_gst_model').modal('show');
 
 
@@ -307,17 +310,24 @@ $(document).on('click', '.edit_gst', function() {
             // var branch = data.gst_num.branch_id;
             // var branch_array = branch.split(",");
             var branchID = [];
-            $.each(data.gst_num.branch, function (key, value) {
+            $.each(data.gst_num.branch, function(key, value) {
                 branchID.push(value.id);
             });
 
             $('#gst_id').val(data.gst_num.id);
             $('#gst_no').val(data.gst_num.gst_no);
             $('#branch_id').val(branchID).change();
+            $('#old_branch').val(branchID);
             $('#state').val(data.gst_num.state);
             $('#address_line_1').val(data.gst_num.address_line_1);
             $('#address_line_2').val(data.gst_num.address_line_2);
+
+            // $("#branch_id").change(function() {
+            //     var branch_id = $('#branch_id').val();
+            //     alert(branch_id);
+            // });
         }
+
 
     });
 });
@@ -347,15 +357,6 @@ $('#update_gst_address').submit(function(e) {
 
         }
     });
-});
-$("#branch_id").change(function(){
-    
-    var on_click_branch = $(this).val();
-    var branch_id = $('#branch_id').val();
-    
-    // var check_arr = on_click_branch.split(',');
-    console.log(on_click_branch);
-
 });
 </script>
 @endsection

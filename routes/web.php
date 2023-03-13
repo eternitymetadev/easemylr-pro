@@ -201,6 +201,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
     Route::get('create-regional-client', [ClientController::class, 'createRegionalClient']);
     Route::any('generate-regional', [ClientController::class, 'generateRegionalName']);
+    Route::any('regclient-detail/update-generate-regional', [ClientController::class, 'updateGenerateRegionalName']);
     Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);

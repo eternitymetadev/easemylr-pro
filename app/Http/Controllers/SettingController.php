@@ -300,8 +300,16 @@ class SettingController extends Controller
 
     public function updateGstAddress(Request $request)
     {
+        
         try {
             DB::beginTransaction();
+            $old_branch = explode(',', $request->old_branch);
+            $result = array_diff($old_branch,$request->branch_id);
+            if(!empty($result)){
+                foreach($result as $val){
+                    Location::where('id', $val)->update(['gst_registered_id' => NULL]);
+                }
+            }
             GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2]);
 
             foreach($request->branch_id as $branch){
