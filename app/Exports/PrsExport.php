@@ -9,6 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Session;
 use Helper;
+use App\Models\Role;
+use Auth;
 
 class PrsExport implements FromCollection, WithHeadings,ShouldQueue
 {
@@ -21,8 +23,16 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit ( 6000 );
         $arr = array();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
         $query = PickupRunSheet::query();
 
+        if ($authuser->role_id == 1) {
+            $query;
+        } else {
+            $query = $query->whereIn('branch_id', $cc);
+        }
        
         $prs_report = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail')->orderBy('id', 'DESC')->get();
 //  echo "<pre>"; print_r($prs_report);exit;
@@ -54,7 +64,7 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
                     'regional_client' => $reg_client,
                     'pickup_points' => $pickup_point,
                     'date' => $value->prs_date,
-                    'vehicle_no' => $value->VehicleDetail->regn_no,
+                    'vehicle_no' => @$value->VehicleDetail->regn_no,
                     'driver_name' => @$value->DriverDetail->name,
                     // 'status' => $value->status,
                 ];
