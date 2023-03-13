@@ -203,6 +203,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('generate-regional', [ClientController::class, 'generateRegionalName']);
     Route::any('regclient-detail/update-generate-regional', [ClientController::class, 'updateGenerateRegionalName']);
     Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
+    Route::any('edit-baseclient/{id}', [ClientController::class, 'editBaseClient']);
+    Route::any('update-base-client', [ClientController::class, 'updateBaseClient']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);

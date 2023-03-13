@@ -119,7 +119,7 @@
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
-                                <div class="checkbox radio">
+                                <div class="checkbox radio"> 
                                     <label class="check-label">No
                                         <input type="radio" name="is_prs_pickup" value='0'
                                             {{ ($regclient_name->is_prs_pickup=="0")? "checked" : "" }}>

@@ -758,4 +758,87 @@ class ClientController extends Controller
         return response()->json($response);
     }
 
+    public function editBaseClient(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        $baseClient = BaseClient::where('id', $request->id)->first();
+
+        return view('clients.update-baseclient', ['prefix' => $this->prefix, 'baseClient' => $baseClient]);
+    }
+    // =========
+    public function updateBaseClient(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'client_name' => 'required|unique:base_clients,client_name',
+                // 'name' => 'required|unique:regional_clients,name',
+            );
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['errors'] = $errors;
+                return response()->json($response);
+            }
+            if (!empty($request->client_name)) {
+                $client['client_name'] = $request->client_name;
+            }
+
+            // // ======= gst upload
+            // $gstupload = $request->file('upload_gst');
+            // $path = Storage::disk('s3')->put('clients', $gstupload);
+            // $gst_img_path_save = Storage::disk('s3')->url($path);
+
+            // //  ======= pan upload
+            // $panupload = $request->file('upload_pan');
+            // $pan_path = Storage::disk('s3')->put('clients', $panupload);
+            // $pan_img_path_save = Storage::disk('s3')->url($pan_path);
+
+            // // // ======= tan upload
+            // $tanupload = $request->file('upload_tan');
+            // $tan_path = Storage::disk('s3')->put('clients', $tanupload);
+            // $tan_img_path_save = Storage::disk('s3')->url($tan_path);
+
+            // // // ======= moa upload
+            // $moaupload = $request->file('upload_moa');
+            // $moa_path = Storage::disk('s3')->put('clients', $moaupload);
+            // $moa_img_path_save = Storage::disk('s3')->url($moa_path);
+
+            $client['tan'] = $request->tan;
+            $client['gst_no'] = $request->gst_no;
+            $client['pan'] = $request->pan;
+            // $client['upload_gst'] = $gst_img_path_save;
+            // $client['upload_pan'] = $pan_img_path_save;
+            // $client['upload_tan'] = $tan_img_path_save;
+            // $client['upload_moa'] = $moa_img_path_save;
+            $client['status'] = "1";
+
+            $saveclient = BaseClient::where('id',$request->base_client)->update($client);
+
+            $url = URL::to($this->prefix . '/clients');
+            $response['success'] = true;
+            $response['success_message'] = "Clients Added successfully";
+            $response['error'] = false;
+            $response['page'] = 'client-create';
+            $response['redirect_url'] = $url;
+       
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+        }
+        return response()->json($response);
+    }
+
 }
