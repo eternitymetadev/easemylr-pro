@@ -1217,32 +1217,96 @@ class VendorController extends Controller
         return 1;
     }
 
-    // public function paymentReportView(Request $request)
-    // {
-    //     $this->prefix = request()->route()->getPrefix();
-    //     $authuser = Auth::user();
-    //     $role_id = Role::where('id', '=', $authuser->role_id)->first();
-    //     $cc = explode(',', $authuser->branch_id);
-
-    //     if ($authuser->role_id == 2) {
-    //         $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
-    //             ->where('branch_id', $cc)
-    //             ->get();
-    //     } else {
-    //         $payment_lists = PaymentRequest::with('Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'PaymentHistory', 'TransactionDetails.ConsignmentNote.ConsignmentItems', 'TransactionDetails.ConsignmentNote.vehicletype', 'TransactionDetails.ConsignmentNote.ShiptoDetail')
-    //             ->get();
-    //     }
-    //     $simp =
-
-    //     return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
-    // }
-
     public function paymentReportView(Request $request)
     {
+        //
         $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        // $query = PaymentRequest::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+
+            if ($authuser->role_id == 2) {
+                $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+                    $query->whereIn('branch_id', $cc);
+                });
+            } else {
+                $query = $query;
+            }
+            // $payment_lists = $query->groupBy('transaction_id')->get();
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        });
+
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $payment_lists = $query->whereBetween('created_at', [$startdate, $enddate])->groupBy('transaction_id')->paginate($peritem);
+            } else {
+                $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
+            }
+
+            $html = view('vendors.payment-report-view-ajax', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
+        // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
         $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
 
         if ($authuser->role_id == 2) {
@@ -1252,13 +1316,35 @@ class VendorController extends Controller
         } else {
             $query = $query;
         }
-        $payment_lists = $query->groupBy('transaction_id')->get();
-        return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
+
+        $payment_lists = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $payment_lists = $payment_lists->appends($request->query());
+
+        return view('vendors.payment-report-view', ['payment_lists' => $payment_lists, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
+
+    // public function paymentReportView(Request $request)
+    // {
+    //     $this->prefix = request()->route()->getPrefix();
+    //     $authuser = Auth::user();
+    //     $role_id = Role::where('id', '=', $authuser->role_id)->first();
+    //     $cc = explode(',', $authuser->branch_id);
+    //     $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+
+    //     if ($authuser->role_id == 2) {
+    //         $query->whereHas('PaymentRequest', function ($query) use ($cc) {
+    //             $query->whereIn('branch_id', $cc);
+    //         });
+    //     } else {
+    //         $query = $query;
+    //     }
+    //     $payment_lists = $query->groupBy('transaction_id')->get();
+    //     return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
+    // }
 
     public function exportPaymentReport(Request $request)
     {
-        return Excel::download(new PaymentReportExport, 'PaymentReport.xlsx');
+        return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx'); 
     }
 
     public function handshakeReport(Request $request)
@@ -1274,9 +1360,9 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
-        // 
+        //
         $this->prefix = request()->route()->getPrefix();
-        
+
         $sessionperitem = Session::get('peritem');
         if (!empty($sessionperitem)) {
             $peritem = $sessionperitem;
@@ -1306,7 +1392,6 @@ class VendorController extends Controller
             } else {
                 $query = $query;
             }
-           
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -1354,15 +1439,14 @@ class VendorController extends Controller
 
             return response()->json(['html' => $html]);
         }
-        
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-       
 
         $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
-        
+
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -1371,15 +1455,14 @@ class VendorController extends Controller
 
         $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
         $drswiseReports = $drswiseReports->appends($request->query());
-        
 
         return view('vendors.drswise-report', ['drswiseReports' => $drswiseReports, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
 
     public function exportdrsWiseReport(Request $request)
     {
-      
-        return Excel::download(new exportDrsWiseReport($request->startdate,$request->enddate), 'DrsWise-PaymentReport.xlsx');
+
+        return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate), 'DrsWise-PaymentReport.xlsx');
     }
 
 }
