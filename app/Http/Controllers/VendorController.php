@@ -1317,7 +1317,7 @@ class VendorController extends Controller
             $query = $query;
         }
 
-        $payment_lists = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
         $payment_lists = $payment_lists->appends($request->query());
 
         return view('vendors.payment-report-view', ['payment_lists' => $payment_lists, 'prefix' => $this->prefix, 'peritem' => $peritem]);
