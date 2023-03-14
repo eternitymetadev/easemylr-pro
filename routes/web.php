@@ -125,6 +125,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::post('/vehicles/delete-rcimage', [VehicleController::class, 'deletercImage']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
+    Route::any('check-vehicle-rc', [VehicleController::class, 'checkVehicleRc']);
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
@@ -314,6 +315,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
     Route::get('vehicles/list',[VehicleController::class, 'getData']);
+    Route::any('check-vehicle-rc', [VehicleController::class, 'checkVehicleRc']);
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
@@ -695,6 +697,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('vehicles/delete-vehicle', [VehicleController::class, 'deleteVehicle']);
     Route::post('/vehicles/delete-rcimage', [VehicleController::class, 'deletercImage']);
     Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel']);
+      Route::any('check-vehicle-rc', [VehicleController::class, 'checkVehicleRc']);
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);

@@ -2968,4 +2968,35 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
 //         });
 // });
 /*===== End delete User =====*/
+ 
+$("#vehicle_no").change(function(){
+    if($('#vehicle_no').val() != ''){
+        var vehicle_id = $(this).val();
+        $url = 'check-vehicle-rc';
+        $url = window.location.pathname;
+        alert($url);
+        $.ajax({
+            type: 'get',
+            url: 'check-vehicle-rc',
+            data: {
+                vehicle_id: vehicle_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            beforeSend: function() {
+            },
+            success: function(res) {
+                if(res.success == true){
+    
+                }else{
+                    swal('error', res.message ,'error');
+                    $('#vehicle_no').val("").change();
+                }
+    
+            }
+        });
+    }
+  });
 

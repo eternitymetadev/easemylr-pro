@@ -333,4 +333,26 @@ class VehicleController extends Controller
         }
     	return response()->json($response);
     }
+
+    public function checkVehicleRc(Request $request)
+    {
+
+        $check_rc = Vehicle::where('id', $request->vehicle_id)->first();
+        if(empty($check_rc->rc_image)){
+
+            $response['success'] = false;
+            $response['error'] = true;
+            $response['message'] = "Please upload RC image";
+            return response()->json($response);
+
+        }else{
+            $response['success'] = true;
+            $response['error'] = false;
+            $response['message'] = "verified account";
+    
+            return response()->json($response);
+        }
+       
+    }
+
 }
