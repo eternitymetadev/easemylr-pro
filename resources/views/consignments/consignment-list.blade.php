@@ -682,7 +682,7 @@ a.badge.alert.bg-secondary.shadow-sm {
         <div class="modal-content">
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center">
-                <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
+                    <img src="#" id="toggledImageView" style="max-height: 90vh; max-width: 90vw" />
                 </div>
             </div>
         </div>
@@ -814,12 +814,13 @@ function row_click(row_id, job_id, url) {
 
                 } else {
 
-                    if(response.driver_trail){
-                    var cc =
-                        '<div class="historyTimeLineContainer taskContainer taskDetailContainer">';
-                    $.each(response.driver_trail, function(index, task) {
-                        const statusColor = task.status == 'Started' ? 'red' : 'green';
-                        cc += `<div class="historyTimeline">
+                    if (response.driver_trail) {
+                        var cc =
+                            '<div class="historyTimeLineContainer taskContainer taskDetailContainer">';
+                        $.each(response.driver_trail, function(index, task) {
+                            const statusColor = task.status == 'Started' ? 'red' : 'green';
+
+                                cc += `<div class="historyTimeline">
                                     <div class="d-flex align-items-center flex-wrap"
                                          style="gap: 1rem; --statusColor:` + statusColor + `;">
                                         <span class="marker"></span>
@@ -828,16 +829,21 @@ function row_click(row_id, job_id, url) {
                                     <div class="d-flex align-items-center flex-wrap">
                                         <div class="historyTimeLineDetail">
                                             <span style="font-size: 14px; font-weight: 700">` + task.create_at + `
-                                            </span><br/></strong>
-                                        </div>
+                                            </span><br/></strong>`;
+                                if (task.status == 'Started') {
+                                    cc += `<div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;">
+                                            </div>`;
+                                }
+                                cc += `</div>
                                     </div>
                                 </div>`;
+                        });
 
-                    });
-                    const acknowledged = response.driver_trail.some(el => el.status === 'Acknowledge');
-                    
-                    if(!acknowledged){
-                        cc += `<div class="historyTimeline">
+
+                        const acknowledged = response.driver_trail.some(el => el.status === 'Acknowledge');
+
+                        if (!acknowledged) {
+                            cc += `<div class="historyTimeline">
                                     <div class="d-flex align-items-center flex-wrap"
                                          style="gap: 1rem; --statusColor:orange">
                                         <span class="marker"></span>
@@ -850,11 +856,14 @@ function row_click(row_id, job_id, url) {
                                         </div>
                                     </div>
                                 </div>`;
-                    } 
-                    const successful = response.driver_trail.some(el => el.status === 'Successful');
-                    
-                    if(acknowledged && !successful){
-                        cc += `<div class="historyTimeline">
+                        }
+                        const successful = response.driver_trail.some(el => el.status === 'Successful');
+
+                        if (acknowledged && !successful) {
+                            if (response.app_media?.length > 0) {
+                                cc += ``;
+                            } else {
+                            cc += `<div class="historyTimeline">
                                     <div class="d-flex align-items-center flex-wrap"
                                          style="gap: 1rem; --statusColor:orange">
                                         <span class="marker"></span>
@@ -867,46 +876,47 @@ function row_click(row_id, job_id, url) {
                                         </div>
                                     </div>
                                 </div>`;
-                    } 
+                        }
+                        }
 
-                    cc += '</div>';
-                    var modal_html1 = cc;
-                    $('.append-modal').html(modal_html1);
+                        cc += '</div>';
+                        var modal_html1 = cc;
+                        $('.append-modal').html(modal_html1);
 
-                    var sssss = ``;
+                        var sssss = ``;
 
-                    $.each(response.app_media, function(index, media) {
+                        $.each(response.app_media, function(index, media) {
 
-                        if(media.type == 'pod'){
-                    sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                            if (media.type == 'pod') {
+                                sssss += `<div class="timelineImagesBlock" style="flex: 3">
                                                     <p>POD</p>
-                                                    <img src="`+media.pod_img+`"
+                                                    <img src="` + media.pod_img + `"
                                                         class="viewImageInNewTab" data-toggle="modal"
                                                         data-target="#exampleModal" style="width: 100%;"/>
                                                 </div>`;
-                        }else if(media.type == 'sign'){
-                    sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                            } else if (media.type == 'sign') {
+                                sssss += `<div class="timelineImagesBlock" style="flex: 1">
                                                     <p>Sign</p>
-                                                    <img src="`+media.pod_img+`"
+                                                    <img src="` + media.pod_img + `"
                                                         class="viewImageInNewTab" data-toggle="modal"
                                                         data-target="#exampleModal" style="width: 100%;"/>
                                                 
                                                 </div>`;
-                        }else if(media.type == 'product_images'){
-                    sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                            } else if (media.type == 'product_images') {
+                                sssss += `<div class="timelineImagesBlock" style="flex: 2">
                                                     <p>Material</p>
-                                                    <img src="`+media.pod_img+`"
+                                                    <img src="` + media.pod_img + `"
                                                         class="viewImageInNewTab" data-toggle="modal"
                                                         data-target="#exampleModal" style="width: 100%;"/>
                                                 </div>`;
-                        }
-                    });
-                    $('.append-modal-images').html(sssss);
-                }else{
-                    var sssss = '';
-                    var modal_html1 = 'No Data Available';
-                    $('.append-modal').html(modal_html1);
-                }
+                            }
+                        });
+                        $('.append-modal-images').html(sssss);
+                    } else {
+                        var sssss = '';
+                        var modal_html1 = 'No Data Available';
+                        $('.append-modal').html(modal_html1);
+                    }
 
                 }
                 if ((response.job_id != '') && (response.delivery_status != 'Successful')) {
@@ -962,7 +972,7 @@ function initMap(response, row_id) {
 }
 
 jQuery(document).on('click', '.viewImageInNewTab', function() {
-    
+
     let toggledImage = $(this).attr('src');
     $('#toggledImageView').attr('src', toggledImage);
 });
