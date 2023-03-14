@@ -188,7 +188,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('/sample-deliverydate',[ImportCsvController::class, 'deliverydateSampleDownload']);
     Route::get('/sample-manualdelivery',[ImportCsvController::class, 'manualdeliverySampleDownload']);
 
-    Route::resource('clients', ClientController::class);
+    Route::resource('clients', ClientController::class); 
     Route::get('clients-list', [ClientController::class, 'clientList']);
     Route::post('/clients/update-client', [ClientController::class, 'UpdateClient']);
     Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
@@ -208,7 +208,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
     Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
-
+ 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
