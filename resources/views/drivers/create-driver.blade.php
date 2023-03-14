@@ -60,34 +60,6 @@
                                             class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
                                 </div>
                             </div>
-                            <h5 class="form-row mb-2">Bank Details</h5>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Bank Name</label>
-                                    <input type="text" class="form-control" name="bank_name" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Branch Name</label>
-                                    <input type="text" class="form-control" name="branch_name" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">IFSC</label>
-                                    <input type="text" class="form-control" name="ifsc" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account No</label>
-                                    <input type="text" class="form-control" name="account_number" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name</label>
-                                    <input type="text" class="form-control" name="account_holdername" placeholder="">
-                                </div>
-
-                            </div>
                             <!-- <div class="form-group d-flex col-md-3">
  
                                 <div class="d-flex align-items-center px-2 pt-2">

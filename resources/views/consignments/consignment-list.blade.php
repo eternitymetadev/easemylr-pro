@@ -834,6 +834,41 @@ function row_click(row_id, job_id, url) {
                                 </div>`;
 
                     });
+                    const acknowledged = response.driver_trail.some(el => el.status === 'Acknowledge');
+                    
+                    if(!acknowledged){
+                        cc += `<div class="historyTimeline">
+                                    <div class="d-flex align-items-center flex-wrap"
+                                         style="gap: 1rem; --statusColor:orange">
+                                        <span class="marker"></span>
+                                        <span class="status">Pending Acknowledge</span><br/>
+                                    </div>
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <div class="historyTimeLineDetail">
+                                            <span style="font-size: 14px; font-weight: 700">
+                                            </span><br/></strong>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    } 
+                    const successful = response.driver_trail.some(el => el.status === 'Successful');
+                    
+                    if(acknowledged && !successful){
+                        cc += `<div class="historyTimeline">
+                                    <div class="d-flex align-items-center flex-wrap"
+                                         style="gap: 1rem; --statusColor:orange">
+                                        <span class="marker"></span>
+                                        <span class="status">In Transit</span><br/>
+                                    </div>
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <div class="historyTimeLineDetail">
+                                            <span style="font-size: 14px; font-weight: 700">
+                                            </span><br/></strong>
+                                        </div>
+                                    </div>
+                                </div>`;
+                    } 
+
                     cc += '</div>';
                     var modal_html1 = cc;
                     $('.append-modal').html(modal_html1);
