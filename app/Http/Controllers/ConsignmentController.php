@@ -4124,6 +4124,23 @@ class ConsignmentController extends Controller
     {
         try {
 
+            $authuser = Auth::user();
+            $login_branch = $authuser->branch_id;
+
+            $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
+            if ($get_delivery_branch->lr_type == 0) {
+                $delivery_branch = $get_delivery_branch->branch_id;
+            } else {
+                $delivery_branch = $get_delivery_branch->to_branch_id;
+            }
+
+            if ($login_branch != $delivery_branch) {
+
+                $response['success'] = false;
+                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+                return Response::json($response);
+            }
+
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
             if (!empty($file)) {
