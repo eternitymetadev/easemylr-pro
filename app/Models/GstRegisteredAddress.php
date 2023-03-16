@@ -16,10 +16,11 @@ class GstRegisteredAddress extends Model
         'upload_gst',
         'created_at', 
         'updated_at'
-    ];
+    ]; 
 
     public function Branch(){
         return $this->hasMany('App\Models\Location','gst_registered_id','id');
     }
+    
 
 }

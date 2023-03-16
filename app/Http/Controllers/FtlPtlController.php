@@ -915,7 +915,7 @@ class FtlPtlController extends Controller
                 $consigners = Consigner::select('id', 'nick_name')->whereIn('regionalclient_id', $regclient)->get();
             } else {
                 $consigners = Consigner::select('id', 'nick_name')->get();
-            }
+            } 
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
