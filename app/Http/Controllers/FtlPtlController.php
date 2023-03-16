@@ -893,7 +893,7 @@ class FtlPtlController extends Controller
                    $respons_data = json_encode($respons);
                    $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                    // ==== end create
-            }
+            } 
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
             //     $lid = $saveconsignment->id;
