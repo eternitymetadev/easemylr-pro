@@ -119,7 +119,7 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>Consignee</span>
+                <span>Farmer</span>
             </div>
         </a>
     </li>
@@ -151,7 +151,7 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Drivers</span>
+                <span>Pilot</span>
             </div>
         </a>
     </li>
@@ -174,7 +174,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5"></circle>
                     <circle cx="18.5" cy="18.5" r="2.5"></circle>
                 </svg>
-                <span>Vehicles</span>
+                <span>Drone</span>
             </div>
         </a>
     </li>
@@ -287,7 +287,7 @@
         </ul>
     </li>
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'orders') || str_contains($currentURL, 'create-ptl')) active @endif">
@@ -313,10 +313,10 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create PTL lR</a>
             </li>
-            <!-- <li>
+            <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
             </li> -->
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
             <li>
@@ -324,7 +324,7 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>
+            </li>  -->
 
             <!-- <li class="submenuListStyle">
                 <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -347,10 +347,10 @@
                     <li>🔹 <a href="{{$prefixurl.'outgoing-hrs'}}"> Outgoing Hrs </a></li>
                 </ul>
             </li> -->
-        </ul>
-    </li>
+        <!-- </ul>
+    </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'unverified-list') || str_contains($currentURL, 'transaction-sheet')) active @endif">
@@ -377,9 +377,9 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'transaction-sheet'}}">Drs List</a>
             </li>
         </ul>
-    </li>
+    </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#hrs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'hrs-list') || str_contains($currentURL, 'hrs-sheet') || str_contains($currentURL, 'incoming-hrs')  || str_contains($currentURL, 'outgoing-hrs')) active @endif">
@@ -412,10 +412,10 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'outgoing-hrs'}}">Outgoing Hrs</a>
             </li>
         </ul>
-    </li>
+    </li> -->
 
     <?php if($authuser->role_id == 1 || $authuser->role_id ==2 || $authuser->role_id ==3 || $authuser->role_id ==4){ ?>
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#prs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'prs') || str_contains($currentURL, 'driver-tasks') || str_contains($currentURL, 'vehicle-receivegate')) active @endif">
@@ -449,10 +449,10 @@
             </li>
 
         </ul>
-    </li>
+    </li> -->
    <?php }
    if($authuser->role_id == 2 || $authuser->role_id ==3 || $authuser->role_id ==5){ ?>
-    <p class="menuHead menuHeadHidden mb-0">Payments</p>
+    <!-- <p class="menuHead menuHeadHidden mb-0">Payments</p>
     <li class="menu">
         <a href="{{$prefixurl.'vendor-list'}}" data-active="<?php if($segment == 'vendor-list'){?>true<?php }?>"
             class="dropdown-toggle">
@@ -488,11 +488,11 @@
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
         </a> 
-        <ul class="collapse submenu list-unstyled" id="drsPayments" data-parent="#accordionExample">
+        <ul class="collapse submenu list-unstyled" id="drsPayments" data-parent="#accordionExample"> -->
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'vendor-list'}}"> Vendor List </a>
             </li> -->
-            <li>
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'drs-paymentlist'}}"> Create Payments </a>
             </li>
             <li>
@@ -562,10 +562,10 @@
             </li>
 
         </ul>
-    </li>
+    </li> -->
     <?php } ?>
 
-    <p class="menuHead menuHeadHidden mb-0">Reports</p>
+    <!-- <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
     <li class="menu">
         <a href="#misReports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -593,7 +593,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report2'}}"> Mis Report 2 </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 
     
     <!-- <li class="menu">

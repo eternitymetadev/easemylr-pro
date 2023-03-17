@@ -46,7 +46,7 @@
                 </ol>
             </nav>
         </div>
-        <div class="row layout-top-spacing">
+        <!-- <div class="row layout-top-spacing">
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
                 <div class="widget widget-four">
 
@@ -263,7 +263,7 @@
                     </div>
                 </div>
             </div> -->
-            <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+            <!-- <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-chart-three">
                     <div class="widget-heading">
                         <div class="">
@@ -362,8 +362,8 @@
                         <div class="w-shadow-bottom"></div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> -->
+        <!-- </div> -->
     </div>
 
 @endsection
