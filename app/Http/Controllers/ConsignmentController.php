@@ -939,7 +939,7 @@ class ConsignmentController extends Controller
 
         // get branch address
         if(!empty($locations->GstAddress)){
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
         <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
         <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
         <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';

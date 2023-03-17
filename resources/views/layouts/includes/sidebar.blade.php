@@ -749,10 +749,10 @@
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}">Company Setup </a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{url($prefix.'users')}}">All Users</a>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/users')}}">All Users</a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{url($prefix.'locations')}}">Branches </a>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/locations')}}">Branches </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
