@@ -21,7 +21,7 @@ class ConsigneePhoneImport implements ToModel,WithHeadingRow
     {        
         $consignee = Consignee::where('id', $row['consignee_id'])->first();
         
-        if(empty($consignee->phone)){
+        if(!empty($consignee)){
             Consignee::where('id', $row['consignee_id'])->update(['phone' => $row['contact_no']]);
         }
     }
