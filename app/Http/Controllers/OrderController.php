@@ -26,6 +26,8 @@ use Mail;
 use QrCode;
 use App\Models\BranchAddress;
 use Helper;
+use Carbon\Carbon;
+use App\Models\Job;
 
 
 class OrderController extends Controller
@@ -2476,6 +2478,55 @@ class OrderController extends Controller
                     }
                 }
             }
+
+            $mytime = Carbon::now('Asia/Kolkata');
+            $currentdate = $mytime->toDateTimeString(); 
+            //===========================End drs lr ================================= //
+            // if ($saveconsignment) {
+            /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
+            $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
+
+            // check app assign ========================================
+            if(!empty($get_driver_details->branch_id)){
+               $driver_branch = explode(',', $get_driver_details->branch_id);
+               if (in_array($authuser->branch_id, $driver_branch))
+                {
+                    $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+
+                    // task created
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    $respons_data = json_encode($respons);
+                    $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                    // ==== end create
+                    // =================== task assign 
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$saveconsignment->id)->latest('consignment_id')->first();
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+                    
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                     // ==== end started
+                    $app_notify = $this->sendNotification($request->driver_id);
+                }else{
+                     // task created
+                     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                     $respons_data = json_encode($respons);
+                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                     // ==== end create
+                }
+                // if(!empty($request->driver_id)){
+                //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+                // }
+            }else{
+                   // task created
+                   $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                   $respons_data = json_encode($respons);
+                   $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                   // ==== end create
+            } 
+
             
                 $url = $this->prefix . '/orders';
                 $response['success'] = true;
@@ -2770,9 +2821,9 @@ class OrderController extends Controller
             }
             //===========================End drs lr ================================= //
             if ($saveconsignment) {
-
                 /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-                $vn = $consignmentsave['vehicle_id'];
+
+                $vn = $consignmentsave['vehicle_id']; 
                 $lid = $request->consignment_id;
                 $lrdata = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -2782,10 +2833,10 @@ class OrderController extends Controller
                     ->where('consignment_notes.id', $lid)
                     ->get();
                 $simplyfy = json_decode(json_encode($lrdata), true);
-                //echo "<pre>";print_r($simplyfy);die;
                 //Send Data to API
                 $get_data = ConsignmentNote::where('id', $request->consignment_id)->first();
 
+                if (($request->edd) >= $request->consignment_date) {
                 if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
                     $createTask = $this->createTookanTasks($simplyfy);
                     $json = json_decode($createTask[0], true);
@@ -2793,6 +2844,7 @@ class OrderController extends Controller
                     $tracking_link = $json['data']['tracking_link'];
                     $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                 }
+            }
                 // insert consignment items
                 if (!empty($request->data)) {
                     $get_data = $request->data;

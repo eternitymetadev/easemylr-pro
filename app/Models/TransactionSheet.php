@@ -1,17 +1,65 @@
 <?php
 
+
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TransactionSheet extends Model
-{
-    use HasFactory;
-    protected $table = 'transaction_sheets';
+
+{ 
+
+    protected $table = "transaction_sheets";
+
+    public $timestamps = false;
+
+    protected $primaryKey = 'id';
+
+    public $boolean = 1;
+
+    
+
+  /**
+
+     * The attributes that are mass assignable.
+
+     *
+
+     * @var array
+
+     */
+
     protected $fillable = [
-        'consignment_id','consignee_id','consignment_no','consignment_date','city','pincode','total_quantity', 'total_weight','order_no','vehicle_no', 'driver_name','driver_no','status','job_id','delivery_status','delivery_date','drs_no','branch_id','purchase_amount','created_at','updated_at'
+
+        'drs_no','consignment_no','consignee_id','consignment_date','city','pincode','total_quantity','total_weight','order_no','vehicle_no','driver_name','driver_no','branch_id','delivery_status','delivery_date','job_id','status','created_at','updated_at'
+
     ];
+
+
+
+     /**
+
+     * The attributes that should be cast to native types.
+
+     *
+
+     * @var array
+
+     */
+
+    protected $casts = [
+
+        
+
+'created_at' => 'datetime',
+
+'updated_at' => 'datetime',
+
+    ];
+
+    use HasFactory;
 
     public function ConsignmentDetail()
     {
@@ -31,6 +79,8 @@ class TransactionSheet extends Model
         return $this->hasMany('App\Models\ConsignmentItem','consignment_id','consignment_no');
     }
 
-    
 
 }
+
+
+
