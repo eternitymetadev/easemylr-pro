@@ -98,7 +98,7 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>Consigners</span>
+                <span>Pilot HQ</span>
             </div>
         </a>
     </li>
@@ -287,7 +287,7 @@
         </ul>
     </li>
 
-    <!-- <li class="menu">
+     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'orders') || str_contains($currentURL, 'create-ptl')) active @endif">
@@ -313,10 +313,10 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create PTL lR</a>
             </li>
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
-            </li> -->
             <!-- <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
+            </li>  -->
+           <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
             <li>
@@ -324,7 +324,7 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>  -->
+            </li>  
 
             <!-- <li class="submenuListStyle">
                 <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
