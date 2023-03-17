@@ -72,6 +72,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                 }
 
                 $arr[] = [
+                    'consignee_id' =>  $value->id,
                     'nick_name'     => $value->nick_name,
                     'legal_name'    => $value->legal_name,
                     'consigner_id'  => $value->consigner_id,
@@ -98,6 +99,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
     public function headings(): array
     {
         return [
+            'Consignee Id',
             'Consignee Nick Name',
             'Consignee Legal Name',
             'Consigner',
