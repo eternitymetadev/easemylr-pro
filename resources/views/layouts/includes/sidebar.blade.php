@@ -287,7 +287,7 @@
         </ul>
     </li>
 
-     <li class="menu">
+    <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'orders') || str_contains($currentURL, 'create-ptl')) active @endif">
@@ -315,8 +315,8 @@
             </li>
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
-            </li>  -->
-           <li>
+            </li> -->
+            <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
             <li>
@@ -324,7 +324,7 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>  
+            </li>
 
             <!-- <li class="submenuListStyle">
                 <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -347,10 +347,10 @@
                     <li>🔹 <a href="{{$prefixurl.'outgoing-hrs'}}"> Outgoing Hrs </a></li>
                 </ul>
             </li> -->
-        <!-- </ul>
-    </li> -->
+        </ul>
+    </li>
 
-    <!-- <li class="menu">
+    <li class="menu">
         <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'unverified-list') || str_contains($currentURL, 'transaction-sheet')) active @endif">
@@ -377,7 +377,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'transaction-sheet'}}">Drs List</a>
             </li>
         </ul>
-    </li> -->
+    </li>
 
     <!-- <li class="menu">
         <a href="#hrs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -468,9 +468,9 @@
                 <span>Vendors</span>
             </div>
         </a>
-    </li>
+    </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#drsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'drs-paymentlist') || str_contains($currentURL, 'request-list') || str_contains($currentURL, 'payment-report-view') || str_contains($currentURL, 'drswise-report')) active @endif">
@@ -506,9 +506,9 @@
             </li>
 
         </ul>
-    </li>
+    </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#hrsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'hrs-payment-list')) active @endif">
@@ -534,8 +534,8 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'hrs-request-list'}}"> Request List </a>
             </li>
         </ul>
-    </li>
-    <li class="menu">
+    </li> -->
+    <!-- <li class="menu">
         <a href="#prsPayments" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'prs-paymentlist')) active @endif">
