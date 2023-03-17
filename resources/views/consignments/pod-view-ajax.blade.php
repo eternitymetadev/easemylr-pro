@@ -241,8 +241,9 @@ $invoice['amt'] = implode(',', $inv_amt);
                 <td style="max-width: 260px">
                  <?php
                  $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                 $count_arra = count($getjobimg);
                     ?>
-                    <?php if (!empty($getjobimg)) {?>
+                    <?php if ($count_arra > 1) { ?>
                     <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             @foreach($getjobimg as $img)
