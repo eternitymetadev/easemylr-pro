@@ -849,7 +849,7 @@ class FtlPtlController extends Controller
                 $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
             }
 
-            $mytime = Carbon::now('Asia/Kolkata');
+            $mytime = Carbon::now('Asia/Kolkata'); 
             $currentdate = $mytime->toDateTimeString();
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
