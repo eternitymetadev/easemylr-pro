@@ -1778,7 +1778,7 @@ jQuery(document).ready(function () {
                             var field1 = [];
                             var img_length = app_img.length;
                             var i = 0;
-                            $.each(img_api, function (index, img) {
+                            $.each(app_img, function (index, img) {
                                 i++;
                                 img_group =
                                     "<a href='" +
