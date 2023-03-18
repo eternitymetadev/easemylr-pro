@@ -1683,7 +1683,7 @@ jQuery(document).ready(function () {
         var base_url = window.location.origin;
         jQuery.ajax({
             url: "get-delivery-dateLR", 
-            type: "get",
+            type: "get", 
             cache: false,
             data: data,
             dataType: "json",
@@ -1762,23 +1762,21 @@ jQuery(document).ready(function () {
                             var field = field1.join(" ");
                         }
                     } else {
-                        var img_api = [];
+                        var app_img = [];
 
                         $.each(
-                            trail_history.task_history,
-                            function (index, history) {
-                                if (history.type == "image_added") {
-                                    img_api.push(history.description);
-                                }
+                            data.app_media,
+                            function (index, media) {
+                                    app_img.push(media.pod_img);
                             }
                         );
 
-                        if (img_api == null || img_api == "") {
+                        if (app_img == null || app_img == "") {
                             var field = "No image available";
 
                         } else {
                             var field1 = [];
-                            var img_length = img_api.length;
+                            var img_length = app_img.length;
                             var i = 0;
                             $.each(img_api, function (index, img) {
                                 i++;
@@ -1840,9 +1838,11 @@ jQuery(document).ready(function () {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
+                    }else if(value.lr_mode == 1){
+                        row += "<td>Update from shadow</td>";
                     } else {
 
-                        row += "<td>Update from shadow</td>";
+                        row += "<td>Update from Shiprider</td>";
                     }
                     row += "</tr>";
 

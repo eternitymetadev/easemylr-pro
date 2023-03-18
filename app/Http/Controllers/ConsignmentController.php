@@ -3855,10 +3855,12 @@ class ConsignmentController extends Controller
             })->get();
 
         $result = json_decode(json_encode($transcationview), true);
-        //  echo '<pre>'; print_r($result); die;
+
+        $getapp = AppMedia::where('consignment_no', $request->lr_no)->get();
 
         $response['fetch'] = $result;
         $response['role_id'] = $role;
+        $response['app_media'] = $getapp;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);

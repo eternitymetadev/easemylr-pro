@@ -109,7 +109,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </span>
                     @endif
                 </td>
-
+ 
                 <td style="width: 120px;">
                     <?php $dlStatus = $consignment->delivery_status?>
                     <p style="font-size: 11px; text-align: center">
