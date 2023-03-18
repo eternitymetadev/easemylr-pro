@@ -10,15 +10,16 @@ use App\Models\ConsignmentNote;
 use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
 use App\Models\ItemMaster;
+use App\Models\Job;
 use App\Models\Location;
 use App\Models\RegionalClient;
 use App\Models\Role;
-use App\Models\Job;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Zone;
 use Auth;
+use Carbon\Carbon;
 use Config;
 use DB;
 use Helper;
@@ -28,7 +29,6 @@ use QrCode;
 use Response;
 use Storage;
 use Validator;
-use Carbon\Carbon;
 
 class FtlPtlController extends Controller
 {
@@ -157,13 +157,13 @@ class FtlPtlController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            $regional_email=[];
+            $regional_email = [];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();
-            if($regional_id->is_email_sent == 1){
+            if ($regional_id->is_email_sent == 1) {
                 $regional_email[] = $regional_id->email;
             }
             $consigner_id = Consigner::where('id', $request->consigner_id)->first();
-            if($consigner_id->is_email_sent == 1){
+            if ($consigner_id->is_email_sent == 1) {
                 $regional_email[] = $consigner_id->email;
             }
             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
@@ -493,9 +493,9 @@ class FtlPtlController extends Controller
                         <!-- Required meta tags -->
                         <meta charset="utf-8" />
                         <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
+
                         <!-- Bootstdap CSS -->
-    
+
                         <style>
                             * {
                                 box-sizing: border-box;
@@ -504,8 +504,8 @@ class FtlPtlController extends Controller
                                 padding: 12px 12px 12px 0;
                                 display: inline-block;
                             }
-    
-    
+
+
                             /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
                             @media screen and (max-width: 600px) {
                             }
@@ -543,7 +543,7 @@ class FtlPtlController extends Controller
                    left: 0;
                    bottom: 50px;
                    padding: 10px 2rem;
-    
+
                 }
                 .vl {
                     border-left: solid;
@@ -558,12 +558,12 @@ class FtlPtlController extends Controller
                   left: 30px;
                 }
                 .mini-table1{
-    
+
                     border: 1px solid;
                     border-radius: 13px;
                     width: 429px;
                     height: 72px;
-    
+
                 }
                 .mini-th{
                   width:90px;
@@ -604,31 +604,31 @@ class FtlPtlController extends Controller
                     width: 100%;
                     margin-inline: 2rem;
                 }
-    
-    
+
+
                         </style>
                     <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                     </head>
                     <body style="font-family:Arial Helvetica,sans-serif;">
-                    <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
+                    <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
                         <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px; padding: 0 2rem ">
                             <table style="height: 70px; margin-inline: 1rem;">
                                 <tr>
                                 <td class="a" style="font-size: 10px;">
                                 ' . $branch_address . '
                                 </td>
-    
+
                                     <td class="a">
                                     <b>	Email & Phone</b><br />
                                     <b>	' . @$locations->email . '</b><br />
                                     ' . @$locations->phone . '<br />
-    
+
                                     </td>
                                      <td>
                                      <img class="logoImg" src="' . $logo . '" style="width: 100%;"/>
                                      </td>
                                 </tr>
-    
+
                             </table>
                             <hr />
                             <table style="margin-inline: 1rem;">
@@ -656,21 +656,21 @@ class FtlPtlController extends Controller
                                                 <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
                                                 <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
                                                 <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
-    
+
                                             </tr>
                                         </table>
                             </div>
                                     </td>
                                 </tr>
                             </table>
-    
+
                             <div class="loc">
                                 <table style="margin-inline: 1rem;">
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">
                                         <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-    
+
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                             </div>
                                         </td>
@@ -693,7 +693,7 @@ class FtlPtlController extends Controller
                                     </tr>
                                 </table>
                             </div>
-    
+
                             <div class="container">
                                     <div class="row">
                                         <div class="col-sm-12 ">
@@ -735,7 +735,7 @@ class FtlPtlController extends Controller
                                         <th>' . $data['total_gross_weight'] . ' Kgs.</th>
                                     </tr>
                                 </table>
-    
+
                             <div class="inputfiled">
                                     <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >
                                          <tr>
@@ -750,10 +750,10 @@ class FtlPtlController extends Controller
                                               <th style="width:70px ">Gross Weight</th>
                                           </tr>
                                       ';
-                                    $counter = 0;
-                                    foreach ($data['consignment_items'] as $k => $dataitem) {
-                                        $counter = $counter + 1;
-                                        $html .= ' <tr>
+                $counter = 0;
+                foreach ($data['consignment_items'] as $k => $dataitem) {
+                    $counter = $counter + 1;
+                    $html .= ' <tr>
                                                         <td style="width:70px ">' . $dataitem['order_id'] . '</td>
                                                         <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
                                                         <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
@@ -764,8 +764,8 @@ class FtlPtlController extends Controller
                                                         <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
                                                         <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
                                                    </tr>';
-                                    }
-                                $html .= '</table>
+                }
+                $html .= '</table>
                                 <div>
                                         <table style="margin-top:0px;">
                                             <tr>
@@ -777,7 +777,7 @@ class FtlPtlController extends Controller
                                 </table>
                             </div>
                             </div>
-    
+
                             <div class="footer">
                                 <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soilage by sun ran ,fire and any other damage caused.</p>
@@ -794,14 +794,14 @@ class FtlPtlController extends Controller
                            </div>
                         </div>
                         <!-- Optional JavaScript; choose one of the two! -->
-    
+
                         <!-- Option 1: Bootstdap Bundle with Popper -->
                         <script
                             src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
                             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                             crossorigin="anonymous"
                         ></script>
-    
+
                         <!-- Option 2: Separate Popper and Bootstdap JS -->
                         <!--
                     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -815,11 +815,11 @@ class FtlPtlController extends Controller
                 $pdf->loadHTML($html);
                 $pdf->setPaper('legal', 'portrait');
 
-                $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' =>$data['consignee_detail']['postal_code'], 'net_weigth'=> $data['total_weight'], 'cases' => $data['total_quantity'],'client' => $regional_id->name];
+                $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' => $data['consignee_detail']['postal_code'], 'net_weigth' => $data['total_weight'], 'cases' => $data['total_quantity'], 'client' => $regional_id->name];
                 $user['to'] = $regional_email;
                 Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
                     $messges->to($user['to']);
-                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. '.$consignment_id.'');
+                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
                     $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
 
                 });
@@ -850,17 +850,16 @@ class FtlPtlController extends Controller
             }
 
             $mytime = Carbon::now('Asia/Kolkata');
-            $currentdate = $mytime->toDateTimeString(); 
+            $currentdate = $mytime->toDateTimeString();
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
-            if(!empty($get_driver_details->branch_id)){
-               $driver_branch = explode(',', $get_driver_details->branch_id);
-               if (in_array($authuser->branch_id, $driver_branch))
-                {
+            if (!empty($get_driver_details->branch_id)) {
+                $driver_branch = explode(',', $get_driver_details->branch_id);
+                if (in_array($authuser->branch_id, $driver_branch)) {
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
 
                     // task created
@@ -868,34 +867,34 @@ class FtlPtlController extends Controller
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
-                    // =================== task assign 
+                    // =================== task assign
                     $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$saveconsignment->id)->latest('consignment_id')->first();
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('consignment_id')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
-                    
+
                     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                     // ==== end started
+                    // ==== end started
                     $app_notify = $this->sendNotification($request->driver_id);
-                }else{
-                     // task created
-                     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                     $respons_data = json_encode($respons);
-                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                     // ==== end create
+                } else {
+                    // task created
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    $respons_data = json_encode($respons);
+                    $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                    // ==== end create
                 }
                 // if(!empty($request->driver_id)){
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
-            }else{
-                   // task created
-                   $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                   $respons_data = json_encode($respons);
-                   $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                   // ==== end create
-            } 
+            } else {
+                // task created
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                $respons_data = json_encode($respons);
+                $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                // ==== end create
+            }
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
             //     $lid = $saveconsignment->id;
@@ -909,7 +908,7 @@ class FtlPtlController extends Controller
             //     $simplyfy = json_decode(json_encode($lrdata), true);
             //     //echo "<pre>";print_r($simplyfy);die;
             //     //Send Data to API
-    
+
             //     if (($request->edd) >= $request->consignment_date) {
             //         if (!empty($vn) && !empty($simplyfy[0]['team_id']) && !empty($simplyfy[0]['fleet_id'])) {
             //             $createTask = $this->createTookanTasks($simplyfy);
@@ -920,8 +919,6 @@ class FtlPtlController extends Controller
             //         }
             //     }
             // }
-
-           
 
             // $app_notify = $this->sendNotification($request->driver_id);
 
@@ -1384,10 +1381,9 @@ class FtlPtlController extends Controller
     public function sendNotification($request)
     {
 
-         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
+        $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
 
         $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
-       
 
         $data_json = ['type' => 'Assigned', 'status' => 1];
 
