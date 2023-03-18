@@ -22,7 +22,7 @@ class ConsigneePhoneImport implements ToModel,WithHeadingRow
         $consignee = Consignee::where('id', $row['consignee_id'])->first();
         
         if(!empty($consignee)){
-            Consignee::where('id', $row['consignee_id'])->update(['phone' => $row['contact_no']]);
+            Consignee::where('id', $row['consignee_id'])->update(['phone' => (float)$row['contact_no']]);
         }
     }
 }
