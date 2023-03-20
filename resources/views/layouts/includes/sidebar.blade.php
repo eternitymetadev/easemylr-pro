@@ -88,7 +88,7 @@
     {
     ?>
     <p class="menuHead menuHeadHidden mb-0">Masters</p>
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="{{$prefixurl.'consigners'}}" data-active="<?php if($segment == 'consigners'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'consigners')) active @endif">
@@ -101,7 +101,7 @@
                 <span>Pilot HQ</span>
             </div>
         </a>
-    </li>
+    </li> -->
     <?php }
     } ?>
     <?php
@@ -119,7 +119,7 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>Farmer</span>
+                <span>Farmers</span>
             </div>
         </a>
     </li>
@@ -151,7 +151,7 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Pilot</span>
+                <span>Riders</span>
             </div>
         </a>
     </li>
@@ -174,7 +174,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5"></circle>
                     <circle cx="18.5" cy="18.5" r="2.5"></circle>
                 </svg>
-                <span>Drone</span>
+                <span>Drones</span>
             </div>
         </a>
     </li>
@@ -192,7 +192,7 @@
     {
     ?>
     <li class="menu">
-        <a href="{{$prefixurl.'postal-code'}}" data-active="<?php if($segment == 'postal-code'){?>true<?php }?>"
+        <a href="{{$prefixurl.'locations'}}" data-active="<?php if($segment == 'locations'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -203,7 +203,23 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Pin Code</span>
+                <span>Hub</span>
+            </div>
+        </a>
+    </li>
+    <li class="menu">
+        <a href="{{$prefixurl.'#'}}" data-active="<?php if($segment == ''){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Crops</span>
             </div>
         </a>
     </li>
@@ -243,9 +259,40 @@
 
         </ul>
     </li -->
-    <p class="menuHead menuHeadHidden mb-0">Pickup & Delivery</p>
-
+    <p class="menuHead menuHeadHidden mb-0">Spray Scheduler</p>
     <li class="menu">
+        <a href="{{$prefixurl.'orders'}}" data-active="<?php if($segment == 'orders'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Order Booking</span>
+            </div>
+        </a>
+        </li>
+        <li class="menu">
+        <a href="{{$prefixurl.'consignments'}}" data-active="<?php if($segment == 'consignments'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Verified Orders</span>
+            </div>
+        </a>
+        </li>
+    <!-- <li class="menu">
         <a href="#ftl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'order-book-ftl') || str_contains($currentURL, 'create-ftl')) active @endif">
@@ -285,9 +332,9 @@
             </li>
           
         </ul>
-    </li>
+    </li> -->
 
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'order-book-ptl') || str_contains($currentURL, 'orders') || str_contains($currentURL, 'create-ptl')) active @endif">
@@ -308,23 +355,23 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="Ptl" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order List</a>
-            </li>
-            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'orders'}}"> Order Booking </a>
+            </li> -->
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ptl'}}"> Create PTL lR</a>
-            </li>
+            </li> -->
             <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ptl'}}"> Create LR Ptl</a>
             </li> -->
-            <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
-            </li>
-            <li>
+            <!-- <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Verified Orders  </a>
+            </li> -->
+            <!-- <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
-            </li>
+            </li> -->
 
             <!-- <li class="submenuListStyle">
                 <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -347,8 +394,8 @@
                     <li>🔹 <a href="{{$prefixurl.'outgoing-hrs'}}"> Outgoing Hrs </a></li>
                 </ul>
             </li> -->
-        </ul>
-    </li>
+        <!-- </ul>
+    </li> -->
 
     <li class="menu">
         <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -361,7 +408,7 @@
                     <rect x="7" y="7" width="3" height="9"></rect>
                     <rect x="14" y="7" width="3" height="5"></rect>
                 </svg>
-                <span>DRS</span>
+                <span>ORS</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -371,10 +418,10 @@
         </a>
         <ul class="collapse submenu list-unstyled" id="drs" data-parent="#accordionExample">
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'unverified-list'}}"> Create Drs</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'unverified-list'}}"> Create ORS</a>
             </li>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'transaction-sheet'}}">Drs List</a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'transaction-sheet'}}">Ors List</a>
             </li>
         </ul>
     </li>

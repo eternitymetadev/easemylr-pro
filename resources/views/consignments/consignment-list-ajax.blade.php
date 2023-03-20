@@ -116,12 +116,12 @@
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print Sticker</a>  <?php if($authuser->role_id !=7){?> |<a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
+                        class="badge alert bg-cust shadow-sm">Print Order Sheet </a> <?php } ?>
                     <?php }else{ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?>|  <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
+                        class="badge alert bg-cust shadow-sm">Print Order Sheet </a> <?php } ?>
                     <?php }} ?>
                 </td>
 
