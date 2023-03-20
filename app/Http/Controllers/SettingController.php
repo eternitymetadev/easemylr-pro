@@ -258,9 +258,11 @@ class SettingController extends Controller
 
             $gstsave = GstRegisteredAddress::create($gstsave);
 
+            if(!empty($request->branch_id)){
             foreach($request->branch_id as $branch){
                 Location::where('id', $branch)->update(['gst_registered_id'=> $gstsave->id]);
             }
+        }
 
 
 
@@ -310,7 +312,17 @@ class SettingController extends Controller
                     Location::where('id', $val)->update(['gst_registered_id' => NULL]);
                 }
             }
-            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2]);
+
+            $gst = $request->file('upload_gst');
+            if (!empty($gst)) {
+                $gstfile = $gst->getClientOriginalName();
+                $gst->move(public_path('drs/company_gst'), $gstfile);
+            } else {
+                $getgstimg = GstRegisteredAddress::where('id',$request->gst_id)->first();
+                $gstfile = $getgstimg->upload_gst;
+            }
+
+            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'upload_gst' => $gstfile]);
 
             foreach($request->branch_id as $branch){
                 Location::where('id', $branch)->update(['gst_registered_id'=> $request->gst_id]);
@@ -328,6 +340,15 @@ class SettingController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
+    }
+    public function viewGstAddress(Request $request)
+    {
+        $id = $request->gst_id;
+        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first(); 
 
+        $response['gst_num'] = $gst_num;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetch";
+        return response()->json($response);
     }
 }

@@ -62,6 +62,7 @@
                                     <th>GSTN No</th>
                                     <th>State</th>
                                     <th>Address</th>
+                                    <th>Gst View</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -72,15 +73,7 @@
                                 @foreach($gstaddresses as $address)
                                 <?php
                                     $i++;
-                                    // $branch = explode(',', $address->branch_id);
-                                    // $store_branch = array();
-                                    // foreach($branch as $brnch){
-                                    //     $getname = DB::table('locations')->where('id', $brnch)->first();
-                                    //     $store_branch[] = $getname->nick_name; 
-                                        
-                                    // }
-                                    // $all_branch = implode(',', $store_branch);
-                                    
+                                    $decl = URL::to('/drs/company_gst/'.$address->upload_gst);
                                 ?>
                                 <tr>
                                     <td>{{$i}}</td>
@@ -88,8 +81,16 @@
                                     <td>{{$address->gst_no}}</td>
                                     <td>{{$address->state}}</td>
                                     <td>{{$address->address_line_1}}</td>
+                                    <?php if(!empty($address->upload_gst)){?>
+                                    <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$decl}}"
+                                            role="button">Gst view</a></td>
+                                    <?php }else{ ?>
+                                    <td>-</td>
+                                    <?php } ?>
                                     <td><button type="button" class="btn btn-warning edit_gst"
-                                            value="{{$address->id}}">edit</button></td>
+                                            value="{{$address->id}}">Edit</button>|| <button type="button"
+                                            class="btn btn-warning view_gst_detail"
+                                            value="{{$address->id}}">View</button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -253,6 +254,62 @@
         </div>
     </div>
 </div>
+<!------------------- View modle ---------------------->
+<!-- Modal -->
+<div class="modal fade" id="view_gst_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">View Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="statbox widget box box-shadow">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Gst No</th>
+                                <td id="view_gst_no">
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">State</th>
+                                <td id="view_state">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address Line 1</th>
+                                <td id="view_address_line_1">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address Line 2</th>
+                                <td id="view_address_line_2">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Branch</th>
+                                <td id="view_branch">
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('js')
 <script>
@@ -354,6 +411,38 @@ $('#update_gst_address').submit(function(e) {
             } else {
                 swal('error', data.error_message, 'error');
             }
+
+        }
+    });
+});
+///
+$(document).on('click', '.view_gst_detail', function() {
+    var gst_id = $(this).val();
+    $('#view_gst_model').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "view-gst-address/" + gst_id,
+        data: {
+            gst_id: gst_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#view_gst_no').empty();
+                $('#view_state').empty();
+                $('#view_address_line_1').empty();
+                $('#view_address_line_2').empty();
+                $('#view_branch').empty();
+            },
+        success: function(data) {
+            var branchID = [];
+            $.each(data.gst_num.branch, function(key, value) {
+                branchID.push(value.name);
+            });
+            $('#view_gst_no').append(data.gst_num.gst_no);
+            $('#view_branch').html(branchID);
+            $('#view_state').append(data.gst_num.state);
+            $('#view_address_line_1').append(data.gst_num.address_line_1);
+            $('#view_address_line_2').append(data.gst_num.address_line_2);
 
         }
     });
