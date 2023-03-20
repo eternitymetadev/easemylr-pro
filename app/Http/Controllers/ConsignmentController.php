@@ -2339,8 +2339,8 @@ class ConsignmentController extends Controller
                 </header>
                     <footer><div class="row">
                     <div class="col-sm-12" style="margin-left: 0px;">
-                        <p>Head Office:Forwarders private Limited</p>
-                        <p style="margin-top:-13px;">Add:Plot No.B-014/03712,prabhat,Zirakpur-140603</p>
+                        <p>Head Office: Eternity Forwarders private Limited</p>
+                        <p style="margin-top:-13px;">Add:Plot No.B-014/03712,pabhat,Zirakpur-140603</p>
                         <p style="margin-top:-13px;">Phone:07126645510 email:contact@eternityforwarders.com</p>
                     </div>
                 </div></footer>
