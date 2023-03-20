@@ -389,16 +389,16 @@ span.select2.select2-container.mb-4 {
                     <option value="">Select Consignee</option>
                 </select>
                 <div class="appendedAddress" id="consignee_address"></div>
-            </div>
+            </div>-->
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
+                    Select Farm Location<span class="text-danger">*</span>
                 </label>
                 <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
-                    <option value="">Select Ship To</option>
+                    <option value="">Select Farm</option>
                 </select>
                 <div class="appendedAddress" id="ship_to_address"></div>
-            </div> -->
+            </div> 
         </div>
 
 
