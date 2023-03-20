@@ -1,8 +1,8 @@
 <ul class="list-unstyled menu-categories" id="accordionExample">
     <div class="logoBox">
         <img id="openSidebarLogo" class="toggleLogo" alt="logo"
-            src="{{asset('assets/img/d2f-logo.png')}}">
-        <img id="closeSidebarLogo" alt="logo" src="{{asset('assets/img/d2f-logo.png')}}">
+            src="{{asset('assets/img/agri.png')}}">
+        <img id="closeSidebarLogo" alt="logo" src="{{asset('assets/img/agri.png')}}">
     </div>
 
 
