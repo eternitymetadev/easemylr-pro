@@ -1,7 +1,7 @@
 /*global styling*/
 *::selection{
     color: #000;
-    background: #f9b80880;
+    background: #01361c80;
 }
 *::-webkit-scrollbar {
     height: 6px;
@@ -10,11 +10,11 @@
 
 *::-webkit-scrollbar-thumb {
     border-radius: 50vh;
-    background-color: #f9b80880;
+    background-color: #01361c80;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background-color: #f9b808;
+    background-color: #01361c;
 }
 
 /*.main-container {*/
@@ -33,7 +33,7 @@
 }
 
 * a:hover {
-    color: #f9b808 !important;
+    color: #01361c !important;
 }
 
 .btn {
@@ -44,17 +44,17 @@
 
 .dt-buttons .dt-button {
     color: #000 !important;
-    background-color: #f9b808 !important;
-    border-color: #f9b808;
+    background-color: #01361c !important;
+    border-color: #01361c;
 }
 
 .table > thead > tr > th {
-    background: rgba(249, 184, 8, 0.17) !important;
+    background: #20812017 !important;
     color: #000 !important;
 }
 
 .page-item.active .page-link {
-    background-color: #f9b808 !important;
+    background-color: #01361c !important;
     color: #000 !important;
 }
 
@@ -67,7 +67,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 div.dataTables_wrapper div.dataTables_info:hover {
-    color: #f9b808 !important;
+    color: #01361c !important;
 }
 
 
@@ -119,11 +119,11 @@ label.error {
 
 
 .topbar-nav.header nav#topbar ul.menu-categories li.menu > a:hover svg:not(.feather-chevron-down), .topbar-nav.header nav#topbar ul.menu-categories li.menu > a:hover div span {
-    color: #f9b808;
+    color: #01361c;
 }
 
 .topbar-nav.header nav#topbar ul.menu-categories li.menu.menu-extras a[aria-expanded="true"] svg:not(.feather-chevron-down):not(.feather-chevron-right) {
-    color: #f9b808 !important;
+    color: #01361c !important;
 }
 
 .modal-content {
@@ -143,5 +143,5 @@ label.error {
 
 .table > thead.thead-dark > tr > th {
     color: #000;
-    background: #f9b808;
+    background: #01361c;
 }

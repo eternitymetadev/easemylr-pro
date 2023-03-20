@@ -309,7 +309,7 @@ code {
     z-index: 1032;
     padding: 16px;
     color: #000;
-    background: #f9b80820;
+    background: #20812020;
     backdrop-filter: blur(22px);
     display: flex;
     justify-content: space-between;
@@ -1043,7 +1043,7 @@ code {
 }
 
 .navbar .navbar-item .nav-item.user-profile-dropdown .dropdown-menu:after {
-    border-bottom-color: #f9b808 !important;
+    border-bottom-color: #208120 !important;
 }
 
 .navbar .navbar-item .nav-item.user-profile-dropdown .dropdown-menu .user-profile-section {
@@ -1052,7 +1052,7 @@ code {
     border-top-right-radius: 4px;
     margin-right: -10px;
     margin-left: -10px;
-    background: #f9b808;
+    background: #208120;
     margin-top: -1px;
 }
 
@@ -1744,12 +1744,12 @@ code {
     }
 
     .topbar-nav.header nav#topbar ul.menu-categories li.menu > a[aria-expanded="true"] svg:not(.feather-chevron-down) {
-        color: #f9b808;
+        color: #208120;
         stroke-width: 1.6px;
     }
 
     .topbar-nav.header nav#topbar ul.menu-categories li.menu > a[aria-expanded="true"] div span {
-        color: #f9b808;
+        color: #208120;
     }
 
     .topbar-nav.header nav#topbar ul.menu-categories li.menu.active > a[aria-expanded="true"] {
@@ -2446,7 +2446,7 @@ label {
 }
 
 .editIcon:hover {
-    background-color: #f9b808;
+    background-color: #208120;
 }
 
 .viewIcon:hover {
@@ -2600,11 +2600,11 @@ input::file-selector-button {
 }
 
 #sidebarBox ul li a svg {
-    color: #f9b808;
+    color: #208120;
 }
 
 #sidebarBox ul li a:hover {
-    color: #f9b808 !important;
+    color: #208120 !important;
 }
 
 #sidebarBox ul li div {
@@ -2618,7 +2618,7 @@ input::file-selector-button {
 }
 
 #sidebarBox ul li div.active {
-    background-color: #f9b808;
+    background-color: #208120;
     border-radius: 12px;
 }
 
@@ -2627,7 +2627,7 @@ input::file-selector-button {
 }
 
 #sidebarBox ul li a div.active:hover {
-    color: #f9b808 !important;
+    color: #208120 !important;
 }
 
 #sidebarBox ul li div.active svg {
@@ -2635,11 +2635,11 @@ input::file-selector-button {
 }
 
 #sidebarBox ul li div.active:hover svg {
-    color: #f9b808 !important;
+    color: #208120 !important;
 }
 
 #sidebarBox ul li div:hover {
-    background-color: #f9b80830;
+    background-color: #20812030;
     border-radius: 12px;
 }
 
@@ -2655,7 +2655,7 @@ input::file-selector-button {
 }
 
 #sidebarToggleButton {
-    background: #f9b808;
+    background: #208120;
     color: #fff;
     margin: 4px;
     height: 2rem;
@@ -2759,11 +2759,11 @@ ul.submenu li .submenuListStyle{
     height: 8px;
     max-width: 8px;
     padding: 0 !important;
-    background: #f9b808;
+    background: #208120;
 }
 
 #sidebarBox ul.submenu li a:hover {
-    color: #f9b808 !important;
+    color: #208120 !important;
 }
 
 
@@ -2852,7 +2852,7 @@ ul.submenu li .submenuListStyle{
     height: 2.5rem;
     width: 2.5rem;
     border-radius: 50vh;
-    outline: 2px solid #f9b808;
+    outline: 2px solid #208120;
     outline-offset: 2px;
     cursor: pointer;
 }
