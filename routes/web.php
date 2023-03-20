@@ -181,6 +181,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
 
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
+    Route::get('/sample-consignee-phone',[ImportCsvController::class, 'consigneePhoneSampleDownload']);
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
     Route::get('/sample-vehicle',[ImportCsvController::class, 'vehicleSampleDownload']);
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
@@ -499,7 +500,6 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('consignees/update-consignee', [ConsigneeController::class, 'updateConsignee']);
     Route::post('consignees/delete-consignee', [ConsigneeController::class, 'deleteConsignee']);
     Route::get('consignees/export/excel', [ConsigneeController::class, 'exportExcel']);
-    Route::get('consignees/export/excel', [ConsigneeController::class, 'exportExcel']);
 
     Route::resource('drivers', DriverController::class);
     Route::post('drivers/update-driver', [DriverController::class, 'updateDriver']);
@@ -573,6 +573,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
 
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
+    Route::get('/sample-consignee-phone',[ImportCsvController::class, 'consigneePhoneSampleDownload']);
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
     Route::get('/sample-vehicle',[ImportCsvController::class, 'vehicleSampleDownload']);
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);

@@ -47,6 +47,18 @@
                 <br/>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
+                        <h4 class="win-h4">Browse Consignees Phone No Update</h4>
+                    </div>
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                        <input type="file" name="consigneephonesfile" id="consigneephonesfile" class="consigneephonesfile"> 
+                    </div> 
+                    <div class="col-lg-4 col-md-9 col-sm-12">
+                    <a class="btn btn-primary" href="{{url($prefix.'/sample-consignee-phone')}}">Sample Download</a> 
+                    </div>
+                </div> 
+                <br/>
+                <div class="row">
+                    <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse Vehicles Sheet</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">

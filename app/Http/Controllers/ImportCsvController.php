@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Imports\ConsigneeImport;
+use App\Imports\ConsigneePhoneImport;
 use App\Imports\VehiclesImport;
 use App\Imports\ConsignerImport;
 use App\Imports\DriverImport;
@@ -31,6 +32,11 @@ class ImportCsvController extends Controller
             $data = Excel::import(new ConsigneeImport,request()->file('consigneesfile'));
             $url  = URL::to($this->prefix.'/consignees');
             $message = 'Consignees Imported Successfully';
+        }
+        if($request->hasFile('consigneephonesfile')){
+            $data = Excel::import(new ConsigneePhoneImport,request()->file('consigneephonesfile'));
+            $url  = URL::to($this->prefix.'/consignees');
+            $message = 'Consignee Phone Number Imported Successfully';
         }
         if($request->hasFile('vehiclesfile')){
             $data = Excel::import(new VehiclesImport,request()->file('vehiclesfile'));
@@ -106,6 +112,12 @@ class ImportCsvController extends Controller
     public function consigneesSampleDownload()
     {
         $path = public_path('sample/consignee_bulkimport.xlsx');
+        return response()->download($path);     // use download() helper to download the file
+    }
+
+    public function consigneePhoneSampleDownload()
+    {
+        $path = public_path('sample/consigneephone_bulk_import.xlsx');
         return response()->download($path);     // use download() helper to download the file
     }
 
