@@ -69,7 +69,7 @@ div.relative {
                         <div class="btn-group relative" style="width: auto">
                             <a href="{{'order-book-ptl'}}" class="btn btn-primary myButtonExtra"
                                 style="font-size: 13px; padding: 6px 0px;">Create Order</a>
-                            <button type="button" class="btn btn-primary myButtonExtra ml-2" data-toggle="modal"
+                            <!-- <button type="button" class="btn btn-primary myButtonExtra ml-2" data-toggle="modal"
                                 data-target="#exampleModal">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -80,31 +80,22 @@ div.relative {
                                     <polyline points="16 16 12 12 8 16"></polyline>
                                 </svg>
                                 upload
-                            </button>
+                            </button> -->
                         </div>
                         <thead>
                             <tr>
                                 <!-- <th> </th> -->
-                                <th>LR No</th>
-                                <th>Pickup ID</th>
-                                <th>LR Date</th>
-                                <th>Booking Branch</th>
-                                <th>Pickup Zone</th>
-                                <th>Delivery Zone</th>
+                                <th>Order Number</th>
+                                <th>Order Date</th>
+                                <th>Booking Location</th>
+                                <th>Spraying Branch</th>
                                 <th>Billing Client</th>
-                                <th>Consigner Name</th>
-                                <th>Consigner Pin Code</th>
-                                <th>Consignee Name</th>
-                                <th>Pin Code</th>
-                                <th>Delivery City</th>
-                                <th>Invoice no</th>
-                                <th>Order No</th>
-                                <th>Quantity</th>
-                                <th>Net Weight</th>
-                                <th>Booking Mode</th>
-                                <th>Pickup Status</th>
-                                <th>Action</th>
-                                <th>Status</th>
+                                <th>Farmer Name</th>
+                                <th>Farmer City</th>
+                                <th>Farm Address</th>
+                                <th>Crop</th>
+                                <th>Acreage</th>
+                                <th>Order Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,87 +115,8 @@ div.relative {
                                 <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
-                                <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
-                                <td>{{ $consignment->total_quantity ?? "-" }}</td>
-                                <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                <?php 
-                                $prs_pickup_status = DB::table('prs_drivertasks')->select('id','status')->where(['prsconsigner_id'=>$consignment->ConsignerDetail->id, 'prs_id'=>$consignment->prs_id])->first();
-
-                                if(!empty($consignment->prs_id)){
-                                    $booking_mode = "Driver";
-                                    $pickup_status = Helper::PrsDriverTaskStatus($prs_pickup_status->status);
-                                }else{
-                                    $booking_mode = "Manual";
-                                    $pickup_status = "N/A";
-                                }
-                                ?>
-                                <td>{{ $booking_mode }}</td>
-                                <td>{{ $pickup_status }}</td>
-
-
-                                <!-- ---Action Button ----->
-                                <?php if(!empty($consignment->fall_in)){ 
-                                $authuser = Auth::user();
-                               if($authuser->branch_id == $consignment->fall_in){ ?>
-                                <td>
-                                    <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
-                                        data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
-                                            Cancel</span></a>
-
-                                </td>
-                                <?php }else{ ?>
-                                <td>
-                                    <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
-                                        data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
-                                            Cancel</span></a>
-                                </td>
-                                <?php } 
-                            } else { ?>
-
-                                <td>
-                                    <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
-                                        data-action="<?php echo URL::current(); ?>"><span><i class="fa fa-ban"></i>
-                                            Cancel</span></a>
-                                        <?php if(!empty($consignment->prs_id)){ ?>
-                                    <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i class="fa fa-edit"></i></span></a>
-                                        <?php } ?>
-                                </td>
-                                <?php } ?>
-                                <!-- -------- Status Button ------------>
-                                <?php if(!empty($consignment->fall_in)){ 
-                                $authuser = Auth::user();
-                                   if($authuser->branch_id == $consignment->fall_in){ 
-                                 if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
-                                <td>
-                                    <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete
-                                            Lr</span></a>
-                                </td>
-                                <?php }else{
-                                    ?>
-                                <td>
-                                    <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a>
-                                    <button type="button" class="btn btn-success prs_not_require"
-                                        value="{{$consignment->id}}">Receved Material</button>
-                                </td>
-                                <?php }
-                                }else{ 
-                                    if($consignment->prsitem_status == 0){ ?>
-                                <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
-                                <?php }else{ ?>
-                                <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
-                                <?php } } 
-                                }else{?>
-                                <td>-</td>
-                                <?php } ?>
-                               
                             </tr>
-                            <?php
-                        }
-                        ?>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
