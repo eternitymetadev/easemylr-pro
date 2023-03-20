@@ -119,9 +119,9 @@
     <script src="{{asset('plugins/sweetalerts/custom-sweetalert.js')}}"></script>
 
     <script>
-    var APP_URL = {
-        !!json_encode(url('/')) !!
-    };
+    var APP_URL = {!!json_encode(url('/')) !!};
+        
+    
 
     $(document).ready(function() {
         App.init();
