@@ -54,7 +54,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
       
         if ($drswiseReports->count() > 0) {
             $i = 0;
-            foreach ($drswiseReports as $key => $drswiseReport) {
+            foreach ($drswiseReports as $key => $drswiseReport) { 
                 $i++;
                 $date = date('d-m-Y',strtotime($drswiseReport->created_at));
                 $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);

@@ -5,7 +5,7 @@
         </div>
         <thead>
             <tr>
-                <?php $authuser = Auth::user();
+                <?php $authuser = Auth::user(); 
 if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <th>
                     <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">

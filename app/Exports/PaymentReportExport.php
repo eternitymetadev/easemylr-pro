@@ -14,14 +14,27 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
 {
+    protected $startdate;
+    protected $enddate;
+    // protected $search;
+
+    function __construct($startdate,$enddate) {
+        $this->startdate = $startdate;
+        $this->enddate = $enddate;
+        // $this->search = $search;
+    }
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function collection()
+    public function collection() 
     {
         ini_set('memory_limit', '2048M');
         set_time_limit(6000);
         $arr = array();
+
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+
               $authuser = Auth::user();
                  $role_id = Role::where('id', '=', $authuser->role_id)->first();
                  $cc = explode(',', $authuser->branch_id);
@@ -33,7 +46,11 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
             }else{
                 $query = $query;
              }
-            $payment_lists = $query->groupBy('transaction_id')->get();
+             if(isset($startdate) && isset($enddate)){
+                $payment_lists = $query->whereBetween('created_at',[$startdate,$enddate])->groupBy('transaction_id')->get();
+            }else {
+                $payment_lists = $query->groupBy('transaction_id')->get();
+            }
 
         
         // $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
