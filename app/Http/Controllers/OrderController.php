@@ -2194,6 +2194,7 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
+        $farmers = Consignee::where('status', '1')->get();
 
         /////////////////////////////Bill to regional clients //////////////////////////
 
@@ -2211,7 +2212,7 @@ class OrderController extends Controller
             $regionalclient = RegionalClient::select('id', 'name', 'location_id')->get();
         // }
 
-        return view('orders.order-book-ptl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
+        return view('orders.order-book-ptl', ['prefix' => $this->prefix, 'consigners' => $consigners, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs, 'farmers' => $farmers]);
     }
 
     public function storePtlOrder(Request $request)

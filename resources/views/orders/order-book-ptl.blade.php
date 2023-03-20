@@ -309,8 +309,6 @@ span.select2.select2-container.mb-4 {
                 <?php } ?>
 
         </div> -->
-
-        <input type="hidden" name="lr_type" value="1" />
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>
@@ -319,7 +317,7 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Select Bill to Client<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-control-sm my-select2" id="select_regclient" name="regclient_id">
+                <select class="form-control form-control-sm my-select2" id="" name="regclient_id">
                     <option selected="selected" disabled>select client..</option>
                     @foreach($regionalclient as $client)
                     <option value="{{$client->id}}">{{$client->name}}</option>
@@ -334,10 +332,12 @@ span.select2.select2-container.mb-4 {
                     Payment Term<span class="text-danger">*</span>
                 </label>
                 <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
-                    id="paymentType">
-                    <!-- <option value="To be Billed" selected="selected">TBB</option>
-                    <option value="To Pay">To Pay</option>
-                    <option value="Paid">Paid</option>  -->
+                    id="paymentType_">
+                    <option value="To be Billed" selected="selected">Bill to client </option>
+                    <option value="UPI/Wallet">UPI/Wallet </option>
+                    <option value="Cash">Cash </option>
+                    <option value="Card">Card </option>
+                    <option value="Net Banking">Net Banking</option>
                 </select>
             </div>
             <!-- <div class="form-group col-md-2">
@@ -346,7 +346,7 @@ span.select2.select2-container.mb-4 {
                 </label>
                 <Input type="number" class="form-control" name="freight">
             </div> -->
-            <div class="form-group col-md-2">
+            <!-- <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Freight on Delivery
                 </label>
@@ -356,51 +356,32 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
                 <Input type="number" class="form-control" name="cod" id="cod" readonly >
-            </div>
-            <div class="form-group d-flex col-md-3">
+            </div> -->
 
-                <div class="d-flex align-items-center px-2 pt-2">
-                    <label class="mr-4">
-                        Sale Return<span class="text-danger">*</span>
-                    </label>
-                    <div class="checkbox radio">
-                        <label class="check-label">Yes
-                            <input type="radio" name="is_salereturn" value="1" class="">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-                    <div class="checkbox radio ml-3">
-                        <label class="check-label">No
-                            <input type="radio" name="is_salereturn" value="0" checked="">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <input type="hidden" class="form-seteing date-picker" id="consignDate" name="consignment_date" placeholder=""
             value="<?php echo date('d-m-Y'); ?>" />
 
 
-        {{--pickup & drop info--}}
+        {{--Farmer Address Details Section: --}}
         <div class="form-row">
-            <h6 class="col-12">Pickup and Drop Information</h6>
+            <h6 class="col-12">Farmer Address Details Section: </h6>
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Pickup Location (Consigner)<span class="text-danger">*</span>
+                    Farmer Name and contact search option <span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" id="select_consigner" name="consigner_id">
-                    <option value="">Select Consignor</option>
-                    {{--                        @foreach($consigners as $consigner)--}}
-                    {{--                            <option value="{{$consigner->id}}">{{$consigner->nick_name}}--}}
-                    {{--                            </option>--}}
-                    {{--                        @endforeach--}}
+                <select class="form-control my-select2" id="select_consignee" name="consigner_id">
+                    <option value="">Select Farmer</option>
+                                           @foreach($farmers as $farmer)
+                                             <option value="{{$farmer->id}}">{{$farmer->nick_name}}
+                                               </option>
+                                         @endforeach
                 </select>
-                <div class="appendedAddress" id="consigner_address"></div>
+                <div class="appendedAddress" id="consignee_address"></div>
             </div>
-            <div class="form-group col-md-4">
+            <!-- <div class="form-group col-md-4">
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
@@ -417,7 +398,7 @@ span.select2.select2-container.mb-4 {
                     <option value="">Select Ship To</option>
                 </select>
                 <div class="appendedAddress" id="ship_to_address"></div>
-            </div>
+            </div> -->
         </div>
 
 
@@ -426,15 +407,15 @@ span.select2.select2-container.mb-4 {
         </div>
 
         {{--vehicle info--}}
-        <!-- <div class="form-row" id="vehicleInformationBlock">
-            <h6 class="col-12">Vehicle Information</h6>
+        <div class="form-row">
+            <h6 class="col-12">Spray Details Section</h6>
 
             <div class="form-group col-md-4">
                 <label>
-                    Vehicle Number<span class="text-danger">*</span>
+                    Crop<span class="text-danger">*</span>
                 </label>
                 <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
-                    <option value="">Select vehicle no</option>
+                    <option value="">Select Crop</option>
                     @foreach($vehicles as $vehicle)
                     <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
                     </option>
@@ -443,57 +424,12 @@ span.select2.select2-container.mb-4 {
             </div>
             <div class="form-group col-md-4">
                 <label>
-                    Driver Name<span class="text-danger">*</span>
+                 Acreage<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" id="driver_id" name="driver_id" tabindex="-1">
-                    <option value="">Select driver</option>
-                    @foreach($drivers as $driver)
-                    <option value="{{$driver->id}}">{{ucfirst($driver->name) ?? '-'}}-{{$driver->phone ??
-                                '-'}}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group col-md-4">
-                <label>
-                    EDD<span class="text-danger">*</span>
-                </label>
-                <Input type="date" class="form-control form-small" name="edd" />
+                <Input type="number" class="form-control" id="" name="">
             </div>
 
-            <div class="form-group col-12">
-                <input type="checkbox" id="chek" style="margin-left:19px;">
-                <label for="chek">Vehicle Purchase Information</label>
-            </div>
-
-            <div class="row flex-wrap align-items-center" style="display:none; width: 100%;" id="veh">
-
-                <div class="form-group col-md-4">
-                    <label>Vehicle Name<span class="text-danger">*</span></label>
-                    <Input type="text" class="form-control form-small" name="transporter_name" />
-                </div>
-                <div class="form-group col-md-4">
-                    <label>
-                        Vehicle Type<span class="text-danger">*</span>
-                    </label>
-                    <select class="form-control my-select2 sete" id="vehicle_type" name="vehicle_type" tabindex="-1">
-                        <option value="">Select vehicle type</option>
-                        @foreach($vehicletypes as $vehicle)
-                        <option value="{{$vehicle->id}}">{{$vehicle->name}}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-4">
-                    <label>
-                        Purchase Price<span class="text-danger">*</span>
-                    </label>
-                    <Input type="number" class="form-control form-small" name="purchase_price" />
-                </div>
-
-            </div>
-
-        </div> -->
+        </div>
 
         <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
             {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
@@ -1045,17 +981,17 @@ $("#branch_id").change(function(e) {
 
 function togglePaymentAction() {
 
-if ($('#paymentType').val() == 'To Pay') {
-    $('#freight_on_delivery').attr('readonly', false);
-    $('#cod').attr('readonly', false);
-} else if($('#paymentType').val() == 'Paid'){
-    $('#cod').attr('readonly', true);
-    $('#freight_on_delivery').attr('readonly', true);
-} else {
-    $('#freight_on_delivery').attr('readonly', true);
-    $('#cod').attr('readonly', false);
-    $('#freight_on_delivery').val('');
-}
+    if ($('#paymentType').val() == 'To Pay') {
+        $('#freight_on_delivery').attr('readonly', false);
+        $('#cod').attr('readonly', false);
+    } else if ($('#paymentType').val() == 'Paid') {
+        $('#cod').attr('readonly', true);
+        $('#freight_on_delivery').attr('readonly', true);
+    } else {
+        $('#freight_on_delivery').attr('readonly', true);
+        $('#cod').attr('readonly', false);
+        $('#freight_on_delivery').val('');
+    }
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">

@@ -7,8 +7,8 @@
         <div class="page-header">
                         <nav class="breadcrumb-one" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Consignees</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);"> Create Consignee</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Farmers</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);"> Create Farmer</a></li>
                             </ol>
                         </nav>
                     </div>
@@ -21,61 +21,19 @@
                         <form class="general_form" method="POST" action="{{url($prefix.'/consignees')}}" id="createconsignee">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Consignee Nick Name<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Farmer Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="nick_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Consignee Legal Name</label>
-                                    <input type="text" class="form-control" name="legal_name" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">                          
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Contact Person Name</label>
-                                    <input type="text" class="form-control" name="contact_name" placeholder="Contact Name">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Email ID</label>
-                                    <input type="email" class="form-control" name="email" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
-                            <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Mobile No.<span class="text-danger">*</span></label>
                                     <input type="tel" class="form-control mbCheckNm" name="phone" placeholder="Enter 10 digit mobile no" maxlength="10">
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
-                                    <select class="form-control" name="consigner_id">
-                                        <option value="">Select</option>
-                                        <?php 
-                                        if(count($consigners)>0) {
-                                            foreach ($consigners as $key => $consigner) {
-                                        ?>
-                                            <option value="{{ $key }}">{{ucwords($consigner)}}</option>
-                                            <?php 
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                            
                                 
                             </div>
-                            <div class="form-row mb-0">     
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Type Of Dealer</label>
-                                    <select class="form-control" id="dealer_type" name="dealer_type">
-                                        <option value="">Select</option>
-                                        <option value="1">Registered</option>
-                                        <option value="0">Unregistered</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">GST No.</label>
-                                    <input type="text" class="form-control" id="gst_number" name="gst_number" disabled placeholder="" maxlength="15">
-                                    <p class="gstno_error text-danger" style="display: none; color: #ff0000; font-weight: 500;">Please enter GST no.</p>
-                                </div>
-                            </div>
+                          
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pincode</label>
@@ -96,25 +54,18 @@
                                     <label for="exampleFormControlInput2">District</label>
                                     <input type="text" class="form-control" id="district" name="district" placeholder="District">
                                 </div>
-                            </div>
+                            </div>   
                             <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Primary Zone</label>
-                                    <input type="text" class="form-control" id="zone_name" name="zone_name" disabled placeholder="">
-                                </div>
-                                <input type="hidden" id="zone_id" name="zone_id" value="">
-                            </div>         
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Address Line 1</label>
-                                    <input type="text" class="form-control" name="address_line1" placeholder="">
+                                <div class="form-group col-md-8">
+                                    <label for="exampleFormControlInput2">Address</label>
+                                    <textarea type="text" class="form-control" name="address_line1" placeholder=""></textarea>
                                 </div>       
-                                <div class="form-group col-md-6">
+                                <!-- <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 2</label>
                                     <input type="text" class="form-control" name="address_line2" placeholder="">
-                                </div> 
+                                </div>  -->
                             </div>
-                            <div class="form-row mb-0">
+                            <!-- <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Address Line 3</label>
                                     <input type="text" class="form-control" name="address_line3" placeholder="">
@@ -123,7 +74,7 @@
                                     <label for="exampleFormControlInput2">Address Line 4</label>
                                     <input type="text" class="form-control" name="address_line4" placeholder="">
                                 </div>
-                            </div>
+                            </div> -->
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/consignees') }}"> Back</a>
                         </form>

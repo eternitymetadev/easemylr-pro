@@ -192,22 +192,6 @@
     {
     ?>
     <li class="menu">
-        <a href="{{$prefixurl.'locations'}}" data-active="<?php if($segment == 'locations'){?>true<?php }?>"
-            class="dropdown-toggle">
-            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="feather feather-users">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                <span>Hub</span>
-            </div>
-        </a>
-    </li>
-    <li class="menu">
         <a href="{{$prefixurl.'#'}}" data-active="<?php if($segment == ''){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
@@ -261,6 +245,22 @@
     </li -->
     <p class="menuHead menuHeadHidden mb-0">Spray Scheduler</p>
     <li class="menu">
+        <a href="{{$prefixurl.'order-book-ptl'}}" data-active="<?php if($segment == 'order-book-ptl'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span> Book Order</span>
+            </div>
+        </a>
+        </li>
+        <li class="menu">
         <a href="{{$prefixurl.'orders'}}" data-active="<?php if($segment == 'orders'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
@@ -272,7 +272,7 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Order Booking</span>
+                <span>Verified Orders</span>
             </div>
         </a>
         </li>
@@ -288,7 +288,7 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Verified Orders</span>
+                <span>Order List</span>
             </div>
         </a>
         </li>
