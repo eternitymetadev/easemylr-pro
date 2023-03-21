@@ -105,16 +105,18 @@ div.relative {
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
                                 <td>{{ $consignment->id ?? "-" }}</td>
-                                <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
+                                <td>{{ $consignment->date ?? "NA" }}</td>
                                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
                                 <td>{{ $consignment->fallIn->name ?? "-" }}</td>
-                                <td>{{ $consignment->ToBranch->name ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
-                                <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
-                                <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
-                                <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
+                                <td>{{ $consignment->RegClient->name ?? "-" }}</td>
+                                <td>{{ $consignment->ConsigneeDetail->nick_name}}</td>
+                                <td>{{ $consignment->ConsigneeDetail->city ?? "-"}}</td>
+                                <td>{{ $consignment->ConsigneeDetail->address_line1 ?? "-"}}</td>
+                                <td>{{ $consignment->ConsigneeDetail->postal_code}}</td>
+                                <td>{{ $consignment->acreage}}</td>
+                                <td><a class="btn btn-primary"
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete
+                                            Lr</span></a></td>
                             </tr>
                             <?php } ?>
                         </tbody>

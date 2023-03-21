@@ -824,10 +824,10 @@ jQuery(document).ready(function () {
     });
 
     /*===== get consigner address on create consignment page =====*/
-    $("#select_consigner").change(function (e) {
-        $("#select_consignee").empty();
-        $("#select_ship_to").empty();
+    $("#select_farmer").change(function (e) {
+        $("#select_farmer_add").empty();
         let consigner_id = $(this).val();
+        // alert(consigner_id); 
         getConsigners(consigner_id);
     });
 
@@ -841,22 +841,19 @@ jQuery(document).ready(function () {
             },
             dataType: "json",
             success: function (res) {
-                $("#consigner_address").empty();
+                // $("#consigner_address").empty();
                 $("#consignee_address").empty();
-                $("#ship_to_address").empty();
+                $("#farm_address").empty();
 
-                $("#select_consignee").append(
-                    '<option value="">Select Consignee</option>'
-                );
-                $("#select_ship_to").append(
-                    '<option value="">Select Ship To</option>'
+                $("#select_farmer_add").append(
+                    '<option value="">Select Farm</option>'
                 );
                 $.each(res.consignee, function (key, value) {
-                    $("#select_consignee, #select_ship_to").append(
+                    $("#select_farmer_add").append(
                         '<option value="' +
                         value.id +
                         '">' +
-                        value.nick_name +
+                        value.field_area +
                         "</option>"
                     );
                 });
@@ -918,8 +915,8 @@ jQuery(document).ready(function () {
     }
 
     /*===== get consignee address on create consignment page =====*/
-    $("#select_consignee").change(function (e) {
-        $("#consignee_address").empty();
+    $("#select_farmer_add").change(function (e) {
+        $("#farm_address").empty();
         let consignee_id = $(this).val();
         getConsignees(consignee_id);
     });
@@ -936,10 +933,10 @@ jQuery(document).ready(function () {
             success: function (res) {
                 // $('#consignee_address').empty();
                 if (res.data) {
-                    if (res.data.address_line1 == null) {
-                        var address_line1 = "";
+                    if (res.data.address == null) {
+                        var address = "";
                     } else {
-                        var address_line1 = res.data.address_line1 + "<br>";
+                        var address = res.data.address + "<br>";
                     }
                     if (res.data.address_line2 == null) {
                         var address_line2 = "";
@@ -968,9 +965,9 @@ jQuery(document).ready(function () {
                         var phone = "Phone: " + res.data.phone;
                     }
 
-                    $("#consignee_address").append(
-                        address_line1 +
-                        " " +
+                    $("#farm_address").append(
+                        address +
+                        "" +
                         address_line2 +
                         "" +
                         address_line3 +

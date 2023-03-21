@@ -9,6 +9,8 @@ class ConsignmentNote extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'crop',
+        'acreage',
         'lr_type',
         'h2h_check',
         'hrs_status',

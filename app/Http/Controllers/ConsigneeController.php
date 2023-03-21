@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ConsigneeExport;
 use App\Models\Role;
 use App\Models\Zone;
+use App\Models\Farm;
 use DB;
 use URL;
 use Auth;
@@ -24,7 +25,7 @@ class ConsigneeController extends Controller
     {
       $this->title =  "Consignees";
       $this->segment = \Request::segment(2);
-    }
+    } 
 
     /**
      * Display a listing of the resource.
@@ -143,10 +144,11 @@ class ConsigneeController extends Controller
      */
     public function store(Request $request)
     {
+        // echo'<pre>'; print_r($request->all()); die;
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $rules = array(
-            'nick_name' => 'required|unique:consignees',
+            // 'nick_name' => 'required|unique:consignees',
         );
         $validator = Validator::make($request->all(),$rules);
         
@@ -159,23 +161,12 @@ class ConsigneeController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
-        $consigneesave['nick_name']           = $request->nick_name;
-        $consigneesave['legal_name']          = $request->legal_name;
-        $consigneesave['gst_number']          = $request->gst_number;
-        $consigneesave['contact_name']        = $request->contact_name;
+        $consigneesave['nick_name']           = $request->farmer_name;
         $consigneesave['phone']               = $request->phone;
-        $consigneesave['consigner_id']        = $request->consigner_id;
-        $consigneesave['zone_id']             = $request->zone_id;
-        $consigneesave['branch_id']           = $request->branch_id;
-        $consigneesave['dealer_type']         = $request->dealer_type;
-        $consigneesave['email']               = $request->email;
-        $consigneesave['sales_officer_name']  = $request->sales_officer_name;
-        $consigneesave['sales_officer_email'] = $request->sales_officer_email;
-        $consigneesave['sales_officer_phone'] = $request->sales_officer_phone;
         $consigneesave['address_line1']       = $request->address_line1;
-        $consigneesave['address_line2']       = $request->address_line2;
-        $consigneesave['address_line3']       = $request->address_line3;
-        $consigneesave['address_line4']       = $request->address_line4;
+        // $consigneesave['address_line2']       = $request->address_line2;
+        // $consigneesave['address_line3']       = $request->address_line3;
+        // $consigneesave['address_line4']       = $request->address_line4;
         $consigneesave['city']                = $request->city;
         $consigneesave['district']            = $request->district;
         $consigneesave['postal_code']         = $request->postal_code;
@@ -185,6 +176,16 @@ class ConsigneeController extends Controller
         $saveconsignee = Consignee::create($consigneesave); 
         if($saveconsignee)
         {
+            if(!empty($request->data)){ 
+                $get_data = $request->data;
+                foreach ($get_data as $key => $save_data ) { 
+                    $save_data['farmer_id'] = $saveconsignee->id;
+                    $save_data['field_area'] = $save_data['field_area'];
+                    $save_data['address'] = $save_data['address'];
+                    $saveregclients = Farm::create($save_data);
+                }
+            }
+
             $response['success'] = true;
             $response['success_message'] = "Consignee Added successfully";
             $response['error'] = false;

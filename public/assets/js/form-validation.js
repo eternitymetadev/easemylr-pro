@@ -474,7 +474,7 @@ jQuery(document).ready(function(){
     $('#createconsignee').validate({ 
         rules: {
             nick_name: {
-                required: true
+                // required: true
             },
             // email: {
             //     required: true,
@@ -492,7 +492,7 @@ jQuery(document).ready(function(){
                 minlength: 15,
             },
             consigner_id : {
-                required: true,
+                // required: true,
             },
             postal_code : {
                 required: true,

@@ -56,9 +56,8 @@ div.relative {
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified
-                                Order</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Crop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Crop List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -68,53 +67,23 @@ div.relative {
                     @csrf
                     <table id="unverified-table" class="table table-hover" style="width:100%">
                         <div class="btn-group relative">
-                            <button type="button" class="btn btn-warning disableDrs" id="create_edd"
+                            <button type="button" class="btn btn-warning disableDrs" data-toggle="modal"
+                                data-target="#exampleModalCenter"
                                 style="font-size: 11px;">
-                                Create ORS
+                                Add Crop
                             </button>
-                            <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
-
-                            Create DSR
-                            </button> -->
                         </div>
                         <thead>
                             <tr>
-                                <th>
-                                    <input type="checkbox" name="" id="ckbCheckAll" style="width: 30px; height:30px;">
-                                </th>
-                                <th>Order Number</th>
-                                <th>Order Date</th>
-                                <th>farmer name</th>
-                                <th>District</th>
-                                <th>City</th>
-                                <th>Pin Code</th>
-                                <th>Crop</th>
-                                <th>Acrage</th>
-
+                                <th>Crop Name</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                            $i = 1;
-                                foreach ($consignments as $key => $consignment) {     
-                                    $authuser = Auth::user();  
-                                ?>
+                            @foreach($crops as $crop)
                             <tr>
-                                
-                                <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd"
-                                        value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype=""
-                                        style="width: 30px; height:30px;"></td>
-                                <td>{{ $consignment->id ?? "-" }}</td>
-                                <td>{{ $consignment->consignment_date}}</td>
-                                <td>{{ $consignment->consignee_id}}</td>
-                                <td>{{ $consignment->consignee_district ?? "-" }}</td>
-                                <td>{{ $consignment->city ?? "-" }}</td>
-                                <td>{{ $consignment->pincode ?? "-" }}</td>
-                                <td>{{ $consignment->crop ?? "-" }}</td>
-                                <td>{{ $consignment->acreage ?? "-" }}</td>
+                                <td>{{$crop->crop_name}}</td>
                             </tr>
-
-                            <?php  $i++; } ?>
+                           @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -122,8 +91,39 @@ div.relative {
         </div>
     </div>
 </div>
-@include('models.common-confirm')
-@include('models.update-unverifiedList')
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add New Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add_crop">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Crop Name</label>
+                            <input type="text" class="form-control" name="crop_name">
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Submit</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -194,6 +194,36 @@ $('#unverified-table').DataTable({
     "paging": false,
     // "pageLength": 100,
 
+});
+$('#add_crop').submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+    $.ajax({
+        url: "add-crop",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
 });
 </script>
 @endsection

@@ -192,7 +192,7 @@
     {
     ?>
     <li class="menu">
-        <a href="{{$prefixurl.'#'}}" data-active="<?php if($segment == ''){?>true<?php }?>"
+        <a href="{{$prefixurl.'crop-list'}}" data-active="<?php if($segment == 'crop-list'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'postal-code')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

@@ -48,8 +48,8 @@ div.relat {
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignee</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignee List</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Farmer</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Farmer List</a></li>
                     </ol>
                 </nav>
             </div>
@@ -72,10 +72,7 @@ div.relat {
                         </div>
                         <thead>
                             <tr>
-                                <th>Cnee ID</th>
-                                <th>Consignee Nick Name</th>
-                                <th>Consigner</th> 
-                                <th>Contact Person Name</th>
+                                <th>Farmer Name</th>
                                 <th>Mobile No.</th>
                                 <th>PIN Code</th>
                                 <th>City</th>
@@ -118,10 +115,7 @@ var table = $('#consigneetable').DataTable({
         drawCallback: function () { $('.dataTables_paginate > .pagination').addClass(' pagination-style-13 pagination-bordered'); },
 
     columns: [
-        {data: 'id', name: 'id', defaultContent: '-'},
         {data: 'nick_name', name: 'nick_name', defaultContent: '-'},
-        {data: 'consigner', name: 'consigner', defaultContent: '-'},
-        {data: 'contact_name', name: 'contact_name', defaultContent: '-'},
         {data: 'phone', name: 'phone', defaultContent: '-'},
         {data: 'postal_code', name: 'postal_code', defaultContent: '-'},
         {data: 'city', name: 'city', defaultContent: '-'},

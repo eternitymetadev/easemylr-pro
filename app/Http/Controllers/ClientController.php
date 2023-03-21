@@ -585,7 +585,7 @@ class ClientController extends Controller
 
             if ($request->peritem) {
                 Session::put('peritem', $request->peritem);
-            }
+            } 
 
             $peritem = Session::get('peritem');
             if (!empty($peritem)) {

@@ -269,7 +269,7 @@ span.select2.select2-container.mb-4 {
 <div class="layout-px-spacing">
     {{--page title--}}
     <div class="page-header layout-spacing">
-        <h2 class="pageHeading">Order Book PTL </h2>
+        <h2 class="pageHeading">Order Book </h2>
     </div>
 
 
@@ -322,6 +322,7 @@ span.select2.select2-container.mb-4 {
                     @foreach($regionalclient as $client)
                     <option value="{{$client->id}}">{{$client->name}}</option>
                     @endforeach
+                    <option value="0">Self Pay</option>
                 </select>
 
             </div>
@@ -372,14 +373,14 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Farmer Name and contact search option <span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" id="select_consignee" name="consigner_id">
+                <select class="form-control my-select2" id="select_farmer" name="farmer_id">
                     <option value="">Select Farmer</option>
                                            @foreach($farmers as $farmer)
                                              <option value="{{$farmer->id}}">{{$farmer->nick_name}}
                                                </option>
-                                         @endforeach
+                                         @endforeach 
                 </select>
-                <div class="appendedAddress" id="consignee_address"></div>
+                <div class="appendedAddress" id="consigner_address"></div>
             </div>
             <!-- <div class="form-group col-md-4">
                 <label>
@@ -394,10 +395,10 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Select Farm Location<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
+                <select class="form-control my-select2" name="farm_id" id="select_farmer_add">
                     <option value="">Select Farm</option>
                 </select>
-                <div class="appendedAddress" id="ship_to_address"></div>
+                <div class="appendedAddress" id="farm_address"></div>
             </div> 
         </div>
 
@@ -414,10 +415,10 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Crop<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                <select class="form-control form-small my-select2" id="crop" name="crop" tabindex="-1">
                     <option value="">Select Crop</option>
-                    @foreach($vehicles as $vehicle)
-                    <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
+                    @foreach($Crops as $crop)
+                    <option value="{{$crop->id}}">{{$crop->crop_name}}
                     </option>
                     @endforeach
                 </select>
@@ -426,7 +427,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                  Acreage<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" id="" name="">
+                <Input type="number" class="form-control" id="" name="acreage">
             </div>
 
         </div>

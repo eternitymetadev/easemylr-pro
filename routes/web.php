@@ -140,6 +140,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('test', [ConsignmentController::class, 'test']);
     // Test Routes
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
+    Route::get('crop-list', [ConsignmentController::class, 'cropList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
@@ -168,6 +169,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('upload-delivery-img', [ConsignmentController::class, 'uploadDrsImg']);
     Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
     Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+    Route::any('add-crop', [ConsignmentController::class, 'addCrop']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -338,6 +340,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::resource('consignments', ConsignmentController::class);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
+    Route::get('crop-list', [ConsignmentController::class, 'cropList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
@@ -370,6 +373,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
     Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+    Route::any('add-crop', [ConsignmentController::class, 'addCrop']);
+
 
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
@@ -532,6 +537,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
     Route::resource('consignments', ConsignmentController::class);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
+    Route::get('crop-list', [ConsignmentController::class, 'cropList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
@@ -717,6 +723,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('reserve-lr/update-reserve-lr', [OrderController::class, 'updateReserveLr']);
 
     Route::resource('consignments', ConsignmentController::class);
+    Route::get('crop-list', [ConsignmentController::class, 'cropList']);
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);

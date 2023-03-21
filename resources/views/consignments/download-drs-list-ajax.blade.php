@@ -3,12 +3,12 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>DRS NO</th>
-                <th>DRS Date</th>
-                <th>Vehicle No</th>
-                <th>Driver Name</th>
-                <th>Driver Number</th>
-                <th>Total LR</th>
+                <th>ORS NO</th>
+                <th>ORS Date</th>
+                <th>Drone No</th>
+                <th>Rider Name</th>
+                <th>Rider Number</th>
+                <th>Total Order</th>
                 <th>Action</th>
                 <th>Delivery Status</th>
                 <th>DRS Status</th>
@@ -28,7 +28,7 @@
 
 ?>
             <tr>
-                <td>DRS-{{$trns->drs_no}}</td>
+                <td>ORS-{{$trns->drs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>

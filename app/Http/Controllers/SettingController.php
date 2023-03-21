@@ -330,4 +330,5 @@ class SettingController extends Controller
         return response()->json($response);
 
     }
+
 }

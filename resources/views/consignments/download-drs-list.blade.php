@@ -35,8 +35,8 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download DRS
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">ORS</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download ORS
                                 List</a></li>
                     </ol>
                 </nav>
@@ -209,8 +209,7 @@ $(document).on('click', '.draft-sheet', function() {
                     .consignment_detail.edd + "'></td><td>" + value.consignment_no +
                     "</td><td>" + value.consignment_date + "</td><td>" + value
                     .consignee_id + "</td><td>" + value.city + "</td><td>" + value
-                    .pincode + "</td><td>" + value.total_quantity + "</td><td>" + value
-                    .total_weight + "</td></tr>");
+                    .pincode + "</td></tr>");
             });
             $("#transaction_id").val(consignmentID);
             var rowCount = $("#save-DraftSheet tbody tr").length;

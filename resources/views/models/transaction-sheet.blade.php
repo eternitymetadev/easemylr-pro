@@ -185,7 +185,7 @@
                     <input type="hidden" class="form-control" id="transaction_id" name="transaction_id" value="">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
-                            <label for="location_name">Vehicle No.</label>
+                            <label for="location_name">Drone No.</label>
 
                             <select class="form-control my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
                                 <option value="">Select vehicle no</option>
@@ -196,7 +196,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Driver Name</label>
+                            <label for="exampleFormControlInput2">Rider Name</label>
                             <select class="form-control my-select2" id="driver_id" name="driver_id" tabindex="-1">
                                 <option value="">Select driver</option>
                                 @foreach($drivers as $driver)
@@ -210,25 +210,6 @@
                     </div>
 
                     <div class="form-row mb-0">
-                    <div class="form-group col-md-4">
-                            <label for="exampleFormControlInput2">Vehicle Type</label>
-                            <select class="form-control my-select2" id="vehicle_type" name="vehicle_type" tabindex="-1">
-                                <option value="">Select vehicle type</option>
-                                @foreach($vehicletypes as $vehicle)
-                                <option value="{{$vehicle->id}}">{{$vehicle->name}}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleFormControlInput2">Transporter Name</label>
-                            <input type="text" class="form-control" id="Transporter" name="transporter_name" value="">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleFormControlInput2">Purchase Price</label>
-                            <input type="text" class="form-control" name="purchase_price" value="">
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table id="save-DraftSheet" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
@@ -236,13 +217,12 @@
                                 <tr>
                                     <th>E-Way</th>
                                     <th>EDD</th>
-                                    <th>LR No</th>
+                                    <th>Order No</th>
                                     <th>Consignment Date</th>
                                     <th>Consignee Name</th>
                                     <th>city</th>
                                     <th>Pin Code</th>
-                                    <th>Number Of Boxes</th>
-                                    <th>Net Weight</th>
+                                  
                                     
                                 </tr>
                             </thead>
@@ -258,8 +238,7 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td id="total_boxes"></td>
-                                    <td id="totalweights"></td>
+                                  
                                 </tr>
 
                             </tfoot>

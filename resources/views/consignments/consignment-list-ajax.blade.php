@@ -62,10 +62,10 @@
                 <!-- relocate cnr cnee check for sale to return case -->
                 <?php 
                 if($consignment->is_salereturn == 1){
-                    $cnr_nickname = $consignment->ConsigneeDetail->nick_name;
-                    $cne_nickname = $consignment->ConsignerDetail->nick_name;
+                    $cnr_nickname = @$consignment->ConsigneeDetail->nick_name;
+                    $cne_nickname = @$consignment->ConsignerDetail->nick_name;
                 }else{
-                    $cnr_nickname = $consignment->ConsignerDetail->nick_name;
+                    $cnr_nickname = @$consignment->ConsignerDetail->nick_name;
                     $cne_nickname = @$consignment->ConsigneeDetail->nick_name;
                 } ?>
                     <ul class="ant-timeline">
@@ -87,13 +87,13 @@
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
                                 <?php if($consignment->is_salereturn == '1'){ ?>
-                                    <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
-                                        {{ $consignment->ConsignerDetail->city ?? "" }},
-                                        {{ $consignment->ConsignerDetail->district ?? "" }} </span>
+                                    <span>{{ @$consignment->ConsignerDetail->postal_code ?? "" }},
+                                        {{ @$consignment->ConsignerDetail->city ?? "" }},
+                                        {{ @$consignment->ConsignerDetail->district ?? "" }} </span>
                                         <?php }else{ ?>
-                                            <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
-                                            {{ $consignment->ConsigneeDetail->city ?? "" }},
-                                            {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                            <span>{{ @$consignment->ConsigneeDetail->postal_code ?? "" }},
+                                            {{ @$consignment->ConsigneeDetail->city ?? "" }},
+                                            {{ @$consignment->ConsigneeDetail->district ?? "" }} </span>
                                             <?php } ?>
                                 </div>
                             </div>
@@ -266,7 +266,7 @@
                                                                     $cnr_nickname_txn = $consignment->ConsigneeDetail->nick_name;
                                                                     $cne_nickname_txn = $consignment->ConsignerDetail->nick_name;
                                                                 }else{
-                                                                $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name;
+                                                                $cnr_nickname_txn = @$consignment->ConsignerDetail->nick_name;
                                                                 $cne_nickname_txn = @$consignment->ConsigneeDetail->nick_name;
                                                                 }
                                                                 ?>

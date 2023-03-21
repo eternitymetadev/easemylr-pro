@@ -19,6 +19,8 @@ use App\Models\TransactionSheet;
 use App\Models\Zone;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Farm;
+use App\Models\Crop;
 use App\Models\VehicleType;
 use App\Exports\PodExport;
 use Auth;
@@ -660,10 +662,10 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsigners(Request $request)
     {
-        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id', 'regionalclient_id')->with('GetRegClient', 'GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
-
+        // echo'<pre>'; print_r($request->consigner_id); die;
+        $getconsigners = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
         $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
-        $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
+        $getConsignees = Farm::where('farmer_id',$request->consigner_id)->get();
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
@@ -707,7 +709,7 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsignees(Request $request)
     {
-        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone')->where(['id' => $request->consignee_id, 'status' => '1'])->first();
+        $getconsignees = Farm::where('id', $request->consignee_id)->first();
 
         if ($getconsignees) {
             $response['success'] = true;
@@ -1956,8 +1958,7 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*','consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
             ->whereIn('consignment_notes.status', ['2', '5', '6'])
@@ -2005,8 +2006,7 @@ class ConsignmentController extends Controller
 
         $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'purchase_price' => $purchasePrice, 'delivery_status' => 'Started']);
 
-        $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
             ->join('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
@@ -2030,28 +2030,9 @@ class ConsignmentController extends Controller
         $chk_tooken = Driver::where('id', $adddriverId)->select('team_id', 'fleet_id')->get();
         $tooken_details = json_decode(json_encode($chk_tooken), true);
         // Push to tooken if Team Id & Fleet Id Available
-        if (!empty($tooken_details[0]['fleet_id'])) {
-            $createTask = $this->createTookanMultipleTasks($simplyfy);
-            $json = json_decode($createTask, true);
-            if (!empty($json['data'])) {
-                $response = $json['data']['deliveries'];
-                $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-                foreach ($response as $res) {
-                    $job_id = $res['job_id'];
-                    $orderId = $res['order_id'];
-                    $tracking_link = $res['result_tracking_link'];
-                    $update = DB::table('consignment_notes')->where('id', $orderId)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
-                    $updatedrs = DB::table('transaction_sheets')->where('consignment_no', $orderId)->update(['job_id' => $job_id]);
-                }
-            } else {
-                $response['success'] = false;
-                $response['error_message'] = $json['message'];
-                return response()->json($response);
-            }
-        } else {
+       
 
             $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-        }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -2643,8 +2624,7 @@ class ConsignmentController extends Controller
             }
         }
 
-        $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+        $consignment = DB::table('consignment_notes')->select('consignment_notes.*','consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->whereIn('consignment_notes.id', $consignmentId)
             ->get(['consignees.city']);
@@ -2670,11 +2650,9 @@ class ConsignmentController extends Controller
             $consignment_date = $value['consignment_date'];
             $city = $value['city'];
             $pincode = $value['pincode'];
-            $total_quantity = $value['total_quantity'];
-            $total_weight = $value['total_weight'];
             //echo'<pre>'; print_r($data); die;
 
-            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
+            $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
         }
 
         $response['success'] = true;
@@ -5042,4 +5020,66 @@ class ConsignmentController extends Controller
          }
          return Response::json($response);
        }
+
+       public function cropList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $crops = Crop::where('status', 1)->get();
+        return view('consignments.crop-list', ['prefix' => $this->prefix, 'title' => $this->title, 'crops' => $crops]);
+    }
+    public function addCrop(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'crop_name' => 'required|unique:crops',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+
+            $gstsave['crop_name'] = $request->crop_name;
+            $gstsave['status'] = 1;
+
+            $gstsave = Crop::create($gstsave);
+
+            if ($gstsave) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Crop Added successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
 }
