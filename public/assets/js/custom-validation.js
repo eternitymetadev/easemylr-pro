@@ -2040,10 +2040,10 @@ $(document).on("click", ".onelrupdate", function () {
         success: function (data) {
             // alert(data.success);
             if (data.success == true) {
-                swal("success", "Status Updated successfully", "success");
+                swal("success", data.messages, "success");
                 location.reload();
             } else {
-                swal("error", "Something went wrong", "error");
+                swal("error", data.messages , "error");
             }
         },
     });

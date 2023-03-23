@@ -4126,6 +4126,23 @@ class ConsignmentController extends Controller
     {
         try {
 
+            $authuser = Auth::user();
+            $login_branch = $authuser->branch_id;
+
+            $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
+            if ($get_delivery_branch->lr_type == 0) {
+                $delivery_branch = $get_delivery_branch->branch_id;
+            } else {
+                $delivery_branch = $get_delivery_branch->to_branch_id;
+            }
+
+            if ($login_branch != $delivery_branch) {
+
+                $response['success'] = false;
+                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+                return Response::json($response);
+            }
+
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
             if (!empty($file)) {
@@ -4511,7 +4528,10 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            $query = $query->whereIn('branch_id', $cc);
+            // $query = $query->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
+            });
         }
 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -4977,7 +4997,25 @@ class ConsignmentController extends Controller
        {
         try {
 
-            $lr_no = $request->lr_no;
+            $lr_no = $request->lr_no; 
+
+            $authuser = Auth::user();
+            $login_branch = $authuser->branch_id;
+
+            $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
+            if ($get_delivery_branch->lr_type == 0) {
+                $delivery_branch = $get_delivery_branch->branch_id;
+            } else {
+                $delivery_branch = $get_delivery_branch->to_branch_id;
+            }
+
+            if ($login_branch != $delivery_branch) {
+
+                $response['success'] = false;
+                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+                return Response::json($response);
+            }
+
             $file = $request->file('pod');
             if (!empty($file)) {
                 $filename = $file->getClientOriginalName();
