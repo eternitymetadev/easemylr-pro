@@ -58,7 +58,8 @@ div.relat {
                                 <th>Make</th>
                                 <th>Vehicle Capacity</th>
                                 <th>Manufacture</th>
-                                <th>RC Image</th>
+                                <th>First RC Image</th>
+                                <th>Second RC Image</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -91,6 +92,7 @@ div.relat {
                 {data: 'tonnage_capacity', name: 'tonnage_capacity'},
                 {data: 'mfg', name: 'mfg'},
                 {data: 'rc_image', name: 'rc_image'},
+                {data: 'second_rc_image', name: 'second_rc_image'},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
                 
             ]
