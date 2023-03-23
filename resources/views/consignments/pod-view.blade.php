@@ -12,7 +12,7 @@ td p {
 }
 
 .lrStatus {
-    border-radius: 4px;
+    border-radius: 4px; 
     border: 1px solid;
     padding: 2px 5px;
     font-size: 10px !important;
