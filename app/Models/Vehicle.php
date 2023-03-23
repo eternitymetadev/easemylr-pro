@@ -26,6 +26,7 @@ class Vehicle extends Model
         'owner_name',
         'owner_phone',
         'rc_image',
+        'second_rc_image',
         'status',
         'created_at',
         'updated_at'

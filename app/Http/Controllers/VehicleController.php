@@ -71,6 +71,14 @@ class VehicleController extends Controller
                 }
                 return $rc_image;
             })
+            ->addColumn('second_rc_image', function ($arrData) {
+                if($arrData->second_rc_image == null){
+                    $second_rc_image = '-';
+                }else{
+                    $second_rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->second_rc_image).' " target="_blank">view</a>';
+                }
+                return $second_rc_image;
+            })
             ->addColumn('action', function($row){
                 $actionBtn = '<a href="'.URL::to($this->prefix.'/vehicles/'.Crypt::encrypt($row->id).'/edit').'" class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>';
                 $actionBtn .= '&nbsp;&nbsp;';
@@ -79,7 +87,7 @@ class VehicleController extends Controller
                 // $actionBtn .= '<button type="button" name="delete" data-id="'.$row->id.'" data-action="'.URL::to($this->prefix.'/vehicles/delete-vehicle').'" class="delete btn btn-danger btn-sm delete_vehicle"><span><i class="fa fa-trash"></i></span></button>';
                 return $actionBtn;
             })
-            ->rawColumns(['action', 'rc_image'])
+            ->rawColumns(['action', 'rc_image','second_rc_image'])
                 ->make(true);
 
     }
@@ -145,6 +153,13 @@ class VehicleController extends Controller
             $path = 'public/images/vehicle_rc_images';
             $name = Helper::uploadImage($file,$path);
             $vehiclesave['rc_image']  = $name;
+        }
+        // upload rc image
+        if($request->second_rc_image){
+            $file = $request->file('second_rc_image');
+            $path = 'public/images/vehicle_rc_images';
+            $second_name = Helper::uploadImage($file,$path);
+            $vehiclesave['second_rc_image']  = $second_name;
         }
         
         $savevehicle = Vehicle::create($vehiclesave); 
@@ -244,6 +259,12 @@ class VehicleController extends Controller
                 $name = Helper::uploadImage($file,$path); 
                 $vehiclesave['rc_image']  = $name;
            }
+           if($request->second_rc_image){
+            $file = $request->file('second_rc_image');
+            $path = 'public/images/vehicle_rc_images';
+            $second_name = Helper::uploadImage($file,$path); 
+            $vehiclesave['second_rc_image']  = $second_name;
+       }
             
             Vehicle::where('id',$request->vehicle_id)->update($vehiclesave);
             

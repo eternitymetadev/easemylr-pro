@@ -125,7 +125,16 @@
                                     <input type="file" class="form-control rc_image" name="rc_image" accept="image/*">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}" class="rcshow image-fluid" id="img-tag" width="320" height="240"></div>
+                                    <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}" class="rcshow image-fluid" id="img-tag" width="120" height="100"></div>
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Second Vehicle RC File(Optional)</label>
+                                    <input type="file" class="form-control second_rc_image" name="second_rc_image" accept="image/*">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}" class="second_rcshow image-fluid" id="img-tag" width="120" height="100"></div>
                                 </div>
                             </div>
                             
@@ -153,10 +162,26 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+    function readURL2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('.second_rcshow').attr('src', e.target.result);
+                // $(".remove_licensefield").css("display", "block");
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
     $(document).on("change",'.rc_image', function(e){
         var fileName = this.files[0].name;
         readURL1(this);
+    });
+    ///
+    $(document).on("change",'.second_rc_image', function(e){
+        var fileName = this.files[0].name;
+        readURL2(this);
     });
 
 

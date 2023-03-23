@@ -141,6 +141,32 @@
                                     <?php } ?>
                                 </div>
                             </div>
+
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6 rc-load">
+                                    <label for="exampleFormControlInput2">Second Vehicle RC File(Optional)</label>
+                                    <?php if(!empty($getvehicle->second_rc_image))
+                                    { 
+                                        ?> 
+                                        <input type="file" class="form-control second_rcfile" name="second_rc_image" value="" placeholder="">
+
+                                        <div class="image_upload"><img src="{{url("storage/images/vehicle_rc_images/$getvehicle->second_rc_image")}}" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>  
+                                    <?php }
+                                    else{
+                                        ?>  
+                                        <input type="file" class="form-control second_rcfile" name="second_rc_image" value="" placeholder="">
+
+                                        <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>
+                                    <?php
+                                    }
+                                        ?>
+                                    <?php if($getvehicle->second_rc_image!=null){ ?>
+                                        <a class="deletercimg d-block text-center" href="javascript:void(0)" data-action = "<?php echo URL::to($prefix.'/vehicles/update-rc'); ?>" data-rcimg = "del-rcimg" data-id="{{ $getvehicle->id }}" data-name="{{$getvehicle->second_rc_image}}"><i class="red-text fa fa-trash"></i> </a>
+                                    <?php } else { ?>
+                                    <a href="javascript:void(0)" class="remove_rcfield" style="display: none;"><i class="red-text fa fa-trash"></i> </a>
+                                    <?php } ?>
+                                </div>
+                            </div>
                             
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/vehicles')}}"> Back</a>
@@ -179,11 +205,30 @@
         }
     }
 
+    function readURL2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('.second_rcshow').attr('src', e.target.result);
+                $(".remove_rcfield").css("display", "block");
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     $(document).on("change",'.rcfile', function(e){
         var fileName = this.files[0].name;
         // $(this).parent().parent().find('.file_graph').text(fileName);
 
         readURL1(this);
+    });
+
+    $(document).on("change",'.second_rcfile', function(e){
+        var fileName = this.files[0].name;
+        // $(this).parent().parent().find('.file_graph').text(fileName);
+
+        readURL2(this);
     });
 
 </script>
