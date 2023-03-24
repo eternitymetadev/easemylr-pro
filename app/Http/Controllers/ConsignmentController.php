@@ -4236,7 +4236,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', '2','5','6');
+            ->where('consignment_notes.status', '=', ['2','5','6']);
             // ->where('consignment_notes.status', '!=', 5);
 
         if ($authuser->role_id == 1) {
