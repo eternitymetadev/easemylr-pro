@@ -4221,7 +4221,7 @@ class ConsignmentController extends Controller
         }
     }
 
-    public function addmoreLr(Request $request)
+    public function addmoreLr(Request $request) 
     {
 
         $this->prefix = request()->route()->getPrefix();
@@ -4236,8 +4236,8 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', '2')
-            ->where('consignment_notes.status', '!=', 5);
+            ->where('consignment_notes.status', '=', '2','5','6');
+            // ->where('consignment_notes.status', '!=', 5);
 
         if ($authuser->role_id == 1) {
             $data;
@@ -4248,7 +4248,10 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc);
+            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5','6']);
+            });
+            // $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
