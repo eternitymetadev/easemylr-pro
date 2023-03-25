@@ -43,6 +43,9 @@
                 <th>TAT</th>
                 <th>Delivery Mode</th>
                 <th>POD</th>
+                <th>Payment Type</th>
+                <th>Freignt on Delivery</th>
+                <th>Cash on Delivery</th>
             </tr>
         </thead>
         <tbody>
@@ -135,7 +138,9 @@
                     <td>Active</td>
                     <?php }elseif($consignment->status == 2){ ?>
                     <td>Unverified</td> 
-                    <?php } ?>
+                    <?php }else{?>
+                        <td>Unknown</td> 
+                 <?php   } ?>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date )}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <?php 
@@ -188,6 +193,9 @@
             }
             ?>
                 <?php } ?>
+                <td>{{$consignment->payment_type}}</td>
+                <td>{{$consignment->freight_on_delivery}}</td>
+                <td>{{$consignment->cod}}</td>
                 
             </tr>
             @endforeach

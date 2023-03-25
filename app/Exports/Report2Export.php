@@ -258,6 +258,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'tat'                 => $tatday,
                     'delivery_mode'       => $deliverymode,
                     'pod'                 => $pod,
+                    'payment_type'        => @$consignment->payment_type,
+                    'freight_on_delivery' => @$consignment->freight_on_delivery,
+                    'cod'                 => @$consignment->cod,
 
                 ];
             }
@@ -308,7 +311,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Status',
             'Tat',
             'Delivery Mode',
-            'POD'
+            'POD',
+            'Payment Type',
+            'Freight on Delivery',
+            'COD',
         ];
     }
 }
