@@ -94,10 +94,7 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
-                    $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
-                });
-                // $query = $query->whereIn('branch_id', $cc);
+                $query = $query->whereIn('branch_id', $cc);
                 // ->orWhere(function ($query) use ($cc){
                 //     $query->whereIn('fall_in', $cc);
                 // });
