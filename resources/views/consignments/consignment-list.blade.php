@@ -725,6 +725,7 @@ function row_click(row_id, job_id, url) {
             ),
         },
         success: function(response) {
+
             if (response.success) {
 
                 var modal_html = '';
@@ -815,108 +816,38 @@ function row_click(row_id, job_id, url) {
                 } else {
 
                     if (response.driver_trail) {
-                        var cc =
-                            '<div class="historyTimeLineContainer taskContainer taskDetailContainer">';
-                        $.each(response.driver_trail, function(index, task) {
-                            const statusColor = task.status == 'Started' ? 'red' : 'green';
+                        var trail_reverse = response.driver_trail;
+                        var array_trail = trail_reverse.reverse();
+                        if (response.driver_app.lr_type == 0) {
+                            var cc = '<ul class="cbp_tmtimeline">';
+                            $.each(array_trail, function(index, task) {
 
-                                cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:` + statusColor + `;">
-                                        <span class="marker"></span>
-                                        <span class="status">` + task.status + `</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">` + task.create_at + `
-                                            </span><br/></strong>`;
-                                if (task.status == 'Started') {
-                                    cc += `<div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;">
-                                            </div>`;
+                                if (task.status == 'Created') {
+                                    cc +=
+                                        '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span> by HARJINDER 9080</span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received at </span> by HARJINDER 9080</span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                        task.create_at + '><span class="hidden">' + task.create_at +
+                                        '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span> by HARJINDER 9080</span></div></li>';
+                                } else {
+                                    cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                        .create_at + '><span class="hidden">' + task.create_at +
+                                        '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                        task.status + '</span> by HARJINDER 9080</span></div></li>';
                                 }
-                                cc += `</div>
-                                    </div>
-                                </div>`;
-                        });
+                            });
+                            cc += '</ul>';
+                            var modal_html1 = cc;
 
-
-                        const acknowledged = response.driver_trail.some(el => el.status === 'Acknowledge');
-
-                        if (!acknowledged) {
-                            cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:orange">
-                                        <span class="marker"></span>
-                                        <span class="status">Pending Acknowledge</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">
-                                            </span><br/></strong>
-                                        </div>
-                                    </div>
-                                </div>`;
+                            $('.append-modal').html(modal_html1);
+                        } else {
+                            var modal_html1 = 'No Data Available';
+                            $('.append-modal').html(modal_html1);
                         }
-                        const successful = response.driver_trail.some(el => el.status === 'Successful');
-
-                        if (acknowledged && !successful) {
-                            if (response.app_media?.length > 0) {
-                                cc += ``;
-                            } else {
-                            cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:orange">
-                                        <span class="marker"></span>
-                                        <span class="status">In Transit</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">
-                                            </span><br/></strong>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-                        }
-
-                        cc += '</div>';
-                        var modal_html1 = cc;
-                        $('.append-modal').html(modal_html1);
-
-                        var sssss = ``;
-
-                        $.each(response.app_media, function(index, media) {
-
-                            if (media.type == 'pod') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 3">
-                                                    <p>POD</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                </div>`;
-                            } else if (media.type == 'sign') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 1">
-                                                    <p>Sign</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                
-                                                </div>`;
-                            } else if (media.type == 'product_images') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 2">
-                                                    <p>Material</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                </div>`;
-                            }
-                        });
-                        $('.append-modal-images').html(sssss);
                     } else {
                         var sssss = '';
                         var modal_html1 = 'No Data Available';
                         $('.append-modal').html(modal_html1);
                     }
+
 
                 }
                 if ((response.job_id != '') && (response.delivery_status != 'Successful')) {

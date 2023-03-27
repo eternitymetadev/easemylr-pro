@@ -4375,7 +4375,7 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
         ////
-        $driver_app = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
+        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*','consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -4416,6 +4416,7 @@ class ConsignmentController extends Controller
             $response['tracking_link'] = $job->tracking_link;
             $response['driver_trail'] = $app_trail;
             $response['app_media'] = $app_media;
+            $response['driver_app'] = $driver_app;
         }
 
         return response()->json($response);
