@@ -896,6 +896,9 @@ class PickupRunSheetController extends Controller
 
             return response()->json(['html' => $html]);
         }
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        
         $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
         $vendors = Vendor::with('Branch')->get();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -903,9 +906,6 @@ class PickupRunSheetController extends Controller
 
         $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
             ->where('payment_status', 0);
-
-        $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
 
         if ($authuser->role_id == 1) {
             $query;
