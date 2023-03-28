@@ -94,16 +94,10 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->whereIn('branch_id', $cc);
-                // ->orWhere(function ($query) use ($cc){
-                //     $query->whereIn('fall_in', $cc);
-                // });
+                $query =  $query->where(function ($query) use ($cc){
+                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
 
-                // if(!empty('to_branch_id')){
-                //     $query = $query->whereIn('to_branch_id', $cc);
-                // }else{
-                // $query = $query->whereIn('branch_id', $cc);
-                // }
+                });
             }
 
             if (!empty($request->search)) {
@@ -147,7 +141,7 @@ class ConsignmentController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-
+            // echo'<pre'; print_r($consignments); die;
             $html = view('consignments.consignment-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
 
             return response()->json(['html' => $html]);
@@ -4476,7 +4470,10 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->whereIn('branch_id', $cc);
+                $query =  $query->where(function ($query) use ($cc){
+                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+
+                });
             }
 
             if (!empty($request->search)) {
