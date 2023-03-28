@@ -819,28 +819,197 @@ function row_click(row_id, job_id, url) {
                         var trail_reverse = response.driver_trail;
                         var array_trail = trail_reverse.reverse();
                         if (response.driver_app.lr_type == 0) {
-                            var cc = '<ul class="cbp_tmtimeline">';
-                            $.each(array_trail, function(index, task) {
+                            if (response.driver_app.lr_mode == 0) {
+                                //================Manual L TRAIL =================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
 
-                                if (task.status == 'Created') {
-                                    cc +=
-                                        '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span> by HARJINDER 9080</span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received at </span> by HARJINDER 9080</span></div></li><li><time class="cbp_tmtime" datetime=' +
-                                        task.create_at + '><span class="hidden">' + task.create_at +
-                                        '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span> by HARJINDER 9080</span></div></li>';
-                                } else {
-                                    cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                        .create_at + '><span class="hidden">' + task.create_at +
-                                        '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
-                                        task.status + '</span> by HARJINDER 9080</span></div></li>';
-                                }
-                            });
-                            cc += '</ul>';
-                            var modal_html1 = cc;
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received at </span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+                                    } else if (task.status == 'Successful') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span> by HARJINDER 9080</span></div></li>';
+                                    }
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+                            } else if (response.driver_app.lr_mode == 2) {
+                                //  ================DRIVER App TRAIL ====================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
 
-                            $('.append-modal').html(modal_html1);
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received at </span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+                                    } else {
+                                       if(task.status == 'Successful'){
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span><span class="successful">Shipment Delivered</span>text</span></div></li>';
+                                       } else{
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                            if (task.status == 'Started') {
+                                            cc += `<div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;">
+                                            </div>`;
+                                        }
+                                        cc +=  '<span><span class="successful">' +
+                                            task.status +
+                                            '</span>text</span></div></li>';
+                                       }
+                                        
+                                    }
+
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+
+                                var sssss = ``;
+
+                                $.each(response.app_media, function(index, media) {
+
+                                    if (media.type == 'pod') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                            <p>POD</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                          </div>`;
+                                    } else if (media.type == 'sign') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                            <p>Sign</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+
+                        </div>`;
+                                    } else if (media.type == 'product_images') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                            <p>Material</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                        </div>`;
+                                    }
+                                });
+                                $('.append-modal-images').html(sssss);
+
+                            } else {
+                                var modal_html1 = 'No Data Available';
+                                $('.append-modal').html(modal_html1);
+                            }
                         } else {
-                            var modal_html1 = 'No Data Available';
-                            $('.append-modal').html(modal_html1);
+                            // ============================  PTL LR Trail ========================= //
+                            if (response.driver_app.lr_mode == 0) {
+                                //================Manual L TRAIL =================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
+
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Order Booked</span>'+response.driver_app.branch_name+'</div></li>';
+                                    } 
+                                     else if (task.status == 'Successful') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span> by HARJINDER 9080</span></div></li>';
+                                    }else{
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span>'+response.driver_app.fall_in_branch_name+'</span></div></li>';
+                                    }
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+                            } else if (response.driver_app.lr_mode == 2) {
+                                //  ================DRIVER App TRAIL ====================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
+
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received at </span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+                                    } else {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                        if (task.status == 'Started') {
+                                            cc += `<div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;">
+                                            </div>`;
+                                        }
+                                        cc += '<span><span class="successful">' +
+                                            task.status +
+                                            '</span>text</span></div></li>';
+
+                                    }
+
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+
+                                var sssss = ``;
+
+                                $.each(response.app_media, function(index, media) {
+
+                                    if (media.type == 'pod') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                            <p>POD</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                          </div>`;
+                                    } else if (media.type == 'sign') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                            <p>Sign</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+
+                        </div>`;
+                                    } else if (media.type == 'product_images') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                            <p>Material</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                        </div>`;
+                                    }
+                                });
+                                $('.append-modal-images').html(sssss);
+
+                            } else {
+                                var modal_html1 = 'No Data Available';
+                                $('.append-modal').html(modal_html1);
+                            }
+
                         }
                     } else {
                         var sssss = '';
