@@ -930,9 +930,7 @@ function row_click(row_id, job_id, url) {
                                      else if (task.status == 'Successful') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
-                                            task.status +
-                                            '</span> by HARJINDER 9080</span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Delivered </span></span></div></li>';
                                     }else if(task.status == 'Prs Created'){
                                         cc += '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span> </span></div></li><li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +

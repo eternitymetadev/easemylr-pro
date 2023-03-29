@@ -2038,8 +2038,8 @@ class ConsignmentController extends Controller
         //     }
         // } else {
 
-        $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-        // }
+     $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+        //  }
         // =============new app
         $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
@@ -2071,10 +2071,11 @@ class ConsignmentController extends Controller
                     // =================== task assign
                     $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('consignment_id')->first();
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
+                   
 
                     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
                     // ==== end started
@@ -4187,7 +4188,7 @@ class ConsignmentController extends Controller
 
                 $respons2 = array('consignment_id' => $request->lr, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
 
-                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->latest('consignment_id')->first();
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->orderBy('id','DESC')->first();
                 if (!empty($lastjob->response_data)) {
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
@@ -4409,7 +4410,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->join('locations', 'locations.id', '=', 'consignment_notes.branch_id')
-            ->join('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
+            ->leftjoin('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
             ->leftjoin('jobs', function ($data) {
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
