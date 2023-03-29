@@ -937,10 +937,18 @@ function row_click(row_id, job_id, url) {
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
                                             task.status +
                                             '</span>'+response.driver_app.fall_in_branch_name+'</span></div></li>';
+                                    } else if(task.status == 'Hub Transfer'){
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span>'+response.driver_app.to_branch_detail+'</span></div></li>';
+                                    }else if(task.status == 'Received Hub'){
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span>'+response.driver_app.to_branch_detail+'</span></div></li>';
                                     }else if(task.status == 'Assigned'){
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span>'+response.driver_app.fall_in_branch_name+'</span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span>'+response.driver_app.to_branch_detail+'</span></div></li>';
                                     }else{
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
