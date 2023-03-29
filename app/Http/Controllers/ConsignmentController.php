@@ -1000,6 +1000,7 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         $codStamp = public_path('assets/img/cod.png');
         $paidStamp = public_path('assets/img/paid.png');
+        $waterMark = public_path('assets/img/images.jpg');
         
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
@@ -1009,7 +1010,7 @@ class ConsignmentController extends Controller
                 $cnr_state = '';
             }
 
-            $html = '<!DOCTYPE html>
+            $html = '<!DOCTYPE html> 
             <html lang="en">
                 <head>
                     <!-- Required meta tags -->
@@ -1111,6 +1112,7 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
+                <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
                     <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
                         <table style="height: 70px;">
                             <tr>
