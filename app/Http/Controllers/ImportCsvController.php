@@ -11,6 +11,7 @@ use App\Imports\DriverImport;
 use App\Imports\ZoneImport;
 use App\Imports\DeliveryDateImport;
 use App\Imports\ManualDeliveryImport;
+use App\Imports\UpdateLatitudeLongitude;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
 use ZipArchive;
@@ -66,6 +67,11 @@ class ImportCsvController extends Controller
             $data = Excel::import(new ManualDeliveryImport,request()->file('manualdeliveryfile'));
             $url  = URL::to($this->prefix.'/consignments');
             $message = 'Manual delivery status Uploaded Successfully';
+        }
+        if($request->hasFile('lat_lang')){
+            $data = Excel::import(new UpdateLatitudeLongitude,request()->file('lat_lang'));
+            $url  = URL::to($this->prefix.'/consignments');
+            $message = 'Latitude longitude Uploaded Successfully';
         }
         if($request->hasFile('podsfile')){
             $url  = URL::to($this->prefix.'/consignments');

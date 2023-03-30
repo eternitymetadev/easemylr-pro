@@ -800,7 +800,7 @@ jQuery(document).ready(function () {
     
                 </div>`;
                     $('.orderInfoBlock').html(blockToAppend);
-                
+
                     // $(".insert-more").attr("disabled", true);
                 }
             },
@@ -1296,6 +1296,8 @@ jQuery(document).ready(function () {
         jQuery('.is_hub_no').attr("checked", false);
         jQuery(".radio_vehicleno_yes").attr("checked", false);
         jQuery(".radio_vehicleno_no").attr("checked", false);
+        jQuery(".app_use_eternity").attr("checked", false);
+        jQuery(".app_use_shadow").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1328,6 +1330,14 @@ jQuery(document).ready(function () {
                 } else {
                     jQuery('.is_hub_yes').attr("checked", false);
                     jQuery('.is_hub_no').attr("checked", true);
+                }
+
+                if (response.newcata.app_use == 'Eternity') {
+                    jQuery('.app_use_eternity').attr("checked", true);
+                    jQuery('.app_use_shadow').attr("checked", false);
+                } else {
+                    jQuery('.app_use_eternity').attr("checked", false);
+                    jQuery('.app_use_shadow').attr("checked", true);
                 }
 
             },
@@ -1503,7 +1513,7 @@ jQuery(document).ready(function () {
                             "][delivery_date]' data-id=" +
                             value.consignment_no +
                             " class='delivery_d' value='" +
-                            value.dd + 
+                            value.dd +
                             "' onkeydown='return false'>";
                     } else {
                         var deliverydate = value.dd;
@@ -1672,8 +1682,8 @@ jQuery(document).ready(function () {
         var data = { lr_no: lr_no };
         var base_url = window.location.origin;
         jQuery.ajax({
-            url: "get-delivery-dateLR",
-            type: "get",
+            url: "get-delivery-dateLR", 
+            type: "get", 
             cache: false,
             data: data,
             dataType: "json",
@@ -1731,10 +1741,10 @@ jQuery(document).ready(function () {
                                 "' target='_blank' class='btn btn-warning'>view</a>";
 
                         }
-                    } else {
+                    } else if (value.lr_mode == 1) {
                         if (img_api == null || img_api == "") {
                             var field = "No image available";
-                                
+
                         } else {
                             var field1 = [];
                             var img_length = img_api.length;
@@ -1751,7 +1761,37 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
-                    } 
+                    } else {
+                        var app_img = [];
+
+                        $.each(
+                            data.app_media,
+                            function (index, media) {
+                                    app_img.push(media.pod_img);
+                            }
+                        );
+
+                        if (app_img == null || app_img == "") {
+                            var field = "No image available";
+
+                        } else {
+                            var field1 = [];
+                            var img_length = app_img.length;
+                            var i = 0;
+                            $.each(app_img, function (index, img) {
+                                i++;
+                                img_group =
+                                    "<a href='" +
+                                    img +
+                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
+                                    i +
+                                    "</a> ";
+                                field1.push(img_group);
+                            });
+                            var field = field1.join(" ");
+                        }
+
+                    }
                     // delivery date check
                     if (value.delivery_date == null) {
                         if (data.role_id == 7) {
@@ -1798,9 +1838,11 @@ jQuery(document).ready(function () {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
+                    }else if(value.lr_mode == 1){
+                        row += "<td>Update from shadow</td>";
                     } else {
 
-                        row += "<td>Update from shadow</td>";
+                        row += "<td>Update from Shiprider</td>";
                     }
                     row += "</tr>";
 
@@ -1920,7 +1962,7 @@ jQuery(document).ready(function () {
                 success: function (data) {
                     if (data.success) {
                         console.log(data.zone);
-                        
+
                         // $("#city").val(data.data.city);
                         $("#district").val(data.zone.district);
                         $("#state").val(data.zone.state);
@@ -2353,11 +2395,11 @@ $("#payment_form").submit(function (e) {
     var formData = new FormData(this);
     var tds_rate = $("#tds_rate").val();
 
-    if (!tds_rate) { 
+    if (!tds_rate) {
         swal("Error", "please add tds rate in vendor", "error");
         return false;
     }
- 
+
     $.ajax({
         url: "create-payment",
         headers: {
@@ -2377,9 +2419,9 @@ $("#payment_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 $("#payment_form")[0].reset();
-            } else if(data.error == true){
+            } else if (data.error == true) {
                 swal("error", data.message, "error");
-            }else {
+            } else {
                 swal("error", data.message, "error");
             }
         },
@@ -2664,9 +2706,9 @@ $("#create_request_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 window.location.href = data.redirect_url;
-            } else if(data.error == true){
+            } else if (data.error == true) {
                 swal("error", data.message, "error");
-            }else {
+            } else {
                 swal("error", data.message, "error");
             }
         },
@@ -2862,8 +2904,8 @@ $(document).on("click", ".receive-vehicle", function () {
                         '<td><input class="dialogInput remaining_qty" style="width: 120px; visibility: hidden" type="text" name="data[' +
                         index +
                         '][remaining_qty]" readonly></td>';
-                   
-                    
+
+
 
                     rows +=
                         '<td><input class="dialogInput form-control-sm remarks" style="min-width: 200px; visibility: hidden" type="text" name="data[' +
@@ -2880,12 +2922,12 @@ $(document).on("click", ".receive-vehicle", function () {
 jQuery(document).on("click", ".verify_status", function (event) {
     $(this).closest('td').next('td').find('input').val('');
     verify_val = $(this).val();
-    if(verify_val == '1'){
+    if (verify_val == '1') {
         $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'hidden');
         $(this).closest('td').next('td').find('.remaining_qty').css('visibility', 'hidden');
         $(this).closest('td').next('td').find('.remarks').css('visibility', 'hidden');
-        
-    }else{
+
+    } else {
         $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'visible');
         $(this).closest('td').siblings('td').find('.remaining_qty').css('visibility', 'visible');
         $(this).closest('td').siblings('td').find('.remarks').css('visibility', 'visible');

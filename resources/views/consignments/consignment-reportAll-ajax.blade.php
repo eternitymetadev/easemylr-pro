@@ -1,4 +1,4 @@
-<p class="totalcount">Total Count: <span class = "reportcount">{{$consignments->total()}}</span></p>
+<p class="totalcount">Total Count: <span class="reportcount">{{$consignments->total()}}</span></p>
 <div class="custom-table">
     <table id="" class="table table-hover" style="width:100%">
         <thead>
@@ -16,7 +16,7 @@
                 <th>Contact Person Name</th>
                 <th>Consignee Phone</th>
                 <th>City</th>
-                <th>Pin Code</th> 
+                <th>Pin Code</th>
                 <th>District</th>
                 <th>State</th>
                 <th>Ship To Name</th>
@@ -49,9 +49,9 @@
             </tr>
         </thead>
         <tbody>
-        @if(count($consignments)>0)
-        @foreach($consignments as $consignment)
-        <?php
+            @if(count($consignments)>0)
+            @foreach($consignments as $consignment)
+            <?php
       
             $start_date = strtotime($consignment->consignment_date);
             $end_date = strtotime($consignment->delivery_date);
@@ -89,13 +89,13 @@
                     $invoice['date'] = implode(',', $inv_date);
                     $invoice['amt'] = implode(',', $inv_amt);?>
 
-                    <td>{{ $orders->order_id ?? "-" }}</td>
+                <td>{{ $orders->order_id ?? "-" }}</td>
 
                 <?php }else{ ?>
                 <td>-</td>
-            <?php } }else{ ?>
-            <td>{{ $consignment->order_id ?? "-" }}</td>
-            <?php  } ?>
+                <?php } }else{ ?>
+                <td>{{ $consignment->order_id ?? "-" }}</td>
+                <?php  } ?>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
@@ -116,11 +116,11 @@
                 <td>{{ $order_item['invoices'] ?? "-" }}</td>
                 <td>{{ $invoice['date'] ?? '-'}}</td>
                 <td>{{ $invoice['amt'] ?? '-' }}</td>
-            <?php  } else{ ?>
+                <?php  } else{ ?>
                 <td>{{ $consignment->invoice_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->invoice_date ?? "-" )}}</td>
                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
-            <?php  } ?>
+                <?php  } ?>
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
                 <td>{{ $consignment->transporter_name ?? "-" }}</td>
@@ -133,7 +133,7 @@
 
                 <?php 
                 if($consignment->status == 0){ ?>
-                    <td>Cancel</td>
+                <td>Cancel</td>
                 <?php }elseif($consignment->status == 1){ ?>
                     <td>Active</td>
                     <?php }elseif($consignment->status == 2){ ?>
@@ -145,29 +145,31 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <?php 
                 if($consignment->delivery_status == 'Assigned'){ ?>
-                    <td>Assigned</td>
-                    <?php }elseif($consignment->delivery_status == 'Unassigned'){ ?>
-                    <td>Unassigned</td>
-                    <?php }elseif($consignment->delivery_status == 'Started'){ ?>
-                    <td>Started</td>
+                <td>Assigned</td>
+                <?php }elseif($consignment->delivery_status == 'Unassigned'){ ?>
+                <td>Unassigned</td>
+                <?php }elseif($consignment->delivery_status == 'Started'){ ?>
+                <td>Started</td>
                 <?php }elseif($consignment->delivery_status == 'Successful'){ ?>
-                    <td>Successful</td>
+                <td>Successful</td>
                 <?php }elseif($consignment->delivery_status == 'Cancel'){ ?>
-                    <td>Cancel</td>
+                <td>Cancel</td>
                 <?php }else{?>
-                    <td>Unknown</td>
+                <td>Unknown</td>
                 <?php }?>
                 <?php if($consignment->delivery_date == ''){?>
-                    <td> - </td>
+                <td> - </td>
                 <?php }else{?>
                 <td>{{ $tat }}</td>
                 <?php } if($consignment->lr_mode == 0){?>
-                    <td>Manual</td>
-                    <?php }else{?>
-                        <td>Shadow</td>
-                    <?php } ?>
+                <td>Manual</td>
+                <?php }else if($consignment->lr_mode == 1){ ?>
+                <td>Shadow</td>
+                <?php  }else{?>
+                <td>Shiprider</td>
+                <?php } ?>
 
-                    <?php if($consignment->lr_mode == 0){
+                <?php if($consignment->lr_mode == 0){
             if(empty($consignment->signed_drs)){
             ?>
                 <td>Not Available</td>
@@ -196,7 +198,7 @@
                 <td>{{$consignment->payment_type}}</td>
                 <td>{{$consignment->freight_on_delivery}}</td>
                 <td>{{$consignment->cod}}</td>
-                
+
             </tr>
             @endforeach
             @else
@@ -207,7 +209,7 @@
         </tbody>
     </table>
     <div class="perpage container-fluid">
-        <div class="row"> 
+        <div class="row">
             <div class="col-md-12 col-lg-8 col-xl-9">
             </div>
             <div class="col-md-12 col-lg-4 col-xl-3">

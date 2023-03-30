@@ -109,7 +109,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </span>
                     @endif
                 </td>
-
+ 
                 <td style="width: 120px;">
                     <?php $dlStatus = $consignment->delivery_status?>
                     <p style="font-size: 11px; text-align: center">
@@ -117,9 +117,12 @@ $invoice['amt'] = implode(',', $inv_amt);
                         @if ($consignment->lr_mode == 0)
                         <a class="swan-tooltip-right dlMode notAllowed" data-tooltip="Already in manual mode"
                             style="color: #009a10">Manual</a>
-                        @else
+                        @elseif($consignment->lr_mode == 1)
                         <a class="dlMode change_mode swan-tooltip-right pointer" data-tooltip="Click to change mode"
                             style="color: #005892" data-id="{{$consignment->id}}">Shadow</a>
+                            @else
+                            <a class="dlMode change_mode swan-tooltip-right pointer" data-tooltip="Click to change mode"
+                            style="color: #ff3c07" data-id="{{$consignment->id}}">ShipRider</a>
                         @endif
                         </span>
                         <br />
@@ -172,7 +175,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                         @else
                         <img src="{{$img}}"  class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
-                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />  
                         @endif
                         </div>
                         <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
@@ -206,8 +209,8 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </div>
                     @endif
                 </td>
-                <?php } else {?>
-                <td style="max-width: 260px">
+                <?php } else if($consignment->lr_mode == 1){ ?>
+                    <td style="max-width: 260px">
                     <?php if (!empty($img_group)) {?>
                     <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
@@ -221,7 +224,39 @@ $invoice['amt'] = implode(',', $inv_amt);
                     <?php } else {?>
                     <div style="min-height: 50px" class="d-flex align-items-center">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
-                            Not Available
+                            Not Available 
+                        </div>
+
+                        <a class="edit editIcon notAllowed swan-tooltip-left" data-tooltip="First change mode to manual">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-edit-2">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <?php }?>
+                </td>
+               <?php }else {?>
+                <td style="max-width: 260px">
+                 <?php
+                 $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                 $count_arra = count($getjobimg);
+                    ?>
+                    <?php if ($count_arra > 1) { ?>
+                    <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            @foreach($getjobimg as $img)
+                            <img src="{{$img->pod_img}}" class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal"
+                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                            @endforeach
+                        </div>
+                    </div>
+                    <?php } else {?>
+                    <div style="min-height: 50px" class="d-flex align-items-center">
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            Not Available 
                         </div>
 
                         <a class="edit editIcon notAllowed swan-tooltip-left" data-tooltip="First change mode to manual">

@@ -20,12 +20,16 @@
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <tr>
-                <td class="card-header collapsed" id="{{$consignment->id}}" data-toggle="collapse" href="#collapse-{{$consignment->id}}" data-jobid="{{$consignment->job_id}}" data-action="<?php echo URL::to($prefix.'/get-jobs'); ?>" onClick="row_click(this.id,this.getAttribute('data-jobid'),this.getAttribute('data-action'))">
+                <td class="card-header collapsed" id="{{$consignment->id}}" data-toggle="collapse"
+                    href="#collapse-{{$consignment->id}}" data-jobid="{{$consignment->job_id}}"
+                    data-action="<?php echo URL::to($prefix.'/get-jobs'); ?>"
+                    onClick="row_click(this.id,this.getAttribute('data-jobid'),this.getAttribute('data-action'))">
 
                 </td>
                 <td>
                     <div class="">
-                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}</span>
+                        <div class=""><span style="color:#4361ee;">LR No: </span>{{$consignment->id}}<span
+                                class="badge bg-cust">{{ $consignment->VehicleDetail->regn_no ?? " " }}</span>
                         </div>
 
                         <?php
@@ -59,8 +63,8 @@
                 </td>
                 <td>
 
-                <!-- relocate cnr cnee check for sale to return case -->
-                <?php 
+                    <!-- relocate cnr cnee check for sale to return case -->
+                    <?php 
                 if($consignment->is_salereturn == 1){
                     $cnr_nickname = $consignment->ConsigneeDetail->nick_name;
                     $cne_nickname = $consignment->ConsignerDetail->nick_name;
@@ -86,15 +90,15 @@
                                     {{ @$cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
-                                <?php if($consignment->is_salereturn == '1'){ ?>
+                                    <?php if($consignment->is_salereturn == '1'){ ?>
                                     <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
                                         {{ $consignment->ConsignerDetail->city ?? "" }},
                                         {{ $consignment->ConsignerDetail->district ?? "" }} </span>
-                                        <?php }else{ ?>
-                                            <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
-                                            {{ $consignment->ConsigneeDetail->city ?? "" }},
-                                            {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
-                                            <?php } ?>
+                                    <?php }else{ ?>
+                                    <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
+                                        {{ $consignment->ConsigneeDetail->city ?? "" }},
+                                        {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </li>
@@ -114,12 +118,12 @@
                     <?php if($authuser->role_id !=6 ){
                     if($consignment->invoice_no != null || $consignment->invoice_no != ''){ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a>  <?php if($authuser->role_id !=7){?> |<a
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?> |<a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php }else{ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?>|  <a
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?>| <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php }} ?>
@@ -148,6 +152,9 @@
                     <span class="badge alert bg-success shadow-sm manual_updateLR"
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? '' }}</span>
                     <?php } elseif ($consignment->delivery_status == "Accepted") { ?>
+                    <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Acknowledged</span>
+                    <?php }
+                    elseif ($consignment->delivery_status == "Acknowledge") { ?>
                     <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Acknowledged</span>
                     <?php }elseif ($consignment->delivery_status == "Cancel") { ?>
                     <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Cancel</span>
@@ -239,7 +246,8 @@
 
                                                         <tr>
                                                             <td>Driver Name</td>
-                                                            <td>{{ucfirst(@$consignment->DriverDetail->name) ?? ''}}</td>
+                                                            <td>{{ucfirst(@$consignment->DriverDetail->name) ?? ''}}
+                                                            </td>
                                                         </tr>
 
                                                         <tr>
@@ -262,7 +270,7 @@
                                                         </tr>
 
                                                         <tr>
-                                                        <?php if($consignment->is_salereturn ==1){
+                                                            <?php if($consignment->is_salereturn ==1){
                                                                     $cnr_nickname_txn = $consignment->ConsigneeDetail->nick_name;
                                                                     $cne_nickname_txn = $consignment->ConsignerDetail->nick_name;
                                                                 }else{
@@ -281,7 +289,7 @@
                                                                             <div class="css-16pld72">
                                                                                 {{$cnr_nickname_txn ?? ''}}
                                                                             </div>
-                                                                            
+
                                                                         </div>
                                                                     </li>
                                                                     <li
@@ -318,13 +326,20 @@
                                                 </table>
                                             </div>
                                             <div class="col-md-8" id="mapdiv-{{$consignment->id}}">
-                                                                                       
+
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="tab-pane fade append-modal" id="icon-timeline-{{$consignment->id}}" role="tabpanel" aria-labelledby="icon-timeline-tab">
+                                    <div class="tab-pane fade" id="icon-timeline-{{$consignment->id}}" role="tabpanel"
+                                        aria-labelledby="icon-timeline-tab">
                                         <!-- modal code here -->
+
+                                        <div class="d-flex flex-wrap">
+                                            <div class="append-modal" style="width: -webkit-fill-available"></div>
+                                            <!-- <div class="append-modal-images d-flex flex-wrap" style="gap: 16px; flex: 1;">
+                                            </div> -->
+                                        </div>
 
                                     </div>
                                     <div class="tab-pane fade" id="icon-otherdetail-{{$consignment->id}}"
@@ -332,7 +347,7 @@
                                         <table class="table table-striped">
                                             <tbody>
 
-                                            <?php
+                                                <?php
                                                 if(empty($consignment->order_id)){ 
                                                     if(!empty($consignment->ConsignmentItems)){
                                                         $order = array();
@@ -344,29 +359,31 @@
                                                         $order_item['orders'] = implode(',', $order);
                                                         $order_item['invoices'] = implode(',', $invoices);
                                                     ?>
-                                            <tr>
-                                                <td>Order Number</td>
-                                                <td><span class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
-                                                </td>
-                                            </tr>
-                                            <?php }}else{ ?>
                                                 <tr>
                                                     <td>Order Number</td>
-                                                    <td><span class="badge bg-info mt-2">{{ $consignment->orders_id ?? "-" }}</span>
+                                                    <td><span
+                                                            class="badge bg-info mt-2">{{ $order_item['orders'] ?? "-" }}</span>
                                                     </td>
                                                 </tr>
-                                            <?php } ?>
-                                            <?php if(empty($consignment->invoice_no)){ ?>
+                                                <?php }}else{ ?>
+                                                <tr>
+                                                    <td>Order Number</td>
+                                                    <td><span
+                                                            class="badge bg-info mt-2">{{ $consignment->orders_id ?? "-" }}</span>
+                                                    </td>
+                                                </tr>
+                                                <?php } ?>
+                                                <?php if(empty($consignment->invoice_no)){ ?>
                                                 <tr>
                                                     <td>Invoice Number</td>
                                                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
                                                 </tr>
-                                            <?php }else{ ?>
+                                                <?php }else{ ?>
                                                 <tr>
                                                     <td>Invoice Number</td>
                                                     <td>{{ $consignment->invoice_no ?? "-" }}</td>
                                                 </tr>
-                                            <?php } ?>
+                                                <?php } ?>
 
                                             </tbody>
                                         </table>

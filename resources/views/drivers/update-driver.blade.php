@@ -11,7 +11,7 @@
                         <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update Driver</a></li>
                     </ol>
                 </nav>
-            </div>
+            </div> 
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Update Driver</h5></div> -->
@@ -65,32 +65,7 @@
                                     <?php } ?>
                                 </div>
                             </div>
-                            <h4>Bank Details</h4>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Bank Name</label>
-                                    <input type="text" class="form-control" name="bank_name" value="{{old('bank_name',isset($getdriver->BankDetail->bank_name)?$getdriver->BankDetail->bank_name:'')}}" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Branch Name</label>
-                                    <input type="text" class="form-control" name="branch_name" value="{{old('branch_name',isset($getdriver->BankDetail->branch_name)?$getdriver->BankDetail->branch_name:'')}}" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">IFSC</label>
-                                    <input type="text" class="form-control" name="ifsc" value="{{old('ifsc',isset($getdriver->BankDetail->ifsc)?$getdriver->BankDetail->ifsc:'')}}" placeholder="">
-                                </div> 
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account No</label>
-                                    <input type="text" class="form-control" name="account_number" value="{{old('account_number',isset($getdriver->BankDetail->account_number)?$getdriver->BankDetail->account_number:'')}}" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name</label>
-                                    <input type="text" class="form-control" name="account_holdername" value="{{old('account_holdername',isset($getdriver->BankDetail->account_holdername)?$getdriver->BankDetail->account_holdername:'')}}" placeholder="">
-                                </div>
+                          
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Team Id</label>
                                     <input type="text" class="form-control" name="team_id" value="{{old('team_id',isset($getdriver->team_id)?$getdriver->team_id:'')}}" placeholder="">
@@ -112,6 +87,18 @@
                                     <input type="text" class="form-control" name="password" value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}" placeholder="">
                                 </div> 
                             </div>
+                            <label for="exampleFormControlInput2">Select Branch</label>
+                            <select class="form-control tagging" id="select_consigner" multiple="multiple"
+                                name="branch_id[]">
+                                <option disabled>Select</option>
+                                <?php
+                                $selected = explode(",", $getdriver->branch_id);
+                                ?>
+                                @foreach($branchs as $branch)
+                           <option value="{{ $branch->id }}" {{ (in_array($branch->id, $selected)) ? 'selected' : '' }}>{{ $branch->name}}</option>
+                                 @endforeach
+                             
+                            </select>
 
                             <input type="submit" class="mt-4 mb-4 btn btn-primary">
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
