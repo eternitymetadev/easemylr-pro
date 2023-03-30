@@ -336,7 +336,7 @@
                                         <!-- modal code here -->
 
                                         <div class="d-flex flex-wrap">
-                                            <div class="append-modal"></div>
+                                            <div class="append-modal" style="width: -webkit-fill-available"></div>
                                             <!-- <div class="append-modal-images d-flex flex-wrap" style="gap: 16px; flex: 1;">
                                             </div> -->
                                         </div>

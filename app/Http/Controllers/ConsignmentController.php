@@ -23,6 +23,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Zone;
 use Auth;
+use Carbon\Carbon;
 use Config;
 use DateTime;
 use DB;
@@ -36,7 +37,6 @@ use Session;
 use Storage;
 use URL;
 use Validator;
-use Carbon\Carbon;
 
 class ConsignmentController extends Controller
 {
@@ -65,7 +65,7 @@ class ConsignmentController extends Controller
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
-                return response()->json(['success' => true, 'redirect_url' => $url]); 
+                return response()->json(['success' => true, 'redirect_url' => $url]);
             }
             if (isset($request->updatestatus)) {
                 ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
@@ -1008,7 +1008,7 @@ class ConsignmentController extends Controller
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         $codStamp = public_path('assets/img/cod.png');
         $paidStamp = public_path('assets/img/paid.png');
-        
+
         for ($i = 1; $i < 5; $i++) {
             if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';} elseif ($i == 3) {$type = 'TRIPLICATE';} elseif ($i == 4) {$type = 'QUADRUPLE';}
             if (!empty($data['consigner_detail']['get_zone']['state'])) {
@@ -1168,15 +1168,15 @@ class ConsignmentController extends Controller
                                 </td>
                             </tr>
                         </table>';
-                        if($data['payment_type'] == 'To be Billed' || $data['payment_type'] == NULL){ 
-                            if(!empty($data['cod'])){
-                                $html .=  ' <div class="loc">
+            if ($data['payment_type'] == 'To be Billed' || $data['payment_type'] == null) {
+                if (!empty($data['cod'])) {
+                    $html .= ' <div class="loc">
                                 <table>
                                     <tr>
                                         <td valign="middle" style="position:relative; width: 200px">
                                         <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
                                             <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
+                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . @$data['cod'] . '
                                             </h2>
                                         </td>
                                         <td class="width_set">
@@ -1198,8 +1198,8 @@ class ConsignmentController extends Controller
                                     </tr>
                                 </table>
                             </div>';
-                            }else{
-                                $html .= '   <div class="loc">
+                } else {
+                    $html .= '   <div class="loc">
                                 <table>
                                     <tr>
                                         <td class="width_set">
@@ -1227,20 +1227,20 @@ class ConsignmentController extends Controller
                                     </tr>
                                 </table>
                             </div>';
-                            }
-                        }
+                }
+            }
 
-                            if($data['payment_type'] == 'To Pay'){
-                                if(!empty($data['freight_on_delivery']) || !empty($data['cod'])){
-                                    $total_cod_sum = @$data['freight_on_delivery'] + @$data['cod'];
+            if ($data['payment_type'] == 'To Pay') {
+                if (!empty($data['freight_on_delivery']) || !empty($data['cod'])) {
+                    $total_cod_sum = @$data['freight_on_delivery']+@$data['cod'];
 
-                                    $html .=  ' <div class="loc">
+                    $html .= ' <div class="loc">
                                     <table>
                                         <tr>
                                             <td valign="middle" style="position:relative; width: 200px">
                                             <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
                                                 <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                                <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.$total_cod_sum.'
+                                                <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . $total_cod_sum . '
                                                 </h2>
                                             </td>
                                             <td class="width_set">
@@ -1262,8 +1262,8 @@ class ConsignmentController extends Controller
                                         </tr>
                                     </table>
                                 </div>';
-                                }else{
-                                    $html .= '   <div class="loc">
+                } else {
+                    $html .= '   <div class="loc">
                                     <table>
                                         <tr>
                                             <td class="width_set">
@@ -1291,13 +1291,13 @@ class ConsignmentController extends Controller
                                         </tr>
                                     </table>
                                 </div>';
-                                }
+                }
 
-                            }
+            }
 
-                            if($data['payment_type'] == 'Paid'){
+            if ($data['payment_type'] == 'Paid') {
 
-                                    $html .=  ' <div class="loc">
+                $html .= ' <div class="loc">
                                     <table>
                                         <tr>
                                             <td valign="middle" style="position:relative; width: 200px">
@@ -1322,11 +1322,10 @@ class ConsignmentController extends Controller
                                         </tr>
                                     </table>
                                 </div>';
-                               
-                            }
 
+            }
 
-                       $html .= '<div class="container">
+            $html .= '<div class="container">
                                 <div class="row">
                                     <div class="col-sm-12 ">
                                         <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
@@ -2039,33 +2038,47 @@ class ConsignmentController extends Controller
         //     }
         // } else {
 
-        $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-        // }
+       $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+        //  }
         // =============new app
         $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
-
         $mytime = Carbon::now('Asia/Kolkata');
-        $currentdate = $mytime->toDateTimeString(); 
+        $currentdate = $mytime->toDateTimeString();
         // check app assign ========================================
         if (!empty($get_driver_details->branch_id)) {
             $driver_branch = explode(',', $get_driver_details->branch_id);
             if (in_array($authuser->branch_id, $driver_branch)) {
                 $update = DB::table('consignment_notes')->whereIn('id', $cc)->update(['lr_mode' => 2]);
-                foreach($cc as $c_id){
-                     // =================== task assign 
-                     $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+                foreach ($cc as $c_id) {
+                    // =================== task assign
+                    $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
 
-                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$c_id)->latest('consignment_id')->first();
-                     $st = json_decode($lastjob->response_data);
-                     array_push($st, $respons2);
-                     $sts = json_encode($st);
-                     
-                     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                      // ==== end started
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    // ==== end started
                 }
-                
+
                 $app_notify = $this->sendNotification($request->driver_id);
             }
+        }else{
+            $update = DB::table('consignment_notes')->whereIn('id', $cc)->update(['lr_mode' => 0]);
+                foreach ($cc as $c_id) {
+                    // =================== task assign
+                    $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+                   
+
+                    $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    // ==== end started
+                }
         }
 
         $response['success'] = true;
@@ -4168,6 +4181,22 @@ class ConsignmentController extends Controller
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
+            // =================== task assign ====== //
+                $mytime = Carbon::now('Asia/Kolkata');
+                $currentdate = $mytime->toDateTimeString();
+
+                $respons2 = array('consignment_id' => $request->lr, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->orderBy('id','DESC')->first();
+                if (!empty($lastjob->response_data)) {
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $request->lr, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+                }
+                // ==== end started
+
                 $response['success'] = true;
                 $response['messages'] = 'Image uploaded successfully';
                 return Response::json($response);
@@ -4375,10 +4404,14 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
         ////
-        $driver_app = DB::table('consignment_notes')->select('consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode')
+        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name','fall_in_branch.name as fall_in_branch_name','to_branch_name.name as to_branch_detail','drivers.name as driver_name')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->join('locations', 'locations.id', '=', 'consignment_notes.branch_id')
+            ->leftjoin('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
+            ->leftjoin('locations as to_branch_name', 'to_branch_name.id', '=', 'consignment_notes.to_branch_id')
+            ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
             ->leftjoin('jobs', function ($data) {
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
@@ -4416,6 +4449,7 @@ class ConsignmentController extends Controller
             $response['tracking_link'] = $job->tracking_link;
             $response['driver_trail'] = $app_trail;
             $response['app_media'] = $app_media;
+            $response['driver_app'] = $driver_app;
         }
 
         return response()->json($response);
@@ -5032,6 +5066,22 @@ class ConsignmentController extends Controller
             }
             ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
+            // =================== task assign ====== //
+            $mytime = Carbon::now('Asia/Kolkata');
+            $currentdate = $mytime->toDateTimeString();
+
+            $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('consignment_id')->first();
+            if (!empty($lastjob->response_data)) {
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $lr_no, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+            }
+            // ==== end started
+
             $response['success'] = true;
             $response['messages'] = 'POD uploaded successfully';
             return Response::json($response);
@@ -5075,43 +5125,42 @@ class ConsignmentController extends Controller
         return Response::json($response);
     }
 
-      //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
-      public function sendNotification($request)
-      {
-  
-           $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
-  
-          $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
-         
-  
-          $data_json = ['type' => 'Assigned', 'status' => 1];
-  
-          $data = [
-              "registration_ids" => $firebaseToken,
-              "notification" => [
-                  "title" => "LR Assigned",
-                  "body" => "New LR assigned to you, please check",
-              ],
-              "data" => $data_json,
-          ];
-          $dataString = json_encode($data);
-  
-          $headers = [
-              'Authorization: key=' . $SERVER_API_KEY,
-              'Content-Type: application/json',
-          ];
-  
-          $ch = curl_init();
-  
-          curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-          curl_setopt($ch, CURLOPT_POST, true);
-          curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-  
-          $response = curl_exec($ch);
-  
-          return $response;
-      }
+    //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
+    public function sendNotification($request)
+    {
+
+        $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
+
+        $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
+
+        $data_json = ['type' => 'Assigned', 'status' => 1];
+
+        $data = [
+            "registration_ids" => $firebaseToken,
+            "notification" => [
+                "title" => "LR Assigned",
+                "body" => "New LR assigned to you, please check",
+            ],
+            "data" => $data_json,
+        ];
+        $dataString = json_encode($data);
+
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+        $response = curl_exec($ch);
+
+        return $response;
+    }
 }

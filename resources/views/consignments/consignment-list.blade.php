@@ -1,6 +1,7 @@
 @extends('layouts.main')
 @section('content')
 <style>
+
 .accordion {
     overflow-anchor: none;
     font-weight: bold;
@@ -21,10 +22,12 @@
 }
 
 .successful {
+    --statusColor: #f16334;
     color: #ffffff !important;
-    background: #009688;
+    background: var(--statusColor);
     padding: 3px 5px;
     border-radius: 5px;
+    margin-right: 5px;
 }
 
 .cbp_tmtimeline {
@@ -56,8 +59,8 @@
 }
 
 .cbp_tmtimeline>li:first-child .cbp_tmicon {
-    background: #fff;
-    color: #666
+    background: #03ba19;
+    color: #666;
 }
 
 .cbp_tmtimeline>li:nth-child(odd) .cbp_tmtime span:last-child {
@@ -171,7 +174,7 @@
     -webkit-font-smoothing: antialiased;
     position: absolute;
     color: #fff;
-    background: #1a545a;
+    background: #535353;
     border-radius: 50%;
     box-shadow: 0 0 0 5px #f4f4f4;
     text-align: center;
@@ -611,6 +614,10 @@ a.badge.alert.bg-secondary.shadow-sm {
     cursor: pointer;
     box-shadow: 0 0 2px #838383fa;
 }
+.order_book{
+    color: green;
+
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -710,6 +717,7 @@ function row_click(row_id, job_id, url) {
     var lr_id = row_id;
 
     var url = url;
+    var origin  = window.location.origin;
     jQuery.ajax({
         url: url,
         type: "get",
@@ -725,6 +733,7 @@ function row_click(row_id, job_id, url) {
             ),
         },
         success: function(response) {
+
             if (response.success) {
 
                 var modal_html = '';
@@ -815,108 +824,273 @@ function row_click(row_id, job_id, url) {
                 } else {
 
                     if (response.driver_trail) {
-                        var cc =
-                            '<div class="historyTimeLineContainer taskContainer taskDetailContainer">';
-                        $.each(response.driver_trail, function(index, task) {
-                            const statusColor = task.status == 'Started' ? 'red' : 'green';
+                        var trail_reverse = response.driver_trail;
+                        var array_trail = trail_reverse.reverse();
+                        if (response.driver_app.lr_type == 0) {
+                            if (response.driver_app.lr_mode == 0) {
+                                //================Manual L TRAIL =================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
 
-                                cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:` + statusColor + `;">
-                                        <span class="marker"></span>
-                                        <span class="status">` + task.status + `</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">` + task.create_at + `
-                                            </span><br/></strong>`;
-                                if (task.status == 'Started') {
-                                    cc += `<div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;">
-                                            </div>`;
-                                }
-                                cc += `</div>
-                                    </div>
-                                </div>`;
-                        });
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #002930">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+                                    } else if (task.status == 'Successful') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Delivered </span></span></div></li>';
+                                    }
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+                            } else if (response.driver_app.lr_mode == 2) {
+                                //  ================DRIVER App TRAIL ====================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
 
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+                                    } else {
+                                        if (task.status == 'Successful') {
+                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                                .create_at + '><span class="hidden">' + task
+                                                .create_at +
+                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span>text</span></div></li>';
+                                        } else if(task.status == 'Acknowledge'){
+                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span>'+origin+'/track-vehicle/'+response.driver_app.id+'</span></div></li>';
+                                        } else {
+                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                                .create_at + '><span class="hidden">' + task
+                                                .create_at +
+                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                            cc += '<span><span class="successful">' +
+                                                task.status +
+                                                '</span>text</span></div></li>';
+                                        }
 
-                        const acknowledged = response.driver_trail.some(el => el.status === 'Acknowledge');
+                                    }
 
-                        if (!acknowledged) {
-                            cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:orange">
-                                        <span class="marker"></span>
-                                        <span class="status">Pending Acknowledge</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">
-                                            </span><br/></strong>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-                        const successful = response.driver_trail.some(el => el.status === 'Successful');
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
 
-                        if (acknowledged && !successful) {
-                            if (response.app_media?.length > 0) {
-                                cc += ``;
+                                var sssss = ``;
+
+                                $.each(response.app_media, function(index, media) {
+
+                                    if (media.type == 'pod') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                            <p>POD</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                          </div>`;
+                                    } else if (media.type == 'sign') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                            <p>Sign</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+
+                        </div>`;
+                                    } else if (media.type == 'product_images') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                            <p>Material</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                        </div>`;
+                                    }
+                                });
+                                $('.append-modal-images').html(sssss);
+
                             } else {
-                            cc += `<div class="historyTimeline">
-                                    <div class="d-flex align-items-center flex-wrap"
-                                         style="gap: 1rem; --statusColor:orange">
-                                        <span class="marker"></span>
-                                        <span class="status">In Transit</span><br/>
-                                    </div>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <div class="historyTimeLineDetail">
-                                            <span style="font-size: 14px; font-weight: 700">
-                                            </span><br/></strong>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-                        }
-
-                        cc += '</div>';
-                        var modal_html1 = cc;
-                        $('.append-modal').html(modal_html1);
-
-                        var sssss = ``;
-
-                        $.each(response.app_media, function(index, media) {
-
-                            if (media.type == 'pod') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 3">
-                                                    <p>POD</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                </div>`;
-                            } else if (media.type == 'sign') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 1">
-                                                    <p>Sign</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                
-                                                </div>`;
-                            } else if (media.type == 'product_images') {
-                                sssss += `<div class="timelineImagesBlock" style="flex: 2">
-                                                    <p>Material</p>
-                                                    <img src="` + media.pod_img + `"
-                                                        class="viewImageInNewTab" data-toggle="modal"
-                                                        data-target="#exampleModal" style="width: 100%;"/>
-                                                </div>`;
+                                var modal_html1 = 'No Data Available';
+                                $('.append-modal').html(modal_html1);
                             }
-                        });
-                        $('.append-modal-images').html(sssss);
+                        } else {
+                            // ============================  PTL LR Trail ========================= //
+                            if (response.driver_app.lr_mode == 0) {
+                                //================Manual L TRAIL =================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
+
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="order_book">Order Booked</span>' +
+                                            response.driver_app.branch_name + '</div></li>';
+                                    } else if (task.status == 'Successful') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span></span></div></li>';
+                                    } else if (task.status == 'Prs Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span>' + response.driver_app.fall_in_branch_name +
+                                            '</span></div></li>';
+                                    } else if (task.status == 'Hub Transfer') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span>' +
+                                            response.driver_app.to_branch_detail +
+                                            '</span></div></li>';
+                                    } else if (task.status == 'Received Hub') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span>' +
+                                            response.driver_app.to_branch_detail +
+                                            '</span></div></li>';
+                                    } else if (task.status == 'Assigned') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful"  style="--statusColor: #cab627">Shipment Out for Delivery </span>' +
+                                            response.driver_app.to_branch_detail +
+                                            '</span></div></li>';
+                                    } else {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span>' + response.driver_app.fall_in_branch_name +
+                                            '</span></div></li>';
+                                    }
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+                            } else if (response.driver_app.lr_mode == 2) {
+                                //  ================DRIVER App TRAIL ====================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
+
+                                    if (task.status == 'Created') {
+                                        cc +=
+                                            '<li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Order Booked</span>' +
+                                            response.driver_app.branch_name + '</div></li>';
+                                    } else if (task.status == 'Prs Created') {
+                                        cc +=
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #cab627">Shipment Received </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
+                                            task.status +
+                                            '</span>' + response.driver_app.fall_in_branch_name +
+                                            '</span></div></li>';
+                                    } else if(task.status == 'Acknowledge'){
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span>'+origin+'/track-vehicle/'+response.driver_app.id+'</span></div></li>';
+
+                                    }else if (task.status == 'Hub Transfer') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span>' +
+                                            response.driver_app.to_branch_detail +
+                                            '</span></div></li>';
+                                    } else if (task.status == 'Received Hub') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span>' +
+                                            response.driver_app.to_branch_detail +
+                                            '</span></div></li>';
+                                    } else if(task.status == 'Assigned'){
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                        cc += '<span><span class="successful" style="--statusColor: #cab627">' +
+                                            task.status +
+                                            '</span> to ' +
+                                            response.driver_app.driver_name +
+                                            '</span></div></li>';
+                                    }else if (task.status == 'Successful') {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span></span><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div></div></li>';
+                                    } else {
+                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                        
+                                        cc += '<span><span class="successful">' +
+                                            task.status +
+                                            '</span></span></div></li>';
+
+                                    }
+
+                                });
+                                cc += '</ul>';
+                                var modal_html1 = cc;
+                                $('.append-modal').html(modal_html1);
+
+                                var sssss = ``;
+
+                                $.each(response.app_media, function(index, media) {
+
+                                    if (media.type == 'pod') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                            <p>POD</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                          </div>`;
+                                    } else if (media.type == 'sign') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                            <p>Sign</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+
+                        </div>`;
+                                    } else if (media.type == 'product_images') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                            <p>Material</p>
+                            <img src="` + media.pod_img + `"
+                                class="viewImageInNewTab" data-toggle="modal"
+                                data-target="#exampleModal" style="width: 100%;"/>
+                        </div>`;
+                                    }
+                                });
+                                $('.append-modal-images').html(sssss);
+
+                            } else {
+                                var modal_html1 = 'No Data Available';
+                                $('.append-modal').html(modal_html1);
+                            }
+
+                        }
                     } else {
                         var sssss = '';
                         var modal_html1 = 'No Data Available';
                         $('.append-modal').html(modal_html1);
                     }
+
 
                 }
                 if ((response.job_id != '') && (response.delivery_status != 'Successful')) {
@@ -959,6 +1133,7 @@ function initMap(response, row_id) {
         "travelMode": travel_mode,
         "avoidTolls": true,
     }, function(response, status) {
+
         if (status === 'OK') {
             directionsDisplay.setMap(map);
             directionsDisplay.setDirections(response);

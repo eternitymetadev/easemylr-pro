@@ -2590,6 +2590,23 @@ class OrderController extends Controller
 
         $update_receve = ConsignmentNote::where('id', $request->lr_id)->update(['prsitem_status' => 2, 'prs_remarks' => $request->prs_remarks]);
 
+          // =================== task assign ====== //
+          $mytime = Carbon::now('Asia/Kolkata');
+          $currentdate = $mytime->toDateTimeString();
+
+          $respons2 = array('consignment_id' => $request->lr_id, 'status' => 'Prs Created', 'create_at' => $currentdate, 'type' => '2');
+
+          $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr_id)->latest('consignment_id')->first();
+          if (!empty($lastjob->response_data)) {
+              $st = json_decode($lastjob->response_data);
+              array_push($st, $respons2);
+              $sts = json_encode($st);
+
+              $start = Job::create(['consignment_id' => $request->lr_id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
+          }
+          // ==== end started
+         
+
         if ($update_receve) {
             $response['success'] = true;
             $response['success_message'] = "Status updated successfully";
