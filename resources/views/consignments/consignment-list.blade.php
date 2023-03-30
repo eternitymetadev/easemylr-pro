@@ -866,7 +866,16 @@ function row_click(row_id, job_id, url) {
                                                 .create_at + '><span class="hidden">' + task
                                                 .create_at +
                                                 '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span>text</span></div></li>';
-                                        } else if(task.status == 'Acknowledge'){
+                                        } else if(){
+                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
+                                        cc += '<span><span class="successful" style="--statusColor: #cab627">' +
+                                            task.status +
+                                            '</span> to ' +
+                                            response.driver_app.driver_name +
+                                            '</span></div></li>';
+                                        }else if(task.status == 'Acknowledge'){
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span>'+origin+'/track-vehicle/'+response.driver_app.id+'</span></div></li>';
@@ -877,7 +886,7 @@ function row_click(row_id, job_id, url) {
                                                 '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
                                             cc += '<span><span class="successful">' +
                                                 task.status +
-                                                '</span>text</span></div></li>';
+                                                '</span></span></div></li>';
                                         }
 
                                     }
