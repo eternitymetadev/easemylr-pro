@@ -2038,7 +2038,7 @@ class ConsignmentController extends Controller
         //     }
         // } else {
 
-       $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+        $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         //  }
         // =============new app
         $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
@@ -2053,32 +2053,35 @@ class ConsignmentController extends Controller
                     // =================== task assign
                     $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id', 'DESC')->first();
+                    if (!empty($lastjob->response_data)) {
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
                     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
                     // ==== end started
+                    }
                 }
 
                 $app_notify = $this->sendNotification($request->driver_id);
             }
-        }else{
+        } else {
             $update = DB::table('consignment_notes')->whereIn('id', $cc)->update(['lr_mode' => 0]);
-                foreach ($cc as $c_id) {
-                    // =================== task assign
-                    $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+            foreach ($cc as $c_id) {
+                // =================== task assign
+                $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
-                   
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id', 'DESC')->first();
+                if (!empty($lastjob->response_data)) {
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                    // ==== end started
+                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                // ==== end started
                 }
+            }
         }
 
         $response['success'] = true;
@@ -4181,13 +4184,13 @@ class ConsignmentController extends Controller
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
-            // =================== task assign ====== //
+                // =================== task assign ====== //
                 $mytime = Carbon::now('Asia/Kolkata');
                 $currentdate = $mytime->toDateTimeString();
 
                 $respons2 = array('consignment_id' => $request->lr, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
 
-                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->orderBy('id','DESC')->first();
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->orderBy('id', 'DESC')->first();
                 if (!empty($lastjob->response_data)) {
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
@@ -4248,6 +4251,22 @@ class ConsignmentController extends Controller
                         }
                         ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+
+                        // =================== task assign ====== //
+                        $mytime = Carbon::now('Asia/Kolkata');
+                        $currentdate = $mytime->toDateTimeString();
+
+                        $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->orderBy('id', 'DESC')->first();
+                        if (!empty($lastjob->response_data)) {
+                            $st = json_decode($lastjob->response_data);
+                            array_push($st, $respons2);
+                            $sts = json_encode($st);
+
+                            $start = Job::create(['consignment_id' => $lrno, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+                        }
+                        // ==== end started
 
                     } else {
                         if (!empty($filename)) {
@@ -4404,7 +4423,7 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
         ////
-        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name','fall_in_branch.name as fall_in_branch_name','to_branch_name.name as to_branch_detail','drivers.name as driver_name')
+        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
