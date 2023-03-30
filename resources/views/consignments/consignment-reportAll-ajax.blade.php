@@ -135,12 +135,12 @@
                 if($consignment->status == 0){ ?>
                 <td>Cancel</td>
                 <?php }elseif($consignment->status == 1){ ?>
-                    <td>Active</td>
-                    <?php }elseif($consignment->status == 2){ ?>
-                    <td>Unverified</td> 
-                    <?php }else{?>
-                        <td>Unknown</td> 
-                 <?php   } ?>
+                <td>Active</td>
+                <?php }elseif($consignment->status == 2){ ?>
+                <td>Unverified</td>
+                <?php }else{?>
+                <td>Unknown</td>
+                <?php   } ?>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date )}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <?php 
@@ -176,7 +176,7 @@
                 <?php } else { ?>
                 <td>Avliable</td>
                 <?php } ?>
-                <?php } else { 
+                <?php } else if($consignment->lr_mode == 1) { 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
 
             if(!empty($job->response_data)){
@@ -194,7 +194,15 @@
                 <?php }
             }
             ?>
-                <?php } ?>
+                <?php } else{ 
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { ?>
+                <td>Available</td>
+                <?php   }else{ ?>
+                <td>Not Available</td>
+                <?php   }  ?>
+                <?php  } ?>
                 <td>{{$consignment->payment_type}}</td>
                 <td>{{$consignment->freight_on_delivery}}</td>
                 <td>{{$consignment->cod}}</td>

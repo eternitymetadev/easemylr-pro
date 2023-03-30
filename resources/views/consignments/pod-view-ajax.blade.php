@@ -11,7 +11,7 @@
                 <th>Branch</th>
                 <th>LR</th>
                 <th>Client</th>
-                <th>Order No</th>
+                <th>Order No</th> 
                 <th>Invoice No</th>
                 <th style="text-align: center; width: 120px;">Delivery Status</th>
                 <th style="text-align: center; width: 120px;">Delivery Date</th>
