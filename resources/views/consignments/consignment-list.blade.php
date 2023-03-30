@@ -860,13 +860,13 @@ function row_click(row_id, job_id, url) {
                                             .create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
                                             response.driver_app.branch_name + '</span></div></li>';
-                                    } else {
+                                    } else 
                                         if (task.status == 'Successful') {
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                                 .create_at + '><span class="hidden">' + task
                                                 .create_at +
                                                 '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span>text</span></div></li>';
-                                        } else if(){
+                                        } else if(task.status == 'Assigned'){
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
