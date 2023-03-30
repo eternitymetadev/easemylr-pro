@@ -2,21 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Consignee;
-use App\Models\Consigner;
-use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
-use App\Models\RegionalClient;
-use App\Models\Driver;
-use App\Models\Location;
-use App\Models\Vehicle;
-use App\Models\VehicleType;
-use DB;
-use Storage;
-use Helper;
+use App\Models\Coordinate;
+use Illuminate\Http\Request;
 use Response;
-
 
 class TrackingController extends Controller
 {
@@ -25,20 +14,31 @@ class TrackingController extends Controller
     {
         $this->title = "Consignments Tracking";
     }
-    
+
     public function trackOrder(Request $request)
     {
-       $lr_no = $request->lr ;
-       
-       $getconsi = ConsignmentNote::select('*')->with('ConsigneeDetail','ConsignerDetail','ShiptoDetail','VehicleDetail','DriverDetail','JobDetail')->where(['id' => $lr_no])
-       ->get();
-       $simplify = json_decode(json_encode($getconsi), true);
+        $lr_no = $request->lr;
 
-            $response['fetch'] = $simplify;
-            $response['success'] = true;
-            $response['messages'] = 'Succesfully loaded';
-            return Response::json($response);
-        
+        $getconsi = ConsignmentNote::select('*')->with('ConsigneeDetail', 'ConsignerDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail')->where(['id' => $lr_no])
+            ->get();
+        $simplify = json_decode(json_encode($getconsi), true);
+
+        $response['fetch'] = $simplify;
+        $response['success'] = true;
+        $response['messages'] = 'Succesfully loaded';
+        return Response::json($response);
+
+    }
+    public function trackLr(Request $request, $id)
+    {
+
+        $get_lr_details = ConsignmentNote::with('ConsigneeDetail')->where('id', $id)->first();
+        $get_consigne_pin = $get_lr_details->ConsigneeDetail->postal_code;
+
+        $get_last_cordinate = Coordinate::where('consignment_id', $id)->orderBy('id', 'DESC')->first();
+
+        return view('map-view', ['get_consigne_pin' => $get_consigne_pin, 'get_last_cordinate' => $get_last_cordinate]);
+
     }
 
-}    
+}

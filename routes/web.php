@@ -995,6 +995,7 @@ Route::get('/forgot-session', [DashboardController::class, 'ForgotSession']);
 Route::get('/forbidden-error', [DashboardController::class, 'ForbiddenPage']);
 Route::post('webhook', [ConsignmentController::class, 'handle']);
 Route::any('track-order', [TrackingController::class, 'trackOrder']);
+Route::any('track-vehicle/{id}', [TrackingController::class, 'trackLr']);
 
 ///check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
