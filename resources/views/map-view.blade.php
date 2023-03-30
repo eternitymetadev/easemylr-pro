@@ -74,8 +74,8 @@
     window.onload = initMap;
     </script>
 
-    <script defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key=AIzaSyCEzojx1_dyy0ACDIF5zP5dt7hk4RggtOg"
+<script defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key={{config('services.googleMap_key.map_key')}}"
         type="text/javascript"></script>
 </body>
 
