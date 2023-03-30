@@ -618,6 +618,19 @@ a.badge.alert.bg-secondary.shadow-sm {
     color: green;
 
 }
+
+.trackLink {
+    background: #f9b808;
+    color: #252525 !important;
+    padding: 2px 10px;
+    border-radius: 8px;
+    border: 2px solid;
+    transition: all 200ms ease-in-out;
+}
+.trackLink:hover{
+    color: #252525 !important;
+    padding: 2px 14px;
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -834,10 +847,10 @@ function row_click(row_id, job_id, url) {
 
                                     if (task.status == 'Created') {
                                         cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #002930">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #002930">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span>' +
                                             response.driver_app.branch_name + '</span></div></li>';
                                     } else if (task.status == 'Successful') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
@@ -865,7 +878,7 @@ function row_click(row_id, job_id, url) {
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                                 .create_at + '><span class="hidden">' + task
                                                 .create_at +
-                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span>text</span></div></li>';
+                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span></span></div></li>';
                                         } else if(task.status == 'Assigned'){
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
@@ -875,10 +888,10 @@ function row_click(row_id, job_id, url) {
                                             '</span> to ' +
                                             response.driver_app.driver_name +
                                             '</span></div></li>';
-                                        }else if(task.status == 'Acknowledge'){
+                                        }else if(task.status == 'Started'){
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span>'+origin+'/track-vehicle/'+response.driver_app.id+'</span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span><a href="'+origin+'/track-vehicle/'+response.driver_app.id+'" target="_blank" class="trackLink">Track Link</a></span></div></li>';
                                         } else {
                                             cc += '<li><time class="cbp_tmtime" datetime=' + task
                                                 .create_at + '><span class="hidden">' + task
@@ -939,7 +952,7 @@ function row_click(row_id, job_id, url) {
 
                                     if (task.status == 'Created') {
                                         cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="order_book">Order Booked</span>' +
@@ -1012,10 +1025,10 @@ function row_click(row_id, job_id, url) {
                                             task.status +
                                             '</span>' + response.driver_app.fall_in_branch_name +
                                             '</span></div></li>';
-                                    } else if(task.status == 'Acknowledge'){
+                                    } else if(task.status == 'Started'){
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span>'+origin+'/track-vehicle/'+response.driver_app.id+'</span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span><a href="'+origin+'/track-vehicle/'+response.driver_app.id+'" target="_blank" class="trackLink">Track Link</a></span></div></li>';
 
                                     }else if (task.status == 'Hub Transfer') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
