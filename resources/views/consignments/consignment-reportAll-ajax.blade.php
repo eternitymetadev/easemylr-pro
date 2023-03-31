@@ -136,7 +136,7 @@
                     <td>Cancel</td>
                 <?php }elseif($consignment->status == 1){ ?>
                     <td>Active</td>
-                    <?php }elseif($consignment->status == 2){ ?>
+                    <?php }elseif($consignment->status == 2 || $consignment->status == 6){ ?>
                     <td>Unverified</td> 
                     <?php }else{?>
                         <td>Unknown</td> 
