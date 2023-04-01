@@ -23,11 +23,11 @@
 
 .successful {
     --statusColor: #f16334;
-    color: #ffffff !important;
-    background: var(--statusColor);
+    color: var(--statusColor) !important;
     padding: 3px 5px;
     border-radius: 5px;
     margin-right: 5px;
+    border: 2px solid;
 }
 
 .cbp_tmtimeline {
@@ -40,12 +40,11 @@
 .cbp_tmtimeline:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 10px;
     bottom: 0;
-    width: 3px;
-    background: #eee;
     left: 20%;
-    margin-left: -6px
+    margin-left: -3px;
+    border-left: 2px dashed #979797;
 }
 
 .cbp_tmtimeline>li {
@@ -65,15 +64,13 @@
 
 .cbp_tmtimeline>li:nth-child(odd) .cbp_tmtime span:last-child {
     color: #444;
-    font-size: 13px
+    font-size: 14px
 }
 
 .cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel {
-    background: #f0f1f3
 }
 
 .cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel:after {
-    border-right-color: #f0f1f3
 }
 
 .cbp_tmtimeline>li .empty span {
@@ -105,9 +102,8 @@
 }
 
 .cbp_tmtimeline>li .cbp_tmlabel {
-    margin: 0 0 15px 25%;
-    background: #f0f1f3;
-    padding: 1.2em;
+    margin: 0 0 15px 22%;
+    padding: 10px 16px;
     position: relative;
     border-radius: 5px
 }
@@ -115,7 +111,7 @@
 .cbp_tmtimeline>li .cbp_tmlabel:after {
     right: 100%;
     border: solid transparent;
-    content: " ";
+    /* content: " "; */
     height: 0;
     width: 0;
     position: absolute;
@@ -234,7 +230,6 @@
 
     .cbp_tmtimeline>li:nth-child(odd) .cbp_tmlabel:after {
         border-right-color: transparent;
-        border-bottom-color: #f5f5f6
     }
 }
 
@@ -631,6 +626,12 @@ a.badge.alert.bg-secondary.shadow-sm {
     color: #252525 !important;
     padding: 2px 14px;
 }
+
+.desTimeLine {
+    padding: 4px;
+    margin-top: 8px;
+    border-radius: 8px;
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -868,7 +869,7 @@ function row_click(row_id, job_id, url) {
 
                                     if (task.status == 'Created') {
                                         cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span class="successful">Shipment Out for Delivery </span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
@@ -1018,46 +1019,46 @@ function row_click(row_id, job_id, url) {
                                             response.driver_app.fall_in_branch_name + '</span></div></li><li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span>' +
-                                            response.driver_app.fall_in_branch_name + '</span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span><div class="desTimeLine">' +
+                                            response.driver_app.fall_in_branch_name + '</div></div></li>';
                                     } else if(task.status == 'Started'){
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span><a href="'+origin+'/track-vehicle/'+response.driver_app.id+'" target="_blank" class="trackLink">Track Link</a></span></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span class="successful">'+task.status+' </span><div class="desTimeLine">Shipment is started and you can track it with given link.<br/><br/> <a href="'+origin+'/track-vehicle/'+response.driver_app.id+'" target="_blank" class="trackLink">Track Shipment</a></div></div></li>';
 
                                     }else if (task.status == 'Hub Transfer') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span>' +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span><div class="desTimeLine">' +
                                             response.driver_app.to_branch_detail +
-                                            '</span></div></li>';
+                                            '</div></div></li>';
                                     } else if (task.status == 'Received Hub') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span>' +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span class="successful">Shipment Received</span><div class="desTimeLine">Shipment have arrived and received at ' +
                                             response.driver_app.to_branch_detail +
-                                            '</span></div></li>';
+                                            ' hub</div></div></li>';
                                     } else if(task.status == 'Assigned'){
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
-                                        cc += '<span><span class="successful" style="--statusColor: #cab627">' +
+                                        cc += '<span class="successful" style="--statusColor: #cab627">' +
                                             task.status +
-                                            '</span> to ' +
+                                            '</span> <div class="desTimeLine">Shipment is assigned for delivery to driver ' +
                                             response.driver_app.driver_name +
-                                            '</span></div></li>';
+                                            '</div></div></li>';
                                     }else if (task.status == 'Successful') {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span></span><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div></div></li>';
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span><div class="desTimeLine"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div></div></div></li>';
                                     } else {
                                         cc += '<li><time class="cbp_tmtime" datetime=' + task
                                             .create_at + '><span class="hidden">' + task.create_at +
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
                                         
-                                        cc += '<span><span class="successful">' +
+                                        cc += '<span class="successful">' +
                                             task.status +
-                                            '</span></span></div></li>';
+                                            '</span></div></li>';
 
                                     }
 
