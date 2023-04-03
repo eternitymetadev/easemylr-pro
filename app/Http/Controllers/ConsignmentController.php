@@ -4127,7 +4127,11 @@ class ConsignmentController extends Controller
             if ($get_delivery_branch->lr_type == 0) {
                 $delivery_branch = $get_delivery_branch->branch_id;
             } else {
-                $delivery_branch = $get_delivery_branch->to_branch_id;
+                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+                    $delivery_branch = $get_delivery_branch->branch_id;
+                }else{
+                    $delivery_branch = $get_delivery_branch->to_branch_id;
+                }
             }
 
             if ($login_branch != $delivery_branch) {
@@ -5006,7 +5010,11 @@ class ConsignmentController extends Controller
             if ($get_delivery_branch->lr_type == 0) {
                 $delivery_branch = $get_delivery_branch->branch_id;
             } else {
-                $delivery_branch = $get_delivery_branch->to_branch_id;
+                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+                    $delivery_branch = $get_delivery_branch->branch_id;
+                }else{
+                    $delivery_branch = $get_delivery_branch->to_branch_id;
+                }
             }
 
             if ($login_branch != $delivery_branch) {
