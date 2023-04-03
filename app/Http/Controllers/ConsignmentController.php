@@ -2543,7 +2543,7 @@ class ConsignmentController extends Controller
                       </div>
                       <div class="column" >
                         <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
-                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['weight'] . '</p>
+                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_weight'] . '</p>
                         <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
                       </div>
                       <div class="column" style="width:170px;">
