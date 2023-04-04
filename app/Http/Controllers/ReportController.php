@@ -15,11 +15,14 @@ use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
+use App\Models\BaseClient;
+use App\Models\RegionalClient;
 use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
+use App\Exports\CustomReport2Export;
 use Session;
 use Config;
 use Auth; 
@@ -45,6 +48,7 @@ class ReportController extends Controller
       $this->segment = \Request::segment(2);
     }
 
+    // MIS report2 get records
     public function consignmentReportsAll(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -326,6 +330,25 @@ class ReportController extends Controller
     public function exportExcelReport2(Request $request)
     {
         return Excel::download(new Report2Export($request->startdate,$request->enddate), 'mis_report2.csv');
+    }
+
+    public function customReport()
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $location = explode(',',$authuser->branch_id);
+        $locations = Location::select('id','name')->whereIn('id',$location)->get();
+        // $locations = Helper::getLocations();
+        $base_clients = BaseClient::get();
+        $reg_clients = RegionalClient::get();
+
+
+        return view('reports.custom-report', ['prefix' => $this->prefix,'locations'=>$locations,'base_clients'=>$base_clients,'reg_clients'=>$reg_clients]);
+    }
+
+    public function customexportReport2()
+    {
+        return Excel::download(new CustomReport2Export($request->startdate,$request->enddate,$request->location,$request->base_client,$request->reg_client), 'custom_mis_report2.csv');
     }
 
 

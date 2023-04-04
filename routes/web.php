@@ -475,6 +475,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::any('custom-reports', [ReportController::class,'customReport']);
+    Route::any('cutom-reports/export2', [ReportController::class, 'customexportReport2']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
