@@ -346,9 +346,10 @@ class ReportController extends Controller
         return view('reports.custom-report', ['prefix' => $this->prefix,'locations'=>$locations,'base_clients'=>$base_clients,'reg_clients'=>$reg_clients]);
     }
 
-    public function customexportReport2()
+    public function customexportReport2(Request $request)
     {
-        return Excel::download(new CustomReport2Export($request->startdate,$request->enddate,$request->location,$request->base_client,$request->reg_client), 'custom_mis_report2.csv');
+        // dd($request->all());
+        return Excel::download(new CustomReport2Export($request->startdate,$request->enddate,$request->location_id,$request->baseclient_id,$request->regclient_id), 'custom_mis_report2.csv');
     }
 
 
