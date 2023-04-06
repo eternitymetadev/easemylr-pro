@@ -349,7 +349,26 @@ class ReportController extends Controller
     public function customexportReport2(Request $request)
     {
         // dd($request->all());
-        return Excel::download(new CustomReport2Export($request->startdate,$request->enddate,$request->location_id,$request->baseclient_id,$request->regclient_id), 'custom_mis_report2.csv');
+        return Excel::download(new CustomReport2Export($request->startdate,$request->enddate,$request->baseclient_id,$request->regclient_id), 'custom_mis_report2.csv');
+    }
+
+    //// get regional client to base client ////
+    public function getRegionalClient(Request $request)
+    {
+        $getregclients = RegionalClient::select('id', 'name')->where('baseclient_id', $request->baseclient_id)->get();
+
+        if ($getregclients) {
+            $response['success'] = true;
+            $response['success_message'] = "Regional client list fetch successfully";
+            $response['error'] = false;
+            // $response['data'] = $getconsigners;
+            $response['data_regclient'] = $getregclients;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch regional client list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
     }
 
 

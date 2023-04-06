@@ -28,15 +28,15 @@ class CustomReport2Export implements FromCollection, WithHeadings, ShouldQueue
 
     protected $startdate;
     protected $enddate;
-    protected $location_id;
+    // protected $location_id;
     protected $baseclient_id;
     protected $regclient_id;
     // protected $search;
 
-    function __construct($startdate,$enddate,$location_id,$baseclient_id,$regclient_id) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        $this->location_id = $location_id;
+        // $this->location_id = $location_id;
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
         // $this->search = $search;
@@ -52,7 +52,7 @@ class CustomReport2Export implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
-        $location_id = $this->location_id;
+        // $location_id = $this->location_id;
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
 
@@ -84,9 +84,9 @@ class CustomReport2Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereIn('branch_id', $cc);
         }
 
-        if(isset($location_id)){
-            $query = $query->where('branch_id',$location_id);
-        }
+        // if(isset($location_id)){
+        //     $query = $query->where('branch_id',$location_id);
+        // }
         if(isset($baseclient_id)){
             $query = $query->whereHas('ConsignerDetail.GetRegClient', function ($query) use ($baseclient_id){
                 return $query->where('baseclient_id', '=', $baseclient_id);

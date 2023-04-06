@@ -332,7 +332,7 @@ label {
                         </svg>
                     </span>
                 </div>
-
+                <!-- <form class="general_form" method="POST" action="{{url($prefix.'/custom-reports/export2')}}" id="createcustomreport" style="margin: auto;"> -->
                 <div class="d-flex align-items-center justify-content-end dateRangeBlock">
                     <div class="form-group">
                         <label for="fromDate">From</label>
@@ -348,21 +348,17 @@ label {
             <div class="modal-body" style="min-height: min(70vh, 700px)">
                 <div class="form-row">
                     <h6 class="col-12">Filter</h6>
-                    <div class="form-group col-md-4">
+                    <!-- <div class="form-group col-md-4">
                         <label for="exampleFormControlInput2">Branch</label>
                         <select name="location_id" class="form-control form-control-sm my-select2" id="location_id">
                             <option value="">Select branch</option>
-                            <?php 
-                                if(count($locations)>0) {
-                                    foreach ($locations as $key => $value) {  
-                                ?>
+                            @if(count($locations)>0)
+                                    @foreach ($locations as $key => $value)
                             <option value="{{ $value->id }}">{{ucwords($value->name)}}</option>
-                            <?php 
-                                }
-                            }
-                            ?>
+                            @endforeach
+                            @endif
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group col-md-4">
                         <label for="exampleFormControlInput2">Base Client</label>
                         <select name="baseclient_id" class="form-control form-control-sm my-select2" id="baseclient_id">
@@ -382,15 +378,11 @@ label {
                         <label for="exampleFormControlInput2">Regional Client</label>
                         <select name="regclient_id" class="form-control form-control-sm my-select2" id="regclient_id">
                             <option value="">Select</option>
-                            <?php 
-                                if(count($reg_clients)>0) {
-                                    foreach ($reg_clients as $key => $reg_client) {  
-                                ?>
+                            <!-- @if(count($reg_clients)>0) 
+                                    @foreach ($reg_clients as $key => $reg_client)
                             <option value="{{ $reg_client->id }}">{{ucwords($reg_client->name)}}</option>
-                            <?php 
-                                }
-                            }
-                            ?>
+                            @endforeach
+                            @endif -->
                         </select>
                     </div>
                 </div>
@@ -489,14 +481,13 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     var geturl = jQuery(this).attr('data-action');
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
-    var location_id = jQuery('#location_id').val();
+    // var location_id = jQuery('#location_id').val();
     var baseclient_id = jQuery('#baseclient_id').val();
     var regclient_id = jQuery('#regclient_id').val();
-
     var search = jQuery('#search').val();
     var url = jQuery('#search').attr('data-url');
     if (startdate)
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&location_id=' + location_id + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
     else if (search)
         geturl = geturl + '?search=' + search;
 
@@ -527,28 +518,37 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     });
 });
 /*======get base client on location change =====*/
-$("#select_regclient").change(function(e) {
+$("#baseclient_id").change(function(e) {
     // $("#items_table").find("tr:gt(1)").remove();
-    var regclient_id = $(this).val();
-    $("#select_consigner").empty();
-    $("#select_consignee").empty();
-    $("#select_ship_to").empty();
+    var baseclient_id = $(this).val();
+    $("#regclient_id").empty();
     $.ajax({
-        url: "/get-consigner-regional",
+        url: "/get-regclient-baseclient",
         type: "get",
         cache: false,
         data: {
-            regclient_id: regclient_id
+            baseclient_id: baseclient_id
         },
         dataType: "json",
         headers: {
             "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
         },
         beforeSend: function() {
-            $("#select_consigner").empty();
+            $("#regclient_id").empty();
         },
         success: function(res) {
-
+            $("#regclient_id").append(
+                    '<option value="">select regional client</option>'
+                );
+                $.each(res.data_regclient, function (index, value) {
+                    $("#regclient_id").append(
+                        '<option value="' +
+                        value.id +
+                        '">' +
+                        value.name +
+                        "</option>"
+                    );
+                });
         },
     });
 });

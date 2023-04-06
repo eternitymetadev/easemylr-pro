@@ -477,6 +477,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::any('custom-reports', [ReportController::class,'customReport']);
     Route::any('custom-reports/export2', [ReportController::class, 'customexportReport2']);
+    // Route::post('custom-reports/export2', [ReportController::class, 'customexportReport2']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -981,6 +982,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_locations', [ConsignerController::class, 'regLocations']);
     Route::any('/get-address-by-postcode', [ConsignerController::class, 'getPostalAddress']);
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'getConsignersonRegional']);
+    Route::get('/get-regclient-baseclient', [ReportController::class, 'getRegionalClient']);
     Route::get('/get-consignerprs', [PickupRunSheetController::class, 'getConsigner']);
     Route::get('/get-bill-client', [OrderController::class, 'getBillClient']);
  
