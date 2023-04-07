@@ -8,15 +8,11 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                <!-- <th>Branch</th> -->
-                <th>LR</th>
-                <!-- <th>Client</th> -->
-                <!-- <th>Order No</th>
-                <th>Invoice No</th> -->
-                <th style="text-align: center; width: 120px;">Delivery Status</th>
-                <th style="text-align: center; width: 120px;">Delivery Date</th>
-                <th class="text-center">POD</th>
-            </tr> 
+                <th style="width: 15%; min-width: 200px">LR</th>
+                <th style="text-align: center; width: 15%; min-width: 200px">Delivery Status</th>
+                <th style="text-align: center; width: 15%; min-width: 200px">Delivery Date</th>
+                <th class="" style="width: 55%">POD</th>
+            </tr>
         </thead>
         <tbody>
             @if(count($consignments)>0)
@@ -28,7 +24,6 @@ $end_date = strtotime($consignment->delivery_date);
 $tat = ($end_date - $start_date) / 60 / 60 / 24;
 ?>
             <tr>
-                <!-- <td>{{$consignment->Branch->name ?? '-'}}</td> -->
                 <td>
                     <p>
                         <span style="font-weight: 700; font-size: 14px; color: #000">
@@ -45,20 +40,6 @@ $tat = ($end_date - $start_date) / 60 / 60 / 24;
                         Dated: {{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}
                     </p>
                 </td>
-
-                <!-- <td>
-                    <p class="textWrap" style="max-width: 240px; font-size: 11px; text-transform: capitalize">
-                        <span style="color: #000; font-weight: 700; font-size: 13px">
-                            {{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}
-                        </span>
-                        <br />
-                        Regional:
-                        <span style="color: #000; font-weight: 700; font-size: 13px">
-                            {{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}
-                        </span>
-                    </p>
-                </td> -->
-
                 @if (empty($consignment->order_id))
                 @if (!empty($consignment->ConsignmentItems))
                 <?php
@@ -109,7 +90,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                     @endif
                 </td> -->
 
-                <td style="width: 120px;">
+                <td style="width: 20%; min-width: 200px">
                     <?php $dlStatus = $consignment->delivery_status?>
                     <p style="font-size: 11px; text-align: center">
                         Mode:
@@ -138,10 +119,8 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </p>
                 </td>
 
-                <td style="text-align: center; width: 120px;">
+                <td style="text-align: center; width: 20%; min-width: 200px">
                     {{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
-
-
                 <?php if ($consignment->lr_mode == 1) {
                      $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();
                       if (!empty($job->response_data)) {
@@ -163,16 +142,17 @@ $invoice['amt'] = implode(',', $inv_amt);
                 <td style="max-width: 260px; vertical-align: middle">
                     @if (!empty($consignment->signed_drs))
                     <div class="d-flex align-items-center">
-                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
-                        @if($pdfcheck[1] == 'pdf')
-                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab" data-toggle="modal"
-                                data-target="#exampleModalPdf"
+                        <div class="d-flex justify-content-center flex-wrap"
+                            style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                            @if($pdfcheck[1] == 'pdf')
+                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab"
+                                data-toggle="modal" data-target="#exampleModalPdf"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
-                        @else
-                        <img src="{{$img}}"  class="viewImageInNewTab" data-toggle="modal"
+                            @else
+                            <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
-                        @endif
+                            @endif
                         </div>
                         <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
                             data-id="{{$consignment->id}}">
@@ -190,11 +170,12 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </div>
                     @else
                     <div style="min-height: 50px" class="d-flex align-items-center">
-                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                        <div class="d-flex justify-content-center flex-wrap"
+                            style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             Not Available
-                        </div> 
-                        <a class="edit @if($consignment->status == 1) editButtonimg @endif editIcon swan-tooltip-left" 
-                        data-tooltip="@if($consignment->status == 1) Add Images @else Need to update status @endif"
+                        </div>
+                        <a class="edit @if($consignment->status == 1) editButtonimg @endif editIcon swan-tooltip-left"
+                            data-tooltip="@if($consignment->status == 1) Add Images @else Need to update status @endif"
                             data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -209,7 +190,8 @@ $invoice['amt'] = implode(',', $inv_amt);
                 <td style="max-width: 260px">
                     <?php if (!empty($img_group)) {?>
                     <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
-                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                        <div class="d-flex justify-content-center flex-wrap"
+                            style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             @foreach($img_group as $img)
                             <img src="{{$img}}" class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
@@ -219,11 +201,13 @@ $invoice['amt'] = implode(',', $inv_amt);
                     </div>
                     <?php } else {?>
                     <div style="min-height: 50px" class="d-flex align-items-center">
-                        <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
+                        <div class="d-flex justify-content-center flex-wrap"
+                            style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             Not Available
                         </div>
 
-                        <a class="edit editIcon notAllowed swan-tooltip-left" data-tooltip="First change mode to manual">
+                        <a class="edit editIcon notAllowed swan-tooltip-left"
+                            data-tooltip="First change mode to manual">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="feather feather-edit-2">
@@ -234,12 +218,11 @@ $invoice['amt'] = implode(',', $inv_amt);
                     <?php }?>
                 </td>
                 <?php }?>
-
             </tr>
             @endforeach
             @else
             <tr>
-                <td colspan="12" class="text-center">No Record Found</td>
+                <td colspan="5" class="text-center">No Record Found</td>
             </tr>
             @endif
         </tbody>
