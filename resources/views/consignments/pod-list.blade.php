@@ -125,7 +125,7 @@ label.statusLabel {
                                     data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
                                     class="consignmentReportEx ml-2 btn btn-outline-primary btn-white btn-cstm"
                                     style=" font-size: 15px; padding: 9px; width: 85px"
-                                    data-action="<?php echo URL::to($prefix.'/pod-export'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                    data-action="<?php echo URL::to($prefix.'/pod-export'); ?>" download><span> Export</span></a>
                                 <a href="javascript:void();" style=" font-size: 15px; padding: 9px;"
                                     class="ml-2 btn btn-outline-primary reset_filter"
                                     data-action="<?php echo url()->current(); ?>">Reset</span></a>
