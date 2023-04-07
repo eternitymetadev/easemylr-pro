@@ -4119,27 +4119,26 @@ class ConsignmentController extends Controller
     public function uploadDrsImg(Request $request)
     {
         try {
-
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-                    $delivery_branch = $get_delivery_branch->branch_id;
-                }else{
-                    $delivery_branch = $get_delivery_branch->to_branch_id;
-                }
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
@@ -5147,23 +5146,23 @@ class ConsignmentController extends Controller
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-                    $delivery_branch = $get_delivery_branch->branch_id;
-                }else{
-                    $delivery_branch = $get_delivery_branch->to_branch_id;
-                }
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $file = $request->file('pod');
             if (!empty($file)) {
