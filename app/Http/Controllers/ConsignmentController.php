@@ -4119,27 +4119,26 @@ class ConsignmentController extends Controller
     public function uploadDrsImg(Request $request)
     {
         try {
-
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-                    $delivery_branch = $get_delivery_branch->branch_id;
-                }else{
-                    $delivery_branch = $get_delivery_branch->to_branch_id;
-                }
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
@@ -4542,6 +4541,147 @@ class ConsignmentController extends Controller
         $consignments = $consignments->appends($request->query());
 
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+
+    // mobile pod view list
+    public function podList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        $query = ConsignmentNote::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                );
+
+            if ($authuser->role_id == 1) {
+                $query = $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                $query =  $query->where(function ($query) use ($cc){
+                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+
+                });
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+
+                    $query->where('id', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $reg_client = RegionalClient::select('id','name');
+            if ($authuser->role_id == 1) {
+                $reg_client = $reg_client;
+            } elseif ($authuser->role_id == 4) {
+                $reg_client = $reg_client->whereIn('id', $regclient);
+            } else {
+                $reg_client = $reg_client->whereIn('location_id', $cc);
+
+                // $regclients = $regclients->where(function ($query) use ($cc){
+                //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+                // });
+            }
+
+            $regclients = $reg_client->orderBy('name', 'ASC')->get();
+
+            if(isset($request->regclient_id)){
+                $query = $query->where('regclient_id',$request->regclient_id);
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $consignments = $query->whereBetween('consignment_date', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
+            } else {
+                $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            }
+
+            $html = view('consignments.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'regclients'=>$regclients])->render();
+            // $consignments = $consignments->appends($request->query());
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+            );
+
+        if ($authuser->role_id == 1) {
+            $query = $query;
+        } elseif ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } else {
+            // $query = $query->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
+            });
+        }
+        
+        $reg_client = RegionalClient::select('id','name');
+        if ($authuser->role_id == 1) {
+            $reg_client = $reg_client;
+        } elseif ($authuser->role_id == 4) {
+            $reg_client = $reg_client->whereIn('id', $regclient);
+        } else {
+            $reg_client = $reg_client->whereIn('location_id', $cc);
+
+            // $regclients = $regclients->where(function ($query) use ($cc){
+            //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+            // });
+        }
+
+        $regclients = $reg_client->orderBy('name', 'ASC')->get();
+
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        return view('consignments.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'regclients'=>$regclients]);
     }
 
     //////////////////////////////New Create Lr Form ///////////////////////////////////
@@ -4994,7 +5134,7 @@ class ConsignmentController extends Controller
 
     public function exportPodFile(Request $request)
     {
-        return Excel::download(new PodExport($request->startdate,$request->enddate), 'Pod.xlsx');
+        return Excel::download(new PodExport($request->startdate,$request->enddate,$request->regclient_id), 'Pod.xlsx');
     }
 
        public function updatePod(Request $request)
@@ -5006,23 +5146,23 @@ class ConsignmentController extends Controller
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-                    $delivery_branch = $get_delivery_branch->branch_id;
-                }else{
-                    $delivery_branch = $get_delivery_branch->to_branch_id;
-                }
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $file = $request->file('pod');
             if (!empty($file)) {
