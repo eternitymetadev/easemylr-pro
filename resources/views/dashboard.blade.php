@@ -319,7 +319,7 @@
         ?>
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <div class="widget mb-3">
-                <a href="{{$prefixurl.'pod-list'}}" class="btn btn-primary podButton"> POD Upload Mobile function </a>
+                <a href="{{$prefixurl.'pod-list'}}" class="btn btn-primary podButton"> POD Mobile Upload </a>
             </div>
             <div class="widget widget-activity-five">
 
