@@ -4190,7 +4190,7 @@ class ConsignmentController extends Controller
                     } else {
                         $filename = null;
                     }
-
+                    $check_lr_mode = ConsignmentNote::where('id', $lrno)->first();
                     if (!empty($deliverydate)) {
                         $dateTimestamp1 = strtotime($save_data['lr_date']);
                         $dateTimestamp2 = strtotime($deliverydate);
@@ -4201,13 +4201,18 @@ class ConsignmentController extends Controller
                             $response['messages'] = 'Delivery date cannot be less than LR Date';
                             return Response::json($response);
                         }
+                        
+                        if($check_lr_mode->lr_mode == 0){
                         ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                        }
 
                     } else {
                         if (!empty($filename)) {
+                            if($check_lr_mode->lr_mode == 0){
                             ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                            }
                         }
                     }
                 }
