@@ -27,11 +27,13 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
 
     protected $startdate;
     protected $enddate;
+    protected $regclient_id;
     // protected $search;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
+        $this->regclient_id = $regclient_id;
         // $this->search = $search;
     }
 
@@ -45,6 +47,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $regclient_id = $this->regclient_id;
 
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
@@ -76,6 +79,10 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
         }
         else{
             $query = $query->whereIn('branch_id', $cc);
+        }
+
+        if(isset($regclient_id)){
+            $query = $query->where('regclient_id',$regclient_id);
         }
 
         if(isset($startdate) && isset($enddate)){
