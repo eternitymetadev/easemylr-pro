@@ -70,7 +70,7 @@ div.relative {
                         <div class="btn-group relative">
                             <button type="button" class="btn btn-warning disableDrs" id="create_edd"
                                 style="font-size: 11px;">
-                                Create DSR
+                                Create DRS
                             </button>
                             <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
 
