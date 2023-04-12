@@ -2882,9 +2882,11 @@ class OrderController extends Controller
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-            $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
+            if(!empty($request->driver_id)){
+            $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
+           if ($get_driver_details->access_status == 1) {
             if (!empty($get_driver_details->branch_id)) {
                 $driver_branch = explode(',', $get_driver_details->branch_id);
                 if (in_array($authuser->branch_id, $driver_branch)) {
@@ -2923,6 +2925,8 @@ class OrderController extends Controller
                 // $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                 // ==== end create
             }
+        }
+    }
             // insert consignment items
             if (!empty($request->data)) {
                 $get_data = $request->data;
