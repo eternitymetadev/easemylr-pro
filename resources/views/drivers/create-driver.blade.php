@@ -9,97 +9,90 @@
 </style>
 
 <div class="layout-px-spacing">
-    <div class="row layout-top-spacing">
-        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-            <div class="page-header">
-                <nav class="breadcrumb-one" aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Drivers</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Driver</a></li>
-                    </ol>
-                </nav>
+    <!-- <div class="row layout-top-spacing"> -->
+    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+        <div class="page-header">
+            <nav class="breadcrumb-one" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Drivers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
+                            Driver</a></li>
+                </ol>
+            </nav>
+        </div>
+        <div class="widget-content widget-content-area br-6">
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <!-- <div class="breadcrumb-title pe-3"><h5>Create Driver</h5></div> -->
             </div>
-            <div class="widget-content widget-content-area br-6">
-                <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <!-- <div class="breadcrumb-title pe-3"><h5>Create Driver</h5></div> -->
-                </div>
-                <div class="col-lg-12 col-12 layout-spacing">
-                    <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/drivers')}}" id="createdriver">
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Driver Name<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name" placeholder="Name">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Driver Phone<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control mbCheckNm" name="phone" id="phone" placeholder="Phone"
-                                        maxlength="10">
-                                </div>
+            <div class="col-lg-12 col-12 layout-spacing">
+                <div class="statbox widget box box-shadow">
+                    <form class="general_form" method="POST" action="{{url($prefix.'/drivers')}}" id="createdriver">
+                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Driver Name<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="name" placeholder="Name">
                             </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Driver License Number<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="license_number" placeholder="">
-                                </div>
-
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Driver Phone<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control mbCheckNm" name="phone" id="phone"
+                                    placeholder="Phone" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Driver License Number<span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="license_number" placeholder="">
                             </div>
 
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Driver License File(Optional)</label>
-                                    <input type="file" class="form-control license_image" name="license_image"
-                                        accept="image/*">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}"
-                                            class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
-                                </div>
+                        </div>
+
+                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Driver License File(Optional)</label>
+                                <input type="file" class="form-control license_image" name="license_image"
+                                    accept="image/*">
                             </div>
-                            <!-- <div class="form-group d-flex col-md-3">
- 
-                                <div class="d-flex align-items-center px-2 pt-2">
-                                    <label class="mr-4">
-                                        APP USE<span class="text-danger">*</span>
-                                    </label>
+                            <div class="form-group col-md-6">
+                                <div class="image_upload"><img src="{{url("/assets/img/upload-img.png")}}"
+                                        class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">App Access</label>
+                                <div class="check-box d-flex">
                                     <div class="checkbox radio">
-                                        <label class="check-label">Eternity
-                                            <input type="radio" name="app_use" value="Eternity" class="">
+                                        <label class="check-label">Yes
+                                            <input type="radio" value='1' name="access_status">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
-                                    <div class="checkbox radio ml-3">
-                                        <label class="check-label">Shadow
-                                            <input type="radio" name="app_use" value="Shadow" checked="">
+                                    <div class="checkbox radio">
+                                        <label class="check-label">No
+                                            <input type="radio" name="access_status" value='0' checked>
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
-                                </div>
-                            </div> -->
-
-                            <h5 class="form-row mb-2">Shadow Details</h5>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Team Id</label>
-                                    <input type="text" class="form-control" name="team_id" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Fleet ID</label>
-                                    <input type="text" class="form-control" name="fleet_id" placeholder="">
                                 </div>
                             </div>
+
+                        </div>
+                        <div id="driver_detail" style="display: none;">
+                            <h5 class="form-row mb-2">Shadow Details</h5>
+
                             <h5 class="form-row mb-2">Login Details</h5>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Login Id</label>
-                                    <input type="text" class="form-control" name="login_id" id="login_id" placeholder="" readonly>
+                                    <input type="text" class="form-control" name="login_id" id="login_id" placeholder=""
+                                        readonly>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Password</label> 
+                                    <label for="exampleFormControlInput2">Password</label>
                                     <input type="password" class="form-control" name="password" placeholder="">
                                 </div>
                             </div>
@@ -108,44 +101,35 @@
                                 name="branch_id[]">
                                 <option disabled>Select</option>
                                 @foreach($branchs as $branch)
-                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                                        @endforeach
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
                             </select>
+                        </div>
 
-                            <label for="exampleFormControlInput2">App Access</label>
-                            <div class="check-box d-flex">
-                                <div class="checkbox radio">
-                                    <label class="check-label">Yes
-                                        <input type="radio" value='1' name="access_status">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="checkbox radio">
-                                    <label class="check-label">No
-                                        <input type="radio" name="access_status" value='0'
-                                            checked>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-
-                            <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
-                            <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
-                        </form>
-                    </div>
+                        <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
+                        <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <!-- </div> -->
 </div>
 
 @endsection
 @section('js')
 <script>
-    $("#phone").blur(function(){
-        $("#login_id").val($(this).val());
-    });
+$('input[type=radio][name=access_status]').change(function() {
+    if (this.value == '1') {
+        $('#driver_detail').show();
+    } else {
+        $('#driver_detail').hide();
+    }
+});
+
+$("#phone").blur(function() {
+    $("#login_id").val($(this).val());
+});
 
 $(document).on("click", ".remove_licensefield", function(e) { //user click on remove text
     var getUrl = window.location;
