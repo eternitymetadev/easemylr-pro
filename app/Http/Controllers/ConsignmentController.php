@@ -2037,10 +2037,11 @@ class ConsignmentController extends Controller
         $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         //  }
         // =============new app
-        $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
+        $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
         $mytime = Carbon::now('Asia/Kolkata');
         $currentdate = $mytime->toDateTimeString();
         // check app assign ========================================
+         if ($get_driver_details->access_status == 1) {
         if (!empty($get_driver_details->branch_id)) {
             $driver_branch = explode(',', $get_driver_details->branch_id);
             if (in_array($authuser->branch_id, $driver_branch)) {
@@ -2079,6 +2080,23 @@ class ConsignmentController extends Controller
                 }
             }
         }
+    }else{
+        $update = DB::table('consignment_notes')->whereIn('id', $cc)->update(['lr_mode' => 0]);
+        foreach ($cc as $c_id) {
+            // =================== task assign
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id', 'DESC')->first();
+            if (!empty($lastjob->response_data)) {
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
+
+            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            // ==== end started
+            }
+        }
+    }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";

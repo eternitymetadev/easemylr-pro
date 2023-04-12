@@ -854,6 +854,7 @@ class FtlPtlController extends Controller
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
+            if(!empty($request->driver_id)){
             $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
@@ -903,6 +904,13 @@ class FtlPtlController extends Controller
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                 // ==== end create
             }
+        }else{
+             // task created
+             $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+             $respons_data = json_encode($respons);
+             $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+             // ==== end create
+        }
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
             //     $lid = $saveconsignment->id;
