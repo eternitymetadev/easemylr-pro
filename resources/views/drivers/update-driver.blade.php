@@ -128,9 +128,16 @@
                                 value="{{old('login_id',isset($getdriver->login_id)?$getdriver->login_id:'')}}"
                                 placeholder="" readonly>
                         </div>
+                        <?php $authuser = Auth::user();
+                        if($authuser->role_id==2){
+                            $disable = ''; 
+                        } else{
+                            $disable = 'disable_n';
+                        }
+                        ?>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Password</label>
-                            <input type="text" class="form-control" name="password"
+                            <input type="text" class="form-control {{$disable}}" name="password"
                                 value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}"
                                 placeholder="">
                         </div>
