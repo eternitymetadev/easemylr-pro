@@ -854,9 +854,10 @@ class FtlPtlController extends Controller
             //===========================End drs lr ================================= //
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
-            $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
+            $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
 
             // check app assign ========================================
+            if ($get_driver_details->access_status == 1) {
             if (!empty($get_driver_details->branch_id)) {
                 $driver_branch = explode(',', $get_driver_details->branch_id);
                 if (in_array($authuser->branch_id, $driver_branch)) {
@@ -889,6 +890,13 @@ class FtlPtlController extends Controller
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
             } else {
+                // task created
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                $respons_data = json_encode($respons);
+                $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                // ==== end create
+            }
+        }else {
                 // task created
                 $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
                 $respons_data = json_encode($respons);
