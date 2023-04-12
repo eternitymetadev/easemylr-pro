@@ -106,34 +106,35 @@
                                 </div>
                             </div>
 
-                            
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">App Access</label>
-                            <div class="check-box d-flex">
-                                <div class="checkbox radio">
-                                    <label class="check-label">Yes
-
-                                        <input type="radio" value="1" name="access_status" class="access_status"
-                                            {{ ($getdriver->access_status=="1")? "checked" : "" }}>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="checkbox radio">
-                                    <label class="check-label">No
-                                        <input type="radio" value='0' name="access_status" class="access_status"
-                                            {{ ($getdriver->access_status=="0")? "checked" : "" }}>
-                                        <span class="checkmark"></span>
-                                    </label>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6 d-flex align-items-center" style="gap: 1.5rem">
+                                    <label for="exampleFormControlInput2">App Access</label>
+                                    <div class="check-box d-flex align-items-center" style="gap: 1rem">
+                                        <div class="checkbox radio">
+                                            <label class="check-label d-flex align-items-center" style="gap: 0.2rem">
+                                                <input type="radio" value='1' name="access_status" class="access_status"
+                                                    {{ ($getdriver->access_status=="1")? "checked" : "" }}>
+                                                <span class="checkmark"></span>
+                                                Yes
+                                            </label>
+                                        </div>
+                                        <div class="checkbox radio">
+                                            <label class="check-label d-flex align-items-center" style="gap: 0.2rem">
+                                                <input type="radio" value='0' name="access_status" class="access_status"
+                                                    {{ ($getdriver->access_status=="0")? "checked" : "" }}>
+                                                <span class="checkmark"></span>
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    </div>
+                    
 
 
-                    <div id="driver_detail"  style="display: none;">
+                    <div id="driver_detail" style="display: none;">
+                            <h5 class="form-row mb-2">Login Details</h5>
                         <div class="form-row mb-0">
                             <div class="form-group col-md-6">
                                 <label for="exampleFormControlInput2">Login ID</label>
@@ -186,6 +187,8 @@
                     <input type="submit" class="mt-4 mb-4 btn btn-primary">
                     <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
                     </form>
+                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,10 +201,9 @@
 <script>
 $('.nSelect').prop('disabled', true);
 
-if($('.access_status:checked').val() == 1 ){
+if ($('.access_status:checked').val() == 1) {
     $('#driver_detail').show();
-}
-else{
+} else {
     $('#driver_detail').hide();
 }
 
