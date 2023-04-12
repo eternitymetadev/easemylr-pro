@@ -106,82 +106,82 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Team Id</label>
-                                <input type="text" class="form-control" name="team_id"
-                                    value="{{old('team_id',isset($getdriver->team_id)?$getdriver->team_id:'')}}"
-                                    placeholder="">
+                            
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">App Access</label>
+                            <div class="check-box d-flex">
+                                <div class="checkbox radio">
+                                    <label class="check-label">Yes
+
+                                        <input type="radio" value="1" name="access_status" class="access_status"
+                                            {{ ($getdriver->access_status=="1")? "checked" : "" }}>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkbox radio">
+                                    <label class="check-label">No
+                                        <input type="radio" value='0' name="access_status" class="access_status"
+                                            {{ ($getdriver->access_status=="0")? "checked" : "" }}>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
                             </div>
-                    </div>
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Fleet ID</label>
-                            <input type="text" class="form-control" name="fleet_id"
-                                value="{{old('fleet_id',isset($getdriver->fleet_id)?$getdriver->fleet_id:'')}}"
-                                placeholder="">
                         </div>
                     </div>
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Login ID</label>
-                            <input type="text" class="form-control" id="login_id" name="login_id"
-                                value="{{old('login_id',isset($getdriver->login_id)?$getdriver->login_id:'')}}"
-                                placeholder="" readonly>
-                        </div>
-                        <?php $authuser = Auth::user();
+
+                    </div>
+
+
+                    <div id="driver_detail"  style="display: none;">
+                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Login ID</label>
+                                <input type="text" class="form-control" id="login_id" name="login_id"
+                                    value="{{old('login_id',isset($getdriver->login_id)?$getdriver->login_id:'')}}"
+                                    placeholder="" readonly>
+                            </div>
+                            <?php $authuser = Auth::user();
                         if($authuser->role_id==2){
                             $disable = ''; 
                         } else{
                             $disable = 'disable_n';
                         }
                         ?>
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Password</label>
-                            <input type="text" class="form-control {{$disable}}" name="password"
-                                value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}"
-                                placeholder="">
+                            <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Password</label>
+                                <input type="text" class="form-control {{$disable}}" name="password"
+                                    value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}"
+                                    placeholder="">
+                            </div>
                         </div>
-                    </div>
 
-                    <?php $selected = explode(",", $getdriver->branch_id); ?>
-                    <label for="exampleFormControlInput2">Tagged Branches</label>
-                    <div class="taggedBranches">
-                        @foreach($branches as $branch)
-                        <span>{{ (in_array($branch->id, $selected)) ? $branch->name : '' }}</span>
-                        @endforeach
-                    </div>
-                    <input type="hidden" name="branches_id[]" value="{{$getdriver->branch_id}}">
+                        <?php $selected = explode(",", $getdriver->branch_id); ?>
+                        <label for="exampleFormControlInput2">Tagged Branches</label>
+                        <div class="taggedBranches">
+                            @foreach($branches as $branch)
+                            <span>{{ (in_array($branch->id, $selected)) ? $branch->name : '' }}</span>
+                            @endforeach
+                        </div>
+                        <input type="hidden" name="branches_id[]" value="{{$getdriver->branch_id}}">
 
-                    
-                    <label for="exampleFormControlInput2">Select Branch</label>
-                    <select class="form-control tagging" id="select_consigner" multiple="multiple" name="branch_id[]">
-                        <option disabled>Select</option>
-                        <?php
+
+                        <label for="exampleFormControlInput2">Select Branch</label>
+                        <select class="form-control tagging" id="select_consigner" multiple="multiple"
+                            name="branch_id[]">
+                            <option disabled>Select</option>
+                            <?php
                                 $selected = explode(",", $getdriver->branch_id);
                                 ?>
-                        @foreach($branchs as $branch)
-                        <option value="{{ $branch->id }}" {{ (in_array($branch->id, $selected)) ? 'selected' : '' }}>
-                            {{ $branch->name}}</option>
-                        @endforeach
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}"
+                                {{ (in_array($branch->id, $selected)) ? 'selected' : '' }}>
+                                {{ $branch->name}}</option>
+                            @endforeach
 
-                    </select>
+                        </select>
+                    </div>
 
-                    <label for="exampleFormControlInput2">App Access</label>
-                        <div class="check-box d-flex">
-                            <div class="checkbox radio">
-                                <label class="check-label">Yes
-
-                                    <input type="radio" value="1" name="access_status" class=""  {{ ($getdriver->access_status=="1")? "checked" : "" }}>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="checkbox radio">
-                                <label class="check-label">No
-                                        <input type="radio" value='0' name="access_status" {{ ($getdriver->access_status=="0")? "checked" : "" }}>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                        </div>
 
                     <input type="submit" class="mt-4 mb-4 btn btn-primary">
                     <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
@@ -198,6 +198,20 @@
 <script>
 $('.nSelect').prop('disabled', true);
 
+if($('.access_status:checked').val() == 1 ){
+    $('#driver_detail').show();
+}
+else{
+    $('#driver_detail').hide();
+}
+
+$('input[type=radio][name=access_status]').change(function() {
+    if (this.value == '1') {
+        $('#driver_detail').show();
+    } else {
+        $('#driver_detail').hide();
+    }
+});
 
 $("#phone").blur(function() {
     $("#login_id").val($(this).val());
