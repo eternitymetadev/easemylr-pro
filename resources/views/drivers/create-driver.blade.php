@@ -62,27 +62,28 @@
                         </div>
 
                         <div class="form-row mb-0">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-6 d-flex align-items-center" style="gap: 1.5rem">
                                 <label for="exampleFormControlInput2">App Access</label>
-                                <div class="check-box d-flex">
+                                <div class="check-box d-flex align-items-center" style="gap: 1rem">
                                     <div class="checkbox radio">
-                                        <label class="check-label">Yes
+                                        <label class="check-label d-flex align-items-center" style="gap: 0.2rem">
                                             <input type="radio" value='1' name="access_status">
                                             <span class="checkmark"></span>
+                                            Yes
                                         </label>
                                     </div>
                                     <div class="checkbox radio">
-                                        <label class="check-label">No
+                                        <label class="check-label d-flex align-items-center" style="gap: 0.2rem">
                                             <input type="radio" name="access_status" value='0' checked>
                                             <span class="checkmark"></span>
+                                            No
                                         </label>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
+
                         <div id="driver_detail" style="display: none;">
-                            <h5 class="form-row mb-2">Shadow Details</h5>
 
                             <h5 class="form-row mb-2">Login Details</h5>
                             <div class="form-row mb-0">
@@ -93,7 +94,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Password</label>
-                                    <input type="password" class="form-control" name="password" placeholder="">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="">
                                 </div>
                             </div>
                             <label for="exampleFormControlInput2">Select Branch</label>
@@ -122,10 +124,13 @@
 $('input[type=radio][name=access_status]').change(function() {
     if (this.value == '1') {
         $('#driver_detail').show();
+        $("#password").val('');
     } else {
         $('#driver_detail').hide();
     }
 });
+
+$("#password").val('');
 
 $("#phone").blur(function() {
     $("#login_id").val($(this).val());
