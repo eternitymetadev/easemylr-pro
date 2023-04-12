@@ -36,7 +36,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Driver Phone<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control mbCheckNm" name="phone" placeholder="Phone"
+                                    <input type="text" class="form-control mbCheckNm" name="phone" id="phone" placeholder="Phone"
                                         maxlength="10">
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Login Id</label>
-                                    <input type="text" class="form-control" name="login_id" placeholder="">
+                                    <input type="text" class="form-control" name="login_id" id="login_id" placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Password</label> 
@@ -111,6 +111,25 @@
                                         <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
                                         @endforeach
                             </select>
+
+                            <label for="exampleFormControlInput2">App Access</label>
+                            <div class="check-box d-flex">
+                                <div class="checkbox radio">
+                                    <label class="check-label">Yes
+                                        <input type="radio" value='1' name="access_status">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkbox radio">
+                                    <label class="check-label">No
+                                        <input type="radio" name="access_status" value='0'
+                                            checked>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/drivers') }}"> Back</a>
                         </form>
@@ -124,6 +143,10 @@
 @endsection
 @section('js')
 <script>
+    $("#phone").blur(function(){
+        $("#login_id").val($(this).val());
+    });
+
 $(document).on("click", ".remove_licensefield", function(e) { //user click on remove text
     var getUrl = window.location;
     var baseurl = getUrl.origin + '/' + getUrl.pathname.split('/')[0];
