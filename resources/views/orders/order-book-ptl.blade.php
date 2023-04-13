@@ -335,9 +335,9 @@ span.select2.select2-container.mb-4 {
                 </label>
                 <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
                     id="paymentType">
-                    <option value="To be Billed" selected="selected">TBB</option>
+                    <!-- <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
-                    <option value="Paid">Paid</option> 
+                    <option value="Paid">Paid</option>  -->
                 </select>
             </div>
             <!-- <div class="form-group col-md-2">
@@ -355,7 +355,7 @@ span.select2.select2-container.mb-4 {
             <div class="form-group col-md-2" id="codFreightBlock">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" name="cod" id="cod" >
+                <Input type="number" class="form-control" name="cod" id="cod" readonly >
             </div>
             <div class="form-group d-flex col-md-3">
 

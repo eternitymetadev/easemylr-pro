@@ -7,56 +7,94 @@
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Update Consigner</h5></div> -->
-                    
+
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
-                        <form class="general_form" method="POST" action="{{url($prefix.'/settings/branch-address')}}" id="createbranchadd" enctype="multipart/form-data">
+                        <h4>Company name and contact</h4>
+                        <form class="general_form row flex-wrap" method="POST"
+                            action="{{url($prefix.'/settings/branch-address')}}" id="createbranchadd"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="branchadd_id" value="{{$branchaddvalue->id}}">
-                            <div class="form-group mb-4">
+                            <div class="form-group col-md-4 mb-4">
                                 <label for="exampleFormControlInput2">Name<span class="text-danger">*</span></label>
-                                <input class="form-control" name="name" id="name" placeholder="" value="{{old('name',isset($branchaddvalue->name)?$branchaddvalue->name:'')}}" disabled>
+                                <input class="form-control" name="name" id="name" placeholder=""
+                                    value="{{old('name',isset($branchaddvalue->name)?$branchaddvalue->name:'')}}"
+                                    disabled>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">Address<span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="address" name="address" cols="5" rows="3" placeholder="" disabled>{{old('address',isset($branchaddvalue->address)?$branchaddvalue->address:'')}}</textarea>
+                            <div class="form-group col-md-4 mb-4">
+                                <label for="exampleFormControlInput2">Email Address<span
+                                        class="text-danger">*</span></label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder=""
+                                    value="{{old('email',isset($branchaddvalue->email)?$branchaddvalue->email:'')}}"
+                                    disabled>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">GST Number<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="gst_number" id="gst_number" placeholder="" value="{{old('gst_number',isset($branchaddvalue->gst_number)?$branchaddvalue->gst_number:'')}}" disabled>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">Email Address<span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="" value="{{old('email',isset($branchaddvalue->email)?$branchaddvalue->email:'')}}" disabled>
-                            </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group col-md-4 mb-4">
                                 <label for="exampleFormControlInput2">Phone<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control mbCheckNm" name="phone" id="phone" placeholder="" value="{{old('phone',isset($branchaddvalue->phone)?$branchaddvalue->phone:'')}}"  maxlength="10" disabled>
+                                <input type="text" class="form-control mbCheckNm" name="phone" id="phone" placeholder=""
+                                    value="{{old('phone',isset($branchaddvalue->phone)?$branchaddvalue->phone:'')}}"
+                                    maxlength="10" disabled>
                             </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">State<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="state" id="state" placeholder="" value="{{old('state',isset($branchaddvalue->state)?$branchaddvalue->state:'')}}" disabled>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">District</label>
-                                <input type="text" class="form-control" name="district" id="district" placeholder="" value="{{old('district',isset($branchaddvalue->district)?$branchaddvalue->district:'')}}" disabled>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">City</label>
-                                <input type="text" class="form-control" name="city" id="city" placeholder="" value="{{old('city',isset($branchaddvalue->city)?$branchaddvalue->city:'')}}" disabled>
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">Postal Code<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control mbCheckNm" name="postal_code" id="postal_code" placeholder="" value="{{old('postal_code',isset($branchaddvalue->postal_code)?$branchaddvalue->postal_code:'')}}"  maxlength="7" disabled>
-                            </div>
-                            
-                            
-                             
-                            <button style="display:none;" type="submit" name="" class="mt-4 mb-4 btn btn-primary submitBtn">Submit</button>
-                            <a href="javascript:void(0)" class="btn btn-primary editBranchadd" title="Edit Meta Value"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+
+                            <button style="display:none;" type="submit" name=""
+                                class="mt-4 mb-4 btn btn-primary submitBtn">Submit</button>
+                            <a href="javascript:void(0)" class="btn btn-primary editBranchadd" title="Edit Meta Value">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
                             <!-- <a class="btn btn-primary" href="{{url($prefix.'/users') }}"> Back</a> -->
                         </form>
+                    </div>
+                    </br>
+                    <div class="statbox widget box box-shadow">
+                        <div class="btn-group relative">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter" style="font-size: 11px;">
+                                Add New Address
+                            </button>
+                        </div>
+                        <h4 style="text-align:center;">GST Registered Address of Eternity Forwarders</h4>
+                        <table id="unverified-table" class="table table-hover" style="width:100%">
+
+                            <thead>
+                                <tr>
+                                    <th>Sr No.</th>
+                                    <!-- <th>Branch Nick Name</th> -->
+                                    <th>GSTN No</th>
+                                    <th>State</th>
+                                    <th>Address</th>
+                                    <th>Gst View</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    $i = 0;
+                                ?>
+                                @foreach($gstaddresses as $address)
+                                <?php
+                                    $i++;
+                                    $decl = URL::to('/drs/company_gst/'.$address->upload_gst);
+                                ?>
+                                <tr>
+                                    <td>{{$i}}</td>
+
+                                    <td>{{$address->gst_no}}</td>
+                                    <td>{{$address->state}}</td>
+                                    <td>{{$address->address_line_1}}</td>
+                                    <?php if(!empty($address->upload_gst)){?>
+                                    <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$decl}}"
+                                            role="button">Gst view</a></td>
+                                    <?php }else{ ?>
+                                    <td>-</td>
+                                    <?php } ?>
+                                    <td><button type="button" class="btn btn-warning edit_gst"
+                                            value="{{$address->id}}">Edit</button>|| <button type="button"
+                                            class="btn btn-warning view_gst_detail"
+                                            value="{{$address->id}}">View</button></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -64,4 +102,350 @@
     </div>
 </div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add New Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new_gst_address">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">GST NO.</label>
+                            <input type="text" class="form-control" name="gst_no">
+                        </div>
+                        <!-- <div class="form-group col-md-6">
+                            <label for="inputPassword4">Branch Nick Name</label>
+                            <select class="form-control  tagging" id="branch_id" name="branch_id" multiple="multiple">
+                                <option selected disabled>Select..</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div> -->
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">State</label>
+                            <select class="form-control" name="state" style="z-index: 1999">
+                                <option selected disabled>Select..</option>
+                                @foreach($states as $state)
+                                <option value="{{ $state->name }}">{{ucwords($state->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Address Line 1</label>
+                            <input type="text" class="form-control" name="address_line_1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Address Line 2</label>
+                            <input type="text" class="form-control" name="address_line_2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Upload GST RC</label>
+                            <input type="file" class="form-control" name="upload_gst">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="inputPassword4">Branch Nick Name</label>
+                        <select class="form-control  tagging" name="branch_id[]" multiple="multiple">
+                            <option disabled>Select..</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Submit</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------- edit modle ---------------------->
+<!-- Modal -->
+<div class="modal fade" id="edit_gst_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Update Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update_gst_address">
+                    <input type="hidden" id="gst_id" name="gst_id" />
+                    <input type="hidden" id="old_branch" name="old_branch" />
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">GST NO.</label>
+                            <input type="text" class="form-control" id="gst_no" name="gst_no">
+                        </div>
+                        <!-- <div class="form-group col-md-6">
+                            <label for="inputPassword4">Branch Nick Name</label>
+                            <select class="form-control  tagging" id="branch_id" name="branch_id" multiple="multiple">
+                                <option selected disabled>Select..</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div> -->
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">State</label>
+                            <select class="form-control" name="state" id="state" style="z-index: 1999">
+                                <option selected disabled>Select..</option>
+                                @foreach($states as $state)
+                                <option value="{{ $state->name }}">{{ucwords($state->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Address Line 1</label>
+                            <input type="text" class="form-control" name="address_line_1" id="address_line_1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Address Line 2</label>
+                            <input type="text" class="form-control" name="address_line_2" id="address_line_2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Upload GST RC</label>
+                            <input type="file" class="form-control" name="upload_gst" id="upload_gst">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="inputPassword4">Branch Nick Name</label>
+                        <select class="form-control  tagging" id="branch_id" name="branch_id[]" multiple="multiple">
+                            <option disabled>Select..</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Update</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------- View modle ---------------------->
+<!-- Modal -->
+<div class="modal fade" id="view_gst_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">View Address</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="statbox widget box box-shadow">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Gst No</th>
+                                <td id="view_gst_no">
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th scope="row">State</th>
+                                <td id="view_state">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address Line 1</th>
+                                <td id="view_address_line_1">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address Line 2</th>
+                                <td id="view_address_line_2">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Branch</th>
+                                <td id="view_branch">
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+@section('js')
+<script>
+$('#new_gst_address').submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+    $.ajax({
+        url: "add-gst-address",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else if (data.validation === false) {
+                swal("error", data.error_message.gst_no[0], "error");
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+// ===========
+$(document).on('click', '.edit_gst', function() {
+    var gst_id = $(this).val();
+
+    $('#edit_gst_model').modal('show');
+
+
+    $.ajax({
+        type: "GET",
+        url: "edit-gst-address/" + gst_id,
+        data: {
+            gst_id: gst_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+
+            },
+        success: function(data) {
+
+            // var branch = data.gst_num.branch_id;
+            // var branch_array = branch.split(",");
+            var branchID = [];
+            $.each(data.gst_num.branch, function(key, value) {
+                branchID.push(value.id);
+            });
+
+            $('#gst_id').val(data.gst_num.id);
+            $('#gst_no').val(data.gst_num.gst_no);
+            $('#branch_id').val(branchID).change();
+            $('#old_branch').val(branchID);
+            $('#state').val(data.gst_num.state);
+            $('#address_line_1').val(data.gst_num.address_line_1);
+            $('#address_line_2').val(data.gst_num.address_line_2);
+
+            // $("#branch_id").change(function() {
+            //     var branch_id = $('#branch_id').val();
+            //     alert(branch_id);
+            // });
+        }
+
+
+    });
+});
+$('#update_gst_address').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    $.ajax({
+        url: "update-gst-address",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+
+        },
+        success: (data) => {
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+///
+$(document).on('click', '.view_gst_detail', function() {
+    var gst_id = $(this).val();
+    $('#view_gst_model').modal('show');
+    $.ajax({
+        type: "GET",
+        url: "view-gst-address/" + gst_id,
+        data: {
+            gst_id: gst_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+                $('#view_gst_no').empty();
+                $('#view_state').empty();
+                $('#view_address_line_1').empty();
+                $('#view_address_line_2').empty();
+                $('#view_branch').empty();
+            },
+        success: function(data) {
+            var branchID = [];
+            $.each(data.gst_num.branch, function(key, value) {
+                branchID.push(value.name);
+            });
+            $('#view_gst_no').append(data.gst_num.gst_no);
+            $('#view_branch').html(branchID);
+            $('#view_state').append(data.gst_num.state);
+            $('#view_address_line_1').append(data.gst_num.address_line_1);
+            $('#view_address_line_2').append(data.gst_num.address_line_2);
+
+        }
+    });
+});
+</script>
 @endsection

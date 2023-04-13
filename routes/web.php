@@ -179,13 +179,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     // Route::get('settings/branch-address', [SettingController::class, 'getbranchAddress']);
     Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
+    Route::any('settings/add-gst-address', [SettingController::class, 'addGstAddress']);
 
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
     Route::get('/sample-consignee-phone',[ImportCsvController::class, 'consigneePhoneSampleDownload']);
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
     Route::get('/sample-vehicle',[ImportCsvController::class, 'vehicleSampleDownload']);
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
-    Route::get('/sample-zone',[ImportCsvController::class, 'zoneSampleDownload']);
+    Route::get('/sample-zone',[ImportCsvController::class, 'zoneSampleDownload']); 
     Route::get('/sample-deliverydate',[ImportCsvController::class, 'deliverydateSampleDownload']);
     Route::get('/sample-manualdelivery',[ImportCsvController::class, 'manualdeliverySampleDownload']);
 
@@ -199,6 +200,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
     Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
     Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
+    Route::get('create-regional-client', [ClientController::class, 'createRegionalClient']);
+    Route::any('generate-regional', [ClientController::class, 'generateRegionalName']);
+    Route::any('regclient-detail/update-generate-regional', [ClientController::class, 'updateGenerateRegionalName']);
+    Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
+    Route::any('edit-baseclient/{id}', [ClientController::class, 'editBaseClient']);
+    Route::any('update-base-client', [ClientController::class, 'updateBaseClient']);
 
     Route::any('consignment-report2', [ReportController::class, 'consignmentReportsAll']);
     Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);
@@ -243,6 +250,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('postal-code/export/excel', [SettingController::class, 'exportExcel']);
+    Route::any('settings/edit-gst-address/{id}', [SettingController::class, 'editGstAddress']);
+    Route::any('settings/update-gst-address', [SettingController::class, 'updateGstAddress']);
+    Route::any('settings/view-gst-address/{id}', [SettingController::class, 'viewGstAddress']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
 

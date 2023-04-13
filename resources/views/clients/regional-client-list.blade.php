@@ -59,14 +59,16 @@ div.relative {
                 <div class="table-responsive mb-4 mt-4">
                     @csrf
                     <table id="clienttable" class="table table-hover get-datatable" style="width:100%">
-                        <div class="btn-group relative">
-
+                        <div class="btn-group relat">
+                            <a href="{{'create-regional-client'}}" class="btn btn-primary pull-right"
+                                style="margin-left:7px;">Create Regional Client</a>
                         </div>
                         <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Location Id</th>
+                                <th>Gst</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -81,14 +83,15 @@ div.relative {
                                     <a
                                         href="{{url($prefix.'/'.$segment.'/add-regclient-detail/'.Crypt::encrypt($value->id))}}">{{ ucwords($value->name ?? "-")}}</a>
                                 </td>
-                                <td>{{$value->location_id ?? "-"}}</td>
+                                <td>{{$value->Location->name ?? "-"}}</td>
+                                <td>{{$value->gst_no ?? "-"}}</td>
                                 <td>
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i
                                                 class="fa fa-edit" aria-hidden="true"></i> Edit<span></a>
-                                    <a class="btn btn-primary"
+                                    <!-- <a class="btn btn-primary"
                                         href="{{url($prefix.'/'.$segment.'/view-regclient-detail/'.Crypt::encrypt($value->id))}}"><span><i
-                                                class="fa fa-eye" aria-hidden="true"></i> View</span></a>
+                                                class="fa fa-eye" aria-hidden="true"></i> View</span></a> -->
                                 </td>
                             </tr>
                             <?php 

@@ -270,7 +270,7 @@ $("#second_payment_form").submit(function(e) {
         contentType: false,
         beforeSend: function() {
             $(".indicator-progress").show();
-            $(".indicator-label").hide();
+            $(".indicator-label").hide(); 
         },
         success: (data) => {
             $(".indicator-progress").hide();
