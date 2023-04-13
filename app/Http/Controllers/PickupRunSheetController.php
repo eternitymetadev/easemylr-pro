@@ -830,10 +830,6 @@ class PickupRunSheetController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = PickupRunSheet::query();
-        $authuser = Auth::user();
-        $cc = explode(',', $authuser->branch_id);
-        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-        $vendors = Vendor::with('Branch')->get();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -842,9 +838,8 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
 
-            $query = $query->with('PrsRegClients.RegClient', 'VehicleDetail', 'DriverDetail')
-                ->where('request_status', 0)
-                ->where('payment_status', 0);
+            $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
+            ->where('payment_status', 0);
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -886,20 +881,41 @@ class PickupRunSheetController extends Controller
             }
             $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
             // $vehicles = Vehicle::select('vehicle_no')->distinct()->get();
+            $authuser = Auth::user();
+            $cc = explode(',', $authuser->branch_id); 
 
-            $prsdata = $query->with('PrsRegClients.RegClient', 'VehicleDetail', 'DriverDetail')->orderBy('id', 'DESC')->paginate($peritem);
+            if ($authuser->role_id == 1) {
+                $query;
+            } else {
+                $query = $query->whereIn('branch_id', $cc);
+            }
+
+            $prsdata = $query->orderBy('id', 'DESC')->paginate($peritem);
             $prsdata = $prsdata->appends($request->query());
 
             $html = view('prs.prs-paymentlist-ajax', ['prefix' => $this->prefix, 'prsdata' => $prsdata, 'vehicles' => $vehicles, 'peritem' => $peritem])->render();
 
             return response()->json(['html' => $html]);
         }
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+        $vendors = Vendor::with('Branch')->get();
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-
-        $prsdata = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
-            ->where('payment_status', 0)->orderBy('id', 'DESC')->paginate($peritem);
-        $prsdata = $prsdata->appends($request->query());
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
+            ->where('payment_status', 0);
+
+        if ($authuser->role_id == 1) {
+            $query;
+        } else {
+            $query = $query->whereIn('branch_id', $cc);
+        }
+
+        $prsdata = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $prsdata = $prsdata->appends($request->query());
 
         return view('prs.prs-paymentlist', ['prsdata' => $prsdata, 'vehicles' => $vehicles, 'vehicletype' => $vehicletypes, 'branchs' => $branchs, 'vendors' => $vendors, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }

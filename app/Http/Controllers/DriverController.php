@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Driver;
 use App\Models\Bank;
+use App\Models\Location;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DriverExport;
 use DB;
@@ -15,6 +16,7 @@ use Helper;
 use Validator;
 use Image;
 use Storage;
+use Auth;
 
 class DriverController extends Controller
 {
@@ -51,7 +53,15 @@ class DriverController extends Controller
                             $licence = '<a href="'.URL::to('/storage/images/driverlicense_images/'.$data->license_image).' " target="_blank">view</a>';
                         }        
                         return $licence;
-                    })
+                    }) 
+                    ->addColumn('access_status', function ($data) {
+                        if($data->access_status == 0){
+                            $access_status = 'Not Enabled';
+                        }else{
+                            $access_status = 'Enabled';
+                        }        
+                        return $access_status;
+                    }) 
                     ->rawColumns(['action', 'licence'])
                     ->make(true);
         }
@@ -66,7 +76,14 @@ class DriverController extends Controller
     public function create()
     {
         $this->prefix = request()->route()->getPrefix();
-        return view('drivers.create-driver',['prefix'=>$this->prefix]);
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            $branchs = Location::select('id', 'name')->whereIn('id',$cc)->get();
+        }else{
+            $branchs = Location::select('id', 'name')->get();
+        }
+        return view('drivers.create-driver',['prefix'=>$this->prefix, 'branchs' => $branchs]);
     }
 
     /**
@@ -95,16 +112,20 @@ class DriverController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
+        $branch = implode(',', $request->branch_id);
 
-        $driversave['name']            = $request->name;
-        $driversave['phone']           = $request->phone;
-        $driversave['license_number']  = $request->license_number;
-        $driversave['team_id']         = $request->team_id;
-        $driversave['fleet_id']        = $request->fleet_id;
-        $driversave['login_id']        = $request->login_id;
-        $driversave['driver_password']   = $request->password;
-        $driversave['password']        = bcrypt($request->password);
-        $driversave['status']          = '1';
+        $driversave['name']                 = $request->name;
+        $driversave['phone']                = $request->phone;
+        $driversave['license_number']       = $request->license_number;
+        $driversave['team_id']              = $request->team_id;
+        $driversave['fleet_id']             = $request->fleet_id;
+        $driversave['login_id']             = $request->login_id;
+        $driversave['driver_password']      = $request->password;
+        $driversave['password']             = bcrypt($request->password);
+        // $driversave['app_use']              =  $request->app_use;
+        $driversave['branch_id']            =  $branch;
+        $driversave['access_status']        =  $request->access_status;
+        $driversave['status']               = '1';
 
         // upload license image
         if($request->license_image){
@@ -170,7 +191,15 @@ class DriverController extends Controller
         $getdriver = Driver::where('id',$id)->with(['BankDetail'=> function($query){
             $query->where('status',1);
         }])->first();
-        return view('drivers.update-driver')->with(['prefix'=>$this->prefix,'getdriver'=>$getdriver]);
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        if ($authuser->role_id != 1) {
+            $branchs = Location::select('id', 'name')->whereIn('id',$cc)->get();
+        }else{
+            $branchs = Location::select('id', 'name')->get();
+        }
+        $branches = Location::select('id', 'name')->get();
+        return view('drivers.update-driver')->with(['prefix'=>$this->prefix,'getdriver'=>$getdriver,'branchs' => $branchs, 'branches' => $branches]);
     }
 
     /**
@@ -182,6 +211,7 @@ class DriverController extends Controller
      */
     public function updateDriver(Request $request)
     {
+        // dd($request->branches_id);
         try { 
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
@@ -200,6 +230,10 @@ class DriverController extends Controller
                 $response['errors']     = $errors;
                 return response()->json($response);
             }
+            $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
+
+            $branch = implode(',', $branches);
+            // $branch = implode(',', $request->branch_id);
 
             $driversave['name']           = $request->name;
             $driversave['phone']          = $request->phone;
@@ -207,7 +241,9 @@ class DriverController extends Controller
             $driversave['team_id']        = $request->team_id;
             $driversave['fleet_id']       = $request->fleet_id;
             $driversave['login_id']       = $request->login_id;
-            $driversave['driver_password']       = $request->password;
+            $driversave['driver_password']= $request->password;
+            $driversave['branch_id']      = $branch;
+            $driversave['access_status']  = $request->access_status;
             $driversave['password']       = bcrypt($request->password);
 
             // upload driver_license image 

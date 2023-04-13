@@ -20,6 +20,9 @@ use Helper;
 use Illuminate\Http\Request;
 use Response;
 use Session;
+use Carbon\Carbon;
+use DateTime;
+use App\Models\Job;
 
 class HubtoHubController extends Controller
 {
@@ -232,9 +235,10 @@ class HubtoHubController extends Controller
 
     public function updateVehicleHrs(Request $request)
     {
-
-        $consignerId = $request->transaction_id;
+        //  echo'<pre>'; print_r($request->all()); die;
+        $consignerId = $request->lr_id;
         $cc = explode(',', $consignerId);
+        
         $addvechileNo = $request->vehicle_id;
         $adddriverId = $request->driver_id;
         $vehicleType = $request->vehicle_type;
@@ -243,6 +247,23 @@ class HubtoHubController extends Controller
         $hrs_id = $request->hrs_id;
 
         $transaction = DB::table('hrs')->where('hrs_no', $hrs_id)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'vehicle_type_id' => $vehicleType, 'transporter_name' => $transporterName, 'purchase_price' => $purchasePrice]);
+
+        $mytime = Carbon::now('Asia/Kolkata');
+        $currentdate = $mytime->toDateTimeString();
+
+        foreach ($cc as $c_id) {
+            // =================== task assign
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Hub Transfer', 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
+           
+
+            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Hub Transfer', 'type' => '2']);
+            // ==== end started
+        }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -471,6 +492,23 @@ class HubtoHubController extends Controller
 
             ConsignmentNote::whereIn('id', $lr_no)->update(['hrs_status' => 3]);
 
+            $mytime = Carbon::now('Asia/Kolkata');
+        $currentdate = $mytime->toDateTimeString();
+
+        foreach ($lr_no as $c_id) {
+            // =================== task assign
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Received Hub', 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
+           
+
+            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Received Hub', 'type' => '2']);
+            // ==== end started
+
+        }
             $response['success'] = true;
             $response['success_message'] = "Added successfully";
             $response['error'] = false;

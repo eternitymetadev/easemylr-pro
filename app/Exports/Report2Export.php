@@ -77,11 +77,11 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','ASC')->get();
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get();
         }else {
             $consignments = $query->orderBy('id','ASC')->get();
         }
-
+        
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
@@ -152,7 +152,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
   
                  if($consignment->status == 1){
                     $status = 'Active';
-                 }elseif($consignment->status == 2){
+                 }elseif($consignment->status == 2 || $consignment->status == 6){
                    $status = 'Unverified';
                  }elseif($consignment->status == 0){
                   $status = 'Cancel';
@@ -162,6 +162,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
+                  }elseif($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
                   }else{
                    $deliverymode = 'Manual';
                   }
@@ -193,7 +195,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     } else {
                         $pod= 'Available';
                     } 
-                } else { 
+                } else if($consignment->lr_mode == 1){ 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
         
                     if(!empty($job->response_data)){
@@ -212,9 +214,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     }else{
                         $pod= 'Not Available';
                     }
+                }else{
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { 
+                        $pod= 'Available';
+                    }else{
+                        $pod= 'Not Available'; 
+                    }
                 }
-
-
 
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
@@ -258,6 +266,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'tat'                 => $tatday,
                     'delivery_mode'       => $deliverymode,
                     'pod'                 => $pod,
+                    'payment_type'        => @$consignment->payment_type,
+                    'freight_on_delivery' => @$consignment->freight_on_delivery,
+                    'cod'                 => @$consignment->cod,
 
                 ];
             }
@@ -308,7 +319,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Status',
             'Tat',
             'Delivery Mode',
-            'POD'
+            'POD',
+            'Payment Type',
+            'Freight on Delivery',
+            'COD',
         ];
     }
 }

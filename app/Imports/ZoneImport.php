@@ -25,6 +25,7 @@ class ZoneImport implements ToModel,WithHeadingRow
                 'postal_code'   => (float)$row['postal_code'],
                 'district'      => $row['district'],
                 'state'         => $row['state'],
+                'hub_transfer'    => $row['hub_transfer'],
                 'status'        => "1",
                 'created_at'    => time(),
             ]);
