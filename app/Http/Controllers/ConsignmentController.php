@@ -680,7 +680,7 @@ class ConsignmentController extends Controller
     {
         $getconsigners = Consigner::select('id', 'nick_name')->where('regionalclient_id', $request->regclient_id)->get();
 
-        $getregclients = RegionalClient::select('id', 'location_id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
+        $getregclients = RegionalClient::where('id', $request->regclient_id)->first();
 
         $itemlists = ItemMaster::where('status', '1')->get();
 
@@ -743,7 +743,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::get();
-        $locations = Location::whereIn('id', $cc)->first();
+        $locations = Location::with('GstAddress')->whereIn('id', $cc)->first();
         $cn_id = $request->id;
 
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
@@ -934,17 +934,30 @@ class ConsignmentController extends Controller
         }
 
         // get branch address
-        if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
-        <b>' . $branch_add[1]->address . ',</b><br />
-        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
-        } else {
+        if(!empty($locations->GstAddress)){
             $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
+        <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
+        <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
+
+        }else{
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+            <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+            <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+            <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
         }
+
+        // if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
+        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+        // <b>' . $branch_add[1]->address . ',</b><br />
+        // <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+        // <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+        // } else {
+        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        // <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        // <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        // <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        // }       
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {

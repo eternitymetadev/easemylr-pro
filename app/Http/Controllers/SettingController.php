@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BranchAddress;
 use App\Models\Zone;
+use App\Models\GstRegisteredAddress;
+use App\Models\Location;
+use App\Models\State;
 use App\Exports\ZoneExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -33,12 +36,14 @@ class SettingController extends Controller
 
     public function getbranchAddress(Request $request)
     {
+        
         return view('setting.index');
     }
 
     // add branch address
     public function updateBranchadd(Request $request)
     {
+
         $this->prefix = request()->route()->getPrefix();
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
@@ -102,7 +107,10 @@ class SettingController extends Controller
         else
         {
             $branchaddvalue = BranchAddress::where(['meta_key'=>'addressdata_key'])->first();
-            return view('settings.branch-address',['branchaddvalue'=>$branchaddvalue,'prefix'=>$this->prefix]);
+            $branchs = Location::all();
+            $states = State::all();
+            $gstaddresses = GstRegisteredAddress::all();
+            return view('settings.branch-address',['branchaddvalue'=>$branchaddvalue,'prefix'=>$this->prefix, 'branchs' => $branchs, 'states' => $states,'gstaddresses' => $gstaddresses]);
         }
     }
     // postal code list
@@ -207,5 +215,140 @@ class SettingController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ZoneExport, 'zones.csv');
+    }
+    // ===========
+    public function addGstAddress(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                'gst_no' => 'required|unique:gst_registered_addresses',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+
+            $gst = $request->file('upload_gst');
+
+            if (!empty($gst)) {
+                $gstfile = $gst->getClientOriginalName();
+                $gst->move(public_path('drs/company_gst'), $gstfile);
+            } else {
+                $gstfile = null;
+            }
+
+            // $branch = implode(',', $request->branch_id);
+           
+            $gstsave['gst_no'] = $request->gst_no;
+            // $gstsave['branch_id'] = $branch;
+            $gstsave['state'] = $request->state;
+            $gstsave['address_line_1'] = $request->address_line_1;
+            $gstsave['address_line_2'] = $request->address_line_2;
+            $gstsave['upload_gst'] = $gstfile;
+
+            $gstsave = GstRegisteredAddress::create($gstsave);
+
+            if(!empty($request->branch_id)){
+            foreach($request->branch_id as $branch){
+                Location::where('id', $branch)->update(['gst_registered_id'=> $gstsave->id]);
+            }
+        }
+
+
+
+            if ($gstsave) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Address Added successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    public function editGstAddress(Request $request)
+    {
+        $id = $request->gst_id;
+        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first(); 
+
+        $response['gst_num'] = $gst_num;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetch";
+        return response()->json($response);
+    }
+
+    public function updateGstAddress(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+            $old_branch = explode(',', $request->old_branch);
+            $result = array_diff($old_branch,$request->branch_id);
+            if(!empty($result)){
+                foreach($result as $val){
+                    Location::where('id', $val)->update(['gst_registered_id' => NULL]);
+                }
+            }
+
+            $gst = $request->file('upload_gst');
+            if (!empty($gst)) {
+                $gstfile = $gst->getClientOriginalName();
+                $gst->move(public_path('drs/company_gst'), $gstfile);
+            } else {
+                $getgstimg = GstRegisteredAddress::where('id',$request->gst_id)->first();
+                $gstfile = $getgstimg->upload_gst;
+            }
+
+            GstRegisteredAddress::where('id', $request->gst_id)->update(['gst_no' => $request->gst_no, 'state' => $request->state, 'address_line_1' => $request->address_line_1,'address_line_2' => $request->address_line_2, 'upload_gst' => $gstfile]);
+
+            foreach($request->branch_id as $branch){
+                Location::where('id', $branch)->update(['gst_registered_id'=> $request->gst_id]);
+            }
+
+            $response['success'] = true;
+            $response['success_message'] = "Address Data successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+    public function viewGstAddress(Request $request)
+    {
+        $id = $request->gst_id;
+        $gst_num = GstRegisteredAddress::with('Branch')->where('id', $id)->first(); 
+
+        $response['gst_num'] = $gst_num;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetch";
+        return response()->json($response);
     }
 }

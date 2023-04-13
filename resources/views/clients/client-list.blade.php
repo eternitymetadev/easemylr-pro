@@ -70,10 +70,13 @@ div.relat {
                         <a href="{{'clients/create'}}" class="btn btn-primary pull-right" >Create Client</a>
                         <a href="{{'reginal-clients'}}" class="btn btn-primary pull-right" style="margin-left:7px;">Regional Client List</a>
                         </div>
-                            <thead>
+                            <thead> 
                                 <tr>
                                     <th>Sr No.</th>
                                     <th>Name</th>
+                                    <th>Gst</th>
+                                    <th>Pan</th>
+                                    <th>Tan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -85,9 +88,17 @@ div.relat {
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ ucwords($value->client_name ?? "-")}}</td>
-                                    <td>
+                                    <td>{{$value->gst_no ?? "-"}}</td>
+                                    <td>{{$value->pan ?? "-"}}</td>
+                                    <td>{{$value->tan ?? "-"}}</td>
+                                    <!-- <td>
                                         <a class="btn btn-primary" href="{{url($prefix.'/clients/'.Crypt::encrypt($value->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
-                                    </td>   
+                                    </td>    -->
+                                    <td>
+                                    <a
+                                        href="{{ url($prefix.'/edit-baseclient/'.$value->id) }}"
+                                        class="edit btn btn-sm btn-primary ml-2"><i class="fa fa-edit"></i></a>
+                                    </td> 
                                     
                                 </tr>
                                 <?php 

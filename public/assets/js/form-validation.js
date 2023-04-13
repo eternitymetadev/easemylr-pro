@@ -1652,6 +1652,40 @@ jQuery(document).ready(function(){
         }
     });
 
+     // user login
+     jQuery('#update_baseclient').validate({
+        rules:
+        {
+            // login_id: {
+            //     required: true,
+            // },
+            // email: {
+            //     // required: true,
+            //     regex: "",
+            //     email: true,
+            // },
+            // password: {
+            //     required: true,
+            // },
+        },
+        messages:
+        {
+            // login_id: {
+            //     required: "Please enter login id",
+            // },
+            // email: {
+            //   required: "Email address is required",
+            //  },
+            // password: {
+            //   required: "Password is required",
+            //  }, 
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
     // $(".remarks").each(function()
     // {
     //     $(this).rules('add', {
