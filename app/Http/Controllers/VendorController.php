@@ -1477,7 +1477,7 @@ class VendorController extends Controller
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://beta.finfect.biz/api/get_payment_response_drs_fully/'.$trans_id.'/fully';
+            $url = 'https://finfect.biz/api/get_payment_response_drs_fully/'.$trans_id.'/fully';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1520,7 +1520,7 @@ class VendorController extends Controller
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://beta.finfect.biz/api/get_payment_response_drs_advance/'.$trans_id.'/advance';
+            $url = 'https://finfect.biz/api/get_payment_response_drs_advance/'.$trans_id.'/advance';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
