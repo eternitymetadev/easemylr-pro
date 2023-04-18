@@ -120,6 +120,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $newDrs = implode(',', $exp_arra);
 
                 $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
+                // echo'<pre>'; print_r($trans_id); die;
                 $histrycount = count($trans_id);
                 if ($histrycount > 1) {
                     $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance;
@@ -148,14 +149,14 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 }
 
                 if ($payment_list->payment_type == 'Balance') {
-                    $advan = $payment_list->tds_deduct_balance;
-                    $tds_cut = $payment_list->current_paid_amt - $payment_list->tds_deduct_balance ;
+                    $advan = $trans_id[0]->tds_deduct_balance;
+                    $tds_cut = $trans_id[0]->current_paid_amt - $trans_id[0]->tds_deduct_balance ;
                 } else {
-                    $advan = $payment_list->tds_deduct_balance;
-                    $tds_cut = $payment_list->current_paid_amt - $payment_list->tds_deduct_balance ;
+                    $advan = $trans_id[0]->tds_deduct_balance;
+                    $tds_cut = $trans_id[0]->current_paid_amt - $trans_id[0]->tds_deduct_balance ;
                 }
-                if(!empty($payment_list->payment_date)){
-                $payment_date_1 = date('d-m-Y', strtotime($payment_list->payment_date));
+                if(!empty($trans_id[0]->payment_date)){
+                $payment_date_1 = date('d-m-Y', strtotime($trans_id[0]->payment_date));
                 }else{
                     $payment_date_1 = ' ';
                 }
@@ -197,7 +198,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'advance' => @$advan,
                     'tds_deduct1' => @$tds_cut,
                     'payment_date' => @$payment_date_1,
-                    'ref_no' => @$payment_list->bank_refrence_no,
+                    'ref_no' => @$trans_id[0]->bank_refrence_no,
                     'balance_amt' => @$curr_paid_amt,
                     'tds_deduct2' => @$tds_cut1,
                     'payment_date_2' => @$payment_date_2,

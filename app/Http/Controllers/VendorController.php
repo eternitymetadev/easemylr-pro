@@ -1465,4 +1465,90 @@ class VendorController extends Controller
         return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate), 'DrsWise-PaymentReport.xlsx');
     }
 
+    public function check_paid_status_fully()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        // check drs=====
+        $month = date('m');
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Fully')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $size = sizeof($get_data_db);
+
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://beta.finfect.biz/api/get_payment_response_drs_fully/'.$trans_id.'/fully';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Fully')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                   
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    public function check_paid_status_advance()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        // check drs=====
+        $month = date('m');
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Advance')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $size = sizeof($get_data_db);
+
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://beta.finfect.biz/api/get_payment_response_drs_advance/'.$trans_id.'/advance';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Advance')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                   
+                }
+            }
+        }
+
+        return 1;
+    }
+
 }

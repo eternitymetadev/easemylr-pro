@@ -1003,6 +1003,9 @@ Route::any('track-order', [TrackingController::class, 'trackOrder']);
 
 ///check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
+Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_status_fully']);
+Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
+
 
 
 
