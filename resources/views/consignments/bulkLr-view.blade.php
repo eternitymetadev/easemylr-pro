@@ -168,7 +168,11 @@ a.badge.alert.bg-secondary.shadow-sm {
                             <tbody>
                                 @foreach($consignments as $value)
                                 <tr>
-                                <td><input type="checkbox" name="checked_lr[]" class="checkLr" value="{{$value->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"></td>
+                                <td>
+                                <?php if($value->status == 0){ ?>
+                                    -
+                                <?php }else{?>
+                                <input type="checkbox" name="checked_lr[]" class="checkLr" value="{{$value->id}}" data-trp="" data-vehno="" data-vctype="" style="width: 30px; height:30px;"><?php }?></td>
                                     <td>{{$value->id}}</td>
                                     <td>{{$value->consignment_date}}</td>
                                     <?php 
@@ -177,7 +181,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     $cne_nickname = @$value->ConsignerDetail->nick_name;
                                     $cne_city = @$value->ConsignerDetail->city;
                                     }else{
-                                    $cnr_nickname = $value->ConsignerDetail->nick_name;
+                                    $cnr_nickname = @$value->ConsignerDetail->nick_name;
                                     $cne_nickname = @$value->ConsigneeDetail->nick_name;
                                     $cne_city = @$value->ConsigneeDetail->city;
                                     } ?>
