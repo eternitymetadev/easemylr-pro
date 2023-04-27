@@ -22,6 +22,7 @@ use Helper;
 use Auth;
 use DateTime;
 use DB;
+use Carbon\Carbon;
 
 class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 {
@@ -77,18 +78,21 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get();
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->take(500)->get()->toArray();
         }else {
-            $consignments = $query->orderBy('id','ASC')->get();
+            $consignments = $query->orderBy('id','ASC')->take(500)->get()->toArray();
         }
+        $consignments = array_chunk($consignments, 50, true);
         
-        if($consignments->count() > 0){
-            foreach ($consignments as $key => $consignment){
+        if(count($consignments)){
+            foreach ($consignments as $value){
+                foreach ($value as $consignment){
+                // dd($consignment['consignment_date']);
             
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
+                $start_date = strtotime($consignment['consignment_date']);
+                $end_date = strtotime($consignment['delivery_date']);
                 $tat = ($end_date - $start_date)/60/60/24;
-                if(empty($consignment->delivery_date)){
+                if(empty($consignment['delivery_date'])){
                     $tatday = '-';
                 }else{
                     if($tat == 0){
@@ -98,25 +102,25 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     }
                 }
                 
-                if(!empty($consignment->id )){
-                    $consignment_id = ucfirst($consignment->id);
+                if(!empty($consignment['id'] )){
+                    $consignment_id = ucfirst($consignment['id']);
                 }else{
                     $consignment_id = '-';
                 }
 
-                if(!empty($consignment->consignment_date )){
-                    $consignment_date = $consignment->consignment_date;
+                if(!empty($consignment['consignment_date'] )){
+                    $consignment_date = $consignment['consignment_date'];
                 }else{
                     $consignment_date = '-';
                 }
 
-                if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
+                if(empty($consignment['order_id'])){ 
+                    if(!empty($consignment['ConsignmentItems'])){
                         $order = array();
                         $invoices = array();
                         $inv_date = array();
                         $inv_amt = array();
-                        foreach($consignment->ConsignmentItems as $orders){ 
+                        foreach($consignment['ConsignmentItems'] as $orders){ 
                             
                             $order[] = $orders->order_id;
                             $invoices[] = $orders->invoice_no;
@@ -137,65 +141,66 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $order_id = '-';
                     }
                 }else{
-                    $order_id = $consignment->order_id;
+                    $order_id = $consignment['order_id'];
                 }
 
-                if(empty($consignment->invoice_no)){
+                if(empty($consignment['invoice_no'])){
                     $invno =  $order_item['invoices'] ?? '-';
                     $invdate = $invoice['date']  ?? '-';
                     $invamt = $invoice['amt']  ?? '-';
                  }else{
-                  $invno =  $consignment->invoice_no ?? '-';
-                  $invdate = $consignment->invoice_date  ?? '-';
-                  $invamt = $consignment->invoice_amount  ?? '-';
+                  $invno =  $consignment['invoice_no'] ?? '-';
+                  $invdate = $consignment['invoice_date']  ?? '-';
+                  $invamt = $consignment['invoice_amount']  ?? '-';
                  }
   
-                 if($consignment->status == 1){
+                 if($consignment['status'] == 1){
                     $status = 'Active';
-                 }elseif($consignment->status == 2 || $consignment->status == 6){
+                 }elseif($consignment['status'] == 2 || $consignment['status'] == 6){
                    $status = 'Unverified';
-                 }elseif($consignment->status == 0){
+                 }elseif($consignment['status'] == 0){
                   $status = 'Cancel';
                  }else{
                   $status = 'Unknown';
                  }
 
-                if($consignment->lr_mode == 1){
+                if($consignment['lr_mode'] == 1){
                     $deliverymode = 'Shadow';
                   }else{
                    $deliverymode = 'Manual';
                   }
 
-                  if(!empty($consignment->DrsDetail->drs_no)){
-                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
+                  if(!empty($consignment['drs_detail']['drs_no'])){
+                    $drs = 'DRS-'.@$consignment['drs_detail']['drs_no'];
                   }else{
                     $drs = '-';
                   }
 
-                  if(!empty($consignment->DrsDetail->created_at)){
-                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
+                  if(!empty($consignment['drs_detail']['created_at'])){
+                    // $date = new \DateTime(@$consignment['drs_detail']->created_at, new \DateTimeZone('GMT-7'));
                     // $date->setTimezone(new \DateTimeZone('IST'));
-                    $drsdate = $consignment->DrsDetail->created_at;
-                    $drs_date = $drsdate->format('d-m-Y');
+                    $drsdate = $consignment['drs_detail']['created_at'];
+                    // $drs_date = $drsdate->format('d-m-Y');
+                    $drs_date = Carbon::parse($drsdate)->format('d-m-Y');
                    }else{
                    $drs_date = '-';
                    }
 
-                   if($consignment->lr_mode == 1){
+                   if($consignment['lr_mode'] == 1){
                     $deliverymode = 'Shadow'; 
                   }else{
                    $deliverymode = 'Manual';
                   }
 
                 // pod status
-                if($consignment->lr_mode == 0){
-                    if(empty($consignment->signed_drs)){
+                if($consignment['lr_mode'] == 0){
+                    if(empty($consignment['signed_drs'])){
                         $pod= 'Not Available'; 
                     } else {
                         $pod= 'Available';
                     } 
                 } else { 
-                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
+                    $job = DB::table('jobs')->where('job_id', $consignment['job_id'])->orderBy('id','desc')->first();
         
                     if(!empty($job->response_data)){
                         $trail_decorator = json_decode($job->response_data);
@@ -216,56 +221,56 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 }
 
 
-
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'drs_no'              => $drs,
                     'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
-                    'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
-                    'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
-                    'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
-                    'consigner_city'      => @$consignment->ConsignerDetail->city,
-                    'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
-                    'contact_person'      => @$consignment->ConsigneeDetail->contact_name,
-                    'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
-                    'consignee_city'      => @$consignment->ConsigneeDetail->city,
-                    'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
-                    'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
-                    'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
-                    'Ship_to_city'        => @$consignment->ShiptoDetail->city,
-                    'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
-                    'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
-                    'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
+                    'base_client'         => @$consignment['consigner_detail']['get_reg_client']['base_client']['client_name'],
+                    'regional_client'     => @$consignment['consigner_detail']['get_reg_client']['name'],
+                    'consigner_nick_name' => @$consignment['consigner_detail']['nick_name'],
+                    'consigner_city'      => @$consignment['consigner_detail']['city'],
+                    'consignee_nick_name' => @$consignment['consignee_detail']['nick_name'],
+                    'contact_person'      => @$consignment['consignee_detail']['contact_name'],
+                    'consignee_phone'     => @$consignment['consignee_detail']['phone'],
+                    'consignee_city'      => @$consignment['consignee_detail']['city'],
+                    'consignee_postal'    => @$consignment['consignee_detail']['postal_code'],
+                    'consignee_district'  => @$consignment['consignee_detail']['get_zone']['district'],
+                    'consignee_state'     => @$consignment['consignee_detail']['get_zone']['state'],
+                    'Ship_to_name'        => @$consignment['shipto_detail']['nick_name'],
+                    'Ship_to_city'        => @$consignment['shipto_detail']['city'],
+                    'Ship_to_pin'         => @$consignment['shipto_detail']['postal_code'],
+                    'Ship_to_district'    => @$consignment['shipto_detail']['get_zone']['district'],
+                    'Ship_to_state'       => @$consignment['shipto_detail']['get_zone']['state'],
                     'invoice_no'          => $invno,
                     'invoice_date'        => $invdate,
                     'invoice_amt'         => $invamt,
-                    'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
-                    'vehicle_type'        => @$consignment->vehicletype->name,
-                    'transporter_name'    => @$consignment->transporter_name,
-                    // 'purchase_price'      => @$consignment->purchase_price,
-                    'total_quantity'      => $consignment->total_quantity,
-                    'total_weight'        => $consignment->total_weight,
-                    'total_gross_weight'  => $consignment->total_gross_weight,
-                    'driver_name'         => @$consignment->DriverDetail->name,
-                    'driver_phone'        => @$consignment->DriverDetail->phone,
-                    'driver_fleet'        => @$consignment->DriverDetail->fleet_id,
+                    'vehicle_no'          => @$consignment['vehicle_detail']['regn_no'],
+                    'vehicle_type'        => @$consignment['vehicle_type']['name'],
+                    'transporter_name'    => @$consignment['transporter_name'],
+                    // 'purchase_price'      => @$consignment['purchase_price'],
+                    'total_quantity'      => $consignment['total_quantity'],
+                    'total_weight'        => $consignment['total_weight'],
+                    'total_gross_weight'  => $consignment['total_gross_weight'],
+                    'driver_name'         => @$consignment['driver_detail']['name'],
+                    'driver_phone'        => @$consignment['driver_detail']['phone'],
+                    'driver_fleet'        => @$consignment['driver_detail']['fleet_id'],
                     'lr_status'           => $status,
-                    'dispatch_date'       => @$consignment->consignment_date,
-                    'delivery_date'       => @$consignment->delivery_date,
-                    'delivery_status'     => @$consignment->delivery_status,
+                    'dispatch_date'       => @$consignment['consignment_date'],
+                    'delivery_date'       => @$consignment['delivery_date'],
+                    'delivery_status'     => @$consignment['delivery_status'],
                     'tat'                 => $tatday,
                     'delivery_mode'       => $deliverymode,
                     'pod'                 => $pod,
-                    'payment_type'        => @$consignment->payment_type,
-                    'freight_on_delivery' => @$consignment->freight_on_delivery,
-                    'cod'                 => @$consignment->cod,
+                    'payment_type'        => @$consignment['payment_type'],
+                    'freight_on_delivery' => @$consignment['freight_on_delivery'],
+                    'cod'                 => @$consignment['cod'],
 
                 ];
             }
         }
+    }
         return collect($arr);
     }
 
