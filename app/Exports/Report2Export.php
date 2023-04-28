@@ -78,7 +78,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->take(500)->get()->toArray();
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get()->toArray();
         }else {
             $consignments = $query->orderBy('id','ASC')->get()->toArray();
         }
