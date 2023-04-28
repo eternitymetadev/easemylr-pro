@@ -80,7 +80,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         if(isset($startdate) && isset($enddate)){
             $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->take(500)->get()->toArray();
         }else {
-            $consignments = $query->orderBy('id','ASC')->take(500)->get()->toArray();
+            $consignments = $query->orderBy('id','ASC')->get()->toArray();
         }
         $consignments = array_chunk($consignments, 50, true);
         
@@ -122,18 +122,18 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $inv_amt = array();
                         foreach($consignment['ConsignmentItems'] as $orders){ 
                             
-                            $order[] = $orders->order_id;
-                            $invoices[] = $orders->invoice_no;
-                            $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                            $inv_amt[] = $orders->invoice_amount;
+                            $order[] = $orders['order_id'];
+                            $invoices[] = $orders['invoice_no'];
+                            $inv_date[] = Helper::ShowDayMonthYearslash($orders['invoice_date']);
+                            $inv_amt[] = $orders['invoice_amount'];
                         }
                         $order_item['orders'] = implode('/', $order);
                         $order_item['invoices'] = implode('/', $invoices);
                         $invoice['date'] = implode(',', $inv_date);
                         $invoice['amt'] = implode(',', $inv_amt);
 
-                        if(!empty($orders->order_id)){
-                            $order_id = $orders->order_id;
+                        if(!empty($orders['order_id'])){
+                            $order_id = $orders['order_id'];
                         }else{
                             $order_id = '-';
                         }
