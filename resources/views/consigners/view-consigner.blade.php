@@ -86,19 +86,6 @@
                                     <th scope="row">Address Line 4</th>
                                     <td>{{isset($getconsigner->address_line4)?ucfirst($getconsigner->address_line4):'-'}}</td>
                                 </tr>
-                                
-                                <!-- <tr>
-                                    <th scope="row">Status</th>
-                                    <td>
-                                        <?php// if($getconsigner->status == 1){
-                                            // echo "Active";
-                                        // }else if($getconsigner->status == 0){
-                                            // echo "Deactive";
-                                        // } else{ ?>
-                                                {{$getconsigner->status ?? "-"}}
-                                        <?php// } ?>
-                                    </td>
-                                </tr>   -->
                                     
                             </tbody>
                         </table>  
