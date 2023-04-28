@@ -23,9 +23,13 @@ use Auth;
 use DateTime;
 use DB;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\RemembersRowNumber;
 
-class Report2Export implements FromCollection, WithHeadings, ShouldQueue
+class Report2Export implements FromCollection, WithHeadings, ShouldQueue, WithChunkReading, WithBatchInserts
 {
+    use RemembersRowNumber;
 
     protected $startdate;
     protected $enddate;
@@ -39,6 +43,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
     public function collection()
     {
+        var_dump("Row: " . $this->getRowNumber());
+
         ini_set('memory_limit', '2048M');
         set_time_limit ( 6000 );
         $arr = array();
@@ -322,5 +328,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Freight on Delivery',
             'COD',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 20;
+    }
+
+    public function batchSize(): int
+    {
+        return 20;
     }
 }
