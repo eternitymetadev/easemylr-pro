@@ -120,7 +120,6 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $newDrs = implode(',', $exp_arra);
 
                 $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
-                // echo'<pre>'; print_r($trans_id); die;
                 $histrycount = count($trans_id);
                 if ($histrycount > 1) {
                     $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance;
@@ -133,8 +132,10 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
 
                     $sumof_paid_tds = $paid_amt + $tds_amt;
                     $balance_due = $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds;
+                    $current_paid_amount2 = @$trans_id[1]->current_paid_amt;
                 } else {
                     $paid_amt = $trans_id[0]->tds_deduct_balance;
+                    
                     $tds_cut1 = '';
                     $curr_paid_amt = '';
                     $paymt_date_2 = '';
@@ -147,7 +148,8 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     $sumof_paid_tds = $paid_amt + $tds_amt;
                     $balance_due = $payment_list->PaymentRequest[0]->total_amount - $sumof_paid_tds;
                 }
-
+                
+                $current_paid_amount1 = $trans_id[0]->current_paid_amt;
                 if ($payment_list->payment_type == 'Balance') {
                     $advan = $trans_id[0]->tds_deduct_balance;
                     $tds_cut = $trans_id[0]->current_paid_amt - $trans_id[0]->tds_deduct_balance ;
@@ -195,10 +197,12 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'paid_amt' => @$paid_amt,
                     'tds_amt' => @$tds_amt,
                     'balance_due' => @$balance_due,
+                    'current_advance' => @$current_paid_amount1,
                     'advance' => @$advan,
                     'tds_deduct1' => @$tds_cut,
                     'payment_date' => @$payment_date_1,
                     'ref_no' => @$trans_id[0]->bank_refrence_no,
+                    'current_balance' => @$current_paid_amount2,
                     'balance_amt' => @$curr_paid_amt,
                     'tds_deduct2' => @$tds_cut1,
                     'payment_date_2' => @$payment_date_2,
@@ -239,10 +243,12 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
             'Paid Amount',
             'Tds Amount',
             'Balance Due',
+            'Total Advance',
             'Advance',
             'Tds Deduct',
             'Payment Date',
             'Ref No',
+            'Total Balance',
             'Balance Amount',
             'Tds Deduct',
             'Payment Date',
