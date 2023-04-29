@@ -84,6 +84,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }else {
             $consign = $query->orderBy('id','ASC')->get()->toArray();
         }
+        
         $get_consignments = array_chunk($consign, 50, true);
         
         if(count($get_consignments)){
@@ -122,6 +123,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $invoices = array();
                         $inv_date = array();
                         $inv_amt = array();
+                        echo "<pre>"; print_r($consignment['ConsignmentItems']); die;
                         foreach($consignment['ConsignmentItems'] as $orders){ 
                             
                             $order[] = $orders['order_id'];
