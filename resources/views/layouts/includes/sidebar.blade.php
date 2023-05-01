@@ -41,7 +41,7 @@
     if(in_array('1', $permissions))
     {
     ?>
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="{{$prefixurl.'users'}}" data-active="<?php if($segment == 'users'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'users')) active @endif">
@@ -56,7 +56,7 @@
                 <span>Users</span>
             </div>
         </a>
-    </li>
+    </li> -->
     <?php }
     }
     ?>
@@ -65,7 +65,7 @@
     if(in_array('2', $permissions))
     {
     ?>
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="{{$prefixurl.'locations'}}" data-active="<?php if($segment == 'locations'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'locations')) active @endif">
@@ -78,7 +78,7 @@
                 <span>Branch Locations</span>
             </div>
         </a>
-    </li>
+    </li> -->
     <?php }
     }
     ?>
@@ -689,7 +689,7 @@
         </ul>
     </li> -->
     <?php if($authuser->role_id == 1){ ?>
-    <li class="menu">
+    <!-- <li class="menu">
         <a href="#users" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'users') || str_contains($currentURL, 'roles') || str_contains($currentURL, 'permissions')) active @endif">
@@ -723,7 +723,7 @@
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Clients </a>
             </li>
         </ul>
-    </li>
+    </li> -->
     <?php } if($authuser->role_id == 1 || $authuser->role_id == 3){ ?>
     <li class="menu">
         <a href="#forms" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -735,7 +735,7 @@
                     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                 </svg>
-                <span>Settings</span>
+                <span>System Settings</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -749,8 +749,19 @@
             </li>
             <?php if($authuser->role_id == 1){ ?>
             <li>
-                <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}"> Branch
-                    Address </a>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}">Company Setup </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/users')}}">All Users</a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{url($prefix.'/locations')}}">Branches </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'reginal-clients'}}"> Regional Client </a>
             </li>
             <?php } ?>
 

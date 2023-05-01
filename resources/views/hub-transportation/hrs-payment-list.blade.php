@@ -472,7 +472,7 @@ $(document).on('click', '.update_purchase_price_hrs', function() {
             $('#hrs_num_edit').val(response.hrs_price.hrs_no);
             $('#purchse_edit').val(response.hrs_price.purchase_price);
             $("#vehicle_type_edit").val(response.hrs_price.vehicle_type_id).change();
-
+ 
             
         }
     });

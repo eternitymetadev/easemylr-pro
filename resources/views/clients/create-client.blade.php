@@ -15,7 +15,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Clients</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Base
                                 Client</a></li>
                     </ol>
                 </nav>
@@ -37,96 +37,47 @@
                                     <input type="text" class="form-control" name="client_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-
+                                <label for="exampleFormControlInput2">GST Number<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="gst_no" placeholder="">
                                 </div>
                             </div>
-                            <table id="myTable">
-                                <tbody>
-                                    <tr>
-                                    <th><label for="exampleFormControlInput2">Regional Client Name<span
-                                                    class="text-danger">*</span></label></th>
-                                                    <th><label for="exampleFormControlInput2">Email<span
-                                                    class="text-danger">*</span></label></th>
-                                        <th><label for="exampleFormControlInput2">Location<span
-                                                    class="text-danger">*</span></label></th>
-                                        <th><label for="exampleFormControlInput2">Multiple Invoice </label></th>
-                                        <th><label for="exampleFormControlInput2">Pickup not Rquired </label></th>
-                                        <th><label for="exampleFormControlInput2">Email Sent </label></th>
-                                    </tr>
-                                    <tr class="rowcls">
-                                        <td>
-                                            <input type="text" class="form-control name" name="data[1][name]"
-                                                placeholder="">
-                                        </td>
-                                        <td>
-                                            <input type="email" class="form-control name" name="data[1][email]"
-                                                placeholder="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control location_id" name="data[1][location_id]">
-                                                <option value="">Select</option>
-                                                <?php
-                                                if (count($locations) > 0) {
-                                                    foreach ($locations as $key => $location) {
-                                                        ?>
-                                                <option value="{{ $key }}">{{ucwords($location)}}</option>
-                                                <?php
-                                                }
-                                                }
-                                                ?>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select class="form-control is_multiple_invoice"
-                                                name="data[1][is_multiple_invoice]">
-                                                <option value="">Select</option>
-                                                <option value="1">Per invoice-Item wise</option>
-                                                <option value="2">Multiple Invoice-Item wise</option>
-                                                <option value="3">per invoice-Without Item</option>
-                                                <option value="4">LR Multiple invoice-Without item</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <div class="check-box d-flex">
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">Yes
-                                                        <input type="radio" value='1' name="data[1][is_prs_pickup]">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="data[1][is_prs_pickup]" value='0'
-                                                            checked>
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="check-box d-flex">
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">Yes
-                                                        <input type="radio" value='1' name="data[1][is_email_sent]">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox radio">
-                                                    <label class="check-label">No
-                                                        <input type="radio" name="data[1][is_email_sent]" value='0'
-                                                            checked>
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary" id="addRow"
-                                                onclick="addrow()"><i class="fa fa-plus-circle"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">PAN<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="pan" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">TAN<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="tan" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Upload GST RC<span
+                                            class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="upload_gst" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Upload PAN<span
+                                            class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="upload_pan" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-row mb-0">
+                                <div class="form-group col-md-6">
+                                    <label for="exampleFormControlInput2">Upload TAN<span
+                                            class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="upload_tan" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                <label for="exampleFormControlInput2">Upload MOA<span
+                                            class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="upload_moa" placeholder="">
+                                </div>
+                            </div>
 
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/clients') }}"> Back</a>

@@ -301,6 +301,7 @@ span.select2.select2-container.mb-4 {
                 </label>
                 <select class="form-control my-select2" name="payment_type"
                     id="paymentType" onchange="togglePaymentAction()">
+                    <option selected>Select</option>
                     <option value="To be Billed" selected="selected">TBB</option>
                     <option value="To Pay">To Pay</option>
                     <option value="Paid">Paid</option>

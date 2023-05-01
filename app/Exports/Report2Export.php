@@ -162,6 +162,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
+                  }elseif($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
                   }else{
                    $deliverymode = 'Manual';
                   }
@@ -194,7 +196,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     } else {
                         $pod= 'Available';
                     } 
-                } else { 
+                } else if($consignment->lr_mode == 1){ 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
         
                     if(!empty($job->response_data)){
@@ -213,9 +215,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     }else{
                         $pod= 'Not Available';
                     }
+                }else{
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { 
+                        $pod= 'Available';
+                    }else{
+                        $pod= 'Not Available'; 
+                    }
                 }
-
-
 
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
