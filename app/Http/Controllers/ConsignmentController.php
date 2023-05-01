@@ -2620,7 +2620,7 @@ class ConsignmentController extends Controller
                       </div>
                       <div class="column" >
                         <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
-                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_gross_weight'] . '</p>
+                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_weight'] . '</p>
                         <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
                       </div>
                       <div class="column" style="width:170px;">
@@ -3104,6 +3104,9 @@ class ConsignmentController extends Controller
                                     <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
                 }
                 $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+                $codStamp = public_path('assets/img/cod.png');
+        $paidStamp = public_path('assets/img/paid.png');
+
                 foreach ($pdftype as $i => $pdf) {
 
                     if ($pdf == 1) {
@@ -3271,38 +3274,165 @@ class ConsignmentController extends Controller
                                 </div>
                                         </td>
                                     </tr>
-                                </table>
-                                <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td class="width_set">
-                                                <div style="margin-left: 20px">
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consigner_detail']['postal_code'] . ',' . $data['consigner_detail']['city'] . ',' . $cnr_state . '</b></i><div class="vl" ></div>
+                                </table>';
+                                if($data['payment_type'] == 'To be Billed' || $data['payment_type'] == NULL){ 
+                                    if(!empty($data['cod'])){
+                                        $html .=  ' <div class="loc">
+                                        <table>
+                                            <tr>
+                                                <td valign="middle" style="position:relative; width: 200px">
+                                                <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                                    <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                                    <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
+                                                    </h2>
+                                                </td>
+                                                <td class="width_set">
+                                                    <table border="1px solid" class="table3">
+                                                        <tr>
+                                                            <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                            <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                            <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                            <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>';
+                                    }else{
+                                        $html .= '   <div class="loc">
+                                        <table>
+                                            <tr>
+                                                <td class="width_set">
+                                                    <div style="margin-left: 20px">
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                    </div>
+                                                </td>
+                                                <td class="width_set">
+                                                    <table border="1px solid" class="table3">
+                                                        <tr>
+                                                            <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                            <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                            <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                            <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>';
+                                    }
+                                }
+        
+                                    if($data['payment_type'] == 'To Pay'){
+                                        if(!empty($data['freight_on_delivery']) || !empty($data['cod'])){
+                                            $total_cod_sum = @$data['freight_on_delivery'] + @$data['cod'];
+        
+                                            $html .=  ' <div class="loc">
+                                            <table>
+                                                <tr>
+                                                    <td valign="middle" style="position:relative; width: 200px">
+                                                    <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
+                                                        <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
+                                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.$total_cod_sum.'
+                                                        </h2>
+                                                    </td>
+                                                    <td class="width_set">
+                                                        <table border="1px solid" class="table3">
+                                                            <tr>
+                                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>';
+                                        }else{
+                                            $html .= '   <div class="loc">
+                                            <table>
+                                                <tr>
+                                                    <td class="width_set">
+                                                        <div style="margin-left: 20px">
+                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="width_set">
+                                                        <table border="1px solid" class="table3">
+                                                            <tr>
+                                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>';
+                                        }
+        
+                                    }
+        
+                                    if($data['payment_type'] == 'Paid'){
+        
+                                            $html .=  ' <div class="loc">
+                                            <table>
+                                                <tr>
+                                                    <td valign="middle" style="position:relative; width: 200px">
+                                                    <img src="' . $paidStamp . '" style="position:absolute;left: 50%; transform: translateX(-40%); top: -2.5rem; height: 150px; width: 150px;" />
+                                                    </td>
+                                                    <td class="width_set">
+                                                        <table border="1px solid" class="table3">
+                                                            <tr>
+                                                                <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                                <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                                <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>';
+                                       
+                                    }
 
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . $data['consignee_detail']['postal_code'] . ',' . $data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                </div>
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <div class="container">
+                                    $html .= '<div class="container">
                                         <div class="row">
                                             <div class="col-sm-12 ">
                                                 <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
@@ -4198,23 +4328,26 @@ class ConsignmentController extends Controller
     public function uploadDrsImg(Request $request)
     {
         try {
-
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                $delivery_branch = $get_delivery_branch->to_branch_id;
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $deliverydate = $request->delivery_date;
             $file = $request->file('file');
@@ -4282,7 +4415,7 @@ class ConsignmentController extends Controller
                     } else {
                         $filename = null;
                     }
-
+                    $check_lr_mode = ConsignmentNote::where('id', $lrno)->first();
                     if (!empty($deliverydate)) {
                         $dateTimestamp1 = strtotime($save_data['lr_date']);
                         $dateTimestamp2 = strtotime($deliverydate);
@@ -4293,8 +4426,11 @@ class ConsignmentController extends Controller
                             $response['messages'] = 'Delivery date cannot be less than LR Date';
                             return Response::json($response);
                         }
+                        
+                        if($check_lr_mode->lr_mode == 0){
                         ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                        }
 
                         // =================== task assign ====== //
                         $mytime = Carbon::now('Asia/Kolkata');
@@ -4314,8 +4450,10 @@ class ConsignmentController extends Controller
 
                     } else {
                         if (!empty($filename)) {
+                            if($check_lr_mode->lr_mode == 0){
                             ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                            }
                         }
                     }
                 }
@@ -4669,6 +4807,147 @@ class ConsignmentController extends Controller
         $consignments = $consignments->appends($request->query());
 
         return view('consignments.pod-view', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+
+    // mobile pod view list
+    public function podList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        $query = ConsignmentNote::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                );
+
+            if ($authuser->role_id == 1) {
+                $query = $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                $query =  $query->where(function ($query) use ($cc){
+                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+
+                });
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+
+                    $query->where('id', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $reg_client = RegionalClient::select('id','name');
+            if ($authuser->role_id == 1) {
+                $reg_client = $reg_client;
+            } elseif ($authuser->role_id == 4) {
+                $reg_client = $reg_client->whereIn('id', $regclient);
+            } else {
+                $reg_client = $reg_client->whereIn('location_id', $cc);
+
+                // $regclients = $regclients->where(function ($query) use ($cc){
+                //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+                // });
+            }
+
+            $regclients = $reg_client->orderBy('name', 'ASC')->get();
+
+            if(isset($request->regclient_id)){
+                $query = $query->where('regclient_id',$request->regclient_id);
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $consignments = $query->whereBetween('consignment_date', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
+            } else {
+                $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+            }
+
+            $html = view('consignments.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'regclients'=>$regclients])->render();
+            // $consignments = $consignments->appends($request->query());
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+            );
+
+        if ($authuser->role_id == 1) {
+            $query = $query;
+        } elseif ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } else {
+            // $query = $query->whereIn('branch_id', $cc);
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
+            });
+        }
+        
+        $reg_client = RegionalClient::select('id','name');
+        if ($authuser->role_id == 1) {
+            $reg_client = $reg_client;
+        } elseif ($authuser->role_id == 4) {
+            $reg_client = $reg_client->whereIn('id', $regclient);
+        } else {
+            $reg_client = $reg_client->whereIn('location_id', $cc);
+
+            // $regclients = $regclients->where(function ($query) use ($cc){
+            //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+            // });
+        }
+
+        $regclients = $reg_client->orderBy('name', 'ASC')->get();
+
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+        return view('consignments.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'regclients'=>$regclients]);
     }
 
     //////////////////////////////New Create Lr Form ///////////////////////////////////
@@ -5121,7 +5400,7 @@ class ConsignmentController extends Controller
 
     public function exportPodFile(Request $request)
     {
-        return Excel::download(new PodExport($request->startdate, $request->enddate), 'Pod.xlsx');
+        return Excel::download(new PodExport($request->startdate,$request->enddate,$request->regclient_id), 'Pod.xlsx');
     }
 
     public function updatePod(Request $request)
@@ -5133,19 +5412,23 @@ class ConsignmentController extends Controller
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
 
-            $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            if ($get_delivery_branch->lr_type == 0) {
-                $delivery_branch = $get_delivery_branch->branch_id;
-            } else {
-                $delivery_branch = $get_delivery_branch->to_branch_id;
-            }
+            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
+            // if ($get_delivery_branch->lr_type == 0) {
+            //     $delivery_branch = $get_delivery_branch->branch_id;
+            // } else {
+            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
+            //         $delivery_branch = $get_delivery_branch->branch_id;
+            //     }else{
+            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            //     }
+            // }
 
-            if ($login_branch != $delivery_branch) {
+            // if ($login_branch != $delivery_branch) {
 
-                $response['success'] = false;
-                $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-                return Response::json($response);
-            }
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
+            //     return Response::json($response);
+            // }
 
             $file = $request->file('pod');
             if (!empty($file)) {

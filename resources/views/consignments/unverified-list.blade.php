@@ -70,7 +70,7 @@ div.relative {
                         <div class="btn-group relative">
                             <button type="button" class="btn btn-warning disableDrs" id="create_edd"
                                 style="font-size: 11px;">
-                                Create DSR
+                                Create DRS
                             </button>
                             <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
 
@@ -111,9 +111,14 @@ div.relative {
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd"
                                         value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype=""
                                         style="width: 30px; height:30px;"></td>
-                                <?php }elseif($authuser->branch_id == $consignment->fall_in){?>
+                                        <?php }elseif($authuser->branch_id == $consignment->fall_in){
+                                    if($authuser->branch_id == $consignment->fall_in && $authuser->branch_id == $consignment->to_branch_id){?>
+                                    <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd"
+                                        value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype=""
+                                        style="width: 30px; height:30px;"></td>
+                                        <?php }else{?>
                                 <td>-</td>
-                                <?php }else{
+                                <?php }}else{
                                 if($consignment->hrs_status == 3){?>
                                 <td><input type="checkbox" name="checked_consign[]" class="chkBoxClass ddd"
                                         value="{{$consignment->id}}" data-trp="" data-vehno="" data-vctype=""

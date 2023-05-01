@@ -54,7 +54,7 @@ class HubtoHubController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $query = ConsignmentNote::query();
 
-        $query = $query->where('h2h_check', 'h2h')->where('hrs_status', 2)->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
+        $query = $query->where('h2h_check', 'h2h')->where('hrs_status', 2)->whereNotIn('status', ['5','0'])->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail');
 
         if ($authuser->role_id == 1) {
             $query;

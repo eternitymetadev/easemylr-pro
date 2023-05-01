@@ -29,7 +29,7 @@
 ?>
             <tr>
                 <td>DRS-{{$trns->drs_no}}</td>
-                <td>{{$date->format('Y-m-d')}}</td>
+                <td>{{Helper::ShowDayMonthYear($trns->created_at)?? ''}}</td>
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>

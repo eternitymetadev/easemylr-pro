@@ -27,4 +27,11 @@ class PrsPaymentHistory extends Model
         'created_at',
         'updated_at'
     ];
+
+    
+    public function PrsPaymentRequest()
+    {
+        return $this->hasMany('App\Models\PrsPaymentRequest','transaction_id','transaction_id');
+    }
+
 }

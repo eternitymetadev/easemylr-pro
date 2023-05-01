@@ -12,6 +12,13 @@
                     </ol>
                 </nav>
             </div>
+            <?php $authuser = Auth::user(); 
+            if($authuser->role_id == 1){
+                $disable = '';
+            }else{
+                $disable = 'disable_n';
+            }
+            ?>
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Update Consigner</h5></div> -->
@@ -59,17 +66,17 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Consigner Nick Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="nick_name" value="{{old('nick_name',isset($getconsigner->nick_name)?$getconsigner->nick_name:'')}}" placeholder="">
+                                    <input type="text" class="form-control {{$disable}}" name="nick_name" value="{{old('nick_name',isset($getconsigner->nick_name)?$getconsigner->nick_name:'')}}" placeholder="">
                                 </div>
                             </div>        
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Consigner Legal Name</label>
-                                    <input type="text" class="form-control" name="legal_name" value="{{old('legal_name',isset($getconsigner->legal_name)?$getconsigner->legal_name:'')}}" placeholder="">
+                                    <input type="text" class="form-control {{$disable}}" name="legal_name" value="{{old('legal_name',isset($getconsigner->legal_name)?$getconsigner->legal_name:'')}}" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Contact Person Name</label>
-                                    <input type="text" class="form-control" name="contact_name" value="{{old('contact_name',isset($getconsigner->contact_name)?$getconsigner->contact_name:'')}}" placeholder="Contact Name">
+                                    <input type="text" class="form-control {{$disable}}" name="contact_name" value="{{old('contact_name',isset($getconsigner->contact_name)?$getconsigner->contact_name:'')}}" placeholder="Contact Name">
                                 </div>
                             </div>        
                             <div class="form-row mb-0">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
+use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
@@ -1323,6 +1324,114 @@ class VendorController extends Controller
         return view('vendors.payment-report-view', ['payment_lists' => $payment_lists, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
 
+    // prs payment report
+    public function prsPaymentReport(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        // $query = PaymentRequest::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail','PrsPaymentRequest.Branch','PrsPaymentRequest.PickupRunSheet.Consignments.RegClient','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems','PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype','PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');;
+
+            if ($authuser->role_id == 2) {
+                $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
+                    $query->whereIn('branch_id', $cc);
+                });
+            } else {
+                $query = $query;
+            }
+
+            // if (!empty($request->search)) {
+            //     $search = $request->search;
+            //     $searchT = str_replace("'", "", $search);
+            //     $query->where(function ($query) use ($search, $searchT) {
+            //         $query->where('id', 'like', '%' . $search . '%')
+            //             ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+            //                 $regclientquery->where('name', 'like', '%' . $search . '%');
+            //             })
+            //             ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+            //                 $query->where(function ($cnrquery) use ($search, $searchT) {
+            //                     $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+            //                 });
+            //             })
+            //             ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+            //                 $query->where(function ($cneequery) use ($search, $searchT) {
+            //                     $cneequery->where('nick_name', 'like', '%' . $search . '%');
+            //                 });
+            //             });
+
+            //     });
+            // }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $payment_lists = $query->whereBetween('created_at', [$startdate, $enddate])->groupBy('transaction_id')->paginate($peritem);
+            } else {
+                $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
+            }
+
+            $html = view('vendors.prs-paymentreport-ajax', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail','PrsPaymentRequest.Branch','PrsPaymentRequest.PickupRunSheet.Consignments.RegClient','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems','PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype','PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');
+
+        if ($authuser->role_id == 2) {
+            $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
+                $query->whereIn('branch_id', $cc);
+            });
+        } else {
+            $query = $query;
+        }
+
+        $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
+        // $payment_lists = $query->groupBy('transaction_id')->get();
+        //     echo "<pre>"; print_r($payment_lists); die;
+
+        $payment_lists = $payment_lists->appends($request->query());
+
+        return view('vendors.prs-paymentreport', ['payment_lists' => $payment_lists, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+
     // public function paymentReportView(Request $request)
     // {
     //     $this->prefix = request()->route()->getPrefix();
@@ -1345,6 +1454,11 @@ class VendorController extends Controller
     public function exportPaymentReport(Request $request)
     {
         return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx'); 
+    }
+
+    public function exportPrsPaymentReport(Request $request)
+    {
+        return Excel::download(new PrsPaymentReportExport($request->startdate, $request->enddate), 'PrsPaymentReport.xlsx'); 
     }
 
     public function handshakeReport(Request $request)
@@ -1463,6 +1577,92 @@ class VendorController extends Controller
     {
 
         return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate), 'DrsWise-PaymentReport.xlsx');
+    }
+
+    public function check_paid_status_fully()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        // check drs=====
+        $month = date('m');
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Fully')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $size = sizeof($get_data_db);
+
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://finfect.biz/api/get_payment_response_drs_fully/'.$trans_id.'/fully';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Fully')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                   
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    public function check_paid_status_advance()
+    {
+        ini_set('max_execution_time', 0); // 0 = Unlimited
+        // check drs=====
+        $month = date('m');
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Advance')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $size = sizeof($get_data_db);
+
+        for ($i = 0; $i < $size; $i++) {
+            $trans_id = $get_data_db[$i]->transaction_id;
+            $p_type = $get_data_db[$i]->payment_type;
+
+            $url = 'https://finfect.biz/api/get_payment_response_drs_advance/'.$trans_id.'/advance';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            if ($response) {
+                $received_data = json_decode($response);
+                $status_code = $received_data->status_code;
+                if ($status_code == 2) {
+
+                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Advance')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                   
+                }
+            }
+        }
+
+        return 1;
     }
 
 }

@@ -246,6 +246,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
@@ -376,7 +377,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);
     Route::get('export-drs-table', [ConsignmentController::class, 'exportDownloadDrs']);
-    Route::get('pod-view', [ConsignmentController::class, 'podView']); 
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
@@ -426,6 +428,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+
+    Route::get('prs-payment-report', [VendorController::class, 'prsPaymentReport']);
+    Route::get('prs-payment-reportExport', [VendorController::class, 'exportPrsPaymentReport']);
+
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
 
@@ -484,7 +490,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
-    Route::get('pod-view', [ConsignmentController::class, 'podView']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -564,6 +569,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('get-add-lr', [ConsignmentController::class, 'addmoreLr']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
@@ -623,6 +629,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    
+    Route::get('prs-payment-report', [VendorController::class, 'prsPaymentReport']);
+    Route::get('prs-payment-reportExport', [VendorController::class, 'exportPrsPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('handshake-report', [VendorController::class, 'handshakeReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
@@ -668,7 +677,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
-
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -754,6 +765,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
     Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
     Route::any('change-pod-mode', [ConsignmentController::class, 'changePodMode']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
@@ -898,7 +910,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('all-save-deliverydate', [ConsignmentController::class, 'allSaveDRS']);
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
-
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']);
@@ -941,9 +953,13 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('get-balance-amount', [VendorController::class, 'getBalanceAmount']);
     Route::get('payment-report-view', [VendorController::class, 'paymentReportView']);
     Route::get('payment-reportExport', [VendorController::class, 'exportPaymentReport']);
+    
+    Route::get('prs-payment-report', [VendorController::class, 'prsPaymentReport']);
+    Route::get('prs-payment-reportExport', [VendorController::class, 'exportPrsPaymentReport']);
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
 
     Route::resource('clients', ClientController::class);
@@ -977,6 +993,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
 
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
 
 });
 
@@ -1009,4 +1026,7 @@ Route::any('track-vehicle/{id}', [TrackingController::class, 'trackLr']);
 
 ///check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
+Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_status_fully']);
+Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
+
 

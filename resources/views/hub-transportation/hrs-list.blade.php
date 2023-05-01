@@ -113,6 +113,11 @@
                             <?php
                             $i = 1;
                             foreach ($consignments as $key => $consignment) {
+                                $branch_id = $consignment->branch_id;
+                                $to_branch_id = $consignment->to_branch_id;
+                                $fall_in = $consignment->fall_in;
+                                if($branch_id == $to_branch_id && $branch_id == $fall_in){
+                                }else{
                             ?>
                             <tr>
                                 <td style="text-align: center">
@@ -144,7 +149,7 @@
                                 </td>
                             </tr>
 
-                            <?php  $i++; } ?>
+                            <?php } $i++; } ?>
                             </tbody>
                         </table>
                     </div>

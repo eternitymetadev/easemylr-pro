@@ -175,9 +175,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                   }
 
                   if(!empty($consignment->DrsDetail->created_at)){
-                    $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
-                    $date->setTimezone(new \DateTimeZone('IST'));
-                    $drs_date = $date->format('d-m-Y');
+                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
+                    // $date->setTimezone(new \DateTimeZone('IST'));
+                    $drsdate = $consignment->DrsDetail->created_at;
+                    $drs_date = $drsdate->format('d-m-Y');
                    }else{
                    $drs_date = '-';
                    }

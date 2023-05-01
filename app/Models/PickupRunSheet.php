@@ -54,4 +54,9 @@ class PickupRunSheet extends Model
         return $this->hasOne('App\Models\ConsignmentNote','prs_id','id');
     }
 
+    public function Consignments()
+    {
+        return $this->hasMany('App\Models\ConsignmentNote','prs_id','id');
+    }
+
 }

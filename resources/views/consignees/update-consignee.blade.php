@@ -4,19 +4,26 @@
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-        <div class="page-header">
-                        <nav class="breadcrumb-one" aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:void(0);">Consignees</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);"> Update Consignee</a></li>
-                            </ol>
-                        </nav>
-                    </div>
+            <div class="page-header">
+                <nav class="breadcrumb-one" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignees</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);"> Update Consignee</a></li>
+                    </ol>
+                </nav>
+            </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Update Consignee</h5></div> -->
                     
                 </div>
+                <?php $authuser = Auth::user(); 
+                if($authuser->role_id == 1){
+                    $disable = '';
+                }else{
+                    $disable = 'disable_n';
+                }
+                ?>
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/consignees/update-consignee')}}" id="updateconsignee">
@@ -26,17 +33,17 @@
                             <div class="form-row mb-0">                          
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Consignee Nick Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="nick_name" value="{{old('nick_name',isset($getconsignee->nick_name)?$getconsignee->nick_name:'')}}" placeholder="">
+                                    <input type="text" class="form-control {{$disable}}" name="nick_name" value="{{old('nick_name',isset($getconsignee->nick_name)?$getconsignee->nick_name:'')}}" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Consignee Legal Name</label>
-                                    <input type="text" class="form-control" name="legal_name" value="{{old('legal_name',isset($getconsignee->legal_name)?$getconsignee->legal_name:'')}}" placeholder="">
+                                    <input type="text" class="form-control {{$disable}}" name="legal_name" value="{{old('legal_name',isset($getconsignee->legal_name)?$getconsignee->legal_name:'')}}" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">                          
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Contact Person Name</label>
-                                    <input type="text" class="form-control" name="contact_name" value="{{old('contact_name',isset($getconsignee->contact_name)?$getconsignee->contact_name:'')}}" placeholder="Contact Name">
+                                    <input type="text" class="form-control {{$disable}}" name="contact_name" value="{{old('contact_name',isset($getconsignee->contact_name)?$getconsignee->contact_name:'')}}" placeholder="Contact Name">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Email ID</label>
