@@ -545,7 +545,7 @@ jQuery(document).ready(function () {
                 });
 
                 var payment_term = res.data_regclient.payment_term;
-                var payment_array = payment_term.split(",");
+                // var payment_array = payment_term.split(",");
                 // $("#paymentType").append(
                 //     `<option selected disabled>select..
                 //     </option>`
