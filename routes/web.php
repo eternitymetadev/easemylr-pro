@@ -667,7 +667,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
 
-
+    Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
+    Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
