@@ -85,11 +85,19 @@ if ($trns->delivery_status == 'Unassigned') {?>
                 </td>
                 <!-- END Delivery Status  -------------  -->
                 <!-- DRS STATUS --------------->
-                <?php if ($trns->status == 0) {?>
+               
+                <?php
+                if ($trns->status == 0) {?>
                 <td><label class="badge badge-dark">Cancelled</label></td>
-                <?php } else {?>
-                <td><a class="active_drs btn btn-success" drs-no="{{$trns->drs_no}}"><span><i
-                                class="fa fa-check-circle-o"></i> Active</span></a></td>
+                <?php } else {  
+                    $status =   Helper::getdeleveryStatus($trns->drs_no);
+                    if($status == 'Successful'){
+                        $disable = 'disable_n';
+                    }else{
+                        $disable = '';
+                    }?>
+
+                <td><a class="active_drs btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
                 <?php }?>
                 <!-- ------- payment status -->
                 <?php if ($trns->payment_status == 0) {
