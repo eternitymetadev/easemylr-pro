@@ -138,7 +138,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
+                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11" minlength="11">
                                     <div id="ifsc-error"></div>
                                 </div>
                                 <div class="form-group col-md-6">
