@@ -210,8 +210,10 @@ if ($('.access_status:checked').val() == 1) {
 $('input[type=radio][name=access_status]').change(function() {
     if (this.value == '1') {
         $('#driver_detail').show();
+        $("#login_id").val($("#phone").val());
     } else {
         $('#driver_detail').hide();
+        $("#login_id").val('');
     }
 });
 

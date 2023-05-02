@@ -230,7 +230,14 @@ class DriverController extends Controller
                 $response['errors']     = $errors;
                 return response()->json($response);
             }
+            dd($request->branches_id);
+            if(($request->branch_id != null) || ($request->branches_id != null) || (!empty($request->branch_id)) || (!empty($request->branches_id))){
+                dd("ll");
             $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
+            }else{
+                dd("pp");
+                $branches ='';
+            }
 
             $branch = implode(',', $branches);
             // $branch = implode(',', $request->branch_id);
