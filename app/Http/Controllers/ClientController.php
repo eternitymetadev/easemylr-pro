@@ -438,8 +438,8 @@ class ClientController extends Controller
                 $response['errors'] = $errors;
                 return response()->json($response);
             }
-            
-            $payment_term = implode(',', $request->payment_term);
+
+            // $payment_term = implode(',', $request->payment_term);
 
             $regionalupdate['baseclient_id'] = $request->base_client_id;
             $regionalupdate['name'] = $request->name;
@@ -454,7 +454,7 @@ class ClientController extends Controller
             $regionalupdate['location_id'] = $request->branch_id;
             // $regionalupdate['upload_gst'] = $gst_img_path_save;
             // $regionalupdate['upload_pan'] = $pan_img_path_save;
-            $regionalupdate['payment_term'] = $payment_term;
+            // $regionalupdate['payment_term'] = $payment_term;
             // $regionalupdate['status']       = $request->status;
 
             RegionalClient::where('id', $request->regclientdetail_id)->update($regionalupdate);
@@ -463,6 +463,7 @@ class ClientController extends Controller
             $response['success'] = true;
             $response['success_message'] = "Regional Client Updated Successfully";
             $response['error'] = false;
+            $response['page'] = 'clientdetail-update';
             $response['redirect_url'] = $url;
 
 
@@ -722,7 +723,7 @@ class ClientController extends Controller
             $pan_path = Storage::disk('s3')->put('clients', $panupload);
             $pan_img_path_save = Storage::disk('s3')->url($pan_path);
 
-            $payment_term = implode(',', $request->payment_term);
+            // $payment_term = implode(',', $request->payment_term);
 
             $client['baseclient_id'] = $request->base_client_id;
             $client['name'] = $request->name;
@@ -737,7 +738,7 @@ class ClientController extends Controller
             $client['location_id'] = $request->branch_id;
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;
-            $client['payment_term'] = $payment_term;
+            // $client['payment_term'] = $payment_term;
             $client['status'] = "1";
 
             $saveclient = RegionalClient::create($client);

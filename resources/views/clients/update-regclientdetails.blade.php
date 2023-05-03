@@ -150,38 +150,9 @@
                             </div>
                         </div>
                         <?php 
-                          $payment_term = explode(',',$regclient_name->payment_term);
+                        //   $payment_term = explode(',',$regclient_name->payment_term);
                          ?>
-                        <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Select Payment Terms<span
-                                    class="text-danger">*</span></label>
-                            <div class="check-box d-flex" style="margin: 6px 0 0 6px">
-                                <div class="checkbox radio">
-                                    <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                        <span class="checkmark"></span>
-                                        <input type="checkbox" value='To be Billed' name="payment_term[]"
-                                            {{in_array("To be Billed", $payment_term) ? 'checked' : '' }} />
-                                        TBB
-                                    </label>
-                                </div>
-                                <div class="checkbox radio">
-                                    <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                        <span class="checkmark"></span>
-                                        <input type="checkbox" name="payment_term[]" value='To Pay'
-                                            {{in_array("To Pay", $payment_term) ? 'checked' : '' }} />
-                                        To Pay
-                                    </label>
-                                </div>
-                                <div class="checkbox radio">
-                                    <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                        <span class="checkmark"></span>
-                                        <input type="checkbox" name="payment_term[]" value='Paid'
-                                            {{in_array("Paid", $payment_term) ? 'checked' : '' }} />
-                                        Paid
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div class="btn-section mt-60">

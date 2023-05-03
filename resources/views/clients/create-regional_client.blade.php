@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-md-6">
+                                <!-- <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Select Payment Terms<span
                                             class="text-danger">*</span></label>
                                     <div class="check-box d-flex" style="margin: 6px 0 0 6px">
@@ -179,7 +179,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
