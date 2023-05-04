@@ -449,7 +449,6 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-            
             // $consignmentsave['regclient_id'] = $request->regclient_id;
             // $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -526,7 +525,12 @@ class OrderController extends Controller
                                     $savedata['order_id'] = $save_data['order_id'];
                                     $savedata['invoice_no'] = $save_data['invoice_no'];
                                     $savedata['invoice_date'] = $save_data['invoice_date'];
-                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
                                     $savedata['e_way_bill'] = $save_data['e_way_bill'];
                                     $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                                     $savedata['status'] = 1;
@@ -534,14 +538,12 @@ class OrderController extends Controller
                                     $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
                                     
                                     if ($saveconsignmentitems) {
-                                        // dd($save_data['item_data']);
                                         if (!empty($save_data['item_data'])) {
                                             $qty_array = array();
                                             $netwt_array = array();
                                             $grosswt_array = array();
                                             $chargewt_array = array();
                                             foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                                // echo "<pre>"; print_r($save_itemdata); die;
                                                 $qty_array[] = $save_itemdata['quantity'];
                                                 $netwt_array[] = $save_itemdata['net_weight'];
                                                 $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -585,7 +587,12 @@ class OrderController extends Controller
                                     $savedata['order_id'] = $save_data['order_id'];
                                     $savedata['invoice_no'] = $save_data['invoice_no'];
                                     $savedata['invoice_date'] = $save_data['invoice_date'];
-                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
                                     $savedata['e_way_bill'] = $save_data['e_way_bill'];
                                     $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                                     $savedata['quantity'] = $save_data['quantity'];
@@ -611,26 +618,26 @@ class OrderController extends Controller
                                     $savedata['order_id'] = $save_data['order_id'];
                                     $savedata['invoice_no'] = $save_data['invoice_no'];
                                     $savedata['invoice_date'] = $save_data['invoice_date'];
-                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
                                     $savedata['e_way_bill'] = $save_data['e_way_bill'];
                                     $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                                     
                                     $savedata['status'] = 1;
                                     // unset($save_data['item_id']);
                                     $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
-                                    // $save_data['consignment_id'] = $saveconsignment->id;
-                                    // $save_data['status'] = 1;
-                                    // $saveconsignmentitems = ConsignmentItem::create($save_data);
-                
+                                                    
                                     if ($saveconsignmentitems) {
-                                        // dd($save_data['item_data']);
                                         if (!empty($save_data['item_data'])) {
                                             $qty_array = array();
                                             $netwt_array = array();
                                             $grosswt_array = array();
                                             $chargewt_array = array();
                                             foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                                // echo "<pre>"; print_r($save_itemdata); die;
                                                 $qty_array[] = $save_itemdata['quantity'];
                                                 $netwt_array[] = $save_itemdata['net_weight'];
                                                 $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -645,11 +652,6 @@ class OrderController extends Controller
                                                 $saveitemdata['status'] = 1;
                 
                                                 $savesubitems = ConsignmentSubItem::where('id',$save_itemdata['subitem_id'])->update($saveitemdata);
-
-                                                // $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
-                                                // $save_itemdata['status'] = 1;
-                
-                                                // $savesubitems = ConsignmentSubItem::create($save_itemdata);
                                             }
                                             
                                             $quantity_sum = array_sum($qty_array);
@@ -678,7 +680,12 @@ class OrderController extends Controller
                                     $savedata['order_id'] = $save_data['order_id'];
                                     $savedata['invoice_no'] = $save_data['invoice_no'];
                                     $savedata['invoice_date'] = $save_data['invoice_date'];
-                                    $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
                                     $savedata['e_way_bill'] = $save_data['e_way_bill'];
                                     $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                                     $savedata['quantity'] = $save_data['quantity'];
@@ -705,22 +712,25 @@ class OrderController extends Controller
                         $savedata['order_id'] = $save_data['order_id'];
                         $savedata['invoice_no'] = $save_data['invoice_no'];
                         $savedata['invoice_date'] = $save_data['invoice_date'];
-                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $savedata['invoice_amount'] = 0;
+                        }
                         $savedata['e_way_bill'] = $save_data['e_way_bill'];
                         $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                         $savedata['status'] = 1;
                         // unset($save_data['item_id']);
                         $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
-                        // dd($saveconsignmentitems);
+                        
                         if ($saveconsignmentitems) {
-                            // dd($save_data['item_data']);
                             if (!empty($save_data['item_data'])) {
                                 $qty_array = array();
                                 $netwt_array = array();
                                 $grosswt_array = array();
                                 $chargewt_array = array();
                                 foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                    // echo "<pre>"; print_r($save_itemdata); die;
                                     $qty_array[] = $save_itemdata['quantity'];
                                     $netwt_array[] = $save_itemdata['net_weight'];
                                     $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -762,7 +772,12 @@ class OrderController extends Controller
                         $savedata['order_id'] = $save_data['order_id'];
                         $savedata['invoice_no'] = $save_data['invoice_no'];
                         $savedata['invoice_date'] = $save_data['invoice_date'];
-                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $savedata['invoice_amount'] = 0;
+                        }
                         $savedata['e_way_bill'] = $save_data['e_way_bill'];
                         $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                         $savedata['status'] = 1;
@@ -2363,6 +2378,11 @@ class OrderController extends Controller
         
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
         
                             if ($saveconsignmentitems) {
@@ -2410,6 +2430,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }
@@ -2425,6 +2450,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
         
                             if ($saveconsignmentitems) {
@@ -2471,6 +2501,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }
@@ -2799,6 +2834,11 @@ class OrderController extends Controller
                     foreach ($get_data as $key => $save_data) {
                         $save_data['consignment_id'] = $request->consignment_id;
                         $save_data['status'] = 1;
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $save_data['invoice_amount'] = 0;
+                        }
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
