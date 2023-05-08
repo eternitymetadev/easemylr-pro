@@ -39,7 +39,7 @@
                                     <th scope="row">Driver License Image</th>
                                     <td>{{isset($getdriver->license_image) ? $getdriver->license_image:'-'}}</td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <th scope="row">Bank Name</th>
                                     <td>{{isset($getdriver->BankDetail->bank_name) ? $getdriver->BankDetail->bank_name:'-'}}</td>
                                 </tr>
@@ -58,8 +58,8 @@
                                 <tr>
                                     <th scope="row">Account Holder Name</th>
                                     <td>{{isset($getdriver->BankDetail->account_holdername) ? $getdriver->BankDetail->account_holdername:'-'}}</td>
-                                </tr>
-                                                                        
+                                </tr> -->
+
                             </tbody>
                         </table>  
                         <a href="{{url($prefix.'/drivers/'.Crypt::encrypt($getdriver->id).'/edit')}}" class="btn btn-primary my-3" style="background:#fff;" title="Edit Driver"><i class="fa fa-edit m-0"></i> Edit</a>
