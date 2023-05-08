@@ -691,8 +691,6 @@ class ClientController extends Controller
 
     public function storeRegionalClient(Request $request)
     {
-        
-
         try {
             DB::beginTransaction();
 

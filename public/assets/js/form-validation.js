@@ -1417,6 +1417,17 @@ jQuery(document).ready(function(){
             name: {
                 required: true
             },
+            phone: {
+                required: true,
+                Numbers: true,
+                minlength:10,
+            },
+            gst_no: {
+                required: true
+            },
+            pan: {
+                required: true
+            },
             'location_id[]' : {
                 required: true,
             },
@@ -1430,6 +1441,17 @@ jQuery(document).ready(function(){
             },
             name: {
                 required: "Enter name",
+            },
+            phone: {
+                required: "Enter phone no",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 10 digits",
+            },
+            gst_no: {
+                required: "Enter GST no",
+            },
+            pan: {
+                required: "Enter PAN no",
             },
             'location_id[]' : {
                 required: "Please select location",
@@ -1451,6 +1473,17 @@ jQuery(document).ready(function(){
             name: {
                 required: true
             },
+            phone: {
+                required: true,
+                Numbers: true,
+                minlength:10,
+            },
+            gst_no: {
+                required: true
+            },
+            pan: {
+                required: true
+            },
             'location_id[]' : {
                 required: true,
             },
@@ -1464,6 +1497,17 @@ jQuery(document).ready(function(){
             },
             name: {
                 required: "Enter name",
+            },
+            phone: {
+                required: "Enter phone no",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 10 digits",
+            },
+            gst_no: {
+                required: "Enter GST no",
+            },
+            pan: {
+                required: "Enter PAN no",
             },
             'location_id[]' : {
                 required: "Please select location",

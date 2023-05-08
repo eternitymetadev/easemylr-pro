@@ -15,8 +15,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Clients</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                Regional Client</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Regional Client</a></li>
                     </ol>
                 </nav>
             </div>
@@ -57,7 +56,8 @@
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Regional Client Name</label>
+                                    <label for="exampleFormControlSelect1">Regional Client Name<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="regional_client_name" name="name"
                                         placeholder="" readonly>
                                 </div>
@@ -92,13 +92,11 @@
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload GST RC<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Upload GST RC</label>
                                     <input type="file" class="form-control" name="upload_gst" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload PAN<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Upload PAN</label>
                                     <input type="file" class="form-control" name="upload_pan" placeholder="">
                                 </div>
                             </div>
