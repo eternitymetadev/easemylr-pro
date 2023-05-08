@@ -1874,23 +1874,23 @@ jQuery(document).ready(function () {
     });
 
     // lr create and update ewaybill no check
-    $(document).on("blur", ".invc_amt", function () {
-        var invoice_amt = $(this).val();
-        if(invoice_amt > 50000 && $(this).parent().siblings().children('.ew_bill').val() == ''){
-            $(this).parent().siblings().children('.ew_bill').css("border-color", "red");
-            $(this).parent().siblings().children('.ew_bill').attr('required', true);
-        } else {
-            $(this).parent().siblings().children('.ew_bill').css("border-color", "#bfc9d4");
-            $(this).parent().siblings().children('.ew_bill').removeAttr('required');
-        }
-    });
+    // $(document).on("blur", ".invc_amt", function () {
+    //     var invoice_amt = $(this).val();
+    //     if(invoice_amt > 50000 && $(this).parent().siblings().children('.ew_bill').val() == ''){
+    //         $(this).parent().siblings().children('.ew_bill').css("border-color", "red");
+    //         $(this).parent().siblings().children('.ew_bill').attr('required', true);
+    //     } else {
+    //         $(this).parent().siblings().children('.ew_bill').css("border-color", "#bfc9d4");
+    //         $(this).parent().siblings().children('.ew_bill').removeAttr('required');
+    //     }
+    // });
 
-    $(document).on("blur", ".ew_bill", function () {
-        var invoice_amt = $(this).parent().siblings().children('.invc_amt').val();
-        if(invoice_amt > 50000 && $(this).val() == ''){
-            $(this).css("border-color", "red");
-        } else $(this).css("border-color", "#bfc9d4");
-    });
+    // $(document).on("blur", ".ew_bill", function () {
+    //     var invoice_amt = $(this).parent().siblings().children('.invc_amt').val();
+    //     if(invoice_amt > 50000 && $(this).val() == ''){
+    //         $(this).css("border-color", "red");
+    //     } else $(this).css("border-color", "#bfc9d4");
+    // });
 
 
 
