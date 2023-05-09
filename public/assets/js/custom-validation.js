@@ -1282,13 +1282,13 @@ jQuery(document).ready(function () {
         for (var w = 1; w < rowCount; w++) {
             var qty = !$('[name="data[' + w + '][quantity]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][quantity]"]').val());
+                : parseFloat($('[name="data[' + w + '][quantity]"]').val());
             var ntweight = !$('[name="data[' + w + '][weight]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][weight]"]').val());
+                : parseFloat($('[name="data[' + w + '][weight]"]').val());
             var grweight = !$('[name="data[' + w + '][gross_weight]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][gross_weight]"]').val());
+                : parseFloat($('[name="data[' + w + '][gross_weight]"]').val());
 
             total_quantity += qty;
             total_net_weight += ntweight;

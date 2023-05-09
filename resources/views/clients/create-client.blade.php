@@ -37,44 +37,37 @@
                                     <input type="text" class="form-control" name="client_name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">GST Number<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="gst_no" placeholder="">
+                                <label for="exampleFormControlInput2">GST Number</label>
+                                    <input type="text" class="form-control" minlength="15" maxlength="15" name="gst_no" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">PAN<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="pan" placeholder="">
+                                    <label for="exampleFormControlInput2">PAN</label>
+                                    <input type="text" class="form-control" minlength="10" maxlength="10" name="pan" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">TAN<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="tan" placeholder="">
+                                <label for="exampleFormControlInput2">TAN</label>
+                                    <input type="text" class="form-control" minlength="10" maxlength="10" name="tan" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload GST RC<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Upload GST RC</label>
                                     <input type="file" class="form-control" name="upload_gst" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Upload PAN<span
-                                            class="text-danger">*</span></label>
+                                <label for="exampleFormControlInput2">Upload PAN</label>
                                     <input type="file" class="form-control" name="upload_pan" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload TAN<span
-                                            class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Upload TAN</label>
                                     <input type="file" class="form-control" name="upload_tan" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Upload MOA<span
-                                            class="text-danger">*</span></label>
+                                <label for="exampleFormControlInput2">Upload MOA</label>
                                     <input type="file" class="form-control" name="upload_moa" placeholder="">
                                 </div>
                             </div>
