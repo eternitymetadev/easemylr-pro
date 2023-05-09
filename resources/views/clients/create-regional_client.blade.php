@@ -83,11 +83,11 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">GST Number<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="gst_no" placeholder="">
+                                    <input type="text" class="form-control" name="gst_no" minlength="15" maxlength="15" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">PAN<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="pan" placeholder="">
+                                    <input type="text" class="form-control" name="pan" minlength="10" maxlength="10" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">

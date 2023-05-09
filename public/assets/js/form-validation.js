@@ -1423,10 +1423,14 @@ jQuery(document).ready(function(){
                 minlength:10,
             },
             gst_no: {
-                required: true
+                required: true,
+                maxlength:15,
+                minlength:15,
             },
             pan: {
-                required: true
+                required: true,
+                minlength:10,
+                maxlength:10,
             },
             'location_id[]' : {
                 required: true,
@@ -1449,9 +1453,13 @@ jQuery(document).ready(function(){
             },
             gst_no: {
                 required: "Enter GST no",
+                minlength: "Enter at least 15 digits",
+                maxlength: "Maximum length sholud not more than 15 digits"
             },
             pan: {
                 required: "Enter PAN no",
+                minlength: "Enter at least 10 digits",
+                maxlength: "Maximum length sholud not more than 10 digits"
             },
             'location_id[]' : {
                 required: "Please select location",
@@ -1479,10 +1487,14 @@ jQuery(document).ready(function(){
                 minlength:10,
             },
             gst_no: {
-                required: true
+                required: true,
+                minlength:15,
+                maxlength:15
             },
             pan: {
-                required: true
+                required: true,
+                minlength:10,
+                maxlength:10
             },
             'location_id[]' : {
                 required: true,
@@ -1505,9 +1517,13 @@ jQuery(document).ready(function(){
             },
             gst_no: {
                 required: "Enter GST no",
+                minlength: "Enter at least 15 digits",
+                maxlength: "Maximum length sholud not more than 15 digits"
             },
             pan: {
                 required: "Enter PAN no",
+                minlength: "Enter at least 10 digits",
+                maxlength: "Maximum length sholud not more than 10 digits"
             },
             'location_id[]' : {
                 required: "Please select location",
@@ -1564,20 +1580,61 @@ jQuery(document).ready(function(){
     jQuery('#updateregclientdetail').validate({
         rules:
         {
-            from_state_id: {
-                // required: true,
+            client_name: {
+                required: true
             },
-            to_state_id: {
-                // required: true,
+            name: {
+                required: true
+            },
+            phone: {
+                required: true,
+                Numbers: true,
+                minlength:10,
+            },
+            gst_no: {
+                required: true,
+                minlength:15,
+                maxlength:15
+            },
+            pan: {
+                required: true,
+                minlength:10,
+                maxlength:10
+            },
+            'location_id[]' : {
+                required: true,
+            },
+            'is_prs_pickup[]' : {
+                required: true,
             },
         },
-        messages:
-        {
-            from_state_id: {
-                required: "Please enter login id",
+        messages: {
+            client_name: {
+                required: "Enter client name",
             },
-            to_state_id: {
-                required: "Email address is required",
+            name: {
+                required: "Enter name",
+            },
+            phone: {
+                required: "Enter phone no",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 10 digits",
+            },
+            gst_no: {
+                required: "Enter GST no",
+                minlength: "Enter at least 15 digits",
+                maxlength: "Maximum length sholud not more than 15 digits"
+            },
+            pan: {
+                required: "Enter PAN no",
+                minlength: "Enter at least 10 digits",
+                maxlength: "Maximum length sholud not more than 10 digits"
+            },
+            'location_id[]' : {
+                required: "Please select location",
+            },
+            'is_prs_pickup[]' : {
+                required: "Please select prs pickup",
             },
         },
         submitHandler : function(form)
@@ -1711,6 +1768,14 @@ jQuery(document).ready(function(){
             // password: {
             //     required: true,
             // },
+            gst_no: {
+                minlength: 15,
+                maxlength: 15
+            },
+            pan: {
+                minlength: 10,
+                maxlength: 10
+            }
         },
         messages:
         {
@@ -1723,6 +1788,14 @@ jQuery(document).ready(function(){
             // password: {
             //   required: "Password is required",
             //  }, 
+            gst_no: {
+                minlength: "Enter at least 15 digits",
+                maxlength: "Maximum length sholud not more than 15 digits"
+            },
+            pan: {
+                minlength: "Enter at least 10 digits",
+                maxlength: "Maximum length sholud not more than 10 digits"
+            }
         },
         submitHandler : function(form)
         {
