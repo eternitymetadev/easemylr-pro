@@ -73,12 +73,12 @@
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">GST Number<span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="gst_no" placeholder=""
-                                value="{{old('gst_no',isset($regclient_name->gst_no)?$regclient_name->gst_no:'')}}">
+                                value="{{old('gst_no',isset($regclient_name->gst_no)?$regclient_name->gst_no:'')}}" minlength="15" maxlength="15">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">PAN<span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="pan" placeholder=""
-                                value="{{old('pan',isset($regclient_name->pan)?$regclient_name->pan:'')}}">
+                                value="{{old('pan',isset($regclient_name->pan)?$regclient_name->pan:'')}}" minlength="10" maxlength="10">
                         </div>
                     </div>
                     <!-- <div class="form-row mb-0">
