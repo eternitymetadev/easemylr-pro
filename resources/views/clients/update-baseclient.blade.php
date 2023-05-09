@@ -6,6 +6,54 @@
     margin: auto;
 
 }
+
+.imageInput {
+    position: relative;
+    max-width: 300px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    outline: 1px solid;
+    cursor: pointer;
+}
+
+.imageInput img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.imageInput input {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.imageInput svg {
+    transition: all 300ms ease-in-out;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffffa8;
+    height: 60px;
+    width: 60px;
+    color: #208120;
+    padding: 12px;
+    border-radius: 50vh;
+    cursor: pointer;
+    box-shadow: 0 0 12px inset;
+    opacity: 0;
+    z-index: 0;
+}
+
+.imageInput:hover svg {
+    opacity: 1;
+}
+
 </style>
 
 <div class="layout-px-spacing">
@@ -51,25 +99,75 @@
                                     <input type="text" class="form-control"  minlength="10" maxlength="10" name="tan" placeholder="" value="{{old('tan',isset($baseClient->tan)?$baseClient->tan:'')}}">
                                 </div>
                             </div>
-                            <!-- <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload GST RC</label>
-                                    <input type="file" class="form-control" name="upload_gst" value="{{old('upload_gst',isset($baseClient->upload_gst)?$baseClient->upload_gst:'')}}" placeholder="">
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label for="exampleFormControlInput2">Upload Gst</label>
+                                    <div class="imageInput">
+                                        <input type="file" name="upload_gst" accept="image/png, image/jpeg, image/jpg"
+                                            class="imgInput"
+                                            value="{{old('upload_gst', isset($baseClient->upload_gst) ? $baseClient->upload_gst : '')}}">
+                                        <img src="{{old('upload_gst', isset($baseClient->upload_gst) ? $baseClient->upload_gst : '')}}"
+                                            class="imagePreview" alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Upload PAN</label>
-                                    <input type="file" class="form-control" name="upload_pan" value="{{old('upload_pan',isset($baseClient->upload_pan)?$baseClient->upload_pan:'')}}" placeholder="">
+
+                                <div class="form-group col-md-3">
+                                    <label for="exampleFormControlInput2">Upload Pan</label>
+                                    <div class="imageInput">
+                                        <input type="file" name="upload_pan" accept="image/png, image/jpeg, image/jpg"
+                                            class="imgInput"
+                                            value="{{old('upload_pan', isset($baseClient->upload_pan) ? $baseClient->upload_gst : '')}}">
+                                        <img src="{{old('upload_pan', isset($baseClient->upload_pan) ? $baseClient->upload_pan : '')}}"
+                                            class="imagePreview" alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="exampleFormControlInput2">Upload Tan</label>
+                                    <div class="imageInput">
+                                        <input type="file" name="upload_tan" accept="image/png, image/jpeg, image/jpg"
+                                            class="imgInput"
+                                            value="{{old('upload_tan', isset($baseClient->upload_tan) ? $baseClient->upload_gst : '')}}">
+                                        <img src="{{old('upload_tan', isset($baseClient->upload_tan) ? $baseClient->upload_tan : '')}}"
+                                            class="imagePreview" alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="exampleFormControlInput2">Upload Moa</label>
+                                    <div class="imageInput">
+                                        <input type="file" name="upload_moa" accept="image/png, image/jpeg, image/jpg"
+                                            class="imgInput"
+                                            value="{{old('upload_moa', isset($baseClient->upload_moa) ? $baseClient->upload_moa : '')}}">
+                                        <img src="{{old('upload_moa', isset($baseClient->upload_moa) ? $baseClient->upload_moa : '')}}"
+                                            class="imagePreview" alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-row mb-0">
-                                <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Upload TAN</label>
-                                    <input type="file" class="form-control" name="upload_tan" value="{{old('upload_tan',isset($baseClient->upload_tan)?$baseClient->upload_tan:'')}}" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                <label for="exampleFormControlInput2">Upload MOA</label>
-                                    <input type="file" class="form-control" name="upload_moa" value="{{old('upload_moa',isset($baseClient->upload_moa)?$baseClient->upload_moa:'')}}" placeholder="">
-                                </div> -->
                             </div>
                             <button type="submit" class="mt-4 mb-4 btn btn-primary">Update</button>
                             <a class="btn btn-primary" href="{{url($prefix.'/clients') }}"> Back</a>
@@ -84,5 +182,13 @@
 @endsection
 @section('js')
 <script>
+$('.imgInput').change(function() {
+    const file = this.files[0]
+    console.log('sss', file)
+    if (file) {
+        console.log('img', $(this).siblings('.imagePreview'))
+        $(this).siblings('.imagePreview').attr('src', URL.createObjectURL(file))
+    }
+})
 </script>
 @endsection
