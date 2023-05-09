@@ -76,7 +76,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Phone<span
                                             class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" name="phone" placeholder="">
+                                    <input type="number" class="form-control" name="phone" placeholder="" minlength="10" maxlength="10">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
