@@ -56,11 +56,9 @@ class DriverController extends Controller
                             $chk_imgurl = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
                             if($chk_url == $chk_imgurl){
                                 $licence = '<a href="'.$data->license_image.' " target="_blank">view</a>';
-                                // $licence = $data->license_image;
                             }else{
                                 $licence = '<a href="'.$chk_url.'/'.$data->license_image.' " target="_blank">view</a>';
                                 
-                                // $licence = $chk_url.'/'.$data->license_image;
                             }
                         }        
                         return $licence;
