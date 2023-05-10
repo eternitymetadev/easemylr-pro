@@ -51,14 +51,18 @@ class DriverController extends Controller
                             $licence = '-';
                         }else{
                             $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
-                            $chk_imgurl = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images/0n2gxG36abuP0uIGAS5ZmA0XctRrf8f6jErIeGLR.png";
-                            $explode_url = explode("/",$chk_imgurl);
-                            $chk_imgurl = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
-                            if($chk_url == $chk_imgurl){
-                                $licence = '<a href="'.$data->license_image.' " target="_blank">view</a>';
+                            $chk_imgurl = $data->license_image;
+                            if($chk_imgurl != '' || $chk_imgurl != null){
+                                $explode_url = explode("/",$chk_imgurl);
+                                $chk_imgurl = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                            
+                                if($chk_url == $chk_imgurl){
+                                    $licence = '<a href="'.$data->license_image.' " target="_blank">view</a>';
+                                }else{
+                                    $licence = '<a href="'.$chk_url.'/'.$data->license_image.' " target="_blank">view</a>';
+                                }
                             }else{
-                                $licence = '<a href="'.$chk_url.'/'.$data->license_image.' " target="_blank">view</a>';
-                                
+                                $licence = '';
                             }
                         }        
                         return $licence;
