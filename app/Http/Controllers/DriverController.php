@@ -51,16 +51,16 @@ class DriverController extends Controller
                             $licence = '-';
                         }else{
                             $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
-                            $chk_imgurl = $data->license_image;
-                            if($chk_imgurl != '' || $chk_imgurl != null){
-                                $explode_url = explode("/",$chk_imgurl);
-                                if(! isset($explode_url[0]) && ! isset($explode_url[1]) && ! isset($explode_url[2]) && ! isset($explode_url[3])){
-                                $chk_imgurl = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                            $img_url = $data->license_image;
+                            if($img_url != '' || $img_url != null){
+                                $explode_url = explode("/",$img_url);
+                                if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                                    $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
                                 }else{
-                                    $chk_imgurl = '';
+                                    $img_url = '';
                                 }
-                            
-                                if($chk_url == $chk_imgurl){
+                                
+                                if($chk_url == $img_url){
                                     $licence = '<a href="'.$data->license_image.' " target="_blank">view</a>';
                                 }else{
                                     $licence = '<a href="'.$chk_url.'/'.$data->license_image.' " target="_blank">view</a>';
