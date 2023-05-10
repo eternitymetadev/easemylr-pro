@@ -50,7 +50,18 @@ class DriverController extends Controller
                         if($data->license_image == null){
                             $licence = '-';
                         }else{
-                            $licence = '<a href="'.URL::to('/storage/images/driverlicense_images/'.$data->license_image).' " target="_blank">view</a>';
+                            $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
+                            $chk_imgurl = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images/0n2gxG36abuP0uIGAS5ZmA0XctRrf8f6jErIeGLR.png";
+                            $explode_url = explode("/",$chk_imgurl);
+                            $chk_imgurl = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                            if($chk_url == $chk_imgurl){
+                                $licence = '<a href="'.$data->license_image.' " target="_blank">view</a>';
+                                // $licence = $data->license_image;
+                            }else{
+                                $licence = '<a href="'.$chk_url.'/'.$data->license_image.' " target="_blank">view</a>';
+                                
+                                // $licence = $chk_url.'/'.$data->license_image;
+                            }
                         }        
                         return $licence;
                     }) 
@@ -112,7 +123,17 @@ class DriverController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
-        $branch = implode(',', $request->branch_id);
+        if($request->branch_id){
+            if(($request->branch_id != null) || ($request->branch_id != '')){
+                $branches = array_unique(array_merge($request->branch_id));
+                $branch = implode(',', $branches);
+            }
+            else{
+                $branch ='';
+            }
+        }else{
+                $branch ='';
+            }
 
         $driversave['name']                 = $request->name;
         $driversave['phone']                = $request->phone;
@@ -129,11 +150,17 @@ class DriverController extends Controller
 
         // upload license image
         if($request->license_image){
-            $file = $request->file('license_image');
-            $path = 'public/images/driverlicense_images';
-            $name = Helper::uploadImage($file,$path);
-            $driversave['license_image']  = $name;
+            $license_image = $request->file('license_image');
+            $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+            $driversave['license_image'] = Storage::disk('s3')->url($path);
         }
+
+        // if($request->license_image){
+        //     $file = $request->file('license_image');
+        //     $path = 'public/images/driverlicense_images';
+        //     $name = Helper::uploadImage($file,$path);
+        //     $driversave['license_image']  = $name;
+        // }
 
         $savedriver = Driver::create($driversave); 
         if($savedriver)
