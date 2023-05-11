@@ -77,6 +77,7 @@ div.relat {
                                 <th>Image</th>
                                 <th>App Access</th>
                                 <th>Password</th>
+                                <th>Tagged Branch</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -120,6 +121,7 @@ var table = $('#drivertable').DataTable({
         {data: 'licence', name: 'licence'},
         {data: 'access_status', name: 'access_status'},
         {data: 'driver_password', name: 'driver_password'},
+        {data: 'branch_id', name: 'branch_id'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
         
     ]

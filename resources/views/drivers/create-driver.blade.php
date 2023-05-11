@@ -90,12 +90,12 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Login Id</label>
                                     <input type="text" class="form-control" name="login_id" id="login_id" placeholder=""
-                                        readonly>
+                                        readonly autocomplete="off">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Password</label>
                                     <input type="password" class="form-control" id="password" name="password"
-                                        placeholder="">
+                                        placeholder="" autocomplete="off">
                                 </div>
                             </div>
                             <label for="exampleFormControlInput2">Select Branch</label>
@@ -134,6 +134,14 @@ $("#password").val('');
 
 $("#phone").blur(function() {
     $("#login_id").val($(this).val());
+});
+
+$('input[type=radio][name=access_status]').change(function() {
+    if (this.value == '1') {
+        $('#password').attr('required',true);
+    }else{
+        $('#password').removeAttr('required');
+    }
 });
 
 $(document).on("click", ".remove_licensefield", function(e) { //user click on remove text

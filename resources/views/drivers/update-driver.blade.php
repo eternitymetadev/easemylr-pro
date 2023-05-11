@@ -80,7 +80,7 @@
                                         placeholder="">
 
                                     <div class="image_upload"><img
-                                            src="{{url("storage/images/driverlicense_images/$getdriver->license_image")}}"
+                                            src="{{$getdriver->license_image}}"
                                             class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
                                     <?php }
                                     else{
@@ -140,7 +140,7 @@
                                 <label for="exampleFormControlInput2">Login ID</label>
                                 <input type="text" class="form-control" id="login_id" name="login_id"
                                     value="{{old('login_id',isset($getdriver->login_id)?$getdriver->login_id:'')}}"
-                                    placeholder="" readonly>
+                                    placeholder="" readonly autocomplete="off">
                             </div>
                             <?php $authuser = Auth::user();
                         if($authuser->role_id==2){
@@ -151,9 +151,9 @@
                         ?>
                             <div class="form-group col-md-6">
                                 <label for="exampleFormControlInput2">Password</label>
-                                <input type="text" class="form-control {{$disable}}" name="password"
+                                <input type="text" class="form-control {{$disable}}" id="password" name="password"
                                     value="{{old('driver_password',isset($getdriver->driver_password)?$getdriver->driver_password:'')}}"
-                                    placeholder="">
+                                    placeholder="" autocomplete="off">
                             </div>
                         </div>
 
@@ -219,6 +219,14 @@ $('input[type=radio][name=access_status]').change(function() {
 
 $("#phone").blur(function() {
     $("#login_id").val($(this).val());
+});
+
+$('input[type=radio][name=access_status]').change(function() {
+    if (this.value == '1') {
+        $('#password').attr('required',true);
+    }else{
+        $('#password').removeAttr('required');
+    }
 });
 
 $(document).on("click", ".remove_licensefield", function(e) { //user click on remove text
