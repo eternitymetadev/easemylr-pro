@@ -78,8 +78,23 @@ class DriverController extends Controller
                             $access_status = 'Enabled';
                         }        
                         return $access_status;
+                    })
+                    ->addColumn('branch_id', function ($data) {
+                        if($data->branch_id){
+                            $branch_id = explode(',',$data->branch_id);
+                            $branch_ids = array();
+                            foreach($branch_id as $branch){
+                                $location = Location::where('id',$branch)->first();
+                                $branch_ids[] = $location->name;
+                            }
+                            $branch_names = implode('/', $branch_ids);
+                            $branch_name = $branch_names;
+                        }else{
+                            $branch_name = '';
+                        }
+                        return $branch_name;
                     }) 
-                    ->rawColumns(['action', 'licence'])
+                    ->rawColumns(['action', 'licence','branch_id'])
                     ->make(true);
         }
         return view('drivers.driver-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);
@@ -161,6 +176,14 @@ class DriverController extends Controller
             $driversave['license_image'] = Storage::disk('s3')->url($path);
         }
 
+
+        // $images = $request->invoice_image;
+        // $path = Storage::disk('s3')->put('invoice_image', $images);
+        // $get_real_names = explode('/', $path);
+        // Storage::disk('s3')->url($path);
+        // $addinventory['invoice_image'] = $get_real_names[1];
+
+        // ----------------------------------------
         // if($request->license_image){
         //     $file = $request->file('license_image');
         //     $path = 'public/images/driverlicense_images';
@@ -282,13 +305,20 @@ class DriverController extends Controller
             $driversave['access_status']  = $request->access_status;
             $driversave['password']       = bcrypt($request->password);
 
-            // upload driver_license image 
+            // upload license image
             if($request->license_image){
-                $file = $request->file('license_image');
-                $path = 'public/images/driverlicense_images';
-                $name = Helper::uploadImage($file,$path); 
-                $driversave['license_image']  = $name;
-           }
+                $license_image = $request->file('license_image');
+                $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+                $driversave['license_image'] = Storage::disk('s3')->url($path);
+            }
+
+            // upload driver_license image 
+        //     if($request->license_image){
+        //         $file = $request->file('license_image');
+        //         $path = 'public/images/driverlicense_images';
+        //         $name = Helper::uploadImage($file,$path); 
+        //         $driversave['license_image']  = $name;
+        //    }
             
             $savedriver = Driver::where('id',$request->driver_id)->update($driversave);
 
