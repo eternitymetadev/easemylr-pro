@@ -87,8 +87,12 @@ class DriverController extends Controller
                                 $location = Location::where('id',$branch)->first();
                                 $branch_ids[] = $location['name'];
                             }
-                            $branch_names = implode('/', $branch_ids);
-                            $branch_name = $branch_names;
+                            if($branch_ids){
+                                $branch_names = implode('/', $branch_ids);
+                                $branch_name = $branch_names;
+                            }else{
+                                $branch_name = '';
+                            }
                         }else{
                             $branch_name = '';
                         }
