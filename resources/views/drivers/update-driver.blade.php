@@ -79,9 +79,8 @@
                                     <input type="file" class="form-control licensefile" name="license_image" value=""
                                         placeholder="">
 
-                                    <div class="image_upload"><img
-                                            src="{{$getdriver->license_image}}"
-                                            class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
+                                    <div class="image_upload">
+                                        <img src="{{$getdriver->license_image}}" class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
                                     <?php }
                                     else{
                                         ?>
