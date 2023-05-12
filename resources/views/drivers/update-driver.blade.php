@@ -160,9 +160,11 @@
                         <?php $selected = explode(",", $getdriver->branch_id); ?>
                         <label for="exampleFormControlInput2">Tagged Branches</label>
                         <div class="taggedBranches">
-                            @foreach($branches as $branch)
-                            <span>{{ (in_array($branch->id, $selected)) ? $branch->name : '' }}</span>
-                            @endforeach
+                        @foreach($branches as $branch)
+                            @if(in_array($branch->id, $selected))                        
+                                <span>{{ (in_array($branch->id, $selected)) ? $branch->name : '' }}</span>
+                            @endif
+                        @endforeach
                         </div>
                         <input type="hidden" name="branches_id[]" value="{{$getdriver->branch_id}}">
 
