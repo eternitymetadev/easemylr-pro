@@ -75,12 +75,30 @@
 
                                     <?php if(!empty($getdriver->license_image))
                                     { 
+                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
+                                        $img_url = $getdriver->license_image;
+                                        if($img_url != '' || $img_url != null){
+                                            $explode_url = explode("/",$img_url);
+                                            if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                                            }else{
+                                                $img_url = '';
+                                            }
+                                            
+                                            if($chk_url == $img_url){
+                                                $licence = $getdriver->license_image;
+                                            }else{
+                                                $licence = $chk_url.'/'.$getdriver->license_image;
+                                            }
+                                        }else{
+                                            $licence = '';
+                                        }
                                         ?>
                                     <input type="file" class="form-control licensefile" name="license_image" value=""
                                         placeholder="">
 
                                     <div class="image_upload">
-                                        <img src="{{$getdriver->license_image}}" class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
+                                        <img src="{{$licence}}" class="licenseshow image-fluid" id="img-tag" width="320" height="240"></div>
                                     <?php }
                                     else{
                                         ?>
