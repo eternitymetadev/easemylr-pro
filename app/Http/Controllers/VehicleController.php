@@ -16,6 +16,7 @@ use Crypt;
 use Config;
 use Validator;
 use DataTables;
+use Session;
 use Storage;
 use Auth;
 
@@ -42,35 +43,24 @@ class VehicleController extends Controller
         $query = Vehicle::query();
 
         if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
             $authuser = Auth::user();
-            $query = $query;
+            $query = $query->with('GetState');
 
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cnrquery) use ($search, $searchT) {
-                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cneequery) use ($search, $searchT) {
-                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        });
+                    $query->where('regn_no', 'like', '%' . $search . '%')
+                    ->orWhere('body_type', 'like', '%' . $search . '%')
+                    ->orWhere('make', 'like', '%' . $search . '%')
+                    ->orWhere('tonnage_capacity', 'like', '%' . $search . '%')
+                    ->orWhere('mfg', 'like', '%' . $search . '%');
                 });
-                // ->orWhereHas('ConsignmentItem',function( $query ) use($search,$searchT){
-                //     $query->where(function ($invcquery)use($search,$searchT) {
-                //         $invcquery->where('invoice_no', 'like', '%' . $search . '%');
-                //     });
-                // });
-
-                // });
             }
 
             if ($request->peritem) {
@@ -92,7 +82,7 @@ class VehicleController extends Controller
             return response()->json(['html' => $html]);
         }
         $authuser = Auth::user();
-        $vehicles = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $vehicles = $query->with('GetState')->orderBy('id', 'DESC')->paginate($peritem);
         $vehicles = $vehicles->appends($request->query());
   
         return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment,'vehicles'=>$vehicles, 'peritem' => $peritem]);

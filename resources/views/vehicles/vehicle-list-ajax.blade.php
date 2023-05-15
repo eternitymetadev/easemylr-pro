@@ -17,11 +17,11 @@
         <tbody id="accordion" class="accordion">
             @if(count($vehicles)>0)
             @foreach($vehicles as $value)
-            
+
             <tr>
                 <td>{{ $value->regn_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYear($value->regndate) ?? "-" }}</td>
-                <td>{{ $value->state_id ?? "-" }}</td>
+                <td>{{ $value->GetState->name ?? "-" }}</td>
                 <td>{{ $value->body_type ?? "-" }}</td>
                 <td>{{ $value->make ?? "-" }}</td>
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
@@ -35,25 +35,26 @@
                     if($img_url != '' || $img_url != null){
                         
                         $explode_url = explode("/",$img_url);
-                        // echo "<pre>"; print_r($explode_url);die;
                         if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
                             $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
-
-                            // echo "<pre>"; print_r($img_url);die;
                         }else{
                             $img_url = '';
                         }
-                        
                         if($chk_url == $img_url){
-                            $rc_image = `<a href="$value->rc_image" target="_blank">view</a>`;
+                            $rc_image = $value->rc_image;
                         }else{
-                            $rc_image = `<a href="$chk_url.'/'.$value->rc_image" target="_blank">view</a>`;
+                            $rc_image = $chk_url.'/'.$value->rc_image;
                         }
                     }else{
                         $rc_image = '';
                     }
-                }?>
-                <td>{{ $rc_image ?? "-" }}</td>
+                }
+                 ?>
+                @if($value->rc_image)
+                <td><a href="{{$rc_image}}" target="_blank">view</a></td>
+                @else
+                <td></td>
+                @endif
                 <?php
                 if($value->second_rc_image == null){
                     $second_rc_image = '-';
@@ -67,22 +68,29 @@
                         }else{
                             $img_url = '';
                         }
-                        
                         if($chk_url == $img_url){
-                            $second_rc_image = `<a href="$value->second_rc_image" target="_blank">view</a>`;
+                            $second_rc_image = $value->second_rc_image;
                         }else{
-                            $second_rc_image = `<a href="$chk_url.'/'.$value->second_rc_image" target="_blank">view</a>`;
+                            $second_rc_image = $chk_url.'/'.$value->second_rc_image;
                         }
                     }else{
                         $second_rc_image = '';
                     }
                 } ?>
-                <td>{{ $second_rc_image ?? "-" }}</td>
+                @if($value->second_rc_image)
+                <td> <a href="{{$value->second_rc_image}}" target="_blank">view</a></td>
+                @else
+                <td></td>
+                @endif</td>
                 <td>
-                    <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id).'/edit')?>" class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>
-                    <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id))?>" class="view btn btn-info btn-sm"><span><i class="fa fa-eye"></i></span></a>
+                    <div class="d-flex" style="gap: 4px">
+                        <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id).'/edit')?>"
+                            class="edit btn btn-primary btn-sm"><span><i class="fa fa-edit"></i></span></a>
+                        <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id))?>"
+                            class="view btn btn-info btn-sm"><span><i class="fa fa-eye"></i></span></a>
+                    </div>
                 </td>
-                
+
             </tr>
             @endforeach
             @else
