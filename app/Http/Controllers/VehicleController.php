@@ -13,8 +13,10 @@ use URL;
 use Helper;
 use Hash;
 use Crypt;
+use Config;
 use Validator;
 use DataTables;
+use Session;
 use Storage;
 use Auth;
 
@@ -37,8 +39,53 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Vehicle::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+            $authuser = Auth::user();
+            $query = $query->with('GetState');
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('regn_no', 'like', '%' . $search . '%')
+                    ->orWhere('body_type', 'like', '%' . $search . '%')
+                    ->orWhere('make', 'like', '%' . $search . '%')
+                    ->orWhere('tonnage_capacity', 'like', '%' . $search . '%')
+                    ->orWhere('mfg', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehicles = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $vehicles = $vehicles->appends($request->query());
+            // echo'<pre'; print_r($vehicles); die;
+            $html = view('vehicles.vehicle-list-ajax', ['prefix' => $this->prefix, 'vehicles' => $vehicles, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+        $authuser = Auth::user();
+        $vehicles = $query->with('GetState')->orderBy('id', 'DESC')->paginate($peritem);
+        $vehicles = $vehicles->appends($request->query());
   
-        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
+        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment,'vehicles'=>$vehicles, 'peritem' => $peritem]);
     }
 
     public function getData(Request $request) {
