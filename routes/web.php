@@ -971,7 +971,14 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::post('/regclient-detail/update-detail', [ClientController::class, 'updateRegclientdetail']);
     Route::get('/reginal-clients/view-regclient-detail/{id}', [ClientController::class, 'viewRegclientdetail']);
     Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
-    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);
+    Route::post('/save-regclient-detail', [ClientController::class, 'storeRegclientdetail']);   
+
+    Route::get('create-regional-client', [ClientController::class, 'createRegionalClient']);
+    Route::any('generate-regional', [ClientController::class, 'generateRegionalName']);
+    Route::any('regclient-detail/update-generate-regional', [ClientController::class, 'updateGenerateRegionalName']);
+    Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
+    Route::any('edit-baseclient/{id}', [ClientController::class, 'editBaseClient']);
+    Route::any('update-base-client', [ClientController::class, 'updateBaseClient']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
