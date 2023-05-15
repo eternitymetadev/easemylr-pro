@@ -1906,6 +1906,7 @@ function formSubmitRedirect(form)
         processData : false,
         dataType    : "json",
         beforeSend  : function () {
+            $("#mainLoader").show();
             $(".loader").show();
             
             if ($('#dealer_type').val() == 1 && $("#gst_number").val() == '') {
@@ -1922,6 +1923,7 @@ function formSubmitRedirect(form)
              $("input[type=submit]").attr("enabled", "enabled");
         	$("button[type=submit]").attr("enabled", "enabled");
             $(".loader").hide();
+            $("#mainLoader").hide();
         },
         success: function (response)
         {
