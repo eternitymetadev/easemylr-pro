@@ -1152,8 +1152,8 @@ class ConsignmentController extends Controller
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
                                             if ($data['is_salereturn'] == '1') {
-                                                $html .= '<th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
-                                            <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>';
+                                                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
+                                            <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
                                             }else{
                                                 $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
                                             <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
