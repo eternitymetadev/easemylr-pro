@@ -4350,13 +4350,23 @@ class ConsignmentController extends Controller
             // }
 
             $deliverydate = $request->delivery_date;
-            $file = $request->file('file');
-            if (!empty($file)) {
-                $filename = $file->getClientOriginalName();
-                $file->move(public_path('drs/Image'), $filename);
-            } else {
+            // $file = $request->file('file');
+            // if (!empty($file)) {
+            //     $filename = $file->getClientOriginalName();
+            //     $file->move(public_path('drs/Image'), $filename);
+            // } else {
+            //     $filename = null;
+            // }
+
+            // upload pod image
+            if($request->file){
+                $pod = $request->file('file');
+                $path = Storage::disk('s3')->put('pod_images', $pod);
+                $filename = Storage::disk('s3')->url($path);
+            }else {
                 $filename = null;
             }
+
             if (!empty($deliverydate)) {
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
@@ -4402,19 +4412,29 @@ class ConsignmentController extends Controller
         if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
-                // echo'<pre>'; print_r($save_data); die;
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
-                $pic = @$save_data['img'];
+                // $pic = @$save_data['img'];
 
                 if ($save_data['job_id'] == 'null') {
 
-                    if (!empty($pic)) {
-                        $filename = $pic->getClientOriginalName();
-                        $pic->move(public_path('drs/Image'), $filename);
-                    } else {
+                    // if (!empty($pic)) {
+                    //     $filename = $pic->getClientOriginalName();
+                    //     $pic->move(public_path('drs/Image'), $filename);
+                    // } else {
+                    //     $filename = null;
+                    // }
+                    // echo'<pre>'; print_r($save_data['img']->getClientOriginalName()); die;
+
+                    // upload pod image
+                    if($save_data['img']){
+                        $pod = $save_data['img']->getClientOriginalName();
+                        $path = Storage::disk('s3')->put('pod_images', $pod);
+                        $filename = Storage::disk('s3')->url($path);
+                    }else {
                         $filename = null;
                     }
+                    
                     $check_lr_mode = ConsignmentNote::where('id', $lrno)->first();
                     if (!empty($deliverydate)) {
                         $dateTimestamp1 = strtotime($save_data['lr_date']);
@@ -5411,32 +5431,24 @@ class ConsignmentController extends Controller
 
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
-
-            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            // if ($get_delivery_branch->lr_type == 0) {
-            //     $delivery_branch = $get_delivery_branch->branch_id;
+            
+            // $file = $request->file('pod');
+            // if (!empty($file)) {
+            //     $filename = $file->getClientOriginalName();
+            //     $file->move(public_path('drs/Image'), $filename);
             // } else {
-            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-            //         $delivery_branch = $get_delivery_branch->branch_id;
-            //     }else{
-            //         $delivery_branch = $get_delivery_branch->to_branch_id;
-            //     }
+            //     $filename = null;
             // }
 
-            // if ($login_branch != $delivery_branch) {
-
-            //     $response['success'] = false;
-            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-            //     return Response::json($response);
-            // }
-
-            $file = $request->file('pod');
-            if (!empty($file)) {
-                $filename = $file->getClientOriginalName();
-                $file->move(public_path('drs/Image'), $filename);
-            } else {
+            // upload pod image
+            if($request->pod){
+                $pod = $request->file('pod');
+                $path = Storage::disk('s3')->put('pod_images', $pod);
+                $filename = Storage::disk('s3')->url($path);
+            }else {
                 $filename = null;
             }
+            
             ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //

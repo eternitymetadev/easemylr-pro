@@ -160,6 +160,33 @@ $invoice['amt'] = implode(',', $inv_amt);
                 }?>
 
                 <?php if ($consignment->lr_mode == 0) {
+                ///////////////////////////
+
+                    if($consignment->signed_drs == null){
+                        $signed_drs = '-';
+                    }else{
+                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/pod_images";
+                        $img_url = $consignment->signed_drs;
+                        if($img_url != '' || $img_url != null){
+                            $explode_url = explode("/",$img_url);
+                            if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                            }else{
+                                $img_url = '';
+                            }
+                            
+                            if($chk_url == $img_url){
+                                $signed_drs = $consignment->signed_drs;
+                            }else{
+                                $signed_drs = $chk_url.'/'.$consignment->signed_drs;
+                            }
+                        }else{
+                            $signed_drs = '';
+                        }
+                    }
+
+
+                ///////////////////////////
                      $img = URL::to('/drs/Image/' . $consignment->signed_drs);
                     $pdfcheck = explode('.',$consignment->signed_drs);
                 ?>
@@ -173,7 +200,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                                 data-target="#exampleModalPdf"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
                         @else
-                        <img src="{{$img}}"  class="viewImageInNewTab" data-toggle="modal"
+                        <img src="{{$signed_drs}}"  class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />  
                         @endif
@@ -210,6 +237,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                     @endif
                 </td>
                 <?php } else if($consignment->lr_mode == 1){ ?>
+
                     <td style="max-width: 260px">
                     <?php if (!empty($img_group)) {?>
                     <div class="d-flex align-items-center" style="gap: 4px; width: 250px;">
