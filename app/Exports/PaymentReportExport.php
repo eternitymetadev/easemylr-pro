@@ -57,7 +57,9 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
 
         if ($payment_lists->count() > 0) {
             $i = 0;
+            
             foreach ($payment_lists as $key => $payment_list) {
+                $current_paid_amount2 = '';
                 $i++;
 
                 $bankdetails = json_decode($payment_list->PaymentRequest[0]->VendorDetails->bank_details);
