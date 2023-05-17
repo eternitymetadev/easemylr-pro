@@ -214,7 +214,14 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $pod= 'Not Available';
                     }
                 }
-
+                // lr type //
+                if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                     }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                        $lr_type = "PTL";
+                         }else{ 
+                            $lr_type = "-";
+                            }
 
 
                 $arr[] = [
@@ -262,6 +269,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'payment_type'        => @$consignment->payment_type,
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
+                    'lr_type'             => @$lr_type,
 
                 ];
             }
@@ -316,6 +324,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Payment Type',
             'Freight on Delivery',
             'COD',
+            'LR Type',
         ];
     }
 }
