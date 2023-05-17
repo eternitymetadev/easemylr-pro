@@ -8,16 +8,6 @@
        </div>
        <!-- Modal body -->
        <div class="modal-body">
-       <!-- <div class="form-row mb-0">
-                        <div class="form-group col-md-12">
-                            <label for="location_name">Status</label>
-
-                            <select class="form-control" id="lr_status" name="lr_status" onchange="lrCheck(this);" tabindex="-1" >
-
-
-                            </select>
-                        </div>
-                        </div> -->
           <div class="Delt-content text-center">
             <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->

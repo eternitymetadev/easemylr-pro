@@ -188,7 +188,7 @@
                                         ?> 
                                         <input type="file" class="form-control second_rcfile" name="second_rc_image" value="" placeholder="">
 
-                                        <div class="image_upload"><img src="{{$second_rc_image}}" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>  
+                                        <div class="image_upload"><img src="{{$second_rc_image}}ww" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>  
                                     <?php }
                                     else{
                                         ?>  

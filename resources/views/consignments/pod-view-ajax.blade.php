@@ -160,12 +160,12 @@ $invoice['amt'] = implode(',', $inv_amt);
                 }?>
 
                 <?php if ($consignment->lr_mode == 0) {
-                ///////////////////////////
+                // AWS image view //
 
                     if($consignment->signed_drs == null){
                         $signed_drs = '-';
                     }else{
-                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/pod_images";
+                        $chk_url = "http://easemylr.s3.us-east-2.amazonaws.com/pod_images";
                         $img_url = $consignment->signed_drs;
                         if($img_url != '' || $img_url != null){
                             $explode_url = explode("/",$img_url);
@@ -174,7 +174,6 @@ $invoice['amt'] = implode(',', $inv_amt);
                             }else{
                                 $img_url = '';
                             }
-                            
                             if($chk_url == $img_url){
                                 $signed_drs = $consignment->signed_drs;
                             }else{
@@ -184,7 +183,6 @@ $invoice['amt'] = implode(',', $inv_amt);
                             $signed_drs = '';
                         }
                     }
-
 
                 ///////////////////////////
                      $img = URL::to('/drs/Image/' . $consignment->signed_drs);
@@ -196,7 +194,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                     <div class="d-flex align-items-center">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                         @if($pdfcheck[1] == 'pdf')
-                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab" data-toggle="modal"
+                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$signed_drs}}" class="viewpdfInNewTab" data-toggle="modal"
                                 data-target="#exampleModalPdf"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
                         @else

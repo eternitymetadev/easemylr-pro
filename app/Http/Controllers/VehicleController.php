@@ -122,7 +122,7 @@ class VehicleController extends Controller
                 if($data->rc_image == null){
                     $rc_image = '-';
                 }else{
-                    $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                    $chk_url = "http://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
                     $img_url = $data->rc_image;
                     if($img_url != '' || $img_url != null){
                         $explode_url = explode("/",$img_url);

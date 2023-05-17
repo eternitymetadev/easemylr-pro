@@ -1505,7 +1505,34 @@ jQuery(document).ready(function () {
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
                     var drs_sign = value.signed_drs;
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+
+                    // AWS image view //
+                    if(drs_sign == null){
+                        var signed_drs = '-';
+                    }else{
+                        var chk_url = "http:";
+                        var img_url = drs_sign;
+                        
+                        if(img_url != '' || img_url != null){
+                            var explode_url = img_url.split("/"); //explode("/",img_url);
+                            console.log(explode_url[0]);
+                            if((explode_url[0] !='')){
+                                var img_url = explode_url[0];
+                            }else{
+                                var img_url = '';
+                            }
+                            if(chk_url == img_url){
+                                var signed_drs = drs_sign;
+                            }else{
+                                var signed_drs = chk_url+'/'+drs_sign;
+                            }
+                        }else{
+                            var signed_drs = '';
+                        }
+                    }
+                    // end AWS image view //
+
+                    var storage_img = signed_drs;
                     if (value.signed_drs == null) {
                         var field =
                             "<input type='file' name='data[" +
@@ -1732,13 +1759,38 @@ jQuery(document).ready(function () {
                             }
                         );
                     }
-                    //   console.log(img_api); return false;
+                    // AWS image view //
 
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
+                    
+                    if(drs_sign == null){
+                        var signed_drs = '-';
+                    }else{
+                        var chk_url = "http:";
+                        var img_url = drs_sign;
+                        
+                        if(img_url != '' || img_url != null){
+                            var explode_url = img_url.split("/"); //explode("/",img_url);
+                            console.log(explode_url[0]);
+                            if((explode_url[0] !='')){
+                                var img_url = explode_url[0];
+                            }else{
+                                var img_url = '';
+                            }
+                            if(chk_url == img_url){
+                                var signed_drs = drs_sign;
+                            }else{
+                                var signed_drs = chk_url+'/'+drs_sign;
+                            }
+                        }else{
+                            var signed_drs = '';
+                        }
+                    }
+
                     /////pod img
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    var storage_img = signed_drs;
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
