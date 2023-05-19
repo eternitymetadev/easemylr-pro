@@ -77,7 +77,7 @@ div.relative {
                         <th>Transaction Id</th>
                         <th>Date</th>
                         <th>Total Drs</th>
-                        <th style="max-width:200px;">Drs No</th>
+                        <!-- <th style="max-width:200px;">Drs No</th> -->
                         <th>Vendor</th>
                         <th>Total Amount</th>
                         <th>Adavanced</th>
@@ -101,7 +101,7 @@ div.relative {
                         <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
                             {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                         </td>
-                        <td style="max-width: 200px; word-wrap: break-word; white-space: break-spaces;">{{ Helper::showDrsNo($requestlist->transaction_id) ?? "" }}</td>
+                        <!-- <td style="max-width: 200px; word-wrap: break-word; white-space: break-spaces;">{{ Helper::showDrsNo($requestlist->transaction_id) ?? "" }}</td> -->
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
