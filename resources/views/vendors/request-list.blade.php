@@ -77,6 +77,7 @@ div.relative {
                         <th>Transaction Id</th>
                         <th>Date</th>
                         <th>Total Drs</th>
+                        <th style="max-width:200px;">Drs No</th>
                         <th>Vendor</th>
                         <th>Total Amount</th>
                         <th>Adavanced</th>
@@ -90,6 +91,7 @@ div.relative {
                 <tbody>
                     @foreach($requestlists as $requestlist)
                     <?php
+                            
                           $date = date('d-m-Y',strtotime($requestlist->created_at));
                     ?>
                     <tr>
@@ -97,7 +99,9 @@ div.relative {
                         <td>{{ $requestlist->transaction_id ?? "-" }}</td>
                         <td>{{ $date }}</td>
                         <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
-                            {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}</td>
+                            {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
+                        </td>
+                        <td style="max-width: 200px; word-wrap: break-word; white-space: break-spaces;">{{ Helper::showDrsNo($requestlist->transaction_id) ?? "" }}</td>
                         <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                         <td>{{ $requestlist->total_amount ?? "-"}}</td>
                         <td>{{ $requestlist->advanced ?? "-"}}</td>
@@ -152,7 +156,7 @@ div.relative {
 $(document).on('click', '.payment_button', function() {
     $("#payment_form")[0].reset();
     var trans_id = $(this).val();
-    
+
 
     $.ajax({
         type: "GET",
@@ -166,9 +170,9 @@ $(document).on('click', '.payment_button', function() {
 
             },
         success: function(data) {
-           
+
             if (data.status == 'Successful') {
-                
+
                 $('#pymt_request_modal').modal('show');
                 var bank_details = JSON.parse(data.req_data[0].vendor_details.bank_details);
 
@@ -211,7 +215,7 @@ $(document).on('click', '.payment_button', function() {
                 }
             } else {
                 // $('#pymt_request_modal').modal('hide');
-                swal('error', 'Please update delivey status','error');
+                swal('error', 'Please update delivey status', 'error');
                 return false;
                 if (data.req_data[0].balance == '' || data.req_data[0].balance == null) {
                     $('#p_type').append(

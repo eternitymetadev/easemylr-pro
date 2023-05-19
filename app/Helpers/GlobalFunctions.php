@@ -296,6 +296,18 @@ class GlobalFunctions
         $data = DB::table('payment_requests')->where('transaction_id', $trans_id)->count();
         return $data;
     }
+
+    public static function showDrsNo($trans_id)
+    {
+        $datas = DB::table('payment_requests')->where('transaction_id', $trans_id)->get();
+        $drsarr = array();
+        foreach($datas as $row){
+
+            $drsarr[] = $row->drs_no;
+        }
+        $alldrs = implode(',',$drsarr);
+        return $alldrs;
+    }
     ///////////// Create Payment ////////
 
     public static function totalQuantity($drs_number)
