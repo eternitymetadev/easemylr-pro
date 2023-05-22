@@ -471,6 +471,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
     Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
     Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
+    Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
+
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
@@ -666,6 +668,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
+    Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
 
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
