@@ -1049,28 +1049,14 @@ if ($('#paymentType').val() == 'To Pay') {
     $('#cod').attr('readonly', false);
 } else if($('#paymentType').val() == 'Paid'){
     $('#cod').attr('readonly', true);
-    $('#freight_on_delivery').attr('readonly', true);
+    $('#freight_on_delivery').attr('readonly', false);
 } else {
     $('#freight_on_delivery').attr('readonly', true);
     $('#cod').attr('readonly', false);
     $('#freight_on_delivery').val('');
 }
 }
-// function togglePaymentAction() {
 
-// if ($('#paymentType').val() == 'TBB With COD') {
-//     $('#codFreightBlock').show();
-//     $('#codFreightBlock').attr('required', true);
-
-//     console.log('cod shown');
-// } else {
-//     $('#codFreightBlock').hide();
-//     $('#codFreightBlock').attr('required', false);
-//     console.log('cod hide');
-// }
-
-
-// }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ6x_bU2BIZPPsjS8Y8Zs-yM2g2Bs2mnM&callback=myMap">
 </script>

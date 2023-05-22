@@ -92,6 +92,7 @@ $(document).on("click", ".add-taskbtn", function() {
             console.log(response.data);
             if ((response.data).length != 0) {
                 $.each(response.data, function(index, consignmtvalue) {
+                    console.log("oo");
                     if ((consignmtvalue.consignment_items).length != 0) {
                         $.each(consignmtvalue.consignment_items, function(index, value) {
                             i++;
