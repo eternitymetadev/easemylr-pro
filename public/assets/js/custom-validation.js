@@ -1892,7 +1892,35 @@ jQuery(document).ready(function () {
     //     } else $(this).css("border-color", "#bfc9d4");
     // });
 
+    $("#paymentType").change(function (e) {
+        $('#freight_on_delivery').val('');
+        $('#cod').val('');
+        var payment_val = $(this).val();
+        if(payment_val == 'To Pay' || payment_val == 'Paid'){
+            var frieght_val = $('#freight_on_delivery').val();
+            if(frieght_val == ''){
+                $('#freight_on_delivery').css("border-color", "red");
+                $('#freight_on_delivery').attr('required', true);
+            }else{
+                $("#freight_on_delivery").css("border-color", "#bfc9d4");
+                $("#freight_on_delivery").removeAttr('required');
+            }
+        }else{
+            $("#freight_on_delivery").css("border-color", "#bfc9d4");
+            $("#freight_on_delivery").removeAttr('required');
+        }
+    });
 
+    $(document).on("keyup", "#freight_on_delivery", function () {
+        var frieght_val = $(this).val();
+            if(frieght_val == ''){
+                $(this).css("border-color", "red");
+                $(this).attr('required', true);
+            }else{
+                $(this).css("border-color", "#bfc9d4");
+                $(this).removeAttr('required');
+            }
+    });
 
     // for vehicle tonnage capacity calculation
     $("#gross_vehicle_weight").keyup(function () {
