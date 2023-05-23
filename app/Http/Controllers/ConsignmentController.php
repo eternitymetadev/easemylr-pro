@@ -1191,18 +1191,6 @@ class ConsignmentController extends Controller
                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                 </tr>
 
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                    <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                    <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                    <td>' . ucwords(@$data['cod']) . '</td>
-                                                </tr>
                                             </table>
                                         </td>
                                     </tr>
@@ -1238,18 +1226,7 @@ class ConsignmentController extends Controller
                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                 </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                    <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                    <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                    <td>' . ucwords(@$data['cod']) . '</td>
-                                                </tr>
+                                                
                                             </table>
                                         </td>
                                     </tr>
@@ -1285,18 +1262,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                    <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                    <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                    <td>' . ucwords(@$data['cod']) . '</td>
-                                                </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -1331,18 +1297,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                    <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                    <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                    <td>' . ucwords(@$data['cod']) . '</td>
-                                                </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -1374,18 +1329,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                    <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                    <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                    <td>' . ucwords(@$data['cod']) . '</td>
-                                                </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -3300,18 +3244,6 @@ class ConsignmentController extends Controller
                                                             <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                             <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                            <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                            <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                            <td>' . ucwords(@$data['cod']) . '</td>
-                                                        </tr>
                                                     </table>
                                                 </td>
                                             </tr>
@@ -3341,18 +3273,7 @@ class ConsignmentController extends Controller
                                                             <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                             <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                            <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                            <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                            <td>' . ucwords(@$data['cod']) . '</td>
-                                                        </tr>
+                                                        
                                                     </table>
                                                 </td>
                                             </tr>
@@ -3388,18 +3309,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                                <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                                <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                                <td>' . ucwords(@$data['cod']) . '</td>
-                                                            </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -3434,18 +3344,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                                <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                                <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                                <td>' . ucwords(@$data['cod']) . '</td>
-                                                            </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -3477,18 +3376,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Payment Terms</b></td>
-                                                                <td>' . ucwords(@$data['payment_type']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">Freight</b></td>
-                                                                <td>' . ucwords(@$data['freight_on_delivery']) . '</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td width="40%"><b style="margin-left: 7px;">COD</b></td>
-                                                                <td>' . ucwords(@$data['cod']) . '</td>
-                                                            </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
