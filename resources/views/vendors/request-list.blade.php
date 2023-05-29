@@ -116,9 +116,16 @@ div.relative {
                         <?php } else if($requestlist->payment_status == 0){ ?>
                         <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
                                 Payment</button></td>
-                        <?php }else{ ?>
+                        <?php }else{
+                        if($requestlist->balance < 1){ ?>
+                            <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
+                                Paid</button></td>
+                       <?php }else{ ?>
                         <td><button class="btn btn-warning payment_button"
                                 value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                      <?php  }
+                             ?>
+                        
                         <?php } ?>
 
                         <!-- payment Status -->
