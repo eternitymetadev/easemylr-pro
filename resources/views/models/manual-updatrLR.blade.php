@@ -26,7 +26,7 @@
                         <table id="get-delvery-dateLR" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>
-                                <tr>
+                                <tr> 
                                     <th>LR No</th>
                                     <th>Consignee</th>
                                     <th>City</th>

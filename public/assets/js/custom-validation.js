@@ -1976,7 +1976,7 @@ function get_delivery_date() {
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
-    var consignment_date = $(this)
+    var consignment_date = $(this) 
         .closest("tr")
         .find("td:eq(0) input[type='hidden']")
         .val();
@@ -2038,12 +2038,12 @@ $(document).on("click", ".onelrupdate", function () {
         },
         beforeSend: function () { },
         success: function (data) {
-            // alert(data.success);
+        //    alert(data.success);
             if (data.success == true) {
-                swal("success", "Status Updated successfully", "success");
+                swal("success", data.messages, "success");
                 location.reload();
             } else {
-                swal("error", "Something went wrong", "error");
+                swal("error", data.messages , "error");
             }
         },
     });
