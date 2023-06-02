@@ -845,7 +845,7 @@ class FtlPtlController extends Controller
                     ->first(['consignees.city']);
                 $simplyfy = json_decode(json_encode($consignmentdrs), true);
 
-                $no_of_digit = 5;
+                $no_of_digit = 5;  
                 $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
                 $drs_no = json_decode(json_encode($drs), true);
                 if (empty($drs_no) || $drs_no == null) {
