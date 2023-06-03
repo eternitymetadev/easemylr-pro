@@ -389,7 +389,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::get('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 

@@ -66,11 +66,14 @@ div.relative {
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
                                 <span class="indicator-label">Filter Data</span>
                             </button>
-                            <a href="<?php echo URL::to($prefix.'/payment-reportExport'); ?>"
-                                data-url="<?php echo URL::to($prefix.'/payment-report-view'); ?>"
+                            <!-- <a href="<?php //echo URL::to($prefix.'/payment-reportExport'); ?>"
+                                data-url="<?php //echo URL::to($prefix.'/payment-report-view'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                data-action="<?php echo URL::to($prefix.'/payment-reportExport'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                data-action="<?php //echo URL::to($prefix.'/payment-reportExport'); ?>" download><span><i class="fa fa-download"></i> Export</span></a> -->
+
+                                <span style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px" data-href="<?php echo URL::to($prefix.'/payment-reportExport'); ?>" id="export" class="btn btn-white btn-cstm" onclick ="exportTasks (event.target);"><i class="fa fa-download"></i> Export</span>
+                                
                             <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
@@ -88,6 +91,12 @@ div.relative {
 @endsection
 @section('js')
 <script>
+
+function exportTasks(_this) {
+      let _url = $(_this).data('href');
+      window.location.href = _url;
+   }
+   
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
