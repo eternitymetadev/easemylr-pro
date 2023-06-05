@@ -1451,7 +1451,7 @@ class VendorController extends Controller
     //     return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
     // }
 
-    // public function exportPaymentReportold(Request $request)
+    // public function exportPaymentReport(Request $request)
     // {
     //     return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx'); 
     // }
@@ -1480,7 +1480,7 @@ class VendorController extends Controller
         }else {
             $payment_lists = $query->groupBy('transaction_id')->get();
         }
-
+echo "<pre>"; print_r($payment_lists); die;
         $headers = array(
             "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
