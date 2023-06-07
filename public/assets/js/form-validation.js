@@ -16,6 +16,14 @@ jQuery(document).ready(function(){
           return false;
         }
     });
+
+    /*====== Pan number check =========*/
+    // $(document).on("keyup", "#pan_no", function () {
+    $.validator.addMethod("PanNumbers", function(value, element) {
+        // var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+        return this.optional(element) || /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/.test(value);
+    }, "Please enter valid pan no.");
+    
     /*========== Number ========*/
     $.validator.addMethod("Numbers", function(value, element) {
         return this.optional(element) || /^[0-9]*$/.test(value);
