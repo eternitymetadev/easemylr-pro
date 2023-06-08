@@ -2336,6 +2336,7 @@ $("#vendor-master").submit(function (e) {
     var bank_name = $("#bank_name").val();
     var branch_name = $("#branch_name").val();
     var pan_no = $("#pan_no").val();
+    var pan_upload = $("#pan_upload").val();
 
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
@@ -2367,6 +2368,21 @@ $("#vendor-master").submit(function (e) {
     }
     if (!pan_no) {
         swal("Error!", "Please Enter Pan No", "error");
+        return false;
+    }else{
+        var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+
+        if (regpan.test(pan_no)) {
+            $("#lblPANCard").hide();
+        } else {
+            $("#lblPANCard").show();
+            swal("Error!", "Invalid Pan No", "error");
+            return false;
+        }
+    }
+
+    if (!pan_upload) {
+        swal("Error!", "Please Enter pan upload", "error");
         return false;
     }
     $.ajax({
@@ -2509,10 +2525,48 @@ $("#update_vendor").validate({
         name: {
             required: true,
         },
+        vendor_type: {
+            required: true,
+        },
+        acc_holder_name: {
+            required: true,
+        },
+        account_no: {
+            required: true,
+        },
+        ifsc_code: {
+            required: true,
+        },
+        bank_name: {
+            required: true,
+        },
+        pan: {
+            required: true,
+            PanNumbers: true,
+        },
     },
     messages: {
         name: {
             required: "Enter Vendor name",
+        },
+        vendor_type: {
+            required: "Select vendor type",
+        },
+        acc_holder_name: {
+            required: "Enter account holder name",
+        },
+        account_no: {
+            required: "Enter account no",
+        },
+        ifsc_code: {
+            required: "Enter ifsc code",
+        },
+        bank_name: {
+            required: "Enter bank name",
+        },
+        pan: {
+            required: "Enter pan no",
+            // PanNumbers: "Please enter valid pan no.",
         },
     },
     submitHandler: function (form) {
