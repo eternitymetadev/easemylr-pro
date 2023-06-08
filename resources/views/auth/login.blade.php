@@ -89,14 +89,14 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class=" container">
-                        <img src="http://easemylr.in/assets/images/Eternity_Forwarder.png" width="250px" height="110px"
+                        <img src="{{asset('assets/img/logo_2.png')}}" width="250px" height="110px"
                             class="dd">
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="main-container" >
                         <div class="container">
-                            <a><img src="http://easemylr.in/assets/images/ease my lr final.png" class="EE"> </a>
+                            <a><img src="{{asset('assets/img/login_logo.png')}}" class="EE"> </a>
                         </div>
                         <div class="container">
                             <p style="text-align:center;">Please login into your account.</p>
