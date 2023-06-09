@@ -7,6 +7,7 @@
                 <th>District</th>
                 <th>State</th>
                 <th>Hub Transfer</th>
+                <th>Hub Nick Name</th>
                 <th>primary Zone</th>
                 <th>Edit</th>
             </tr>
@@ -18,6 +19,7 @@
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
+                <td>{{ $zone->hub_nickname ?? '-'}}</td>
                 <td>{{ $zone->primary_zone ?? '-'}}</td>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
             </tr>

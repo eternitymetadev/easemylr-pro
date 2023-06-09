@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\BranchAddress;
 use App\Models\Zone;
 use App\Exports\ZoneExport;
+use App\Models\Location;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use URL;
@@ -111,6 +112,8 @@ class SettingController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = Zone::query();
+        $all_districts = Zone::select('district')->groupBy('district')->get();
+        $branchs = Location::all();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -168,7 +171,7 @@ class SettingController extends Controller
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
         $zones = $zones->appends($request->query());
 
-        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment]);
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment,'all_districts' => $all_districts,'branchs' => $branchs]);
     }
 
     public function editPostalCode(Request $request)
@@ -207,5 +210,30 @@ class SettingController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ZoneExport, 'zones.csv');
+    }
+
+    public function updateDistrictHub(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+
+            $get_location = Location::where('id', $request->branch_id)->first();
+
+            Zone::where('district', $request->district)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $get_location->hub_nickname]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Hub Updated successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
     }
 }

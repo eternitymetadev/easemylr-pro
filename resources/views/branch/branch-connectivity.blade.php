@@ -111,7 +111,7 @@ div.relative {
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Hub</label>
                             <select class="form-control" name="hub">
-                                <option disabled>Select..</option>
+                                <option disabled selected>Select..</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
                                 @endforeach
