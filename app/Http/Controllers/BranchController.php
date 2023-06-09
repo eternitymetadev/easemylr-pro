@@ -10,6 +10,8 @@ use App\Models\Consignee;
 use App\Models\Broker;
 use App\Models\User;
 use App\Models\BranchImage;
+use App\Models\Location;
+use App\Models\BranchConnectivity;
 use DB;
 use URL;
 use Helper;
@@ -290,6 +292,74 @@ class BranchController extends Controller
       $response['error']           = false;
 
       return response()->json($response);
+    }
+
+    public function branchConnectivity(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $query = Location::query();
+        $authuser = Auth::user();
+        $cc = explode(',',$authuser->branch_id);
+        if($authuser->role_id == 2){
+            $locations = $query->whereIn('id',$cc)->orderBy('id','ASC')->get();
+        }
+        else{
+            $locations = $query->orderBy('id','ASC')->get();
+        }
+        $branchs = Location::all();
+        return view('branch.branch-connectivity',['locations'=>$locations,'branchs'=>$branchs,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
+    public function addBranchConnectivity(Request $request)
+    {
+        
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                // 'crop_name' => 'required|unique:crops',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+
+            $connective_hub = implode(',',$request->direct_connectivity);
+
+            $savehub['efpl_hub'] = $request->hub;
+            $savehub['direct_connectivity'] = $connective_hub;
+            $savehub['status'] = 1;
+
+            $saveconnectivity = BranchConnectivity::create($savehub);
+
+            if ($saveconnectivity) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Branch Added successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
     }
 
 }
