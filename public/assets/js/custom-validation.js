@@ -1306,6 +1306,7 @@ jQuery(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 jQuery("#nameup").val(response.newcata.name);
+                jQuery("#hub_nicknameup").val(response.newcata.hub_nickname);
                 jQuery("#nick_nameup").val(response.newcata.nick_name);
                 jQuery("#team_idup").val(response.newcata.team_id);
                 jQuery("#consignment_noup").val(

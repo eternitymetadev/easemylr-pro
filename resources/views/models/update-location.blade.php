@@ -21,32 +21,34 @@
                                 <input class="form-control" id="nameup" name="name" value="">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="location_name">Location City</label>
-                                <input class="form-control" id="nick_nameup" name="nick_name" value="">
+                                <label for="location_name">Location Nick Name</label>
+                                <input class="form-control" id="hub_nicknameup" name="hub_nickname" value="">
                             </div>
                         </div>
                         <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
+                                <label for="location_name">Location City</label>
+                                <input class="form-control" id="nick_nameup" name="nick_name" value="">
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="location_name">Email</label>
                                 <input class="form-control" id="emailup" name="email" value="">
                             </div>
+                        </div>
+                        <div class="form-row mb-0">
                             <div class="form-group col-md-6">
                                 <label for="location_name">Mobile No.</label>
                                 <input class="form-control" id="phoneup" name="phone" value="" maxlength="10">
                             </div>
-                        </div>
-                        <div class="form-row mb-0">
                             <div class="form-group col-md-6">
                                 <label for="location_name">Team ID</label>
                                 <input class="form-control" id="team_idup" name="team_id" value="">
                             </div>
-                            <!-- <div class="form-group col-md-6">
-                                <label for="location_name">Consignment No.</label>
-                                <input class="form-control" id="consignment_noup" name="consignment_no" value="" maxlength="4">
-                            </div> -->
-
+                        </div>
+                        
+                        <div class="form-row mb-0">
                             <div class="form-group col-md-6">
-                            <label for="location_name">&nbsp;</label>
+                                <label for="location_name">&nbsp;</label>
                                 <div class="check-box d-flex align-content-center align-items-center ml-2" style="gap: 8px; height: 42px">
                                 <!-- <span style="color: #000"><strong>Is HUB?</strong></span> -->
                                     <div class="checkbox radio">
@@ -65,9 +67,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="form-row mb-0">
+                            <div class="form-group col-md-6">
                             <span style="color: #000"><strong>Allow LR without vehicle no. :</strong></span>
                             <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
                                 <div class="checkbox radio">
@@ -88,6 +88,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>

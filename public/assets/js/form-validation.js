@@ -1212,6 +1212,9 @@ jQuery(document).ready(function(){
             name: {
                 required: true,
             },
+            hub_nickname: {
+                required: true,
+            },
             nick_name: {
                 required: true,
             },
@@ -1233,6 +1236,9 @@ jQuery(document).ready(function(){
         {
             name: {
                 required: "Location name is required"
+            },
+            hub_nickname: {
+                required: "Hub nick name is required",
             },
             nick_name: {
                 required: "Nick name is required"
@@ -1267,6 +1273,9 @@ jQuery(document).ready(function(){
             name: {
                 required: true,
             },
+            hub_nickname: {
+                required: true,
+            },
             nick_name: {
                 required: true,
             },
@@ -1290,6 +1299,9 @@ jQuery(document).ready(function(){
         {
             name: {
                 required: "Location name is required"
+            },
+            hub_nickname: {
+                required: "Hub nick name is required",
             },
             nick_name: {
                 required: "Nick name is required"
