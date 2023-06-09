@@ -297,16 +297,13 @@ class BranchController extends Controller
     public function branchConnectivity(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        $query = Location::query();
+        $query = BranchConnectivity::query();
         $authuser = Auth::user();
         $cc = explode(',',$authuser->branch_id);
-        if($authuser->role_id == 2){
-            $locations = $query->whereIn('id',$cc)->orderBy('id','ASC')->get();
-        }
-        else{
-            $locations = $query->orderBy('id','ASC')->get();
-        }
+       
+        $locations = $query->with('Location')->orderBy('id','ASC')->get();
         $branchs = Location::all();
+
         return view('branch.branch-connectivity',['locations'=>$locations,'branchs'=>$branchs,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 

@@ -11,4 +11,8 @@ class BranchConnectivity extends Model
     protected $fillable = [
         'efpl_hub','direct_connectivity','status','created_at', 'updated_at'
     ];
+
+    public function Location(){
+        return $this->belongsTo('App\Models\Location','efpl_hub');
+    }
 }

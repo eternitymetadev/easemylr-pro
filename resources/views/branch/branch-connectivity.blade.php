@@ -62,7 +62,8 @@ div.relative {
                 <thead>
                     <tr>
                         <th>Sr No.</th>
-                        <th>ID</th>
+                        <th>EFPL Hub</th>
+                        <th>Direct Connectivity</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,8 +71,19 @@ div.relative {
                     @foreach($locations as $key => $value)
                     <tr>
                         <td>{{ $value->id ?? '-' }}</td>
-                        <td>{{ ucwords($value->name ?? '-') }}</td>
-
+                        <td>{{ ucwords($value->Location->name ?? '-') }}</td>
+                        <?php $str = $value->direct_connectivity;
+                        $connect_hubs = (explode(",",$str)); 
+                        $getbranch = DB::table('locations')->whereIn('id', $connect_hubs)->get();
+                       ?>
+                       <?php $locarray = array(); ?>
+                        @foreach($getbranch as $loc)
+                        <?php $locarray[] = $loc->name; ?>
+                        @endforeach
+                        <?php 
+                       
+                        $hubs = implode(',',$locarray); ?>
+                        <td>{{ $hubs }}</td>
                     </tr>
                     @endforeach
                     @endif
@@ -99,11 +111,11 @@ div.relative {
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Hub</label>
                             <select class="form-control" name="hub">
-                            <option disabled>Select..</option>
-                            @foreach($branchs as $branch)
-                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                            @endforeach
-                        </select>
+                                <option disabled>Select..</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                     </div>
@@ -131,7 +143,7 @@ div.relative {
 @endsection
 @section('js')
 <script>
-    $('#add_connectivity').submit(function(e) {
+$('#add_connectivity').submit(function(e) {
     e.preventDefault();
 
     var formData = new FormData(this);

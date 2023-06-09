@@ -81,6 +81,12 @@ class GlobalFunctions
         return $locations;
     }
 
+    public static function getLocationDetail($id)
+    {
+        $locations = Location::select('name')->where('id', $id)->where('status', 1)->first();
+        return $locations;
+    }
+
     public static function getRegionalClients()
     {
         $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->pluck('name', 'id');
