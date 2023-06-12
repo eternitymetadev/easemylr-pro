@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\BranchAddress;
-use App\Models\Zone;
 use App\Exports\ZoneExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Validator;
-use URL;
-use Crypt;
-use Helper;
-use Config;
-use Auth;
+use App\Models\BranchAddress;
+use App\Models\BranchConnectivity;
+use App\Models\Location;
 use App\Models\Role;
 use App\Models\User;
-use Session;
+use App\Models\Zone;
+use Auth;
+use Config;
 use DB;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Session;
+use URL;
+use Validator;
 
 class SettingController extends Controller
 {
@@ -40,69 +40,65 @@ class SettingController extends Controller
     public function updateBranchadd(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
-        if($_SERVER['REQUEST_METHOD'] == 'POST')
-        {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rules = array(
                 'name' => 'required',
             );
-            $validator = Validator::make($request->all(),$rules);
-            if($validator->fails())
-            {
-                $errors                  = $validator->errors();
-                $response['success']     = false;
-                $response['formErrors']  = true;
-                $response['errors']      = $errors;                
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['formErrors'] = true;
+                $response['errors'] = $errors;
                 return response()->json($response);
             }
-            if(!empty($request->name)){
-                $settingsave['name']   = $request->name;
+            if (!empty($request->name)) {
+                $settingsave['name'] = $request->name;
             }
-            if(!empty($request->gst_number)){
-                $settingsave['gst_number']   = $request->gst_number;
+            if (!empty($request->gst_number)) {
+                $settingsave['gst_number'] = $request->gst_number;
             }
-            if(!empty($request->phone)){
-                $settingsave['phone']   = $request->phone;
+            if (!empty($request->phone)) {
+                $settingsave['phone'] = $request->phone;
             }
-            if(!empty($request->address)){
-                $settingsave['address']   = $request->address;
+            if (!empty($request->address)) {
+                $settingsave['address'] = $request->address;
             }
-            if(!empty($request->state)){
-                $settingsave['state']   = $request->state;
+            if (!empty($request->state)) {
+                $settingsave['state'] = $request->state;
             }
-            if(!empty($request->district)){
-                $settingsave['district']   = $request->district;
+            if (!empty($request->district)) {
+                $settingsave['district'] = $request->district;
             }
-            if(!empty($request->city)){
-                $settingsave['city']   = $request->city;
+            if (!empty($request->city)) {
+                $settingsave['city'] = $request->city;
             }
-            if(!empty($request->postal_code)){
-                $settingsave['postal_code']   = $request->postal_code;
+            if (!empty($request->postal_code)) {
+                $settingsave['postal_code'] = $request->postal_code;
             }
-            if(!empty($request->email)){
-                $settingsave['email']   = $request->email;
+            if (!empty($request->email)) {
+                $settingsave['email'] = $request->email;
             }
-            $settingsave['status']      = "1";
+            $settingsave['status'] = "1";
 
-            $savesetting = BranchAddress::updateOrCreate(['meta_key'=>'addressdata_key'],$settingsave);
-            if($savesetting){
+            $savesetting = BranchAddress::updateOrCreate(['meta_key' => 'addressdata_key'], $settingsave);
+            if ($savesetting) {
 
                 $response['success'] = true;
                 $response['success_message'] = "Branch address value updated successfully.";
                 $response['error'] = false;
                 $response['page'] = 'settings-branch-address';
-                  
-            }else{
+
+            } else {
                 $response['success'] = false;
                 $response['error_message'] = "Can not updated branch address value please try again";
                 $response['error'] = true;
             }
             return response()->json($response);
 
-        }
-        else
-        {
-            $branchaddvalue = BranchAddress::where(['meta_key'=>'addressdata_key'])->first();
-            return view('settings.branch-address',['branchaddvalue'=>$branchaddvalue,'prefix'=>$this->prefix]);
+        } else {
+            $branchaddvalue = BranchAddress::where(['meta_key' => 'addressdata_key'])->first();
+            return view('settings.branch-address', ['branchaddvalue' => $branchaddvalue, 'prefix' => $this->prefix]);
         }
     }
     // postal code list
@@ -111,6 +107,8 @@ class SettingController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = Zone::query();
+        $all_districts = Zone::select('district')->groupBy('district')->get();
+        $branchs = Location::all();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -126,7 +124,7 @@ class SettingController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->where('status',1);
+            $query = $query->where('status', 1);
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -143,7 +141,7 @@ class SettingController extends Controller
             $peritem = Session::get('peritem');
             if (!empty($peritem)) {
                 $peritem = $peritem;
-            } else {    
+            } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
             $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -162,13 +160,13 @@ class SettingController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query
-            ->where('status',1);
+        $query = $query->with('Branch')
+            ->where('status', 1);
 
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
         $zones = $zones->appends($request->query());
 
-        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment]);
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment, 'all_districts' => $all_districts, 'branchs' => $branchs]);
     }
 
     public function editPostalCode(Request $request)
@@ -186,7 +184,7 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone,'hub_transfer' => $request->hub_transfer]);
+            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone, 'hub_transfer' => $request->hub_transfer]);
 
             $response['success'] = true;
             $response['success_message'] = "Zone Data successfully";
@@ -207,5 +205,129 @@ class SettingController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ZoneExport, 'zones.csv');
+    }
+
+    public function updateDistrictHub(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $get_location = Location::where('id', $request->branch_id)->first();
+
+            Zone::where('district', $request->district)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $get_location->id]);
+
+            $response['success'] = true;
+            $response['success_message'] = "Hub Updated successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
+
+    public function routeFinder()
+    {
+        $this->prefix = request()->route()->getPrefix();
+        return view('settings.route-finder', ['prefix' => $this->prefix]);
+    }
+
+    public function findRoute(Request $request)
+    {
+        $startingPincode = $request->startingPincode;
+        $endingPincode = $request->endingPincode;
+
+        $connected_hubs = BranchConnectivity::all();
+
+        $graph = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            $neighbors = explode(',', $hub->direct_connectivity);
+            $graph[$location] = $neighbors;
+        }
+
+        $pincode_locations = Zone::all();
+
+        $pincodeLocations = [];
+        foreach ($pincode_locations as $pincode_location) {
+            $pincodeLocations[$pincode_location->postal_code] = $pincode_location->hub_nickname;
+        }
+
+        $response = '';
+
+        if (isset($pincodeLocations[$startingPincode]) && isset($pincodeLocations[$endingPincode])) {
+            $startingLocation = $pincodeLocations[$startingPincode];
+            $endingLocation = $pincodeLocations[$endingPincode];
+
+            $response .= "<h3>Routes between $startingPincode and $endingPincode :</h3>";
+
+            // Initialize visited and route arrays
+            $visited = array_fill_keys(array_keys($graph), false);
+            $route = [];
+
+            // Find routes using DFS
+            $routes = $this->findRoutes($graph, $startingLocation, $endingLocation, $visited, $route);
+            
+            // If no routes were found, display a message
+            if (empty($routes)) {
+                $response .= "<p>No route available between $startingPincode ($startingLocation) and $endingPincode ($endingLocation).</p>";
+            } else {
+
+                // Display all routes found
+                foreach ($routes as $key => $route) {
+                    $new = array();
+                   // $i = 0;
+                   
+                    foreach ($route as $key => $r) {
+                        $getbranch = DB::table('locations')->where('id', $r)->first();
+                        $new[]= $getbranch->name;
+                    }
+                    $response .= "<p>" . implode(' -> ', $new) . "</p>";
+   
+                }
+              
+            }
+        } else {
+            $response .= "<p>Invalid pincode entered.</p>";
+        }
+
+        echo $response;
+
+    }
+
+    public function findRoutes($graph, $start, $end, $visited, $route)
+    {
+        // Mark the current location as visited
+        $visited[$start] = true;
+
+        // Add the current location to the route
+        $route[] = $start;
+
+        // If the destination location is reached, return the route
+        if ($start === $end) {
+            return [$route];
+        } else {
+            $allRoutes = [];
+
+            // Check if the current location exists in the graph
+            if (isset($graph[$start])) {
+                // Iterate over the neighbors of the current location
+                foreach ($graph[$start] as $neighbor) {
+                    // Visit unvisited neighbors recursively
+                    if (!$visited[$neighbor]) {
+                        $newRoutes = $this->findRoutes($graph, $neighbor, $end, $visited, $route);
+                        $allRoutes = array_merge($allRoutes, $newRoutes);
+                    }
+                }
+            }
+
+            return $allRoutes;
+        }
     }
 }

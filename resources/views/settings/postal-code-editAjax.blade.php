@@ -6,8 +6,8 @@
                 <th>Postal Code</th>
                 <th>District</th>
                 <th>State</th>
-                <th>Hub Transfer</th>
-                <th>primary Zone</th>
+                <th>Service HUB Name </th>
+                <th>Service Hub Code</th>
                 <th>Edit</th>
             </tr>
         </thead>
@@ -18,7 +18,7 @@
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
-                <td>{{ $zone->primary_zone ?? '-'}}</td>
+                <td>{{ $zone->Branch->hub_nickname ?? '-'}}</td>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
             </tr>
             @endforeach
