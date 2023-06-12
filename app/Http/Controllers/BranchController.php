@@ -360,40 +360,6 @@ class BranchController extends Controller
         return response()->json($response);
     }
 
-    public function routeListTest(Request $request)
-    {
-        $this->prefix = request()->route()->getPrefix();
-        $peritem = Config::get('variable.PER_PAGE');
-        $query = BranchConnectivity::query();
-        $authuser = Auth::user();
-        $cc = explode(',',$authuser->branch_id);
-
-        if ($request->ajax()) {
-            if ($request->peritem) {
-                Session::put('peritem', $request->peritem);
-            }
-
-            $peritem = Session::get('peritem');
-            if (!empty($peritem)) {
-                $peritem = $peritem;
-            } else {
-                $peritem = Config::get('variable.PER_PAGE');
-            }
-
-            $consignments = $query->orderBy('id', 'ASC')->paginate($peritem);
-            $consignments = $consignments->appends($request->query());
-            // echo'<pre'; print_r($consignments); die;
-            $html = view('branch.route-list-ajax', ['prefix' => $this->prefix, 'locations'=>$locations,'branches'=>$branches, 'peritem' => $peritem])->render();
-
-            return response()->json(['html' => $html]);
-        }
-       
-        $locations = $query->with('Location')->orderBy('id','ASC')->paginate($peritem);
-        $branches = Location::all();
-
-        return view('branch.route-list',['locations'=>$locations,'branches'=>$branches,'prefix'=>$this->prefix,'title'=>$this->title,'peritem' => $peritem]);
-    }
-
     public function routeList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -470,10 +436,6 @@ class BranchController extends Controller
             }
         }
     }
-    // dd(str_replace(array(
-    //     '\'', '"', ';', '[', ']'
-    // ), ' ', $routeData));
-    // dd( str_replace('~^"?(.*?)"?$~', '$1', $routeData));die;
 
         return view('branch.route-list',['routeData'=>$routeData,'branches'=>$branches,'prefix'=>$this->prefix,'title'=>$this->title,'peritem' => $peritem]);
     }
