@@ -100,6 +100,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('branches/delete-branchimage', [BranchController::class, 'deletebranchImage']);
     Route::any('branch-connectivity', [BranchController::class, 'branchConnectivity']);
     Route::any('add-branch-connectivity', [BranchController::class, 'addBranchConnectivity']);
+    Route::any('route-list', [BranchController::class, 'routeList']);
 
     Route::resource('consigners', ConsignerController::class);
     Route::post('consigners/update-consigner', [ConsignerController::class, 'updateConsigner']);
