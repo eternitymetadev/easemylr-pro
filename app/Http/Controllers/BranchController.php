@@ -315,7 +315,7 @@ class BranchController extends Controller
 
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
-                // 'crop_name' => 'required|unique:crops',
+                //  'efpl_hub' => 'required|unique:branch_connectivities',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -326,6 +326,16 @@ class BranchController extends Controller
                 $response['formErrors'] = true;
                 $response['error_message'] = $errors;
                 return response()->json($response);
+            }
+            
+            $check_branch = BranchConnectivity::where('efpl_hub',$request->hub)->first();
+            if(!empty($check_branch)){
+
+                $response['validation'] = true;
+                $response['error'] = true;
+                $response['error_message'] = 'Branch Already Exists';
+                return response()->json($response);
+
             }
 
             $connective_hub = implode(',',$request->direct_connectivity);

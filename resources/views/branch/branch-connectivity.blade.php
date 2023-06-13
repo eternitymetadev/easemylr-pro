@@ -166,7 +166,9 @@ $('#add_connectivity').submit(function(e) {
             if (data.success == true) {
                 swal('success', data.success_message, 'success');
                 window.location.reload();
-            } else {
+            } else if(data.validation == true) {
+                swal('error', data.error_message, 'error');
+            }else {
                 swal('error', data.error_message, 'error');
             }
 
