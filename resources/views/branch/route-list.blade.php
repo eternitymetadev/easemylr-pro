@@ -42,6 +42,18 @@ div.relative {
     margin-top: 3rem;
     margin-left: 2rem;
 }
+
+table{
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+th{
+    font-size: 18px;
+    font-weight: 700;
+}
+th, td{
+    padding: 6px 10px;
+}
 </style>
 
 <div class="layout-px-spacing">
