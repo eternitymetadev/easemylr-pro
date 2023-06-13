@@ -185,6 +185,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('update-hub', [SettingController::class, 'updateDistrictHub']);
     Route::any('route-finder', [SettingController::class, 'routeFinder']);
     Route::any('find-route', [SettingController::class, 'findRoute']);
+    Route::any('get-district', [SettingController::class, 'getDistrict']);
 
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
     Route::get('/sample-consignee-phone',[ImportCsvController::class, 'consigneePhoneSampleDownload']);

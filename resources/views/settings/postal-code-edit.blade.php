@@ -31,6 +31,14 @@
 .btn {
     font-size: 10px;
 }
+.select2-container--open {
+    z-index: 99999;
+}
+
+.select2-dropdown {
+    /* margin-top: 3rem;
+    margin-left: 2rem; */
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -165,21 +173,28 @@
             </div>
             <div class="modal-body">
                 <form id="update_hub">
-                    <div class="form-row">
+                <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="inputEmail4">Select District</label>
-                            <select class="form-control my-select2" id="" name="district" tabindex="-1">
+                            <label for="inputEmail4">Select State</label>
+                            <select class="form-control my-select2" id="state_id" name="state_id" tabindex="-1">
                                 <option value="">--Select--</option>
-                                @foreach($all_districts as $district)
-                                <option value="{{$district->district}}">{{$district->district}}</option>
+                                @foreach($all_states as $all_state)
+                                <option value="{{$all_state->state}}">{{$all_state->state}}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select District</label>
+                            <select class="form-control tagging" id="state_district" name="district[]" multiple="multiple">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
                             <label for="inputEmail4">Select Hub</label>
-                            <select class="form-control my-select2" id="" name="branch_id" tabindex="-1">
+                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1" required >
                                 <option value="">--Select--</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
@@ -311,6 +326,44 @@ $('#update_hub').submit(function(e) {
 
         }
     });
+});
+
+$('#state_id').change(function() {
+    $("#state_district").empty();
+    // $("#hub_assign").empty();
+    var state_name = $(this).val();
+
+    $.ajax({
+        type: 'get',
+        url: 'get-district',
+        data: {
+            state_name: state_name
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+            
+        },
+        success: function(res) {
+
+            $("#state_district").append(
+                    '<option value="">--select--</option>'
+                );
+            $.each(res.all_district, function (key, value) {
+                    $("#state_district").append(
+                        '<option value="' +
+                        value +
+                        '">' +
+                        value +
+                        "</option>"
+                    );
+                });
+
+        }
+    });
+
 });
 </script>
 @endsection

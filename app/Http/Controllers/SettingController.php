@@ -108,6 +108,7 @@ class SettingController extends Controller
         $peritem = Config::get('variable.PER_PAGE');
         $query = Zone::query();
         $all_districts = Zone::select('district')->groupBy('district')->get();
+        $all_states = Zone::select('state')->groupBy('state')->get();
         $branchs = Location::all();
 
         if ($request->ajax()) {
@@ -166,7 +167,7 @@ class SettingController extends Controller
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
         $zones = $zones->appends($request->query());
 
-        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment, 'all_districts' => $all_districts, 'branchs' => $branchs]);
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment, 'all_districts' => $all_districts, 'branchs' => $branchs, 'all_states' => $all_states]);
     }
 
     public function editPostalCode(Request $request)
@@ -215,7 +216,7 @@ class SettingController extends Controller
 
             $get_location = Location::where('id', $request->branch_id)->first();
 
-            Zone::where('district', $request->district)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $get_location->id]);
+            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $get_location->id]);
 
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";
@@ -329,5 +330,23 @@ class SettingController extends Controller
 
             return $allRoutes;
         }
+    }
+
+    public function getDistrict(Request $request)
+    {
+         $all_district = Zone::select('district')->where('state', $request->state_name)->get();
+
+         $district_array = array();
+         foreach($all_district as $district){
+            $district_array[] = $district->district;
+
+         }
+         $state_district = array_unique($district_array);
+
+        $response['all_district'] = $state_district;
+        $response['success'] = true;
+        $response['message'] = "District Fetched";
+
+        return response()->json($response);
     }
 }
