@@ -383,10 +383,12 @@ class BranchController extends Controller
             $locations[$location] = $location;
         }
 
+        $no = 1;
         // Initialize visited and route arrays
     $routeData = "<table style='width: 100%; border:1px solid black; font-size: 16px'>
                     <thead>
                         <tr>
+                            <th style='width: 70px; border:1px solid black;'>Sr.</th>
                             <th style='width: 120px; border:1px solid black;'>From</th>
                             <th style='width: 120px; border:1px solid black;'>To</th>
                             <th style='width: auto; border:1px solid black;'>Route</th>
@@ -413,14 +415,15 @@ class BranchController extends Controller
                 if (empty($routes)) {
                     // $routeData .= "<p>No route available.</p>";
                 } else {
-                    
                     foreach ($routes as $route) {
                         $branch_name = [];
+                       
                         foreach($route as $key => $r){
                         $getbranch = DB::table('locations')->where('id', $r)->first();
                         $branch_name[]= $getbranch->name;
                         }
                         $routeData .= "<tr>
+                                            <td style='border:1px solid black;'>$no</td>
                                             <td style='border:1px solid black;'>$start_branch->name</td>
                                             <td style='border:1px solid black;'>$end_branch->name</td>
                                             <td style='border:1px solid black;'>".implode('  >  ', $branch_name)."</td>
@@ -428,6 +431,7 @@ class BranchController extends Controller
                         
                         // $routeData .= "<p>" . implode(' -> ', $route) . "</p>";
                         // $routeData .= "<p>" . implode(' -> ', $branch_name) . "</p>";
+                        $no = $no + 1;
                     }
                 }
                 // Reverse the starting and ending locations to find vice versa routes
