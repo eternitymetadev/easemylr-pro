@@ -18,6 +18,7 @@ use Helper;
 use Validator;
 use Storage;
 use Auth;
+use Config;
 
 class BranchController extends Controller
 {
@@ -367,6 +368,116 @@ class BranchController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
+    }
+
+    public function routeList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $branches = Location::all();
+        // $query = BranchConnectivity::query();
+
+        $connected_hubs = BranchConnectivity::all();
+
+        $graph = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            $neighbors = explode(',', $hub->direct_connectivity);
+            $graph[$location] = $neighbors;
+        }
+
+        // echo "<pre>"; print_r($graph); die;
+        $routeData = '';
+
+        $locations = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            // $neighbors = explode(',', $hub->direct_connectivity);
+            $locations[$location] = $location;
+        }
+
+        // Initialize visited and route arrays
+    
+    foreach ($locations as $startkey => $startingLocation) {
+        foreach ($locations as $endkey => $endingLocation) {
+            if ($startingLocation !== $endingLocation) {
+                // Initialize visited and route arrays
+                $visited = array_fill_keys(array_keys($graph), false);
+
+                $route = [];
+                // Find routes using DFS
+                $routes = $this->findRoutes($graph, $startingLocation, $endingLocation, $visited, $route);
+
+                $start_branch = DB::table('locations')->where('id', $startingLocation)->first();
+                $end_branch = DB::table('locations')->where('id', $endingLocation)->first();
+
+                // Add the routes to the response string
+                $routeData .= "<h3>Routes from $start_branch->name to $end_branch->name:</h3><br/>";
+    
+                if (empty($routes)) {
+                    $routeData .= `<p>No route available.</p>`;
+                } else {
+                    foreach ($routes as $route) {
+                        $branch_name = [];
+                        foreach($route as $key => $r){
+                        $getbranch = DB::table('locations')->where('id', $r)->first();
+                        $branch_name[]= $getbranch->name;
+                        }
+                        // $routeData .= "<p>" . implode(' -> ', $route) . "</p>";
+                        $routeData .= "<p>" . implode(' -> ', $branch_name) . "</p>";
+                    }
+                }
+    
+                // // Reverse the starting and ending locations to find vice versa routes
+                // $visited = array_fill_keys(array_keys($graph), false);
+                // $route = [];
+    
+                // $reverseRoutes = $this->findRoutes($graph, $endingLocation, $startingLocation, $visited, $route);
+        
+                // $response .= "<h3>Routes from ".$endingLocation." to ".$startingLocation.":</h3>";
+    
+                // if (empty($reverseRoutes)) {
+                //     $response .= "<p>No route available.</p>";
+                // } else {
+                //     foreach ($reverseRoutes as $route) {
+                //         $response .= "<p>" . implode(' -> ', $route) . "</p>";
+                //     }
+                // }
+            }
+        }
+    }
+
+        return view('branch.route-list',['routeData'=>$routeData,'branches'=>$branches,'prefix'=>$this->prefix,'title'=>$this->title,'peritem' => $peritem]);
+    }
+
+    public function findRoutes($graph, $start, $end, $visited, $route)
+    {
+        // Mark the current location as visited
+        $visited[$start] = true;
+
+        // Add the current location to the route
+        $route[] = $start;
+
+        // If the destination location is reached, return the route
+        if ($start === $end) {
+            return [$route];
+        } else {
+            $allRoutes = [];
+
+            // Check if the current location exists in the graph
+            if (isset($graph[$start])) {
+                // Iterate over the neighbors of the current location
+                foreach ($graph[$start] as $keyneighbor=>$neighbor) {
+                    // Visit unvisited neighbors recursively
+                    if (!$visited[$neighbor]) {
+                        $newRoutes = $this->findRoutes($graph, $neighbor, $end, $visited, $route);
+                        $allRoutes = array_merge($allRoutes, $newRoutes);
+                    }
+                }
+            }
+
+            return $allRoutes;
+        }
     }
 
 }
