@@ -376,9 +376,6 @@ class BranchController extends Controller
             $graph[$location] = $neighbors;
         }
 
-        // echo "<pre>"; print_r($graph); die;
-        $routeData = '';
-
         $locations = [];
         foreach ($connected_hubs as $hub) {
             $location = $hub->efpl_hub;
@@ -387,7 +384,16 @@ class BranchController extends Controller
         }
 
         // Initialize visited and route arrays
-    
+    $routeData = "<table style='width: 100%; border:1px solid black; font-size: 16px'>
+                    <thead>
+                        <tr>
+                            <th style='width: 120px; border:1px solid black;'>From</th>
+                            <th style='width: 120px; border:1px solid black;'>To</th>
+                            <th style='width: auto; border:1px solid black;'>Route</th>
+                        </tr>
+                    </thead>
+                <tbody>";
+    // $routeData .= "<table class=''><tr><td rowspan="2">d</td><td>ss</td></tr><tr><td>ss</td></tr>";
     foreach ($locations as $startkey => $startingLocation) {
         foreach ($locations as $endkey => $endingLocation) {
             if ($startingLocation !== $endingLocation) {
@@ -402,40 +408,33 @@ class BranchController extends Controller
                 $end_branch = DB::table('locations')->where('id', $endingLocation)->first();
 
                 // Add the routes to the response string
-                $routeData .= "<h3>Routes from $start_branch->name to $end_branch->name:</h3><br/>";
+                // $routeData .= "<h3>Routes from $start_branch->name to $end_branch->name:</h3><br/>";
     
                 if (empty($routes)) {
-                    $routeData .= `<p>No route available.</p>`;
+                    // $routeData .= "<p>No route available.</p>";
                 } else {
+                    
                     foreach ($routes as $route) {
                         $branch_name = [];
                         foreach($route as $key => $r){
                         $getbranch = DB::table('locations')->where('id', $r)->first();
                         $branch_name[]= $getbranch->name;
                         }
+                        $routeData .= "<tr>
+                                            <td style='border:1px solid black;'>$start_branch->name</td>
+                                            <td style='border:1px solid black;'>$end_branch->name</td>
+                                            <td style='border:1px solid black;'>".implode('  >  ', $branch_name)."</td>
+                                        </tr>";
+                        
                         // $routeData .= "<p>" . implode(' -> ', $route) . "</p>";
-                        $routeData .= "<p>" . implode(' -> ', $branch_name) . "</p>";
+                        // $routeData .= "<p>" . implode(' -> ', $branch_name) . "</p>";
                     }
                 }
-    
-                // // Reverse the starting and ending locations to find vice versa routes
-                // $visited = array_fill_keys(array_keys($graph), false);
-                // $route = [];
-    
-                // $reverseRoutes = $this->findRoutes($graph, $endingLocation, $startingLocation, $visited, $route);
-        
-                // $response .= "<h3>Routes from ".$endingLocation." to ".$startingLocation.":</h3>";
-    
-                // if (empty($reverseRoutes)) {
-                //     $response .= "<p>No route available.</p>";
-                // } else {
-                //     foreach ($reverseRoutes as $route) {
-                //         $response .= "<p>" . implode(' -> ', $route) . "</p>";
-                //     }
-                // }
+                // Reverse the starting and ending locations to find vice versa routes
             }
         }
     }
+    $routeData .= "</tbody></table>";
 
         return view('branch.route-list',['routeData'=>$routeData,'branches'=>$branches,'prefix'=>$this->prefix,'title'=>$this->title,'peritem' => $peritem]);
     }
