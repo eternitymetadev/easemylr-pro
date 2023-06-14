@@ -168,7 +168,7 @@ div.relative {
             </div>
             <div class="modal-body">
                 <form id="update_connectivity">
-                    <input type="text" id="branchid_hidden" name="branchid_hidden" value="">
+                    <input type="hidden" id="branchid_hidden" name="branchid_hidden" value="">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Hub</label>
