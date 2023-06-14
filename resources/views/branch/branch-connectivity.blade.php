@@ -209,7 +209,6 @@ div.relative {
 @section('js')
 <script>
 $('#add_connectivity').submit(function(e) {
-    alert('ll');
     e.preventDefault();
 
     var formData = new FormData(this);
