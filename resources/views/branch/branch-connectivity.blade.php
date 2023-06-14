@@ -87,22 +87,15 @@ div.relative {
                         <td>{{ $hubs }}</td>
                         <td>
                             <div class="d-flex align-content-center justify-content-center" style="gap: 6px">
-                                <a class="editIcon edit-connectivity" href="javascript:void(0)"
+                                <a class="btn btn-primary editIcon edit-connectivity" href="javascript:void(0)"
                                     data-action="<?php echo URL::to($prefix . '/branch-connectivity/edit-branch-connectivity'); ?>"
                                     data-id="{{ $value->id }}" data-toggle="modal"
                                     data-target="#connectivity-updatemodal">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round" class="feather feather-edit">
-                                        <path
-                                            d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                        <path
-                                            d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
+                                    <span><i class="fa fa-edit"></i></span>
                                 </a>
-                               
+                                <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="<?php echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity'); ?>">
+                                    <span><i class="fa fa-trash"></i></span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -211,7 +204,7 @@ div.relative {
 </div>
 
 
-
+@include('models.delete-connectivity')
 @endsection
 @section('js')
 <script>
@@ -267,7 +260,6 @@ $('#add_connectivity').submit(function(e) {
             $('#branch_nameup').val(response.branch_data.efpl_hub).change();
             var myString = response.branch_data.direct_connectivity;
             var myArray = myString.split(",");
-            console.log(myArray);
             var branchID = [];
             $.each(myArray, function(key, value) {
                 console.log(key);
@@ -282,7 +274,6 @@ $('#add_connectivity').submit(function(e) {
 // update conectivity
 
 $('#update_connectivity').submit(function(e) {
-    alert('lffl');
     e.preventDefault();
 
     var formData = new FormData(this);
@@ -314,6 +305,34 @@ $('#update_connectivity').submit(function(e) {
         }
     });
 });
+
+/*===== delete connectivity =====*/
+jQuery(document).on("click", ".delete_connectivity", function () {
+        jQuery("#deletelocation").modal("show");
+        var location_id = jQuery(this).attr("data-id");
+        var url = jQuery(this).attr("data-action");
+        jQuery(document)
+            .off("click", ".deletelocationconfirm")
+            .on("click", ".deletelocationconfirm", function () {
+                jQuery.ajax({
+                    type: "post",
+                    url: url,
+                    data: { location_id: location_id },
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data) {
+                            jQuery("#deletelocation").modal("hide");
+                            location.reload();
+                        }
+                    },
+                });
+            });
+    });
 </script>
 
 @endsection

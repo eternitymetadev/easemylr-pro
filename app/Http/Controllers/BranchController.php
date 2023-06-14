@@ -444,6 +444,16 @@ class BranchController extends Controller
         return response()->json($response);
     }
 
+    public function deleteBranchConnectivity(Request $request)
+    { 
+      $deletelocation = BranchConnectivity::where('id',$request->location_id)->delete();
+      $response['success']         = true;
+      $response['success_message'] = 'Branch connectivity deleted successfully';
+      $response['error']           = false;
+
+      return response()->json($response);
+    }
+
     public function routeList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
