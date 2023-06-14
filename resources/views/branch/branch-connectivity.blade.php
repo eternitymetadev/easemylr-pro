@@ -96,9 +96,9 @@ div.relative {
                                     data-target="#connectivity-updatemodal">
                                     <span><i class="fa fa-edit"></i></span>
                                 </a>
-                                <!-- <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="<?php// echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity'); ?>">
+                                <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity');">
                                     <span><i class="fa fa-trash"></i></span>
-                                </a> -->
+                                </a>
                             </div>
                         </td>
                     </tr>
