@@ -559,7 +559,7 @@ class BranchController extends Controller
                 // Iterate over the neighbors of the current location
                 foreach ($graph[$start] as $keyneighbor=>$neighbor) {
                     // Visit unvisited neighbors recursively
-                    if (!$visited[$neighbor]) {
+                    if (!@$visited[$neighbor]) {
                         $newRoutes = $this->findRoutes($graph, $neighbor, $end, $visited, $route);
                         $allRoutes = array_merge($allRoutes, $newRoutes);
                     }
