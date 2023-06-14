@@ -82,9 +82,12 @@ div.relative {
                         <?php $locarray[] = $loc->name; ?>
                         @endforeach
                         <?php 
-                       
-                        $hubs = implode(',',$locarray); ?>
+                        $hubs = implode(',',$locarray); 
+                        if($value->direct_connectivity){?>
                         <td>{{ $hubs }}</td>
+                        <?php }else{ ?>
+                            <td>Route not available!</td>
+                            <?php } ?>
                         <td>
                             <div class="d-flex align-content-center justify-content-center" style="gap: 6px">
                                 <a class="btn btn-primary editIcon edit-connectivity" href="javascript:void(0)"
@@ -93,9 +96,9 @@ div.relative {
                                     data-target="#connectivity-updatemodal">
                                     <span><i class="fa fa-edit"></i></span>
                                 </a>
-                                <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="<?php echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity'); ?>">
+                                <!-- <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="<?php// echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity'); ?>">
                                     <span><i class="fa fa-trash"></i></span>
-                                </a>
+                                </a> -->
                             </div>
                         </td>
                     </tr>
