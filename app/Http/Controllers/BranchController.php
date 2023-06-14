@@ -453,7 +453,7 @@ class BranchController extends Controller
 
       return response()->json($response);
     }
-
+  
     public function routeList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
