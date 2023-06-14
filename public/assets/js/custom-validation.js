@@ -414,7 +414,7 @@ jQuery(document).ready(function () {
             });
     });
 
-    /*===== delete location =====*/
+    /*===== delete location and connectivity branch =====*/
     jQuery(document).on("click", ".delete_location", function () {
         jQuery("#deletelocation").modal("show");
         var location_id = jQuery(this).attr("data-id");
