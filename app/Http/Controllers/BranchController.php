@@ -412,8 +412,11 @@ class BranchController extends Controller
                 return response()->json($response);
 
             }
-
-            $connective_hub = implode(',',$request->direct_connectivity);
+            if(!empty($request->direct_connectivity)){
+                $connective_hub = implode(',',$request->direct_connectivity);
+            }else{
+                $connective_hub = "";
+            }
 
             $savehub['efpl_hub'] = $request->hub;
             $savehub['direct_connectivity'] = $connective_hub;
