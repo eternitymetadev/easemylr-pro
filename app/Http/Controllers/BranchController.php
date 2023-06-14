@@ -310,7 +310,6 @@ class BranchController extends Controller
 
     public function addBranchConnectivity(Request $request)
     {
-        
         try {
             DB::beginTransaction();
 
@@ -351,6 +350,81 @@ class BranchController extends Controller
                 $url = $this->prefix . '/settings/branch-address';
                 $response['success'] = true;
                 $response['success_message'] = "Branch Added successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    public function editBranchConnectivity(Request $request){
+        $get_branch = BranchConnectivity::where('id', $request->branch_id)->first();
+        if($get_branch){
+            $response['success'] = true;
+            $response['branch_data'] = $get_branch;
+            $response['error'] = false;
+        }else{
+            $response['success']         = false;
+            $response['success_message'] = 'data not found';
+            $response['error']           = true;
+        }
+        return response()->json($response);
+    }
+
+    public function updateBranchConnectivity(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //  'efpl_hub' => 'required|unique:branch_connectivities',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+            
+            $check_branch = BranchConnectivity::where('id','!=',$request->branchid_hidden)->where('efpl_hub', $request->hub)->first();
+            if(!empty($check_branch)){
+
+                $response['validation'] = true;
+                $response['error'] = true;
+                $response['error_message'] = 'Branch Already Exists';
+                return response()->json($response);
+
+            }
+
+            $connective_hub = implode(',',$request->direct_connectivity);
+
+            $savehub['efpl_hub'] = $request->hub;
+            $savehub['direct_connectivity'] = $connective_hub;
+            $savehub['status'] = 1;
+
+            $saveconnectivity = BranchConnectivity::where('id', $request->branchid_hidden)->update($savehub);
+
+            if ($saveconnectivity) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Branch Updated successfully";
                 $response['error'] = false;
                 $response['redirect_url'] = $url;
 
