@@ -209,6 +209,7 @@ div.relative {
 @section('js')
 <script>
 $('#add_connectivity').submit(function(e) {
+    alert('ll');
     e.preventDefault();
 
     var formData = new FormData(this);
@@ -273,6 +274,7 @@ $('#add_connectivity').submit(function(e) {
 // update conectivity
 
 $('#update_connectivity').submit(function(e) {
+
     e.preventDefault();
 
     var formData = new FormData(this);
