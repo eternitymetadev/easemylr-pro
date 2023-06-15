@@ -177,7 +177,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Pan<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control pan" id="pan_no" name="pan" placeholder=""
-                                        maxlength="10" minlength="10">
+                                        maxlength="10" minlength="10" disabled>
                                     <span id="lblPANCard" class="error" style="display: none">Invalid PAN Number</span>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -217,16 +217,37 @@
 @endsection
 @section('js')
 <script>
-$(document).on("keyup", "#pan_no", function () {
-    var panVal = $(this).val();
-    var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+    $(document).ready(function(){
 
-    if (regpan.test(panVal)) {
-        $("#lblPANCard").hide();
-    } else {
-        $("#lblPANCard").show();
-    }
-})
+        $(document).on("keyup blur", "#pan_no", function () {
+            var vendor_type = $("#vendor_type").val();
+            var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+            var panVal = $(this).val().toUpperCase();
+            
+            if(panVal.length >= 4){
+                var strval =  panVal.charAt(4 - 1);
+                if(strval != 'F' && vendor_type == "Firm"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'P' && (vendor_type == "Individual" || vendor_type == "Proprietorship") ){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'C' && vendor_type == "Company"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'H' && vendor_type == "HUF"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }
+            }
+
+            if (regpan.test(panVal)) {
+                $("#lblPANCard").hide();
+            } else {
+                $("#lblPANCard").show();
+            }
+        })
+    });
 
 jQuery(function() {
     $('.my-select2').each(function() {
@@ -245,7 +266,13 @@ jQuery(function() {
 })
 
 $('#vendor_type').change(function() {
+    $("#pan_no").val('');
     var v_typ = $(this).val();
+    if(v_typ != ''){
+        $("#pan_no").prop('disabled', false);
+    }else{
+        $("#pan_no").prop('disabled', true);
+    }
     var declaration = ($('input[name=decalaration_available]:checked').val());
     if (declaration == '2') {
         if (v_typ == 'Individual') {
