@@ -41,6 +41,7 @@ class ConsignmentNote extends Model
         'user_id',
         'branch_id',
         'to_branch_id',
+        'route_branch_id',
         'fall_in',
         'driver_id',
         'bar_code',
@@ -133,6 +134,9 @@ class ConsignmentNote extends Model
     }
     public function fallIn(){
         return $this->belongsTo('App\Models\Location','fall_in');
+    }
+    public function LrRoute(){
+        return $this->hasOne('App\Models\LrRoute','lr_id','id');
     }
 
 }

@@ -9,6 +9,8 @@ use App\Models\Location;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\Consigner;
+use App\Models\Consignee;
 use Auth;
 use Config;
 use DB;
@@ -349,4 +351,73 @@ class SettingController extends Controller
 
         return response()->json($response);
     }
+
+     public function getRoute(Request $request)
+     {
+        $consioner_pin = Consigner::where('id', $request->consigner_id)->first();
+        
+        $consignee_pin = Consignee::where('id', $request->consignee_id)->first();
+
+        $startingPincode = $consioner_pin->postal_code;
+        $endingPincode = $consignee_pin->postal_code;
+
+        $connected_hubs = BranchConnectivity::all();
+
+        $graph = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            $neighbors = explode(',', $hub->direct_connectivity);
+            $graph[$location] = $neighbors;
+        }
+
+        $pincode_locations = Zone::all();
+
+        $pincodeLocations = [];
+        foreach ($pincode_locations as $pincode_location) {
+            $pincodeLocations[$pincode_location->postal_code] = $pincode_location->hub_nickname;
+        }
+
+        $response = '';
+
+        if (isset($pincodeLocations[$startingPincode]) && isset($pincodeLocations[$endingPincode])) {
+            $startingLocation = $pincodeLocations[$startingPincode];
+            $endingLocation = $pincodeLocations[$endingPincode];
+
+            $response .= "<h3>Routes between $startingPincode and $endingPincode :</h3>";
+
+            // Initialize visited and route arrays
+            $visited = array_fill_keys(array_keys($graph), false);
+            $route = [];
+
+            // Find routes using DFS
+            $routes = $this->findRoutes($graph, $startingLocation, $endingLocation, $visited, $route);
+            
+            // If no routes were found, display a message
+            if (empty($routes)) {
+                $response .= "<p>No route available between $startingPincode ($startingLocation) and $endingPincode ($endingLocation).</p>";
+            } else {
+                $i = 0;
+
+                // Display all routes found
+                foreach ($routes as $key => $route) {
+                    $new = array();
+                   
+                    foreach ($route as $key => $r) {
+                        $getbranch = DB::table('locations')->where('id', $r)->first();
+                        $new[]= $getbranch->name;
+                    }
+                    // $response .= "<p>" . implode(' -> ', $new) . "</p>";
+                    $response .= "<div><input type='radio' onchange='enableSUbmitButton()' id='route-$i' name='lr_routes' value=".implode(',', $route)."><label for='route-$i'>".implode(' -> ', $new)."</label></div>" ;
+                    $i++;
+                }
+              
+            }
+        } else {
+            $response .= "<p>Invalid pincode entered.</p>";
+        }
+
+        return response()->json($response);
+
+
+     }
 }

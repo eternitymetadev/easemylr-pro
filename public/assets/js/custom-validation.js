@@ -800,7 +800,7 @@ jQuery(document).ready(function () {
     
                 </div>`;
                     $('.orderInfoBlock').html(blockToAppend);
-                
+
                     // $(".insert-more").attr("disabled", true);
                 }
             },
@@ -894,6 +894,17 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
+                    if (res.get_pin_hub == null) {
+                        $('#check_hub').html('No hub found');
+                        $('.disableme').prop('disabled', true);
+                        $('#select_consignee').prop('disabled', true);
+                        swal('error','Hub not found','error')
+
+                    } else {
+                        $('#check_hub').html(res.get_pin_hub);
+                        $('.disableme').prop('disabled', false);
+                        $('#select_consignee').prop('disabled', false);
+                    }
 
                     $("#dispatch").val(res.data.city);
                 }
@@ -966,6 +977,15 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
+                    if (res.get_pin_hub == null) {
+                        $('#check_hub_delivery').html('No hub found');
+                        $('.disableme').prop('disabled', true);
+                        swal('error','Hub not found','error')
+                    } else {
+                        $('#check_hub_delivery').html(res.get_pin_hub);
+                        $('.disableme').prop('disabled', false);
+                    }
+
                 }
             },
         });
@@ -1504,7 +1524,7 @@ jQuery(document).ready(function () {
                             "][delivery_date]' data-id=" +
                             value.consignment_no +
                             " class='delivery_d' value='" +
-                            value.dd + 
+                            value.dd +
                             "' onkeydown='return false'>";
                     } else {
                         var deliverydate = value.dd;
@@ -1735,7 +1755,7 @@ jQuery(document).ready(function () {
                     } else {
                         if (img_api == null || img_api == "") {
                             var field = "No image available";
-                                
+
                         } else {
                             var field1 = [];
                             var img_length = img_api.length;
@@ -1752,7 +1772,7 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
-                    } 
+                    }
                     // delivery date check
                     if (value.delivery_date == null) {
                         if (data.role_id == 7) {
@@ -1897,16 +1917,16 @@ jQuery(document).ready(function () {
         $('#freight_on_delivery').val('');
         $('#cod').val('');
         var payment_val = $(this).val();
-        if(payment_val == 'To Pay' || payment_val == 'Paid'){
+        if (payment_val == 'To Pay' || payment_val == 'Paid') {
             var frieght_val = $('#freight_on_delivery').val();
-            if(frieght_val == ''){
+            if (frieght_val == '') {
                 $('#freight_on_delivery').css("border-color", "red");
                 $('#freight_on_delivery').attr('required', true);
-            }else{
+            } else {
                 $("#freight_on_delivery").css("border-color", "#bfc9d4");
                 $("#freight_on_delivery").removeAttr('required');
             }
-        }else{
+        } else {
             $("#freight_on_delivery").css("border-color", "#bfc9d4");
             $("#freight_on_delivery").removeAttr('required');
         }
@@ -1914,13 +1934,13 @@ jQuery(document).ready(function () {
 
     $(document).on("keyup", "#freight_on_delivery", function () {
         var frieght_val = $(this).val();
-            if(frieght_val == ''){
-                $(this).css("border-color", "red");
-                $(this).attr('required', true);
-            }else{
-                $(this).css("border-color", "#bfc9d4");
-                $(this).removeAttr('required');
-            }
+        if (frieght_val == '') {
+            $(this).css("border-color", "red");
+            $(this).attr('required', true);
+        } else {
+            $(this).css("border-color", "#bfc9d4");
+            $(this).removeAttr('required');
+        }
     });
 
     // for vehicle tonnage capacity calculation
@@ -1970,7 +1990,7 @@ jQuery(document).ready(function () {
                 success: function (data) {
                     if (data.success) {
                         console.log(data.zone);
-                        
+
                         // $("#city").val(data.data.city);
                         $("#district").val(data.zone.district);
                         $("#state").val(data.zone.state);
@@ -2093,7 +2113,7 @@ $(document).on("click", ".onelrupdate", function () {
                 swal("success", data.messages, "success");
                 location.reload();
             } else {
-                swal("error", data.messages , "error");
+                swal("error", data.messages, "error");
             }
         },
     });
@@ -2370,7 +2390,7 @@ $("#vendor-master").submit(function (e) {
     if (!pan_no) {
         swal("Error!", "Please Enter Pan No", "error");
         return false;
-    }else{
+    } else {
         var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 
         if (regpan.test(pan_no)) {
@@ -2419,11 +2439,11 @@ $("#payment_form").submit(function (e) {
     var formData = new FormData(this);
     var tds_rate = $("#tds_rate").val();
 
-    if (!tds_rate) { 
+    if (!tds_rate) {
         swal("Error", "please add tds rate in vendor", "error");
         return false;
     }
- 
+
     $.ajax({
         url: "create-payment",
         headers: {
@@ -2443,9 +2463,9 @@ $("#payment_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 $("#payment_form")[0].reset();
-            } else if(data.error == true){
+            } else if (data.error == true) {
                 swal("error", data.message, "error");
-            }else {
+            } else {
                 swal("error", data.message, "error");
             }
         },
@@ -2768,9 +2788,9 @@ $("#create_request_form").submit(function (e) {
             if (data.success == true) {
                 swal("success", data.message, "success");
                 window.location.href = data.redirect_url;
-            } else if(data.error == true){
+            } else if (data.error == true) {
                 swal("error", data.message, "error");
-            }else {
+            } else {
                 swal("error", data.message, "error");
             }
         },
@@ -2966,8 +2986,8 @@ $(document).on("click", ".receive-vehicle", function () {
                         '<td><input class="dialogInput remaining_qty" style="width: 120px; visibility: hidden" type="text" name="data[' +
                         index +
                         '][remaining_qty]" readonly></td>';
-                   
-                    
+
+
 
                     rows +=
                         '<td><input class="dialogInput form-control-sm remarks" style="min-width: 200px; visibility: hidden" type="text" name="data[' +
@@ -2984,12 +3004,12 @@ $(document).on("click", ".receive-vehicle", function () {
 jQuery(document).on("click", ".verify_status", function (event) {
     $(this).closest('td').next('td').find('input').val('');
     verify_val = $(this).val();
-    if(verify_val == '1'){
+    if (verify_val == '1') {
         $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'hidden');
         $(this).closest('td').next('td').find('.remaining_qty').css('visibility', 'hidden');
         $(this).closest('td').next('td').find('.remarks').css('visibility', 'hidden');
-        
-    }else{
+
+    } else {
         $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'visible');
         $(this).closest('td').siblings('td').find('.remaining_qty').css('visibility', 'visible');
         $(this).closest('td').siblings('td').find('.remarks').css('visibility', 'visible');

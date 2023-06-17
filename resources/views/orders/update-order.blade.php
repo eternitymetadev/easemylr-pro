@@ -263,9 +263,48 @@ span.select2.select2-container.mb-4 {
     background: #f9b60024;
     color: #000;
 }
-select[readonly]
-{
+
+select[readonly] {
     pointer-events: none;
+}
+
+
+/* for routes list */
+#routeList {
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 12px #83838380 inset;
+    margin-top: 1.5rem;
+}
+
+#routeList h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+#routeList div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 1rem;
+    margin-bottom: 8px;
+}
+
+#routeList input {
+    height: 20px;
+    width: 20px;
+    accent-color: green;
+    cursor: pointer;
+}
+
+div#routeList input:checked+label {
+    color: green !important;
+}
+
+div#routeList label {
+    font-size: 18px !important;
+    cursor: pointer;
 }
 </style>
 <?php 
@@ -340,14 +379,15 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <label for="exampleFormControlSelect1">
                     Payment Term<span class="text-danger">*</span>
                 </label>
-                <select class="form-control" style="width: 160px;" name="payment_type" id="payment_type" onchange="togglePaymentAction()" {{$disable}}>
+                <select class="form-control" style="width: 160px;" name="payment_type" id="payment_type"
+                    onchange="togglePaymentAction()" {{$disable}}>
                     <option value="To be Billed" {{$getconsignments->payment_type == 'To be Billed' ? 'selected' : ''}}>
                         TBB</option>
                     <option value="To Pay" {{$getconsignments->payment_type == 'To Pay' ? 'selected' : ''}}>To Pay
-                    </option> 
+                    </option>
                     <option value="Paid" {{$getconsignments->payment_type == 'Paid' ? 'selected' : ''}}>
-                                Paid
-                                </option>
+                        Paid
+                    </option>
                 </select>
             </div>
             <!-- <div class="form-group col-md-2">
@@ -364,7 +404,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </label>
                 <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery"
                     value="{{old('freight_on_delivery',isset($getconsignments->freight_on_delivery)?$getconsignments->freight_on_delivery:'')}}"
-                    readonly >
+                    readonly>
             </div>
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
@@ -525,8 +565,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                     <div class="form-group form-group-sm">
                                                         <label>Order ID</label>
                                                         <input type="text" class="form-control orderid"
-                                                            name="data[{{$i}}][order_id]" value="{{$item->order_id}}"
-                                                            >
+                                                            name="data[{{$i}}][order_id]" value="{{$item->order_id}}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -550,7 +589,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Invoice Amount</label>
                                                         <input type="number" class="form-control invc_amt"
                                                             name="data[{{$i}}][invoice_amount]"
-                                                            value="{{$item->invoice_amount}}" >
+                                                            value="{{$item->invoice_amount}}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -558,7 +597,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>E-way Bill Number</label>
                                                         <input type="number" class="form-control ew_bill"
                                                             name="data[{{$i}}][e_way_bill]"
-                                                            value="{{$item->e_way_bill}}" >
+                                                            value="{{$item->e_way_bill}}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -566,7 +605,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>E-Way Bill Date</label>
                                                         <input type="date" class="form-control ewb_date"
                                                             name="data[{{$i}}][e_way_bill_date]"
-                                                            value="{{$item->e_way_bill_date}}" >
+                                                            value="{{$item->e_way_bill_date}}">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -741,18 +780,15 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                 value="{{old('id',isset($item->id)?$item->id:'')}}">
                                             <td><input type="text" class="form-control form-small orderid"
                                                     name="data[{{$i}}][order_id]"
-                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}"
-                                                    >
+                                                    value="{{old('order_id',isset($item->order_id)?$item->order_id:'')}}">
                                             </td>
                                             <td><input type="text" class="form-control form-small invc_no" id="1"
                                                     name="data[{{$i}}][invoice_no]"
-                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}"
-                                                    >
+                                                    value="{{old('invoice_no',isset($item->invoice_no)?$item->invoice_no:'')}}">
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
-                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}"
-                                                    >
+                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}">
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[{{$i}}][invoice_amount]"
@@ -761,28 +797,23 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             </td>
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[{{$i}}][e_way_bill]"
-                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}"
-                                                    >
+                                                    value="{{old('e_way_bill',isset($item->e_way_bill)?$item->e_way_bill:'')}}">
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
-                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}"
-                                                    >
+                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}">
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[{{$i}}][quantity]"
-                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}"
-                                                    >
+                                                    value="{{old('quantity',isset($item->quantity)?$item->quantity:'')}}">
                                             </td>
                                             <td><input type="number" class="form-control form-small net"
                                                     name="data[{{$i}}][weight]"
-                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}"
-                                                    >
+                                                    value="{{old('weight',isset($item->weight)?$item->weight:'')}}">
                                             </td>
                                             <td><input type="number" class="form-control form-small gross"
                                                     name="data[{{$i}}][gross_weight]"
-                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}"
-                                                    >
+                                                    value="{{old('gross_weight',isset($item->gross_weight)?$item->gross_weight:'')}}">
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-default btn-rounded insert-more"> +
@@ -796,6 +827,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                             </div>
                         </div>
                     </div>
+                    <div id="routeList"></div>
                 </div>
 
             </div>
@@ -875,8 +907,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
                 {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
-                <button type="submit" class="mt-2 btn btn-primary disableme"
-                    style="height: 40px; width: 200px">Submit</button>
+                <button type="submit" class="mt-2 btn btn-primary disableme" id="completeOrderButton"
+                    style="height: 40px; width: 200px" disabled>Submit</button>
             </div>
 
     </form>
@@ -886,6 +918,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 @endsection
 @section('js')
 <script>
+    function enableSUbmitButton() {
+        $('#completeOrderButton').removeAttr('disabled');
+    }
+
 function insertMaintableRow() {
     var tid = $("#tid").val();
     $(".items_table").each(function() {
@@ -1359,6 +1395,26 @@ $(document).ready(function() {
     var consigner_id = $('#select_consigner').val();
     var consignee_id = $('#select_consignee').val();
     var shipto_id = $('#select_ship_to').val();
+
+    $.ajax({
+        type: 'get',
+        url: APP_URL + '/get_route',
+        data: {
+            consigner_id: consigner_id,
+            consignee_id: consignee_id
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            $('#routeList').html(response);
+        },
+        error: function() {
+            $('#routeList').html('<p>Error occurred. Please try again.</p>');
+        }
+    });
+
     $.ajax({
         type: 'get',
         url: APP_URL + '/get_consigners',
@@ -1540,20 +1596,24 @@ $(document).ready(function() {
             }
         }
     });
+
+
 });
 
+
+
 function togglePaymentAction() {
-if ($('#payment_type').val() == 'To Pay') {
-    $('#freight_on_delivery').attr('readonly', false);
-    $('#cod').attr('readonly', false);
-} else if($('#payment_type').val() == 'Paid'){
-    $('#cod').attr('readonly', true);
-    $('#freight_on_delivery').attr('readonly', true);
-} else {
-    $('#freight_on_delivery').attr('readonly', true);
-    $('#cod').attr('readonly', false);
-    $('#freight_on_delivery').val(''); 
-}
+    if ($('#payment_type').val() == 'To Pay') {
+        $('#freight_on_delivery').attr('readonly', false);
+        $('#cod').attr('readonly', false);
+    } else if ($('#payment_type').val() == 'Paid') {
+        $('#cod').attr('readonly', true);
+        $('#freight_on_delivery').attr('readonly', true);
+    } else {
+        $('#freight_on_delivery').attr('readonly', true);
+        $('#cod').attr('readonly', false);
+        $('#freight_on_delivery').val('');
+    }
 }
 
 // function togglePaymentAction() {

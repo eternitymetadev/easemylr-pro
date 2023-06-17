@@ -14,6 +14,7 @@ use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\LrRoute;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -412,7 +413,7 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateOrder(Request $request){
+    public function updateOrder(Request $request){ 
         try {
             DB::beginTransaction();
 
@@ -468,7 +469,7 @@ class OrderController extends Controller
             
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            // $consignmentsave['branch_id'] = $authuser->branch_id;
+             $consignmentsave['route_branch_id'] = $authuser->branch_id;
 
             $consignmentsave['edd'] = $request->edd;
             // $consignmentsave['user_id'] = $authuser->id;
@@ -786,6 +787,14 @@ class OrderController extends Controller
                 }
             }
             }
+
+            $saveroute['lr_id'] = $request->consignment_id;
+            $saveroute['route'] = $request->lr_routes;
+
+            $routesave = LrRoute::create($saveroute);
+
+
+
               /////////////////// drs api push ////////////////////////////
 
              $consignment_id = $request->consignment_id;

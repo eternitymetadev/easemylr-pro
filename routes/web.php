@@ -998,6 +998,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/get_route', [SettingController::class, 'getRoute']);
     Route::get('/get_drivers', [VehicleController::class, 'getDrivers']);
     Route::get('/get_consigners', [ConsignmentController::class, 'getConsigners']);
     Route::get('/get_consignees', [ConsignmentController::class, 'getConsignees']);
