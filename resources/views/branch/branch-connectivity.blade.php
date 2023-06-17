@@ -64,6 +64,7 @@ div.relative {
                         <th>Sr No.</th>
                         <th>EFPL Hub</th>
                         <th>Direct Connectivity</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,9 +82,25 @@ div.relative {
                         <?php $locarray[] = $loc->name; ?>
                         @endforeach
                         <?php 
-                       
-                        $hubs = implode(',',$locarray); ?>
+                        $hubs = implode(',',$locarray); 
+                        if($value->direct_connectivity){?>
                         <td>{{ $hubs }}</td>
+                        <?php }else{ ?>
+                            <td>Route not available!</td>
+                            <?php } ?>
+                        <td>
+                            <div class="d-flex align-content-center justify-content-center" style="gap: 6px">
+                                <a class="btn btn-primary editIcon edit-connectivity" href="javascript:void(0)"
+                                    data-action="<?php echo URL::to($prefix . '/branch-connectivity/edit-branch-connectivity'); ?>"
+                                    data-id="{{ $value->id }}" data-toggle="modal"
+                                    data-target="#connectivity-updatemodal">
+                                    <span><i class="fa fa-edit"></i></span>
+                                </a>
+                                <!-- <a href="Javascript:void();" class="btn btn-danger delete_connectivity" data-id="{{ $value->id }}" data-action="echo URL::to($prefix.'/branch-connectivity/delete-branch-connectivity');">
+                                    <span><i class="fa fa-trash"></i></span>
+                                </a> -->
+                            </div>
+                        </td>
                     </tr>
                     @endforeach
                     @endif
@@ -94,7 +111,7 @@ div.relative {
 </div>
 
 
-<!-- Modal -->
+<!--Add connectivity Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -140,10 +157,62 @@ div.relative {
         </div>
     </div>
 </div>
+
+<!--Update connectivity Modal -->
+<div class="modal fade" id="connectivity-updatemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Update Branch Connectivity</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update_connectivity">
+                    <input type="hidden" id="branchid_hidden" name="branchid_hidden" value="">
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Hub</label>
+                            <select class="form-control" id="branch_nameup" name="hub">
+                                <option disabled selected>Select..</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="inputPassword4">Direct Connectivity</label>
+                        <select class="form-control  tagging" id="direct_connectivityup" name="direct_connectivity[]" multiple="multiple">
+                            <option disabled>Select..</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id=""><span class="indicator-label">Submit</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@include('models.delete-connectivity')
 @endsection
 @section('js')
 <script>
 $('#add_connectivity').submit(function(e) {
+    alert('ll');
     e.preventDefault();
 
     var formData = new FormData(this);
@@ -175,6 +244,99 @@ $('#add_connectivity').submit(function(e) {
         }
     });
 });
+
+/*===== get location on edit click =====*/   
+    $(".edit-connectivity").click(function() {
+    var branch_id = jQuery(this).attr("data-id");
+    jQuery("#branchid_hidden").val(branch_id);
+    var action = jQuery(this).attr("data-action");
+    jQuery.ajax({
+        type: "post",
+        url: action,
+        data: { branch_id:branch_id },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        dataType: "json",
+        success: function (response) {
+            console.log(response.branch_data);
+            $('#branch_nameup').val(response.branch_data.efpl_hub).change();
+            var myString = response.branch_data.direct_connectivity;
+            var myArray = myString.split(",");
+            var branchID = [];
+            $.each(myArray, function(key, value) {
+                console.log(key);
+                branchID.push(value);
+            });
+            $('#direct_connectivityup').val(branchID).change();
+        },
+    });
+
+});
+
+// update conectivity
+
+$('#update_connectivity').submit(function(e) {
+
+    e.preventDefault();
+
+    var formData = new FormData(this);
+    $.ajax({
+        url: "update-branch-connectivity",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else if(data.validation == true) {
+                swal('error', data.error_message, 'error');
+            }else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+
+/*===== delete connectivity =====*/
+jQuery(document).on("click", ".delete_connectivity", function () {
+        jQuery("#deletelocation").modal("show");
+        var location_id = jQuery(this).attr("data-id");
+        var url = jQuery(this).attr("data-action");
+        jQuery(document)
+            .off("click", ".deletelocationconfirm")
+            .on("click", ".deletelocationconfirm", function () {
+                jQuery.ajax({
+                    type: "post",
+                    url: url,
+                    data: { location_id: location_id },
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    dataType: "JSON",
+                    success: function (data) {
+                        if (data) {
+                            jQuery("#deletelocation").modal("hide");
+                            location.reload();
+                        }
+                    },
+                });
+            });
+    });
 </script>
 
 @endsection
