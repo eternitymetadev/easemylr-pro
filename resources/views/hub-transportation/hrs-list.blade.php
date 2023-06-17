@@ -190,13 +190,14 @@ $(document).ready(function() {
                 this.checked = false;
             });
             jQuery('#create_hrs').prop('disabled', true);
-        }
+        } 
     });
 
     jQuery(document).on('click', '.chkBoxClass', function() {
         if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
             $('#ckbCheckAll').prop('checked', true);
             jQuery('#launch_model').prop('disabled', false);
+            jQuery('#create_hrs').prop('disabled', false);
         } else {
             var checklength = $('.chkBoxClass:checked').length;
             if (checklength < 1) {
@@ -213,7 +214,7 @@ $(document).ready(function() {
 /////////////////////////////////////////////////////////////////
 $('#create_hrs').click(function() {
 
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var checkboxes = document.querySelectorAll('input[type="checkbox"].chkBoxClass');
             var selectedNextHub = null;
 
             for (var i = 0; i < checkboxes.length; i++) {
