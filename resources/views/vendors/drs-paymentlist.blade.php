@@ -339,7 +339,7 @@ jQuery(document).on('click', '#ckbCheckAll', function() {
         jQuery('.payment').prop('disabled', true);
     }
 });
-
+ 
 jQuery(document).on('click', '.chkBoxClass', function() {
     if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
         $('#ckbCheckAll').prop('checked', true);

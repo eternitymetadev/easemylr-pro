@@ -10,12 +10,15 @@ use App\Models\Consignee;
 use App\Models\Broker;
 use App\Models\User;
 use App\Models\BranchImage;
+use App\Models\Location;
+use App\Models\BranchConnectivity;
 use DB;
 use URL;
 use Helper;
 use Validator;
 use Storage;
 use Auth;
+use Config;
 
 class BranchController extends Controller
 {
@@ -290,6 +293,281 @@ class BranchController extends Controller
       $response['error']           = false;
 
       return response()->json($response);
+    }
+
+    public function branchConnectivity(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $query = BranchConnectivity::query();
+        $authuser = Auth::user();
+        $cc = explode(',',$authuser->branch_id);
+       
+        $locations = $query->with('Location')->orderBy('id','ASC')->get();
+        $branchs = Location::all();
+
+        return view('branch.branch-connectivity',['locations'=>$locations,'branchs'=>$branchs,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
+    public function addBranchConnectivity(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //  'efpl_hub' => 'required|unique:branch_connectivities',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+            
+            $check_branch = BranchConnectivity::where('efpl_hub',$request->hub)->first();
+            if(!empty($check_branch)){
+
+                $response['validation'] = true;
+                $response['error'] = true;
+                $response['error_message'] = 'Branch Already Exists';
+                return response()->json($response);
+
+            }
+
+            $connective_hub = implode(',',$request->direct_connectivity);
+
+            $savehub['efpl_hub'] = $request->hub;
+            $savehub['direct_connectivity'] = $connective_hub;
+            $savehub['status'] = 1;
+
+            $saveconnectivity = BranchConnectivity::create($savehub);
+
+            if ($saveconnectivity) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Branch Added successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    public function editBranchConnectivity(Request $request){
+        $get_branch = BranchConnectivity::where('id', $request->branch_id)->first();
+        if($get_branch){
+            $response['success'] = true;
+            $response['branch_data'] = $get_branch;
+            $response['error'] = false;
+        }else{
+            $response['success']         = false;
+            $response['success_message'] = 'data not found';
+            $response['error']           = true;
+        }
+        return response()->json($response);
+    }
+
+    public function updateBranchConnectivity(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //  'efpl_hub' => 'required|unique:branch_connectivities',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['error_message'] = $errors;
+                return response()->json($response);
+            }
+            
+            $check_branch = BranchConnectivity::where('id','!=',$request->branchid_hidden)->where('efpl_hub', $request->hub)->first();
+            if(!empty($check_branch)){
+
+                $response['validation'] = true;
+                $response['error'] = true;
+                $response['error_message'] = 'Branch Already Exists';
+                return response()->json($response);
+
+            }
+            if(!empty($request->direct_connectivity)){
+                $connective_hub = implode(',',$request->direct_connectivity);
+            }else{
+                $connective_hub = "";
+            }
+
+            $savehub['efpl_hub'] = $request->hub;
+            $savehub['direct_connectivity'] = $connective_hub;
+            $savehub['status'] = 1;
+
+            $saveconnectivity = BranchConnectivity::where('id', $request->branchid_hidden)->update($savehub);
+
+            if ($saveconnectivity) {
+                $url = $this->prefix . '/settings/branch-address';
+                $response['success'] = true;
+                $response['success_message'] = "Branch Updated successfully";
+                $response['error'] = false;
+                $response['redirect_url'] = $url;
+
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created Vendor please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+    }
+
+    public function deleteBranchConnectivity(Request $request)
+    { 
+      $deletelocation = BranchConnectivity::where('id',$request->location_id)->delete();
+      $response['success']         = true;
+      $response['success_message'] = 'Branch connectivity deleted successfully';
+      $response['error']           = false;
+
+      return response()->json($response);
+    }
+  
+    public function routeList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $branches = Location::all();
+        // $query = BranchConnectivity::query();
+
+        $connected_hubs = BranchConnectivity::all();
+
+        $graph = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            $neighbors = explode(',', $hub->direct_connectivity);
+            $graph[$location] = $neighbors;
+        }
+
+        $locations = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            // $neighbors = explode(',', $hub->direct_connectivity);
+            $locations[$location] = $location;
+        }
+
+        $no = 1;
+        // Initialize visited and route arrays
+    $routeData = "<table style='width: 100%; border:1px solid black; font-size: 16px'>
+                    <thead>
+                        <tr>
+                            <th style='width: 70px; border:1px solid black;'>Sr.</th>
+                            <th style='width: 120px; border:1px solid black;'>From</th>
+                            <th style='width: 120px; border:1px solid black;'>To</th>
+                            <th style='width: auto; border:1px solid black;'>Route</th>
+                        </tr>
+                    </thead>
+                <tbody>";
+    // $routeData .= "<table class=''><tr><td rowspan="2">d</td><td>ss</td></tr><tr><td>ss</td></tr>";
+    foreach ($locations as $startkey => $startingLocation) {
+        foreach ($locations as $endkey => $endingLocation) {
+            if ($startingLocation !== $endingLocation) {
+                // Initialize visited and route arrays
+                $visited = array_fill_keys(array_keys($graph), false);
+
+                $route = [];
+                // Find routes using DFS
+                $routes = $this->findRoutes($graph, $startingLocation, $endingLocation, $visited, $route);
+
+                $start_branch = DB::table('locations')->where('id', $startingLocation)->first();
+                $end_branch = DB::table('locations')->where('id', $endingLocation)->first();
+
+                // Add the routes to the response string
+                // $routeData .= "<h3>Routes from $start_branch->name to $end_branch->name:</h3><br/>";
+    
+                if (empty($routes)) {
+                    // $routeData .= "<p>No route available.</p>";
+                } else {
+                    foreach ($routes as $route) {
+                        $branch_name = [];
+                       
+                        foreach($route as $key => $r){
+                        $getbranch = DB::table('locations')->where('id', $r)->first();
+                        $branch_name[]= $getbranch->name;
+                        }
+                        $routeData .= "<tr>
+                                            <td style='border:1px solid black;'>$no</td>
+                                            <td style='border:1px solid black;'>$start_branch->name</td>
+                                            <td style='border:1px solid black;'>$end_branch->name</td>
+                                            <td style='border:1px solid black;'>".implode('  >  ', $branch_name)."</td>
+                                        </tr>";
+                        
+                        // $routeData .= "<p>" . implode(' -> ', $route) . "</p>";
+                        // $routeData .= "<p>" . implode(' -> ', $branch_name) . "</p>";
+                        $no = $no + 1;
+                    }
+                }
+                // Reverse the starting and ending locations to find vice versa routes
+            }
+        }
+    }
+    $routeData .= "</tbody></table>";
+
+        return view('branch.route-list',['routeData'=>$routeData,'branches'=>$branches,'prefix'=>$this->prefix,'title'=>$this->title,'peritem' => $peritem]);
+    }
+
+    public function findRoutes($graph, $start, $end, $visited, $route)
+    {
+        // Mark the current location as visited
+        $visited[$start] = true;
+
+        // Add the current location to the route
+        $route[] = $start;
+
+        // If the destination location is reached, return the route
+        if ($start === $end) {
+            return [$route];
+        } else {
+            $allRoutes = [];
+
+            // Check if the current location exists in the graph
+            if (isset($graph[$start])) {
+                // Iterate over the neighbors of the current location
+                foreach ($graph[$start] as $keyneighbor=>$neighbor) {
+                    // Visit unvisited neighbors recursively
+                    if (!@$visited[$neighbor]) {
+                        $newRoutes = $this->findRoutes($graph, $neighbor, $end, $visited, $route);
+                        $allRoutes = array_merge($allRoutes, $newRoutes);
+                    }
+                }
+            }
+
+            return $allRoutes;
+        }
     }
 
 }

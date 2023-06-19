@@ -46,6 +46,7 @@
                 <th>Payment Type</th>
                 <th>Freignt on Delivery</th>
                 <th>Cash on Delivery</th>
+                <th>LR Type</th>
             </tr>
         </thead>
         <tbody>
@@ -207,6 +208,14 @@
                 <td>{{$consignment->payment_type}}</td>
                 <td>{{$consignment->freight_on_delivery}}</td>
                 <td>{{$consignment->cod}}</td>
+                <?php if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                     }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                        $lr_type = "PTL";
+                         }else{ 
+                            $lr_type = "-";
+                             } ?>
+                <td>{{$lr_type}}</td>
 
             </tr>
             @endforeach

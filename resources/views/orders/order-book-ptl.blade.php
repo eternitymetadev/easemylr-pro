@@ -389,7 +389,7 @@ span.select2.select2-container.mb-4 {
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Pickup Location (Consigner)<span class="text-danger">*</span>
+                    Select Pickup Location (Consigner)<span class="text-danger">*</span><span id="check_hub" style="color:red;"></span>
                 </label>
                 <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                     <option value="">Select Consignor</option>
@@ -402,12 +402,13 @@ span.select2.select2-container.mb-4 {
             </div>
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
+                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
                 </label>
                 <select class="form-control my-select2" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>
                 <div class="appendedAddress" id="consignee_address"></div>
+                
             </div>
             <div class="form-group col-md-4">
                 <label>
@@ -497,7 +498,7 @@ span.select2.select2-container.mb-4 {
 
         <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
             {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
-            <button type="submit" class="mt-2 btn btn-primary disableme"
+            <button type="submit" class="mt-2 btn btn-primary disableme" id="amit"
                 style="height: 40px; width: 200px">Submit</button>
         </div>
 
@@ -1050,7 +1051,7 @@ if ($('#paymentType').val() == 'To Pay') {
     $('#cod').attr('readonly', false);
 } else if($('#paymentType').val() == 'Paid'){
     $('#cod').attr('readonly', true);
-    $('#freight_on_delivery').attr('readonly', true);
+    $('#freight_on_delivery').attr('readonly', false);
 } else {
     $('#freight_on_delivery').attr('readonly', true);
     $('#cod').attr('readonly', false);

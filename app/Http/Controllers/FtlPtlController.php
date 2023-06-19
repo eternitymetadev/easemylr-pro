@@ -174,17 +174,20 @@ class FtlPtlController extends Controller
 
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $save_data['invoice_amount'] = 0;
+                        }
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
 
                         if ($saveconsignmentitems) {
-                            // dd($save_data['item_data']);
                             if (!empty($save_data['item_data'])) {
                                 $qty_array = array();
                                 $netwt_array = array();
                                 $grosswt_array = array();
                                 $chargewt_array = array();
                                 foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                    // echo "<pre>"; print_r($save_itemdata); die;
                                     $qty_array[] = $save_itemdata['quantity'];
                                     $netwt_array[] = $save_itemdata['net_weight'];
                                     $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -219,6 +222,12 @@ class FtlPtlController extends Controller
                     foreach ($get_data as $key => $save_data) {
                         $save_data['consignment_id'] = $saveconsignment->id;
                         $save_data['status'] = 1;
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $save_data['invoice_amount'] = 0;
+                        }
+                        
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
@@ -669,9 +678,10 @@ class FtlPtlController extends Controller
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
 
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                
                                             </div>
                                         </td>
                                         <td class="width_set">
@@ -837,7 +847,7 @@ class FtlPtlController extends Controller
                     ->first(['consignees.city']);
                 $simplyfy = json_decode(json_encode($consignmentdrs), true);
 
-                $no_of_digit = 5;
+                $no_of_digit = 5;  
                 $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
                 $drs_no = json_decode(json_encode($drs), true);
                 if (empty($drs_no) || $drs_no == null) {
@@ -1109,6 +1119,11 @@ class FtlPtlController extends Controller
 
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
 
                             if ($saveconsignmentitems) {
@@ -1156,6 +1171,11 @@ class FtlPtlController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }
@@ -1172,6 +1192,11 @@ class FtlPtlController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
 
                             if ($saveconsignmentitems) {
@@ -1218,6 +1243,11 @@ class FtlPtlController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }

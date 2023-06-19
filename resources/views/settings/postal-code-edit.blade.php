@@ -31,6 +31,14 @@
 .btn {
     font-size: 10px;
 }
+.select2-container--open {
+    z-index: 99999;
+}
+
+.select2-dropdown {
+    /* margin-top: 3rem;
+    margin-left: 2rem; */
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -86,6 +94,10 @@
                                         style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span>
                                             <i class="fa fa-refresh"></i> Reset Filters</span></a>
+                                    <button type="button" class="btn btn-warning" data-toggle="modal"
+                                        data-target="#exampleModalCenter" style="font-size: 15px; padding: 9px;">
+                                        Apply Hub
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -148,9 +160,88 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Update Hub</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="update_hub">
+                <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select State</label>
+                            <select class="form-control my-select2" id="state_id" name="state_id" tabindex="-1">
+                                <option value="">--Select--</option>
+                                @foreach($all_states as $all_state)
+                                <option value="{{$all_state->state}}">{{$all_state->state}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select District</label>
+                            <select class="form-control tagging" id="state_district" name="district[]" multiple="multiple">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select Hub</label>
+                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1" required >
+                                <option value="">--Select--</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{$branch->id}}">{{$branch->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Submit</span>
+                    <span class="indicator-progress" style="display: none;">Please wait...
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('js')
 <script>
+    $(document).ready(function() {
+
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+        })
+    })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
+
+$('#sheet').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+        'print'
+    ]
+});
+});
 $(document).on('click', '.edit_postal', function() {
     var postal_id = $(this).val();
     $('#postal_edit').modal('show');
@@ -204,6 +295,75 @@ $('#update_postal_code').submit(function(e) {
 
         }
     });
+});
+
+$('#update_hub').submit(function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+    $.ajax({
+        url: "update-hub",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        beforeSend: function() {
+            $(".indicator-progress").show();
+            $(".indicator-label").hide();
+        },
+        success: (data) => {
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+            if (data.success == true) {
+                swal('success', data.success_message, 'success');
+                window.location.reload();
+            } else {
+                swal('error', data.error_message, 'error');
+            }
+
+        }
+    });
+});
+
+$('#state_id').change(function() {
+    $("#state_district").empty();
+    // $("#hub_assign").empty();
+    var state_name = $(this).val();
+
+    $.ajax({
+        type: 'get',
+        url: 'get-district',
+        data: {
+            state_name: state_name
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        beforeSend: function() {
+            
+        },
+        success: function(res) {
+
+            $("#state_district").append(
+                    '<option value="">--select--</option>'
+                );
+            $.each(res.all_district, function (key, value) {
+                    $("#state_district").append(
+                        '<option value="' +
+                        value +
+                        '">' +
+                        value +
+                        "</option>"
+                    );
+                });
+
+        }
+    });
+
 });
 </script>
 @endsection

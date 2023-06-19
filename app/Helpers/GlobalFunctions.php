@@ -81,6 +81,12 @@ class GlobalFunctions
         return $locations;
     }
 
+    public static function getLocationDetail($id)
+    {
+        $locations = Location::select('name')->where('id', $id)->where('status', 1)->first();
+        return $locations;
+    }
+
     public static function getRegionalClients()
     {
         $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->pluck('name', 'id');
@@ -296,6 +302,18 @@ class GlobalFunctions
         $data = DB::table('payment_requests')->where('transaction_id', $trans_id)->count();
         return $data;
     }
+
+    public static function showDrsNo($trans_id)
+    {
+        $datas = DB::table('payment_requests')->where('transaction_id', $trans_id)->get();
+        $drsarr = array();
+        foreach ($datas as $row) {
+
+            $drsarr[] = $row->drs_no;
+        }
+        $alldrs = implode(',', $drsarr);
+        return $alldrs;
+    }
     ///////////// Create Payment ////////
 
     public static function totalQuantity($drs_number)
@@ -439,6 +457,40 @@ class GlobalFunctions
     {
         $data = DB::table('prs_payment_requests')->where('transaction_id', $trans_id)->count();
         return $data;
+    }
+
+    public static function getNextHub($lr_id)
+    {
+        $data = ConsignmentNote::with('LrRoute')->where('id', $lr_id)->first();
+
+        $visited = $data->route_branch_id;
+        $route = $data->LrRoute->route;
+        $routeArr = explode(',', $route);
+        $visitedArr = explode(',', $visited);
+        $last_visit = end($visitedArr);
+
+        $current_branch = array_search($last_visit, $routeArr);
+        $next_branch = $routeArr[$current_branch + 1];
+
+        $get_branch = Location::where('id', $next_branch)->first();
+        $branch_name = $get_branch->name;
+
+        return $branch_name;
+    }
+    public static function getNextHubId($lr_id)
+    {
+        $data = ConsignmentNote::with('LrRoute')->where('id', $lr_id)->first();
+
+        $visited = $data->route_branch_id;
+        $route = $data->LrRoute->route;
+        $routeArr = explode(',', $route);
+        $visitedArr = explode(',', $visited);
+        $last_visit = end($visitedArr);
+
+        $current_branch = array_search($last_visit, $routeArr);
+        $next_branch = $routeArr[$current_branch + 1];
+
+        return $next_branch;
     }
 
 }

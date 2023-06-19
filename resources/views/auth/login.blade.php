@@ -111,11 +111,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class=" container">
-                        <img src="http://easemylr.in/assets/images/Eternity_Forwarder.png" width="250px" height="110px"
+                        <img src="{{asset('assets/img/logo_2.png')}}" width="250px" height="110px"
                             class="dd">
                     </div>
                 </div>
                 <div class="col-sm-6">
+
                     <div class="main-container">
                         <div class="container text-center">
                             <a><img src="{{asset('assets/shipbuddy-logo.svg')}}" class="EE"> </a>

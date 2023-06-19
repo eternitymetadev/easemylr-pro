@@ -414,7 +414,7 @@ jQuery(document).ready(function () {
             });
     });
 
-    /*===== delete location =====*/
+    /*===== delete location and connectivity branch =====*/
     jQuery(document).on("click", ".delete_location", function () {
         jQuery("#deletelocation").modal("show");
         var location_id = jQuery(this).attr("data-id");
@@ -910,6 +910,17 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
+                    if (res.get_pin_hub == null) {
+                        $('#check_hub').html('No hub found');
+                        $('.disableme').prop('disabled', true);
+                        $('#select_consignee').prop('disabled', true);
+                        swal('error','Hub not found','error')
+
+                    } else {
+                        $('#check_hub').html(res.get_pin_hub);
+                        $('.disableme').prop('disabled', false);
+                        $('#select_consignee').prop('disabled', false);
+                    }
 
                     $("#dispatch").val(res.data.city);
                 }
@@ -982,6 +993,15 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
+                    if (res.get_pin_hub == null) {
+                        $('#check_hub_delivery').html('No hub found');
+                        $('.disableme').prop('disabled', true);
+                        swal('error','Hub not found','error')
+                    } else {
+                        $('#check_hub_delivery').html(res.get_pin_hub);
+                        $('.disableme').prop('disabled', false);
+                    }
+
                 }
             },
         });
@@ -1324,6 +1344,7 @@ jQuery(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 jQuery("#nameup").val(response.newcata.name);
+                jQuery("#hub_nicknameup").val(response.newcata.hub_nickname);
                 jQuery("#nick_nameup").val(response.newcata.nick_name);
                 jQuery("#team_idup").val(response.newcata.team_id);
                 jQuery("#consignment_noup").val(
@@ -1777,6 +1798,7 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
+
                     } else {
                         var app_img = [];
 
@@ -1806,7 +1828,6 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
-
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
@@ -1928,6 +1949,55 @@ jQuery(document).ready(function () {
             $(".edd_error").css("display", "none");
         } else {
             $(".edd_error").css("display", "block");
+        }
+    });
+
+    // lr create and update ewaybill no check
+    // $(document).on("blur", ".invc_amt", function () {
+    //     var invoice_amt = $(this).val();
+    //     if(invoice_amt > 50000 && $(this).parent().siblings().children('.ew_bill').val() == ''){
+    //         $(this).parent().siblings().children('.ew_bill').css("border-color", "red");
+    //         $(this).parent().siblings().children('.ew_bill').attr('required', true);
+    //     } else {
+    //         $(this).parent().siblings().children('.ew_bill').css("border-color", "#bfc9d4");
+    //         $(this).parent().siblings().children('.ew_bill').removeAttr('required');
+    //     }
+    // });
+
+    // $(document).on("blur", ".ew_bill", function () {
+    //     var invoice_amt = $(this).parent().siblings().children('.invc_amt').val();
+    //     if(invoice_amt > 50000 && $(this).val() == ''){
+    //         $(this).css("border-color", "red");
+    //     } else $(this).css("border-color", "#bfc9d4");
+    // });
+
+    $("#paymentType").change(function (e) {
+        $('#freight_on_delivery').val('');
+        $('#cod').val('');
+        var payment_val = $(this).val();
+        if (payment_val == 'To Pay' || payment_val == 'Paid') {
+            var frieght_val = $('#freight_on_delivery').val();
+            if (frieght_val == '') {
+                $('#freight_on_delivery').css("border-color", "red");
+                $('#freight_on_delivery').attr('required', true);
+            } else {
+                $("#freight_on_delivery").css("border-color", "#bfc9d4");
+                $("#freight_on_delivery").removeAttr('required');
+            }
+        } else {
+            $("#freight_on_delivery").css("border-color", "#bfc9d4");
+            $("#freight_on_delivery").removeAttr('required');
+        }
+    });
+
+    $(document).on("keyup", "#freight_on_delivery", function () {
+        var frieght_val = $(this).val();
+        if (frieght_val == '') {
+            $(this).css("border-color", "red");
+            $(this).attr('required', true);
+        } else {
+            $(this).css("border-color", "#bfc9d4");
+            $(this).removeAttr('required');
         }
     });
 
@@ -2101,7 +2171,7 @@ $(document).on("click", ".onelrupdate", function () {
                 swal("success", data.messages, "success");
                 location.reload();
             } else {
-                swal("error", data.messages , "error");
+                swal("error", data.messages, "error");
             }
         },
     });
@@ -2345,6 +2415,7 @@ $("#vendor-master").submit(function (e) {
     var bank_name = $("#bank_name").val();
     var branch_name = $("#branch_name").val();
     var pan_no = $("#pan_no").val();
+    var pan_upload = $("#pan_upload").val();
 
     if (!v_name) {
         swal("Error!", "Please Enter Vendor Name", "error");
@@ -2376,6 +2447,21 @@ $("#vendor-master").submit(function (e) {
     }
     if (!pan_no) {
         swal("Error!", "Please Enter Pan No", "error");
+        return false;
+    } else {
+        var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+
+        if (regpan.test(pan_no)) {
+            $("#lblPANCard").hide();
+        } else {
+            $("#lblPANCard").show();
+            swal("Error!", "Invalid Pan No", "error");
+            return false;
+        }
+    }
+
+    if (!pan_upload) {
+        swal("Error!", "Please Enter pan upload", "error");
         return false;
     }
     $.ajax({
@@ -2518,10 +2604,48 @@ $("#update_vendor").validate({
         name: {
             required: true,
         },
+        vendor_type: {
+            required: true,
+        },
+        acc_holder_name: {
+            required: true,
+        },
+        account_no: {
+            required: true,
+        },
+        ifsc_code: {
+            required: true,
+        },
+        bank_name: {
+            required: true,
+        },
+        pan: {
+            required: true,
+            PanNumbers: true,
+        },
     },
     messages: {
         name: {
             required: "Enter Vendor name",
+        },
+        vendor_type: {
+            required: "Select vendor type",
+        },
+        acc_holder_name: {
+            required: "Enter account holder name",
+        },
+        account_no: {
+            required: "Enter account no",
+        },
+        ifsc_code: {
+            required: "Enter ifsc code",
+        },
+        bank_name: {
+            required: "Enter bank name",
+        },
+        pan: {
+            required: "Enter pan no",
+            // PanNumbers: "Please enter valid pan no.",
         },
     },
     submitHandler: function (form) {

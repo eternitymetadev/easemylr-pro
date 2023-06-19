@@ -1017,7 +1017,7 @@ function togglePaymentAction() {
         $('#cod').attr('readonly', false);
     } else if($('#paymentType').val() == 'Paid'){
         $('#cod').attr('readonly', true);
-        $('#freight_on_delivery').attr('readonly', true);
+        $('#freight_on_delivery').attr('readonly', false);
     } else {
         $('#freight_on_delivery').attr('readonly', true);
         $('#cod').attr('readonly', false);

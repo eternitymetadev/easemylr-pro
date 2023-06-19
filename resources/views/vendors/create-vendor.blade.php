@@ -14,6 +14,14 @@
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+
+.pan {
+    text-transform: uppercase;
+}
+
+.error {
+    color: Red;
+}
 </style>
 
 <div class="layout-px-spacing">
@@ -41,12 +49,12 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Vendor Name<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="vendor_name" name="name" placeholder=""
-                                        >
+                                    <input type="text" class="form-control" id="vendor_name" name="name" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Transporter Name</label>
-                                    <input type="text" class="form-control" id="transporter_name" name="transporter_name" placeholder="">
+                                    <input type="text" class="form-control" id="transporter_name"
+                                        name="transporter_name" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -64,7 +72,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Contact Number</label>
-                                    <input type="text" class="form-control" name="contact_person_number" placeholder=""  maxlength="10">
+                                    <input type="text" class="form-control" name="contact_person_number" placeholder=""
+                                        maxlength="10">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -75,8 +84,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Vendor Type<span
                                             class="text-danger">*</span></label>
-                                    <select class="form-control" id="vendor_type" name="vendor_type"
-                                        tabindex="-1">
+                                    <select class="form-control" id="vendor_type" name="vendor_type" tabindex="-1">
                                         <option selected disabled>Select</option>
                                         <option value="Individual">Individual </option>
                                         <option value="Proprietorship">Proprietorship</option>
@@ -125,12 +133,14 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Account Holder Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="acc_holder_name" name="acc_holder_name" placeholder="">
+                                    <input type="text" class="form-control" id="acc_holder_name" name="acc_holder_name"
+                                        placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Account No.<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="account_no" name="account_no" placeholder="">
+                                    <input type="text" class="form-control" id="account_no" name="account_no"
+                                        placeholder="">
                                 </div>
                             </div>
 
@@ -138,18 +148,23 @@
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Ifsc Code<span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder="" maxlength="11">
+                                    <input type="text" class="form-control" id="ifsc" name="ifsc_code" placeholder=""
+                                        maxlength="11" minlength="11">
                                     <div id="ifsc-error"></div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Bank Name</label>
-                                    <input type="text" class="form-control" name="bank_name" placeholder="" id="bank_name" maxlength="32">
+                                    <label for="exampleFormControlInput2">Bank Name<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="bank_name" placeholder=""
+                                        id="bank_name" maxlength="32">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Branch Name</label>
-                                    <input type="text" class="form-control" name="branch_name" placeholder="" id="branch_name" maxlength="20">
+                                    <label for="exampleFormControlInput2">Branch Name<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="branch_name" placeholder=""
+                                        id="branch_name" maxlength="20">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Cancel Cheaque</label>
@@ -160,13 +175,16 @@
                             <h3>Vendor Documents</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan<span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="pan_no" name="pan" placeholder="" maxlength="10">
+                                    <label for="exampleFormControlInput2">Pan<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control pan" id="pan_no" name="pan" placeholder=""
+                                        maxlength="10" minlength="10">
+                                    <span id="lblPANCard" class="error" style="display: none">Invalid PAN Number</span>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan Upload</label>
-                                    <input type="file" class="form-control" name="pan_upload" placeholder="">
+                                    <label for="exampleFormControlInput2">Pan Upload<span
+                                            class="text-danger">*</span></label>
+                                    <input id="pan_upload" type="file" class="form-control" name="pan_upload"
+                                        placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -181,8 +199,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlInput2">Gst No</label>
-                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder="" maxlength="15"
-                                        disabled>
+                                    <input type="text" class="form-control" id="gst_no" name="gst_no" placeholder=""
+                                        maxlength="15" disabled>
                                 </div>
                             </div>
 
@@ -199,21 +217,32 @@
 @endsection
 @section('js')
 <script>
- jQuery(function () {
-        $('.my-select2').each(function () {
-            $(this).select2({
-                theme: "bootstrap-5",
-                dropdownParent: $(this).parent(), // fix select2 search input focus bug
-            })
-        })
+$(document).on("keyup", "#pan_no", function () {
+    var panVal = $(this).val();
+    var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 
-        // fix select2 bootstrap modal scroll bug
-        $(document).on('select2:close', '.my-select2', function (e) {
-            var evt = "scroll.select2"
-            $(e.target).parents().off(evt)
-            $(window).off(evt)
+    if (regpan.test(panVal)) {
+        $("#lblPANCard").hide();
+    } else {
+        $("#lblPANCard").show();
+    }
+})
+
+jQuery(function() {
+    $('.my-select2').each(function() {
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: $(this).parent(), // fix select2 search input focus bug
         })
     })
+
+    // fix select2 bootstrap modal scroll bug
+    $(document).on('select2:close', '.my-select2', function(e) {
+        var evt = "scroll.select2"
+        $(e.target).parents().off(evt)
+        $(window).off(evt)
+    })
+})
 
 $('#vendor_type').change(function() {
     var v_typ = $(this).val();
@@ -274,8 +303,8 @@ $('#account_no').blur(function() {
         },
         dataType: 'json',
         success: function(result) {
-            if(result.success == false){
-                swal('Error',result.success_message,'error')
+            if (result.success == false) {
+                swal('Error', result.success_message, 'error')
                 $('#account_no').val('');
             }
 
@@ -284,14 +313,14 @@ $('#account_no').blur(function() {
 });
 
 $('#ifsc').blur(function() {
-   var ifsc = $(this).val();
-   var count = ifsc.length;
-   if(count < 11){
-    $('#ifsc-error').html('<p style="color:red;">Please enter 11 digit number</p>')
-   }else{
-    $('#ifsc-error').empty();  
-   }
-    
+    var ifsc = $(this).val();
+    var count = ifsc.length;
+    if (count < 11) {
+        $('#ifsc-error').html('<p style="color:red;">Please enter 11 digit number</p>')
+    } else {
+        $('#ifsc-error').empty();
+    }
+
 });
 ///
 </script>

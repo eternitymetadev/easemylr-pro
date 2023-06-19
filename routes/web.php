@@ -98,6 +98,12 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::post('branches/update-branch', [BranchController::class, 'updateBranch']);
     Route::post('branches/delete-branch', [BranchController::class, 'deleteBranch']);
     Route::post('branches/delete-branchimage', [BranchController::class, 'deletebranchImage']);
+    Route::any('branch-connectivity', [BranchController::class, 'branchConnectivity']);
+    Route::any('add-branch-connectivity', [BranchController::class, 'addBranchConnectivity']);
+    Route::any('branch-connectivity/edit-branch-connectivity', [BranchController::class, 'editBranchConnectivity']);
+    Route::any('update-branch-connectivity', [BranchController::class, 'updateBranchConnectivity']);
+    Route::any('branch-connectivity/delete-branch-connectivity', [BranchController::class, 'deleteBranchConnectivity']);
+    Route::any('route-list', [BranchController::class, 'routeList']);
 
     Route::resource('consigners', ConsignerController::class);
     Route::post('consigners/update-consigner', [ConsignerController::class, 'updateConsigner']);
@@ -179,6 +185,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     // Route::get('settings/branch-address', [SettingController::class, 'getbranchAddress']);
     Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
+    Route::any('update-hub', [SettingController::class, 'updateDistrictHub']);
+    Route::any('route-finder', [SettingController::class, 'routeFinder']);
+    Route::any('find-route', [SettingController::class, 'findRoute']);
+    Route::any('get-district', [SettingController::class, 'getDistrict']);
     Route::any('settings/add-gst-address', [SettingController::class, 'addGstAddress']);
 
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
@@ -481,6 +491,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('second-payment-hrs', [HubtoHubController::class, 'createSecondPaymentRequest']); 
     Route::get('edit-purchase-price-hrs', [HubtoHubController::class, 'editPurchasePriceHrs']);
     Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
+    Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
+
 
 
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
@@ -676,6 +688,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('rm-approver', [HubtoHubController::class, 'rmApproverRequest']);
     Route::any('update-purchas-price-hrs', [HubtoHubController::class, 'updatePurchasePriceHrs']);
     Route::any('show-hrs', [HubtoHubController::class, 'showHrs']);
+    Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
 
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
@@ -1005,6 +1018,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/get_route', [SettingController::class, 'getRoute']);
     Route::get('/get_drivers', [VehicleController::class, 'getDrivers']);
     Route::get('/get_consigners', [ConsignmentController::class, 'getConsigners']);
     Route::get('/get_consignees', [ConsignmentController::class, 'getConsignees']);
