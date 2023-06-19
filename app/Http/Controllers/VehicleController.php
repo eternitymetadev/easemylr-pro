@@ -13,8 +13,10 @@ use URL;
 use Helper;
 use Hash;
 use Crypt;
+use Config;
 use Validator;
 use DataTables;
+use Session;
 use Storage;
 use Auth;
 
@@ -37,8 +39,53 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Vehicle::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+            $authuser = Auth::user();
+            $query = $query->with('GetState');
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('regn_no', 'like', '%' . $search . '%')
+                    ->orWhere('body_type', 'like', '%' . $search . '%')
+                    ->orWhere('make', 'like', '%' . $search . '%')
+                    ->orWhere('tonnage_capacity', 'like', '%' . $search . '%')
+                    ->orWhere('mfg', 'like', '%' . $search . '%');
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $vehicles = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $vehicles = $vehicles->appends($request->query());
+            // echo'<pre'; print_r($vehicles); die;
+            $html = view('vehicles.vehicle-list-ajax', ['prefix' => $this->prefix, 'vehicles' => $vehicles, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+        $authuser = Auth::user();
+        $vehicles = $query->with('GetState')->orderBy('id', 'DESC')->paginate($peritem);
+        $vehicles = $vehicles->appends($request->query());
   
-        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment]);
+        return view('vehicles.vehicle-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment,'vehicles'=>$vehicles, 'peritem' => $peritem]);
     }
 
     public function getData(Request $request) {
@@ -63,20 +110,70 @@ class VehicleController extends Controller
         $arrDatas = $arrData->get();
 
         return Datatables::of($arrData)->addIndexColumn()
-            ->addColumn('rc_image', function ($arrData) {
-                if($arrData->rc_image == null){
+            // ->addColumn('rc_image', function ($arrData) {
+            //     if($arrData->rc_image == null){
+            //         $rc_image = '-';
+            //     }else{
+            //         $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->rc_image).' " target="_blank">view</a>';
+            //     }
+            //     return $rc_image;
+            // })
+            ->addColumn('rc_image', function ($data) {
+                if($data->rc_image == null){
                     $rc_image = '-';
                 }else{
-                    $rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->rc_image).' " target="_blank">view</a>';
-                }
+                    $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                    $img_url = $data->rc_image;
+                    if($img_url != '' || $img_url != null){
+                        $explode_url = explode("/",$img_url);
+                        if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                            $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                        }else{
+                            $img_url = '';
+                        }
+                        
+                        if($chk_url == $img_url){
+                            $rc_image = '<a href="'.$data->rc_image.' " target="_blank">view</a>';
+                        }else{
+                            $rc_image = '<a href="'.$chk_url.'/'.$data->rc_image.' " target="_blank">view</a>';
+                        }
+                    }else{
+                        $rc_image = '';
+                    }
+                }        
                 return $rc_image;
-            })
-            ->addColumn('second_rc_image', function ($arrData) {
-                if($arrData->second_rc_image == null){
+            }) 
+            // ->addColumn('second_rc_image', function ($arrData) {
+            //     if($arrData->second_rc_image == null){
+            //         $second_rc_image = '-';
+            //     }else{
+            //         $second_rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->second_rc_image).' " target="_blank">view</a>';
+            //     }
+            //     return $second_rc_image;
+            // })
+            ->addColumn('second_rc_image', function ($data) {
+                if($data->second_rc_image == null){
                     $second_rc_image = '-';
                 }else{
-                    $second_rc_image = '<a href="'.URL::to('/storage/images/vehicle_rc_images/'.$arrData->second_rc_image).' " target="_blank">view</a>';
-                }
+                    $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                    $img_url = $data->second_rc_image;
+                    if($img_url != '' || $img_url != null){
+                        $explode_url = explode("/",$img_url);
+                        if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                            $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                        }else{
+                            $img_url = '';
+                        }
+                        
+                        if($chk_url == $img_url){
+                            $second_rc_image = '<a href="'.$data->second_rc_image.' " target="_blank">view</a>';
+                        }else{
+                            $second_rc_image = '<a href="'.$chk_url.'/'.$data->second_rc_image.' " target="_blank">view</a>';
+                        }
+                    }else{
+                        $second_rc_image = '';
+                    }
+                }        
                 return $second_rc_image;
             })
             ->addColumn('action', function($row){
@@ -147,20 +244,33 @@ class VehicleController extends Controller
         $vehiclesave['owner_phone']    = $request->owner_phone;
         $vehiclesave['status']         = '1';
 
-        // upload rc image
+        // upload rc image1
         if($request->rc_image){
-            $file = $request->file('rc_image');
-            $path = 'public/images/vehicle_rc_images';
-            $name = Helper::uploadImage($file,$path);
-            $vehiclesave['rc_image']  = $name;
+            $rc_image = $request->file('rc_image');
+            $path = Storage::disk('s3')->put('vehicle_rc_images', $rc_image);
+            $vehiclesave['rc_image'] = Storage::disk('s3')->url($path);
         }
-        // upload rc image
+        // upload rc image2
         if($request->second_rc_image){
-            $file = $request->file('second_rc_image');
-            $path = 'public/images/vehicle_rc_images';
-            $second_name = Helper::uploadImage($file,$path);
-            $vehiclesave['second_rc_image']  = $second_name;
+            $second_rc_image = $request->file('second_rc_image');
+            $path = Storage::disk('s3')->put('vehicle_rc_images', $second_rc_image);
+            $vehiclesave['second_rc_image'] = Storage::disk('s3')->url($path);
         }
+
+        // upload rc image
+        // if($request->rc_image){
+        //     $file = $request->file('rc_image');
+        //     $path = 'public/images/vehicle_rc_images';
+        //     $name = Helper::uploadImage($file,$path);
+        //     $vehiclesave['rc_image']  = $name;
+        // }
+        //  // upload rc image
+        // if($request->second_rc_image){
+        //     $file = $request->file('second_rc_image');
+        //     $path = 'public/images/vehicle_rc_images';
+        //     $second_name = Helper::uploadImage($file,$path);
+        //     $vehiclesave['second_rc_image']  = $second_name;
+        // }
         
         $savevehicle = Vehicle::create($vehiclesave); 
         if($savevehicle)
@@ -252,19 +362,31 @@ class VehicleController extends Controller
             $vehiclesave['owner_phone']    = $request->owner_phone;
             $vehiclesave['status']         = '1';
 
-             // upload vehicle_rc image
-             if($request->rc_image){
-                $file = $request->file('rc_image');
-                $path = 'public/images/vehicle_rc_images';
-                $name = Helper::uploadImage($file,$path); 
-                $vehiclesave['rc_image']  = $name;
-           }
-           if($request->second_rc_image){
-            $file = $request->file('second_rc_image');
-            $path = 'public/images/vehicle_rc_images';
-            $second_name = Helper::uploadImage($file,$path); 
-            $vehiclesave['second_rc_image']  = $second_name;
-       }
+            // upload rc image1
+            if($request->rc_image){
+                $rc_image = $request->file('rc_image');
+                $path = Storage::disk('s3')->put('vehicle_rc_images', $rc_image);
+                $vehiclesave['rc_image'] = Storage::disk('s3')->url($path);
+            }
+            // upload rc image2
+            if($request->second_rc_image){
+                $second_rc_image = $request->file('second_rc_image');
+                $path = Storage::disk('s3')->put('vehicle_rc_images', $second_rc_image);
+                $vehiclesave['second_rc_image'] = Storage::disk('s3')->url($path);
+            }
+
+            // if($request->rc_image){
+            //     $file = $request->file('rc_image');
+            //     $path = 'public/images/vehicle_rc_images';
+            //     $name = Helper::uploadImage($file,$path); 
+            //     $vehiclesave['rc_image']  = $name;
+            // }
+            // if($request->second_rc_image){
+            //     $file = $request->file('second_rc_image');
+            //     $path = 'public/images/vehicle_rc_images';
+            //     $second_name = Helper::uploadImage($file,$path); 
+            //     $vehiclesave['second_rc_image']  = $second_name;
+            // }
             
             Vehicle::where('id',$request->vehicle_id)->update($vehiclesave);
             

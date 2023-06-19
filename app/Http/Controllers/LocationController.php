@@ -98,6 +98,7 @@ class LocationController extends Controller
             $addlocation['phone'] = $request->phone;
         }
         $addlocation['with_vehicle_no'] = $request->with_vehicle_no;
+        $addlocation['app_use'] = $request->app_use;
         $addlocation['is_hub'] = $request->isHub;
         $addlocation['status'] = 1;
 

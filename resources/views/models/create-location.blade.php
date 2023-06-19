@@ -86,6 +86,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-row mb-0">
+                            <span style="color: #000"><strong>APP USE:</strong></span>
+                            <div class="check-box d-flex align-content-center ml-2" style="gap: 8px">
+                                <div class="checkbox radio">
+                                    <label class="check-label">
+                                        <input type="radio" value='Eternity' name="app_use" checked>
+                                        <span class="checkmark"></span>
+                                        Eternity
+                                    </label>
+                                </div>
+                                <div class="checkbox radio"> 
+                                    <label class="check-label">
+                                        <input type="radio" name="app_use" value='Shadow'>
+                                        <span class="checkmark"></span>
+                                        Shadow
+                                    </label>
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
                     <!-- Modal footer -->

@@ -522,6 +522,7 @@ jQuery(document).ready(function () {
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
+                // $("#paymentType").empty();
 
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
@@ -532,6 +533,7 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
+
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
@@ -542,7 +544,21 @@ jQuery(document).ready(function () {
                     );
                 });
 
-                console.log(res.data_items);
+                var payment_term = res.data_regclient.payment_term;
+                // var payment_array = payment_term.split(",");
+                // $("#paymentType").append(
+                //     `<option selected disabled>select..
+                //     </option>`
+                // );
+                // $.each(payment_array, function (index, term) {
+                //     $("#paymentType").append(
+                //         '<option value="' +
+                //         term +
+                //         '">' +
+                //         term +
+                //         "</option>"
+                //     );
+                // });
 
                 if (res.data_regclient == null) {
                     var multiple_invoice = "";
@@ -1286,13 +1302,13 @@ jQuery(document).ready(function () {
         for (var w = 1; w < rowCount; w++) {
             var qty = !$('[name="data[' + w + '][quantity]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][quantity]"]').val());
+                : parseFloat($('[name="data[' + w + '][quantity]"]').val());
             var ntweight = !$('[name="data[' + w + '][weight]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][weight]"]').val());
+                : parseFloat($('[name="data[' + w + '][weight]"]').val());
             var grweight = !$('[name="data[' + w + '][gross_weight]"]').val()
                 ? 0
-                : parseInt($('[name="data[' + w + '][gross_weight]"]').val());
+                : parseFloat($('[name="data[' + w + '][gross_weight]"]').val());
 
             total_quantity += qty;
             total_net_weight += ntweight;
@@ -1316,6 +1332,8 @@ jQuery(document).ready(function () {
         jQuery('.is_hub_no').attr("checked", false);
         jQuery(".radio_vehicleno_yes").attr("checked", false);
         jQuery(".radio_vehicleno_no").attr("checked", false);
+        jQuery(".app_use_eternity").attr("checked", false);
+        jQuery(".app_use_shadow").attr("checked", false);
         jQuery.ajax({
             type: "post",
             url: action,
@@ -1349,6 +1367,14 @@ jQuery(document).ready(function () {
                 } else {
                     jQuery('.is_hub_yes').attr("checked", false);
                     jQuery('.is_hub_no').attr("checked", true);
+                }
+
+                if (response.newcata.app_use == 'Eternity') {
+                    jQuery('.app_use_eternity').attr("checked", true);
+                    jQuery('.app_use_shadow').attr("checked", false);
+                } else {
+                    jQuery('.app_use_eternity').attr("checked", false);
+                    jQuery('.app_use_shadow').attr("checked", true);
                 }
 
             },
@@ -1693,8 +1719,8 @@ jQuery(document).ready(function () {
         var data = { lr_no: lr_no };
         var base_url = window.location.origin;
         jQuery.ajax({
-            url: "get-delivery-dateLR",
-            type: "get",
+            url: "get-delivery-dateLR", 
+            type: "get", 
             cache: false,
             data: data,
             dataType: "json",
@@ -1752,7 +1778,7 @@ jQuery(document).ready(function () {
                                 "' target='_blank' class='btn btn-warning'>view</a>";
 
                         }
-                    } else {
+                    } else if (value.lr_mode == 1) {
                         if (img_api == null || img_api == "") {
                             var field = "No image available";
 
@@ -1761,6 +1787,36 @@ jQuery(document).ready(function () {
                             var img_length = img_api.length;
                             var i = 0;
                             $.each(img_api, function (index, img) {
+                                i++;
+                                img_group =
+                                    "<a href='" +
+                                    img +
+                                    "' target='_blank' class='btn btn-warning mt-3'>Image " +
+                                    i +
+                                    "</a> ";
+                                field1.push(img_group);
+                            });
+                            var field = field1.join(" ");
+                        }
+
+                    } else {
+                        var app_img = [];
+
+                        $.each(
+                            data.app_media,
+                            function (index, media) {
+                                    app_img.push(media.pod_img);
+                            }
+                        );
+
+                        if (app_img == null || app_img == "") {
+                            var field = "No image available";
+
+                        } else {
+                            var field1 = [];
+                            var img_length = app_img.length;
+                            var i = 0;
+                            $.each(app_img, function (index, img) {
                                 i++;
                                 img_group =
                                     "<a href='" +
@@ -1819,9 +1875,11 @@ jQuery(document).ready(function () {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
+                    }else if(value.lr_mode == 1){
+                        row += "<td>Update from shadow</td>";
                     } else {
 
-                        row += "<td>Update from shadow</td>";
+                        row += "<td>Update from Shiprider</td>";
                     }
                     row += "</tr>";
 
