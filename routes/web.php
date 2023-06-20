@@ -289,6 +289,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
 
+    Route::any('import-employee', [SettingController::class, 'importEmployee']);
+    Route::post('employees/upload-csv', [SettingController::class, 'importBulkEmp']);
+    Route::any('employees/bulk-import', [SettingController::class, 'bulkImportEmp']);
+
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()

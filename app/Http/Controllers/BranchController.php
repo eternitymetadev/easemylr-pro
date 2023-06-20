@@ -570,4 +570,105 @@ class BranchController extends Controller
         }
     }
 
+    public function exportPaymentReport(Request $request)
+    {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
+
+        $fileName = 'Routelist.csv';
+        
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        /////////start//////////
+        $branches = Location::all();
+        // $query = BranchConnectivity::query();
+
+        $connected_hubs = BranchConnectivity::all();
+
+        $graph = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            $neighbors = explode(',', $hub->direct_connectivity);
+            $graph[$location] = $neighbors;
+        }
+
+        $locations = [];
+        foreach ($connected_hubs as $hub) {
+            $location = $hub->efpl_hub;
+            // $neighbors = explode(',', $hub->direct_connectivity);
+            $locations[$location] = $location;
+        }
+
+        foreach ($locations as $startkey => $startingLocation) {
+            foreach ($locations as $endkey => $endingLocation) {
+                if ($startingLocation !== $endingLocation) {
+                    // Initialize visited and route arrays
+                    $visited = array_fill_keys(array_keys($graph), false);
+    
+                    $route = [];
+                    // Find routes using DFS
+                    $routes = $this->findRoutes($graph, $startingLocation, $endingLocation, $visited, $route);
+    
+                    $start_branch = DB::table('locations')->where('id', $startingLocation)->first();
+                    $end_branch = DB::table('locations')->where('id', $endingLocation)->first();
+    
+                    // Add the routes to the response string
+                    // $routeData .= "<h3>Routes from $start_branch->name to $end_branch->name:</h3><br/>";
+        
+                    if (empty($routes)) {
+                        // $routeData .= "<p>No route available.</p>";
+                    } else {
+                        foreach ($routes as $route) {
+                            $branch_name = [];
+                           
+                            foreach($route as $key => $r){
+                            $getbranch = DB::table('locations')->where('id', $r)->first();
+                            $branch_name[]= $getbranch->name;
+                            }
+                            $start_branch->name;
+                            $end_branch->name;
+                            implode('  >  ', $branch_name);
+
+                        }
+                    }
+                    // Reverse the starting and ending locations to find vice versa routes
+                }
+            }
+        }
+
+
+        $payment_lists = $query->get();
+        
+        echo "<pre>"; print_r($payment_lists); die;
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('LR No','LR Date','DRS No','DRS Date','Order No','Base Client','Regional Client','Consigner','Consigner City');
+
+        $callback = function() use($payment_lists, $columns) {
+             $file = fopen('php://output', 'w');
+             fputcsv($file, $columns);
+
+             foreach ($payment_lists as $key => $payment_list) {
+                
+                $row['Sr_no'] = $i;
+                $row['transaction_id'] = $payment_list->transaction_id;
+                $row['date'] = $date;
+                $row['client'] = @$regn;
+                
+
+                fputcsv($file, $row);
+            }
+            fclose($file);
+
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
 }

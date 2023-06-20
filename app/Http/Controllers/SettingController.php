@@ -14,6 +14,7 @@ use Config;
 use DB;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EmployeeImport;
 use Session;
 use URL;
 use Validator;
@@ -349,4 +350,94 @@ class SettingController extends Controller
 
         return response()->json($response);
     }
+
+    public function importEmployee(){
+        $this->prefix = request()->route()->getPrefix();
+        return view('importemp', ['prefix' => $this->prefix]);
+    }
+    
+    public function importBulkEmp(Request $request){
+        $ftp_host = '3.20.3.119';
+        $ftp_user_name = 'finfactuser';
+        $ftp_user_pass = 'Bos14$#00EAC46@&46';
+  
+        $arr = array('Sale Register', 'Purchase Register', 'Stock Register');
+        foreach ($arr as $type) {
+
+            $companys = array('SD1', 'SD3');
+            foreach ($companys as $unit) {
+
+                //Source File Name and Path //
+                $remote_file = "OneDrive - FRONTIERS/$unit/$type/";
+
+                $local_file = (public_path() . '/FRONTIERS/' . $unit . '/' . $type . '/' . $type . '.xls');
+
+                //New file name and path for this file
+                //connect
+                $conn = ftp_connect('3.20.3.119');
+                ftp_login($conn, $ftp_user_name, $ftp_user_pass);
+                //get list of files on given path
+                $files = ftp_nlist($conn, $remote_file);
+
+                $mostRecent = array(
+                    'time' => 0,
+                    'file' => null,
+                );
+
+                foreach ($files as $file) {
+                    //get the last modified time for the file
+                    $ext = pathinfo($file, PATHINFO_EXTENSION);
+                    $time = ftp_mdtm($conn, $file);
+                    $datetimeFormat = 'Y-m-d';
+                    $cdate = date("Y-m-d");
+                    $date = new \DateTime();
+                    // If you must have use time zones
+                    // $date = new \DateTime('now', new \DateTimeZone('Europe/Helsinki'));
+                    $date->setTimestamp($time);
+
+                    $filedate = $date->format($datetimeFormat);
+                    //$filedate= '2022-04-21';
+                    //echo'<pre>';print_r($filedate);die;
+                    if ($cdate == $filedate && $ext = "xls") {
+                        //this file is the most recent so far
+                        $mostRecent['time'] = $time;
+                        $mostRecent['file'] = $file;
+                        //echo'<pre>';print_r($mostRecent['file']);die;
+                    }
+                }
+                if (!empty($mostRecent['file'])) {
+                    if (ftp_get($conn, $local_file, $mostRecent['file'], FTP_BINARY)) {
+                        $res['success'] = true;
+                        $res[$unit]['messages'][] = "WOOT! Successfully written to $local_file\n";
+                    }
+                } 
+                ftp_close($conn);
+            }
+        }
+    }
+
+    public function bulkImportEmp(Request $request){
+        $this->prefix = request()->route()->getPrefix();
+        // if($request->hasFile('employeesfile')){
+        //     $data = Excel::import(new EmployeeImport,request()->file('employeesfile'));
+        //     $url  = URL::to($this->prefix.'/consignees');
+        //     $message = 'Employees Imported Successfully';
+        // }
+
+        $path = (public_path() . '/FRONTIERS/SD1/Sale Register/Sale Register.xls');
+        // dd($path);
+        // $f = explode("/",$path);
+        //echo'<pre>';print_r($f); die;
+        if(file_exists($path)){
+            $data = Excel::import(new EmployeeImport, $path);
+            // $rows = Excel::toArray([], $path);
+            // dd($data);
+        // $data = $rows[0];
+        // $chng = $this->rewrap($data);
+        // echo'<pre>';print_r($chng);die;
+        //     echo 'imported successfully';
+        }
+    }
+    
+
 }
