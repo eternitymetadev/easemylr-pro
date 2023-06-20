@@ -498,7 +498,7 @@ jQuery(document).ready(function () {
         });
     }
     /*===== End get driver detail on create vehicle page =====*/
-
+    
     /*======get consigner on regional client =====*/
     $("#select_regclient").change(function (e) {
         // $("#items_table").find("tr:gt(1)").remove();
@@ -590,7 +590,7 @@ jQuery(document).ready(function () {
                             </div>
                             <div class="col-md-3">
                                 <label>Mode of Packing</label>
-                                <input type="text" class="form-control" value="Case/s"
+                                <input type="text" class="form-control" value="Cases"
                                        name="packing_type">
                             </div>
                             <div class="col-md-2">
@@ -748,7 +748,7 @@ jQuery(document).ready(function () {
                             </tr>
                             <tr>
                                 <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
-                                <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                                <td><input type="text" class="form-control form-small" value="Cases" name="packing_type"></td>
                                 <td align="center"><span id="tot_qty">
                                         <?php echo "0";?>
                                     </span></td>
@@ -882,7 +882,13 @@ jQuery(document).ready(function () {
                     if (res.data.address_line4 == null) {
                         var address_line4 = "";
                     } else {
-                        var address_line4 = res.data.address_line4 + "<br>";
+                        var address_line4 = res.data.address_line4;
+                    }
+                    if (res.data.postal_code == null) {
+                        var postal_code = "";
+                    } else {
+                        var postal_code =
+                            res.data.postal_code + "<br>";
                     }
                     if (res.data.gst_number == null) {
                         var gst_number = "";
@@ -905,21 +911,28 @@ jQuery(document).ready(function () {
                         " " +
                         address_line4 +
                         " " +
+                        postal_code +
+                        " " +
                         gst_number +
                         " " +
                         phone +
                         ""
                     );
-                    if (res.get_pin_hub == null) {
-                        $('#check_hub').html('No hub found');
-                        $('.disableme').prop('disabled', true);
-                        $('#select_consignee').prop('disabled', true);
-                        swal('error','Hub not found','error')
+                    var url = window.location.href;
+                    var theArray = url.split('/');
+                    var shortPath = theArray[theArray.length - 1];
+                    if(shortPath == "order-book-ptl"){
+                        if (res.get_pin_hub == null) {
+                            $('#check_hub').html('No hub found');
+                            $('.disableme').prop('disabled', true);
+                            $('#select_consignee').prop('disabled', true);
+                            swal('error','Hub not found','error')
 
-                    } else {
-                        $('#check_hub').html(res.get_pin_hub);
-                        $('.disableme').prop('disabled', false);
-                        $('#select_consignee').prop('disabled', false);
+                        } else {
+                            $('#check_hub').html(res.get_pin_hub);
+                            $('.disableme').prop('disabled', false);
+                            $('#select_consignee').prop('disabled', false);
+                        }
                     }
 
                     $("#dispatch").val(res.data.city);
@@ -965,7 +978,13 @@ jQuery(document).ready(function () {
                     if (res.data.address_line4 == null) {
                         var address_line4 = "";
                     } else {
-                        var address_line4 = res.data.address_line4 + "<br>";
+                        var address_line4 = res.data.address_line4 ;
+                    }
+                    if (res.data.postal_code == null) {
+                        var postal_code = "";
+                    } else {
+                        var postal_code =
+                            res.data.postal_code + "<br>";
                     }
                     if (res.data.gst_number == null) {
                         var gst_number = "";
@@ -988,18 +1007,25 @@ jQuery(document).ready(function () {
                         " " +
                         address_line4 +
                         " " +
+                        postal_code +
+                        " " +
                         gst_number +
                         " " +
                         phone +
                         ""
                     );
-                    if (res.get_pin_hub == null) {
-                        $('#check_hub_delivery').html('No hub found');
-                        $('.disableme').prop('disabled', true);
-                        swal('error','Hub not found','error')
-                    } else {
-                        $('#check_hub_delivery').html(res.get_pin_hub);
-                        $('.disableme').prop('disabled', false);
+                    var url = window.location.href;
+                    var theArray = url.split('/');
+                    var shortPath = theArray[theArray.length - 1];
+                    if(shortPath == "order-book-ptl"){
+                        if (res.get_pin_hub == null) {
+                            $('#check_hub_delivery').html('No hub found');
+                            $('.disableme').prop('disabled', true);
+                            swal('error','Hub not found','error')
+                        } else {
+                            $('#check_hub_delivery').html(res.get_pin_hub);
+                            $('.disableme').prop('disabled', false);
+                        }
                     }
 
                 }
@@ -1042,7 +1068,13 @@ jQuery(document).ready(function () {
                     if (res.data.address_line4 == null) {
                         var address_line4 = "";
                     } else {
-                        var address_line4 = res.data.address_line4 + "<br>";
+                        var address_line4 = res.data.address_line4 ;
+                    }
+                    if (res.data.postal_code == null) {
+                        var postal_code = "";
+                    } else {
+                        var postal_code =
+                            res.data.postal_code + "<br>";
                     }
                     if (res.data.gst_number == null) {
                         var gst_number = "";
@@ -1064,6 +1096,8 @@ jQuery(document).ready(function () {
                         address_line3 +
                         " " +
                         address_line4 +
+                        " " +
+                        postal_code +
                         " " +
                         gst_number +
                         " " +
@@ -1322,6 +1356,20 @@ jQuery(document).ready(function () {
         $("#total_weight").val(total_net_weight);
         $("#total_gross_weight").val(total_gross_weight);
     }
+    $(document).on("blur", ".gross", function () {
+        var grossval = $(this).val(); // less
+        var netval = $(this).parent().siblings().children('.net').val(); // greater
+        if(parseInt(netval) > parseInt(grossval)){
+            $(this).val('');
+        }
+    });
+    $(document).on("blur", ".net", function () {
+        var netval = $(this).val(); // greater
+        var grossval = $(this).parent().siblings().children('.gross').val(); // less
+        if(parseInt(netval) > parseInt(grossval)){
+            $(this).val('');
+        }
+    });
 
     /*===== get location on edit click =====*/
     jQuery(document).on("click", ".editlocation", function () {

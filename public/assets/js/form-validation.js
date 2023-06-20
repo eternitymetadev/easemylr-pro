@@ -33,6 +33,10 @@ jQuery(document).ready(function(){
         return this.optional(element) || /^[A-Za-z0-9]+$/i.test(value);
     }, "Only Alphabets and Numbers allowed.");
 
+    $.validator.addMethod("Alphabets", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z]*$/i.test(value);
+    }, "Only Alphabets allowed.");
+
     /*========== create user in users ========*/
     // $(document).on('submit','.general_form',function(e){
     //     e.preventDefault();
@@ -863,6 +867,9 @@ jQuery(document).ready(function(){
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
         rules: {
+            regclient_id: {
+                required: true
+            },
             consigner_id: {
                 required: true
             },
@@ -872,6 +879,12 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
+            description: {
+                Alphabets: true
+            },
+            packing_type: {
+                Alphabets: true
+            },           
            
             'quantity[]': {
                 required: true
@@ -886,6 +899,9 @@ jQuery(document).ready(function(){
            
         },
         messages: {
+            regclient_id: {
+                required: "Select bill to client",
+            },
             consigner_id: {
                 required: "Select consigner address",
             },
