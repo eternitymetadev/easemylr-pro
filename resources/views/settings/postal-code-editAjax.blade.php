@@ -13,7 +13,7 @@
         </thead>
         <tbody>
             @foreach($zones as $zone)
-            <tr>
+            <tr> 
                 <td>{{ $zone->postal_code ?? '-'}}</td>
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>

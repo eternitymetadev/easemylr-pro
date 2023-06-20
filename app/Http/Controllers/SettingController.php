@@ -9,18 +9,14 @@ use App\Models\GstRegisteredAddress;
 use App\Models\Location;
 use App\Models\State;
 use App\Exports\ZoneExport;
-use App\Models\BranchAddress;
 use App\Models\BranchConnectivity;
-use App\Models\Location;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Zone;
 use App\Models\Consigner;
 use App\Models\Consignee;
 use Auth;
 use Config;
 use DB;
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Session;
 use URL;
@@ -432,7 +428,7 @@ class SettingController extends Controller
 
 
      }
-}
+
     // ===========
     public function addGstAddress(Request $request)
     {

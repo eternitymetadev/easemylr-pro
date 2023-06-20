@@ -333,7 +333,7 @@ $('#state_id').change(function() {
     // $("#hub_assign").empty();
     var state_name = $(this).val();
 
-    $.ajax({
+    $.ajax({ 
         type: 'get',
         url: 'get-district',
         data: {
