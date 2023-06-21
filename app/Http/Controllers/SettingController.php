@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\Employee;
 use Auth;
 use Config;
 use DB;
@@ -18,6 +19,7 @@ use App\Imports\EmployeeImport;
 use Session;
 use URL;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -416,28 +418,58 @@ class SettingController extends Controller
         }
     }
 
+    public function rewrap(array $input)
+    {
+        $key_names = array_shift($input);
+        $output = array();
+        foreach ($input as $index => $inner_array) {
+            $output[] = array_combine($key_names, $inner_array);
+        }
+        return $output;
+    }
+
     public function bulkImportEmp(Request $request){
         $this->prefix = request()->route()->getPrefix();
-        // if($request->hasFile('employeesfile')){
-        //     $data = Excel::import(new EmployeeImport,request()->file('employeesfile'));
-        //     $url  = URL::to($this->prefix.'/consignees');
-        //     $message = 'Employees Imported Successfully';
-        // }
+        
+        $filePath = public_path('/FRONTIERS/SD1/Sale Register/Sale.csv');
+        $employees = [];
 
-        $path = (public_path() . '/FRONTIERS/SD1/Sale Register/Sale Register.xls');
-        // dd($path);
-        // $f = explode("/",$path);
-        //echo'<pre>';print_r($f); die;
-        if(file_exists($path)){
-            $data = Excel::import(new EmployeeImport, $path);
-            // $rows = Excel::toArray([], $path);
-            // dd($data);
-        // $data = $rows[0];
-        // $chng = $this->rewrap($data);
-        // echo'<pre>';print_r($chng);die;
-        //     echo 'imported successfully';
+        if (($open = fopen($filePath, "r")) !== FALSE) {
+            while (($data = fgetcsv($open, 1000, ",")) !== FALSE) {
+                $employees[] = $data;
+            }
+            fclose($open);
         }
+        $rows = $this->rewrap($employees);
+
+        foreach ($rows as $row) {
+            // dd($row);
+            $getEmp = Employee::where("emp_name", $row["Name"])->where("emp_id",$row["EmployeeCode"])->first();
+            
+            if(!empty($getEmp)){
+                $employee = Employee::where('emp_name', $row['Name'])->where('emp_id',$row["EmployeeCode"])->update([
+                    'phone'         => (float)@$row["OfficePhone"],
+                    'status'        => @$row["EmployeeStatus"],
+                    'updated_at'    => time(),
+                ]);
+            }
+            else{
+                return new Employee([
+                    'emp_id'        => @$row["EmployeeCode"],
+                    'emp_name'      => @$row["Name"],
+                    'phone'         => (float)@$row["OfficePhone"],
+                    'status'        => @$row["EmployeeStatus"],
+                    'created_at'    => time(),
+    
+                ]);
+            }
+        }
+        
+        return "Excel import successfully.";
+        
     }
+
+
     
 
 }

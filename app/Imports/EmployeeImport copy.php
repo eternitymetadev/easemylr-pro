@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Models\Employee;
 use Auth;
 
+
 class EmployeeImport implements ToModel,WithHeadingRow
 {
     /**
@@ -17,7 +18,8 @@ class EmployeeImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        echo "<pre>"; print_r($row); die;
+        // return $row;
+        echo "<pre>"; print_r("hi"); die;
         $getEmp = Employee::where('emp_name', $row['name'])->where('emp_id',$row['employeecode'])->first();
 
         if(!empty($getEmp)){
