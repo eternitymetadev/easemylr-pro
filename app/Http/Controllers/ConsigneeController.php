@@ -11,12 +11,15 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ConsigneeExport;
 use App\Models\Role;
 use App\Models\Zone;
+use App\Models\BaseClient;
+use Validator;
+use Session;
+use Helper;
+use Config;
+use Crypt;
+use Auth;
 use DB;
 use URL;
-use Auth;
-use Crypt;
-use Helper;
-use Validator;
 
 class ConsigneeController extends Controller
 {
@@ -31,7 +34,7 @@ class ConsigneeController extends Controller
      *
      * @return \Illuminate\Http\Response   
      */
-    public function index(Request $request)
+    public function index1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         if ($request->ajax()) {
@@ -40,42 +43,55 @@ class ConsigneeController extends Controller
             $role_id = Role::where('id','=',$authuser->role_id)->first();
             $regclient = explode(',',$authuser->regionalclient_id);
             $cc = explode(',',$authuser->branch_id);
-            $query = Consignee::with('Consigner.RegClient','Zone');
-
-            if($authuser->role_id == 2 || $authuser->role_id == 3){
-                if($authuser->role_id == $role_id->id){
-                    $query = $query->whereHas('Consigner.RegClient', function ($regclientquery) use($cc) {
-                    $regclientquery->whereIn('location_id', $cc);
-                    });
-                }else{
-                    $query = $query;
-                }
-            }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-                if($authuser->role_id == $role_id->id){
-                    if($authuser->role_id !=1){
-                        $query = $query->whereHas('Consigner', function($query) use($regclient){
-                            $query->whereIn('regionalclient_id', $regclient);
-                        });
-                    }else{
-                        $query = $query;
-                    }
-                }else{
-                    $query = $query;
-                }
-            }
-            else{
-                $query = $query;
-            }
+            $query = Consignee::with('RegClients.BaseClient','Zone');
+            // $query = Consignee::with('RegClients.BaseClient','Zone')->latest()->take(5)->get();
+            // echo'<pre>';print_r($query); die;
+            
+            // if($authuser->role_id == 2 || $authuser->role_id == 3){
+            //     if($authuser->role_id == $role_id->id){
+            //         $query = $query->whereHas('RegClients', function ($regclientquery) use ($cc) {
+            //         $regclientquery->whereIn('location_id', $cc);
+            //         })->get();
+            //         echo "<pre>"; print_r($query); die;
+            //     }else{
+            //         $query = $query;
+            //     }
+            // }else if($authuser->role_id != 2 || $authuser->role_id != 3){
+            //     if($authuser->role_id == $role_id->id){
+            //         if($authuser->role_id !=1){
+            //             $query = $query->whereHas('Consigner', function($query) use($regclient){
+            //                 $query->whereIn('regionalclient_id', $regclient);
+            //             });
+            //         }else{
+            //             $query = $query;
+            //         }
+            //     }else{
+            //         $query = $query;
+            //     }
+            // }
+            // else{
+            //     $query = $query;
+            // }
+            // $consignees = $query->latest()->take(5)->get();
             $consignees = $query->get();
+            echo "<pre>";print_r($consignees);die;
             return datatables()->of($consignees)
                 ->addIndexColumn()
-                ->addColumn('consigner', function($row){
-                    if(isset($row->Consigner)){
-                        $consigner = $row->Consigner->nick_name;
+                // ->addColumn('consigner', function($row){
+                //     if(isset($row->Consigner)){
+                //         $consigner = $row->Consigner->nick_name;
+                //     }else{
+                //         $consigner = '';
+                //     }
+                //     return $consigner;
+                // })
+                ->addColumn('baseclient', function($row){
+                    if(isset($row->RegClients->BaseClient)){
+                        $base_client = $row->RegClients->BaseClient->client_name;
                     }else{
-                        $consigner = '';
+                        $base_client = '';
                     }
-                    return $consigner;
+                    return $base_client;
                 })
                 ->addColumn('district', function($row){
                     if(isset($row->district)){
@@ -102,10 +118,67 @@ class ConsigneeController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action','consigner','district','state'])
+                ->rawColumns(['action','baseclient','district','state'])
                 ->make(true);
         }
         return view('consignees.consignee-list',['prefix'=>$this->prefix,'segment'=>$this->segment]);
+    }
+
+    public function index(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Consignee::query();
+
+        if ($request->ajax()) {
+            
+            $authuser = Auth::user();
+            $role_id = Role::where('id','=',$authuser->role_id)->first();
+            $regclient = explode(',',$authuser->regionalclient_id);
+            $cc = explode(',',$authuser->branch_id);
+
+            $query = $query->with('RegClients.BaseClient','Zone');
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhere('contact_name', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('postal_code', 'like', '%' . $search . '%')
+                    ->orWhere('city', 'like', '%' . $search . '%')
+                    ->orWhere('district', 'like', '%' . $search . '%')
+                    ->orWhere('state_id', 'like', '%' . $search . '%');
+                });
+
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+            $consignees = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $consignees = $consignees->appends($request->query());
+
+            $html = view('consignees.consignee-list-ajax', ['prefix' => $this->prefix,'segment' => $this->segment, 'consignees' => $consignees, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+           
+
+        }
+        $query = $query->with('RegClients.BaseClient','Zone');
+
+        $consignees = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $consignees = $consignees->appends($request->query());
+
+        return view('consignees.consignee-list', ['prefix' => $this->prefix,'segment' => $this->segment, 'consignees' => $consignees, 'peritem' => $peritem]);
+
     }
 
     /**
@@ -122,17 +195,18 @@ class ConsigneeController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
-            if($authuser->role_id == $role_id->id){
-                $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
-            }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }else{
-            $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }
+        // if($authuser->role_id == 2 || $authuser->role_id == 3){
+        //     if($authuser->role_id == $role_id->id){
+        //         $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        //     }
+        // }else if($authuser->role_id != 2 || $authuser->role_id != 3){
+        //     $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        // }else{
+        //     $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        // }
+        $base_clients = BaseClient::orderby('client_name','ASC')->pluck('client_name','id');
         
-        return view('consignees.create-consignee',['consigners'=>$consigners, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>'Create']);
+        return view('consignees.create-consignee',['base_clients'=>$base_clients, 'prefix'=>$this->prefix, 'title'=>$this->title, 'pagetitle'=>'Create']);
     }
 
     /**
@@ -164,7 +238,7 @@ class ConsigneeController extends Controller
         $consigneesave['gst_number']          = $request->gst_number;
         $consigneesave['contact_name']        = $request->contact_name;
         $consigneesave['phone']               = $request->phone;
-        $consigneesave['consigner_id']        = $request->consigner_id;
+        $consigneesave['baseclient_id']       = $request->baseclient_id;
         $consigneesave['zone_id']             = $request->zone_id;
         $consigneesave['branch_id']           = $request->branch_id;
         $consigneesave['dealer_type']         = $request->dealer_type;
@@ -208,7 +282,7 @@ class ConsigneeController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($consignee);
-        $getconsignee = Consignee::where('id',$id)->with('GetConsigner','GetBranch','GetZone')->first();
+        $getconsignee = Consignee::where('id',$id)->with('RegClients.BaseClient','GetBranch','GetZone')->first();
         return view('consignees.view-consignee',['prefix'=>$this->prefix,'title'=>$this->title,'getconsignee'=>$getconsignee,'pagetitle'=>'View Details']);
     }
 
@@ -228,17 +302,18 @@ class ConsigneeController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         
-        if($authuser->role_id == 2 || $authuser->role_id == 3){
-            if($authuser->role_id == $role_id->id){
-                $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
-            }
-        }else if($authuser->role_id != 2 || $authuser->role_id != 3){
-            $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }else{
-            $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
-        }      
+        // if($authuser->role_id == 2 || $authuser->role_id == 3){
+        //     if($authuser->role_id == $role_id->id){
+        //         $consigners = Consigner::whereIn('branch_id',$cc)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        //     }
+        // }else if($authuser->role_id != 2 || $authuser->role_id != 3){
+        //     $consigners = Consigner::whereIn('regionalclient_id',$regclient)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        // }else{
+        //     $consigners = Consigner::where('status',1)->orderby('nick_name','ASC')->pluck('nick_name','id');
+        // }      
+        $baseclients = Baseclient::where('status',1)->orderby('client_name','ASC')->pluck('client_name','id');
         $getconsignee = Consignee::with('GetZone')->where('id',$id)->first();
-        return view('consignees.update-consignee')->with(['prefix'=>$this->prefix, 'getconsignee'=>$getconsignee,'branches'=>$branches,'consigners'=>$consigners,'title'=>$this->title,'pagetitle'=>'Update']);
+        return view('consignees.update-consignee')->with(['prefix'=>$this->prefix, 'getconsignee'=>$getconsignee,'branches'=>$branches,'baseclients'=>$baseclients,'title'=>$this->title,'pagetitle'=>'Update']);
     }
 
     /**
@@ -281,7 +356,8 @@ class ConsigneeController extends Controller
             $consigneesave['gst_number']          = $request->gst_number;
             $consigneesave['contact_name']        = $request->contact_name;
             $consigneesave['phone']               = $request->phone;
-            $consigneesave['consigner_id']        = $request->consigner_id;
+            $consigneesave['baseclient_id']        = $request->baseclient_id;
+            // $consigneesave['consigner_id']        = $request->consigner_id;
             $consigneesave['zone_id']             = $request->zone_id;
             $consigneesave['branch_id']           = $request->branch_id;
             $consigneesave['dealer_type']         = $request->dealer_type;

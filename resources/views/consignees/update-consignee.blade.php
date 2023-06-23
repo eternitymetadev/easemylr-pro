@@ -56,14 +56,14 @@
                                     <input type="text" class="form-control mbCheckNm" name="phone" value="{{old('phone',isset($getconsignee->phone)?$getconsignee->phone:'')}}" placeholder="Phone" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
-                                    <select class="form-control" name="consigner_id">
+                                    <label for="exampleFormControlSelect1">Base Client</label>
+                                    <select class="form-control" name="baseclient_id">
                                         <option value="">Select</option>
                                         <?php 
-                                        if(count($consigners)>0) {
-                                            foreach ($consigners as $k => $consigner) { 
+                                        if(count($baseclients)>0) {
+                                            foreach ($baseclients as $k => $baseclient) { 
                                         ?>
-                                            <option value="{{ $k }}" {{ $k == $getconsignee->consigner_id ? 'selected' : ''}}>{{ucwords($consigner)}}</option>
+                                            <option value="{{ $k }}" {{ $k == $getconsignee->baseclient_id ? 'selected' : ''}}>{{ucwords($baseclient)}}</option>
                                             <?php 
                                             }
                                         }

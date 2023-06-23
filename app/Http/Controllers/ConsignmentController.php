@@ -692,12 +692,14 @@ class ConsignmentController extends Controller
         $getregclients = RegionalClient::where('id', $request->regclient_id)->first();
 
         $itemlists = ItemMaster::where('status', '1')->get();
+        $getconsignees = Consignee::where('baseclient_id', $getregclients->baseclient_id)->get();
 
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
+            $response['data_consignee'] = $getconsignees;
             $response['data_regclient'] = $getregclients;
             $response['data_items'] = $itemlists;
 

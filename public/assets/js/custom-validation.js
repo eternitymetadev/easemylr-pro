@@ -519,6 +519,7 @@ jQuery(document).ready(function () {
                 $("#select_consigner").empty();
             },
             success: function (res) {
+                console.log(res);
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
@@ -533,6 +534,18 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
+                //////////
+
+                $.each(res.data_consignee, function (key, value) {
+                    $("#select_consignee, #select_ship_to").append(
+                        '<option value="' +
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
+                    );
+                });
+                ///////////
 
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
@@ -825,8 +838,6 @@ jQuery(document).ready(function () {
 
     /*===== get consigner address on create consignment page =====*/
     $("#select_consigner").change(function (e) {
-        $("#select_consignee").empty();
-        $("#select_ship_to").empty();
         let consigner_id = $(this).val();
         getConsigners(consigner_id);
     });
@@ -842,24 +853,7 @@ jQuery(document).ready(function () {
             dataType: "json",
             success: function (res) {
                 $("#consigner_address").empty();
-                $("#consignee_address").empty();
-                $("#ship_to_address").empty();
-
-                $("#select_consignee").append(
-                    '<option value="">Select Consignee</option>'
-                );
-                $("#select_ship_to").append(
-                    '<option value="">Select Ship To</option>'
-                );
-                $.each(res.consignee, function (key, value) {
-                    $("#select_consignee, #select_ship_to").append(
-                        '<option value="' +
-                        value.id +
-                        '">' +
-                        value.nick_name +
-                        "</option>"
-                    );
-                });
+                
                 if (res.data) {
                     console.log(res.data);
                     $("#regclient_id").val(res.data.regionalclient_id);
