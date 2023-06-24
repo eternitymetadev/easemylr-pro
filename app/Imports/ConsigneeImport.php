@@ -12,6 +12,7 @@ use App\Models\Consigner;
 use App\Models\Location;
 use App\Models\State;
 use App\Models\User;
+use App\Models\BaseClient;
 use Auth;
 
 class ConsigneeImport implements ToModel,WithHeadingRow
