@@ -76,7 +76,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     'nick_name'     => $value->nick_name,
                     'legal_name'    => $value->legal_name,
                     'consigner_id'  => $value->consigner_id,
-                    'consigner_name' => $value->Consigner->nick_name,
+                    'consigner_name' => @$value->Consigner->nick_name,
                     'contact_name'  => $value->contact_name,
                     'email'         => $value->email,
                     'dealer_type'   => $dealer_type,
