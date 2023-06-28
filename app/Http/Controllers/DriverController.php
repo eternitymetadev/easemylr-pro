@@ -16,7 +16,9 @@ use Helper;
 use Validator;
 use Image;
 use Storage;
+use Session;
 use Auth;
+use Config;
 
 class DriverController extends Controller
 {
@@ -31,6 +33,51 @@ class DriverController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Driver::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('license_number', 'like', '%' . $search . '%');
+                });
+            }
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $drivers = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $drivers = $drivers->appends($request->query());
+             // echo'<pre'; print_r($drivers); die;
+             $html = view('drivers.driver-list-ajax', ['prefix' => $this->prefix, 'drivers' => $drivers, 'peritem' => $peritem])->render();
+
+             return response()->json(['html' => $html]);
+        }
+        $drivers = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $drivers = $drivers->appends($request->query());
+  
+        return view('drivers.driver-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment,'drivers'=>$drivers, 'peritem' => $peritem]);
+
+    }
+    public function index1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         if ($request->ajax()) {

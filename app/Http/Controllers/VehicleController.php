@@ -48,7 +48,6 @@ class VehicleController extends Controller
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
-            $authuser = Auth::user();
             $query = $query->with('GetState');
 
             if (!empty($request->search)) {
@@ -81,7 +80,6 @@ class VehicleController extends Controller
 
             return response()->json(['html' => $html]);
         }
-        $authuser = Auth::user();
         $vehicles = $query->with('GetState')->orderBy('id', 'DESC')->paginate($peritem);
         $vehicles = $vehicles->appends($request->query());
   
