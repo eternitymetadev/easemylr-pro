@@ -31,6 +31,7 @@
 .btn {
     font-size: 10px;
 }
+
 .select2-container--open {
     z-index: 99999;
 }
@@ -173,7 +174,7 @@
             </div>
             <div class="modal-body">
                 <form id="update_hub">
-                <div class="form-row">
+                    <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select State</label>
                             <select class="form-control my-select2" id="state_id" name="state_id" tabindex="-1">
@@ -187,14 +188,16 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select District</label>
-                            <select class="form-control tagging" id="state_district" name="district[]" multiple="multiple">
+                            <select class="form-control tagging" id="state_district" name="district[]"
+                                multiple="multiple">
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select Hub</label>
-                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1" required >
+                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1"
+                                required>
                                 <option value="">--Select--</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
@@ -217,30 +220,30 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
 
-jQuery(function() {
-    $('.my-select2').each(function() {
-        $(this).select2({
-            theme: "bootstrap-5",
-            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+    jQuery(function() {
+        $('.my-select2').each(function() {
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+            })
+        })
+
+        // fix select2 bootstrap modal scroll bug
+        $(document).on('select2:close', '.my-select2', function(e) {
+            var evt = "scroll.select2"
+            $(e.target).parents().off(evt)
+            $(window).off(evt)
         })
     })
 
-    // fix select2 bootstrap modal scroll bug
-    $(document).on('select2:close', '.my-select2', function(e) {
-        var evt = "scroll.select2"
-        $(e.target).parents().off(evt)
-        $(window).off(evt)
-    })
-})
-
-$('#sheet').DataTable({
-    dom: 'Bfrtip',
-    buttons: [
-        'print'
-    ]
-});
+    $('#sheet').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    });
 });
 $(document).on('click', '.edit_postal', function() {
     var postal_id = $(this).val();
@@ -264,6 +267,7 @@ $(document).on('click', '.edit_postal', function() {
             $('#zone_id').val(data.zone_data.id);
             $('#hub_transfer').val(data.zone_data.hub_transfer);
             $('#postal_code').val(data.zone_data.postal_code);
+            
         }
 
     });
@@ -333,7 +337,7 @@ $('#state_id').change(function() {
     // $("#hub_assign").empty();
     var state_name = $(this).val();
 
-    $.ajax({ 
+    $.ajax({
         type: 'get',
         url: 'get-district',
         data: {
@@ -344,22 +348,22 @@ $('#state_id').change(function() {
         },
         dataType: 'json',
         beforeSend: function() {
-            
+
         },
         success: function(res) {
 
             $("#state_district").append(
-                    '<option value="">--select--</option>'
+                '<option value="">--select--</option>'
+            );
+            $.each(res.all_district, function(key, value) {
+                $("#state_district").append(
+                    '<option value="' +
+                    value +
+                    '">' +
+                    value +
+                    "</option>"
                 );
-            $.each(res.all_district, function (key, value) {
-                    $("#state_district").append(
-                        '<option value="' +
-                        value +
-                        '">' +
-                        value +
-                        "</option>"
-                    );
-                });
+            });
 
         }
     });
