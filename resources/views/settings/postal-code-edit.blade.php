@@ -48,8 +48,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Postal
-                                Code</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Postal Code</a></li>
                     </ol>
                 </nav>
             </div>
@@ -60,9 +59,6 @@
 
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
-                            <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                <h4 class="win-h4">List</h4>
-                            </div> -->
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
@@ -131,25 +127,19 @@
                     <div class="col-12">
                         <input type="hidden" id="zone_id" name="zone_id" />
                         <label for="x">Postal Code</label>
-                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder=""
-                            readonly />
-                    </div>
-                    <div class="col-12">
-                        <label for="x">District</label>
-                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
+                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly />
                     </div>
                     <div class="col-12">
                         <label for="x">State</label>
                         <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">Hub Transfer</label>
-                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
-                            placeholder="" />
+                        <label for="x">District</label>
+                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">Primary Zone</label>
-                        <input class="form-control form-control-sm" id="primary_zone" name="primary_zone"
+                        <label for="x">Hub Transfer</label>
+                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
                             placeholder="" />
                     </div>
                 </div>
@@ -195,7 +185,19 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="inputEmail4">Select Hub</label>
+                            <label for="inputEmail4">Select Pickup Hub</label>
+                            <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1"
+                                required>
+                                <option value="">--Select--</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{$branch->id}}">{{$branch->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select Delivery Hub</label>
                             <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1"
                                 required>
                                 <option value="">--Select--</option>

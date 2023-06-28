@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsdeliveryToZonesTable extends Migration
+class AddPickuphubToZonesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddIsdeliveryToZonesTable extends Migration
     public function up()
     {
         Schema::table('zones', function (Blueprint $table) {
-            $table->string('is_pickup')->after('hub_nickname')->default(0);
-            $table->string('is_delivery')->after('is_pickup')->default(0);
+            $table->string('pickup_hub')->after('state')->nullable();
         });
     }
 

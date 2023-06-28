@@ -6,6 +6,7 @@
                 <th>Postal Code</th>
                 <th>District</th>
                 <th>State</th>
+                <th>Pickup Hub</th>
                 <th>Service HUB Name </th>
                 <th>Service Hub Code</th>
                 <th>Edit</th>
@@ -17,6 +18,7 @@
                 <td>{{ $zone->postal_code ?? '-'}}</td>
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
+                <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
                 <td>{{ $zone->Branch->hub_nickname ?? '-'}}</td>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
