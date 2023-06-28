@@ -136,7 +136,7 @@ class SettingController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->where('status', 1);
+            $query = $query->with('Branch','GetLocation')->where('status', 1);
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -172,7 +172,7 @@ class SettingController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with('Branch')
+        $query = $query->with('Branch','GetLocation')
             ->where('status', 1);
 
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -196,7 +196,12 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone, 'hub_transfer' => $request->hub_transfer]);
+            $zoneupdate['district'] = $request->district;
+            $zoneupdate['state'] = $request->state;
+            $zoneupdate['primary_zone'] = $request->primary_zone;
+            $zoneupdate['hub_transfer'] = $request->hub_transfer;
+           
+            Zone::where('id', $request->zone_id)->update($zoneupdate);
 
             $response['success'] = true;
             $response['success_message'] = "Zone Data successfully";
@@ -220,13 +225,13 @@ class SettingController extends Controller
     }
     public function updateDistrictHub(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
             $get_location = Location::where('id', $request->branch_id)->first();
+            // $pickup_location = Location::where('id', $request->pickup_hub)->first();
 
-            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $get_location->id]);
+            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
 
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";

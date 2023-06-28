@@ -31,6 +31,7 @@
 .btn {
     font-size: 10px;
 }
+
 .select2-container--open {
     z-index: 99999;
 }
@@ -47,8 +48,7 @@
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Postal
-                                Code</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Postal Code</a></li>
                     </ol>
                 </nav>
             </div>
@@ -59,9 +59,6 @@
 
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
-                            <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                <h4 class="win-h4">List</h4>
-                            </div> -->
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
@@ -130,25 +127,19 @@
                     <div class="col-12">
                         <input type="hidden" id="zone_id" name="zone_id" />
                         <label for="x">Postal Code</label>
-                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder=""
-                            readonly />
-                    </div>
-                    <div class="col-12">
-                        <label for="x">District</label>
-                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
+                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly />
                     </div>
                     <div class="col-12">
                         <label for="x">State</label>
                         <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">Hub Transfer</label>
-                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
-                            placeholder="" />
+                        <label for="x">District</label>
+                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">Primary Zone</label>
-                        <input class="form-control form-control-sm" id="primary_zone" name="primary_zone"
+                        <label for="x">Hub Transfer</label>
+                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
                             placeholder="" />
                     </div>
                 </div>
@@ -173,7 +164,7 @@
             </div>
             <div class="modal-body">
                 <form id="update_hub">
-                <div class="form-row">
+                    <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select State</label>
                             <select class="form-control my-select2" id="state_id" name="state_id" tabindex="-1">
@@ -187,14 +178,28 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select District</label>
-                            <select class="form-control tagging" id="state_district" name="district[]" multiple="multiple">
+                            <select class="form-control tagging" id="state_district" name="district[]"
+                                multiple="multiple">
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-12">
-                            <label for="inputEmail4">Select Hub</label>
-                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1" required >
+                            <label for="inputEmail4">Select Pickup Hub</label>
+                            <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1"
+                                required>
+                                <option value="">--Select--</option>
+                                @foreach($branchs as $branch)
+                                <option value="{{$branch->id}}">{{$branch->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="inputEmail4">Select Delivery Hub</label>
+                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1"
+                                required>
                                 <option value="">--Select--</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
@@ -217,30 +222,30 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
 
-jQuery(function() {
-    $('.my-select2').each(function() {
-        $(this).select2({
-            theme: "bootstrap-5",
-            dropdownParent: $(this).parent(), // fix select2 search input focus bug
+    jQuery(function() {
+        $('.my-select2').each(function() {
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+            })
+        })
+
+        // fix select2 bootstrap modal scroll bug
+        $(document).on('select2:close', '.my-select2', function(e) {
+            var evt = "scroll.select2"
+            $(e.target).parents().off(evt)
+            $(window).off(evt)
         })
     })
 
-    // fix select2 bootstrap modal scroll bug
-    $(document).on('select2:close', '.my-select2', function(e) {
-        var evt = "scroll.select2"
-        $(e.target).parents().off(evt)
-        $(window).off(evt)
-    })
-})
-
-$('#sheet').DataTable({
-    dom: 'Bfrtip',
-    buttons: [
-        'print'
-    ]
-});
+    $('#sheet').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    });
 });
 $(document).on('click', '.edit_postal', function() {
     var postal_id = $(this).val();
@@ -264,6 +269,7 @@ $(document).on('click', '.edit_postal', function() {
             $('#zone_id').val(data.zone_data.id);
             $('#hub_transfer').val(data.zone_data.hub_transfer);
             $('#postal_code').val(data.zone_data.postal_code);
+            
         }
 
     });
@@ -333,7 +339,7 @@ $('#state_id').change(function() {
     // $("#hub_assign").empty();
     var state_name = $(this).val();
 
-    $.ajax({ 
+    $.ajax({
         type: 'get',
         url: 'get-district',
         data: {
@@ -344,22 +350,22 @@ $('#state_id').change(function() {
         },
         dataType: 'json',
         beforeSend: function() {
-            
+
         },
         success: function(res) {
 
             $("#state_district").append(
-                    '<option value="">--select--</option>'
+                '<option value="">--select--</option>'
+            );
+            $.each(res.all_district, function(key, value) {
+                $("#state_district").append(
+                    '<option value="' +
+                    value +
+                    '">' +
+                    value +
+                    "</option>"
                 );
-            $.each(res.all_district, function (key, value) {
-                    $("#state_district").append(
-                        '<option value="' +
-                        value +
-                        '">' +
-                        value +
-                        "</option>"
-                    );
-                });
+            });
 
         }
     });
