@@ -3194,7 +3194,7 @@ function getConsignees(consignee_id) {
 
 // for autocomplte consignee list
 jQuery(document).on("keyup", "#select_consignee", function (event) {
-    
+    $("#consignee_address").empty();
     var searchTerm= $(this).val();
     var regclient_id= $("#select_regclient").val();
     

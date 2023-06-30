@@ -751,8 +751,8 @@ class ConsignmentController extends Controller
         ->where('id', $request->consignee_id)
         ->first();
 
-        $get_pin_hub = '';
-        // $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
+        // $get_pin_hub = '';
+        $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
         if(!empty($get_pin_hub->Branch)){
             $check_hub = $get_pin_hub->Branch->name;
         }else{
