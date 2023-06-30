@@ -409,7 +409,7 @@ span.select2.select2-container.mb-4 {
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop location (Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
+                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
                 </label>
 
                 {{-- <label for="exampleFormControlSelect1">
@@ -425,15 +425,21 @@ span.select2.select2-container.mb-4 {
                 <div class="appendedAddress" id="consignee_address"></div> --}}
                 
             </div>
-            {{-- <div class="form-group col-md-4">
+            <div class="form-group col-md-4">
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
+
+                <input id="select_ship_to" name="" class="form-control selectShipto" type="text" placeholder="Search.." />
+
+                <div class="appendedAddress" id="ship_to_address"></div>
+                <input type="hidden" id="ship_to_id" name="ship_to_id" value="">
+
+            {{--    <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
                     <option value="">Select Ship To</option>
                 </select>
-                <div class="appendedAddress" id="ship_to_address"></div>
-            </div> --}}
+                <div class="appendedAddress" id="ship_to_address"></div> --}}
+            </div>
         </div>
 
 

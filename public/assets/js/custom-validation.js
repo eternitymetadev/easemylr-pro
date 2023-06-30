@@ -936,83 +936,6 @@ jQuery(document).ready(function () {
         });
     }
 
-    
-
-    $("#select_ship_to").change(function (e) {
-        $("#ship_to_address").empty();
-        let consignee_id = $(this).val();
-        getShipto(consignee_id);
-    });
-
-    function getShipto(consignee_id) {
-        $.ajax({
-            type: "get",
-            url: APP_URL + "/get_consignees",
-            data: { consignee_id: consignee_id },
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            dataType: "json",
-            success: function (res) {
-                if (res.data) {
-                    if (res.data.address_line1 == null) {
-                        var address_line1 = "";
-                    } else {
-                        var address_line1 = res.data.address_line1 + "<br>";
-                    }
-                    if (res.data.address_line2 == null) {
-                        var address_line2 = "";
-                    } else {
-                        var address_line2 = res.data.address_line2 + "<br>";
-                    }
-                    if (res.data.address_line3 == null) {
-                        var address_line3 = "";
-                    } else {
-                        var address_line3 = res.data.address_line3 + "<br>";
-                    }
-                    if (res.data.address_line4 == null) {
-                        var address_line4 = "";
-                    } else {
-                        var address_line4 = res.data.address_line4;
-                    }
-                    if (res.data.postal_code == null) {
-                        var postal_code = "";
-                    } else {
-                        var postal_code = res.data.postal_code + "<br>";
-                    }
-                    if (res.data.gst_number == null) {
-                        var gst_number = "";
-                    } else {
-                        var gst_number =
-                            "GST No: " + res.data.gst_number + "<br>";
-                    }
-                    if (res.data.phone == null) {
-                        var phone = "";
-                    } else {
-                        var phone = "Phone: " + res.data.phone;
-                    }
-
-                    $("#ship_to_address").append(
-                        address_line1 +
-                            " " +
-                            address_line2 +
-                            "" +
-                            address_line3 +
-                            " " +
-                            address_line4 +
-                            " " +
-                            postal_code +
-                            " " +
-                            gst_number +
-                            " " +
-                            phone +
-                            ""
-                    );
-                }
-            },
-        });
-    }
-
     //get location on create consigner page on client change
     $("#regionalclient_id").change(function () {
         let location_id = $(this).find(":selected").attr("data-locationid");
@@ -3190,8 +3113,6 @@ function getConsignees(consignee_id) {
     });
 }
 
-
-
 // for autocomplte consignee list
 jQuery(document).on("keyup", "#select_consignee", function (e) {
     $("#consignee_address").empty();
@@ -3260,6 +3181,150 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
     }else if(e.which == 8){
         $("#consignee_address").empty();
         $("#conee_id").val('');
+    }
+});
+// get ship to address
+// $("#select_ship_to").change(function (e) {
+//     $("#ship_to_address").empty();
+//     let consignee_id = $(this).val();
+//     getShipto(consignee_id);
+// });
+
+function getShipto(consignee_id) {
+    $.ajax({
+        type: "get",
+        url: APP_URL + "/get_consignees-address",
+        data: { consignee_id: consignee_id },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        dataType: "json",
+        success: function (res) {
+            if (res.data) {
+                if (res.data.address_line1 == null) {
+                    var address_line1 = "";
+                } else {
+                    var address_line1 = res.data.address_line1 + "<br>";
+                }
+                if (res.data.address_line2 == null) {
+                    var address_line2 = "";
+                } else {
+                    var address_line2 = res.data.address_line2 + "<br>";
+                }
+                if (res.data.address_line3 == null) {
+                    var address_line3 = "";
+                } else {
+                    var address_line3 = res.data.address_line3 + "<br>";
+                }
+                if (res.data.address_line4 == null) {
+                    var address_line4 = "";
+                } else {
+                    var address_line4 = res.data.address_line4;
+                }
+                if (res.data.postal_code == null) {
+                    var postal_code = "";
+                } else {
+                    var postal_code = res.data.postal_code + "<br>";
+                }
+                if (res.data.gst_number == null) {
+                    var gst_number = "";
+                } else {
+                    var gst_number =
+                        "GST No: " + res.data.gst_number + "<br>";
+                }
+                if (res.data.phone == null) {
+                    var phone = "";
+                } else {
+                    var phone = "Phone: " + res.data.phone;
+                }
+
+                $("#ship_to_address").append(
+                    address_line1 +
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        postal_code +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
+                );
+            }
+        },
+    });
+}
+
+// for autocomplte ship to list
+jQuery(document).on("keyup", "#select_ship_to", function (e) {
+    $("#ship_to_address").empty();
+    var searchTerm= $(this).val();
+    var regclient_id= $("#select_regclient").val();
+    
+    if(e.which != 8){
+        jQuery.ajax({
+            type: "get",
+            url: APP_URL + "/get_consignees",
+            cache: false,
+            data: { search:searchTerm, regclient_id:regclient_id },
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+            },
+            processData: true,
+            beforeSend: function () {
+                //console.log(dataToSearch, "payload");
+                jQuery("#loader-section").css('display','flex');
+    
+            },
+            complete: function () {
+                jQuery("#loader-section").css('display','none');
+            },
+            success: function (res) {
+                console.log(res.data);
+                // $( function() {
+                $("#select_ship_to").autocomplete({
+                    source: function (request, response) {
+                        response(
+                            $.map(res.data, function (obj, key) {
+                                var name = obj.nick_name.toUpperCase();
+                                if (
+                                    name.indexOf(request.term.toUpperCase()) != -1
+                                ) {
+                                    return {
+                                        displayLabel: `${obj.nick_name}`,
+                                        label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+                                        value: obj.id
+                                    }
+                                } else {
+                                    return null;
+                                }
+                            })
+                        );
+                    },
+                    focus: function (event, ui) {
+                        event.preventDefault();
+                    },
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        $("#select_ship_to").val(ui.item.displayLabel);
+                        $("#ship_to_id").val(ui.item.value);
+                        getShipto(ui.item.value);
+                        // ... any other tasks (like setting Hidden Fields) go here...
+                        $("#themeLoader").css("display", "flex");
+                        return false;
+                    },
+                });
+                // });
+            },
+        });
+    }else if(e.which == 8){
+        $("#ship_to_address").empty();
+        $("#ship_to_id").val('');
     }
 });
 
