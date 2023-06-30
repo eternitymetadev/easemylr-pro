@@ -692,14 +692,14 @@ class ConsignmentController extends Controller
         $getregclients = RegionalClient::where('id', $request->regclient_id)->first();
 
         $itemlists = ItemMaster::where('status', '1')->get();
-        $getconsignees = Consignee::where('baseclient_id', $getregclients->baseclient_id)->get();
+        // $getconsignees = Consignee::where('baseclient_id', $getregclients->baseclient_id)->get();
 
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
-            $response['data_consignee'] = $getconsignees;
+            // $response['data_consignee'] = $getconsignees;
             $response['data_regclient'] = $getregclients;
             $response['data_items'] = $itemlists;
 
@@ -714,8 +714,44 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsignees(Request $request)
     {
-        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone','postal_code')->where(['id' => $request->consignee_id, 'status' => '1'])->first();
+        $get_regclient = RegionalClient::select('id','baseclient_id')->where('id',$request->regclient_id)->first();
+    
+        $getconsignees = Consignee::select('id', 'nick_name','phone')
+        ->where('baseclient_id', $get_regclient->baseclient_id)
+        ->where('nick_name', 'LIKE', '%' . $request->search . '%')
+        ->orderBy('nick_name', 'asc')
+        ->get();
 
+        // $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
+        // $get_pin_hub = '';
+        // if(!empty($get_pin_hub->Branch)){
+        //     $check_hub = $get_pin_hub->Branch->name;
+        // }else{
+        //     $check_hub = Null;
+        // }
+
+        if ($getconsignees) {
+            $response['success'] = true;
+            $response['success_message'] = "Consignee list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getconsignees;
+            // $response['get_pin_hub'] = $check_hub;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consignee list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
+    // get consigner address on change
+    public function getConsigneesAdd(Request $request)
+    {
+        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone','postal_code')
+        ->where('id', $request->consignee_id)
+        ->first();
+
+        // $get_pin_hub = '';
         $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
         if(!empty($get_pin_hub->Branch)){
             $check_hub = $get_pin_hub->Branch->name;

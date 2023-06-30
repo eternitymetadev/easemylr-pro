@@ -1022,6 +1022,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_drivers', [VehicleController::class, 'getDrivers']);
     Route::get('/get_consigners', [ConsignmentController::class, 'getConsigners']);
     Route::get('/get_consignees', [ConsignmentController::class, 'getConsignees']);
+    Route::get('/get_consignees-address', [ConsignmentController::class, 'getConsigneesAdd']);
 
     Route::get('/get_regclients', [UserController::class, 'regClients']);
     Route::get('/get_locations', [ConsignerController::class, 'regLocations']);

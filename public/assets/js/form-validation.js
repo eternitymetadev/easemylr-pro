@@ -877,7 +877,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
             description: {
                 Alphabets: true
@@ -909,7 +909,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address",
             },
             ship_to_id: {
-                required: "Select ship to address",
+                // required: "Select ship to address",
             },
             driver_id : {
                 required: "Select driver",
@@ -956,7 +956,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
             invoice_no: {
                 // required: true,
@@ -1007,7 +1007,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address",
             },
             ship_to_id: {
-                required: "Select ship to address",
+                // required: "Select ship to address",
             },
             invoice_no: {
                 required: "Enter invoice no.",
@@ -1066,7 +1066,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
         //     'quantity[]': {
         //         required: true
@@ -1088,7 +1088,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address"
             },
             ship_to_id: {
-                required: "Select ship to address"
+                // required: "Select ship to address"
             },
             // driver_id : {
             //     required: "Select driver"

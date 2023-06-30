@@ -2,6 +2,7 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
 
 <style>
 @media only screen and (max-width: 600px) {
@@ -393,24 +394,38 @@ span.select2.select2-container.mb-4 {
                 </label>
                 <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                     <option value="">Select Consignor</option>
-                    {{--                        @foreach($consigners as $consigner)--}}
-                    {{--                            <option value="{{$consigner->id}}">{{$consigner->nick_name}}--}}
-                    {{--                            </option>--}}
-                    {{--                        @endforeach--}}
+        
                 </select>
                 <div class="appendedAddress" id="consigner_address"></div>
             </div>
+
+
+            {{-- <div class="form-group" style="max-width: 320px">
+                <label for="exampleFormControlSelect1">
+                    Select Consignee<span class="text-danger">*</span>
+                </label>
+                <input id="consigneeID" class="form-control" type="text" placeholder="Search.." />
+            </div> --}}
+
+
             <div class="form-group col-md-4">
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
                 </label>
-                <select class="form-control my-select2" name="consignee_id" id="select_consignee">
+
+                {{-- <label for="exampleFormControlSelect1">
+                    Select Consignee<span class="text-danger">*</span>
+                </label> --}}
+                <input id="select_consignee" name="consignee_id" class="form-control selectConsignee" type="text" placeholder="Search.." />
+
+                <div class="appendedAddress" id="consignee_address"></div>
+                {{-- <select class="form-control my-select2 selectConsignee" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>
-                <div class="appendedAddress" id="consignee_address"></div>
+                <div class="appendedAddress" id="consignee_address"></div> --}}
                 
             </div>
-            <div class="form-group col-md-4">
+            {{-- <div class="form-group col-md-4">
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
@@ -418,7 +433,7 @@ span.select2.select2-container.mb-4 {
                     <option value="">Select Ship To</option>
                 </select>
                 <div class="appendedAddress" id="ship_to_address"></div>
-            </div>
+            </div> --}}
         </div>
 
 
@@ -508,7 +523,7 @@ span.select2.select2-container.mb-4 {
 
 @endsection
 @section('js')
-<script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script><script>
 $(document).ready(function() {
 
     jQuery(function() {
