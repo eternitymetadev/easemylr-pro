@@ -3193,71 +3193,74 @@ function getConsignees(consignee_id) {
 
 
 // for autocomplte consignee list
-jQuery(document).on("keyup", "#select_consignee", function (event) {
+jQuery(document).on("keyup", "#select_consignee", function (e) {
     $("#consignee_address").empty();
     var searchTerm= $(this).val();
     var regclient_id= $("#select_regclient").val();
     
-    jQuery.ajax({
-        type: "get",
-        url: APP_URL + "/get_consignees",
-        cache: false,
-        data: { search:searchTerm, regclient_id:regclient_id },
-        dataType: "json",
-        headers: {
-            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
-        },
-        processData: true,
-        beforeSend: function () {
-            //console.log(dataToSearch, "payload");
-            jQuery("#loader-section").css('display','flex');
 
-        },
-        complete: function () {
-            jQuery("#loader-section").css('display','none');
-        },
-
-        success: function (res) {
-            console.log(res.data);
-            // $( function() {
-            $("#select_consignee").autocomplete({
-                source: function (request, response) {
-                    response(
-                        $.map(res.data, function (obj, key) {
-                            var name = obj.nick_name.toUpperCase();
-                            if (
-                                name.indexOf(request.term.toUpperCase()) != -1
-                            ) {
-                                return {
-                                    label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
-                                    value: obj.id, // Value
-                                };
-                            } else {
-                                return null;
-                            }
-                        })
-                    );
-                },
-                focus: function (event, ui) {
-                    event.preventDefault();
-                },
-                select: function (event, ui) {
-                    event.preventDefault();
-                    // place the person.given_name value into the textfield called 'select_origin'...
-                    $("#select_consignee").val(ui.item.label);
-                    $("#select_consignee").attr("data-val", ui.item.value);
-
-                    // gett cnee addr
-                    $("#consignee_address").empty();
-                    getConsignees(ui.item.value);
-                    // ... any other tasks (like setting Hidden Fields) go here...
-                    $("#themeLoader").css("display", "flex");
-                    return false;
-                },
-            });
-            // });
-        },
-    });
+    if(e.which != 8){
+        jQuery.ajax({
+            type: "get",
+            url: APP_URL + "/get_consignees",
+            cache: false,
+            data: { search:searchTerm, regclient_id:regclient_id },
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+            },
+            processData: true,
+            beforeSend: function () {
+                //console.log(dataToSearch, "payload");
+                jQuery("#loader-section").css('display','flex');
+    
+            },
+            complete: function () {
+                jQuery("#loader-section").css('display','none');
+            },
+    
+            success: function (res) {
+                console.log(res.data);
+                // $( function() {
+                $("#select_consignee").autocomplete({
+                    source: function (request, response) {
+                        response(
+                            $.map(res.data, function (obj, key) {
+                                var name = obj.nick_name.toUpperCase();
+                                if (
+                                    name.indexOf(request.term.toUpperCase()) != -1
+                                ) {
+                                    return {
+                                        displayLabel: `${obj.nick_name}`,
+                                        label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+                                        value: obj.id
+                                    }
+                                } else {
+                                    return null;
+                                }
+                            })
+                        );
+                    },
+                    focus: function (event, ui) {
+                        event.preventDefault();
+                    },
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        $("#select_consignee").val(ui.item.displayLabel);
+                        $("#conee_id").val(ui.item.value);
+                        getConsignees(ui.item.value);
+                        // ... any other tasks (like setting Hidden Fields) go here...
+                        $("#themeLoader").css("display", "flex");
+                        return false;
+                    },
+                });
+                // });
+            },
+        });
+    }else if(e.which == 8){
+        $("#consignee_address").empty();
+        $("#conee_id").val('');
+    }
 });
 
 

@@ -658,13 +658,12 @@ class ConsignmentController extends Controller
     {
         $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id', 'regionalclient_id','postal_code')->with('GetRegClient', 'GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
 
-        $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsigners->postal_code)->first();
-        if(!empty($get_pin_hub->Branch)){
-            $check_hub = $get_pin_hub->Branch->name;
+        $get_pin_hub = Zone::with('GetLocation')->where('postal_code',$getconsigners->postal_code)->first();
+        if(!empty($get_pin_hub->GetLocation)){
+            $check_hub = $get_pin_hub->GetLocation->name;
         }else{
             $check_hub = Null;
-        }
-        
+        }        
 
         $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
