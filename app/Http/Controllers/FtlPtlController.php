@@ -100,7 +100,7 @@ class FtlPtlController extends Controller
             $rules = array(
                 'consigner_id' => 'required',
                 'consignee_id' => 'required',
-                'ship_to_id' => 'required',
+                // 'ship_to_id' => 'required',
             );
             $validator = Validator::make($request->all(), $rules);
 
@@ -127,7 +127,7 @@ class FtlPtlController extends Controller
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
-            $consignmentsave['ship_to_id'] = $request->ship_to_id;
+            $consignmentsave['ship_to_id'] = $request->consignee_id;
             $consignmentsave['is_salereturn'] = $request->is_salereturn;
             $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;

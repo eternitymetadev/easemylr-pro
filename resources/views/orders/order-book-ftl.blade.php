@@ -402,14 +402,20 @@ span.select2.select2-container.mb-4 {
             </div>
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
+                    Select Drop location (Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control my-select2" name="consignee_id" id="select_consignee">
+
+                <input id="select_consignee" name="" class="form-control selectConsignee" type="text" placeholder="Search.." />
+
+                <div class="appendedAddress" id="consignee_address"></div>
+                <input type="hidden" id="conee_id" name="consignee_id" value="">
+                
+                {{-- <select class="form-control my-select2" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>
-                <div class="appendedAddress" id="consignee_address"></div>
+                <div class="appendedAddress" id="consignee_address"></div> --}}
             </div>
-            <div class="form-group col-md-4">
+            {{-- <div class="form-group col-md-4">
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
@@ -417,7 +423,7 @@ span.select2.select2-container.mb-4 {
                     <option value="">Select Ship To</option>
                 </select>
                 <div class="appendedAddress" id="ship_to_address"></div>
-            </div>
+            </div> --}}
         </div>
 
 

@@ -2,7 +2,6 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
 <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
 
 <style>
 @media only screen and (max-width: 600px) {
@@ -410,7 +409,7 @@ span.select2.select2-container.mb-4 {
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
+                    Select Drop location (Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
                 </label>
 
                 {{-- <label for="exampleFormControlSelect1">
@@ -524,7 +523,7 @@ span.select2.select2-container.mb-4 {
 
 @endsection
 @section('js')
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script><script>
+<script>
 $(document).ready(function() {
 
     jQuery(function() {

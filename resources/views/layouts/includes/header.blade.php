@@ -28,6 +28,7 @@
       type="text/css"/>
 
 <link rel="stylesheet" href="{{asset('assets/css/sumoselect.min.css')}}" type="text/css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />
 
 <!-- gmap script -->
 <script defer
