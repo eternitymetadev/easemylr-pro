@@ -100,7 +100,7 @@ class FtlPtlController extends Controller
             $rules = array(
                 'consigner_id' => 'required',
                 'consignee_id' => 'required',
-                // 'ship_to_id' => 'required',
+                'ship_to_id' => 'required',
             );
             $validator = Validator::make($request->all(), $rules);
 

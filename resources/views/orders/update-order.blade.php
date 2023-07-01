@@ -462,50 +462,31 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <div id="consigner_address">
                 </div>
             </div>
+
             <div class="form-group col-md-4">
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="consignee_id"
-                    id="select_consignee" {{$disable}}>
-                    <option value="">Select Consignee</option>
-                    @if(count($consignees) > 0)
-                    @foreach($consignees as $k => $consignee)
-                    <option value="{{$consignee->id}}"
-                        {{ $consignee->id == $getconsignments->consignee_id ? 'selected' : ''}}>
-                        {{ucwords($consignee->nick_name)}}
-                    </option>
-                    @endforeach
-                    @endif
-                </select>
+
+                <input id="select_consignee" name="" class="form-control selectConsignee" type="text" value="{{old('consignee_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
+
                 <?php 
                 if(empty($getconsignments->prs_id)){ ?>
-                <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
+                <input type="hidden" id="consignee_id" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
                 <?php } ?>
                 <div class="" id="consignee_address"></div>
             </div>
+
             <div class="form-group col-md-4">
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" style="width: 328px;" type="text" name="ship_to_id"
-                    id="select_ship_to" {{$disable}}>
-                    <option value="">Select Ship To</option>
-                    @if(count($consignees) > 0)
-                    @foreach($consignees as $k => $consignee)
-                    <option value="{{$consignee->id}}"
-                        {{ $consignee->id == $getconsignments->ship_to_id ? 'selected' : ''}}>
-                        {{ucwords($consignee->nick_name)}}
-                    </option>
-                    @endforeach
-                    @endif
-                </select>
+                <input id="select_ship_to" name="" class="form-control selectShipto" type="text" value="{{old('ship_to_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
+                
                 <?php if(empty($getconsignments->prs_id)){ ?>
-                <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
+                <input type="hidden" id="ship_to_id" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
                 <?php } ?>
-                <div id="ship_to_address">
-
-                </div>
+                <div id="ship_to_address"></div>
             </div>
 
             {{--order info--}}
@@ -1393,8 +1374,8 @@ function getItem(item) {
 $(document).ready(function() {
     var regclient_id = $('#select_regclient').val();
     var consigner_id = $('#select_consigner').val();
-    var consignee_id = $('#select_consignee').val();
-    var shipto_id = $('#select_ship_to').val();
+    var consignee_id = $('#consignee_id').val();
+    var shipto_id = $('#ship_to_id').val();
 
     $.ajax({
         type: 'get',
@@ -1500,7 +1481,7 @@ $(document).ready(function() {
     ///////get consinee address//
     $.ajax({
         type: 'get',
-        url: APP_URL + '/get_consignees',
+        url: APP_URL + '/get-consignees-address',
         data: {
             consignee_id: consignee_id
         },
@@ -1550,7 +1531,7 @@ $(document).ready(function() {
     //////////get ship to address///
     $.ajax({
         type: 'get',
-        url: APP_URL + '/get_consignees',
+        url: APP_URL + '/get-consignees-address',
         data: {
             consignee_id: shipto_id
         },
