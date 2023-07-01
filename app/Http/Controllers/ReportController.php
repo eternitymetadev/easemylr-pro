@@ -329,4 +329,9 @@ class ReportController extends Controller
     }
 
 
+    public function emailSend(Request $request)
+    {
+        return "Email sent successfully";
+    }
+
 }
