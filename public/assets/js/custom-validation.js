@@ -3024,7 +3024,7 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
 function getConsignees(consignee_id) {
     $.ajax({
         type: "get",
-        url: APP_URL + "/get_consignees-address",
+        url: APP_URL + "/get-consignees-address",
         data: { consignee_id: consignee_id},
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -3168,7 +3168,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
                     select: function (event, ui) {
                         event.preventDefault();
                         $("#select_consignee").val(ui.item.displayLabel);
-                        $("#conee_id").val(ui.item.value);
+                        $("#consignee_id").val(ui.item.value);
                         getConsignees(ui.item.value);
                         // ... any other tasks (like setting Hidden Fields) go here...
                         $("#themeLoader").css("display", "flex");
@@ -3180,7 +3180,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
         });
     }else if(e.which == 8){
         $("#consignee_address").empty();
-        $("#conee_id").val('');
+        $("#consignee_id").val('');
     }
 });
 // get ship to address
@@ -3193,7 +3193,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
 function getShipto(consignee_id) {
     $.ajax({
         type: "get",
-        url: APP_URL + "/get_consignees-address",
+        url: APP_URL + "/get-consignees-address",
         data: { consignee_id: consignee_id },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),

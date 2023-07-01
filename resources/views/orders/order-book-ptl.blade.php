@@ -418,7 +418,7 @@ span.select2.select2-container.mb-4 {
                 <input id="select_consignee" name="" class="form-control selectConsignee" type="text" placeholder="Search.." />
 
                 <div class="appendedAddress" id="consignee_address"></div>
-                <input type="hidden" id="conee_id" name="consignee_id" value="">
+                <input type="hidden" id="consignee_id" name="consignee_id" value="">
                 {{-- <select class="form-control my-select2 selectConsignee" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>

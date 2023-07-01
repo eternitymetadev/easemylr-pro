@@ -278,40 +278,18 @@ span.round-tab:hover {
 
                         <div class="col-sm-4 ">
                             <p>Select Drop location (Bill To Consignee)</p>
-                            <select class="form-control" style="width: 328px;" type="text"
-                                name="consignee_id" id="select_consignee" disabled>
-                                <option value="">Select Consignee</option>
-                                @if(count($consignees) > 0)
-                                @foreach($consignees as $k => $consignee)
-                                <option value="{{ $k }}" {{ $k == $getconsignments->consignee_id ? 'selected' : ''}}>
-                                    {{ucwords($consignee)}}
-                                </option>
-                                @endforeach
-                                @endif
-                            </select>
-                            <input type="hidden" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
-                            <div id="consignee_address">
+                            <input id="select_consignee" name="" class="form-control selectConsignee" type="text" value="{{old('consignee_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." disabled/>
 
-                            </div>
+                            <input type="hidden" id="consignee_id" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
+                            <div id="consignee_address"></div>
                         </div>
 
                         <div class="col-sm-4 ">
                             <p>Select Drop Location (Ship To Consignee)</p>
-                            <select class="form-control" style="width: 328px;" type="text" name="ship_to_id"
-                                id="select_ship_to" disabled>
-                                <option value="">Select Ship To</option>
-                                @if(count($consignees) > 0)
-                                @foreach($consignees as $k => $consignee)
-                                <option value="{{ $k }}" {{ $k == $getconsignments->ship_to_id ? 'selected' : ''}}>
-                                    {{ucwords($consignee)}}
-                                </option>
-                                @endforeach
-                                @endif
-                            </select>
-                            <input type="hidden" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
-                            <div id="ship_to_address">
-
-                            </div>
+                            <input id="select_ship_to" name="" class="form-control selectShipto" type="text" value="{{old('ship_to_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." disabled/>
+                            
+                            <input type="hidden" id="ship_to_id" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
+                            <div id="ship_to_address"></div>
                         </div>
                     </div>
                 </div>
@@ -562,8 +540,8 @@ span.round-tab:hover {
     $(document).ready(function() {
         var regclient_id = $('#select_regclient').val();
         var consigner_id = $('#select_consigner').val();
-        var consignee_id = $('#select_consignee').val();
-        var shipto_id = $('#select_ship_to').val();
+        var consignee_id = $('#consignee_id').val();
+        var shipto_id = $('#ship_to_id').val();
         $.ajax({
             type: 'get',
             url: APP_URL + '/get_consigners',
@@ -650,7 +628,7 @@ span.round-tab:hover {
         ///////get consinee address//
         $.ajax({
             type: 'get',
-            url: APP_URL + '/get_consignees',
+            url: APP_URL + '/get-consignees-address',
             data: {
                 consignee_id: consignee_id
             },
@@ -701,7 +679,7 @@ span.round-tab:hover {
         //////////get ship to address///
         $.ajax({
             type: 'get',
-            url: APP_URL + '/get_consignees',
+            url: APP_URL + '/get-consignees-address',
             data: {
                 consignee_id: shipto_id
             },
