@@ -30,6 +30,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use Mail;
 use URL;
 
 
@@ -331,7 +332,20 @@ class ReportController extends Controller
 
     public function emailSend(Request $request)
     {
-        return "Email sent successfully";
+        $data = "hii";
+        $message = "test";
+
+        $data = ['invoice_id'=>'test'];
+
+        Mail::send('testMail', $data, function ($messges) {
+            $messges->to("vineet.thakur@eternitysolutions.net");
+            $messges->subject('Testing purpuse');
+        });
+        $message = "Inventory updated successfully";
+        
+       return response()->json($message);
+
+        
     }
 
 }
