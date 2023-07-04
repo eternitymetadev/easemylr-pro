@@ -1036,6 +1036,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
     Route::get('get-items', [ConsignmentController::class, 'getItems']);
+    Route::get('emailSend', [ReportController::class, 'emailSend']);
 
     
     Route::get('/get-regclients', [ReportController::class, 'getRegclients']);

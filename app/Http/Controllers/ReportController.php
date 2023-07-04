@@ -32,6 +32,7 @@ use Validator;
 use DataTables;
 use Helper;
 use Response;
+use Mail;
 use URL;
 
 
@@ -153,7 +154,6 @@ class ReportController extends Controller
                     $q->where('id', $regclient_id);
                 });
             }
-
             else {
                 $query = $query;
             }
@@ -194,7 +194,6 @@ class ReportController extends Controller
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem, 'getbaseclients'=>$getbaseclients]);
     }
 
-
     // MIS report1 get records
     public function consignmentReports(Request $request)
     {
@@ -206,7 +205,6 @@ class ReportController extends Controller
         }else{
             $peritem = Config::get('variable.PER_PAGE');
         }
-
         $query = ConsignmentNote::query();
         
         if($request->ajax()){
@@ -377,25 +375,6 @@ class ReportController extends Controller
         }
         return response()->json($response);
     }
-    // get reg client on Baseclient change filter in MIS2
-    public function getLocations(Request $request)
-    {
-        $getLocations = RegionalClient::select('id', 'name')->where(['id' => $request->regclient_id, 'status' => '1'])->get();
-        dd($getLocations);
-        if ($getLocations) {
-            $response['success'] = true;
-            $response['success_message'] = "Location list fetch successfully";
-            $response['error'] = false;
-            $response['data_location'] = $getLocations;
-        } else {
-            $response['success'] = false;
-            $response['error_message'] = "Can not fetch client list please try again";
-            $response['error'] = true;
-        }
-        return response()->json($response);
-    }
-
-
 
 
 }

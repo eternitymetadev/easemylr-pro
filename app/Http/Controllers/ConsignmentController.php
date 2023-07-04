@@ -719,6 +719,7 @@ class ConsignmentController extends Controller
         ->where('baseclient_id', $get_regclient->baseclient_id)
         ->where('nick_name', 'LIKE', '%' . $request->search . '%')
         ->orderBy('nick_name', 'asc')
+        ->take(20)
         ->get();
 
         // $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
