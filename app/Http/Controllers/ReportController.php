@@ -137,22 +137,32 @@ class ReportController extends Controller
                 });
             }
             elseif(isset($baseclient_id)){
-                $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
-                    $q->where('id', $baseclient_id);
-                });
+                if(isset($regclient_id)){
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    })
+                    ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }else{
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    });
+                }
             }
             elseif(isset($regclient_id)){
-                $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
-                    $q->where('id', $regclient_id);
-                });
-            }
-            elseif(isset($baseclient_id) && isset($regclient_id)){
-                $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
-                    $q->where('id', $baseclient_id);
-                })
-                ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
-                    $q->where('id', $regclient_id);
-                });
+                if(isset($baseclient_id)){
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    })
+                    ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }else{
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }
             }
             else {
                 $query = $query;

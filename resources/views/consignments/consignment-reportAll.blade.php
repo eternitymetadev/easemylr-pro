@@ -216,13 +216,18 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         geturl = geturl + '?search=' + search;
     }
     else if(baseclient_id){
-        geturl = geturl + '?baseclient_id=' + baseclient_id;
+        if(regclient_id){
+            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        }else{
+            geturl = geturl + '?baseclient_id=' + baseclient_id;
+        }
     }
     else if(regclient_id){
-        geturl = geturl + '?regclient_id=' + regclient_id;
-    }
-    else if(!empty(baseclient_id) && !empty(regclient_id)){
-        geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        if(baseclient_id){
+            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        }else{
+            geturl = geturl + '?regclient_id=' + regclient_id;
+        }
     }
 
     jQuery.ajax({
