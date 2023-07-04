@@ -592,6 +592,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report2'}}"> Mis Report 2 </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'custom-reports'}}"> Custom Report </a>
+            </li>
         </ul>
     </li>
 
