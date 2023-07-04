@@ -25,14 +25,18 @@ use DB;
 
 class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 {
-
     protected $startdate;
     protected $enddate;
+    protected $baseclient_id;
+    protected $regclient_id;
     // protected $search;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
+        $this->baseclient_id = $baseclient_id;
+        $this->regclient_id = $regclient_id;
+
         // $this->search = $search;
     }
 
@@ -46,7 +50,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
-
+        $baseclient_id = $this->baseclient_id;
+        $regclient_id = $this->regclient_id;
+        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -65,7 +71,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        ); 
+        );
 
         if($authuser->role_id ==1)
         {
@@ -75,12 +81,24 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }else{
             $query = $query->whereIn('branch_id', $cc);
         }
-
+        
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get();
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);
         }else {
-            $consignments = $query->orderBy('id','ASC')->get();
+            $query = $query;
         }
+        if(isset($baseclient_id)){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                $q->where('id', $baseclient_id);
+            });
+        }
+        if(isset($regclient_id)){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                $q->where('id', $regclient_id);
+            });
+        }
+
+        $consignments = $query->orderBy('id','ASC')->get();
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){

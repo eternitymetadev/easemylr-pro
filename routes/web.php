@@ -1037,6 +1037,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
     Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
+    
+    Route::get('/get-regclients', [ReportController::class, 'getRegclients']);
+    Route::get('/get-locations', [ReportController::class, 'getLocations']);
+
 });
 
 Route::get('/forgot-session', [DashboardController::class, 'ForgotSession']);
