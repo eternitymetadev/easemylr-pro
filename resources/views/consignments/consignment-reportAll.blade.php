@@ -53,14 +53,36 @@ div.relative {
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000
                         records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>from</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
+                        <div class="col-sm-2">
+                            <label>Base Client</label>
+                            <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
+                                <option value="">Select</option>
+                                @foreach($getbaseclients as $value)
+                                <option value="{{ $value->id }}">{{ucwords($value->client_name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Regional Client</label>
+                            <select class="form-control my-select2" name="regclient_id" id="select_regionalclient">
+                                <option value="">Select All</option>
+                            </select>
+                        </div>
+                        {{-- <div class="col-sm-2">
+                            <label>Location</label>
+                            <select class="form-control my-select2" name="location_id" id="select_location">
+                                <option value="">Select Location</option>
+                            </select>
+                        </div> --}}
+                        
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
@@ -88,9 +110,28 @@ div.relative {
 @endsection
 @section('js')
 <script>
+    jQuery(function () {
+            $('.my-select2').each(function () {
+                $(this).select2({
+                    theme: "bootstrap-5",
+                    dropdownParent: $(this).parent(), // fix select2 search input focus bug
+                })
+            })
+
+            // fix select2 bootstrap modal scroll bug
+            $(document).on('select2:close', '.my-select2', function (e) {
+                var evt = "scroll.select2"
+                $(e.target).parents().off(evt)
+                $(window).off(evt)
+            })
+        })
+
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
+    var baseclient_id = $("#select_baseclient").val();
+    var regclient_id = $("#select_regionalclient").val();
+    var location_id = $("#select_location").val();
     var search = jQuery('#search').val();
     
     jQuery.ajax({
@@ -99,6 +140,9 @@ jQuery(document).on('click', '#filter_reportall', function() {
         data: {
             startdate: startdate,
             enddate: enddate,
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id,
+            location_id: location_id,
             search: search
         },
         headers: {
@@ -160,13 +204,31 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     var geturl = jQuery(this).attr('data-action');
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
+    var baseclient_id = jQuery('#select_baseclient').val();
+    var regclient_id = jQuery('#select_regionalclient').val();
 
     var search = jQuery('#search').val();
     var url = jQuery('#search').attr('data-url');
-    if (startdate)
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-    else if (search)
+
+    if(startdate){
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+    }else if(search){
         geturl = geturl + '?search=' + search;
+    }
+    else if(baseclient_id){
+        if(regclient_id){
+            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        }else{
+            geturl = geturl + '?baseclient_id=' + baseclient_id;
+        }
+    }
+    else if(regclient_id){
+        if(baseclient_id){
+            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+        }else{
+            geturl = geturl + '?regclient_id=' + regclient_id;
+        }
+    }
 
     jQuery.ajax({
         url: url,
@@ -174,7 +236,9 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         cache: false,
         data: {
             startdate: startdate,
-            enddate: enddate
+            enddate: enddate,
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

@@ -3277,7 +3277,6 @@ jQuery(document).on("keyup", "#select_ship_to", function (e) {
             },
             processData: true,
             beforeSend: function () {
-                //console.log(dataToSearch, "payload");
                 jQuery("#loader-section").css('display','flex');
     
             },
@@ -3286,7 +3285,6 @@ jQuery(document).on("keyup", "#select_ship_to", function (e) {
             },
             success: function (res) {
                 console.log(res.data);
-                // $( function() {
                 $("#select_ship_to").autocomplete({
                     source: function (request, response) {
                         response(
@@ -3319,7 +3317,6 @@ jQuery(document).on("keyup", "#select_ship_to", function (e) {
                         return false;
                     },
                 });
-                // });
             },
         });
     }else if(e.which == 8){
@@ -3328,4 +3325,36 @@ jQuery(document).on("keyup", "#select_ship_to", function (e) {
     }
 });
 
-
+//get regclient on change baseclient in mis2 report filter
+$("#select_baseclient").change(function (e) {
+    var baseclient_id = $(this).val();
+    $("#select_regionalclient").empty();
+    $.ajax({
+        url: "/get-regclients",
+        type: "get",
+        cache: false,
+        data: { baseclient_id: baseclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {
+            console.log(res.data_regclient);
+            $("#select_regionalclient").append(
+                '<option value="">select All</option>'
+            );
+            $.each(res.data_regclient, function (key, value) {
+                $("#select_regionalclient").append(
+                    '<option value="' +
+                        value.id +
+                        '">' +
+                        value.name +
+                        "</option>"
+                );
+            });
+        },
+    });
+});
