@@ -427,7 +427,7 @@ span.select2.select2-container.mb-4 {
             </div>
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
+                    Select Drop Location (Ship To Consignee)<span class="text-danger">*</span><span id="checkship_hub_delivery" style="color:red;"></span>
                 </label>
 
                 <input id="select_ship_to" name="" class="form-control selectShipto" type="text" placeholder="Search.." />
