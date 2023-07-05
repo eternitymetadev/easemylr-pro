@@ -759,7 +759,7 @@ class ConsignmentController extends Controller
             $check_hub = Null;
         }
 
-        if ($getconsignees) {
+        if($getconsignees){
             $response['success'] = true;
             $response['success_message'] = "Consignee list fetch successfully";
             $response['error'] = false;

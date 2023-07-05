@@ -3148,9 +3148,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
                         response(
                             $.map(res.data, function (obj, key) {
                                 var name = obj.nick_name.toUpperCase();
-                                if (
-                                    name.indexOf(request.term.toUpperCase()) != -1
-                                ) {
+                                if(name.indexOf(request.term.toUpperCase()) != -1) {
                                     return {
                                         displayLabel: `${obj.nick_name}`,
                                         label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
@@ -3259,12 +3257,12 @@ function getShipto(consignee_id) {
                 var theArray = url.split('/');
                 var shortPath = theArray[theArray.length - 1];
                 if(shortPath == "order-book-ptl"){
-                    if (res.data.get_pin_hub == null) {
+                    if (res.get_pin_hub == null) {
                         $('#checkship_hub_delivery').html('No hub found');
                         $('.disableme').prop('disabled', true);
                         swal('error','Hub not found','error')
                     } else {
-                        $('#checkship_hub_delivery').html(res.data.get_pin_hub);
+                        $('#checkship_hub_delivery').html(res.get_pin_hub);
                         $('.disableme').prop('disabled', false);
                     }
                 }
