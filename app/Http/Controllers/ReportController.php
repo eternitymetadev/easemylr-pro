@@ -386,5 +386,23 @@ class ReportController extends Controller
         return response()->json($response);
     }
 
+    public function emailSend(Request $request)
+    {
+        $data = "hii";
+        $message = "test";
+
+        $data = ['invoice_id'=>'test'];
+
+        Mail::send('testMail', $data, function ($messges) {
+            $messges->to("vineet.thakur@eternitysolutions.net");
+            $messges->subject('Testing purpuse');
+        });
+        $message = "Inventory updated successfully";
+        
+       return response()->json($message);
+
+        
+    }
+
 
 }
