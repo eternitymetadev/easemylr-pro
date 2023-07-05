@@ -3,13 +3,16 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>Postal Code</th>
+                <th>PIN Code</th>
                 <th>District</th>
                 <th>State</th>
                 <th>Pickup Hub</th>
                 <th>Service HUB Name </th>
                 <th>Service Hub Code</th>
+               <?php $authuser = Auth::user();
+                if($authuser->role_id == 1){?>
                 <th>Edit</th>
+                <?php }?>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +24,9 @@
                 <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
                 <td>{{ $zone->Branch->hub_nickname ?? '-'}}</td>
+                <?php if($authuser->role_id == 1){?>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
+                <?php } ?>
             </tr>
             @endforeach
         </tbody>

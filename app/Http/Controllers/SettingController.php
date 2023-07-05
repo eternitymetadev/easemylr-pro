@@ -142,7 +142,10 @@ class SettingController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('postal_code', 'like', '%' . $search . '%');
+                    $query->where('postal_code', 'like', '%' . $search . '%')
+                    ->orWhere('district', 'like', '%' . $search . '%')
+                    ->orWhere('state', 'like', '%' . $search . '%');
+                    
                 });
             }
 

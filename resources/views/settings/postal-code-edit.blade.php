@@ -91,10 +91,13 @@
                                         style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span>
                                             <i class="fa fa-refresh"></i> Reset Filters</span></a>
+                                            <?php $authuser = Auth::user();
+                                    if($authuser->role_id == 1){?>
                                     <button type="button" class="btn btn-warning" data-toggle="modal"
                                         data-target="#exampleModalCenter" style="font-size: 15px; padding: 9px;">
                                         Apply Hub
                                     </button>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
