@@ -3025,7 +3025,7 @@ function getConsignees(consignee_id) {
     $.ajax({
         type: "get",
         url: APP_URL + "/get-consignees-address",
-        data: { consignee_id: consignee_id},
+        data: {consignee_id: consignee_id},
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -3112,20 +3112,42 @@ function getConsignees(consignee_id) {
         },
     });
 }
+function getRoutes(consigner_id,consignee_id) {
+    $.ajax({
+        type: 'get',
+        url: APP_URL + '/get_route',
+        data: {
+            consigner_id: consigner_id,
+            consignee_id: consignee_id
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            $('#routeList').html(response);
+        },
+        error: function() {
+            $('#routeList').html('<p>Error occurred. Please try again.</p>');
+        }
+    });
+}
+
 
 // for autocomplte consignee list
 jQuery(document).on("keyup", "#select_consignee", function (e) {
     $("#consignee_address").empty();
     var searchTerm= $(this).val();
+    var consignment_id= $("#consignment_id").val();
     var regclient_id= $("#select_regclient").val();
-    
+    var consigner_id= $("#select_consigner").val();
 
     if(e.which != 8){
         jQuery.ajax({
             type: "get",
             url: APP_URL + "/get_consignees",
             cache: false,
-            data: { search:searchTerm, regclient_id:regclient_id },
+            data: { search:searchTerm, regclient_id:regclient_id,consignment_id:consignment_id },
             dataType: "json",
             headers: {
                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
@@ -3141,7 +3163,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
             },
     
             success: function (res) {
-                console.log(res.data);
+                console.log(res);
                 // $( function() {
                 $("#select_consignee").autocomplete({
                     source: function (request, response) {
@@ -3166,8 +3188,12 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
                     select: function (event, ui) {
                         event.preventDefault();
                         $("#select_consignee").val(ui.item.displayLabel);
+
                         $("#consignee_id").val(ui.item.value);
                         getConsignees(ui.item.value);
+                        if((res.data_prsid.prs_id ).length > 0){
+                            getRoutes(consigner_id, ui.item.value);
+                        }
                         // ... any other tasks (like setting Hidden Fields) go here...
                         $("#themeLoader").css("display", "flex");
                         return false;

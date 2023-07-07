@@ -454,6 +454,7 @@ class OrderController extends Controller
 
             if($request->lr_type == 1 || $request->lr_type == 2){  
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
+                
                 $consignee_pincode = $consignee->postal_code;
 
                 $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();

@@ -666,13 +666,13 @@ class ConsignmentController extends Controller
         }        
 
         $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
-        $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
+        // $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
-            $response['consignee'] = $getConsignees;
+            // $response['consignee'] = $getConsignees;
             $response['regclient'] = $getregclients;
             $response['get_pin_hub'] = $check_hub;
         } else {
@@ -719,9 +719,9 @@ class ConsignmentController extends Controller
         ->where('baseclient_id', $get_regclient->baseclient_id)
         ->where('nick_name', 'LIKE', '%' . $request->search . '%')
         ->orderBy('nick_name', 'asc')
-        ->take(20)
         ->get();
 
+        $check_prsid = ConsignmentNote::select('id','prs_id')->where('id',$request->consignment_id)->first();
         // $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
         // $get_pin_hub = '';
         // if(!empty($get_pin_hub->Branch)){
@@ -729,12 +729,14 @@ class ConsignmentController extends Controller
         // }else{
         //     $check_hub = Null;
         // }
-
+        
         if ($getconsignees) {
             $response['success'] = true;
             $response['success_message'] = "Consignee list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsignees;
+            $response['data_prsid'] = $check_prsid;
+
             // $response['get_pin_hub'] = $check_hub;
         } else {
             $response['success'] = false;
@@ -758,6 +760,9 @@ class ConsignmentController extends Controller
         }else{
             $check_hub = Null;
         }
+        // get routes
+       
+        //
 
         if($getconsignees){
             $response['success'] = true;
