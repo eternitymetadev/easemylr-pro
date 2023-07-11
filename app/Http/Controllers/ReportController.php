@@ -15,6 +15,7 @@ use App\Models\Vehicle;
 use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
+use App\Models\RegionalClient;
 use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
@@ -238,14 +239,29 @@ class ReportController extends Controller
             
             $startdate = $request->startdate;
             $enddate = $request->enddate;
+            $regclient_id = $request->regclient_id;
 
             if(isset($startdate) && isset($enddate)){
-                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
-            }else {
-                $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+                $query = $query->whereBetween('consignment_date',[$startdate,$enddate])
+                ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                    $q->where('id', $regclient_id);
+                });
+            }
+            elseif(isset($regclient_id)){
+                $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                    $q->where('id', $regclient_id);
+                });
+            }
+            else {
+                $query = $query;
             }
 
-            $html =  view('consignments.consignment-reportThree-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
+            
+            $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+
+            $getRegclients = RegionalClient::select('id','name')->where('status','1')->get();
+
+            $html =  view('consignments.consignment-reportThree-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem,'getRegclients'=>$getRegclients])->render();
             // $consignments = $consignments->appends($request->query());
 
             return response()->json(['html' => $html]);
@@ -256,6 +272,8 @@ class ReportController extends Controller
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+
+        $getRegclients = RegionalClient::select('id','name')->where('status','1')->get();
 
         $query = $query
             ->where('status', '!=', 5)
@@ -275,7 +293,7 @@ class ReportController extends Controller
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
         
-        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
+        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem,'getRegclients'=>$getRegclients]);
     }
 
 

@@ -60,7 +60,16 @@ div.relative {
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
-                        <div class="col-6">
+                        <div class="col-sm-3">
+                            <label>Base Client</label>
+                            <select class="form-control my-select2" id="select_regclient" name="regclient_id">
+                                <option value="">Select</option>
+                                @foreach($getRegclients as $value)
+                                <option value="{{ $value->id }}">{{ucwords($value->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-3">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
                                 <span class="indicator-label">Filter Data</span>
@@ -90,14 +99,17 @@ div.relative {
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
+    var regclient_id = $("#select_regclient").val();
     var search = jQuery('#search').val();
+
     
     jQuery.ajax({
         type: 'get',
-        url: 'consignment-report2',
+        url: 'consignment-report3',
         data: {
             startdate: startdate,
             enddate: enddate,
+            regclient_id: regclient_id,
             search: search
         },
         headers: {
