@@ -65,11 +65,11 @@ div.relative {
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
                                 <span class="indicator-label">Filter Data</span>
                             </button>
-                            <a href="<?php echo URL::to($prefix.'/reports/export3'); ?>"
-                                data-url="<?php echo URL::to($prefix.'/consignment-report3'); ?>"
+                            {{-- <a href="<?php //echo URL::to($prefix.'/reports/export3'); ?>"
+                                data-url="<?php //echo URL::to($prefix.'/consignment-report3'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                data-action="<?php echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                data-action="<?php// echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a> --}}
                             <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
