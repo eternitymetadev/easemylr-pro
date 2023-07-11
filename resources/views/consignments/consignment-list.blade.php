@@ -839,7 +839,6 @@ function row_click(row_id, job_id, url) {
                         
                         if (response.driver_app.lr_type == 0) {
                             if (response.driver_app.lr_mode == 0) {
-                                
 
                                 console.log(response);
                                 //================Manual LR TRAIL =================== //
@@ -848,6 +847,12 @@ function row_click(row_id, job_id, url) {
                                     if (task.status == 'Created') {
                                      
                                     //////// start new timeline ///////////
+                                    cc+= '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #002930">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                            task.create_at + '><span class="hidden">' + task
+                                            .create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span>' +
+                                            response.driver_app.branch_name + '</span></div></li>';
+
                                        cc+= `<!--pickup-->
                                                 <div class="timeline">
                                                     <div class="timeBlock">
@@ -1035,59 +1040,24 @@ function row_click(row_id, job_id, url) {
                                 $('.append-modal').html(modal_html1);
                             }
                         } else {
+                            alert("ftl");
                             // ============================  PTL LR Trail ========================= //
                             if (response.driver_app.lr_mode == 0) {
-                                alert("klll");
+                                var base_url = window.location.origin;
                                 //================Manual LR TRAIL =================== //
                                 var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
-
-                                    if (task.status == 'Created') {
-                                        cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                    console.log(task); 
+                                    if (task.status == 'Successful') {
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                    }else{
+                                        manual_img = '';
+                                    }
+                                    cc += '<li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">Order Booked</span>' +
-                                            response.driver_app.branch_name + '</div></li>';
-                                    } else if (task.status == 'Successful') {
-                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span></span></div></li>';
-                                    } else if (task.status == 'Prs Created') {
-                                        cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span> </span></div></li><li><time class="cbp_tmtime" datetime=' +
-                                            task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
-                                            task.status +
-                                            '</span>' + response.driver_app.fall_in_branch_name +
-                                            '</span></div></li>';
-                                    } else if (task.status == 'Hub Transfer') {
-                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Connected to </span>' +
-                                            response.driver_app.to_branch_detail +
-                                            '</span></div></li>';
-                                    } else if (task.status == 'Received Hub') {
-                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received </span>' +
-                                            response.driver_app.to_branch_detail +
-                                            '</span></div></li>';
-                                    } else if (task.status == 'Assigned') {
-                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful"  style="--statusColor: #cab627">Shipment Out for Delivery </span>' +
-                                            response.driver_app.to_branch_detail +
-                                            '</span></div></li>';
-                                    } else {
-                                        cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">' +
-                                            task.status +
-                                            '</span>' + response.driver_app.fall_in_branch_name +
-                                            '</span></div></li>';
-                                    }
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">' + task.desc + ' '+manual_img+'</span>' +
+                                            task.location + '</div></li>';
                                 });
                                 cc += '</ul>';
                                 var modal_html1 = cc;
@@ -1096,7 +1066,6 @@ function row_click(row_id, job_id, url) {
                                 //  ================DRIVER App TRAIL ====================== //
                                 var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
-
                                     if (task.status == 'Created') {
                                         cc +=
                                             '<li><time class="cbp_tmtime" datetime=' +
@@ -1105,8 +1074,7 @@ function row_click(row_id, job_id, url) {
                                             '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Order Booked</span>' +
                                             response.driver_app.branch_name + '</div></li>';
                                     } else if (task.status == 'Prs Created') {
-                                        cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #cab627">Shipment Received </span>' +
+                                        cc += '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #cab627">Shipment Received </span>' +
                                             response.driver_app.fall_in_branch_name + '</span></div></li><li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +

@@ -2041,12 +2041,11 @@ $(document).on("click", ".onelrupdate", function () {
         },
     });
 });
-//////////////////////////
+
+//update delivery date and pod img in multiple lr//
 $("#allsave").submit(function (e) {
     e.preventDefault();
-
     var formData = new FormData(this);
-
     $.ajax({
         url: "all-save-deliverydate",
         headers: {
@@ -3165,6 +3164,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
             success: function (res) {
                 console.log(res);
                 // $( function() {
+                    $("#consignee_address").empty();
                 $("#select_consignee").autocomplete({
                     source: function (request, response) {
                         response(
@@ -3191,7 +3191,7 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
 
                         $("#consignee_id").val(ui.item.value);
                         getConsignees(ui.item.value);
-                        if((res.data_prsid.prs_id ).length > 0){
+                        if((res?.data_prsid?.prs_id )?.length > 0){
                             getRoutes(consigner_id, ui.item.value);
                         }
                         // ... any other tasks (like setting Hidden Fields) go here...
