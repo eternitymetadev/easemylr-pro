@@ -124,7 +124,9 @@ class ReportController extends Controller
             
             $startdate = $request->startdate;
             $enddate = $request->enddate;
-
+            $baseclient_id = $request->baseclient_id;
+            $regclient_id = $request->regclient_id;
+            
             if(isset($startdate) && isset($enddate)){
                 $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
             }
