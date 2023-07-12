@@ -41,39 +41,11 @@
             }else{
                 $tat = $tat_diff;
             }
-            
-            if(!empty($consignment->DrsDetail->created_at)){
-                $drsdate = $consignment->DrsDetail->created_at;
-                $drs_date = $drsdate->format('d-m-Y');
-            }else{
-                $drs_date = '-';
-            }
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
-                
-                <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
-                    $order = array();
-                    $invoices = array();
-                    $inv_date = array();
-                    $inv_amt = array();
-                    foreach($consignment->ConsignmentItems as $orders){ 
-                        
-                        $order[] = $orders->order_id;
-                        $invoices[] = $orders->invoice_no;
-                        $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                        $inv_amt[] = $orders->invoice_amount;
-                    }
-                    //echo'<pre>'; print_r($order); die;
-                    $order_item['orders'] = implode(',', $order);
-                    $order_item['invoices'] = implode(',', $invoices);
-                    $invoice['date'] = implode(',', $inv_date);
-                    $invoice['amt'] = implode(',', $inv_amt);?>
-                    <?php }
-                }?>
-                    
+                                    
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->district ?? "-" }}</td>
@@ -91,25 +63,11 @@
                 <td>{{$consignment->payment_type ?? "-"}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
 
-                <?php 
-                if($consignment->delivery_status == 'Assigned'){ ?>
-                <td>Assigned</td>
-                <?php }elseif($consignment->delivery_status == 'Unassigned'){ ?>
-                <td>Unassigned</td>
-                <?php }elseif($consignment->delivery_status == 'Started'){ ?>
-                <td>Started</td>
-                <?php }elseif($consignment->delivery_status == 'Successful'){ ?>
-                <td>Successful</td>
-                <?php }elseif($consignment->delivery_status == 'Cancel'){ ?>
-                <td>Cancel</td>
-                <?php }else{?>
-                <td>Unknown</td>
-                <?php }?>
+                <td>{{@$consignment->delivery_status ?? 'Unknown'}}</td>
 
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
 
                 <td>-</td>
-
             </tr>
             @endforeach
             @else
