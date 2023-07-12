@@ -16,11 +16,13 @@ use App\Models\Role;
 use App\Models\VehicleType;
 use App\Models\User;
 use App\Models\RegionalClient;
+use App\Models\BaseClient;
 use App\Exports\MisReportExport;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
+use App\Exports\Report3Export;
 use Session;
 use Config;
 use Auth; 
@@ -203,29 +205,8 @@ class ReportController extends Controller
             }else{
                 $query = $query->whereIn('branch_id', $cc);
             }
-
-            if(!empty($request->search)){
-                $search = $request->search;
-                $searchT = str_replace("'","",$search);
-                $query->where(function ($query)use($search,$searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        $regclientquery->where('name', 'like', '%' . $search . '%');
-                    })
-                    ->orWhereHas('ConsignerDetail',function( $query ) use($search,$searchT){
-                            $query->where(function ($cnrquery)use($search,$searchT) {
-                            $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    })
-                    ->orWhereHas('ConsigneeDetail',function( $query ) use($search,$searchT){
-                        $query->where(function ($cneequery)use($search,$searchT) {
-                            $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        });
-                    });
-
-                });
-            }
-
+            
+            
             if($request->peritem){
                 Session::put('peritem',$request->peritem);
             }
@@ -239,29 +220,26 @@ class ReportController extends Controller
             
             $startdate = $request->startdate;
             $enddate = $request->enddate;
+            $baseclient_id = $request->baseclient_id;
             $regclient_id = $request->regclient_id;
-
+            
             if(isset($startdate) && isset($enddate)){
-                $query = $query->whereBetween('consignment_date',[$startdate,$enddate])
-                ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
-                    $q->where('id', $regclient_id);
+                $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
+            }
+            if($baseclient_id){
+                $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                    $q->where('id', $baseclient_id);
                 });
             }
-            elseif(isset($regclient_id)){
+            if($regclient_id){
                 $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
                     $q->where('id', $regclient_id);
                 });
             }
-            else {
-                $query = $query;
-            }
 
-            
             $consignments = $query->orderBy('id','DESC')->paginate($peritem);
 
-            $getRegclients = RegionalClient::select('id','name')->where('status','1')->get();
-
-            $html =  view('consignments.consignment-reportThree-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem,'getRegclients'=>$getRegclients])->render();
+            $html =  view('consignments.consignment-reportThree-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             // $consignments = $consignments->appends($request->query());
 
             return response()->json(['html' => $html]);
@@ -273,8 +251,6 @@ class ReportController extends Controller
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
-        $getRegclients = RegionalClient::select('id','name')->where('status','1')->get();
-
         $query = $query
             ->where('status', '!=', 5)
             ->with(
@@ -283,7 +259,7 @@ class ReportController extends Controller
 
         if($authuser->role_id ==1) 
         {
-            $query = $query;            
+            $query = $query;
         }elseif($authuser->role_id == 4){
             $query = $query->whereIn('regclient_id', $regclient);   
         }else{
@@ -292,8 +268,10 @@ class ReportController extends Controller
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
+
+        $getbaseclients = BaseClient::select('id','client_name')->where('status','1')->get();
         
-        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem,'getRegclients'=>$getRegclients]);
+        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem, 'getbaseclients'=>$getbaseclients]);
     }
 
 
@@ -462,6 +440,28 @@ class ReportController extends Controller
     {
         return Excel::download(new Report2Export($request->startdate,$request->enddate), 'mis_report2.csv');
     }
+
+    public function exportExcelReport3(Request $request)
+    {
+        return Excel::download(new Report3Export($request->startdate,$request->enddate,$request->baseclient_id,$request->regclient_id), 'mis_report3.csv');
+    }
+
+     // get reg client on Baseclient change filter in MIS2
+     public function getRegclients(Request $request)
+     {
+         $getRegclients = RegionalClient::select('id', 'name')->where(['baseclient_id' => $request->baseclient_id, 'status' => '1'])->get();
+         if ($getRegclients) {
+             $response['success'] = true;
+             $response['success_message'] = "Regional Client list fetch successfully";
+             $response['error'] = false;
+             $response['data_regclient'] = $getRegclients;
+         } else {
+             $response['success'] = false;
+             $response['error_message'] = "Can not fetch client list please try again";
+             $response['error'] = true;
+         }
+         return response()->json($response);
+     }
 
 
 }

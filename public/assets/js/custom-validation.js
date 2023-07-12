@@ -3043,6 +3043,40 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
     });
 });
 
+//get regclient on change baseclient in mis2 mis3 report filter
+$("#select_baseclient").change(function (e) {
+    var baseclient_id = $(this).val();
+    $("#select_regionalclient").empty();
+    $.ajax({
+        url: "/get-regclients",
+        type: "get",
+        cache: false,
+        data: { baseclient_id: baseclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_regionalclient").empty();
+        },
+        success: function (res) {
+            console.log(res.data_regclient);
+            $("#select_regionalclient").append(
+                '<option value="">select All</option>'
+            );
+            $.each(res.data_regclient, function (key, value) {
+                $("#select_regionalclient").append(
+                    '<option value="' +
+                        value.id +
+                        '">' +
+                        value.name +
+                        "</option>"
+                );
+            });
+        },
+    });
+});
+
 /*===== add prs purchase amount =====*/
 // jQuery(document).on("click", ".add-prs-purchase-price", function () {
 //     jQuery("#add_prsamount").modal("show");

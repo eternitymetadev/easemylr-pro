@@ -208,8 +208,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::any('admin-report1', [ReportController::class, 'adminReport1']);
     Route::any('admin-report2', [ReportController::class, 'adminReport2']);
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::any('reports/export3', [ReportController::class, 'exportExcelReport3']);
 
     Route::any('view_invoices/{id}', [ConsignmentController::class, 'viewupdateInvoice']);
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
@@ -391,8 +392,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::any('reports/export3', [ReportController::class, 'exportExcelReport3']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::any('vendor-list', [VendorController::class, 'index']);
@@ -597,8 +599,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::any('reports/export3', [ReportController::class, 'exportExcelReport3']);
 
     Route::any('vendor-list', [VendorController::class, 'index']);
     Route::any('vendor/create', [VendorController::class, 'create']);
@@ -792,8 +795,9 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('all-invoice-save', [ConsignmentController::class, 'allupdateInvoice']);
     Route::any('mis-report2', [ReportController::class, 'misreport']);
     Route::post('export-mis', [ReportController::class,'exportExcelmisreport2']);
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::any('reports/export3', [ReportController::class, 'exportExcelReport3']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     Route::any('postal-code', [SettingController::class,'postalCode']);
@@ -922,8 +926,9 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::get('/consignment-regclient', [ClientController::class, 'getConsignmentClient']);
     Route::get('clients/export', [ClientController::class, 'clientReportExport']);
 
-    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('reports/export2', [ReportController::class, 'exportExcelReport2']);
+    Route::any('reports/export3', [ReportController::class, 'exportExcelReport3']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
 
     // vendor paymant
@@ -1012,6 +1017,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoice-check', [ConsignmentController::class, 'invoiceCheck']);
     Route::get('vehicle/get-item', [PickupRunSheetController::class, 'getVehicleItem']);
     Route::get('get-items', [ConsignmentController::class, 'getItems']);
+
+    Route::get('/get-regclients', [ReportController::class, 'getRegclients']);
 
 });
 
