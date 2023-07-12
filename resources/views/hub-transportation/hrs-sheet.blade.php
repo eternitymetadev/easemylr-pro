@@ -301,7 +301,7 @@ $('#updt_hrs_details').submit(function(e) {
     var vehicle = $('#vehicle_no').val();
     var driver = $('#driver_id').val();
     if (vehicle == '') {
-        swal('error', 'Please select vehicle', 'error');
+        swal('error', 'Please select vehicle', 'error'); 
         return false;
     }
     if (driver == '') {
@@ -379,7 +379,7 @@ $('#updt_hrs_details').submit(function(e) {
                                 .consignment_id + "</td><td>" + value.consignment_detail.consignee_detail.nick_name + "</td><td>" + value.consignment_detail.consignee_detail.city +
                             "</td><td>" + value.consignment_detail.consignee_detail.postal_code + "</td><td style='text-align: right'>" + value.consignment_detail.total_quantity +
                             "</td><td style='text-align: right'>" + value.consignment_detail.total_weight +
-                            "</td><td style='text-align: center'><button type='button'  data-id=" + value.consignment_no +
+                            "</td><td style='text-align: center'><button type='button'  data-id=" + value.consignment_id +
                             " style='border: none; margin-inline: auto;' class='delete deleteIcon remover_lr'><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"feather feather-trash-2\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path><line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"17\"></line><line x1=\"14\" y1=\"11\" x2=\"14\" y2=\"17\"></line></svg></button></td></tr>"
                         );
                     });
@@ -464,6 +464,31 @@ $('#updt_hrs_details').submit(function(e) {
                 }
             })
         });
+
+        // Remove Lr From DRS //
+$(document).on('click', '.remover_lr', function() {
+    var consignment_id = $(this).attr('data-id');
+    $.ajax({
+        type: "GET",
+        url: "remove-hrs",
+        data: {
+            consignment_id: consignment_id
+        },
+        beforeSend: //reinitialize Datatables
+            function() {
+
+            },
+        success: function(data) {
+            var re = jQuery.parseJSON(data)
+            if (re.success == true) {
+                swal('success', 'HRS Removed Successfully', 'success');
+                location.reload();
+            } else {
+                swal('error', 'something wrong', 'error');
+            }
+        }
+    });
+});
 
 </script>
 @endsection

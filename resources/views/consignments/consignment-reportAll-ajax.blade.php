@@ -46,6 +46,7 @@
                 <th>Payment Type</th>
                 <th>Freignt on Delivery</th>
                 <th>Cash on Delivery</th>
+                <th>LR Type</th>
             </tr>
         </thead>
         <tbody>
@@ -183,9 +184,11 @@
             if(!empty($job->response_data)){
             $trail_decorator = json_decode($job->response_data);
             $img_group = array();
-            foreach($trail_decorator->task_history as $task_img){
-                if($task_img->type == 'image_added'){
-                    $img_group[] = $task_img->description;
+            if(!empty($trail_decorator)){
+                foreach($trail_decorator->task_history as $task_img){
+                    if($task_img->type == 'image_added'){
+                        $img_group[] = $task_img->description;
+                    }
                 }
             }
             if(empty($img_group)){?>
@@ -207,6 +210,15 @@
                 <td>{{$consignment->payment_type}}</td>
                 <td>{{$consignment->freight_on_delivery}}</td>
                 <td>{{$consignment->cod}}</td>
+                <?php if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                     }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                        $lr_type = "PTL";
+                         }else{ 
+                            $lr_type = "-";
+                             } ?>
+                <td>{{$lr_type}}</td>
+
 
             </tr>
             @endforeach

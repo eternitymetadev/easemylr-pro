@@ -413,7 +413,7 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateOrder(Request $request)
+      public function updateOrder(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -1444,6 +1444,7 @@ class OrderController extends Controller
         return response()->json($response);
     }
 
+
     ////////////////////
     public function updateOrderOld(Request $request)
     {
@@ -2407,6 +2408,11 @@ class OrderController extends Controller
 
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
 
                             if ($saveconsignmentitems) {
@@ -2454,6 +2460,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }
@@ -2469,6 +2480,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
 
                             if ($saveconsignmentitems) {
@@ -2515,6 +2531,11 @@ class OrderController extends Controller
                         foreach ($get_data as $key => $save_data) {
                             $save_data['consignment_id'] = $saveconsignment->id;
                             $save_data['status'] = 1;
+                            if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                $save_data['invoice_amount'] = $save_data['invoice_amount'];
+                            }else{
+                                $save_data['invoice_amount'] = 0;
+                            }
                             $saveconsignmentitems = ConsignmentItem::create($save_data);
                         }
                     }
@@ -2956,6 +2977,7 @@ class OrderController extends Controller
         }
         return response()->json($response);
     }
+  
     public function sendNotification($request)
     {
 

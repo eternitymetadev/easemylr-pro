@@ -40,7 +40,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
             <tr>
                 <?php if ($authuser->role_id == 2 || $authuser->role_id == 3) { 
            if ($list->status != 0) {
-           if (!empty($list->ConsignmentDetail->purchase_price)) {?>
+           if (!empty($list->ConsignmentDetail->purchase_price) && (($list->ConsignmentDetail->purchase_price)>0)) {?>
                 <td><input type="checkbox" name="checked_drs[]" class="chkBoxClass" value="{{$list->drs_no}}"
                         data-price="{{$list->ConsignmentDetail->purchase_price}}" style="width: 30px; height:30px;">
                 </td>
@@ -50,7 +50,7 @@ if ($authuser->role_id == 2 || $authuser->role_id == 3) {?>
                 <td>-</td>
                 <?php }}?>
                 <!------- Purchase Price ---------------> 
-                <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?>
+                <?php if (!empty($list->ConsignmentDetail->purchase_price)) {?> 
                 <td class="update_purchase_price" drs-no="{{$list->drs_no}}">{{$list->ConsignmentDetail->purchase_price ?? '-'}}</td>
                 <?php } else {?>
                 <td><button type="button" class="btn btn-warning add_purchase_price" value="{{$list->drs_no}}"

@@ -108,7 +108,7 @@ class HubtoHubController extends Controller
     }
 
     public function hrsSheet(Request $request)
-    {
+    { 
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = Hrs::query();
@@ -1782,6 +1782,18 @@ class HubtoHubController extends Controller
         }
         return response()->json($response);
 
+    }
+
+    public function removeHrs(Request $request)
+    {
+        //
+        $consignmentId = $_GET['consignment_id'];
+        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['hrs_status' => '2']);
+        $transac = DB::table('hrs')->where('consignment_id', $consignmentId)->delete();
+
+        $response['success'] = true;
+        $response['success_message'] = "hrs remove successful";
+        echo json_encode($response);
     }
 
 }

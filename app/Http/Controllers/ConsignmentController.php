@@ -1167,11 +1167,16 @@ class ConsignmentController extends Controller
                                         </tr>
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
-                                            <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
-                                            <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
+                                            <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
+                                            if ($data['is_salereturn'] == '1') {
+                                                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
+                                            <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
+                                            }else{
+                                                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
+                                            }
 
-                                        </tr>
+                                            $html .= '</tr>
                                     </table>
                         </div>
                                 </td>
@@ -1202,6 +1207,7 @@ class ConsignmentController extends Controller
                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                 </tr>
+
                                             </table>
                                         </td>
                                     </tr>
@@ -1212,10 +1218,16 @@ class ConsignmentController extends Controller
                                 <table>
                                     <tr>
                                         <td class="width_set">
-                                            <div style="margin-left: 20px">
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                            </div>
+                                            <div style="margin-left: 20px">';
+                                            if ($data['is_salereturn'] == '1') {
+                                                $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                                                <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
+                                            }else{
+                                                $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                            }
+                                            $html .= ' </div>
                                         </td>
                                         <td class="width_set">
                                             <table border="1px solid" class="table3">
@@ -1231,6 +1243,7 @@ class ConsignmentController extends Controller
                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                 </tr>
+                                                
                                             </table>
                                         </td>
                                     </tr>
@@ -1266,6 +1279,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -1276,10 +1290,15 @@ class ConsignmentController extends Controller
                                     <table>
                                         <tr>
                                             <td class="width_set">
-                                                <div style="margin-left: 20px">
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                </div>
+                                                <div style="margin-left: 20px">';
+                                                if($data['is_salereturn'] == 1){
+                                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
+                                                }else{
+                                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                                }
+                                                $html .= '</div>
                                             </td>
                                             <td class="width_set">
                                                 <table border="1px solid" class="table3">
@@ -1295,6 +1314,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -1326,6 +1346,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
+                                                    
                                                 </table>
                                             </td>
                                         </tr>
@@ -3105,7 +3126,7 @@ class ConsignmentController extends Controller
                 }
                 $pay = public_path('assets/img/LOGO_Frowarders.jpg');
                 $codStamp = public_path('assets/img/cod.png');
-        $paidStamp = public_path('assets/img/paid.png');
+                $paidStamp = public_path('assets/img/paid.png');
 
                 foreach ($pdftype as $i => $pdf) {
 
@@ -3329,6 +3350,7 @@ class ConsignmentController extends Controller
                                                             <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                             <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                         </tr>
+                                                        
                                                     </table>
                                                 </td>
                                             </tr>
@@ -3364,6 +3386,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -3374,10 +3397,15 @@ class ConsignmentController extends Controller
                                             <table>
                                                 <tr>
                                                     <td class="width_set">
-                                                        <div style="margin-left: 20px">
-                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                        </div>
+                                                        <div style="margin-left: 20px">';
+                                                        if($data['is_salereturn'] == 1){
+                                                            $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
+                                                        }else{
+                                                    $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                                        }
+                                                        $html .= '</div>
                                                     </td>
                                                     <td class="width_set">
                                                         <table border="1px solid" class="table3">
@@ -3393,6 +3421,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -3424,6 +3453,7 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
+                                                            
                                                         </table>
                                                     </td>
                                                 </tr>
@@ -3930,6 +3960,22 @@ class ConsignmentController extends Controller
                     }
                     if (@$data['driver_detail']['name'] != '') {
                         $html .= '<p>' . ucwords($data['driver_detail']['name']) . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
+
+                    if (@$data['payment_type'] != '') {
+                        $html .= '<p>' . ucwords($data['payment_type']) . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
+                    if (@$data['freight_on_delivery'] != '') {
+                        $html .= '<p>' . ucwords($data['freight_on_delivery']) . '</p>';
+                    } else {
+                        $html .= '<p> - </p>';
+                    }
+                    if (@$data['cod'] != '') {
+                        $html .= '<p>' . ucwords($data['cod']) . '</p>';
                     } else {
                         $html .= '<p> - </p>';
                     }

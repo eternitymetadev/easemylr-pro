@@ -44,7 +44,7 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report2</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report3</a></li>
                     </ol>
                 </nav>
             </div>
@@ -52,30 +52,48 @@ div.relative {
                 <div class="mb-4 mt-4">
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000 records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>from</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id == 3){ ?>
+                        <div class="col-sm-2">
+                            <label>Base Client</label>
+                            <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
+                                <option value="">Select</option>
+                                @foreach($getbaseclients as $value)
+                                <option value="{{ $value->id }}">{{ucwords($value->client_name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Regional Client</label>
+                            <select class="form-control my-select2" name="regclient_id" id="select_regionalclient">
+                                <option value="">Select All</option>
+                            </select>
+                        </div>
+                        <?php } ?>
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
                                 <span class="indicator-label">Filter Data</span>
                             </button>
-                            <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>"
-                                data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
+                            <a href="<?php echo URL::to($prefix.'/reports/export3'); ?>"
+                                data-url="<?php echo URL::to($prefix.'/consignment-report3'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                data-action="<?php echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
                             <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
                     @csrf
                     <div class="main-table table-responsive">
-                        @include('consignments.consignment-reportAll-ajax')
+                        @include('consignments.consignment-reportThree-ajax')
                     </div>
                 </div>
             </div>
@@ -88,17 +106,32 @@ div.relative {
 @section('js')
 <script>
 jQuery(document).on('click', '#filter_reportall', function() {
+    
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
-    var search = jQuery('#search').val();
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+    
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
+    
     
     jQuery.ajax({
         type: 'get',
-        url: 'consignment-report2',
+        url: 'consignment-report3',
         data: {
             startdate: startdate,
             enddate: enddate,
-            search: search
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -122,7 +155,13 @@ jQuery(document).on('change', '.report_perpage', function() {
     }
     var url = jQuery(this).attr('data-action');
     var peritem = jQuery(this).val();
-    var search  = jQuery('#search').val();
+    var search_val  = jQuery('#search').val();
+
+    if(typeof(search_val) === "undefined"){
+        var search = '';
+    }else{
+        var search = search_val;
+    }
         jQuery.ajax({
             type      : 'get', 
             url       : url,
@@ -160,12 +199,23 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
 
-    var search = jQuery('#search').val();
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
+
     var url = jQuery('#search').attr('data-url');
-    if (startdate)
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-    else if (search)
-        geturl = geturl + '?search=' + search;
+
+    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
 
     jQuery.ajax({
         url: url,
@@ -173,7 +223,9 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         cache: false,
         data: {
             startdate: startdate,
-            enddate: enddate
+            enddate: enddate,
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id,
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

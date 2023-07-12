@@ -17,6 +17,9 @@
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+.pan {
+    text-transform: uppercase;
+}
 </style> 
 
 <div class="layout-px-spacing">
@@ -133,28 +136,33 @@
                                 ?>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Account Holder Name </label>
+                                    <label for="exampleFormControlInput2">Account Holder Name<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="acc_holder_name" placeholder="" value="{{old('$bankdetails->acc_holder_name',isset($bankdetails->acc_holder_name)?$bankdetails->acc_holder_name:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Account No.</label>
+                                    <label for="exampleFormControlSelect1">Account No.<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="account_no" name="account_no" placeholder="" value="{{old('$bankdetails->account_no',isset($bankdetails->account_no)?$bankdetails->account_no:'')}}">
                                 </div>
                             </div>
 
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Ifsc Code</label>
-                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="" value="{{old('$bankdetails->ifsc_code',isset($bankdetails->ifsc_code)?$bankdetails->ifsc_code:'')}}">
+                                    <label for="exampleFormControlInput2">Ifsc Code<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="" name="ifsc_code" placeholder="" value="{{old('$bankdetails->ifsc_code',isset($bankdetails->ifsc_code)?$bankdetails->ifsc_code:'')}}" maxlength="11" minlength="11">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Bank Name</label>
+                                    <label for="exampleFormControlInput2">Bank Name<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="bank_name" placeholder="" value="{{old('$bankdetails->bank_name',isset($bankdetails->bank_name)?$bankdetails->bank_name:'')}}">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Branch Name</label>
+                                    <label for="exampleFormControlInput2">Branch Name<span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="branch_name" placeholder="" value="{{old('$bankdetails->branch_name',isset($bankdetails->branch_name)?$bankdetails->branch_name:'')}}">
                                 </div>
                                 <div class="form-group col-md-6">
@@ -166,12 +174,15 @@
                             <h3>Vendor Documents</h3>
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan</label>
-                                    <input type="text" class="form-control" name="pan" placeholder="" value="{{old('pan',isset($getvendor->pan)?$getvendor->pan:'')}}">
+                                    <label for="exampleFormControlInput2">Pan<span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control pan" id="pan_no" name="pan" placeholder="" value="{{old('pan',isset($getvendor->pan)?$getvendor->pan:'')}}">
+                                    <label id="lblPANCard" class="error" style="display: none">Invalid PAN Number</label>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Pan Upload</label>
-                                    <input type="file" class="form-control" name="pan_upload" placeholder="">
+                                    <label for="exampleFormControlInput2">Pan Upload<span
+                                            class="text-danger">*</span></label>
+                                    <input id="pan_upload" type="file" class="form-control" name="pan_upload" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row mb-0">
@@ -204,8 +215,56 @@
 @endsection
 @section('js')
 <script>
+    $(document).ready(function(){
+        var panVal = $(this).val().toUpperCase();
+
+        
+        var v_typ = $("#vendor_type").val();
+        if(v_typ != ''){
+            $("#pan_no").prop('disabled', false);
+        }else{
+            $("#pan_no").prop('disabled', true);
+        }
+
+        $(document).on("keyup blur", "#pan_no", function () {
+            var vendor_type = $("#vendor_type").val();
+            var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+            var panVal = $(this).val().toUpperCase();
+
+            if(panVal.length >= 4){
+                var strval =  panVal.charAt(4 - 1);
+                if(strval != 'F' && vendor_type == "Firm"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'P' && (vendor_type == "Individual" || vendor_type == "Proprietorship") ){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'C' && vendor_type == "Company"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'H' && vendor_type == "HUF"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }
+            }
+
+            if (regpan.test(panVal)) {
+                $("#lblPANCard").hide();
+            } else {
+                $("#lblPANCard").show();
+            }
+
+        })
+    });
+
 $('#vendor_type').change(function() {
+    $("#pan_no").val('');
     var v_typ = $(this).val();
+    if(v_typ != ''){
+        $("#pan_no").prop('disabled', false);
+    }else{
+        $("#pan_no").prop('disabled', true);
+    }
     var declaration = ($('input[name=decalaration_available]:checked').val());
     if (declaration == '2') {
         if (v_typ == 'Individual') {
