@@ -165,8 +165,10 @@
                 <td>{{ $tat }}</td>
                 <?php } if($consignment->lr_mode == 0){?>
                 <td>Manual</td>
-                <?php }else{?>
+                <?php }else if($consignment->lr_mode == 1){ ?>
                 <td>Shadow</td>
+                <?php  }else{?>
+                <td>Shiprider</td>
                 <?php } ?>
 
                 <?php if($consignment->lr_mode == 0){
@@ -176,7 +178,7 @@
                 <?php } else { ?>
                 <td>Avliable</td>
                 <?php } ?>
-                <?php } else { 
+                <?php } else if($consignment->lr_mode == 1) { 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
 
             if(!empty($job->response_data)){
@@ -196,7 +198,15 @@
                 <?php }
             }
             ?>
-                <?php } ?>
+                <?php } else{ 
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { ?>
+                <td>Available</td>
+                <?php   }else{ ?>
+                <td>Not Available</td>
+                <?php   }  ?>
+                <?php  } ?>
                 <td>{{$consignment->payment_type}}</td>
                 <td>{{$consignment->freight_on_delivery}}</td>
                 <td>{{$consignment->cod}}</td>
@@ -208,6 +218,7 @@
                             $lr_type = "-";
                              } ?>
                 <td>{{$lr_type}}</td>
+
 
             </tr>
             @endforeach

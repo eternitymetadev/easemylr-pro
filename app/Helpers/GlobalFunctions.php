@@ -337,6 +337,16 @@ class GlobalFunctions
         return $total_weight;
     }
 
+    public static function apiResponseSend($message,$data,$status = true,$errorCode){
+        $errorCode = $status ? 200 : $errorCode;
+        $result = [
+            "status" => $status,
+            "message" => $message,
+            "data" => $data,
+            'statuscode' => $errorCode
+        ];
+        return response()->json($result);
+    }
     public static function DriverTaskStatusCheck($prs_id)
     {
         $countids = PrsDrivertask::where('prs_id', $prs_id)->count();
