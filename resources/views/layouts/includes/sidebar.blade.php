@@ -595,9 +595,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report2'}}"> Mis Report 2 </a>
             </li>
-            {{-- <li>
+            <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report3'}}"> Mis Report 3 </a>
-            </li> --}}
+            </li>
         </ul>
     </li>
 
