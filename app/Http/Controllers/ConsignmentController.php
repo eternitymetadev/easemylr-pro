@@ -4776,27 +4776,39 @@ class ConsignmentController extends Controller
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
-            $app_trail = json_decode($driver_app->trail, true);
+            if($driver_app){
+                $app_trail = json_decode($driver_app->trail, true);
 
-            if ($driver_app) {
-                return response([
-                    'data' => $driver_app,
-                    'driver_trail' => $app_trail,
-                    'status' => 'success',
-                    'code' => 1,
-                    'message' => 'Data fetched successfully!',
-                ], 200);
+                if ($driver_app) {
+                    return response([
+                        'data' => $driver_app,
+                        'driver_trail' => $app_trail,
+                        'status' => 'success',
+                        'code' => 1,
+                        'message' => 'Data fetched successfully!',
+                    ], 200);
+                }else{
+                    return response([
+                        'status' => 'error',
+                        'code' => 0,
+                        'message' => "Data not found!",
+                        'data' => "",
+                    ], 200);
+                }
             }
+            else{
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'data' => "Failed to update status",
-            ], 500);
+                'message' => "Data not found!",
+                'data' => "",
+            ], 200);
+        }
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
                 'code' => 0,
-                'message' => "Failed to update transaction_sheets, please try again. {$exception->getMessage()}",
+                'message' => "Failed to get result, please try again. {$exception->getMessage()}",
             ], 500);
         }
     }
