@@ -452,7 +452,7 @@ class ReportController extends Controller
 
     public function exportExcelReport2(Request $request)
     {
-        return Excel::download(new Report2Export($request->startdate,$request->enddate), 'mis_report2.csv');
+        return Excel::download(new Report2Export($request->startdate,$request->enddate,$request->baseclient_id,$request->regclient_id), 'mis_report2.csv');
     }
 
     public function exportExcelReport3(Request $request)
