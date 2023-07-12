@@ -28,12 +28,14 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
     protected $startdate;
     protected $enddate;
-    // protected $search;
+    protected $baseclient_id;
+    protected $regclient_id;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        // $this->search = $search;
+        $this->baseclient_id = $baseclient_id;
+        $this->regclient_id = $regclient_id;
     }
 
     public function collection()
@@ -46,6 +48,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $baseclient_id = $this->baseclient_id;
+        $regclient_id = $this->regclient_id;
 
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
@@ -77,10 +81,20 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get();
-        }else {
-            $consignments = $query->orderBy('id','ASC')->get();
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
+        if($baseclient_id){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                $q->where('id', $baseclient_id);
+            });
+        }
+        if($regclient_id){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                $q->where('id', $regclient_id);
+            });
+        }
+
+        $consignments = $query->orderBy('id','ASC')->get();
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){

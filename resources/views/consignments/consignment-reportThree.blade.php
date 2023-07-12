@@ -155,28 +155,19 @@ jQuery(document).on('change', '.report_perpage', function() {
     }
     var url = jQuery(this).attr('data-action');
     var peritem = jQuery(this).val();
-    var search_val  = jQuery('#search').val();
 
-    if(typeof(search_val) === "undefined"){
-        var search = '';
-    }else{
-        var search = search_val;
-    }
+    
         jQuery.ajax({
             type      : 'get', 
             url       : url,
-            data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate},
+            data      : {peritem:peritem,startdate:startdate,enddate:enddate},
             headers   : {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         dataType: 'json',
         success: function(response) {
             if (response.html) {
-                if (response.page == 'lead_note') {
-                    jQuery('#Note .main-table').html(response.html);
-                } else {
-                    jQuery('.main-table').html(response.html);
-                }
+                jQuery('.main-table').html(response.html);
             }
         }
     });
@@ -225,7 +216,7 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
             startdate: startdate,
             enddate: enddate,
             baseclient_id: baseclient_id,
-            regclient_id: regclient_id,
+            regclient_id: regclient_id
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

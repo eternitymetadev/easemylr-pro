@@ -52,14 +52,32 @@ div.relative {
                 <div class="mb-4 mt-4">
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000 records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>from</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id == 3){ ?>
+                        <div class="col-sm-2">
+                            <label>Base Client</label>
+                            <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
+                                <option value="">Select</option>
+                                @foreach($getbaseclients as $value)
+                                <option value="{{ $value->id }}">{{ucwords($value->client_name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Regional Client</label>
+                            <select class="form-control my-select2" name="regclient_id" id="select_regionalclient">
+                                <option value="">Select All</option>
+                            </select>
+                        </div>
+                        <?php } ?>
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
@@ -90,7 +108,20 @@ div.relative {
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
-    var search = jQuery('#search').val();
+
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+    
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
     
     jQuery.ajax({
         type: 'get',
@@ -98,7 +129,8 @@ jQuery(document).on('click', '#filter_reportall', function() {
         data: {
             startdate: startdate,
             enddate: enddate,
-            search: search
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -122,22 +154,17 @@ jQuery(document).on('change', '.report_perpage', function() {
     }
     var url = jQuery(this).attr('data-action');
     var peritem = jQuery(this).val();
-    var search  = jQuery('#search').val();
         jQuery.ajax({
             type      : 'get', 
             url       : url,
-            data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate},
+            data      : {peritem:peritem,startdate:startdate,enddate:enddate},
             headers   : {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         dataType: 'json',
         success: function(response) {
             if (response.html) {
-                if (response.page == 'lead_note') {
-                    jQuery('#Note .main-table').html(response.html);
-                } else {
-                    jQuery('.main-table').html(response.html);
-                }
+                jQuery('.main-table').html(response.html);
             }
         }
     });
@@ -160,12 +187,23 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
 
-    var search = jQuery('#search').val();
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
+
     var url = jQuery('#search').attr('data-url');
-    if (startdate)
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-    else if (search)
-        geturl = geturl + '?search=' + search;
+
+    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
 
     jQuery.ajax({
         url: url,
@@ -173,7 +211,9 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         cache: false,
         data: {
             startdate: startdate,
-            enddate: enddate
+            enddate: enddate,
+            baseclient_id: baseclient_id,
+            regclient_id: regclient_id
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

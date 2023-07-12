@@ -126,10 +126,20 @@ class ReportController extends Controller
             $enddate = $request->enddate;
 
             if(isset($startdate) && isset($enddate)){
-                $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','DESC')->paginate($peritem);
-            }else {
-                $consignments = $query->orderBy('id','DESC')->paginate($peritem);
+                $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
             }
+            if($baseclient_id){
+                $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                    $q->where('id', $baseclient_id);
+                });
+            }
+            if($regclient_id){
+                $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                    $q->where('id', $regclient_id);
+                });
+            }
+
+            $consignments = $query->orderBy('id','DESC')->paginate($peritem);
 
             $html =  view('consignments.consignment-reportAll-ajax',['prefix'=>$this->prefix,'consignments' => $consignments,'peritem'=>$peritem])->render();
             // $consignments = $consignments->appends($request->query());
@@ -160,8 +170,10 @@ class ReportController extends Controller
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
+
+        $getbaseclients = BaseClient::select('id','client_name')->where('status','1')->get();
         
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem]);
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem,'getbaseclients'=>$getbaseclients]);
     }
 
     // MIS report3 get records
