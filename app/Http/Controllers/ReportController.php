@@ -493,5 +493,28 @@ class ReportController extends Controller
          return response()->json($response);
      }
 
+    public function career (Request $request) {
+        // // Retrieve the data from the request body
+     
+        $data['fullName'] = $request->fullName;
+        $data['phone'] = $request->phone;
+        $data['email'] = $request->email;
+        $data['education'] = $request->education;
+        $data['location'] = $request->location;
+        $data['cv'] = $request->cv;
+       
+        // Simulate a success or failure response based on a condition
+        if ($data) {
+            $response['success'] = true;
+            $response['success_message'] = "Regional Client list fetch successfully";
+            $response['error'] = false;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch client list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
 
 }
