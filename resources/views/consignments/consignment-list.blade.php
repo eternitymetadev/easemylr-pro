@@ -839,125 +839,29 @@ function row_click(row_id, job_id, url) {
                         
                         if (response.driver_app.lr_type == 0) {
                             if (response.driver_app.lr_mode == 0) {
-
+                                alert("oo");
                                 console.log(response);
                                 //================Manual LR TRAIL =================== //
-                                var cc = '<ul class="cbp_tmtimeline"><div class="timelineBlock">';
+                                var base_url = window.location.origin;
+                                var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
-                                    if (task.status == 'Created') {
-                                     
-                                    //////// start new timeline ///////////
-                                    cc+= '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #002930">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                    console.log(task); 
+                                    if (task.status == 'Successful') {
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                    }else{
+                                        manual_img = '';
+                                    }
+                                    cc += '<li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #41ca5d">Shipment Manifested </span>' +
-                                            response.driver_app.branch_name + '</span></div></li>';
-
-                                       cc+= `<!--pickup-->
-                                                <div class="timeline">
-                                                    <div class="timeBlock">
-                                                        <div class="timeStamp">
-                                                            <!--<div class="date">26 Aug</div>
-                                                            <div class="time">05:30 PM</div>--!>
-                                                        </div>
-                                                        <div class="badge"></div>
-                                                    </div>
-                                                    <div class="description">
-                                                        <div class="activity">
-                                                            <span class="heading">Activity :</span>
-                                                            Out for Delivery
-                                                        </div>
-                                                        <div class="location">
-                                                            <span class="heading">Location :</span>
-                                                            `+ response.driver_app.shipto_city +`
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!--menifested-->
-                                                <div class="timeline">
-                                                    <div class="timeBlock">
-                                                        <div class="timeStamp">
-                                                            <!--<div class="date">26 Aug</div>
-                                                            <div class="time">11:30 AM</div>--!>
-                                                        </div>
-                                                        <div class="badge"></div>
-                                                    </div>
-                                                    <div class="description">
-                                                        <div class="activity">
-                                                            <span class="heading">Activity :</span>
-                                                            Consignment Menifested at
-                                                        </div>
-                                                        <div class="location">
-                                                            <span class="heading">Location :</span>
-                                                            `+ response.driver_app.branch_name +`
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!--recieved-->
-                                                <div class="timeline">
-                                                    <div class="timeBlock">
-                                                        <div class="timeStamp">
-                                                            <div class="date">`+ task.create_at +`</div>
-                                                            <!--<div class="time">08:30 AM</div>-->
-                                                        </div>
-                                                        <div class="badge"></div>
-                                                    </div>
-                                                    <div class="description">
-                                                        <div class="activity">
-                                                            <span class="heading">Activity :</span>
-                                                            Order Placed
-                                                        </div>
-                                                        <div class="location">
-                                                            <span class="heading">Location :</span>
-                                                            `+ response.driver_app.branch_name +`
-                                                        </div>
-                                                    </div>
-                                                </div>`;
-                                    } else if (task.status == 'Successful') {
-                                        cc += `<div class="timeline">
-                                                    <div class="timeBlock">
-                                                        <div class="timeStamp">
-                                                            <div class="date">`+ task.create_at +`</div>
-                                                            <!--<div class="time">02:30 PM</div>--!>
-                                                        </div>
-                                                        <div class="badge"></div>
-                                                    </div>
-                                                    <div class="description">
-                                                        <div class="activity">
-                                                            <span class="heading">Activity :</span>
-                                                            Order Completed
-                                                        </div>
-                                                        <!--<div class="location">
-                                                            <span class="heading">Location :</span>
-                                                            CHD
-                                                        </div>--!>
-                                                    </div>
-                                                </div>
-                                                <div class="timeline">
-                                                    <div class="timeBlock">
-                                                        <div class="timeStamp">
-                                                            <div class="date">`+ task.create_at +`</div>
-                                                            <!--<div class="time">02:30 PM</div>--!>
-                                                        </div>
-                                                        <div class="badge"></div>
-                                                    </div>
-                                                    <div class="description">
-                                                        <div class="activity">
-                                                            <span class="heading">Activity :</span>
-                                                            Delivered
-                                                        </div>
-                                                        <div class="location">
-                                                            <span class="heading">Location :</span>
-                                                            `+ response.driver_app.shipto_city +`
-                                                        </div>
-                                                    </div>
-                                                </div>`;
-                                    }
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">' + task.desc + ' '+manual_img+'</span></span>' +
+                                            task.location + '</div></li>';
                                 });
-                                cc += '</div></ul>';
+                                cc += '</ul>';
                                 var modal_html1 = cc;
                                 $('.append-modal').html(modal_html1);
-                            } 
+                            }                
+
                             else if (response.driver_app.lr_mode == 2) {
                                 //  ================DRIVER App TRAIL ====================== //
                                 var cc = '<ul class="cbp_tmtimeline">';
