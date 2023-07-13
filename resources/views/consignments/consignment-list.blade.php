@@ -839,7 +839,6 @@ function row_click(row_id, job_id, url) {
                         
                         if (response.driver_app.lr_type == 0) {
                             if (response.driver_app.lr_mode == 0) {
-                                alert("oo");
                                 console.log(response);
                                 //================Manual LR TRAIL =================== //
                                 var base_url = window.location.origin;

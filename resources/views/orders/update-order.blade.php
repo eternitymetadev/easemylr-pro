@@ -470,10 +470,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
                 <input id="select_consignee" name="" class="form-control selectConsignee" type="text" value="{{old('consignee_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
 
-                <?php 
-                // if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" id="consignee_id" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
-                <?php// } ?>
                 <div class="" id="consignee_address"></div>
             </div>
 
@@ -483,10 +480,8 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </label>
                 <input id="select_ship_to" name="" class="form-control selectShipto" type="text" value="{{old('ship_to_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
                 
-                <?php 
-                // if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" id="ship_to_id" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
-                <?php //} ?>
+               
                 <div id="ship_to_address"></div>
             </div>
 
