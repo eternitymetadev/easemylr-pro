@@ -943,7 +943,7 @@ function row_click(row_id, job_id, url) {
                                 $('.append-modal').html(modal_html1);
                             }
                         } else {
-                            alert("ftl");
+                            // ftl timeline
                             // ============================  PTL LR Trail ========================= //
                             if (response.driver_app.lr_mode == 0) {
                                 var base_url = window.location.origin;
