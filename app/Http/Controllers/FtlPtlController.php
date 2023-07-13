@@ -882,14 +882,14 @@ class FtlPtlController extends Controller
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
                     // =================== task assign
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                     // ==== end started
 
 
