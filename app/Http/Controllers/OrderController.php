@@ -2551,14 +2551,14 @@ class OrderController extends Controller
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create =================//
                     // ================= task assign =================//
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                     // ==== end started
                     $app_notify = $this->sendNotification($request->driver_id);
                 } else {
@@ -2579,14 +2579,14 @@ class OrderController extends Controller
                 // ==== end create===//
                 $pickup_location = Location::where('id',$saveconsignment->fall_in)->first();
                 // ================= task assign =================//
-                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$pickup_location->name, 'type' => '2');
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$pickup_location->name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                 $st = json_decode($lastjob->response_data);
                 array_push($st, $respons2);
                 $sts = json_encode($st);
 
-                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assiganed', 'type' => '2']);
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                 // ==== end started
                 
             }
