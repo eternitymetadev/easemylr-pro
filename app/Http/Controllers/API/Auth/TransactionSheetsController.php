@@ -556,10 +556,12 @@ class TransactionSheetsController extends Controller
             $path = Storage::disk('s3')->put('images', $images);
 
             $img_path[] = Storage::disk('s3')->url($path);
-            $img_path_save = Storage::disk('s3')->url($path);
+            $img_path_save = Storage::disk('s3')->url($path); 
+            $url_chng = explode(':', $img_path_save);
+            $url_chng = $url_chng[0] . 's:' . $url_chng[1];
 
             $appmedia['consignment_no'] = $id;
-            $appmedia['pod_img'] = $img_path_save;
+            $appmedia['pod_img'] = $url_chng;
             $appmedia['type'] = $type;
 
             $savedata = AppMedia::create($appmedia);
