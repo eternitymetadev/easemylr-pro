@@ -323,7 +323,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
     <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder"
         style="margin: auto; ">
-        <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
+        <input type="hidden" id="consignment_id" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">
         <?php if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){ ?>
         <input type="hidden" name="lr_type" value="{{$getconsignments->lr_type}}">
@@ -471,9 +471,9 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 <input id="select_consignee" name="" class="form-control selectConsignee" type="text" value="{{old('consignee_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
 
                 <?php 
-                if(empty($getconsignments->prs_id)){ ?>
+                // if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" id="consignee_id" name="consignee_id" value="{{$getconsignments->consignee_id}}" />
-                <?php } ?>
+                <?php// } ?>
                 <div class="" id="consignee_address"></div>
             </div>
 
@@ -483,9 +483,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                 </label>
                 <input id="select_ship_to" name="" class="form-control selectShipto" type="text" value="{{old('ship_to_id',isset($getconsignments->ConsigneeDetail->nick_name)?$getconsignments->ConsigneeDetail->nick_name:'')}}" placeholder="Search.." {{$disable}}/>
                 
-                <?php if(empty($getconsignments->prs_id)){ ?>
+                <?php 
+                // if(empty($getconsignments->prs_id)){ ?>
                 <input type="hidden" id="ship_to_id" name="ship_to_id" value="{{$getconsignments->ship_to_id}}" />
-                <?php } ?>
+                <?php //} ?>
                 <div id="ship_to_address"></div>
             </div>
 
@@ -1370,6 +1371,9 @@ function getItem(item) {
     });
 }
 
+
+
+
 // append address
 $(document).ready(function() {
     var regclient_id = $('#select_regclient').val();
@@ -1377,6 +1381,7 @@ $(document).ready(function() {
     var consignee_id = $('#consignee_id').val();
     var shipto_id = $('#ship_to_id').val();
 
+    //get routes in lr from prs  case consignee keyup//
     $.ajax({
         type: 'get',
         url: APP_URL + '/get_route',
@@ -1412,12 +1417,13 @@ $(document).ready(function() {
             // $('#consignee_address').empty();
             // $('#ship_to_address').empty();
 
-            $('#select_consignee').append('<option value="">Select Consignee</option>');
-            $('#select_ship_to').append('<option value="">Select Ship To</option>');
-            $.each(res.consignee, function(key, value) {
-                $('#select_consignee, #select_ship_to').append('<option value="' + value
-                    .id + '">' + value.nick_name + '</option>');
-            });
+            // $('#select_consignee').append('<option value="">Select Consignee</option>');
+            // $('#select_ship_to').append('<option value="">Select Ship To</option>');
+
+            // $.each(res.consignee, function(key, value) {
+            //     $('#select_consignee, #select_ship_to').append('<option value="' + value
+            //         .id + '">' + value.nick_name + '</option>');
+            // });
             if (res.data) {
                 console.log(res.data);
                 if (res.data.address_line1 == null) {
@@ -1478,6 +1484,7 @@ $(document).ready(function() {
             }
         }
     });
+
     ///////get consinee address//
     $.ajax({
         type: 'get',

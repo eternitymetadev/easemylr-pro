@@ -78,8 +78,7 @@ div.relative {
             <div class="widget-content widget-content-area br-6">
                 <div class=" mb-4 mt-4">
                     <div class="d-flex justify-content-between align-items-center px-3 pb-3" style="gap: 1rem;">
-                        <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs"
-                            style="align-self: stretch;">
+                        <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs" style="align-self: stretch;">
                             Create HRS
                         </button>
                         <div class="d-flex justify-content-center align-items-center"
