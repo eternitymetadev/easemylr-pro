@@ -265,6 +265,19 @@ class ReportController extends Controller
         $cc = explode(',',$authuser->branch_id);
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
 
+        $regclients = RegionalClient::with('BaseClient:id,client_name')->select('id','name','location_id','baseclient_id')->whereIn('location_id',$cc)->get();
+
+        $base_clients = [];
+        foreach($regclients as $val){
+            $base_clients[] = json_decode($val->BaseClient);
+        }
+
+        $uniqueData = array_unique($base_clients, SORT_REGULAR);
+        $getbaseclients = array_values($uniqueData); // Resetting array keys
+
+        // $getbaseclients = BaseClient::select('id','client_name')->where('status','1')->get();
+
+
         $query = $query
             ->where('status', '!=', 5)
             ->with(
@@ -282,8 +295,6 @@ class ReportController extends Controller
         
         $consignments = $query->orderBy('id','DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-
-        $getbaseclients = BaseClient::select('id','client_name')->where('status','1')->get();
         
         return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix,'peritem'=>$peritem, 'getbaseclients'=>$getbaseclients]);
     }
