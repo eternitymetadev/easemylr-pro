@@ -60,8 +60,7 @@ div.relative {
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
-                        <?php $authuser = Auth::user(); 
-                        if($authuser->role_id == 3){ ?>
+                        
                         <div class="col-sm-2">
                             <label>Base Client</label>
                             <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
@@ -77,7 +76,7 @@ div.relative {
                                 <option value="">Select All</option>
                             </select>
                         </div>
-                        <?php } ?>
+                        
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">

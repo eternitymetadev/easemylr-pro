@@ -60,12 +60,11 @@ div.relative {
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div> 
-                        
+
                         <div class="col-sm-2">
                             <label>Base Client</label>
                             <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
                                 <option value="">Select</option>
-                                <?php //echo "<pre>"; print_r($getbaseclients); die; ?>
                                 @foreach($getbaseclients as $value)
 
                                 <option value="{{ $value->id }}">{{ucwords($value->client_name)}}</option>
