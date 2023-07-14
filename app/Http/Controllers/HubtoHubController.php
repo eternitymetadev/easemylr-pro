@@ -519,17 +519,17 @@ class HubtoHubController extends Controller
             $currentdate = $mytime->toDateTimeString();
 
             foreach ($lr_no as $c_id) {
-                ConsignmentNote::where('id', $lr)->update(['hrs_status' => 3, 'route_branch_id' => $route_line]);
+                ConsignmentNote::where('id', $c_id)->update(['hrs_status' => 3, 'route_branch_id' => $route_line]);
 
                 //=========== task assign========//
-                $respons2 = array('consignment_id' => $lr, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+                $respons2 = array('consignment_id' => $c_id, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-                $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $lr)->latest('id')->first();
+                $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $c_id)->latest('id')->first();
                 $st = json_decode($lastjob->response_data);
                 array_push($st, $respons2);
                 $sts = json_encode($st);
 
-                $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
                 // ==== end started ===//
 
             }
