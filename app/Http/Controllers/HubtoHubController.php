@@ -257,6 +257,7 @@ class HubtoHubController extends Controller
         //  echo'<pre>'; print_r($request->all()); die;
         $consignerId = $request->lr_id;
         $cc = explode(',', $consignerId);
+        $location = Location::whereIn('id', $cc)->first();
         
         $addvechileNo = $request->vehicle_id;
         $adddriverId = $request->driver_id;
@@ -272,7 +273,7 @@ class HubtoHubController extends Controller
 
         foreach ($cc as $c_id) {
             // =================== task assign
-            $respons2 = array('consignment_id' => $c_id, 'status' => 'Hub Transfer', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Hub Transfer','desc'=>'In Transit - Arrived at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
             $st = json_decode($lastjob->response_data);

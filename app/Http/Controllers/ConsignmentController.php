@@ -4421,6 +4421,9 @@ class ConsignmentController extends Controller
 
     public function allSaveDRS(Request $request)
     {
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        $location = Location::whereIn('id',$cc)->first();
 
         if (!empty($request->data)) {
             $get_data = $request->data;
@@ -4459,9 +4462,9 @@ class ConsignmentController extends Controller
                         $mytime = Carbon::now('Asia/Kolkata');
                         $currentdate = $mytime->toDateTimeString();
 
-                        $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+                        $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful','desc'=>'Delivered', 'create_at'=>$currentdate, 'location'=>$location->name, 'type' => '2');
 
-                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->orderBy('id', 'DESC')->first();
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->latest('id')->first();
                         if (!empty($lastjob->response_data)) {
                             $st = json_decode($lastjob->response_data);
                             array_push($st, $respons2);
