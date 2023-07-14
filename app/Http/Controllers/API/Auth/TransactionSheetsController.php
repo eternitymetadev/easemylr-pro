@@ -542,7 +542,7 @@ class TransactionSheetsController extends Controller
             ], 500);
 
         }
-
+ 
     }
     public function uploadImage(Request $request, $id)
     {
