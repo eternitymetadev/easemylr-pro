@@ -2286,6 +2286,7 @@ class OrderController extends Controller
 
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
+            $location = Location::whereIn('id',$cc)->first();
 
             $prs_regclientcheck = Regionalclient::where('id', $request->regclient_id)->first();
             if ($prs_regclientcheck->is_prs_pickup == 1) {
@@ -2549,31 +2550,31 @@ class OrderController extends Controller
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
-            // check app assign ========================================
+            //========= check app assign =================//
             if (!empty($get_driver_details->branch_id)) {
                 $driver_branch = explode(',', $get_driver_details->branch_id);
                 if (in_array($authuser->branch_id, $driver_branch)) {
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
 
-                    // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    //========= task created =================//
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=>'Order Placed','create_at' => $currentdate,'location'=>$location->name, 'type' => '2']);
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                    // ==== end create
-                    // =================== task assign
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+                    // ==== end create =================//
+                    // ================= task assign =================//
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('consignment_id')->first();
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                     // ==== end started
                     $app_notify = $this->sendNotification($request->driver_id);
                 } else {
                     // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=>'Order Placed','create_at' => $currentdate,'location'=>$location->name, 'type' => '2']);
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
@@ -2582,11 +2583,23 @@ class OrderController extends Controller
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
             } else {
-                // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                // task created //
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=>'Order Placed','create_at' => $currentdate,'location'=>$location->name, 'type' => '2']);
                 $respons_data = json_encode($respons);
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                // ==== end create
+                // ==== end create===//
+                $pickup_location = Location::where('id',$saveconsignment->fall_in)->first();
+                // ================= task assign =================//
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$pickup_location->name, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                // ==== end started
+                
             }
 
             $url = $this->prefix . '/orders';
@@ -2608,25 +2621,28 @@ class OrderController extends Controller
     }
     public function prsReceiveMaterial(Request $request)
     {
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        $location = Location::whereIn('id', $cc)->first();
 
         $update_receve = ConsignmentNote::where('id', $request->lr_id)->update(['prsitem_status' => 2, 'prs_remarks' => $request->prs_remarks]);
 
-          // =================== task assign ====== //
-          $mytime = Carbon::now('Asia/Kolkata');
-          $currentdate = $mytime->toDateTimeString();
+        // =================== task assign ====== //
+        $mytime = Carbon::now('Asia/Kolkata');
+        $currentdate = $mytime->toDateTimeString();
 
-          $respons2 = array('consignment_id' => $request->lr_id, 'status' => 'Prs Created', 'create_at' => $currentdate, 'type' => '2');
+        $respons2 = array('consignment_id' => $request->lr_id, 'status' => 'Prs Created','desc'=>'Pickup Scheduled', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-          $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr_id)->latest('consignment_id')->first();
-          if (!empty($lastjob->response_data)) {
-              $st = json_decode($lastjob->response_data);
-              array_push($st, $respons2);
-              $sts = json_encode($st);
+        $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $request->lr_id)->latest('id')->first();
+        
+        if (!empty($lastjob->response_data)) {
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
 
-              $start = Job::create(['consignment_id' => $request->lr_id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
-          }
-          // ==== end started
-         
+            $start = Job::create(['consignment_id' => $request->lr_id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
+        }
+        // ==== end started         
 
         if ($update_receve) {
             $response['success'] = true;
@@ -2635,7 +2651,7 @@ class OrderController extends Controller
 
         } else {
             $response['success'] = false;
-            $response['error_message'] = "Can not update  please try again";
+            $response['error_message'] = "Can not update please try again";
             $response['error'] = true;
         }
         return response()->json($response);

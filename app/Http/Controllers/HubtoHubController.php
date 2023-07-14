@@ -77,6 +77,8 @@ class HubtoHubController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
+        $location = Location::where('id', $cc)->first();
+
         $hrsid = DB::table('hrs')->select('hrs_no')->latest('hrs_no')->first();
         $hrs_id = json_decode(json_encode($hrsid), true);
         if (empty($hrs_id) || $hrs_id == null) {
@@ -97,6 +99,23 @@ class HubtoHubController extends Controller
 
         foreach ($consignmentId as $consignment) {
             $savehrs = Hrs::create(['hrs_no' => $hrs_id_new, 'consignment_id' => $consignment, 'branch_id' => $cc, 'to_branch_id' => $get_tobranch, 'total_hrs_quantity' => $boxes, 'status' => 1]);
+
+             // =================== task assign ====== //
+          $mytime = Carbon::now('Asia/Kolkata');
+          $currentdate = $mytime->toDateTimeString();
+
+          $respons2 = array('consignment_id' => $consignment, 'status' => 'Hrs Created','desc'=>'In Transit - Departed from', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+
+          $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $consignment)->latest('id')->first();
+          
+          if (!empty($lastjob->response_data)) {
+              $st = json_decode($lastjob->response_data);
+              array_push($st, $respons2);
+              $sts = json_encode($st);
+
+              $start = Job::create(['consignment_id' => $consignment, 'response_data' => $sts, 'status' => 'Hrs Created', 'type' => '2']);
+          }
+          // ==== end started
         }
 
         ConsignmentNote::whereIn('id', $consignmentId)->update(['hrs_status' => 1]);
@@ -482,6 +501,10 @@ class HubtoHubController extends Controller
     {
         try {
             DB::beginTransaction();
+            $authuser = Auth::user();
+            $cc = explode(',', $authuser->branch_id);
+            $location = Location::whereIn('id', $cc)->first();
+
             $hrs_no = $request->hrs_id;
             $receive_box = $request->receive_quantity;
             $remarks = $request->remarks;
@@ -493,22 +516,23 @@ class HubtoHubController extends Controller
             ConsignmentNote::whereIn('id', $lr_no)->update(['hrs_status' => 3]);
 
             $mytime = Carbon::now('Asia/Kolkata');
-        $currentdate = $mytime->toDateTimeString();
+            $currentdate = $mytime->toDateTimeString();
 
-        foreach ($lr_no as $c_id) {
-            // =================== task assign
-            $respons2 = array('consignment_id' => $c_id, 'status' => 'Received Hub', 'create_at' => $currentdate, 'type' => '2');
+            foreach ($lr_no as $c_id) {
+                ConsignmentNote::where('id', $lr)->update(['hrs_status' => 3, 'route_branch_id' => $route_line]);
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);
-           
+                //=========== task assign========//
+                $respons2 = array('consignment_id' => $lr, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Received Hub', 'type' => '2']);
-            // ==== end started
+                $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $lr)->latest('id')->first();
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
 
-        }
+                $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                // ==== end started ===//
+
+            }
             $response['success'] = true;
             $response['success_message'] = "Added successfully";
             $response['error'] = false;
