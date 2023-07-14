@@ -862,46 +862,20 @@ function row_click(row_id, job_id, url) {
 
                             else if (response.driver_app.lr_mode == 2) {
                                 //  ================DRIVER App TRAIL ====================== //
+                                var base_url = window.location.origin;
                                 var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
-                                    if (task.status == 'Created') {
-                                        cc +=
-                                            '<li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Out for Delivery </span></span></div></li><li><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Received</span></span></div></li><li><time class="cbp_tmtime" datetime=' +
+                                    console.log(task); 
+                                    if (task.status == 'Successful') {
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                    }else{
+                                        manual_img = '';
+                                    }
+                                    cc += '<li><time class="cbp_tmtime" datetime=' +
                                             task.create_at + '><span class="hidden">' + task
                                             .create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">Shipment Manifested </span>' +
-                                            response.driver_app.branch_name + '</span></div></li>';
-                                    } else {
-                                        if (task.status == 'Successful') {
-                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                                .create_at + '><span class="hidden">' + task
-                                                .create_at +
-                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div><span><span class="successful">Shipment Delivered</span></span></div></li>';
-                                        } else if(task.status == 'Assigned'){
-                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
-                                        cc += '<span><span class="successful" style="--statusColor: #cab627">' +
-                                            task.status +
-                                            '</span> to ' +
-                                            response.driver_app.driver_name +
-                                            '</span></div></li>';
-                                        }else if(task.status == 'Started'){
-                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                            .create_at + '><span class="hidden">' + task.create_at +
-                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful">'+task.status+' </span><a href="'+origin+'/track-vehicle/'+response.driver_app.id+'" target="_blank" class="trackLink">Track Link</a></span></div></li>';
-                                        } else {
-                                            cc += '<li><time class="cbp_tmtime" datetime=' + task
-                                                .create_at + '><span class="hidden">' + task
-                                                .create_at +
-                                                '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty">';
-                                            cc += '<span><span class="successful">' +
-                                                task.status +
-                                                '</span></span></div></li>';
-                                        }
-
-                                    }
-
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"> <span><span class="successful" style="--statusColor: #158f2a">' + task.desc + ' '+manual_img+'</span></span>' +
+                                            task.location + '</div></li>';
                                 });
                                 cc += '</ul>';
                                 var modal_html1 = cc;
