@@ -55,6 +55,7 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);   
 });
 
+Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
 
 
 
