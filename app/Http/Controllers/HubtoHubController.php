@@ -519,7 +519,7 @@ class HubtoHubController extends Controller
             $currentdate = $mytime->toDateTimeString();
 
             foreach ($lr_no as $c_id) {
-                ConsignmentNote::where('id', $c_id)->update(['hrs_status' => 3, 'route_branch_id' => $route_line]);
+                ConsignmentNote::where('id', $c_id)->update(['hrs_status' => 3]);
 
                 //=========== task assign========//
                 $respons2 = array('consignment_id' => $c_id, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
