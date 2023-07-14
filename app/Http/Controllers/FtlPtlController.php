@@ -114,9 +114,11 @@ class FtlPtlController extends Controller
             }
 
             $authuser = Auth::user();
+
             $cc = explode(',', $authuser->branch_id);
-            $branch_add = BranchAddress::get();
             $locations = Location::whereIn('id', $cc)->first();
+
+            $branch_add = BranchAddress::get();
 
             if (empty($request->vehicle_id)) {
                 $status = '2';
@@ -875,16 +877,28 @@ class FtlPtlController extends Controller
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
 
                     // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
                     // =================== task assign
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('consignment_id')->first();
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                    // ==== end started
+
+
+                    // =================== task assign
+                    $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons3);
                     $sts = json_encode($st);
 
                     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
@@ -892,34 +906,89 @@ class FtlPtlController extends Controller
                     $app_notify = $this->sendNotification($request->driver_id);
                 } else {
                     // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=> 'Order Placed','location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
+                    // =================== task assign
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
+                    // ==== end started
                 }
                 // if(!empty($request->driver_id)){
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
             } else {
                 // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=> 'Order Placed','location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
                 $respons_data = json_encode($respons);
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                 // ==== end create
+
+                // =================== task assign
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
+                // ==== end started
             }
         }else {
                 // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed', 'location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
                 $respons_data = json_encode($respons);
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                 // ==== end create
+
+                // =================== task assign
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
+                // ==== end started
+
+                // =================== task assign
+                $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons3);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                // ==== end started
+
             }
         }else{
              // task created
-             $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+             $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
              $respons_data = json_encode($respons);
              $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-             // ==== end create
+             // ==== end create === //
+              // =========== task assign ===== //
+              $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+              $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+              $st = json_decode($lastjob->response_data);
+              array_push($st, $respons2);
+              $sts = json_encode($st);
+
+              $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+              // ==== end started
+
         }
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
@@ -1253,6 +1322,7 @@ class FtlPtlController extends Controller
                     }
                 }
             }
+
 
             $url = $this->prefix . '/consignments';
             $response['success'] = true;

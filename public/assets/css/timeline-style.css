@@ -1,0 +1,484 @@
+@charset "UTF-8";
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 50vh;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 50vh;
+  background: #888;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+main {
+  min-height: min(100vh, 700px);
+  background-color: aliceblue;
+  padding: 1rem;
+}
+main .content {
+  max-width: 1100px;
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+main .content .deliveryStatus {
+  margin-bottom: 24px;
+}
+main .content .statusBlock, main .content .infoBlock {
+  flex: 1 1 400px;
+}
+main .content .statusBlock .deliveryStatus, main .content .statusBlock .trackingTimeline, main .content .infoBlock .deliveryStatus, main .content .infoBlock .trackingTimeline {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+}
+main .content .statusBlock .dateLine, main .content .infoBlock .dateLine {
+  margin-bottom: 10px;
+  font-weight: normal;
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+main .content .statusBlock .dateLine:has(svg), main .content .infoBlock .dateLine:has(svg) {
+  font-weight: 500;
+}
+main .content .statusBlock .dateBlock, main .content .infoBlock .dateBlock {
+  color: #444;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  gap: 0;
+}
+main .content .statusBlock .dateBlock .day, main .content .infoBlock .dateBlock .day {
+  font-weight: 600;
+  font-size: 24px;
+  display: inline;
+}
+main .content .statusBlock .dateBlock .month, main .content .infoBlock .dateBlock .month {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 10px;
+  display: inline;
+}
+main .content .statusBlock .dateBlock .date, main .content .infoBlock .dateBlock .date {
+  font-size: 100px;
+  line-height: 100px;
+  color: #f3ba0a;
+  font-weight: 500;
+  display: flex;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+main .content .statusBlock .dateBlock .date .year, main .content .infoBlock .dateBlock .date .year {
+  margin-bottom: 22px;
+  font-weight: 500;
+  font-size: 14px;
+  display: inline-block;
+  line-height: 0px;
+  color: #555;
+}
+main .content .statusBlock .statusHead, main .content .infoBlock .statusHead {
+  margin-top: 24px;
+  font-weight: 500;
+  color: #333;
+}
+main .content .statusBlock .status, main .content .infoBlock .status {
+  width: 100%;
+  font-size: 38px !important;
+  display: inline-flex;
+  align-items: center;
+}
+main .content .statusBlock .status.delivered, main .content .infoBlock .status.delivered {
+  color: #4ebb5b;
+}
+main .content .statusBlock .status.inTransit, main .content .infoBlock .status.inTransit {
+  color: orange;
+}
+main .content .statusBlock .status svg, main .content .infoBlock .status svg {
+  height: 32px;
+  width: 32px;
+  margin-right: 1rem;
+}
+main .content .statusBlock hr, main .content .infoBlock hr {
+  margin-block: 1.5rem;
+}
+main .content .statusBlock .trackingTimeline .trackingId, main .content .infoBlock .trackingTimeline .trackingId {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+main .content .statusBlock .trackingTimeline .trackingId span, main .content .infoBlock .trackingTimeline .trackingId span {
+  color: rgb(0, 132, 221);
+}
+main .content .statusBlock .trackingTimeline .timelineBlock, main .content .infoBlock .trackingTimeline .timelineBlock {
+  margin-top: 8px;
+  min-height: 130px;
+  padding-block: 1.5rem;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock:hover .timeline:hover, main .content .infoBlock .trackingTimeline .timelineBlock:hover .timeline:hover {
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock:hover .timeline:not(:hover), main .content .infoBlock .trackingTimeline .timelineBlock:hover .timeline:not(:hover) {
+  opacity: 0.7;
+  background-color: rgba(255, 242, 0, 0.0509803922);
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline, main .content .infoBlock .trackingTimeline .timelineBlock .timeline {
+  transition: all 240ms ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock {
+  width: 90px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 40px;
+  justify-content: flex-end;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp {
+  text-align: right;
+  text-transform: uppercase;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .date, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .date {
+  color: #444;
+  font-weight: 600;
+  font-size: 14px;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .time, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .time {
+  color: #737373;
+  font-size: 12px;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock .badge, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock .badge {
+  margin-top: 1rem;
+  z-index: 1;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  background: #444;
+  border: 3px solid white;
+  box-shadow: 0 0 2px #a8a8a8;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .timeBlock::after, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .timeBlock::after {
+  content: "";
+  width: 2px;
+  height: 100%;
+  position: absolute;
+  left: 81px;
+  top: 16px;
+  z-index: 0;
+  border-left: 2px dashed #444;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description {
+  text-transform: capitalize;
+  padding-bottom: 1rem;
+  font-size: 12px;
+  flex: 1;
+  color: #737373;
+  position: relative;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .activity span.heading, main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .location span.heading, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .activity span.heading, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .location span.heading {
+  color: #444;
+  font-weight: 600;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .activity, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .activity {
+  margin-bottom: 12px;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .trackLink, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .trackLink {
+  font-size: 12px;
+  font-weight: 500;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  text-decoration: none;
+  color: rgb(0, 132, 221);
+  border-radius: 50vh;
+  padding: 2px 12px;
+  box-shadow: 0 0 12px rgba(131, 131, 131, 0.3764705882);
+  background-color: #fff;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .imageBlock, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .imageBlock {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  gap: 16px;
+  width: 80%;
+  text-align: center;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline .description .imageBlock img, main .content .infoBlock .trackingTimeline .timelineBlock .timeline .description .imageBlock img {
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 8px;
+  height: 70px;
+  max-width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border: 1px solid #444;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock, main .content .infoBlock .trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock {
+  padding-bottom: 10px;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock::after, main .content .infoBlock .trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock::after {
+  content: "";
+  display: none;
+}
+main .content .statusBlock .trackingTimeline .timelineBlock .timeline:first-of-type .timeBlock .badge, main .content .infoBlock .trackingTimeline .timelineBlock .timeline:first-of-type .timeBlock .badge {
+  background: rgb(45, 169, 45);
+}
+main .content .statusBlock .orderBlock, main .content .infoBlock .orderBlock {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+main .content .statusBlock .orderBlock .detailLine, main .content .infoBlock .orderBlock .detailLine {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 12px;
+  color: #444;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+main .content .statusBlock .orderBlock .detailLine span:nth-child(1), main .content .infoBlock .orderBlock .detailLine span:nth-child(1) {
+  flex: 1;
+}
+main .content .statusBlock .orderBlock .detailLine span:nth-child(2), main .content .infoBlock .orderBlock .detailLine span:nth-child(2) {
+  flex: 2;
+  font-weight: normal;
+  color: #737373;
+}
+main .content .statusBlock .reviewBlock, main .content .infoBlock .reviewBlock {
+  position: sticky;
+  top: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  padding-bottom: 72px;
+}
+main .content .statusBlock .reviewBlock .dateLine, main .content .infoBlock .reviewBlock .dateLine {
+  font-weight: 500;
+}
+main .content .statusBlock .reviewBlock .rating, main .content .infoBlock .reviewBlock .rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+}
+main .content .statusBlock .reviewBlock .rating > input, main .content .infoBlock .reviewBlock .rating > input {
+  display: none;
+}
+main .content .statusBlock .reviewBlock .rating > input:checked ~ label:before, main .content .infoBlock .reviewBlock .rating > input:checked ~ label:before {
+  opacity: 1;
+}
+main .content .statusBlock .reviewBlock .rating > label, main .content .infoBlock .reviewBlock .rating > label {
+  position: relative;
+  width: 1em;
+  font-size: 50px;
+  font-weight: 300;
+  color: #ffd600;
+  cursor: pointer;
+}
+main .content .statusBlock .reviewBlock .rating > label::before, main .content .infoBlock .reviewBlock .rating > label::before {
+  content: "★";
+  position: absolute;
+  opacity: 0;
+}
+main .content .statusBlock .reviewBlock .rating > label:hover:before, main .content .statusBlock .reviewBlock .rating > label:hover ~ label:before, main .content .infoBlock .reviewBlock .rating > label:hover:before, main .content .infoBlock .reviewBlock .rating > label:hover ~ label:before {
+  opacity: 1 !important;
+}
+main .content .statusBlock .reviewBlock .rating:hover > input:checked ~ label:before, main .content .infoBlock .reviewBlock .rating:hover > input:checked ~ label:before {
+  opacity: 0.4;
+}
+main .content .statusBlock .reviewBlock textarea, main .content .infoBlock .reviewBlock textarea {
+  border-radius: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
+  background: #f2f2f2;
+  resize: none;
+  font-size: 12px;
+  color: #737373;
+}
+main .content .statusBlock .reviewBlock textarea:hover, main .content .statusBlock .reviewBlock textarea:focus, main .content .infoBlock .reviewBlock textarea:hover, main .content .infoBlock .reviewBlock textarea:focus {
+  border: none;
+  outline: none;
+}
+main .content .statusBlock .reviewBlock button, main .content .infoBlock .reviewBlock button {
+  margin-top: 8px;
+  height: 40px;
+  width: 110px;
+  border-radius: 12px;
+  cursor: pointer;
+  float: right;
+  clear: both;
+  border: none;
+  background-color: #f3ba0a;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 240ms ease-in-out;
+}
+main .content .statusBlock .reviewBlock button:hover:active, main .content .infoBlock .reviewBlock button:hover:active {
+  box-shadow: 0 0 0 0 #444;
+  transform: scale(0.96);
+}
+
+.trackingTimeline .trackingId {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+.trackingTimeline .trackingId span {
+  color: rgb(0, 132, 221);
+}
+.trackingTimeline .timelineBlock {
+  margin-top: 8px;
+  min-height: 130px;
+  padding-block: 1.5rem;
+}
+.trackingTimeline .timelineBlock:hover .timeline:hover {
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+.trackingTimeline .timelineBlock:hover .timeline:not(:hover) {
+  opacity: 0.7;
+  background-color: rgba(255, 242, 0, 0.0509803922);
+}
+.trackingTimeline .timelineBlock .timeline {
+  transition: all 240ms ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock {
+  width: 90px;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 40px;
+  justify-content: flex-end;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp {
+  text-align: right;
+  text-transform: uppercase;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .date {
+  color: #444;
+  font-weight: 600;
+  font-size: 14px;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock .timeStamp .time {
+  color: #737373;
+  font-size: 12px;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock .badge {
+  margin-top: 1rem;
+  z-index: 1;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  background: #444;
+  border: 3px solid white;
+  box-shadow: 0 0 2px #a8a8a8;
+}
+.trackingTimeline .timelineBlock .timeline .timeBlock::after {
+  content: "";
+  width: 2px;
+  height: 100%;
+  position: absolute;
+  left: 81px;
+  top: 16px;
+  z-index: 0;
+  border-left: 2px dashed #444;
+}
+.trackingTimeline .timelineBlock .timeline .description {
+  text-transform: capitalize;
+  padding-bottom: 1rem;
+  font-size: 12px;
+  flex: 1;
+  color: #737373;
+  position: relative;
+}
+.trackingTimeline .timelineBlock .timeline .description .activity span.heading, .trackingTimeline .timelineBlock .timeline .description .location span.heading {
+  color: #444;
+  font-weight: 600;
+}
+.trackingTimeline .timelineBlock .timeline .description .activity {
+  margin-bottom: 12px;
+}
+.trackingTimeline .timelineBlock .timeline .description .trackLink {
+  font-size: 12px;
+  font-weight: 500;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  text-decoration: none;
+  color: rgb(0, 132, 221);
+  border-radius: 50vh;
+  padding: 2px 12px;
+  box-shadow: 0 0 12px rgba(131, 131, 131, 0.3764705882);
+  background-color: #fff;
+}
+.trackingTimeline .timelineBlock .timeline .description .imageBlock {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  gap: 16px;
+  width: 80%;
+  text-align: center;
+}
+.trackingTimeline .timelineBlock .timeline .description .imageBlock img {
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 8px;
+  height: 70px;
+  max-width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border: 1px solid #444;
+}
+.trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock {
+  padding-bottom: 10px;
+}
+.trackingTimeline .timelineBlock .timeline:last-of-type .timeBlock::after {
+  content: "";
+  display: none;
+}
+.trackingTimeline .timelineBlock .timeline:first-of-type .timeBlock .badge {
+  background: rgb(45, 169, 45);
+}
+.badge:empty{
+  display: block !important;
+}
+@media only screen and (max-width: 600px) {
+  .description .location {
+    margin-bottom: 12px;
+  }
+  .description .trackLink {
+    position: relative !important;
+    right: auto !important;
+    top: auto !important;
+  }
+}/*# sourceMappingURL=style.css.map */

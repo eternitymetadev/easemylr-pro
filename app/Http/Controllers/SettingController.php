@@ -371,7 +371,6 @@ class SettingController extends Controller
      public function getRoute(Request $request)
      {
         $consioner_pin = Consigner::where('id', $request->consigner_id)->first();
-        
         $consignee_pin = Consignee::where('id', $request->consignee_id)->first();
 
         $startingPincode = $consioner_pin->postal_code;
