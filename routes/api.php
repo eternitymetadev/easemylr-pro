@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\API\Auth\TransactionSheetsController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ConsignmentController;
 
 /*
 
