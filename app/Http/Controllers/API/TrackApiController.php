@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\LastMilePartner;
 use App\Models\CarrierPartner;
 use App\Models\DriverPartner;
+use Validator;
 
 class TrackApiController extends Controller
 {
