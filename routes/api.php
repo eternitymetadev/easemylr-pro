@@ -50,8 +50,8 @@ Route::post('career', [ReportController::class, 'career']);
 Route::post('lastmile-partner', [TrackApiController::class, 'lastmilePartner']);
 Route::post('carrier-partner', [TrackApiController::class, 'carrierPartner']);
 Route::post('driver-partner', [TrackApiController::class, 'driverPartner']);
+Route::post('career', [TrackApiController::class, 'career']);
 Route::post('contact-us', [TrackApiController::class, 'contactUs']);
-Route::post('carrier', [TrackApiController::class, 'carrier']);
 Route::post('shipnow', [TrackApiController::class, 'shipnow']);
 
 

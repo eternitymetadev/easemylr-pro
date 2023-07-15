@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\LastMilePartner;
 use App\Models\CarrierPartner;
 use App\Models\DriverPartner;
+use App\Models\EfContactUs;
+use App\Models\EfCarrier;
+use App\Models\EfShipnow;
 use DB;
 use URL;
 use Helper;
@@ -304,7 +307,7 @@ class TrackApiController extends Controller
             }
             $addDriver['status'] = 1;
         
-            $saveDriver = DriverPartner::create($addDriver);
+            $saveDriver = EfContactUs::create($addDriver);
             if($saveDriver){
                 $data = '';
                 $message = "Driver created successfully";
@@ -325,7 +328,7 @@ class TrackApiController extends Controller
         return Helper::apiResponseSend($message,$data,$status,$errorCode);
     }
 
-    public function carrier(Request $request){
+    public function career(Request $request){
         try {
 
         }catch(Exception $e) {
