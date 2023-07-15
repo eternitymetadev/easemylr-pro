@@ -426,7 +426,7 @@ class TransactionSheetsController extends Controller
 
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
-            $respons2 = array('consignment_id' => $id, 'status' => 'Started', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $id, 'status' => 'Started','desc'=>'Started','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
             $st = json_decode($lastjob->response_data);
@@ -468,7 +468,7 @@ class TransactionSheetsController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
             // $currentdate = date("d-m-y h:i:sa");
-            $respons2 = array('consignment_id' => $id, 'status' => 'Acknowledge', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $id, 'status' => 'Acknowledge','desc'=>'Acknowledge','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
             $st = json_decode($lastjob->response_data);
@@ -714,7 +714,7 @@ class TransactionSheetsController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
             // $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array('consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>'', 'create_at' => $currentdate, 'type' => '1');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
             
