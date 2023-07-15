@@ -23,5 +23,8 @@ class CarrierPartner extends Model
         'typeOfShipment',
         'valueAddedServices',
         'workingYears',
+        'status',
+        'created_at',
+        'updated_at'
     ];
 }

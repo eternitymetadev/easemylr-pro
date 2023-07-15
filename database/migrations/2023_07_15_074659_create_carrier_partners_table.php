@@ -17,7 +17,7 @@ class CreateCarrierPartnersTable extends Migration
             $table->id();
             $table->string('areaOfDelivery');
             $table->string('company');
-            $table->string('companyAddress');
+            $table->text('companyAddress');
             $table->string('contactPerson');
             $table->string('email');
             $table->string('fleetSize');
