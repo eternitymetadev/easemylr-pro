@@ -14,7 +14,21 @@ class CreateLastMilePartnersTable extends Migration
     public function up()
     {
         Schema::create('last_mile_partners', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('company_name')->nullable();
+            $table->text('contact_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('company_add')->nullable();
+            $table->string('goods_type')->nullable();
+            $table->string('state')->nullable();
+            $table->string('volume')->nullable();
+            $table->text('delivery_frequency')->nullable();
+            $table->string('special_delivery')->nullable();
+            $table->string('expected_timeline')->nullable();
+            $table->string('delivery_type')->nullable();
+            $table->string('reference')->nullable();
+            $table->tinyinteger('status')->default(0)->comment('0=>not active 1=>active');
             $table->timestamps();
         });
     }

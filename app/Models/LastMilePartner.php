@@ -9,6 +9,6 @@ class LastMilePartner extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'company_name', 'company_add', 'contact_name', 'deliveryFrequency', 'deliveryType', 'email', 'expectedTimeline', 'goodsType', 'phone','reference','specialDeliveryConsideration','volume','workingState','status','created_at', 'updated_at'
+        'company_name', 'contact_name', 'email', 'phone', 'company_add', 'goods_type', 'state', 'volume','delivery_frequency', 'special_delivery','expected_timeline', 'delivery_type', 'reference','status','created_at', 'updated_at'
     ];
 }
