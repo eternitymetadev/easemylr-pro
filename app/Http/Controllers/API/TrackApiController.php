@@ -331,6 +331,8 @@ class TrackApiController extends Controller
     public function career(Request $request){
         $message = '';
         $data = '';
+        $status = '';
+        $errorCode = '';
         try {
 
         }catch(\Exception $e) {
