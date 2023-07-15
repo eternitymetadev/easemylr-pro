@@ -46,7 +46,6 @@ Route::post('store-coordinates/{id}', 'App\Http\Controllers\API\Auth\Transaction
 
 });
 
-Route::post('career', [ReportController::class, 'career']);
 Route::post('lastmile-partner', [TrackApiController::class, 'lastmilePartner']);
 Route::post('carrier-partner', [TrackApiController::class, 'carrierPartner']);
 Route::post('driver-partner', [TrackApiController::class, 'driverPartner']);
