@@ -4647,8 +4647,11 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
         $app_trail = json_decode($driver_app->trail, true);
+        $app_trail = array_filter($app_trail, function($item) {
+            return $item['type'] == '2';
+        });
         // ======img
-
+    // echo "<pre>"; print_r($newArray); die;
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
 
         if (!empty($job->trail)) {
@@ -4702,6 +4705,7 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
             if($driver_app){
+
                 $app_trail = json_decode($driver_app->trail, true);
 
                 if ($driver_app) {

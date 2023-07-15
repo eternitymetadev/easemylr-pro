@@ -18,6 +18,7 @@ use Config;
 use Image;
 use Storage;
 use Auth;
+use Session;
 
 class DriverController extends Controller
 {
