@@ -8,7 +8,7 @@ use App\Models\LastMilePartner;
 use App\Models\CarrierPartner;
 use App\Models\DriverPartner;
 use App\Models\EfContactUs;
-use App\Models\EfCarrier;
+use App\Models\EfCareer;
 use App\Models\EfShipnow;
 use DB;
 use URL;
@@ -275,39 +275,38 @@ class TrackApiController extends Controller
             }
             $authuser = Auth::user();
             
-            if (!empty($request->name)) {
-                $addDriver['contact_name'] = $request->name;
+            if (!empty($request->fullName)) {
+                $addDriver['fullName'] = $request->fullName;
             }
-            if (!empty($request->address)) {
-                $addDriver['company_add'] = $request->address;
+
+            if (!empty($request->companyName)) {
+                $addContact['companyName'] = $request->companyName;
             }
-            if (!empty($request->driving_record)) {
-                $addDriver['exp_details'] = $request->driving_record;
+            if (!empty($request->companyWebsite)) {
+                $addContact['companyWebsite'] = $request->companyWebsite;
             }
-            if (!empty($request->exp_details)) {
-                $addDriver['exp_details'] = $request->exp_details;
+            if (!empty($request->connectionPreference)) {
+                $addContact['connectionPreference'] = $request->connectionPreference;
             }
-            if (!empty($request->is_available)) {
-                $addDriver['is_available'] = $request->is_available;
+            if (!empty($request->consent)) {
+                $addContact['consent'] = $request->consent;
             }
-            if (!empty($request->is_compliant)) {
-                $addDriver['is_compliant'] = $request->is_compliant;
+            if (!empty($request->email)) {
+                $addContact['email'] = $request->email;
             }
-            if (!empty($request->is_flexible)) {
-                $addDriver['is_flexible'] = $request->is_flexible;
+            if (!empty($request->phone)) {
+                $addContact['phone'] = $request->phone;
             }
-            if (!empty($request->preferred_state)) {
-                $addDriver['state'] = $request->preferred_state;
+            if (!empty($request->serviceType)) {
+                $addContact['serviceType'] = $request->serviceType;
             }
-            if (!empty($request->valid_license)) {
-                $addDriver['valid_license'] = $request->valid_license;
+            if (!empty($request->state)) {
+                $addContact['state'] = $request->state;
             }
-            if (!empty($request->working_years)) {
-                $addDriver['working_years'] = $request->working_years;
-            }
-            $addDriver['status'] = 1;
+
+            $addContact['status'] = 1;
         
-            $saveDriver = EfContactUs::create($addDriver);
+            $saveDriver = EfContactUs::create($addContact);
             if($saveDriver){
                 $data = '';
                 $message = "Driver created successfully";
@@ -329,11 +328,56 @@ class TrackApiController extends Controller
     }
 
     public function career(Request $request){
-        $message = '';
-        $data = '';
-        $status = '';
-        $errorCode = '';
         try {
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //'name' => 'required|unique:categories',
+            );
+            $validator = Validator::make($request->all(),$rules);
+            
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['status']      = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+
+                return response()->json($response);
+            }
+            $authuser = Auth::user();
+            
+            if (!empty($request->fullName)) {
+                $addCareer['contact_name'] = $request->fullName;
+            }
+            if (!empty($request->email)) {
+                $addCareer['email'] = $request->email;
+            }
+            if (!empty($request->phone)) {
+                $addCareer['phone'] = $request->phone;
+            }
+            if (!empty($request->education)) {
+                $addCareer['education'] = $request->education;
+            }
+            if (!empty($request->location)) {
+                $addCareer['company_add'] = $request->location;
+            }
+            // if (!empty($request->cv)) {
+            //     $addCareer['cv'] = $request->cv;
+            // }
+            $addCareer['status'] = 1;
+        
+            $saveCareer = EfShipnow::create($addCareer);
+            if($saveCareer){
+                $data = '';
+                $message = "Career created successfully";
+                $status = true;
+                $errorCode = 200;
+            }else{
+                $data = $addCareer;
+                $message = "Invalid Record";
+                $status = false;
+                $errorCode = 402;
+            }
 
         }catch(\Exception $e) {
             $data = '';
@@ -346,7 +390,47 @@ class TrackApiController extends Controller
 
     public function shipnow(Request $request){
         try {
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //'name' => 'required|unique:categories',
+            );
+            $validator = Validator::make($request->all(),$rules);
+            
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['status']      = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
 
+                return response()->json($response);
+            }
+            $authuser = Auth::user();
+            
+            if (!empty($request->pickUp)) {
+                $addShipnow['pickUp'] = $request->pickUp;
+            }
+            if (!empty($request->drop)) {
+                $addShipnow['drop'] = $request->drop;
+            }
+            if (!empty($request->phone)) {
+                $addShipnow['phone'] = $request->phone;
+            }
+            
+            $addShipnow['status'] = 1;
+        
+            $saveShipnow = EfShipnow::create($addShipnow);
+            if($saveShipnow){
+                $data = '';
+                $message = "Shipnow Us created successfully";
+                $status = true;
+                $errorCode = 200;
+            }else{
+                $data = $addShipnow;
+                $message = "Invalid Record";
+                $status = false;
+                $errorCode = 402;
+            }
         }catch(Exception $e) {
             $data = '';
             $message = $e->message;

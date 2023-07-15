@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EfContactUs extends Model
+class EfCareer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'companyName',
-        'companyWebsite',
-        'connectionPreference',
-        'consent',
-        'email',
         'fullName',
+        'email',
         'phone',
-        'serviceType',
-        'state',
+        'education',
+        'location',
+        'cv',
         'status',
         'created_at',
         'updated_at'
     ];
+
 }
