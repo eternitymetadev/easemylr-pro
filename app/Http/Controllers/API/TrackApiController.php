@@ -333,7 +333,7 @@ class TrackApiController extends Controller
 
         }catch(Exception $e) {
             $data = '';
-            $message = $e->message;
+            $message = $e->getMessage();
             $status = false;
             $errorCode = 500;
         }
