@@ -866,8 +866,16 @@ function row_click(row_id, job_id, url) {
                                 var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
                                     console.log(task); 
+                                    var base_url = window.location.origin;
+                                //================Manual LR TRAIL =================== //
+                                var cc = '<ul class="cbp_tmtimeline">';
+                                $.each(array_trail, function(index, task) {
+                                    console.log(task); 
                                     if (task.status == 'Successful') {
-                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                        manual_img = '<li><time class="cbp_tmtime" datetime=' + task
+                                            .create_at + '><span class="hidden">' + task.create_at +
+                                            '</span></time><div class="cbp_tmicon"><i class="zmdi zmdi-account"></i></div><div class="cbp_tmlabel empty"><span><span class="successful" style="--statusColor: #158f2a">Shipment Delivered </span></span><div class="append-modal-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"></div></div></li>';
+                                    
                                     }else{
                                         manual_img = '';
                                     }
