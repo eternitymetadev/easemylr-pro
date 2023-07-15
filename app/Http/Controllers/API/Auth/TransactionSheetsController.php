@@ -514,7 +514,6 @@ class TransactionSheetsController extends Controller
     public function destroy($id)
     {
         try {
-
             $res = TransactionSheets::find($id)->delete();
             if ($res) {
                 return response([
