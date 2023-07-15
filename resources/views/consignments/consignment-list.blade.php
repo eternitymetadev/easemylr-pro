@@ -939,7 +939,7 @@ function row_click(row_id, job_id, url) {
                                 var modal_html1 = cc;
                                 $('.append-modal').html(modal_html1);
                             } else if (response.driver_app.lr_mode == 2) {
-                                //  ================DRIVER App TRAIL ====================== //
+                               //  ================DRIVER App TRAIL ====================== //
                                 var base_url = window.location.origin;
                                 //================Manual LR TRAIL =================== //
                                 var cc = '<ul class="cbp_tmtimeline">';
@@ -962,6 +962,42 @@ function row_click(row_id, job_id, url) {
                                 cc += '</ul>';
                                 var modal_html1 = cc;
                                 $('.append-modal').html(modal_html1);
+
+                                var sssss = ``;
+
+                                $.each(response.app_media, function(index, media) {
+
+                                    if (media.type == 'pod') {
+                                        sssss += `<div class="timelineImagesBlock" style="flex: 3">
+                                        <p>POD</p>
+                                        <img src="` + media.pod_img + `"
+                                            class="viewImageInNewTab" data-toggle="modal"
+                                            data-target="#exampleModal" style="width: 100%;"/>
+                                    </div>`;
+                                                } else if (media.type == 'sign') {
+                                                    sssss += `<div class="timelineImagesBlock" style="flex: 1">
+                                        <p>Sign</p>
+                                        <img src="` + media.pod_img + `"
+                                            class="viewImageInNewTab" data-toggle="modal"
+                                            data-target="#exampleModal" style="width: 100%;"/>
+
+                                    </div>`;
+                                                } else if (media.type == 'product_images') {
+                                                    sssss += `<div class="timelineImagesBlock" style="flex: 2">
+                                        <p>Material</p>
+                                        <img src="` + media.pod_img + `"
+                                            class="viewImageInNewTab" data-toggle="modal"
+                                            data-target="#exampleModal" style="width: 100%;"/>
+                                    </div>`;
+                                    }
+                                });
+                                $('.append-modal-images').html(sssss);
+
+                            } else {
+                                var modal_html1 = 'No Data Available';
+                                $('.append-modal').html(modal_html1);
+                            }
+                        
 
                                 var sssss = ``;
 
