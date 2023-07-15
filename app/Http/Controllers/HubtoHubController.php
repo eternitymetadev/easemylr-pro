@@ -257,7 +257,9 @@ class HubtoHubController extends Controller
         //  echo'<pre>'; print_r($request->all()); die;
         $consignerId = $request->lr_id;
         $cc = explode(',', $consignerId);
-        $location = Location::whereIn('id', $cc)->first();
+        $authuser = Auth::user();
+        $loc = explode(',', $authuser->branch_id);
+        $location = Location::whereIn('id', $loc)->first();
         
         $addvechileNo = $request->vehicle_id;
         $adddriverId = $request->driver_id;
