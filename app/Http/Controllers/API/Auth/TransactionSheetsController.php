@@ -9,6 +9,7 @@ use App\Models\Consignee;
 use App\Models\ConsignmentNote;
 use App\Models\Job;
 use App\Models\TransactionSheet;
+use App\Models\Zone;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
