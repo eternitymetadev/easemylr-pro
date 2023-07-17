@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Zone;
+use App\Models\EfDeliveryrating;
 use Auth;
 use Carbon\Carbon;
 use Config;
