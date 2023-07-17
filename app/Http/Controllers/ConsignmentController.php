@@ -4704,7 +4704,7 @@ class ConsignmentController extends Controller
             })->first();
             if($driver_app){
 
-                $app_trail = json_decode($driver_app->trail, true);
+                // $app_trail = json_decode($driver_app->trail, true);
 
 
                 $app_trail = json_decode($app_trail, true);
