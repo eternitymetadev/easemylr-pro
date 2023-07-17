@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCarrierPartnersTable extends Migration
+class CreateEfCarrierPartnersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCarrierPartnersTable extends Migration
      */
     public function up()
     {
-        Schema::create('carrier_partners', function (Blueprint $table) {
+        Schema::create('ef_carrier_partners', function (Blueprint $table) {
             $table->id();
             $table->string('areaOfDelivery');
             $table->string('company');
@@ -21,13 +21,13 @@ class CreateCarrierPartnersTable extends Migration
             $table->string('contactPerson');
             $table->string('email');
             $table->string('fleetSize');
-            $table->string('isCompliant');
-            $table->string('leaseVehicle');
+            $table->tinyinteger('isCompliant')->default(0)->comment('0=>no 1=>yes');
+            $table->tinyinteger('leaseVehicle')->default(0)->comment('0=>no 1=>yes');
             $table->string('phone');
             $table->string('reference');
-            $table->string('specializedTransportation');
+            $table->tinyinteger('specializedTransportation')->default(0)->comment('0=>no 1=>yes');
             $table->string('typeOfShipment');
-            $table->string('valueAddedServices');
+            $table->tinyinteger('valueAddedServices')->default(0)->comment('0=>no 1=>yes');
             $table->string('workingYears');
             $table->tinyinteger('status')->default(0)->comment('0=>not active 1=>active');
             $table->timestamps();
@@ -41,6 +41,6 @@ class CreateCarrierPartnersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('carrier_partners');
+        Schema::dropIfExists('ef_carrier_partners');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDriverPartnersTable extends Migration
+class CreateEfDriverPartnersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateDriverPartnersTable extends Migration
      */
     public function up()
     {
-        Schema::create('driver_partners', function (Blueprint $table) {
+        Schema::create('ef_driver_partners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email');
@@ -40,6 +40,6 @@ class CreateDriverPartnersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('driver_partners');
+        Schema::dropIfExists('ef_driver_partners');
     }
 }

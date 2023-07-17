@@ -712,8 +712,10 @@ class TransactionSheetsController extends Controller
             
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
+
+            
             // $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>'', 'create_at' => $currentdate, 'type' => '1');
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>'', 'create_at' => $currentdate, 'type' => '2');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
             

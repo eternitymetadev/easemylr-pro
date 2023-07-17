@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\LastMilePartner;
-use App\Models\CarrierPartner;
-use App\Models\DriverPartner;
+use App\Models\EfLastMilePartner;
+use App\Models\EfCarrierPartner;
+use App\Models\EfDriverPartner;
 use App\Models\EfContactUs;
 use App\Models\EfCareer;
 use App\Models\EfShipnow;
@@ -20,6 +20,7 @@ use Auth;
 class TrackApiController extends Controller
 {
     public function lastmilePartner(Request $request){
+        // return $request->all();
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -79,7 +80,7 @@ class TrackApiController extends Controller
             }
             $addmile['status'] = 1;
         
-            $saveLastmile = LastMilePartner::create($addmile);
+            $saveLastmile = EfLastMilePartner::create($addmile);
             if($saveLastmile){
                 $data = '';
                 $message = "Last Mile created successfully";
@@ -101,6 +102,7 @@ class TrackApiController extends Controller
     }
 
     public function carrierPartner(Request $request){
+        return $request->all();
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -163,7 +165,7 @@ class TrackApiController extends Controller
             }
             $addCarrier['status'] = 1;
         
-            $saveCarrier = CarrierPartner::create($addCarrier);
+            $saveCarrier = EfCarrierPartner::create($addCarrier);
             if($saveCarrier){
                 $data = '';
                 $message = "Carrier created successfully";
@@ -235,7 +237,7 @@ class TrackApiController extends Controller
             }
             $addDriver['status'] = 1;
         
-            $saveDriver = DriverPartner::create($addDriver);
+            $saveDriver = EfDriverPartner::create($addDriver);
             if($saveDriver){
                 $data = '';
                 $message = "Driver created successfully";
