@@ -708,7 +708,7 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
-            $get_conee = Consignee::where($update_status->consignee_id)->first();
+            $get_conee = Consignee::where('id',$update_status->consignee_id)->first();
             $get_zone = Zone::where('postal_code',$get_conee->postal_code)->first();
 
             if(isset($get_zone)){
