@@ -4707,12 +4707,11 @@ class ConsignmentController extends Controller
                 $app_trail = json_decode($driver_app->trail, true);
                 $result = [];
                 foreach($app_trail as $trail){
-                if(in_array($trail['type'], '2')){
+                if(in_array($trail['type'], 2)){
                     $result[] = $trail;
                 }
                 }
                 // echo "<pre>"; print_r($result);die;
-
 
                 if ($driver_app) {
                     return response([
