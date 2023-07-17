@@ -4705,16 +4705,19 @@ class ConsignmentController extends Controller
             if($driver_app){
 
                 $app_trail = json_decode($driver_app->trail, true);
-                $app_trail = array_filter($app_trail, function($item) {
-                    return $item['type'] == '2';
-                });
-                // echo "<pre>"; print_r($app_trail);die;
+                $result = [];
+                foreach($app_trail as $trail){
+                if(in_array($trail['type'], '2')){
+                    $result[] = $trail;
+                }
+                }
+                // echo "<pre>"; print_r($result);die;
 
 
                 if ($driver_app) {
                     return response([
                         'data' => $driver_app,
-                        'driver_trail' => $app_trail,
+                        'driver_trail' => $result,
                         'status' => 'success',
                         'code' => 1,
                         'message' => 'Data fetched successfully!',
