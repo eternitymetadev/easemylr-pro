@@ -15,19 +15,19 @@ class CreateEfDriverPartnersTable extends Migration
     {
         Schema::create('ef_driver_partners', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->text('address');
-            $table->string('driving_record');
-            $table->text('exp_details');
-            $table->string('is_available');
-            $table->string('is_compliant');
-            $table->string('is_flexible');
-            $table->string('preferred_state');
-            $table->string('reference');
-            $table->string('valid_license');
-            $table->string('working_years');
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('driving_record')->nullable();
+            $table->text('exp_details')->nullable();
+            $table->string('is_available')->nullable();
+            $table->string('is_compliant')->nullable();
+            $table->string('is_flexible')->nullable();
+            $table->string('preferred_state')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('valid_license')->nullable();
+            $table->string('working_years')->nullable();
             $table->tinyinteger('status')->default(0)->comment('0=>not active 1=>active');
             $table->timestamps();
         });

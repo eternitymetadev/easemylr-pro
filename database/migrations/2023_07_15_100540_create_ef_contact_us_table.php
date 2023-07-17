@@ -15,15 +15,15 @@ class CreateEfContactUsTable extends Migration
     {
         Schema::create('ef_contact_us', function (Blueprint $table) {
             $table->id();
-            $table->string('companyName');
+            $table->string('companyName')->nullable();
             $table->string('companyWebsite')->nullable();
             $table->string('connectionPreference')->nullable();
             $table->boolean('consent')->default(false);
-            $table->string('email');
-            $table->string('fullName');
-            $table->string('phone');
-            $table->string('serviceType');
-            $table->string('state');
+            $table->string('email')->nullable();
+            $table->string('fullName')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('serviceType')->nullable();
+            $table->string('state')->nullable();
             $table->tinyinteger('status')->default(0)->comment('0=>not active 1=>active');
             $table->timestamps();
         });

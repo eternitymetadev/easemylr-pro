@@ -10,6 +10,7 @@ use App\Models\EfDriverPartner;
 use App\Models\EfContactUs;
 use App\Models\EfCareer;
 use App\Models\EfShipnow;
+use App\Models\EfDeliveryRating;
 use DB;
 use URL;
 use Helper;
@@ -429,6 +430,58 @@ class TrackApiController extends Controller
                 $errorCode = 200;
             }else{
                 $data = $addShipnow;
+                $message = "Invalid Record";
+                $status = false;
+                $errorCode = 402;
+            }
+        }catch(Exception $e) {
+            $data = '';
+            $message = $e->message;
+            $status = false;
+            $errorCode = 500;
+        }
+        return Helper::apiResponseSend($message,$data,$status,$errorCode);
+    }
+
+    public function deliveryRating(Request $request){
+        try {
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                //'name' => 'required|unique:categories',
+            );
+            $validator = Validator::make($request->all(),$rules);
+            
+            if($validator->fails())
+            {
+                $errors                  = $validator->errors();
+                $response['status']      = false;
+                $response['formErrors']  = true;
+                $response['errors']      = $errors;
+
+                return response()->json($response);
+            }
+            $authuser = Auth::user();
+            
+            if (!empty($request->rating)) {
+                $addRating['rating'] = $request->rating;
+            }
+            if (!empty($request->feedback)) {
+                $addRating['feedback'] = $request->feedback;
+            }
+            if (!empty($request->lr_id)) {
+                $addRating['lr_id'] = $request->lr_id;
+            }
+            
+            $addRating['status'] = 1;
+        
+            $saveRating = EfDeliveryRating::create($addRating);
+            if($saveRating){
+                $data = '';
+                $message = "Rating Us created successfully";
+                $status = true;
+                $errorCode = 200;
+            }else{
+                $data = $addRating;
                 $message = "Invalid Record";
                 $status = false;
                 $errorCode = 402;

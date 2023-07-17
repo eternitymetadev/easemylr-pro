@@ -15,7 +15,7 @@ class CreateEfShipnowsTable extends Migration
     {
         Schema::create('ef_shipnows', function (Blueprint $table) {
             $table->id();
-            $table->string('pickUp');
+            $table->string('pickUp')->nullable();
             $table->string('drop')->nullable();
             $table->string('phone')->nullable();
             $table->tinyinteger('status')->default(0)->comment('0=>not active 1=>active');

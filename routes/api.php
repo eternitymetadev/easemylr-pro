@@ -52,6 +52,7 @@ Route::post('driver-partner', [TrackApiController::class, 'driverPartner']);
 Route::post('career', [TrackApiController::class, 'career']);
 Route::post('contact-us', [TrackApiController::class, 'contactUs']);
 Route::post('shipnow', [TrackApiController::class, 'shipnow']);
+Route::post('delivery-rating', [TrackApiController::class, 'deliveryRating']);
 
 
 Route::group([
