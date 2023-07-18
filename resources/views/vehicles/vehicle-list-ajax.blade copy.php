@@ -26,14 +26,59 @@
                 <td>{{ $value->make ?? "-" }}</td>
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
                 <td>{{ $value->mfg ?? "-" }}</td>
-                <?php if($value->rc_image){ ?>
-                <td><a href="{{url("/storage/images/vehicle_rc_images/$value->rc_image")}}" target="_blank">view</a></td>
-                <?php }else{ ?>
-                    <td>-</td>
-                <?php } ?>
-                
+                <?php
+                if($value->rc_image == null){
+                    $rc_image = '-';
+                }else{
+                    $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                    $img_url = $value->rc_image;
+                    if($img_url != '' || $img_url != null){
+                        
+                        $explode_url = explode("/",$img_url);
+                        if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                            $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                        }else{
+                            $img_url = '';
+                        }
+                        if($chk_url == $img_url){
+                            $rc_image = $value->rc_image;
+                        }else{
+                            $rc_image = $chk_url.'/'.$value->rc_image;
+                        }
+                    }else{
+                        $rc_image = '';
+                    }
+                }
+                 ?>
+                @if($value->rc_image)
+                <td><a href="{{$rc_image}}" target="_blank">view</a></td>
+                @else
+                <td></td>
+                @endif
+                <?php
+                if($value->second_rc_image == null){
+                    $second_rc_image = '-';
+                }else{
+                    $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                    $img_url = $value->second_rc_image;
+                    if($img_url != '' || $img_url != null){
+                        $explode_url = explode("/",$img_url);
+                        if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                            $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                        }else{
+                            $img_url = '';
+                        }
+                        if($chk_url == $img_url){
+                            $second_rc_image = $value->second_rc_image;
+                        }else{
+                            $second_rc_image = $chk_url.'/'.$value->second_rc_image;
+                        }
+                    }else{
+                        $second_rc_image = '';
+                    }
+                } ?>
                 @if($value->second_rc_image)
-                <td> <a href="{{url("/storage/images/vehicle_rc_images/$value->second_rc_image")}}" target="_blank">view</a></td>
+                <td> <a href="{{$value->second_rc_image}}" target="_blank">view</a></td>
                 @else
                 <td></td>
                 @endif</td>
