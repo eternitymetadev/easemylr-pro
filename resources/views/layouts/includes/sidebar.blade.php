@@ -750,8 +750,7 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/bulk-import')}}"> Import Data </a>
             </li>
-            <?php if($authuser->role_id == 1 || $authuser->role_id == 5){ 
-                if($authuser->role_id == 1){?>
+            <?php if($authuser->role_id == 1 || $authuser->role_id == 5){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}">Company Setup </a>
             </li>
@@ -761,14 +760,13 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/locations')}}">Branches </a>
             </li>
-            <?php } if($authuser->role_id == 5){?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'reginal-clients'}}"> Regional Client </a>
             </li>
-            <?php }}?>
+            <?php }?>
 
         </ul>
     </li>
