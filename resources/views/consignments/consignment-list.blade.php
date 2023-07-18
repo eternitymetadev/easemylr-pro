@@ -729,7 +729,7 @@ function row_click(row_id, job_id, url) {
     var job_id = job_id;
     var lr_id = row_id;
 
-    var url = url;
+    var url = url; 
     var origin  = window.location.origin;
     jQuery.ajax({
         url: url,
@@ -1032,6 +1032,8 @@ function row_click(row_id, job_id, url) {
 var map;
 
 function initMap(response, row_id) {
+    console.log(response.cnr_pincode);
+    console.log(response.cne_pincode);
     var map = new google.maps.Map(document.getElementById('map-' + row_id), {
         zoom: 8,
         center: 'Changigarh',

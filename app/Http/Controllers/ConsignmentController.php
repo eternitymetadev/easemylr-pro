@@ -4676,8 +4676,8 @@ class ConsignmentController extends Controller
             $response['job_data'] = '';
             $response['job_id'] = '';
             $response['delivery_status'] = $job->delivery_status;
-            $response['cnr_pincode'] = $job->cnr_pincode;
-            $response['cne_pincode'] = $job->cne_pincode;
+            $response['cnr_pincode'] = $driver_app->cnr_pincode;
+            $response['cne_pincode'] = $driver_app->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
             $response['driver_trail'] = $app_trail;
             $response['app_media'] = $app_media;
