@@ -9,6 +9,7 @@ use App\Models\Consignee;
 use App\Models\ConsignmentNote;
 use App\Models\Job;
 use App\Models\TransactionSheet;
+use App\Models\Zone;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -707,13 +708,22 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
+            $get_conee = Consignee::where('id',$update_status->consignee_id)->first();
+            $get_zone = Zone::where('postal_code',$get_conee->postal_code)->first();
+
+            if(isset($get_zone)){
+                $cnee_district = $get_zone->district;
+            }else{
+                $cnee_district = '';
+            }
 
             $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
             
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
+            
             // $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>'', 'create_at' => $currentdate, 'type' => '1');
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>$cnee_district, 'create_at' => $currentdate, 'type' => '2');
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
             $st = json_decode($lastjob->response_data);
             

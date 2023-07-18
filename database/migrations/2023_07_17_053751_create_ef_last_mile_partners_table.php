@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLastMilePartnersTable extends Migration
+class CreateEfLastMilePartnersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateLastMilePartnersTable extends Migration
      */
     public function up()
     {
-        Schema::create('last_mile_partners', function (Blueprint $table) {
+        Schema::create('ef_last_mile_partners', function (Blueprint $table) {
             $table->increments('id');
             $table->string('company_name')->nullable();
             $table->text('contact_name')->nullable();
@@ -24,7 +24,7 @@ class CreateLastMilePartnersTable extends Migration
             $table->string('state')->nullable();
             $table->string('volume')->nullable();
             $table->text('delivery_frequency')->nullable();
-            $table->string('special_delivery')->nullable();
+            $table->tinyinteger('special_delivery')->default(0)->comment('0=>no 1=>yes');
             $table->string('expected_timeline')->nullable();
             $table->string('delivery_type')->nullable();
             $table->string('reference')->nullable();
@@ -40,6 +40,6 @@ class CreateLastMilePartnersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('last_mile_partners');
+        Schema::dropIfExists('ef_last_mile_partners');
     }
 }

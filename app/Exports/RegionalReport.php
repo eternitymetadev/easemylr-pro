@@ -65,18 +65,26 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
+                // ageing formula = deliverydate - createdate
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->delivery_date);
-                $tat = ($end_date - $start_date)/60/60/24;
+                $age_diff = ($end_date - $start_date)/60/60/24;
 
-                if(empty($consignment->delivery_date)){
-                    $tatday = '-';
+                if($age_diff < 0){
+                    $ageing_day = '-';
                 }else{
-                    if($tat == 0){
-                        $tatday = '0';
-                    }else{
-                        $tatday = $tat;
-                    }
+                    $ageing_day = $age_diff;
+                }
+
+                // tat formula = edd - createdate
+                $start_date = strtotime($consignment->consignment_date);
+                $end_date = strtotime($consignment->edd);
+                $tatday = ($end_date - $start_date)/60/60/24;
+
+                if($tatday < 0){
+                    $tat_day = '-';
+                }else{
+                    $tat_day = $tatday;
                 }
                 
                 if(!empty($consignment->consignment_date )){
@@ -100,7 +108,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $drs = '-';
                 }
-                
+
                 
                 $arr[] = [
                     'consignment_id'      => @$consignment->id,
@@ -115,10 +123,11 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,
-                    'tat'                 => $tatday,
+                    'tat'                 => $tat_day,
                     'payment_type'        => @$consignment->payment_type,
                     'dispatch_date'       => @$consignment->consignment_date,
                     'delivery_status'     => @$consignment->delivery_status,
+                    'ageing'              => @$ageing_day,
                     'delivery_date'       => @$consignment->delivery_date,
                     'issue'               => '',
                 ];
@@ -130,7 +139,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
     public function headings(): array
     {
         return [
-            'LR No',
+            'LR Number',
             'LR Date',
             'Regional Client',
             'Consigner',
@@ -139,13 +148,14 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
             'Consignee Name',
             'Consignee District', 
             'Consignee PinCode',
-            'Boxes',
+            'Number of Box',
             'Net Weight',
             'Gross Weight',
-            'Expected Tat',
+            'Expected TAT',
             'Payment Type',
             'Dispatch Date',
             'Delivery Status',
+            'Ageing',
             'Delivery Date',
             'Issue',        
         ];

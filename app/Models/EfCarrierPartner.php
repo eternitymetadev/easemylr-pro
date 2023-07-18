@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CarrierPartner extends Model
+class EfCarrierPartner extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -23,5 +23,8 @@ class CarrierPartner extends Model
         'typeOfShipment',
         'valueAddedServices',
         'workingYears',
+        'status',
+        'created_at',
+        'updated_at'
     ];
 }

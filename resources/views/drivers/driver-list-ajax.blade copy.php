@@ -13,30 +13,46 @@
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
-
             @if(count($drivers)>0)
             @foreach($drivers as $value)
+
             <tr>
                 <td>{{ $value->name ?? "-" }}</td>
                 <td>{{ $value->phone ?? "-" }}</td>
                 <!-- <td>{{ Helper::ShowDayMonthYear($value->regndate) ?? "-" }}</td> -->
                 <td>{{ $value->license_number ?? "-" }}</td>
-                <?php if($value->license_image){
-                    ?>
-                {{-- <td><a href=URL::to("/storage/images/driverlicense_images/".$value->license_image) target="_blank">view</a></td> --}}
-               
 
-                <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td>
-                <?php }else{?>
-                    <td>-</td>
-                <?php }?>
-                
+                <td><a href="'.URL::to('/storage/images/driverlicense_images/'.$data->license_image).' " target="_blank">view</a></td>
 
-                <?php if($value->access_status == 0){
-                        $access_status = 'Not Enabled';
-                    }else{
-                        $access_status = 'Enabled';
-                    } ?>
+
+
+               <?php if($value->license_image == null){?>
+                            <td>-</td>
+                        <?php }else{
+                            $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
+                            $img_url = $value->license_image;
+                            if($img_url != '' || $img_url != null){
+                                $explode_url = explode("/",$img_url);
+                                if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
+                                    $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                                }else{
+                                    $img_url = '';
+                                }
+                                
+                                if($chk_url == $img_url){?>
+                                    <td><a href={{$value->license_image}} target="_blank">view</a></td>
+                                <?php }else{?>
+                                    <td><a href={{$chk_url.'/'.$value->license_image}} target="_blank">view</a></td>
+                                    <?php }
+                            }else{?>
+                                <td>-</td>
+                                <?php }
+                            }?>
+                   <?php if($value->access_status == 0){
+                            $access_status = 'Not Enabled';
+                        }else{
+                            $access_status = 'Enabled';
+                        } ?>
                 <td>{{ $access_status ?? "-" }}</td>
                 <td>{{ $value->driver_password ?? "-" }}</td>
                 <?php if($value->branch_id){
