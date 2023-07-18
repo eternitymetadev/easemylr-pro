@@ -761,14 +761,13 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/locations')}}">Branches </a>
             </li>
-            <?php } if($authuser->role_id == 5){?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'reginal-clients'}}"> Regional Client </a>
             </li>
-            <?php }}?>
+            <?php }?>
 
         </ul>
     </li>
