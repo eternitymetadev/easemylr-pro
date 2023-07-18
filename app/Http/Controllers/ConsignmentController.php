@@ -2078,20 +2078,18 @@ class ConsignmentController extends Controller
         $currentdate = $mytime->toDateTimeString();
         // check app assign ========================================
          if ($get_driver_details->access_status == 1) {
-            if (!empty($get_driver_details->branch_id)) {
-                $driver_branch = explode(',', $get_driver_details->branch_id);
-                if (in_array($authuser->branch_id, $driver_branch)) {
+            // if (!empty($get_driver_details->branch_id)) {
+                // $driver_branch = explode(',', $get_driver_details->branch_id);
+                // if (in_array($authuser->branch_id, $driver_branch)) {
                     $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 2]);
                     
                     $app_notify = $this->sendNotification($request->driver_id);
-                }
-            } else {
-                $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
-                
-            }
+                // }
+            // } else {
+            //     $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
+            // }
         }else{
             $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
-            
         }
 
         foreach ($consignmentId as $c_id) {
@@ -2101,11 +2099,13 @@ class ConsignmentController extends Controller
             $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned','desc'=>'Out for Delivery', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('id')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);       
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);       
 
-            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            }
             // ==== end started
         }
 
