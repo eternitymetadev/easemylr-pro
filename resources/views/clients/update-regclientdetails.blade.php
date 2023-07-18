@@ -109,7 +109,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="exampleFormControlInput2">Pickup not Rquired<span
+                            <label for="exampleFormControlInput2">Pickup not Required<span
                                     class="text-danger">*</span></label>
                             <div class="check-box d-flex">
                                 <div class="checkbox radio">

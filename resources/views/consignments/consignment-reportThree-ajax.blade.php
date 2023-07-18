@@ -3,8 +3,8 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                <th>LR No</th>
                 <th>LR Date</th>
+                <th>LR Number</th>
                 <th>Regional Client</th>
                 <th>Consigner</th>
                 <th>Consigner District</th>
@@ -13,14 +13,15 @@
                 <th>Consignee District</th>
                 <th>Consignee Pincode</th>
            
-                <th>Boxes</th>
+                <th>Number of Box</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
                 
                 <th>Expected TAT</th>
                 <th>Payment Type</th>
                 <th>Dispatch Date</th>
-                <th>Delivery Status</th>
+                <th>Shipment Status</th>
+                <th>Ageing</th>
                 <th>Delivery Date</th>
 
                 <th>Issue</th>
@@ -34,17 +35,26 @@
             <?php
       
             $start_date = strtotime($consignment->consignment_date);
-            $end_date = strtotime($consignment->delivery_date);
+            $end_date = strtotime($consignment->edd);
             $tat_diff = ($end_date - $start_date)/60/60/24;
             if($tat_diff < 0){
                 $tat = '-';
             }else{
                 $tat = $tat_diff;
             }
+
+            $start_date = strtotime($consignment->consignment_date);
+            $end_date = strtotime($consignment->delivery_date);
+            $age_diff = ($end_date - $start_date)/60/60/24;
+            if($age_diff < 0){
+                $age_day = '-';
+            }else{
+                $age_day = $age_diff;
+            }
         ?>
             <tr>
-                <td>{{ $consignment->id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
+                <td>{{ $consignment->id ?? "-" }}</td>
                                     
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
@@ -64,9 +74,8 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
 
                 <td>{{@$consignment->delivery_status ?? 'Unknown'}}</td>
-
+                <td>{{$age_day ?? "-"}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
-
                 <td>-</td>
             </tr>
             @endforeach
