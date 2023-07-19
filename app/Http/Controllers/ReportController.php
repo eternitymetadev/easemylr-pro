@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use App\Exports\RegionalReport;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
@@ -469,40 +469,58 @@ class ReportController extends Controller
 
     public function regionalReport()
     { 
-
-        $regional_details = RegionalClient::all();
-
-        foreach ($regional_details as $regional) {
-
-            date_default_timezone_set('Asia/Kolkata');
-            $current_time = date("h:i A");
-
-            $consignment_details = ConsignmentNote::where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
-            if (!empty($regional->email)) {
-
-                if (!empty($consignment_details)) {
+        $emailStatus = [
+            'all_sent' => 0,
+            'partially_sent' => 0,
+            'fail' => 0,
+        ];
+    
+        try {
+            $regional_details = RegionalClient::all();
+    
+            foreach ($regional_details as $regional) {
+                date_default_timezone_set('Asia/Kolkata');
+                $current_time = date("h:i A");
+    
+                $consignment_details = ConsignmentNote::where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
+    
+                if (!empty($regional->email) && !empty($consignment_details)) {
                     $path = 'regional/report.xlsx';
-
+    
                     Excel::store(new RegionalReport($regional->id), $path, 'public');
                     $get_file = storage_path('app/public/regional/report.xlsx');
-
+    
                     $data = ['client_name' => $regional->name, 'current_time' => $current_time];
-
                     $user['to'] = $regional->email;
-
-                    Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
-                        $messges->to($user['to']);
-                        $messges->subject('Monthly Report');
-                        $messges->attach($get_file);
-
-                    });
+    
+                    try {
+                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
+                            $messges->to($user['to']);
+                            $messges->subject('Monthly Report');
+                            $messges->attach($get_file);
+                        });
+    
+                        // Log the successful email
+                        Log::info('Email sent to ' . $regional->email);
+                        $emailStatus['all_sent']++;
+                    } catch (Exception $e) {
+                        // Log the error and continue processing other emails
+                        Log::error('Failed to send email to ' . $regional->email . ': ' . $e->getMessage());
+                        $emailStatus['fail']++;
+                    }
+                } else {
+                    $emailStatus['partially_sent']++;
                 }
             }
-
+    
+            return $emailStatus;
+        } catch (Exception $e) {
+            // Log any unexpected error and return a response
+            Log::error('An error occurred while processing emails: ' . $e->getMessage());
+            return ['error' => 'An error occurred while processing emails. Please check the logs for more details.'];
         }
-        return 'Email Sent';
-
     }
+    
 
 
 }
