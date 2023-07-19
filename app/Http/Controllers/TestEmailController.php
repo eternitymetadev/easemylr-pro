@@ -9,16 +9,12 @@ class TestEmailController extends Controller
 {
     public function sendTestEmail()
     {
-        $recipientEmail = 'vikas.singh@eternitysolutions.net';
+        $recipientEmail = 'vikas.singh@eternitysolutions.net'; 
 
-        $data = [
-            'name' => 'Vikas Singh',
-        ];
-
-        // Send the email using the 'test-email' view (resources/views/emails/test-email.blade.php)
-        Mail::send('emails.test-email', $data, function ($message) use ($recipientEmail) {
+        // Send the email without using a view
+        Mail::raw('This is a test email.', function ($message) use ($recipientEmail) {
             $message->to($recipientEmail);
-            $message->subject('Forge Email Working');
+            $message->subject('Email From Forge');
         });
 
         return 'Test email sent successfully to ' . $recipientEmail;
