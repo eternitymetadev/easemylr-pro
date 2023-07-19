@@ -5536,7 +5536,7 @@ class ConsignmentController extends Controller
 
             $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('consignment_id')->first();
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
             if (!empty($lastjob->response_data)) {
                 $st = json_decode($lastjob->response_data);
                 array_push($st, $respons2);
