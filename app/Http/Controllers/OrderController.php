@@ -2004,7 +2004,6 @@ class OrderController extends Controller
 
     public function storeFtlOrder(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -2027,6 +2026,8 @@ class OrderController extends Controller
 
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
+            
+            $locations = Location::whereIn('id', $cc)->first();
 
             if (empty($request->vehicle_id)) {
                 $status = '2';
@@ -2182,10 +2183,22 @@ class OrderController extends Controller
                 // }
             } else {
                 // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
                 $respons_data = json_encode($respons);
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                 // ==== end create
+                // =================== task assign
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                if(!empty($lastjob->response_data)){
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                }
+                // ==== end started
             }
 
             $url = $this->prefix . '/reserve-lr';
