@@ -32,6 +32,11 @@ jQuery(document).ready(function () {
     });
     /*===== End check box checked create/update user permission page =====*/
 
+    // input type number scroll wheel false
+    $('input').bind("wheel", function() {
+        return false;
+    });
+
     /// search by assign user
 
     jQuery("#searchvehicle").SumoSelect({
