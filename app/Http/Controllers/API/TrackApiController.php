@@ -284,7 +284,7 @@ class TrackApiController extends Controller
             $authuser = Auth::user();
             
             if (!empty($request->fullName)) {
-                $addDriver['fullName'] = $request->fullName;
+                $addContact['fullName'] = $request->fullName;
             }
 
             if (!empty($request->companyName)) {
