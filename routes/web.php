@@ -26,7 +26,7 @@ use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
 use App\Http\Controllers\HubtoHubController;
 use App\Http\Controllers\FtlPtlController;
-
+use App\Http\Controllers\TestEmailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -1051,5 +1051,8 @@ Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
 Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_status_fully']);
 Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
 Route::any('regional-report', [ReportController::class, 'regionalReport']);
+
+Route::get('/send-test-email', [TestEmailController::class, 'sendTestEmail']);
+
 
 
