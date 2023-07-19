@@ -21,7 +21,6 @@ use Auth;
 class TrackApiController extends Controller
 {
     public function lastmilePartner(Request $request){
-        // return $request->all();
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -103,7 +102,6 @@ class TrackApiController extends Controller
     }
 
     public function carrierPartner(Request $request){
-        return $request->all();
         try {
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
@@ -165,7 +163,7 @@ class TrackApiController extends Controller
                 $addCarrier['workingYears'] = $request->workingYears;
             }
             $addCarrier['status'] = 1;
-        
+            
             $saveCarrier = EfCarrierPartner::create($addCarrier);
             if($saveCarrier){
                 $data = '';
@@ -203,38 +201,45 @@ class TrackApiController extends Controller
                 $response['errors']      = $errors;
 
                 return response()->json($response);
-            }
-            $authuser = Auth::user();
-            
+            }            
             if (!empty($request->name)) {
-                $addDriver['contact_name'] = $request->name;
+                $addDriver['name'] = $request->name;
+            }
+            if (!empty($request->email)) {
+                $addDriver['email'] = $request->email;
+            }
+            if (!empty($request->phone)) {
+                $addDriver['phone'] = $request->phone;
             }
             if (!empty($request->address)) {
-                $addDriver['company_add'] = $request->address;
+                $addDriver['address'] = $request->address;
             }
-            if (!empty($request->driving_record)) {
-                $addDriver['exp_details'] = $request->driving_record;
+            if (!empty($request->drivingRecord)) {
+                $addDriver['driving_record'] = $request->drivingRecord;
             }
-            if (!empty($request->exp_details)) {
-                $addDriver['exp_details'] = $request->exp_details;
+            if (!empty($request->expDetails)) {
+                $addDriver['exp_details'] = $request->expDetails;
             }
-            if (!empty($request->is_available)) {
-                $addDriver['is_available'] = $request->is_available;
+            if (!empty($request->isAvailable)) {
+                $addDriver['is_available'] = $request->isAvailable;
             }
-            if (!empty($request->is_compliant)) {
-                $addDriver['is_compliant'] = $request->is_compliant;
+            if (!empty($request->isCompliant)) {
+                $addDriver['is_compliant'] = $request->isCompliant;
             }
-            if (!empty($request->is_flexible)) {
-                $addDriver['is_flexible'] = $request->is_flexible;
+            if (!empty($request->isFlexible)) {
+                $addDriver['is_flexible'] = $request->isFlexible;
             }
-            if (!empty($request->preferred_state)) {
-                $addDriver['state'] = $request->preferred_state;
+            if (!empty($request->preferredState)) {
+                $addDriver['preferred_state'] = $request->preferredState;
             }
-            if (!empty($request->valid_license)) {
-                $addDriver['valid_license'] = $request->valid_license;
+            if (!empty($request->validLicense)) {
+                $addDriver['valid_license'] = $request->validLicense;
             }
-            if (!empty($request->working_years)) {
-                $addDriver['working_years'] = $request->working_years;
+            if (!empty($request->workingYears)) {
+                $addDriver['working_years'] = $request->workingYears;
+            }
+            if (!empty($request->reference)) {
+                $addDriver['reference'] = $request->reference;
             }
             $addDriver['status'] = 1;
         
@@ -309,14 +314,14 @@ class TrackApiController extends Controller
 
             $addContact['status'] = 1;
         
-            $saveDriver = EfContactUs::create($addContact);
-            if($saveDriver){
+            $saveContact = EfContactUs::create($addContact);
+            if($saveContact){
                 $data = '';
-                $message = "Driver created successfully";
+                $message = "Contact created successfully";
                 $status = true;
                 $errorCode = 200;
             }else{
-                $data = $addDriver;
+                $data = $addContact;
                 $message = "Invalid Record";
                 $status = false;
                 $errorCode = 402;
@@ -350,7 +355,7 @@ class TrackApiController extends Controller
             $authuser = Auth::user();
             
             if (!empty($request->fullName)) {
-                $addCareer['contact_name'] = $request->fullName;
+                $addCareer['fullName'] = $request->fullName;
             }
             if (!empty($request->email)) {
                 $addCareer['email'] = $request->email;
@@ -362,14 +367,14 @@ class TrackApiController extends Controller
                 $addCareer['education'] = $request->education;
             }
             if (!empty($request->location)) {
-                $addCareer['company_add'] = $request->location;
+                $addCareer['location'] = $request->location;
             }
             // if (!empty($request->cv)) {
             //     $addCareer['cv'] = $request->cv;
             // }
             $addCareer['status'] = 1;
         
-            $saveCareer = EfShipnow::create($addCareer);
+            $saveCareer = EfCareer::create($addCareer);
             if($saveCareer){
                 $data = '';
                 $message = "Career created successfully";

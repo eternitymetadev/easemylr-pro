@@ -4690,7 +4690,7 @@ class ConsignmentController extends Controller
     public function getTimelineapi($lr_id)
     {
         try {
-            // $get_delveryrating = EfDeliveryRating::where('lr_id',$lr_id)->first();
+            $get_delveryrating = EfDeliveryRating::where('lr_id',$lr_id)->first();
             $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode','shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -4706,7 +4706,6 @@ class ConsignmentController extends Controller
             })->first();
             // return ($driver_app);
             if($driver_app){
-
                 $app_trail = json_decode($driver_app->trail, true);
                 $status = [2];
                 $result = [];
@@ -4715,13 +4714,12 @@ class ConsignmentController extends Controller
                         $result[] = $trail;
                     }
                 }
-                // echo "<pre>"; print_r($result);die;
-
+                
                 if ($driver_app) {
                     return response([
                         'data' => $driver_app,
                         'driver_trail' => $result,
-                        // 'delivery_rating' => $get_delveryrating,
+                        'delivery_rating' => $get_delveryrating,
                         'status' => 'success',
                         'code' => 1,
                         'message' => 'Data fetched successfully!',
@@ -4736,13 +4734,13 @@ class ConsignmentController extends Controller
                 }
             }
             else{
-            return response([
-                'status' => 'error',
-                'code' => 0,
-                'message' => "Data not found!",
-                'data' => "",
-            ], 200);
-        }
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "Data not found!",
+                    'data' => "",
+                ], 200);
+            }
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
