@@ -191,17 +191,17 @@ class DriverController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
-        if($request->branch_id){
-            if(($request->branch_id != null) || ($request->branch_id != '')){
-                $branches = array_unique(array_merge($request->branch_id));
-                $branch = implode(',', $branches);
-            }
-            else{
-                $branch ='';
-            }
-        }else{
-                $branch ='';
-            }
+        // if($request->branch_id){
+        //     if(($request->branch_id != null) || ($request->branch_id != '')){
+        //         $branches = array_unique(array_merge($request->branch_id));
+        //         $branch = implode(',', $branches);
+        //     }
+        //     else{
+        //         $branch ='';
+        //     }
+        // }else{
+        //         $branch ='';
+        //     }
 
         $driversave['name']                 = $request->name;
         $driversave['phone']                = $request->phone;
@@ -212,7 +212,7 @@ class DriverController extends Controller
         $driversave['driver_password']      = $request->password;
         $driversave['password']             = bcrypt($request->password);
         // $driversave['app_use']              =  $request->app_use;
-        $driversave['branch_id']            =  $branch;
+        $driversave['branch_id']            =  '';
         $driversave['access_status']        =  $request->access_status;
         $driversave['status']               = '1';
 
@@ -334,12 +334,12 @@ class DriverController extends Controller
                 return response()->json($response);
             }
             
-            if(($request->branch_id != null) || ($request->branches_id[0] != null) || (!empty($request->branch_id)) || (!empty($request->branches_id[0]))){
-            $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
-            $branch = implode(',', $branches);
-            }else{
-                $branch ='';
-            }
+            // if(($request->branch_id != null) || ($request->branches_id[0] != null) || (!empty($request->branch_id)) || (!empty($request->branches_id[0]))){
+            // $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
+            // $branch = implode(',', $branches);
+            // }else{
+            //     $branch ='';
+            // }
 
             $driversave['name']           = $request->name;
             $driversave['phone']          = $request->phone;
@@ -348,7 +348,7 @@ class DriverController extends Controller
             $driversave['fleet_id']       = $request->fleet_id;
             $driversave['login_id']       = $request->login_id;
             $driversave['driver_password']= $request->password;
-            $driversave['branch_id']      = $branch;
+            $driversave['branch_id']      = '';
             $driversave['access_status']  = $request->access_status;
             $driversave['password']       = bcrypt($request->password);
 

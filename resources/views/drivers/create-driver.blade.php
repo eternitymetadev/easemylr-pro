@@ -98,14 +98,14 @@
                                         placeholder="" autocomplete="off">
                                 </div>
                             </div>
-                            <label for="exampleFormControlInput2">Select Branch</label>
+                            {{-- <label for="exampleFormControlInput2">Select Branch</label>
                             <select class="form-control tagging" id="select_consigner" multiple="multiple"
                                 name="branch_id[]">
                                 <option disabled>Select</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
                                 @endforeach
-                            </select>
+                            </select> --}}
                         </div>
 
                         <button type="submit" class="mt-4 mb-4 btn btn-primary">Submit</button>
