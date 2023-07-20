@@ -8,7 +8,7 @@
             <th>Image</th>
             <th>App Access</th>
             <th>Password</th>
-            <th>Tagged Branch</th>
+            {{-- <th>Tagged Branch</th> --}}
             <th>Action</th>
             </tr>
         </thead>
@@ -39,23 +39,25 @@
                     } ?>
                 <td>{{ $access_status ?? "-" }}</td>
                 <td>{{ $value->driver_password ?? "-" }}</td>
-                <?php if($value->branch_id){
-                    $branch_id = explode(',',$value->branch_id);
-                    $branch_ids = array();
-                    foreach($branch_id as $branch){
-                        $location = App\Models\Location::where('id',$branch)->first();
-                        // echo "<pre>"; print_r($location->name);die; 
-                        $branch_ids[] = @$location->name;
-                    }
-                    if($branch_ids){
-                        $branch_name = implode('/', $branch_ids);
-                    }else{
-                    $branch_name = '-';
-                    }
-                }else{
-                    $branch_name = '-';
-                }?>
-                <td>{{ $branch_name ?? "-" }}</td>
+                {{-- <?php 
+                // if($value->branch_id){
+                //     $branch_id = explode(',',$value->branch_id);
+                //     $branch_ids = array();
+                //     foreach($branch_id as $branch){
+                //         $location = App\Models\Location::where('id',$branch)->first();
+                //         // echo "<pre>"; print_r($location->name);die; 
+                //         $branch_ids[] = @$location->name;
+                //     }
+                //     if($branch_ids){
+                //         $branch_name = implode('/', $branch_ids);
+                //     }else{
+                //     $branch_name = '-';
+                //     }
+                // }else{
+                //     $branch_name = '-';
+                // }
+                ?>
+                <td>{{ $branch_name ?? "-" }}</td> --}}
                 
                 <td>
                     <div class="d-flex" style="gap: 4px">
