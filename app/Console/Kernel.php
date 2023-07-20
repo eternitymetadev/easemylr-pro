@@ -15,12 +15,15 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\RegionalReport::class,
+        Commands\CheckPaidStatusCommand::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('regional:report')
-                 ->everyMinute();
+
+    // Run the check:paid_status command every minute
+    $schedule->command('check:paid_status')->everyMinute();
+    
     }
 
     /**
