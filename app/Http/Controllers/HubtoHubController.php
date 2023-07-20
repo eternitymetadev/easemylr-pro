@@ -526,11 +526,13 @@ class HubtoHubController extends Controller
                 $respons2 = array('consignment_id' => $c_id, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $c_id)->latest('id')->first();
-                $st = json_decode($lastjob->response_data);
-                array_push($st, $respons2);
-                $sts = json_encode($st);
+                if (!empty($lastjob->response_data)) {
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
 
-                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                    $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                }
                 // ==== end started ===//
 
             }
