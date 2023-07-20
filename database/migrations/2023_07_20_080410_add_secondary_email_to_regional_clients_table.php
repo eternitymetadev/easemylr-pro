@@ -14,7 +14,7 @@ class AddSecondaryEmailToRegionalClientsTable extends Migration
     public function up()
     {
         Schema::table('regional_clients', function (Blueprint $table) {
-            //
+            $table->string('secondary_email')->after('email')->nullable();
         });
     }
 
