@@ -46,10 +46,26 @@
             $start_date = strtotime($consignment->consignment_date);
             $end_date = strtotime($consignment->delivery_date);
             $age_diff = ($end_date - $start_date)/60/60/24;
-            if($age_diff < 0){
-                $age_day = '-';
+
+            $prspickup_date = strtotime(@$consignment->PrsDetail->PrsDriverTask->pickup_date);
+            $pickup_diff = ($end_date - $prspickup_date)/60/60/24;
+            
+            if(!empty($consignment->prs_id)){
+                if($pickup_diff > 0){
+                    $ageing_day = $pickup_diff;
+                }else{
+                    if($age_diff < 0){
+                        $ageing_day = '-';
+                    }else{
+                        $ageing_day = $age_diff;
+                    }
+                }
             }else{
-                $age_day = $age_diff;
+                if($age_diff < 0){
+                    $ageing_day = '-';
+                }else{
+                    $ageing_day = $age_diff;
+                }
             }
         ?>
             <tr>
@@ -74,7 +90,7 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
 
                 <td>{{@$consignment->delivery_status ?? 'Unknown'}}</td>
-                <td>{{$age_day ?? "-"}}</td>
+                <td>{{$ageing_day ?? "-"}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <td>-</td>
             </tr>

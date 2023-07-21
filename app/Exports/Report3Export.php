@@ -68,7 +68,8 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
-            'DrsDetail:consignment_no,drs_no,created_at'
+            'DrsDetail:consignment_no,drs_no,created_at',
+            'PrsDetail.PrsDriverTask:prs_id,pickup_date'
         );
 
         if($authuser->role_id ==1)
@@ -97,25 +98,38 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
-            // ageing formula = deliverydate - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $age_diff = ($end_date - $start_date)/60/60/24;
+            // ageing formula = deliverydate - createdate / prs_pickupdate
+            $start_date = strtotime($consignment->consignment_date);
+            $end_date = strtotime($consignment->delivery_date);
+            $age_diff = ($end_date - $start_date)/60/60/24;
 
+            $prspickup_date = strtotime(@$consignment->PrsDetail->PrsDriverTask->pickup_date);
+            $pickup_diff = ($end_date - $prspickup_date)/60/60/24;
+            
+            if(!empty($consignment->prs_id)){
+                if($pickup_diff > 0){
+                    $ageing_day = $pickup_diff;
+                }else{
+                    if($age_diff < 0){
+                        $ageing_day = '-';
+                    }else{
+                        $ageing_day = $age_diff;
+                    }
+                }
+            }else{
                 if($age_diff < 0){
                     $ageing_day = '-';
                 }else{
                     $ageing_day = $age_diff;
                 }
+            }
 
                 // tat formula = edd - createdate
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->edd);
                 $tatday = ($end_date - $start_date)/60/60/24;
 
-                if($tatday < 0){
-                    $tat_day = '-';
-                }else{
+                if($tatday > 0){
                     $tat_day = $tatday;
                 }
                                 
