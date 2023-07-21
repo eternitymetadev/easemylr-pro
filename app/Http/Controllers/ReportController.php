@@ -489,9 +489,12 @@ class ReportController extends Controller
                     $data = ['client_name' => $regional->name, 'current_time' => $current_time];
 
                     $user['to'] = $regional->email;
+                    $sec_emails = explode(',', $regional->secondary_email);
+                    $user['cc'] = $sec_emails;
 
                     Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
                         $messges->to($user['to']);
+                        $messges->cc($user['cc']);
                         $messges->subject('Monthly Report');
                         $messges->attach($get_file);
 
