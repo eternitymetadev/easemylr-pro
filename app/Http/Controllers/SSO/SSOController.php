@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\Session;
 
+
 class SSOController extends Controller
 {
 
