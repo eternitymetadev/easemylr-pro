@@ -1,5 +1,5 @@
 <?php
-header('Access-Control-Allow-Origin: https://test-courier.easemyorder.com');
+header('Access-Control-Allow-Origin: https://eml-report.easemyorder.com');
 header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD');
 header('Access-Control-Allow-Headers: *');
 
