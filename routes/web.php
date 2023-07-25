@@ -258,6 +258,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('store-postalcode', [SettingController::class,'storePostalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('postal-code/export/excel', [SettingController::class, 'exportExcel']);

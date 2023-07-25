@@ -184,6 +184,58 @@ class SettingController extends Controller
         return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment, 'all_districts' => $all_districts, 'branchs' => $branchs, 'all_states' => $all_states]);
     }
 
+    // postal code list
+    public function storePostalCode(Request $request)
+    {
+        // dd($request->all());
+        $this->prefix = request()->route()->getPrefix();
+        $rules = array(
+            'postal_code'    => 'required',
+        );
+        $validator = Validator::make($request->all() , $rules);
+        if ($validator->fails())
+        {
+            // $a['name']  = "This name already exists";
+            $errors                 = $validator->errors();
+            $response['success']    = false;
+            $response['validation'] = false;
+            $response['formErrors'] = true;
+            $response['errors']     = $errors;
+            return response()->json($response);
+        }
+        if(!empty($request->postal_code)){
+            $addpostal['postal_code'] = $request->postal_code;
+        }
+        if(!empty($request->state)){
+            $addpostal['state'] = $request->state;
+        }
+        if(!empty($request->district)){
+            $addpostal['district'] = $request->district;
+        }
+        if(!empty($request->pickup_hub)){
+            $addpostal['pickup_hub'] = $request->pickup_hub;
+        }
+        if(!empty($request->hub_transfer)){
+            $addpostal['hub_transfer'] = $request->hub_transfer;
+        }
+        $addpostal['status'] = 1;
+
+        $savepostal = Zone::create($addpostal);
+        if($savepostal){
+            
+            $response['success']    = true;
+            $response['page']       = 'postalcode-create';
+            $response['error']      = false;
+            $response['success_message'] = "Postal code created successfully";
+            $response['redirect_url'] = URL::to($this->prefix.'/postal-code');
+        }else{
+            $response['success']       = false;
+            $response['error']         = true;
+            $response['error_message'] = "Can not created postal code please try again";
+        }
+        return response()->json($response);
+    }
+
     public function editPostalCode(Request $request)
     {
         $id = $request->postal_id;
@@ -234,7 +286,7 @@ class SettingController extends Controller
             $get_location = Location::where('id', $request->branch_id)->first();
             // $pickup_location = Location::where('id', $request->pickup_hub)->first();
 
-            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            Zone::where('state',$request->state_id)->where('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
 
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";

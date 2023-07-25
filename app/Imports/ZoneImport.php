@@ -17,22 +17,27 @@ class ZoneImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-     
-         $zone = DB::table('zones')->select('postal_code')->where('postal_code', $row['postal_code'])->first();
+        $zone = Zone::where('postal_code', $row['postal_code'])->first();
         if(empty($zone)){
+            dd('pp');
             return new Zone([
-                'primary_zone'  => $row['primary_zone'],
-                'postal_code'   => (float)$row['postal_code'],
-                'district'      => $row['district'],
+                'postal_code'   => $row['postal_code'],
                 'state'         => $row['state'],
-                'hub_transfer'    => $row['hub_transfer'],
+                'district'      => $row['district'],
+                'pickup_hub'    => $row['pickup_hub'],
+                'hub_transfer'  => $row['hub_transfer'],
+                'hub_nickname'  => $row['hub_transfer_id'],
                 'status'        => "1",
                 'created_at'    => time(),
             ]);
         }else{
-            $consigner = Zone::where('postal_code', $row['postal_code'])->update([
-                'hub_transfer'    => $row['hub_transfer'],
-                'updated_at'    => time(),
+            $zoneUpdate = Zone::where('postal_code', $row['postal_code'])->update([
+                'state'          =>  $row['state'],
+                'district'       =>  $row['district'],
+                'pickup_hub'     =>  $row['pickup_hub'],
+                'hub_transfer'   =>  $row['hub_transfer'],
+                'hub_nickname'   =>  $row['hub_transfer_id'],
+                'updated_at'     =>  time(),
             ]);
         }
 

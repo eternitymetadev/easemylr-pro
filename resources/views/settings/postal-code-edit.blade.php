@@ -74,10 +74,10 @@
                             </div>
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
-                                    <!-- <a class="btn-primary btn-cstm btn ml-2"
+                                    <span class="btn-primary btn-cstm btn ml-2"
                                         style="font-size: 15px; padding: 9px; width: 130px"
-                                        href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
-                                            New</span></a> -->
+                                        data-target="#postal_create" data-toggle="modal"><span><i class="fa fa-plus"></i> Add
+                                            New</span></span>
                                     <?php $authuser = Auth::user();
                                     if($authuser->role_id ==1 ){ ?>
                                     <div class="btn-group relat">
@@ -110,6 +110,52 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Create zone modle -->
+<!-- Modal -->
+<div class="modal fade" id="postal_create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="create_postalcode" class="general_form" method="POST" action="{{url($prefix.'/store-postalcode')}}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Create Zone Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="col-12">
+                        <label for="x">Postal Code</label>
+                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder=""/>
+                    </div>
+                    <div class="col-12">
+                        <label for="x">State</label>
+                        <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">District</label>
+                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">Pickup Hub</label>
+                        <input class="form-control form-control-sm" id="pickup_hub" name="pickup_hub" placeholder="" />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">Hub Transfer</label>
+                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
+                            placeholder="" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
     </div>
 </div>
 <!-- edit modle -->
