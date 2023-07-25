@@ -127,11 +127,13 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                 // tat formula = edd - createdate
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->edd);
-                $tatday = ($end_date - $start_date)/60/60/24;
-
-                if($tatday > 0){
-                    $tat_day = $tatday;
+                $tat_diff = ($end_date - $start_date)/60/60/24;
+                if($tat_diff < 0){
+                    $tat_day = '-';
+                }else{
+                    $tat_day = $tat_diff;
                 }
+                
                                 
                 if(!empty($consignment->consignment_date )){
                     $consignment_date = $consignment->consignment_date;
