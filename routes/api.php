@@ -1,4 +1,7 @@
 <?php
+header('Access-Control-Allow-Origin: https://test-courier.easemyorder.com');
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD');
+header('Access-Control-Allow-Headers: *');
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

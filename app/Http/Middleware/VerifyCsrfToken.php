@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
 
         'webhook',
+        'api/connect_user',
         //
     ];
 }
