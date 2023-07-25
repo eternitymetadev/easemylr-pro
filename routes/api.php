@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SSO\SSOController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/drivers', 'App\Http\Controllers\Api\DriversController@index')->name('api.index.drivers');
+
+Route::post('/connect_user', [SSOController::class, 'connectUserdirectly']);
+Route::get('/login_user/{email}', [SSOController::class, 'login_user']);
+
+Route::post('/assign_role', [SSOController::class, 'assign_role']);
+
+Route::post('/remove_role', [SSOController::class, 'remove_role']);

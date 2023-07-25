@@ -24,6 +24,8 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
+use App\Http\Controllers\SSO\SSOController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,10 @@ Route::get('/', function () {
 Route::get('/landing', function () {
     return view('landing');
 });
+Route::get("/sso/login", [SSOController::class, 'getLogin'])->name("sso.login");
+Route::get("/callback", [SSOController::class, 'getCallback'])->name("sso.callback");
+Route::get("/sso/connect", [SSOController::class, 'connectUser'])->name("sso.connect");
+Route::get("/portal_login/{email}", [SSOController::class, 'portal_login'])->name("login_to_portal");
 
 Route::get('/', function () {
     if(Auth::check())

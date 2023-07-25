@@ -113,6 +113,7 @@
                                 </div>
                                 <div class="form-group">
                                 <button type="submit" class="jj">Login</button>
+                                <a href="{{ route("sso.login") }}" class="btn btn-block btn-primary btn-sm">Login with SSO</a>
                                 </div>
 
                             </form>
