@@ -132,7 +132,7 @@ class SSOController extends Controller
 
     public function portal_login($email)
     {
-        $user = User::where("login_id", $email)->first();
+        $user = User::where("email", $email)->first();
         Auth::login($user, true);
         if (Auth::check()) {
             $user = Auth::user();

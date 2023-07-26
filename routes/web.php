@@ -26,6 +26,8 @@ use App\Http\Controllers\TechnicalMasterController;
 use App\Http\Controllers\PickupRunSheetController;
 use App\Http\Controllers\HubtoHubController;
 use App\Http\Controllers\FtlPtlController;
+use App\Http\Controllers\SSO\SSOController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -1052,4 +1054,5 @@ Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_stat
 Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
 Route::any('regional-report', [ReportController::class, 'regionalReport']);
 
+Route::get("/portal_login/{email}", [SSOController::class, 'portal_login'])->name("login_to_portal");
 

@@ -74,6 +74,7 @@ Route::post('/assign_role', [SSOController::class, 'assign_role']);
 
 Route::post('/remove_role', [SSOController::class, 'remove_role']);
 Route::get('sample_data', [SSOController::class, 'sample_data']);
+Route::get('/login_user/{email}', [SSOController::class, 'login_user']);
 
 
 
