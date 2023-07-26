@@ -5,6 +5,8 @@
             <tr>
                 <th>LR Date</th>
                 <th>LR Number</th>
+                <th>Type of Shipment</th>
+                <th>Invoice Number</th>
                 <th>Regional Client</th>
                 <th>Consigner</th>
                 <th>Consigner District</th>
@@ -33,14 +35,13 @@
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <?php
-      
             $start_date = strtotime($consignment->consignment_date);
             $end_date = strtotime($consignment->edd);
             $tat_diff = ($end_date - $start_date)/60/60/24;
             if($tat_diff < 0){
-                $tat = '-';
+                $tat_day = '-';
             }else{
-                $tat = $tat_diff;
+                $tat_day = $tat_diff;
             }
 
             $start_date = strtotime($consignment->consignment_date);
@@ -67,30 +68,56 @@
                     $ageing_day = $age_diff;
                 }
             }
+
+            // LR type
+            if($consignment->lr_type == 0){ 
+                $lr_type = "FTL";
+            }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                $lr_type = "PTL";
+            }else{ 
+                $lr_type = "-";
+            } 
+            // invoice number
+            if(empty($consignment->order_id)){ 
+                if(!empty($consignment->ConsignmentItems)){
+                    $invoices = array();
+                    foreach($consignment->ConsignmentItems as $orders){ 
+                        $invoices[] = $orders->invoice_no;
+                    }
+                    $order_item['invoices'] = implode(',', $invoices);
+                }
+            }
+
+            if(empty($consignment->invoice_no)){
+                $invoice_number =  $order_item['invoices'] ?? '-';
+            }else{
+                $invoice_number =  $consignment->invoice_no ?? '-';
+            }
         ?>
             <tr>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <td>{{ $consignment->id ?? "-" }}</td>
-                                    
-                <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
-                <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
-                <td>{{ $consignment->ConsignerDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ConsignerDetail->postal_code ?? "-" }}</td>
+                <td>{{@$lr_type}}</td>
+                <td>{{ @$invoice_number ?? "-" }}</td>
+                <td>{{ @$consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
+                <td>{{ @$consignment->ConsignerDetail->nick_name ?? "-" }}</td>
+                <td>{{ @$consignment->ConsignerDetail->district ?? "-" }}</td>
+                <td>{{ @$consignment->ConsignerDetail->postal_code ?? "-" }}</td>
 
-                <td>{{ $consignment->ConsigneeDetail->nick_name ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
+                <td>{{ @$consignment->ConsigneeDetail->nick_name ?? "-" }}</td>
+                <td>{{ @$consignment->ConsigneeDetail->district ?? "-" }}</td>
+                <td>{{ @$consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
 
-                <td>{{ $consignment->total_quantity ?? "-" }}</td>
-                <td>{{ $consignment->total_weight ?? "-" }}</td>
-                <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
+                <td>{{ @$consignment->total_quantity ?? "-" }}</td>
+                <td>{{ @$consignment->total_weight ?? "-" }}</td>
+                <td>{{ @$consignment->total_gross_weight ?? "-" }}</td>
                 
-                <td>{{$tat ?? "-"}}</td>
-                <td>{{$consignment->payment_type ?? "-"}}</td>
+                <td>{{@$tat_day ?? "-"}}</td>
+                <td>{{@$consignment->payment_type ?? "-"}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
 
                 <td>{{@$consignment->delivery_status ?? 'Unknown'}}</td>
-                <td>{{$ageing_day ?? "-"}}</td>
+                <td>{{@$ageing_day ?? "-"}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <td>-</td>
             </tr>

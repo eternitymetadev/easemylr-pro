@@ -156,10 +156,36 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $drs = '-';
                 }
+                // LR type
+                if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                    $lr_type = "PTL";
+                }else{ 
+                    $lr_type = "-";
+                } 
+                // invoice no
+                if(empty($consignment->order_id)){ 
+                    if(!empty($consignment->ConsignmentItems)){
+                        $invoices = array();
+                        foreach($consignment->ConsignmentItems as $orders){ 
+                            $invoices[] = $orders->invoice_no;
+                        }
+                        $order_item['invoices'] = implode('/', $invoices);
+                    }
+                }
+
+                if(empty($consignment->invoice_no)){
+                    $invoice_number =  $order_item['invoices'] ?? '-';
+                }else{
+                    $invoice_number =  $consignment->invoice_no ?? '-';
+                }
                 
                 $arr[] = [
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'consignment_id'      => @$consignment->id,
+                    'lr_type'             => @$lr_type,
+                    'invoice_number'      => @$invoice_number,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
                     'consigner_district'  => @$consignment->ConsignerDetail->district,
@@ -168,9 +194,9 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
 
-                    'total_quantity'      => $consignment->total_quantity,
-                    'total_weight'        => $consignment->total_weight,
-                    'total_gross_weight'  => $consignment->total_gross_weight,
+                    'total_quantity'      => @$consignment->total_quantity,
+                    'total_weight'        => @$consignment->total_weight,
+                    'total_gross_weight'  => @$consignment->total_gross_weight,
                     
                     'tat'                 => $tat_day,
                     'payment_type'        => @$consignment->payment_type,
@@ -190,6 +216,8 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         return [
             'LR Date',
             'LR Number',
+            'Type of Shipment',
+            'Invoice Number',
             'Regional Client',
             'Consignor Name',
             'Consignor District',
