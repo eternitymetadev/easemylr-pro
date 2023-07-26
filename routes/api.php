@@ -7,6 +7,8 @@ use App\Http\Controllers\API\Auth\TransactionSheetsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\API\TrackApiController;
+use App\Http\Controllers\SSO\SSOController;
+
 
 /*
 
@@ -64,6 +66,13 @@ Route::group([
 });
 
 Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
+
+Route::post('/connect_user', [SSOController::class, 'connectUserdirectly']);
+Route::get('/login_user/{email}', [SSOController::class, 'login_user']);
+
+Route::post('/assign_role', [SSOController::class, 'assign_role']);
+
+Route::post('/remove_role', [SSOController::class, 'remove_role']);
 
 
 
