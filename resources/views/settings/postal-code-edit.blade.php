@@ -100,6 +100,35 @@
                                     <?php } ?>
                                 </div>
                             </div>
+
+                            
+                        </div>
+                        <div class="col-12">
+                            <div class="col-sm-4">
+                                <label>Select State</label>
+                                <select class="form-control tagging" id="state_name" name="state_name[]" multiple="multiple">
+                                    <option value="">--Select--</option>
+                                    @foreach($all_states as $all_state)
+                                    <option value="{{$all_state->state}}">{{$all_state->state}}</option>
+                                    @endforeach
+                                </select>
+
+                            </select>
+
+                            </div>
+
+                            <div class="col-8">
+                                <button type="button" id="filter_reportall" class="btn btn-primary"
+                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
+                                    <span class="indicator-label">Filter Data</span>
+                                </button>
+                                <a href="<?php echo URL::to($prefix.'/reports/export3'); ?>"
+                                    data-url="<?php echo URL::to($prefix.'/consignment-report3'); ?>"
+                                    class="consignmentReportEx btn btn-white btn-cstm"
+                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                    data-action="<?php echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+                                <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
+                            </div>
                         </div>
                     </div>
 
@@ -130,24 +159,36 @@
                 <div class="form-row">
                     <div class="col-12">
                         <label for="x">Postal Code</label>
-                        <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder=""/>
+                        <input class="form-control form-control-sm" id="" name="postal_code" placeholder=""/>
                     </div>
                     <div class="col-12">
                         <label for="x">State</label>
-                        <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
+                        <input class="form-control form-control-sm" id="" name="state" placeholder="" />
                     </div>
                     <div class="col-12">
                         <label for="x">District</label>
-                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
+                        <input class="form-control form-control-sm" id="" name="district" placeholder="" />
                     </div>
                     <div class="col-12">
                         <label for="x">Pickup Hub</label>
-                        <input class="form-control form-control-sm" id="pickup_hub" name="pickup_hub" placeholder="" />
+                        <select class="form-control my-select2" id="" name="pickup_hub" tabindex="-1"
+                            required>
+                            <option value="">--Select--</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{$branch->id}}">{{$branch->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-12">
-                        <label for="x">Hub Transfer</label>
-                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
-                            placeholder="" />
+                        <label for="x">Select Delivery Hub</label>
+                        <select class="form-control my-select2" id="" name="branch_id" tabindex="-1"
+                            required>
+                            <option value="">--Select--</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{$branch->id}}">{{$branch->name}}</option>
+                            @endforeach
+                        </select>
+
                     </div>
                 </div>
             </div>
@@ -180,16 +221,30 @@
                     </div>
                     <div class="col-12">
                         <label for="x">State</label>
-                        <input class="form-control form-control-sm" id="state" name="state" placeholder="" />
+                        <input class="form-control form-control-sm" id="state" name="state" placeholder="" readonly/>
                     </div>
                     <div class="col-12">
                         <label for="x">District</label>
-                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" />
+                        <input class="form-control form-control-sm" id="district" name="district" placeholder="" readonly/>
                     </div>
                     <div class="col-12">
-                        <label for="x">Hub Transfer</label>
-                        <input class="form-control form-control-sm" id="hub_transfer" name="hub_transfer"
-                            placeholder="" />
+                        <label for="x">Pickup Hub</label>
+                        <select class="form-control my-select2" id="update_pickup_hub" name="pickup_hub" tabindex="-1"
+                        required>
+                        <option value="">--Select--</option>
+                        @foreach($branchs as $branch)
+                        <option value="{{$branch->id}}">{{$branch->name}}</option>
+                        @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="x">Select Delivery Hubs</label>
+                        <select class="form-control my-select2" id="update_delivery_hub" name="branch_id" tabindex="-1" required>
+                            <option value="">--Select--</option>
+                            @foreach($branchs as $branch)
+                            <option value="{{ $branch->id }}">{{$branch->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
             </div>
@@ -247,8 +302,7 @@
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputEmail4">Select Delivery Hub</label>
-                            <select class="form-control my-select2" id="hub_assign" name="branch_id" tabindex="-1"
-                                required>
+                            <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1" required>
                                 <option value="">--Select--</option>
                                 @foreach($branchs as $branch)
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
@@ -256,8 +310,8 @@
                             </select>
                         </div>
                     </div>
-
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Submit</span>
@@ -311,14 +365,15 @@ $(document).on('click', '.edit_postal', function() {
 
             },
         success: function(data) {
-            console.log(data.zone_data);
+            console.log(data.zone_data.hub_nickname);
             $('#primary_zone').val(data.zone_data.primary_zone);
             $('#district').val(data.zone_data.district);
             $('#state').val(data.zone_data.state);
             $('#zone_id').val(data.zone_data.id);
             $('#hub_transfer').val(data.zone_data.hub_transfer);
             $('#postal_code').val(data.zone_data.postal_code);
-            
+            $('#update_pickup_hub').val(data.zone_data.pickup_hub).change();
+            $('#update_delivery_hub').val(data.zone_data.hub_nickname).change();
         }
 
     });

@@ -215,14 +215,17 @@ class SettingController extends Controller
         if(!empty($request->pickup_hub)){
             $addpostal['pickup_hub'] = $request->pickup_hub;
         }
-        if(!empty($request->hub_transfer)){
-            $addpostal['hub_transfer'] = $request->hub_transfer;
-        }
+        // if(!empty($request->hub_transfer)){
+        //     $addpostal['hub_transfer'] = $request->hub_transfer;
+        // }
         $addpostal['status'] = 1;
-
+        
         $savepostal = Zone::create($addpostal);
+        
         if($savepostal){
-            
+            $get_location = Location::where('id', $request->branch_id)->first();
+            Zone::where('id',$savepostal->id)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+
             $response['success']    = true;
             $response['page']       = 'postalcode-create';
             $response['error']      = false;
@@ -240,8 +243,10 @@ class SettingController extends Controller
     {
         $id = $request->postal_id;
         $postal_code = Zone::where('id', $id)->first();
+        $branchs = Location::all();
 
         $response['zone_data'] = $postal_code;
+        $response['branch_data'] = $branchs;
         $response['success'] = true;
         $response['success_message'] = "Data Fetch";
         return response()->json($response);
@@ -251,10 +256,13 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            $zoneupdate['district'] = $request->district;
-            $zoneupdate['state'] = $request->state;
-            $zoneupdate['primary_zone'] = $request->primary_zone;
-            $zoneupdate['hub_transfer'] = $request->hub_transfer;
+            $get_location = Location::where('id', $request->branch_id)->first();
+
+            // $zoneupdate['state'] = $request->state;
+            // $zoneupdate['district'] = $request->district;
+            $zoneupdate['pickup_hub'] = $request->pickup_hub;
+            $zoneupdate['hub_transfer'] = $get_location->name;
+            $zoneupdate['hub_nickname'] = $request->branch_id;
            
             Zone::where('id', $request->zone_id)->update($zoneupdate);
 
@@ -270,7 +278,6 @@ class SettingController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
-
     }
 
     //zone download excel/csv
@@ -282,11 +289,10 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $get_location = Location::where('id', $request->branch_id)->first();
             // $pickup_location = Location::where('id', $request->pickup_hub)->first();
 
-            Zone::where('state',$request->state_id)->where('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
 
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";

@@ -18,14 +18,14 @@ class ZoneImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {
         $zone = Zone::where('postal_code', $row['postal_code'])->first();
+        $location = Location::where('id',$row['hub_transfer_id'])->first();
         if(empty($zone)){
-            dd('pp');
             return new Zone([
                 'postal_code'   => $row['postal_code'],
                 'state'         => $row['state'],
                 'district'      => $row['district'],
                 'pickup_hub'    => $row['pickup_hub'],
-                'hub_transfer'  => $row['hub_transfer'],
+                'hub_transfer'  => @$location->name,
                 'hub_nickname'  => $row['hub_transfer_id'],
                 'status'        => "1",
                 'created_at'    => time(),
@@ -35,7 +35,7 @@ class ZoneImport implements ToModel,WithHeadingRow
                 'state'          =>  $row['state'],
                 'district'       =>  $row['district'],
                 'pickup_hub'     =>  $row['pickup_hub'],
-                'hub_transfer'   =>  $row['hub_transfer'],
+                'hub_transfer'   =>  @$location->name,
                 'hub_nickname'   =>  $row['hub_transfer_id'],
                 'updated_at'     =>  time(),
             ]);
