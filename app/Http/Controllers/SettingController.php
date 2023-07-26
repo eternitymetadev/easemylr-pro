@@ -148,6 +148,10 @@ class SettingController extends Controller
                     
                 });
             }
+            
+            if ($request->state_name) {
+                $query = $query->whereIn('state', $request->state_name);
+            }
 
             if ($request->peritem) {
                 Session::put('peritem', $request->peritem);
@@ -281,9 +285,9 @@ class SettingController extends Controller
     }
 
     //zone download excel/csv
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new ZoneExport, 'zones.csv');
+        return Excel::download(new ZoneExport($request->state_name), 'zones.csv');
     }
     public function updateDistrictHub(Request $request)
     {

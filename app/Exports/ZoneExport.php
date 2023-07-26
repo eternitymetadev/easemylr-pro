@@ -12,6 +12,13 @@ use Helper;
 
 class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
 {
+
+    protected $state_name;
+
+    function __construct($state_name) {
+        $this->state_name = $state_name;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */   
@@ -20,18 +27,32 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
         ini_set('memory_limit', '2048M');
         set_time_limit ( 6000 );
         $arr = array();
-        $query = Zone::query();
 
+        $query = Zone::query();
+        $query = $query->with('Branch','GetLocation');
+
+        $str = $this->state_name;
+        if($str){
+            $state_name = explode(" ",$str);
+        }else{
+            $state_name=array('');
+        }
+        if($state_name) {
+            $query = $query->whereIn('state', $state_name);
+        }
+        
         $zone = $query->orderby('created_at','DESC')->get();
 
         if($zone->count() > 0){
             foreach ($zone as $key => $value){
                 $arr[] = [
-                    'postal_code' => $value->postal_code,
-                    'district' => $value->district,
-                    'state' => $value->state,
-                    'hub_transfer' => $value->hub_transfer,
-                    'primary_zone' => $value->primary_zone,
+                    'postal_code'   => @$value->postal_code,
+                    'district'      => @$value->district,
+                    'state'         => @$value->state,
+                    'pickup_hub'    => @$value->GetLocation->name,
+                    'hub_transfer'  => @$value->hub_transfer,
+                    'hub_nickname'  => @$value->Branch->hub_nickname,
+                    // 'primary_zone' => $value->primary_zone,
                 ];
             }
         }                 
@@ -43,8 +64,10 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
             'postal_code',
             'district',
             'state',
+            'pickup_hub',
             'hub_transfer',
-            'primary_zone',
+            'hub_nickname',
+            // 'primary_zone',
         ];
     }
 }

@@ -40,6 +40,9 @@
     /* margin-top: 3rem;
     margin-left: 2rem; */
 }
+.select2-container{
+    margin-bottom: 0 !important;
+}
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
@@ -54,37 +57,40 @@
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-                    <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix.'/export-drs-table') }}">Export
-                    data</a> -->
-
                     <div class="container-fluid">
-                        <div class="row winery_row_n spaceing_2n mb-3">
-                            <div class="col d-flex pr-0">
+                        <div class="row align-items-end winery_row_n spaceing_2n mb-3">
+
+                            <div class="col-md-4">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search" id="search"
-                                                data-action="<?php echo url()->current(); ?>">
-                                            <!-- <div class="input-group-btn">
-                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                            </div> -->
+                                            <input type="text" class="form-control" placeholder="Search" id="search" data-action="<?php echo url()->current(); ?>">
                                         </div>
                                     </form>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <label>Select States</label>
+                                <select class="form-control tagging" id="state_name" name="state_name[]" multiple="multiple">
+                                    <option value="">Select States</option>
+                                    @foreach($all_states as $all_state)
+                                    <option value="{{$all_state->state}}">{{$all_state->state}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
                                     <span class="btn-primary btn-cstm btn ml-2"
                                         style="font-size: 15px; padding: 9px; width: 130px"
-                                        data-target="#postal_create" data-toggle="modal"><span><i class="fa fa-plus"></i> Add
-                                            New</span></span>
+                                        data-target="#postal_create" data-toggle="modal"><span><i class="fa fa-plus"></i> Add New</span></span>
                                     <?php $authuser = Auth::user();
                                     if($authuser->role_id ==1 ){ ?>
                                     <div class="btn-group relat">
                                         <a style="font-size: 15px; padding: 9px;"
-                                            href="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>"
-                                            class="downloadEx btn btn-primary pull-right" download><span><i
+                                            href="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>" data-action="<?php echo URL::to($prefix.'/'.$segment.'/export/excel'); ?>" data-url="<?php echo URL::to($prefix.'/postal-code'); ?>" class="zoneReportEx btn btn-primary pull-right" download><span><i
                                                     class="fa fa-download"></i> Export</span></a>
+            
                                     </div>
                                     <?php } ?>
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
@@ -99,35 +105,6 @@
                                     </button>
                                     <?php } ?>
                                 </div>
-                            </div>
-
-                            
-                        </div>
-                        <div class="col-12">
-                            <div class="col-sm-4">
-                                <label>Select State</label>
-                                <select class="form-control tagging" id="state_name" name="state_name[]" multiple="multiple">
-                                    <option value="">--Select--</option>
-                                    @foreach($all_states as $all_state)
-                                    <option value="{{$all_state->state}}">{{$all_state->state}}</option>
-                                    @endforeach
-                                </select>
-
-                            </select>
-
-                            </div>
-
-                            <div class="col-8">
-                                <button type="button" id="filter_reportall" class="btn btn-primary"
-                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
-                                    <span class="indicator-label">Filter Data</span>
-                                </button>
-                                <a href="<?php echo URL::to($prefix.'/reports/export3'); ?>"
-                                    data-url="<?php echo URL::to($prefix.'/consignment-report3'); ?>"
-                                    class="consignmentReportEx btn btn-white btn-cstm"
-                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
-                                    data-action="<?php echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
-                                <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                             </div>
                         </div>
                     </div>
@@ -474,6 +451,73 @@ $('#state_id').change(function() {
         }
     });
 
+});
+
+$('#state_name').change(function() {    
+    var state_name = $(this).val();   
+    
+    jQuery.ajax({
+        type: 'get',
+        url: 'postal-code',
+        data: {
+            state_name: state_name
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.html) {
+                jQuery('.main-table').html(response.html);
+            }
+        }
+    });
+    return false;
+});
+
+jQuery(document).on('click', '.zoneReportEx', function(event) {
+    event.preventDefault();
+
+    var totalcount = jQuery('.totalcount').text();
+    if (totalcount > 30000) {
+        jQuery('.limitmessage').show();
+        setTimeout(function() {
+            jQuery('.limitmessage').fadeOut();
+        }, 5000);
+        return false;
+    }
+
+    var geturl = jQuery(this).attr('data-action');
+    var state_name = jQuery('#state_name').val();
+
+    var url = jQuery('#search').attr('data-url');
+
+    geturl = geturl + '?state_name=' + state_name;
+
+    jQuery.ajax({
+        url: url,
+        type: 'get',
+        cache: false,
+        data: {
+            state_name: state_name
+        },
+        headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+        },
+        processData: true,
+        beforeSend: function() {
+            //jQuery(".load-main").show();
+        },
+        complete: function() {
+            //jQuery(".load-main").hide();
+        },
+        success: function(response) {
+            // jQuery(".load-main").hide();
+            setTimeout(() => {
+                window.location.href = geturl
+            }, 10);
+        }
+    });
 });
 </script>
 @endsection

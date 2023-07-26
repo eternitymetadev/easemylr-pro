@@ -1,4 +1,5 @@
 <?php $authuser = Auth::user();?>
+<p class="totalcount">Total Count: <span class="reportcount">{{$zones->total()}}</span></p>
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
