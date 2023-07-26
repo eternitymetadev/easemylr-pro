@@ -238,4 +238,9 @@ class SSOController extends Controller
         //     return redirect("login")->withError("Failed to get login information! Try again.");
         // }
     }
+
+    public function sample_data()
+    {
+        return "123";
+    }
 }
