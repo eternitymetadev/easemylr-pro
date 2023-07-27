@@ -528,9 +528,7 @@ class SettingController extends Controller
             } else {
                 $gstfile = null;
             }
-
-            // $branch = implode(',', $request->branch_id);
-           
+            
             $gstsave['gst_no'] = $request->gst_no;
             // $gstsave['branch_id'] = $branch;
             $gstsave['state'] = $request->state;
@@ -541,12 +539,10 @@ class SettingController extends Controller
             $gstsave = GstRegisteredAddress::create($gstsave);
 
             if(!empty($request->branch_id)){
-            foreach($request->branch_id as $branch){
-                Location::where('id', $branch)->update(['gst_registered_id'=> $gstsave->id]);
+                foreach($request->branch_id as $branch){
+                    Location::where('id', $branch)->update(['gst_registered_id'=> $gstsave->id]);
+                }
             }
-        }
-
-
 
             if ($gstsave) {
                 $url = $this->prefix . '/settings/branch-address';
