@@ -15,6 +15,7 @@
                 <th>Invoice No</th>
                 <th style="text-align: center; width: 120px;">Delivery Status</th>
                 <th style="text-align: center; width: 120px;">Delivery Date</th>
+                <th>User Id</th>
                 <th class="text-center">POD</th>
             </tr> 
         </thead>
@@ -23,10 +24,10 @@
             @foreach($consignments as $consignment)
             <?php
 
-$start_date = strtotime($consignment->consignment_date);
-$end_date = strtotime($consignment->delivery_date);
-$tat = ($end_date - $start_date) / 60 / 60 / 24;
-?>
+            $start_date = strtotime($consignment->consignment_date);
+            $end_date = strtotime($consignment->delivery_date);
+            $tat = ($end_date - $start_date) / 60 / 60 / 24;
+            ?>
             <tr>
                 <td>{{$consignment->Branch->name ?? '-'}}</td>
 
@@ -63,22 +64,22 @@ $tat = ($end_date - $start_date) / 60 / 60 / 24;
                 @if (empty($consignment->order_id))
                 @if (!empty($consignment->ConsignmentItems))
                 <?php
-$order = array();
-$invoices = array();
-$inv_date = array();
-$inv_amt = array();
-foreach ($consignment->ConsignmentItems as $orders) {
-    $order[] = $orders->order_id;
-    $invoices[] = $orders->invoice_no;
-    $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-    $inv_amt[] = $orders->invoice_amount;
-}
-//echo'<pre>'; print_r($order); die;
-$order_item['orders'] = implode(',', $order);
-$order_item['invoices'] = implode(', ', $invoices);
-$invoice['date'] = implode(',', $inv_date);
-$invoice['amt'] = implode(',', $inv_amt);
-?>
+                $order = array();
+                $invoices = array();
+                $inv_date = array();
+                $inv_amt = array();
+                foreach ($consignment->ConsignmentItems as $orders) {
+                    $order[] = $orders->order_id;
+                    $invoices[] = $orders->invoice_no;
+                    $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+                    $inv_amt[] = $orders->invoice_amount;
+                }
+                //echo'<pre>'; print_r($order); die;
+                $order_item['orders'] = implode(',', $order);
+                $order_item['invoices'] = implode(', ', $invoices);
+                $invoice['date'] = implode(',', $inv_date);
+                $invoice['amt'] = implode(',', $inv_amt);
+                ?>
                 <td>{{ $orders->order_id ?? "-" }}</td>
                 @else
                 <td>-</td>
@@ -144,7 +145,7 @@ $invoice['amt'] = implode(',', $inv_amt);
 
                 <td style="text-align: center; width: 120px;">
                     {{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
-
+                <td>{{@$consignment->pod_userid}}</td>
 
                 <?php if ($consignment->lr_mode == 1) {
                      $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();

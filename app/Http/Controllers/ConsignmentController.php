@@ -4382,7 +4382,7 @@ class ConsignmentController extends Controller
                 $filename = null;
             }
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 // =================== task assign ====== //
@@ -4455,7 +4455,7 @@ class ConsignmentController extends Controller
                         }
                         
                         if($check_lr_mode->lr_mode == 0){
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                         }
 
@@ -4478,7 +4478,7 @@ class ConsignmentController extends Controller
                     } else {
                         if (!empty($filename)) {
                             if($check_lr_mode->lr_mode == 0){
-                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->id,]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                             }
                         }
@@ -4486,7 +4486,7 @@ class ConsignmentController extends Controller
                 }
             }
             $response['success'] = true;
-            $response['messages'] = 'img uploaded successfully';
+            $response['messages'] = 'Image uploaded successfully';
             return Response::json($response);
         }
     }
@@ -5528,7 +5528,7 @@ class ConsignmentController extends Controller
             } else {
                 $filename = null;
             }
-            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //
             $mytime = Carbon::now('Asia/Kolkata');
@@ -5575,9 +5575,8 @@ class ConsignmentController extends Controller
 
     public function deletePodStatus(Request $request)
     {
-
         $lr_no = $request->lr_id;
-        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null]);
+        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null,'pod_userid' => null]);
 
         if ($mode) {
             $response['success'] = true;
@@ -5592,7 +5591,6 @@ class ConsignmentController extends Controller
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
     public function sendNotification($request)
     {
-
         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
 
         $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";
