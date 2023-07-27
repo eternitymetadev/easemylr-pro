@@ -34,10 +34,6 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
         $str = $this->state_name;
         if($str){
             $state_name = explode(" ",$str);
-        }else{
-            $state_name=array('');
-        }
-        if($state_name) {
             $query = $query->whereIn('state', $state_name);
         }
         
@@ -61,11 +57,11 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
     public function headings(): array
     {
         return [
-            'postal_code',
-            'district',
-            'state',
-            'pickup_hub',
-            'delivery_hub',
+            'Postal Code',
+            'District',
+            'State',
+            'Pickup Hub',
+            'Delivery Hub',
             // 'delivery_hub_nickname',
             // 'primary_zone',
         ];
