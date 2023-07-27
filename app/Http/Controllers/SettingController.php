@@ -194,8 +194,9 @@ class SettingController extends Controller
         // dd($request->all());
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
-            'postal_code'    => 'required',
+            'postal_code' => 'required|unique:zones',
         );
+        
         $validator = Validator::make($request->all() , $rules);
         if ($validator->fails())
         {
@@ -207,6 +208,9 @@ class SettingController extends Controller
             $response['errors']     = $errors;
             return response()->json($response);
         }
+
+        $get_location = Location::where('id', $request->branch_id)->first();
+
         if(!empty($request->postal_code)){
             $addpostal['postal_code'] = $request->postal_code;
         }
@@ -222,14 +226,13 @@ class SettingController extends Controller
         // if(!empty($request->hub_transfer)){
         //     $addpostal['hub_transfer'] = $request->hub_transfer;
         // }
+        $addpostal['hub_transfer'] = $get_location->name;
+        $addpostal['hub_nickname'] = $request->branch_id;
         $addpostal['status'] = 1;
         
         $savepostal = Zone::create($addpostal);
         
         if($savepostal){
-            $get_location = Location::where('id', $request->branch_id)->first();
-            Zone::where('id',$savepostal->id)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
-
             $response['success']    = true;
             $response['page']       = 'postalcode-create';
             $response['error']      = false;
@@ -265,8 +268,8 @@ class SettingController extends Controller
             // $zoneupdate['state'] = $request->state;
             // $zoneupdate['district'] = $request->district;
             $zoneupdate['pickup_hub'] = $request->pickup_hub;
-            $zoneupdate['hub_transfer'] = $get_location->name;
-            $zoneupdate['hub_nickname'] = $request->branch_id;
+            $zoneupdate['hub_transfer'] = @$get_location->name;
+            $zoneupdate['hub_nickname'] = @$request->branch_id;
            
             Zone::where('id', $request->zone_id)->update($zoneupdate);
 
@@ -528,7 +531,7 @@ class SettingController extends Controller
             } else {
                 $gstfile = null;
             }
-            
+
             $gstsave['gst_no'] = $request->gst_no;
             // $gstsave['branch_id'] = $branch;
             $gstsave['state'] = $request->state;

@@ -135,19 +135,19 @@
             <div class="modal-body">
                 <div class="form-row">
                     <div class="col-12">
-                        <label for="x">Postal Code</label>
+                        <label>Postal Code</label>
                         <input class="form-control form-control-sm" id="" name="postal_code" placeholder=""/>
                     </div>
                     <div class="col-12">
-                        <label for="x">State</label>
+                        <label>State</label>
                         <input class="form-control form-control-sm" id="" name="state" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">District</label>
+                        <label>District</label>
                         <input class="form-control form-control-sm" id="" name="district" placeholder="" />
                     </div>
                     <div class="col-12">
-                        <label for="x">Pickup Hub</label>
+                        <label>Pickup Hub</label>
                         <select class="form-control my-select2" id="" name="pickup_hub" tabindex="-1"
                             required>
                             <option value="">--Select--</option>
@@ -157,7 +157,7 @@
                         </select>
                     </div>
                     <div class="col-12">
-                        <label for="x">Select Delivery Hub</label>
+                        <label>Select Delivery Hub</label>
                         <select class="form-control my-select2" id="" name="branch_id" tabindex="-1"
                             required>
                             <option value="">--Select--</option>
