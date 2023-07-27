@@ -9,7 +9,7 @@
                 <th>State</th>
                 <th>Pickup Hub</th>
                 <th>Service HUB Name </th>
-                <th>Service Hub Code</th>
+                <th>Service Nick Name</th>
                <?php $authuser = Auth::user();
                 if($authuser->role_id == 1){?>
                 <th>Edit</th>
@@ -24,7 +24,7 @@
                 <td>{{ $zone->state ?? '-'}}</td>
                 <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
-                <td>{{ $zone->Branch->hub_nickname ?? '-'}}</td>
+                <td>{{ $zone->Branch->nick_name ?? '-'}}</td>
                 <?php if($authuser->role_id == 1){?>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
                 <?php } ?>
