@@ -182,7 +182,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     } else {
                         $pod= 'Available';
                     } 
-                } else { 
+                } elseif($consignment->lr_mode == 1) { 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
         
                     if(!empty($job->response_data)){
@@ -198,6 +198,14 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                         } else {
                             $pod= 'Available';
                         }
+                    }
+                }else{
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { 
+                        $pod= 'Available';
+                    }else{
+                        $pod= 'Not Available'; 
                     }
                 }
 
