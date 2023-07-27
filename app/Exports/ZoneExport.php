@@ -51,7 +51,7 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
                     'state'         => @$value->state,
                     'pickup_hub'    => @$value->GetLocation->name,
                     'hub_transfer'  => @$value->hub_transfer,
-                    'hub_nickname'  => @$value->Branch->hub_nickname,
+                    // 'hub_nickname'  => @$value->Branch->hub_nickname,
                     // 'primary_zone' => $value->primary_zone,
                 ];
             }
@@ -65,8 +65,8 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
             'district',
             'state',
             'pickup_hub',
-            'hub_transfer',
-            'hub_nickname',
+            'delivery_hub',
+            // 'delivery_hub_nickname',
             // 'primary_zone',
         ];
     }
