@@ -34,7 +34,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                     'delivery_date'  => $delivery_date,
                     'delivery_status' => 'Successful',
                     'signed_drs'    => $row['pod_image'],
-                    'pod_userid'    => $authuser->id,
+                    'pod_userid'    => $authuser->login_id,
                 ]);
             }
         }

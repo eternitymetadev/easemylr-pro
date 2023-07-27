@@ -4382,7 +4382,7 @@ class ConsignmentController extends Controller
                 $filename = null;
             }
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 // =================== task assign ====== //
@@ -4455,7 +4455,7 @@ class ConsignmentController extends Controller
                         }
                         
                         if($check_lr_mode->lr_mode == 0){
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                         }
 
@@ -4478,7 +4478,7 @@ class ConsignmentController extends Controller
                     } else {
                         if (!empty($filename)) {
                             if($check_lr_mode->lr_mode == 0){
-                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->id,]);
+                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                             }
                         }
@@ -5528,7 +5528,7 @@ class ConsignmentController extends Controller
             } else {
                 $filename = null;
             }
-            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //
             $mytime = Carbon::now('Asia/Kolkata');
