@@ -188,9 +188,9 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     if(!empty($job->response_data)){
                         $trail_decorator = json_decode($job->response_data);
                         $img_group = array();
-                        foreach($trail_decorator->task_history as $task_img){
+                        foreach(@$trail_decorator->task_history as $task_img){
                             if($task_img->type == 'image_added'){
-                                $img_group[] = $task_img->description;
+                                $img_group[] = @$task_img->description;
                             }
                         }
                         if(empty($img_group)){
