@@ -35,7 +35,6 @@ div.relative {
     font-size: 10px;
     }
     </style>
-    </style>
 
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -67,6 +66,7 @@ div.relative {
                                     <th>Password</th>
                                     <th>Email</th>
                                     <th>Roles</th>
+                                    <th>Assigned Locations</th>
                                     <th style="display: none;">Password</th>
                                     <th>Action</th>
                                 </tr>
@@ -75,7 +75,17 @@ div.relative {
                                 <?php 
                                 if(count($data)>0) {
                                     foreach ($data as $key => $user) {  
-                                ?> 
+
+                                        $str = $user->branch_id;
+                                        $location_ids = explode(",",$str);
+                                        $locations = array();
+
+                                        foreach($location_ids as $val){ 
+                                            $location = App\Models\Location::where('id',$val)->first();
+                                            @$locations[] = $location['name'];
+                                        }
+                                        $user['locations'] = implode(',', $locations);
+                                ?>
                                 <tr>
                                     <td>{{ ++$i }}</td>
                                     <td>{{ ucwords($user->name ?? "-")}}</td>
@@ -83,6 +93,8 @@ div.relative {
                                     <td>{{ $user->user_password ?? "-"}}</td>
                                     <td>{{ $user->email ?? "-" }}</td>
                                     <td>{{ ucwords($user->UserRole->name ?? "-") }}</td>
+                                    <td>{{ @$user['locations'] ?? "-" }}</td>
+
                                     <td style="display: none;">{{ $user->user_password ?? "-" }}</td>
                                     <td>
                                         <a class="btn btn-primary" href="{{url($prefix.'/users/'.Crypt::encrypt($user->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>

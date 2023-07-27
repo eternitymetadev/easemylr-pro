@@ -213,6 +213,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'delivery_mode'       => $deliverymode,
+                    'user_id'             => @$consignment->pod_userid,
                     'pod'                 => $pod,
 
                 ];
@@ -235,6 +236,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Date',
             'Delivery Status',
             'Delivery Mode',
+            'User Id',
             'POD'
         ];
     }
