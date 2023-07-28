@@ -62,7 +62,55 @@ class LoginController extends Controller
         // $remember = $request->has('remember') ? true : false;
 
         $credentials = $request->only('login_id', 'password');
-        if (Auth::attempt(['login_id' => $request->input('login_id'), 'password' => $request->input('password')]))
+        $data=$request->all();
+        $data['portal_id']=2;
+        $httpHost = $_SERVER['HTTP_HOST'];
+
+        if ($httpHost === 'localhost:8081' || $httpHost === 'localhost') {
+            $url = 'http://localhost:8000/api/custom_portal_signin';
+        } else {
+            $url = 'http://heythere.easemyorder.com/api/custom_portal_signin';
+        }
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => array('login' => $data['login_id'], 'password' => $data['password'], 'portal_id' => $data['portal_id']),
+        ));
+
+        $response_api = curl_exec($curl);
+
+        curl_close($curl);
+        $res = json_decode($response_api, true);
+
+
+        if ($res['status'] == "fail") {
+            $response['success'] = false;
+            $response['error_message'] = $res['msg'];
+            $response['error'] = true;
+            $response['email_error'] = true;
+            return response()->json($response);
+        }
+
+        if ($res['status'] == "fail-password") {
+            $response['success'] = false;
+            $response['error_message'] = $res['msg'];
+            $response['error'] = true;
+            $response['email_error'] = true;
+            return response()->json($response);
+        }
+
+        if ($res['status'] == "success-login") {
+       
+        if (Auth::attempt(['login_id' => $res['email'], 'password' => $request->input('password')]))
         {
             // Authentication passed...
             $getauthuser = Auth::user();
@@ -102,6 +150,13 @@ class LoginController extends Controller
             $response['error'] = false;
             $response['redirect_url'] = $url;
         }else{
+            $response['success'] = false;
+            $response['error_message'] = "Incorrect login id and password";
+            $response['error'] = true;
+            $response['email_error'] = true;
+        }
+          
+    } else {
             $response['success'] = false;
             $response['error_message'] = "Incorrect login id and password";
             $response['error'] = true;
