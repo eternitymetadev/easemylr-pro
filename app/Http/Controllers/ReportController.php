@@ -490,11 +490,15 @@ class ReportController extends Controller
 
                     $user['to'] = $regional->email;
                     $sec_emails = explode(',', $regional->secondary_email);
+                    if(!empty($sec_emails)){
                     $user['cc'] = $sec_emails;
+                    }
 
                     Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
                         $messges->to($user['to']);
+                        if(!empty($sec_emails)){
                         $messges->cc($user['cc']);
+                        }
                         $messges->subject('Monthly Report');
                         $messges->attach($get_file);
 
