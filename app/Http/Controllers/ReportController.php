@@ -481,10 +481,10 @@ class ReportController extends Controller
             if (!empty($regional->email)) {
 
                 if (!empty($consignment_details)) {
-                    $path = 'regional/report.xlsx';
+                    $path = 'regional/Shprider Auto MIS 910003.xlsx';
 
                     Excel::store(new RegionalReport($regional->id), $path, 'public');
-                    $get_file = storage_path('app/public/regional/report.xlsx');
+                    $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
 
                     $data = ['client_name' => $regional->name, 'current_time' => $current_time];
 
