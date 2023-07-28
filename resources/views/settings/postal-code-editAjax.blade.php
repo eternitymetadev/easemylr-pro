@@ -7,6 +7,7 @@
                 <th>PIN Code</th>
                 <th>District</th>
                 <th>State</th>
+                <th>City</th>
                 <th>Pickup Hub</th>
                 <th>Delivery HUB</th>
                 {{-- <th>Delivery Hub Nick Name</th> --}}
@@ -22,6 +23,7 @@
                 <td>{{ $zone->postal_code ?? '-'}}</td>
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
+                <td>{{ $zone->city ?? '-'}}</td>
                 <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
                 {{-- <td>{{ $zone->Branch->nick_name ?? '-'}}</td> --}}

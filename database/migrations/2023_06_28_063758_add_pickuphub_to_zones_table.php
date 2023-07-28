@@ -14,6 +14,7 @@ class AddPickuphubToZonesTable extends Migration
     public function up()
     {
         Schema::table('zones', function (Blueprint $table) {
+            $table->string('city')->after('postal_code')->nullable();
             $table->string('pickup_hub')->after('state')->nullable();
         });
     }

@@ -25,6 +25,7 @@ class ZoneImport implements ToModel,WithHeadingRow
         if(empty($zone)){
             return new Zone([
                 'postal_code'   => @$row['postal_code'],
+                'city'          => @$row['city'],
                 'state'         => @$row['state'],
                 'district'      => @$row['district'],
                 'pickup_hub'    => @$pickup_location->id,
@@ -35,6 +36,7 @@ class ZoneImport implements ToModel,WithHeadingRow
             ]);
         }else{
             $zoneUpdate = Zone::where('postal_code', $row['postal_code'])->update([
+                'city'           =>  @$row['city'],
                 'state'          =>  @$row['state'],
                 'district'       =>  @$row['district'],
                 'pickup_hub'     =>  @$row['pickup_hub'],

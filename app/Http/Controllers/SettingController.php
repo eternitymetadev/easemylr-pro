@@ -214,6 +214,9 @@ class SettingController extends Controller
         if(!empty($request->postal_code)){
             $addpostal['postal_code'] = $request->postal_code;
         }
+        if(!empty($request->city)){
+            $addpostal['city'] = $request->city;
+        }
         if(!empty($request->state)){
             $addpostal['state'] = $request->state;
         }
@@ -266,7 +269,7 @@ class SettingController extends Controller
             $get_location = Location::where('id', $request->branch_id)->first();
 
             // $zoneupdate['state'] = $request->state;
-            // $zoneupdate['district'] = $request->district;
+            $zoneupdate['city'] = $request->city;
             $zoneupdate['pickup_hub'] = $request->pickup_hub;
             $zoneupdate['hub_transfer'] = @$get_location->name;
             $zoneupdate['hub_nickname'] = @$request->branch_id;

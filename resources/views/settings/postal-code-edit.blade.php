@@ -139,6 +139,10 @@
                         <input class="form-control form-control-sm" id="" name="postal_code" placeholder=""/>
                     </div>
                     <div class="col-12">
+                        <label>City</label>
+                        <input class="form-control form-control-sm" id="" name="city" placeholder="" />
+                    </div>
+                    <div class="col-12">
                         <label>State</label>
                         <input class="form-control form-control-sm" id="" name="state" placeholder="" />
                     </div>
@@ -195,6 +199,10 @@
                         <input type="hidden" id="zone_id" name="zone_id" />
                         <label for="x">Postal Code</label>
                         <input class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly />
+                    </div>
+                    <div class="col-12">
+                        <label for="x">City</label>
+                        <input class="form-control form-control-sm" id="city" name="city" placeholder=""/>
                     </div>
                     <div class="col-12">
                         <label for="x">State</label>
@@ -342,9 +350,10 @@ $(document).on('click', '.edit_postal', function() {
 
             },
         success: function(data) {
-            console.log(data.zone_data.hub_nickname);
+            console.log(data.zone_data);
             $('#primary_zone').val(data.zone_data.primary_zone);
             $('#district').val(data.zone_data.district);
+            $('#city').val(data.zone_data.city);
             $('#state').val(data.zone_data.state);
             $('#zone_id').val(data.zone_data.id);
             $('#hub_transfer').val(data.zone_data.hub_transfer);
