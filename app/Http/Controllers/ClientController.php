@@ -452,6 +452,11 @@ class ClientController extends Controller
             $regionalupdate['is_prs_pickup'] = $request->is_prs_pickup;
             $regionalupdate['is_email_sent'] = $request->is_email_sent;
             $regionalupdate['location_id'] = $request->branch_id;
+
+            if($request->secondary_email){
+                $secondary_email = implode(',', $request->secondary_email);
+            }
+            $regionalupdate['secondary_email'] = $secondary_email;
             // $regionalupdate['upload_gst'] = $gst_img_path_save;
             // $regionalupdate['upload_pan'] = $pan_img_path_save;
             // $regionalupdate['payment_term'] = $payment_term;
@@ -736,6 +741,10 @@ class ClientController extends Controller
             $client['location_id'] = $request->branch_id;
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;
+            if($request->secondary_email){
+                $secondary_email = implode(',', $request->secondary_email);
+            }
+            $client['secondary_email'] = $secondary_email;
             // $client['payment_term'] = $payment_term;
             $client['status'] = "1";
 

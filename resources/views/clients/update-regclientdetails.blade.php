@@ -1,7 +1,18 @@
 @extends('layouts.main')
 @section('content')
 
-
+<style>
+    .deleteInput {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+        }
+        .deleteInput:hover{
+            color: red;
+        }
+</style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -155,6 +166,23 @@
                         
                     </div>
 
+                    <label for="exampleFormControlInput2">Alertnate Emails</label>
+
+                    <div class="form-row mb-0" id="altEmails"
+                        style="padding: 2rem 1rem 1rem; background: antiquewhite; border-radius: 12px">
+                        <?php $sec_emails = explode(',', $regclient_name->secondary_email);
+                         foreach($sec_emails as $email){?>
+                        <div class="form-group col-md-4" style="position: relative;">
+                            <input type="text" class="form-control" name="secondary_email[]" placeholder="enter email" value="{{$email}}"/>
+                            <span class="deleteInput">Delete</span>
+                        </div>
+                        <?php } ?>
+                       
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <span onclick="appendInput()" style="cursor: pointer; color: #f9b808">Add Email</span>
+                    </div>
+
                     <div class="btn-section mt-60">
                         <button type="submit" class="btn-primary btn-cstm btn mr-4"><span>Save</span></button>
 
@@ -199,6 +227,17 @@ $("#branch_id").change(function() {
         },
     });
 
+});
+
+function appendInput() {
+    let inputToAppend = `<div class="form-group col-md-4" style="position: relative;">
+                            <input type="text" class="form-control" name="secondary_email[]" placeholder="enter email"/>
+                            <span class="deleteInput">Delete</span>
+                        </div>`;
+    $('#altEmails').append(inputToAppend);
+};
+$(document).on('click', '.deleteInput', function() {
+    $(this).closest('.form-group').remove();
 });
 </script>
 @endsection

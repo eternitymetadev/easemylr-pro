@@ -6,6 +6,8 @@ use App\models\SecondaryAvailStock;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
@@ -23,7 +25,7 @@ use Auth;
 use DateTime;
 use DB;
 
-class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
+class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithEvents
 {
     protected $regional_id;
     
@@ -158,6 +160,35 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue
             'Ageing',
             'Delivery Date',
             'Issue',        
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+   
+                $event->sheet->getDelegate()->getRowDimension('1')->setRowHeight(20);
+                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(13);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
+     
+            },
         ];
     }
 }

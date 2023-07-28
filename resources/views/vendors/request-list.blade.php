@@ -57,103 +57,25 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Request
-                                List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Request List</a></li>
                     </ol>
                 </nav>
             </div>
 
             <div class="widget-content widget-content-area br-6">
-                <div class=" mb-4 mt-4">
-                    @csrf
-                    <table id="unverified-table" class="table table-hover" style="width:100%">
-                        <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
-
-                            Create DSR
-                            </button> -->
+                <div class="row mt-4" style="margin-left: 1425px; margin-bottom:15px;">
+                    <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                 </div>
-                <thead>
-                    <tr>
-                        <th>Transaction Id</th>
-                        <th>Date</th>
-                        <th>Total Drs</th>
-                        <!-- <th style="max-width:200px;">Drs No</th> -->
-                        <th>Vendor</th>
-                        <th>Total Amount</th>
-                        <th>Adavanced</th>
-                        <th>Balance</th>
-                        <th>Branch </th>
-                        <th>Create Payment</th>
-                        <th>Status</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($requestlists as $requestlist)
-                    <?php
-                            
-                          $date = date('d-m-Y',strtotime($requestlist->created_at));
-                    ?>
-                    <tr>
-
-                        <td>{{ $requestlist->transaction_id ?? "-" }}</td>
-                        <td>{{ $date }}</td>
-                        <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
-                            {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
-                        </td>
-                        <!-- <td style="max-width: 200px; word-wrap: break-word; white-space: break-spaces;">{{ Helper::showDrsNo($requestlist->transaction_id) ?? "" }}</td> -->
-                        <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
-                        <td>{{ $requestlist->total_amount ?? "-"}}</td>
-                        <td>{{ $requestlist->advanced ?? "-"}}</td>
-                        <td>{{ $requestlist->balance ?? "-" }}</td>
-                        <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
-                        <?php if($requestlist->payment_status == 1){?>
-                        <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
-                                Paid</button></td>
-                        <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
-                        <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}"
-                                disabled>Processing...</button></td>
-                        <?php } else if($requestlist->payment_status == 0){ ?>
-                        <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
-                                Payment</button></td>
-                        <?php }else{
-                        if($requestlist->balance < 1){ ?>
-                            <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
-                                Paid</button></td>
-                       <?php }else{ ?>
-                        <td><button class="btn btn-warning payment_button"
-                                value="{{$requestlist->transaction_id}}">Create Payment</button></td>
-                      <?php  }
-                             ?>
-                        
-                        <?php } ?>
-
-                        <!-- payment Status -->
-                        <?php if($requestlist->payment_status == 0){ ?>
-                        <td> <label class="badge badge-dark">Faild</label>
-                        </td>
-                        <?php } elseif($requestlist->payment_status == 1) { ?>
-                        <td> <label class="badge badge-success">Paid</label> </td>
-                        <?php } elseif($requestlist->payment_status == 2) { ?>
-                        <td> <label class="badge badge-dark">Sent to Account</label>
-                        </td>
-                        <?php } elseif($requestlist->payment_status == 3) { ?>
-                        <td><label class="badge badge-primary">Partial Paid</label></td>
-                        <?php } else{?>
-                        <td> <button type="button" class="btn btn-danger " style="margin-right:4px;">Unknown</button>
-                        </td>
-                        <?php } ?>
-                        <!-- end payment -->
-
-                    </tr>
-                    @endforeach
-                </tbody>
-                </table>
+                @csrf
+                <div class="main-table table-responsive">
+                    @include('vendors.request-list-ajax')
+                </div>
+                
             </div>
         </div>
     </div>
 </div>
-</div>
+
 @include('models.payment-model')
 @endsection
 @section('js')

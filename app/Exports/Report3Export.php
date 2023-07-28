@@ -68,7 +68,8 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
-            'DrsDetail:consignment_no,drs_no,created_at'
+            'DrsDetail:consignment_no,drs_no,created_at',
+            'PrsDetail.PrsDriverTask:prs_id,pickup_date'
         );
 
         if($authuser->role_id ==1)
@@ -97,27 +98,42 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
-            // ageing formula = deliverydate - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $age_diff = ($end_date - $start_date)/60/60/24;
+            // ageing formula = deliverydate - createdate / prs_pickupdate
+            $start_date = strtotime($consignment->consignment_date);
+            $end_date = strtotime($consignment->delivery_date);
+            $age_diff = ($end_date - $start_date)/60/60/24;
 
+            $prspickup_date = strtotime(@$consignment->PrsDetail->PrsDriverTask->pickup_date);
+            $pickup_diff = ($end_date - $prspickup_date)/60/60/24;
+            
+            if(!empty($consignment->prs_id)){
+                if($pickup_diff > 0){
+                    $ageing_day = $pickup_diff;
+                }else{
+                    if($age_diff < 0){
+                        $ageing_day = '-';
+                    }else{
+                        $ageing_day = $age_diff;
+                    }
+                }
+            }else{
                 if($age_diff < 0){
                     $ageing_day = '-';
                 }else{
                     $ageing_day = $age_diff;
                 }
+            }
 
                 // tat formula = edd - createdate
                 $start_date = strtotime($consignment->consignment_date);
                 $end_date = strtotime($consignment->edd);
-                $tatday = ($end_date - $start_date)/60/60/24;
-
-                if($tatday < 0){
+                $tat_diff = ($end_date - $start_date)/60/60/24;
+                if($tat_diff < 0){
                     $tat_day = '-';
                 }else{
-                    $tat_day = $tatday;
+                    $tat_day = $tat_diff;
                 }
+                
                                 
                 if(!empty($consignment->consignment_date )){
                     $consignment_date = $consignment->consignment_date;
@@ -140,10 +156,36 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $drs = '-';
                 }
+                // LR type
+                if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                    $lr_type = "PTL";
+                }else{ 
+                    $lr_type = "-";
+                } 
+                // invoice no
+                if(empty($consignment->order_id)){ 
+                    if(!empty($consignment->ConsignmentItems)){
+                        $invoices = array();
+                        foreach($consignment->ConsignmentItems as $orders){ 
+                            $invoices[] = $orders->invoice_no;
+                        }
+                        $order_item['invoices'] = implode('/', $invoices);
+                    }
+                }
+
+                if(empty($consignment->invoice_no)){
+                    $invoice_number =  $order_item['invoices'] ?? '-';
+                }else{
+                    $invoice_number =  $consignment->invoice_no ?? '-';
+                }
                 
                 $arr[] = [
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'consignment_id'      => @$consignment->id,
+                    'lr_type'             => @$lr_type,
+                    'invoice_number'      => @$invoice_number,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
                     'consigner_district'  => @$consignment->ConsignerDetail->district,
@@ -152,9 +194,9 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
 
-                    'total_quantity'      => $consignment->total_quantity,
-                    'total_weight'        => $consignment->total_weight,
-                    'total_gross_weight'  => $consignment->total_gross_weight,
+                    'total_quantity'      => @$consignment->total_quantity,
+                    'total_weight'        => @$consignment->total_weight,
+                    'total_gross_weight'  => @$consignment->total_gross_weight,
                     
                     'tat'                 => $tat_day,
                     'payment_type'        => @$consignment->payment_type,
@@ -174,6 +216,8 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         return [
             'LR Date',
             'LR Number',
+            'Type of Shipment',
+            'Invoice Number',
             'Regional Client',
             'Consignor Name',
             'Consignor District',

@@ -978,28 +978,81 @@ class VendorController extends Controller
     public function requestList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
+        $query = PaymentRequest::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $cc = explode(',', $authuser->branch_id);
+
+            $query = $query->with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
+                ->groupBy('transaction_id');
+
+            if ($authuser->role_id == 2) {
+                $query = $query->where('branch_id', $cc);
+            } else {
+                $query = $query;
+            }
+
+            $vendors = Vendor::all();
+            $vehicletype = VehicleType::select('id', 'name')->get();
+            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
+
+            $html = view('vendors.request-list-ajax', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $query = $query->with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
+                ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
-            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
-                ->where('branch_id', $cc)
-                ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id')
-                ->get();
+            $query = $query->where('branch_id', $cc);
         } else {
-            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id')
-                ->get();
+            $query = $query;
         }
 
         $vendors = Vendor::all();
         $vehicletype = VehicleType::select('id', 'name')->get();
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
-        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
+        $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $requestlists = $requestlists->appends($request->query());
+
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem]);
     }
 
     public function getVendorReqDetails(Request $request)

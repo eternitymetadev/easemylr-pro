@@ -608,7 +608,8 @@ class PickupRunSheetController extends Controller
                     }
                     // end create order
                 }
-                PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 3]);
+                $pickup_Date = Carbon::now()->format('Y-m-d');
+                PrsDrivertask::where('id', $request->drivertask_id)->update(['pickup_Date'=>$pickup_Date,'status' => 3]);
 
                 $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
                 $countdrivertask_status = PrsDrivertask::where(['prs_id' => $request->prs_id, 'status' => 3])->count();
