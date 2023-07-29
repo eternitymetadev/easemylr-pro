@@ -297,13 +297,16 @@ class SettingController extends Controller
     }
     public function updateDistrictHub(Request $request)
     {
+        dd($request->all());
         try {
             DB::beginTransaction();
             $get_location = Location::where('id', $request->branch_id)->first();
             // $pickup_location = Location::where('id', $request->pickup_hub)->first();
-
-            Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
-
+            if(!empty($request->state_id) && !empty($request->district)){
+                Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            }else if(!empty($request->state_id) && empty($request->district)){
+                Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            }
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";
             $response['error'] = false;

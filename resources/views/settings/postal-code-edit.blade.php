@@ -284,10 +284,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <input type="checkbox" id="pickup_chkbox" name="pickup_chkbox">
+                                {{-- <input type="checkbox" id="pickup_chkbox" name="pickup_chkbox"> --}}
                                 <label for="inputEmail4">Select Pickup Hub</label>
-                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1"
-                                    disabled>
+                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1" >
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -297,9 +296,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <input type="checkbox" id="delivery_chkbox" name="delivery_chkbox">
+                                {{-- <input type="checkbox" id="delivery_chkbox" name="delivery_chkbox"> --}}
                                 <label for="inputEmail4">Select Delivery Hub</label>
-                                <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1" disabled>
+                                <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1">
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -324,17 +323,15 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            $('#pickup_chkbox').on('change', function() {
-            // $('#pickup_chkbox').click(function() {
-                if ($(this).is(":checked")) {
-                    alert('checked')
-                    $('#pickup_hub').attr('required', true);
-                    $('#pickup_hub').removeAttr('disabled');
-                } else{
-                    $('#pickup_hub').removeAttr('required');
-                    $('#pickup_hub').attr('disabled', true);
-                }
-            });
+            // $('#pickup_chkbox').on('change', function() {
+            //     if ($(this).is(":checked")) {
+            //         $('#pickup_hub').attr('required', true);
+            //         $('#pickup_hub').removeAttr('disabled');
+            //     } else{
+            //         $('#pickup_hub').removeAttr('required');
+            //         $('#pickup_hub').attr('disabled', true);
+            //     }
+            // });
 
             jQuery(function() {
                 $('.my-select2').each(function() {
