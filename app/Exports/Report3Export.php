@@ -105,10 +105,14 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
             $date1 = new DateTime($start_date);
             $date2 = new DateTime($end_date);
             // Calculate the difference
+            if(!$date1 || !$date2){
+                $age_diff = '';
+            }else{
             $interval = $date1->diff($date2);
 
             // Get the difference in days
             $age_diff = $interval->days;
+            }
 
             $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
             if(!empty($prspickup_date)){
@@ -117,8 +121,12 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                 $prspickup_date = '';
             }
             if(!empty($prspickup_date)){
-                $interval_prs = $prspickup_date->diff($end_date);
-                $pickup_diff = $interval_prs->days;
+                if(!$prspickup_date || !$end_date){
+                    $pickup_diff = '';
+                }else{
+                    $interval_prs = $prspickup_date->diff($end_date);
+                    $pickup_diff = $interval_prs->days;
+                }
             }else{
                 $pickup_diff = '';
             }
