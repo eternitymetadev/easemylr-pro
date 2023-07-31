@@ -6,6 +6,8 @@ use App\models\SecondaryAvailStock;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
@@ -23,7 +25,7 @@ use Auth;
 use DateTime;
 use DB;
 
-class Report3Export implements FromCollection, WithHeadings, ShouldQueue
+class Report3Export implements FromCollection, WithHeadings, ShouldQueue, WithEvents
 {
     protected $startdate;
     protected $enddate;
@@ -98,42 +100,49 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
-            // ageing formula = deliverydate - createdate / prs_pickupdate
-            $start_date = $consignment->consignment_date;
-            $end_date = $consignment->delivery_date;
+                // ageing formula = deliverydate - createdate / prs_pickupdate
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->delivery_date;
 
-            $date1 = new DateTime($start_date);
-            $date2 = new DateTime($end_date);
-            // Calculate the difference
-            if(!$date1 || !$date2){
-                $age_diff = '';
-            }else{
-            $interval = $date1->diff($date2);
-
-            // Get the difference in days
-            $age_diff = $interval->days;
-            }
-
-            $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
-            if(!empty($prspickup_date)){
-                $prspickup_date = new DateTime($prspickup_date);
-            }else{
-                $prspickup_date = '';
-            }
-            if(!empty($prspickup_date)){
-                if(!$prspickup_date || !$end_date){
-                    $pickup_diff = '';
+                $date1 = new DateTime($start_date);
+                $date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$date1 || !$date2){
+                    $age_diff = '';
                 }else{
-                    $interval_prs = $prspickup_date->diff($end_date);
-                    $pickup_diff = $interval_prs->days;
+                    $interval = $date1->diff($date2);
+
+                    // Get the difference in days
+                    $age_diff = $interval->days;
                 }
-            }else{
-                $pickup_diff = '';
-            }
-            
-            if(!empty($consignment->prs_id)){
-                if($pickup_diff > 0){
-                    $ageing_day = $pickup_diff;
+
+                $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
+                if(!empty($prspickup_date)){
+                    $prspickup_date = new DateTime($prspickup_date);
+                }else{
+                    $prspickup_date = '';
+                }
+                if(!empty($prspickup_date)){
+                    if(!$prspickup_date || !$date2){
+                        $pickup_diff = '';
+                    }else{
+                        $interval_prs = $prspickup_date->diff($date2);
+                        $pickup_diff = $interval_prs->days;
+                    }
+                }else{
+                    $pickup_diff = '';
+                }
+                
+                if(!empty($consignment->prs_id)){
+                    if($pickup_diff > 0){
+                        $ageing_day = $pickup_diff;
+                    }else{
+                        if($age_diff < 0){
+                            $ageing_day = '-';
+                        }else{
+                            $ageing_day = $age_diff;
+                        }
+                    }
                 }else{
                     if($age_diff < 0){
                         $ageing_day = '-';
@@ -141,24 +150,28 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                         $ageing_day = $age_diff;
                     }
                 }
-            }else{
-                if($age_diff < 0){
-                    $ageing_day = '-';
-                }else{
-                    $ageing_day = $age_diff;
-                }
-            }
 
                 // tat formula = edd - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->edd);
-                $tat_diff = ($end_date - $start_date)/60/60/24;
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->edd;
+
+                $s_date1 = new DateTime($start_date);
+                $e_date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$s_date1 || !$e_date2){
+                    $tat_diff = '';
+                }else{
+                    $interval = $s_date1->diff($e_date2);
+
+                    // Get the difference in days
+                    $tat_diff = $interval->days;
+                }
+
                 if($tat_diff < 0){
                     $tat_day = '-';
                 }else{
                     $tat_day = $tat_diff;
-                }
-                
+                }                
                                 
                 if(!empty($consignment->consignment_date )){
                     $consignment_date = $consignment->consignment_date;
@@ -196,7 +209,7 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                         foreach($consignment->ConsignmentItems as $orders){ 
                             $invoices[] = $orders->invoice_no;
                         }
-                        $order_item['invoices'] = implode('/', $invoices);
+                        $order_item['invoices'] = implode(',', $invoices);
                     }
                 }
 
@@ -223,7 +236,7 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
                     'total_weight'        => @$consignment->total_weight,
                     'total_gross_weight'  => @$consignment->total_gross_weight,
                     
-                    'tat'                 => $tat_day,
+                    'tat'                 => @$tat_day,
                     'payment_type'        => @$consignment->payment_type,
                     'dispatch_date'       => @$consignment->consignment_date,
                     'delivery_status'     => @$consignment->delivery_status,
@@ -264,4 +277,34 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
             'Issue',        
         ];
     }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class    => function(AfterSheet $event) {
+   
+                $event->sheet->getDelegate()->getRowDimension('1')->setRowHeight(20);
+                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(13);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(40);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
+     
+            },
+        ];
+    }
+
 }
