@@ -99,12 +99,29 @@ class Report3Export implements FromCollection, WithHeadings, ShouldQueue
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             // ageing formula = deliverydate - createdate / prs_pickupdate
-            $start_date = strtotime($consignment->consignment_date);
-            $end_date = strtotime($consignment->delivery_date);
-            $age_diff = ($end_date - $start_date)/60/60/24;
+            $start_date = $consignment->consignment_date;
+            $end_date = $consignment->delivery_date;
 
-            $prspickup_date = strtotime(@$consignment->PrsDetail->PrsDriverTask->pickup_date);
-            $pickup_diff = ($end_date - $prspickup_date)/60/60/24;
+            $date1 = new DateTime($start_date);
+            $date2 = new DateTime($end_date);
+            // Calculate the difference
+            $interval = $date1->diff($date2);
+
+            // Get the difference in days
+            $age_diff = $interval->days;
+
+            $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
+            if(!empty($prspickup_date)){
+                $prspickup_date = new DateTime($prspickup_date);
+            }else{
+                $prspickup_date = '';
+            }
+            if(!empty($prspickup_date)){
+                $interval_prs = $prspickup_date->diff($end_date);
+                $pickup_diff = $interval_prs->days;
+            }else{
+                $pickup_diff = '';
+            }
             
             if(!empty($consignment->prs_id)){
                 if($pickup_diff > 0){
