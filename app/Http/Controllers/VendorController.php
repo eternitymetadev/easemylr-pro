@@ -6,6 +6,7 @@ use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
 use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
+use App\Exports\DrsPaymentExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
@@ -204,7 +205,6 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -277,7 +277,6 @@ class VendorController extends Controller
             }
 
             /// search with vehicle no
-
             if ($request->searchvehicle) {
                 Session::put('searchvehicle', $request->searchvehicle);
             }
@@ -302,6 +301,13 @@ class VendorController extends Controller
             }
 
             $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
+            }
 
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
 
@@ -366,6 +372,11 @@ class VendorController extends Controller
         $vendors = Vendor::with('Branch')->get();
 
         return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
+    }
+
+    public function drsPaymentExport(Request $request){
+        // dd($request->all());
+        return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle, $request->select_vehicle), 'drs_payment.csv');
     }
 
     public function getdrsdetails(Request $request)
