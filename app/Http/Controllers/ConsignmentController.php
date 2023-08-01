@@ -935,30 +935,35 @@ class ConsignmentController extends Controller
         }
 
         // get branch address
-        if(!empty($locations->GstAddress)){
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
-        <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
-        <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
-
-        }else{
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-            <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-            <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-            <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        }
-
-        // if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
-        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
-        // <b>' . $branch_add[1]->address . ',</b><br />
-        // <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
-        // <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
-        // } else {
+        // if(!empty($locations->GstAddress)){
         //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        // <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        // <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-        // <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        // }       
+        // <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
+        // <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
+        // <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
+
+        // }else{
+        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        //     <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        //     <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        //     <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        // }
+
+        if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+        <b>' . $branch_add[1]->address . ',</b><br />
+        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+        }else if ($data['branch_id'] == 32) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+        <b>' . $branch_add[2]->address . ',</b><br />
+        <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
+        } else {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        }       
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {
@@ -3095,6 +3100,11 @@ class ConsignmentController extends Controller
                 <b>' . $branch_add[1]->address . ',</b><br />
                 <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . 'b</b><br />
                 <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+                }else if ($locations->id == 32) {
+                    $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+                <b>' . $branch_add[2]->address . ',</b><br />
+                <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . 'b</b><br />
+                <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
                 } else {
                     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
                                     <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
@@ -4382,7 +4392,7 @@ class ConsignmentController extends Controller
                 $filename = null;
             }
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 // =================== task assign ====== //
@@ -4455,7 +4465,7 @@ class ConsignmentController extends Controller
                         }
                         
                         if($check_lr_mode->lr_mode == 0){
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                         }
 
@@ -4478,7 +4488,7 @@ class ConsignmentController extends Controller
                     } else {
                         if (!empty($filename)) {
                             if($check_lr_mode->lr_mode == 0){
-                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                             }
                         }
@@ -4486,7 +4496,7 @@ class ConsignmentController extends Controller
                 }
             }
             $response['success'] = true;
-            $response['messages'] = 'img uploaded successfully';
+            $response['messages'] = 'Image uploaded successfully';
             return Response::json($response);
         }
     }
@@ -5528,7 +5538,7 @@ class ConsignmentController extends Controller
             } else {
                 $filename = null;
             }
-            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //
             $mytime = Carbon::now('Asia/Kolkata');
@@ -5575,9 +5585,8 @@ class ConsignmentController extends Controller
 
     public function deletePodStatus(Request $request)
     {
-
         $lr_no = $request->lr_id;
-        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null]);
+        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null,'pod_userid' => null]);
 
         if ($mode) {
             $response['success'] = true;
@@ -5592,7 +5601,6 @@ class ConsignmentController extends Controller
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
     public function sendNotification($request)
     {
-
         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
 
         $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";

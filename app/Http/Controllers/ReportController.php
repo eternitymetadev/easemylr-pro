@@ -468,8 +468,7 @@ class ReportController extends Controller
     }
 
     public function regionalReport()
-    { 
-
+    {
         $regional_details = RegionalClient::all();
 
         foreach ($regional_details as $regional) {
@@ -491,7 +490,7 @@ class ReportController extends Controller
                     $user['to'] = $regional->email;
                     $sec_emails = explode(',', $regional->secondary_email);
                     if(!empty($sec_emails)){
-                    $user['cc'] = $sec_emails;
+                        $user['cc'] = $sec_emails;
                     }
 
                     Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {

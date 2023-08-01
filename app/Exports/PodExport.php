@@ -182,15 +182,15 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     } else {
                         $pod= 'Available';
                     } 
-                } else { 
+                } elseif($consignment->lr_mode == 1) { 
                     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
         
                     if(!empty($job->response_data)){
                         $trail_decorator = json_decode($job->response_data);
                         $img_group = array();
-                        foreach($trail_decorator->task_history as $task_img){
+                        foreach(@$trail_decorator->task_history as $task_img){
                             if($task_img->type == 'image_added'){
-                                $img_group[] = $task_img->description;
+                                $img_group[] = @$task_img->description;
                             }
                         }
                         if(empty($img_group)){
@@ -198,6 +198,14 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                         } else {
                             $pod= 'Available';
                         }
+                    }
+                }else{
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    if ($count_arra > 1) { 
+                        $pod= 'Available';
+                    }else{
+                        $pod= 'Not Available'; 
                     }
                 }
 
@@ -213,6 +221,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'delivery_mode'       => $deliverymode,
+                    'user_id'             => @$consignment->pod_userid,
                     'pod'                 => $pod,
 
                 ];
@@ -235,6 +244,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Date',
             'Delivery Status',
             'Delivery Mode',
+            'User Id',
             'POD'
         ];
     }

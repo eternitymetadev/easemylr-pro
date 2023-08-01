@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Models\ConsignmentNote;
 use Helper;
+use Auth;
 
 class DeliveryDateImport implements ToModel,WithHeadingRow
 {
@@ -21,6 +22,8 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
     {
         $date_string = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['delivery_date']);
         $delivery_date = $date_string->format('Y-m-d');
+
+        $authuser = Auth::user();
         
         $lr_no = ConsignmentNote::where('id',$row['lr_no'])->first();
         $lr_dd = ConsignmentNote::where('id',$row['lr_no'])->update(['delivery_date'=> '']);
@@ -31,6 +34,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                     'delivery_date'  => $delivery_date,
                     'delivery_status' => 'Successful',
                     'signed_drs'    => $row['pod_image'],
+                    'pod_userid'    => $authuser->login_id,
                 ]);
             }
         }

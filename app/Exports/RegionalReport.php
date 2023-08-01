@@ -68,25 +68,85 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             foreach ($consignments as $key => $consignment){
             
                 // ageing formula = deliverydate - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $age_diff = ($end_date - $start_date)/60/60/24;
+                // $start_date = strtotime($consignment->consignment_date);
+                // $end_date = strtotime($consignment->delivery_date);
+                // $age_diff = ($end_date - $start_date)/60/60/24;
 
-                if($age_diff < 0){
-                    $ageing_day = '-';
+                // if($age_diff < 0){
+                //     $ageing_day = '-';
+                // }else{
+                //     $ageing_day = $age_diff;
+                // }
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->delivery_date;
+
+                $date1 = new DateTime($start_date);
+                $date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$date1 || !$date2){
+                    $age_diff = '';
                 }else{
-                    $ageing_day = $age_diff;
+                    $interval = $date1->diff($date2);
+
+                    // Get the difference in days
+                    $age_diff = $interval->days;
+                }
+
+                $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
+                if(!empty($prspickup_date)){
+                    $prspickup_date = new DateTime($prspickup_date);
+                }else{
+                    $prspickup_date = '';
+                }
+                if(!empty($prspickup_date)){
+                    if(!$prspickup_date || !$date2){
+                        $pickup_diff = '';
+                    }else{
+                        $interval_prs = $prspickup_date->diff($date2);
+                        $pickup_diff = $interval_prs->days;
+                    }
+                }else{
+                    $pickup_diff = '';
+                }
+                
+                if(!empty($consignment->prs_id)){
+                    if($pickup_diff > 0){
+                        $ageing_day = $pickup_diff;
+                    }else{
+                        if($age_diff < 0){
+                            $ageing_day = '-';
+                        }else{
+                            $ageing_day = $age_diff;
+                        }
+                    }
+                }else{
+                    if($age_diff < 0){
+                        $ageing_day = '-';
+                    }else{
+                        $ageing_day = $age_diff;
+                    }
                 }
 
                 // tat formula = edd - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->edd);
-                $tatday = ($end_date - $start_date)/60/60/24;
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->edd;
 
-                if($tatday < 0){
+                $s_date1 = new DateTime($start_date);
+                $e_date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$s_date1 || !$e_date2){
+                    $tat_diff = '';
+                }else{
+                    $interval = $s_date1->diff($e_date2);
+
+                    // Get the difference in days
+                    $tat_diff = $interval->days;
+                }
+
+                if($tat_diff < 0){
                     $tat_day = '-';
                 }else{
-                    $tat_day = $tatday;
+                    $tat_day = $tat_diff;
                 }
                 
                 if(!empty($consignment->consignment_date )){
@@ -111,10 +171,37 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
                     $drs = '-';
                 }
 
+                // LR type
+                if($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                    $lr_type = "PTL";
+                }else{
+                    $lr_type = "-";
+                }
+                // invoice no
+                if(empty($consignment->order_id)){ 
+                    if(!empty($consignment->ConsignmentItems)){
+                        $invoices = array();
+                        foreach($consignment->ConsignmentItems as $orders){ 
+                            $invoices[] = $orders->invoice_no;
+                        }
+                        $order_item['invoices'] = implode(',', $invoices);
+                    }
+                }
+
+                if(empty($consignment->invoice_no)){
+                    $invoice_number =  $order_item['invoices'] ?? '-';
+                }else{
+                    $invoice_number =  $consignment->invoice_no ?? '-';
+                }
+
                 
                 $arr[] = [
-                    'consignment_id'      => @$consignment->id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
+                    'consignment_id'      => @$consignment->id,
+                    'lr_type'             => @$lr_type,
+                    'invoice_number'      => @$invoice_number,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
                     'consigner_district'  => @$consignment->ConsignerDetail->district,
@@ -125,7 +212,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,
-                    'tat'                 => $tat_day,
+                    'tat'                 => @$tat_day,
                     'payment_type'        => @$consignment->payment_type,
                     'dispatch_date'       => @$consignment->consignment_date,
                     'delivery_status'     => @$consignment->delivery_status,
@@ -141,12 +228,14 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
     public function headings(): array
     {
         return [
-            'LR Number',
             'LR Date',
+            'LR Number',
+            'Type of Shipment',
+            'Invoice Number',
             'Regional Client',
-            'Consigner',
-            'Consigner District',
-            'Consigner PinCode',
+            'Consignor Name',
+            'Consignor District',
+            'Consignor PinCode',
             'Consignee Name',
             'Consignee District', 
             'Consignee PinCode',
@@ -154,9 +243,9 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             'Net Weight',
             'Gross Weight',
             'Expected TAT',
-            'Payment Type',
+            'Payment Mode',
             'Dispatch Date',
-            'Delivery Status',
+            'Shipment Status',
             'Ageing',
             'Delivery Date',
             'Issue',        
