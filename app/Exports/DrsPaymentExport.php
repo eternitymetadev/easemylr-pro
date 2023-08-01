@@ -55,7 +55,6 @@ class DrsPaymentExport implements FromCollection, WithHeadings, ShouldQueue
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        
         $query = $query->whereIn('status', ['1', '0', '3'])
             ->where('request_status', 0)
             ->where('payment_status', '=', 0)
@@ -92,8 +91,8 @@ class DrsPaymentExport implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereBetween('created_at',[$startdate,$enddate]);                
         }
 
-        if (!empty($request->search_vehicle)) {
-            $search = $request->search_vehicle;
+        if (!empty($search_vehicle)) {
+            $search = $search_vehicle;
             $searchT = str_replace("'", "", $search);
             $query->where(function ($query) use ($search, $searchT) {
                 $query->where('vehicle_no', 'like', '%' . $search . '%')
@@ -103,7 +102,8 @@ class DrsPaymentExport implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if (isset($select_vehicle)) {
-            $query = $query->whereIn('vehicle_no', $select_vehicle);
+            $vehicle_arr = explode(",", $select_vehicle);
+            $query = $query->whereIn('vehicle_no', $vehicle_arr);
         }
         
         $paymentlist = $query->orderBy('id','ASC')->get();

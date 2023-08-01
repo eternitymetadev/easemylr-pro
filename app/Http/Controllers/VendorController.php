@@ -272,7 +272,6 @@ class VendorController extends Controller
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('vehicle_no', 'like', '%' . $search . '%')
                         ->orWhere('drs_no', 'like', '%' . $search . '%');
-
                 });
             }
 
@@ -375,7 +374,6 @@ class VendorController extends Controller
     }
 
     public function drsPaymentExport(Request $request){
-        // dd($request->all());
         return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle, $request->select_vehicle), 'drs_payment.csv');
     }
 
@@ -1008,6 +1006,22 @@ class VendorController extends Controller
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('transaction_id', 'like', '%' . $search . '%')
+                    ->orWhere('total_amount', 'like', '%' . $search . '%')
+                    ->orWhere('advanced', 'like', '%' . $search . '%')
+                    ->orWhere('balance', 'like', '%' . $search . '%')
+                    ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                        $query->where(function ($vndrquery) use ($search, $searchT) {
+                            $vndrquery->where('name', 'like', '%' . $search . '%');
+                        });
+                    });
+                });
             }
 
             $authuser = Auth::user();
