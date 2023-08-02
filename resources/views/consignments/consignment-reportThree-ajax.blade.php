@@ -26,7 +26,7 @@
                 <th>Ageing</th>
                 <th>Delivery Date</th>
 
-                <th>Issue</th>
+                <th>Issues</th>
                 
                 
             </tr>
