@@ -179,3 +179,10 @@ label.error {
     0%{transform:rotate(0deg)}
     100%{transform:rotate(360deg)}
     }
+
+
+    /* for select 2 disabled */
+
+    .select2-container--disabled .select2-selection__rendered {
+        background-color: #eee !important;
+    }

@@ -38,12 +38,14 @@
 
         .select2-dropdown {
             /* margin-top: 3rem;
-        margin-left: 2rem; */
+                                                margin-left: 2rem; */
         }
 
         .select2-container {
             margin-bottom: 0 !important;
         }
+
+ 
     </style>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -274,19 +276,29 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-12">
-                                {{-- <input type="button" id="select_all" name="select_all" value="Select All"> --}}
-                                <label for="inputEmail4">Select District</label>
-                                <select class="form-control tagging" id="state_district" name="district[]"
-                                    multiple="multiple">
+                            <div class="form-group col-md-12" style="position: relative;">
+
+                                <div class="d-flex" style="gap: 8px;">
+                                    <input type="checkbox" id="select_alldistricts" name="select_all"
+                                        value="Select All" />
+                                    <label for="select_alldistricts">All District</label>
+                                </div> <select class="form-control tagging multi_distt" id="state_district"
+                                    name="district[]" multiple="multiple">
                                 </select>
+
+                                {{-- <div class="d-flex" style="gap: 8px;position: absolute; right: 8px; top: 0">
+                                    <input type="checkbox" id="select_alldistricts" name="select_all"
+                                        value="Select All">
+                                    <label for="select_alldistricts">All</label>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                {{-- <input type="checkbox" id="pickup_chkbox" name="pickup_chkbox"> --}}
-                                <label for="inputEmail4">Select Pickup Hub</label>
-                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1" >
+                                <input type="checkbox" id="pickup_chkbox" name="pickup_chkbox">
+                                <label for="pickup_chkbox">Select Pickup Hub</label>
+                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1"
+                                    disabled>
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -296,9 +308,9 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                {{-- <input type="checkbox" id="delivery_chkbox" name="delivery_chkbox"> --}}
-                                <label for="inputEmail4">Select Delivery Hub</label>
-                                <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1">
+                                <input type="checkbox" id="delivery_chkbox" name="delivery_chkbox">
+                                <label for="delivery_chkbox">Select Delivery Hub</label>
+                                <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1" disabled>
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -323,22 +335,51 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            // $('#pickup_chkbox').on('change', function() {
-            //     if ($(this).is(":checked")) {
-            //         $('#pickup_hub').attr('required', true);
-            //         $('#pickup_hub').removeAttr('disabled');
-            //     } else{
-            //         $('#pickup_hub').removeAttr('required');
-            //         $('#pickup_hub').attr('disabled', true);
-            //     }
-            // });
+            $('#select_alldistricts').on('change', function() {
+                if ($(this).is(":checked")) {
+                    $('#state_district').val('').trigger('change');
+                    $('#state_district').attr('data-placeholder', 'Select an option').select2();
+
+                    $('#state_district').attr('disabled', true);
+
+                } else {
+                    $('#state_district').removeAttr('disabled');
+                    $('#state_district').attr('required', true);
+                }
+
+            });
+
+
+            $('#pickup_chkbox').on('change', function() {
+                if ($(this).is(":checked")) {
+                    $('#pickup_hub').attr('required', true);
+                    $('#pickup_hub').removeAttr('disabled');
+                } else {
+                    $('#pickup_hub').val('').trigger('change');
+                    $('#pickup_hub').attr('data-placeholder', 'Select an option').select2();
+                    $('#pickup_hub').attr('disabled', true);
+                    $('#pickup_hub').attr('disabled', );
+                }
+            });
+
+            $('#delivery_chkbox').on('change', function() {
+                if ($(this).is(":checked")) {
+                    $('#delivery_hub').attr('required', true);
+                    $('#delivery_hub').removeAttr('disabled');
+                } else {
+                    $('#delivery_hub').val('').trigger('change');
+                    $('#delivery_hub').attr('data-placeholder', 'Select an option').select2();
+                    $('#delivery_hub').attr('disabled', true);
+                    $('#delivery_hub').attr('disabled', );
+                }
+            });
 
             jQuery(function() {
                 $('.my-select2').each(function() {
                     $(this).select2({
                         theme: "bootstrap-5",
                         dropdownParent: $(this)
-                    .parent(), // fix select2 search input focus bug
+                            .parent(), // fix select2 search input focus bug
                     })
                 })
 
@@ -467,7 +508,7 @@
                 success: function(res) {
 
                     $("#state_district").append(
-                        '<option value="">--select--</option>'
+                        // '<option value="">--select--</option>'
                     );
                     $.each(res.all_district, function(key, value) {
                         $("#state_district").append(

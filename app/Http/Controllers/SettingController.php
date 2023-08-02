@@ -194,7 +194,7 @@ class SettingController extends Controller
         // dd($request->all());
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
-            'postal_code' => 'required|unique:zones',
+            'postal_code' => 'required',
         );
         
         $validator = Validator::make($request->all() , $rules);
@@ -232,6 +232,16 @@ class SettingController extends Controller
         $addpostal['hub_transfer'] = $get_location->name;
         $addpostal['hub_nickname'] = $request->branch_id;
         $addpostal['status'] = 1;
+
+        $checkpostalexist = Zone::where('postal_code',$addpostal['postal_code'])->get();
+        
+        if(!$checkpostalexist->isEmpty()){
+            $response['success'] = false;
+            $response['error_message'] = "Postal code already exists.";
+            $response['postalcodeduplicate_error'] = true;
+            return response()->json($response);
+        }
+        
         
         $savepostal = Zone::create($addpostal);
         
@@ -297,7 +307,7 @@ class SettingController extends Controller
     }
     public function updateDistrictHub(Request $request)
     {
-        dd($request->all());
+        echo "<pre>"; print_r($request->all()); die;
         try {
             DB::beginTransaction();
             $get_location = Location::where('id', $request->branch_id)->first();

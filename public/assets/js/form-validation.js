@@ -2081,6 +2081,12 @@ function formSubmitRedirect(form)
               });
 	        }
 
+            if(response.postalcodeduplicate_error){
+                jQuery("input[name='postal_code']").focus();
+                jQuery("input[name='postal_code']").parents('.form-group').addClass('has-error');
+                jQuery("input[name='postal_code']").after('<label id="postal_code-error" class="error" for="postal_code">'+response.error_message+'</label>');
+          }
+
             if(response.cnr_nickname_duplicate_error){
                 jQuery("input[name='nick_name']").focus();
                 jQuery("input[name='nick_name']").parents('.form-group').addClass('has-error');
