@@ -68,25 +68,85 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             foreach ($consignments as $key => $consignment){
             
                 // ageing formula = deliverydate - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $age_diff = ($end_date - $start_date)/60/60/24;
+                // $start_date = strtotime($consignment->consignment_date);
+                // $end_date = strtotime($consignment->delivery_date);
+                // $age_diff = ($end_date - $start_date)/60/60/24;
 
-                if($age_diff < 0){
-                    $ageing_day = '-';
+                // if($age_diff < 0){
+                //     $ageing_day = '-';
+                // }else{
+                //     $ageing_day = $age_diff;
+                // }
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->delivery_date;
+
+                $date1 = new DateTime($start_date);
+                $date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$date1 || !$date2){
+                    $age_diff = '';
                 }else{
-                    $ageing_day = $age_diff;
+                    $interval = $date1->diff($date2);
+
+                    // Get the difference in days
+                    $age_diff = $interval->days;
+                }
+
+                $prspickup_date = @$consignment->PrsDetail->PrsDriverTask->pickup_date;
+                if(!empty($prspickup_date)){
+                    $prspickup_date = new DateTime($prspickup_date);
+                }else{
+                    $prspickup_date = '';
+                }
+                if(!empty($prspickup_date)){
+                    if(!$prspickup_date || !$date2){
+                        $pickup_diff = '';
+                    }else{
+                        $interval_prs = $prspickup_date->diff($date2);
+                        $pickup_diff = $interval_prs->days;
+                    }
+                }else{
+                    $pickup_diff = '';
+                }
+                
+                if(!empty($consignment->prs_id)){
+                    if($pickup_diff > 0){
+                        $ageing_day = $pickup_diff;
+                    }else{
+                        if($age_diff < 0){
+                            $ageing_day = '-';
+                        }else{
+                            $ageing_day = $age_diff;
+                        }
+                    }
+                }else{
+                    if($age_diff < 0){
+                        $ageing_day = '-';
+                    }else{
+                        $ageing_day = $age_diff;
+                    }
                 }
 
                 // tat formula = edd - createdate
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->edd);
-                $tatday = ($end_date - $start_date)/60/60/24;
+                $start_date = $consignment->consignment_date;
+                $end_date = $consignment->edd;
 
-                if($tatday < 0){
+                $s_date1 = new DateTime($start_date);
+                $e_date2 = new DateTime($end_date);
+                // Calculate the difference
+                if(!$s_date1 || !$e_date2){
+                    $tat_diff = '';
+                }else{
+                    $interval = $s_date1->diff($e_date2);
+
+                    // Get the difference in days
+                    $tat_diff = $interval->days;
+                }
+
+                if($tat_diff < 0){
                     $tat_day = '-';
                 }else{
-                    $tat_day = $tatday;
+                    $tat_day = $tat_diff;
                 }
                 
                 if(!empty($consignment->consignment_date )){
@@ -126,7 +186,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
                         foreach($consignment->ConsignmentItems as $orders){ 
                             $invoices[] = $orders->invoice_no;
                         }
-                        $order_item['invoices'] = implode('/', $invoices);
+                        $order_item['invoices'] = implode(',', $invoices);
                     }
                 }
 
@@ -152,7 +212,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,
-                    'tat'                 => $tat_day,
+                    'tat'                 => @$tat_day,
                     'payment_type'        => @$consignment->payment_type,
                     'dispatch_date'       => @$consignment->consignment_date,
                     'delivery_status'     => @$consignment->delivery_status,
@@ -173,9 +233,9 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             'Type of Shipment',
             'Invoice Number',
             'Regional Client',
-            'Consigner',
-            'Consigner District',
-            'Consigner PinCode',
+            'Consignor Name',
+            'Consignor District',
+            'Consignor PinCode',
             'Consignee Name',
             'Consignee District', 
             'Consignee PinCode',
@@ -183,12 +243,12 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             'Net Weight',
             'Gross Weight',
             'Expected TAT',
-            'Payment Type',
+            'Payment Mode',
             'Dispatch Date',
-            'Delivery Status',
+            'Shipment Status',
             'Ageing',
             'Delivery Date',
-            'Issue',        
+            'Issues',        
         ];
     }
 
@@ -198,24 +258,28 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             AfterSheet::class    => function(AfterSheet $event) {
    
                 $event->sheet->getDelegate()->getRowDimension('1')->setRowHeight(20);
-                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(13);
-                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(25);
-                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(40);
-                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(12);
-                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('A')->setWidth(11);
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(10);
+                $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(16);
+                $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
+                $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(16);
+                $event->sheet->getDelegate()->getColumnDimension('I')->setWidth(25);
+                $event->sheet->getDelegate()->getColumnDimension('J')->setWidth(19);
+                $event->sheet->getDelegate()->getColumnDimension('K')->setWidth(16);
+                $event->sheet->getDelegate()->getColumnDimension('L')->setWidth(13);
                 $event->sheet->getDelegate()->getColumnDimension('M')->setWidth(10);
-                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(20);
-                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(20);
+                $event->sheet->getDelegate()->getColumnDimension('N')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('O')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('P')->setWidth(14);
+                $event->sheet->getDelegate()->getColumnDimension('Q')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('R')->setWidth(14);
+
+                $event->sheet->getDelegate()->getColumnDimension('S')->setWidth(6);
+                $event->sheet->getDelegate()->getColumnDimension('T')->setWidth(12);
+                $event->sheet->getDelegate()->getColumnDimension('U')->setWidth(6);
      
             },
         ];

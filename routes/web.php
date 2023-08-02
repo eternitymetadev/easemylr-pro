@@ -412,6 +412,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('vendor/add-vendor', [VendorController::class, 'store']);
     Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
     Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('drs-payment/export', [VendorController::class, 'drsPaymentExport']);
     Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
     Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
     Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);
@@ -618,6 +619,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::post('vendor/add-vendor', [VendorController::class, 'store']);
     Route::any('vendor/check-account-no', [VendorController::class, 'checkAccValid']);
     Route::any('drs-paymentlist', [VendorController::class, 'paymentList']);
+    Route::any('drs-payment/export', [VendorController::class, 'drsPaymentExport']);
     Route::any('get-drs-details', [VendorController::class, 'getdrsdetails']);
     Route::any('vendor-details', [VendorController::class, 'vendorbankdetails']);
     Route::any('create-payment', [VendorController::class, 'createPaymentRequest']);

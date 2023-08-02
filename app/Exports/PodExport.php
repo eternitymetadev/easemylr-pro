@@ -86,11 +86,11 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
         }
 
         if(isset($startdate) && isset($enddate)){
-            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('created_at','ASC')->get();
+            $consignments = $query->whereBetween('consignment_date',[$startdate,$enddate])->orderby('id','ASC')->get();
         }else {
             $consignments = $query->orderBy('id','ASC')->get();
         }
-        // echo "<pre>"; print_r($consignments); die;
+        
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             

@@ -61,7 +61,7 @@ div.relative {
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div> 
 
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <label>Base Client</label>
                             <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
                                 <option value="">Select</option>
@@ -71,7 +71,7 @@ div.relative {
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-4">
                             <label>Regional Client</label>
                             <select class="form-control my-select2" name="regclient_id" id="select_regionalclient">
                                 <option value="">Select All</option>

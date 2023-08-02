@@ -447,7 +447,7 @@ class ReportController extends Controller
 
     public function exportExcelReport3(Request $request)
     {
-        return Excel::download(new Report3Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id), 'mis_report3.csv');
+        return Excel::download(new Report3Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id), 'mis_report3.xlsx');
     }
 
     // get reg client on Baseclient change filter in MIS2
@@ -498,7 +498,7 @@ class ReportController extends Controller
                         if(!empty($sec_emails)){
                         $messges->cc($user['cc']);
                         }
-                        $messges->subject('Monthly Report');
+                        $messges->subject('ShipRider Auto MIS 910003');
                         $messges->attach($get_file);
 
                     });
