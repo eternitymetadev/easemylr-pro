@@ -8,10 +8,10 @@
                 <th>Type of Shipment</th>
                 <th>Invoice Number</th>
                 <th>Regional Client</th>
-                <th>Consigner</th>
+                <th>Consigner Name</th>
                 <th>Consigner District</th>
                 <th>Consigner Pincode</th>
-                <th>Consignee</th>
+                <th>Consignee Name</th>
                 <th>Consignee District</th>
                 <th>Consignee Pincode</th>
            
@@ -20,7 +20,7 @@
                 <th>Gross Weight</th>
                 
                 <th>Expected TAT</th>
-                <th>Payment Type</th>
+                <th>Payment Mode</th>
                 <th>Dispatch Date</th>
                 <th>Shipment Status</th>
                 <th>Ageing</th>

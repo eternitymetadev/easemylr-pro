@@ -7,10 +7,8 @@
                 <th>LR Details</th>
                 <th>Route</th>
                 <th>Dates</th>
-                <?php if($authuser->role_id !=6){ ?>
+                <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
                 <th>Printing options</th>
-                <?php }else {?>
-                <th></th>
                 <?php }?>
                 <th>Dlvry Status</th>
                 <th>LR Status</th>
@@ -122,22 +120,25 @@
                     }else{
                         $disable = '';
                     }
-                } ?>
+                } 
+                if($authuser->role_id != 7 && $authuser->role_id != 6){
+                ?>
                 <td>
-                    <?php if($authuser->role_id !=6 ){
+                    <?php 
                     if($consignment->invoice_no != null || $consignment->invoice_no != ''){ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm {{$disable}}">Print Sticker</a> 
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a> 
                         <?php if($authuser->role_id !=7){?> |<a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-viewold/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm {{$disable}}">Print LR</a> <?php } ?>
+                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php }else{ ?>
                     <a href="{{url($prefix.'/print-sticker/'.$consignment->id)}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm {{$disable}}">Print Sticker</a> <?php if($authuser->role_id !=7){?>| <a
+                        class="badge alert bg-cust shadow-sm">Print Sticker</a> <?php if($authuser->role_id !=7){?>| <a
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
-                        class="badge alert bg-cust shadow-sm {{$disable}}">Print LR</a> <?php } ?>
-                    <?php }} ?>
+                        class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
+                    <?php } ?>
                 </td>
+                <?php } ?>
                 <td>
                     <?php if ($consignment->delivery_status == "Unassigned") { ?>
                     <span class="badge alert bg-primary shadow-sm manual_updateLR {{$disable}}"
