@@ -277,20 +277,13 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12" style="position: relative;">
-
                                 <div class="d-flex" style="gap: 8px;">
-                                    <input type="checkbox" id="select_alldistricts" name="select_all"
-                                        value="Select All" />
+                                    <input type="checkbox" id="select_alldistricts" name="select_all_distt"
+                                        value="select_all_distt" />
                                     <label for="select_alldistricts">All District</label>
                                 </div> <select class="form-control tagging multi_distt" id="state_district"
-                                    name="district[]" multiple="multiple">
+                                    name="district[]" multiple="multiple" required>
                                 </select>
-
-                                {{-- <div class="d-flex" style="gap: 8px;position: absolute; right: 8px; top: 0">
-                                    <input type="checkbox" id="select_alldistricts" name="select_all"
-                                        value="Select All">
-                                    <label for="select_alldistricts">All</label>
-                                </div> --}}
                             </div>
                         </div>
                         <div class="form-row">
@@ -344,7 +337,9 @@
 
                 } else {
                     $('#state_district').removeAttr('disabled');
+                    
                     $('#state_district').attr('required', true);
+                    // $('#state_district').removeAttr('required');
                 }
 
             });

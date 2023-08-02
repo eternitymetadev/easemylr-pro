@@ -310,13 +310,40 @@ class SettingController extends Controller
         echo "<pre>"; print_r($request->all()); die;
         try {
             DB::beginTransaction();
-            $get_location = Location::where('id', $request->branch_id)->first();
-            // $pickup_location = Location::where('id', $request->pickup_hub)->first();
-            if(!empty($request->state_id) && !empty($request->district)){
-                Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
-            }else if(!empty($request->state_id) && empty($request->district)){
-                Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            if($request->state_id){
+                if($request->select_all_distt){
+                    $all_district = Zone::select('district')->where('state', $request->state_id)->get();
+
+                    $district_array = array();
+                    foreach($all_district as $district){
+                        $district_array[] = $district->district;
+                    }
+                    $state_district = array_unique($district_array);
+                }
+
+                if($request->pickup_chkbox){
+                    if($request->pickup_hub){
+                        Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub]);
+                    }
+                }
+
+                if($request->delivery_chkbox){
+                    if($request->branch_id){
+                        $get_location = Location::where('id', $request->branch_id)->first();
+                        
+                        Zone::where('state',$request->state_id)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+                    }
+                }
             }
+
+            
+            // $get_location = Location::where('id', $request->branch_id)->first();
+            // // $pickup_location = Location::where('id', $request->pickup_hub)->first();
+            // if(!empty($request->state_id) && !empty($request->district)){
+            //     Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            // }else if(!empty($request->state_id) && empty($request->district)){
+            //     Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            // }
             $response['success'] = true;
             $response['success_message'] = "Hub Updated successfully";
             $response['error'] = false;
