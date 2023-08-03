@@ -307,10 +307,34 @@ class SettingController extends Controller
     }
     public function updateDistrictHub(Request $request)
     {
-        echo "<pre>"; print_r($request->all()); die;
+        // echo "<pre>"; print_r($request->all()); die;
         try {
             DB::beginTransaction();
             if($request->state_id){
+                if($request->pickup_chkbox){
+                    if($request->pickup_hub){
+                        $pickup_hub = $request->pickup_hub;
+                    }else{
+                        $pickup_hub = '';
+                    }
+                }else{
+                    $pickup_hub = '';
+                }
+
+                if($request->delivery_chkbox){
+                    if($request->branch_id){
+                        $get_location = Location::where('id', $request->branch_id)->first();
+                        $location_name = $get_location->name;
+                        $location_id = $request->branch_id;
+                    }else{
+                        $location_name = '';
+                        $location_id = '';
+                    }
+                }else{
+                    $location_name = '';
+                    $location_id = '';
+                }
+
                 if($request->select_all_distt){
                     $all_district = Zone::select('district')->where('state', $request->state_id)->get();
 
@@ -318,24 +342,13 @@ class SettingController extends Controller
                     foreach($all_district as $district){
                         $district_array[] = $district->district;
                     }
-                    $state_district = array_unique($district_array);
-                }
+                    $state_district = array_unique($district_array);                    
 
-                if($request->pickup_chkbox){
-                    if($request->pickup_hub){
-                        Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub]);
-                    }
-                }
-
-                if($request->delivery_chkbox){
-                    if($request->branch_id){
-                        $get_location = Location::where('id', $request->branch_id)->first();
-                        
-                        Zone::where('state',$request->state_id)->update(['hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
-                    }
+                    Zone::where('state',$request->state_id)->whereIn('district', $state_district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $location_name, 'hub_nickname' => $location_id]);
+                }else{
+                    Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $location_name, 'hub_nickname' => $location_id]);
                 }
             }
-
             
             // $get_location = Location::where('id', $request->branch_id)->first();
             // // $pickup_location = Location::where('id', $request->pickup_hub)->first();
