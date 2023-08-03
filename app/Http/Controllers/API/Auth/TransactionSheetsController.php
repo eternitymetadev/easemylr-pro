@@ -429,13 +429,16 @@ class TransactionSheetsController extends Controller
             $currentdate = $mytime->toDateTimeString(); 
             $respons2 = array('consignment_id' => $id, 'status' => 'Started','desc'=>'Started','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);
-            
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
 
-            $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+                
+
+                $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
+            }
 
             if ($res) {
                 return response([
@@ -471,12 +474,14 @@ class TransactionSheetsController extends Controller
             // $currentdate = date("d-m-y h:i:sa");
             $respons2 = array('consignment_id' => $id, 'status' => 'Acknowledge','desc'=>'Acknowledge','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);
-            
-            $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Acknowledge', 'type' => '2']);
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+                
+                $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Acknowledge', 'type' => '2']);
+            }
 
             if ($res) {
                 return response([
@@ -724,14 +729,16 @@ class TransactionSheetsController extends Controller
             
             // $currentdate = date("d-m-y h:i:sa");
             $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>$cnee_district, 'create_at' => $currentdate, 'type' => '2');
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
-            $st = json_decode($lastjob->response_data);
             
-            array_push($st, $respons3);
-            $sts = json_encode($st);
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                
+                array_push($st, $respons3);
+                $sts = json_encode($st);
 
-            $create = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
-
+                $create = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+            }
             if ($res) {
                 return response([
                     'status' => 'success',
