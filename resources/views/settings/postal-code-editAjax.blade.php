@@ -1,25 +1,35 @@
 <?php $authuser = Auth::user();?>
+<p class="totalcount">Total Count: <span class="reportcount">{{$zones->total()}}</span></p>
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-                <th>Postal Code</th>
+                <th>PIN Code</th>
                 <th>District</th>
                 <th>State</th>
-                <th>Hub Transfer</th>
-                <th>primary Zone</th>
+                <th>City</th>
+                <th>Pickup Hub</th>
+                <th>Delivery HUB</th>
+                {{-- <th>Delivery Hub Nick Name</th> --}}
+               <?php $authuser = Auth::user();
+                if($authuser->role_id == 1){?>
                 <th>Edit</th>
+                <?php }?>
             </tr>
         </thead>
         <tbody>
             @foreach($zones as $zone)
-            <tr>
+            <tr> 
                 <td>{{ $zone->postal_code ?? '-'}}</td>
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
+                <td>{{ $zone->city ?? '-'}}</td>
+                <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
-                <td>{{ $zone->primary_zone ?? '-'}}</td>
+                {{-- <td>{{ $zone->Branch->nick_name ?? '-'}}</td> --}}
+                <?php if($authuser->role_id == 1){?>
                 <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
+                <?php } ?>
             </tr>
             @endforeach
         </tbody>

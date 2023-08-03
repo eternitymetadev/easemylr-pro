@@ -176,11 +176,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::get('bulk-import', [ImportCsvController::class, 'getBulkImport']);
     Route::post('consignees/upload_csv', [ImportCsvController::class, 'uploadCsv']);
-
-    // Route::get('settings/branch-address', [SettingController::class, 'getbranchAddress']);
-    Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
-    Route::any('settings/add-gst-address', [SettingController::class, 'addGstAddress']);
-
     Route::get('/sample-consignees',[ImportCsvController::class, 'consigneesSampleDownload']);
     Route::get('/sample-consignee-phone',[ImportCsvController::class, 'consigneePhoneSampleDownload']);
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
@@ -249,7 +244,15 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
+    
+    // Route::get('settings/branch-address', [SettingController::class, 'getbranchAddress']);
+    Route::any('settings/branch-address', [SettingController::class, 'updateBranchadd']);
+    Route::any('update-hub', [SettingController::class, 'updateDistrictHub']);
+    Route::any('get-district', [SettingController::class, 'getDistrict']);
+    Route::any('settings/add-gst-address', [SettingController::class, 'addGstAddress']);
+
     Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('store-postalcode', [SettingController::class,'storePostalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
     Route::get('postal-code/export/excel', [SettingController::class, 'exportExcel']);
