@@ -66,10 +66,12 @@ class LoginController extends Controller
         $data['portal_id']=2;
         $httpHost = $_SERVER['HTTP_HOST'];
 
+        // $httpHost ="Dw";
+
         if ($httpHost === 'localhost:8081' || $httpHost === 'localhost') {
             $url = 'http://localhost:8000/api/custom_portal_signin';
         } else {
-            $url = 'http://heythere.easemyorder.com/api/custom_portal_signin';
+            $url = 'https://api.etsbeta.com/api/custom_portal_signin';
         }
 
         $curl = curl_init();
