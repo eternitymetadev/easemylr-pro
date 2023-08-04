@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\BranchAddress;
 use App\Models\Zone;
@@ -9,17 +8,18 @@ use App\Models\GstRegisteredAddress;
 use App\Models\Location;
 use App\Models\State;
 use App\Exports\ZoneExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Validator;
-use URL;
-use Crypt;
-use Helper;
-use Config;
-use Auth;
+use App\Models\BranchConnectivity;
 use App\Models\Role;
 use App\Models\User;
-use Session;
+use App\Models\Consigner;
+use App\Models\Consignee;
+use Auth;
+use Config;
 use DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Session;
+use URL;
+use Validator;
 
 class SettingController extends Controller
 {
@@ -36,14 +36,12 @@ class SettingController extends Controller
 
     public function getbranchAddress(Request $request)
     {
-        
         return view('setting.index');
     }
 
     // add branch address
     public function updateBranchadd(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
@@ -119,6 +117,9 @@ class SettingController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = Zone::query();
+        $all_districts = Zone::select('district')->groupBy('district')->get();
+        $all_states = Zone::select('state')->groupBy('state')->get();
+        $branchs = Location::all();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -134,14 +135,20 @@ class SettingController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->where('status',1);
+            $query = $query->with('Branch','GetLocation')->where('status', 1);
 
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('postal_code', 'like', '%' . $search . '%');
+                    $query->where('postal_code', 'like', '%' . $search . '%')
+                    ->orWhere('district', 'like', '%' . $search . '%')
+                    ->orWhere('state', 'like', '%' . $search . '%');
                 });
+            }
+            
+            if ($request->state_name) {
+                $query = $query->whereIn('state', $request->state_name);
             }
 
             if ($request->peritem) {
@@ -151,7 +158,7 @@ class SettingController extends Controller
             $peritem = Session::get('peritem');
             if (!empty($peritem)) {
                 $peritem = $peritem;
-            } else {    
+            } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
             $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -170,21 +177,93 @@ class SettingController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query
-            ->where('status',1);
+        $query = $query->with('Branch','GetLocation')
+            ->where('status', 1);
 
         $zones = $query->orderBy('id', 'DESC')->paginate($peritem);
         $zones = $zones->appends($request->query());
 
-        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment]);
+        return view('settings.postal-code-edit', ['peritem' => $peritem, 'prefix' => $this->prefix, 'zones' => $zones, 'segment' => $this->segment, 'all_districts' => $all_districts, 'branchs' => $branchs, 'all_states' => $all_states]);
+    }
+    // store postal code
+    public function storePostalCode(Request $request)
+    {
+        // dd($request->all());
+        $this->prefix = request()->route()->getPrefix();
+        $rules = array(
+            'postal_code' => 'required',
+        );
+        
+        $validator = Validator::make($request->all() , $rules);
+        if ($validator->fails())
+        {
+            // $a['name']  = "This name already exists";
+            $errors                 = $validator->errors();
+            $response['success']    = false;
+            $response['validation'] = false;
+            $response['formErrors'] = true;
+            $response['errors']     = $errors;
+            return response()->json($response);
+        }
+
+        $get_location = Location::where('id', $request->branch_id)->first();
+
+        if(!empty($request->postal_code)){
+            $addpostal['postal_code'] = $request->postal_code;
+        }
+        if(!empty($request->city)){
+            $addpostal['city'] = $request->city;
+        }
+        if(!empty($request->state)){
+            $addpostal['state'] = $request->state;
+        }
+        if(!empty($request->district)){
+            $addpostal['district'] = $request->district;
+        }
+        if(!empty($request->pickup_hub)){
+            $addpostal['pickup_hub'] = $request->pickup_hub;
+        }
+        // if(!empty($request->hub_transfer)){
+        //     $addpostal['hub_transfer'] = $request->hub_transfer;
+        // }
+        $addpostal['hub_transfer'] = $get_location->name;
+        $addpostal['hub_nickname'] = $request->branch_id;
+        $addpostal['status'] = 1;
+
+        $checkpostalexist = Zone::where('postal_code',$addpostal['postal_code'])->get();
+        
+        if(!$checkpostalexist->isEmpty()){
+            $response['success'] = false;
+            $response['error_message'] = "Postal code already exists.";
+            $response['postalcodeduplicate_error'] = true;
+            return response()->json($response);
+        }
+        
+        
+        $savepostal = Zone::create($addpostal);
+        
+        if($savepostal){
+            $response['success']    = true;
+            $response['page']       = 'postalcode-create';
+            $response['error']      = false;
+            $response['success_message'] = "Postal code created successfully";
+            $response['redirect_url'] = URL::to($this->prefix.'/postal-code');
+        }else{
+            $response['success']       = false;
+            $response['error']         = true;
+            $response['error_message'] = "Can not created postal code please try again";
+        }
+        return response()->json($response);
     }
 
     public function editPostalCode(Request $request)
     {
         $id = $request->postal_id;
         $postal_code = Zone::where('id', $id)->first();
+        $branchs = Location::all();
 
         $response['zone_data'] = $postal_code;
+        $response['branch_data'] = $branchs;
         $response['success'] = true;
         $response['success_message'] = "Data Fetch";
         return response()->json($response);
@@ -194,7 +273,15 @@ class SettingController extends Controller
     {
         try {
             DB::beginTransaction();
-            Zone::where('id', $request->zone_id)->update(['district' => $request->district, 'state' => $request->state, 'primary_zone' => $request->primary_zone,'hub_transfer' => $request->hub_transfer]);
+            $get_location = Location::where('id', $request->branch_id)->first();
+
+            // $zoneupdate['state'] = $request->state;
+            $zoneupdate['city'] = $request->city;
+            $zoneupdate['pickup_hub'] = $request->pickup_hub;
+            $zoneupdate['hub_transfer'] = @$get_location->name;
+            $zoneupdate['hub_nickname'] = @$request->branch_id;
+           
+            Zone::where('id', $request->zone_id)->update($zoneupdate);
 
             $response['success'] = true;
             $response['success_message'] = "Zone Data successfully";
@@ -208,14 +295,101 @@ class SettingController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
-
     }
 
     //zone download excel/csv
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new ZoneExport, 'zones.csv');
+        return Excel::download(new ZoneExport($request->state_name), 'zones.csv');
     }
+
+    //update all distt pickup and delivery hub
+    public function updateDistrictHub(Request $request)
+    {
+        // echo "<pre>"; print_r($request->all()); die;
+        try {
+            DB::beginTransaction();
+            if($request->state_id){
+                if($request->pickup_chkbox){
+                    if($request->pickup_hub){
+                        $pickup_hub = $request->pickup_hub;
+                    }else{
+                        $pickup_hub = '';
+                    }
+                }else{
+                    $pickup_hub = '';
+                }
+
+                if($request->delivery_chkbox){
+                    if($request->branch_id){
+                        $get_location = Location::where('id', $request->branch_id)->first();
+                        $location_name = $get_location->name;
+                        $location_id = $request->branch_id;
+                    }else{
+                        $location_name = '';
+                        $location_id = '';
+                    }
+                }else{
+                    $location_name = '';
+                    $location_id = '';
+                }
+
+                if($request->select_all_distt){
+                    $all_district = Zone::select('district')->where('state', $request->state_id)->get();
+
+                    $district_array = array();
+                    foreach($all_district as $district){
+                        $district_array[] = $district->district;
+                    }
+                    $state_district = array_unique($district_array);                    
+
+                    Zone::where('state',$request->state_id)->whereIn('district', $state_district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $location_name, 'hub_nickname' => $location_id]);
+                }else{
+                    Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $location_name, 'hub_nickname' => $location_id]);
+                }
+            }
+            
+            // $get_location = Location::where('id', $request->branch_id)->first();
+            // // $pickup_location = Location::where('id', $request->pickup_hub)->first();
+            // if(!empty($request->state_id) && !empty($request->district)){
+            //     Zone::where('state',$request->state_id)->whereIn('district', $request->district)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            // }else if(!empty($request->state_id) && empty($request->district)){
+            //     Zone::where('state',$request->state_id)->update(['pickup_hub' => $request->pickup_hub,'hub_transfer' => $get_location->name, 'hub_nickname' => $request->branch_id]);
+            // }
+            $response['success'] = true;
+            $response['success_message'] = "Hub Updated successfully";
+            $response['error'] = false;
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
+    
+    //get distt on state change
+    public function getDistrict(Request $request)
+    {
+         $all_district = Zone::select('district')->where('state', $request->state_name)->get();
+
+         $district_array = array();
+         foreach($all_district as $district){
+            $district_array[] = $district->district;
+
+         }
+         $state_district = array_unique($district_array);
+
+        $response['all_district'] = $state_district;
+        $response['success'] = true;
+        $response['message'] = "District Fetched";
+
+        return response()->json($response);
+    }
+
     // ===========
     public function addGstAddress(Request $request)
     {
