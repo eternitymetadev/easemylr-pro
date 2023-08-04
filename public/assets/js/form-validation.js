@@ -859,6 +859,32 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    /*===== create postalcode =====*/
+    $('#create_postalcode').validate({ 
+        rules: {
+            postal_code: {
+                required: true,
+                // minlength: 6,
+                // maxlength: 6,
+            },
+            state: {
+                // required: true,
+                // AlphabetandNumbers: true,
+            },
+        },
+        messages: {
+            postal_code: {
+                required: "Enter postal code",
+                // AlphabetandNumbers: "Enter only alphabets and numbers",
+                // minlength: "Enter at least 8 digits",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
     
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
@@ -2003,6 +2029,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-vehiclereceive'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'client-create' || response.page == 'client-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'postalcode-create' || response.page == 'postalcode-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

@@ -38,14 +38,12 @@
 
         .select2-dropdown {
             /* margin-top: 3rem;
-                                                margin-left: 2rem; */
+                                                    margin-left: 2rem; */
         }
 
         .select2-container {
             margin-bottom: 0 !important;
         }
-
- 
     </style>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -88,8 +86,9 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <span class="btn-primary btn-cstm btn ml-2"
-                                            style="font-size: 15px; padding: 9px; width: 130px" data-target="#postal_create" id="addPostalDialog"
-                                            data-toggle="modal"><span><i class="fa fa-plus"></i> Add New</span></span>
+                                            style="font-size: 15px; padding: 9px; width: 130px" data-target="#postal_create"
+                                            id="addPostalDialog" data-toggle="modal"><span><i class="fa fa-plus"></i> Add
+                                                New</span></span>
                                         <?php $authuser = Auth::user();
                                     if($authuser->role_id ==1 ){ ?>
                                         <div class="btn-group relat">
@@ -105,8 +104,9 @@
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
                                         <?php $authuser = Auth::user();
                                     if($authuser->role_id == 1){?>
-                                        <button type="button" class="btn btn-warning" data-toggle="modal"
-                                            data-target="#exampleModalCenter" style="font-size: 15px; padding: 9px;">
+                                        <button type="button" class="btn btn-warning" id="applyHubDialog"
+                                            data-toggle="modal" data-target="#exampleModalCenter"
+                                            style="font-size: 15px; padding: 9px;">
                                             Apply Hub
                                         </button>
                                         <?php } ?>
@@ -290,8 +290,7 @@
                             <div class="form-group col-md-12">
                                 <input type="checkbox" id="pickup_chkbox" name="pickup_chkbox">
                                 <label for="pickup_chkbox">Select Pickup Hub</label>
-                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1"
-                                    disabled>
+                                <select class="form-control my-select2" id="pickup_hub" name="pickup_hub" tabindex="-1" disabled>
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -303,7 +302,7 @@
                             <div class="form-group col-md-12">
                                 <input type="checkbox" id="delivery_chkbox" name="delivery_chkbox">
                                 <label for="delivery_chkbox">Select Delivery Hub</label>
-                                <select class="form-control" id="delivery_hub" name="branch_id" tabindex="-1" disabled>
+                                <select class="form-control my-select2" id="delivery_hub" name="branch_id" tabindex="-1" disabled>
                                     <option value="">--Select--</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -332,16 +331,11 @@
                 if ($(this).is(":checked")) {
                     $('#state_district').val('').trigger('change');
                     $('#state_district').attr('data-placeholder', 'Select an option').select2();
-
                     $('#state_district').attr('disabled', true);
-
                 } else {
                     $('#state_district').removeAttr('disabled');
-                    
                     $('#state_district').attr('required', true);
-                    // $('#state_district').removeAttr('required');
                 }
-
             });
 
 
@@ -353,7 +347,6 @@
                     $('#pickup_hub').val('').trigger('change');
                     $('#pickup_hub').attr('data-placeholder', 'Select an option').select2();
                     $('#pickup_hub').attr('disabled', true);
-                    $('#pickup_hub').attr('disabled', );
                 }
             });
 
@@ -365,7 +358,6 @@
                     $('#delivery_hub').val('').trigger('change');
                     $('#delivery_hub').attr('data-placeholder', 'Select an option').select2();
                     $('#delivery_hub').attr('disabled', true);
-                    $('#delivery_hub').attr('disabled', );
                 }
             });
 
@@ -393,6 +385,7 @@
                 ]
             });
         });
+        // on edit btn submit
         $(document).on('click', '.edit_postal', function() {
             var postal_id = $(this).val();
             $('#postal_edit').modal('show');
@@ -422,7 +415,7 @@
 
             });
         });
-
+        // on 
         $('#update_postal_code').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
@@ -450,7 +443,7 @@
                 }
             });
         });
-
+        // on apply hub btn submit
         $('#update_hub').submit(function(e) {
             e.preventDefault();
 
@@ -477,7 +470,6 @@
                     } else {
                         swal('error', data.error_message, 'error');
                     }
-
                 }
             });
         });
@@ -522,7 +514,6 @@
 
         $('#state_name').change(function() {
             var state_name = $(this).val();
-
             jQuery.ajax({
                 type: 'get',
                 url: 'postal-code',
@@ -587,8 +578,20 @@
             });
         });
 
-        // reset createpostal modal on create btn
-        jQuery('#addPostalDialog').click(function(){
+        // reset modal on apply hub btn
+        jQuery('#applyHubDialog').click(function() {
+            $('#update_hub').trigger("reset");
+            $('#state_id').val('').trigger('change');
+            $('#state_district').val('').trigger('change');
+            $('#pickup_hub').val('').trigger('change');
+            $('#pickup_hub').attr('disabled', true);
+            $('#delivery_hub').val('').trigger('change');
+            $('#delivery_hub').attr('disabled', true);
+            $('#state_district').attr('data-placeholder', 'Select an option').select2();
+        });
+
+        // reset createpostal modal on create new btn
+        jQuery('#addPostalDialog').click(function() {
             $('#create_postalcode').trigger("reset");
         });
     </script>
