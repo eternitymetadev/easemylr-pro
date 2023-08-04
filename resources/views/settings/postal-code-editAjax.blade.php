@@ -13,7 +13,7 @@
                 {{-- <th>Delivery Hub Nick Name</th> --}}
                <?php $authuser = Auth::user();
                 if($authuser->role_id == 1){?>
-                <th>Edit</th>
+                <th>Action</th>
                 <?php }?>
             </tr>
         </thead>
@@ -28,7 +28,9 @@
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
                 {{-- <td>{{ $zone->Branch->nick_name ?? '-'}}</td> --}}
                 <?php if($authuser->role_id == 1){?>
-                <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
+                <td>
+                    <button type="button" class="edit btn btn-primary btn-sm edit_postal" value="{{$zone->id}}"><span><i class="fa fa-edit"></i></span></button>
+                </td>
                 <?php } ?>
             </tr>
             @endforeach

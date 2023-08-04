@@ -62,7 +62,7 @@
                         <div class="container-fluid">
                             <div class="row align-items-end winery_row_n spaceing_2n mb-3">
 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
                                             <div class="input-group">
@@ -72,7 +72,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <label>Select States</label>
                                     <select class="form-control tagging" id="state_name" name="state_name[]"
                                         multiple="multiple">

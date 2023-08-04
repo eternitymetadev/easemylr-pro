@@ -144,7 +144,6 @@ class SettingController extends Controller
                     $query->where('postal_code', 'like', '%' . $search . '%')
                     ->orWhere('district', 'like', '%' . $search . '%')
                     ->orWhere('state', 'like', '%' . $search . '%');
-                    
                 });
             }
             
