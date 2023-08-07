@@ -144,7 +144,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label>Postal Code</label>
-                            <input class="form-control form-control-sm" id="" name="postal_code" placeholder="" />
+                            <input class="form-control form-control-sm" id="" name="postal_code" minlength="6" maxlength="6" placeholder="" />
                         </div>
                         <div class="col-12">
                             <label>City</label>
@@ -206,7 +206,7 @@
                         <div class="col-12">
                             <input type="hidden" id="zone_id" name="zone_id" />
                             <label for="x">Postal Code</label>
-                            <input type="number" class="form-control form-control-sm" id="postal_code" name="postal_code" minlength="6" maxlength="6" placeholder="" readonly />
+                            <input type="number" class="form-control form-control-sm" id="postal_code" name="postal_code" placeholder="" readonly />
                         </div>
                         <div class="col-12">
                             <label for="x">City</label>
