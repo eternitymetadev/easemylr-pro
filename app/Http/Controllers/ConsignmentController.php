@@ -1455,16 +1455,16 @@ class ConsignmentController extends Controller
                                 </div>
                           </div>
 
-                  <!-- <div class="footer">
+                   <div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
-                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
+                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Forwarders Private Limited does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun, rain ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
                                 <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
                                 <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div> -->
+                  </div> 
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
 
