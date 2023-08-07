@@ -144,7 +144,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <label>Postal Code</label>
-                            <input class="form-control form-control-sm" id="" name="postal_code" minlength="6" maxlength="6" placeholder="" />
+                            <input type="number" class="form-control form-control-sm" id="" name="postal_code" minlength="6" maxlength="6" placeholder="" />
                         </div>
                         <div class="col-12">
                             <label>City</label>

@@ -31,7 +31,7 @@ class ZoneExport implements FromCollection, WithHeadings,ShouldQueue
 
         $str = $this->state_name;
         if($str){
-            $state_name = explode(" ",$str);
+            $state_name = explode(",",$str);
             $query = $query->whereIn('state', $state_name);
         }
         
