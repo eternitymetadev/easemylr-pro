@@ -85,12 +85,13 @@
 
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
+                                        <?php $authuser = Auth::user();
+                                        if($authuser->role_id ==1 || $authuser->role_id == 3){ ?>
                                         <span class="btn-primary btn-cstm btn ml-2"
                                             style="font-size: 15px; padding: 9px; width: 130px" data-target="#postal_create"
                                             id="addPostalDialog" data-toggle="modal"><span><i class="fa fa-plus"></i> Add
                                                 New</span></span>
-                                        <?php $authuser = Auth::user();
-                                    if($authuser->role_id ==1 ){ ?>
+                                       
                                         <div class="btn-group relat">
                                             <a style="font-size: 15px; padding: 9px;" href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
                                                 data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" data-url="<?php echo URL::to($prefix . '/postal-code'); ?>"

@@ -692,8 +692,10 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
 
     Route::any('postal-code', [SettingController::class,'postalCode']);
+    Route::any('store-postalcode', [SettingController::class,'storePostalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+    Route::get('postal-code/export/excel', [SettingController::class, 'exportExcel']);
 
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
