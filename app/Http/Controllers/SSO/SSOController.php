@@ -115,7 +115,8 @@ class SSOController extends Controller
         // return $userArray;
         try {
             $email = $userArray['email'];
-            return $email;
+            $encryptedData = encrypt($email);
+            return $encryptedData;
         } catch (\Throwable $th) {
             return redirect("login")->withError("Failed to get login information! Try again.");
         }
@@ -130,8 +131,9 @@ class SSOController extends Controller
         return redirect()->route('login_to_portal', ['email' => $email]);
     }
 
-    public function portal_login($email)
+    public function portal_login($data)
     {
+        $email = decrypt($data);
         $user = User::where("email", $email)->first();
         Auth::login($user, true);
         if (Auth::check()) {
