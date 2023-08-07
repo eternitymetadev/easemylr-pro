@@ -33,6 +33,11 @@ jQuery(document).ready(function(){
         return this.optional(element) || /^[A-Za-z0-9]+$/i.test(value);
     }, "Only Alphabets and Numbers allowed.");
 
+    /*========== Alphabets only ========*/
+    $.validator.addMethod("Alphabets", function(value, element) {
+        return this.optional(element) || /^[A-Za-z]+$/i.test(value);
+    }, "Only Alphabets allowed.");
+
     /*========== create user in users ========*/
     // $(document).on('submit','.general_form',function(e){
     //     e.preventDefault();
@@ -869,8 +874,13 @@ jQuery(document).ready(function(){
                 minlength: 6,
             },
             state: {
-                // required: true,
-                // AlphabetandNumbers: true,
+                Alphabets: true,
+            },
+            district: {
+                Alphabets: true,
+            },
+            city: {
+                Alphabets: true,
             },
         },
         messages: {
@@ -878,6 +888,15 @@ jQuery(document).ready(function(){
                 required: "Enter postal code",
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 6 digits",
+            },
+            state:{
+                Alphabets: "Enter only alphabets",
+            },
+            district:{
+                Alphabets: "Enter only alphabets",
+            },
+            city:{
+                Alphabets: "Enter only alphabets",
             },
         },
         submitHandler : function(form)
