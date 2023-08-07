@@ -12,7 +12,7 @@
                 <th>Delivery HUB</th>
                 {{-- <th>Delivery Hub Nick Name</th> --}}
                <?php $authuser = Auth::user();
-                if($authuser->role_id == 1){?>
+                if($authuser->role_id == 1 || $authuser->role_id == 3){?>
                 <th>Action</th>
                 <?php }?>
             </tr>
@@ -27,7 +27,7 @@
                 <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
                 {{-- <td>{{ $zone->Branch->nick_name ?? '-'}}</td> --}}
-                <?php if($authuser->role_id == 1){?>
+                <?php if($authuser->role_id == 1 || $authuser->role_id == 3){?>
                 <td>
                     <button type="button" class="edit btn btn-primary btn-sm edit_postal" value="{{$zone->id}}"><span><i class="fa fa-edit"></i></span></button>
                 </td>

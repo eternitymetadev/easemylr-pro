@@ -865,8 +865,8 @@ jQuery(document).ready(function(){
         rules: {
             postal_code: {
                 required: true,
-                // minlength: 6,
-                // maxlength: 6,
+                Numbers: true,
+                minlength: 6,
             },
             state: {
                 // required: true,
@@ -876,8 +876,8 @@ jQuery(document).ready(function(){
         messages: {
             postal_code: {
                 required: "Enter postal code",
-                // AlphabetandNumbers: "Enter only alphabets and numbers",
-                // minlength: "Enter at least 8 digits",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 6 digits",
             },
         },
         submitHandler : function(form)
