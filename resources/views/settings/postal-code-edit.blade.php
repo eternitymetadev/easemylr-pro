@@ -128,8 +128,7 @@
 
     <!-- Create zone modle -->
     <!-- Modal -->
-    <div class="modal fade" id="postal_create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true">
+    <div class="modal fade" id="postal_create" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <form class="modal-content" id="create_postalcode" class="general_form" method="POST"
                 action="{{ url($prefix . '/store-postalcode') }}">
@@ -193,7 +192,8 @@
     <div class="modal fade" id="postal_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <form class="modal-content" id="update_postal_code">
+            <form class="modal-content" id="update_postal_code" class="general_form" method="POST"
+            action="{{ url($prefix . '/update-postal-code') }}">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Update Zone Data</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -416,33 +416,33 @@
             });
         });
         // on 
-        $('#update_postal_code').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
+        // $('#update_postal_code').submit(function(e) {
+        //     e.preventDefault();
+        //     var formData = new FormData(this);
 
-            $.ajax({
-                url: "update-postal-code",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
+        //     $.ajax({
+        //         url: "update-postal-code",
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         type: 'POST',
+        //         data: new FormData(this),
+        //         processData: false,
+        //         contentType: false,
+        //         beforeSend: function() {
 
-                },
-                success: (data) => {
-                    if (data.success == true) {
-                        swal('success', data.success_message, 'success');
-                        window.location.reload();
-                    } else {
-                        swal('error', data.error_message, 'error');
-                    }
+        //         },
+        //         success: (data) => {
+        //             if (data.success == true) {
+        //                 swal('success', data.success_message, 'success');
+        //                 window.location.reload();
+        //             } else {
+        //                 swal('error', data.error_message, 'error');
+        //             }
 
-                }
-            });
-        });
+        //         }
+        //     });
+        // });
         // on apply hub btn submit
         $('#update_hub').submit(function(e) {
             e.preventDefault();
