@@ -1464,7 +1464,7 @@ class ConsignmentController extends Controller
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                                <p style="text-align:center; font-size: 10px; margin-top: -5px">Head Office: Plot No. B-104/03712, Pabhat, Zirakpur – 140 603 | contact@eternityforwarders.com
+                                <p style="text-align:center; font-size: 10px; margin-top: -1px">Head Office: Plot No. B-104/03712, Pabhat, Zirakpur – 140 603 | contact@eternityforwarders.com
                                 CIN: U63030PB2021PTC053388
                                 </p>
                         </div> 
