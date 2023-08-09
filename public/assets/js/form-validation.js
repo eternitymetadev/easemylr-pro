@@ -904,6 +904,46 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    /*===== update postalcode =====*/
+    $('#update_postal_code').validate({ 
+        rules: {
+            // postal_code: {
+            //     required: true,
+            //     Numbers: true,
+            //     minlength: 6,
+            // },
+            // state: {
+            //     Alphabets: true,
+            // },
+            // district: {
+            //     Alphabets: true,
+            // },
+            city: {
+                Alphabets: true,
+            },
+        },
+        messages: {
+            // postal_code: {
+            //     required: "Enter postal code",
+            //     Numbers: "Enter only numbers",
+            //     minlength: "Enter at least 6 digits",
+            // },
+            // state:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            // district:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            city:{
+                Alphabets: "Enter only alphabets",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
     
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 

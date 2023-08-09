@@ -271,6 +271,7 @@ class SettingController extends Controller
 
     public function updatePostalCode(Request $request)
     {
+        $this->prefix = request()->route()->getPrefix();
         try {
             DB::beginTransaction();
             $get_location = Location::where('id', $request->branch_id)->first();
@@ -284,8 +285,10 @@ class SettingController extends Controller
             Zone::where('id', $request->zone_id)->update($zoneupdate);
 
             $response['success'] = true;
-            $response['success_message'] = "Zone Data successfully";
+            $response['page']    = 'postalcode-update';
+            $response['success_message'] = "Zone Data updated successfully";
             $response['error'] = false;
+            $response['redirect_url'] = URL::to($this->prefix.'/postal-code');
 
             DB::commit();
         } catch (Exception $e) {
