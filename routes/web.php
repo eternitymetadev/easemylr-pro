@@ -749,6 +749,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
+    Route::get('consignments/html-lr', [ConsignmentController::class, 'consignPrintview']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);

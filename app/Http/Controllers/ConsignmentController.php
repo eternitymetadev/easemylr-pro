@@ -1081,12 +1081,10 @@ class ConsignmentController extends Controller
                 height: 84px;
                 margin-left: 71px;
             }
-                  .footer {
-               position: fixed;
+            .footer {
+                position: fixed;
                left: 0;
                bottom: 0;
-
-
             }
             .vl {
                 border-left: solid;
@@ -1133,7 +1131,7 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
-                <!-- <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
+        
                     <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
                         <table style="height: 70px;">
                             <tr>
@@ -1443,31 +1441,37 @@ class ConsignmentController extends Controller
 
                                 </tr>';
             }
-            $html .= '      </table>
-                                <div>
-                                    <table style="margin-top:0px;">
-                                    <tr>
-                                    <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
-                                    <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>For Eternity Forwarders Pvt.Ltd</b></p></td>
-                                </tr>
-                                    </table>
-
-                                </div>
-                          </div>
+            $html .= '</table>
+                        <div>
+                            <table style="width: 100%; margin-top: 20px">
+                            <tr>
+                            <td width="60%" style="font-size: 13px;">
+                                <strong>Received the goods mentioned above in good conditions.</strong><br/>
+                                Receivers Name & Number :<br/>
+                                Receiving Date & Time :<br/>
+                                Receiver Signature :
+                            </td>
+                          
+                            <td width="40%; text-align: center; vertical-align: top">
+                            <strong>For Eternity Forwarders Pvt.Ltd</strong>
+                            </td>
+                            </tr>
+                            </table>
+                        </div>
+                        </div>
 
                         <div class="footer">
-                                  <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
-                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Forwarders Private Limited does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun, rain ,fire and any other damage caused.</p>
-                                <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
-                                <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
-                                <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
-                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
-                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
-                                <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
+                                  <p style="text-align:center; font-size: 9px;">Terms & Conditions</p>
+                                <p style="font-size: 7px; margin-top: -5px">1. Eternity Forwarders Private Limited does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun, rain ,fire and any other damage caused.</p>
+                                <p style="font-size: 7px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
+                                <p style="font-size: 7px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
+                                <p style="font-size: 7px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
+                                <p style="font-size: 7px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
+                                <p style="font-size: 7px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
+                                <p style="font-size: 7px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
                                 <p style="text-align:center; font-size: 10px; margin-top: -1px">Head Office: Plot No. B-104/03712, Pabhat, Zirakpur – 140 603 | contact@eternityforwarders.com
                                 CIN: U63030PB2021PTC053388
                                 </p>
-                        </div> 
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -1484,12 +1488,12 @@ class ConsignmentController extends Controller
                 <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
                 -->
                 </body>
-            </html>
-            ';
+            </html>';
 
+            // return view('print-lr',['print_html'=>$html]);
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
-            $pdf->setPaper('legal', 'portrait');
+            $pdf->setPaper('A4', 'portrait');
             $pdf->save(public_path() . '/consignment-pdf/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
             $pdf_name[] = 'congn-' . $i . '.pdf';
         }
