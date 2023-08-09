@@ -141,7 +141,7 @@
                 <?php } ?>
                 <td>
                     <?php if ($consignment->delivery_status == "Unassigned") { ?>
-                    <span class="badge alert bg-primary shadow-sm manual_updateLR {{$disable}}"
+                    <span class="badge alert bg-primary shadow-sm {{$disable}}"
                         lr-no="{{$consignment->id}}">{{ $consignment->delivery_status ?? ''}}</span>
                     <?php } elseif ($consignment->delivery_status == "Assigned") { ?>
                     <span class="badge alert bg-secondary shadow-sm manual_updateLR {{$disable}}"
