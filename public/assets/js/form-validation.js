@@ -33,8 +33,9 @@ jQuery(document).ready(function(){
         return this.optional(element) || /^[A-Za-z0-9]+$/i.test(value);
     }, "Only Alphabets and Numbers allowed.");
 
+    /*========== Alphabets only ========*/
     $.validator.addMethod("Alphabets", function(value, element) {
-        return this.optional(element) || /^[a-zA-Z]*$/i.test(value);
+        return this.optional(element) || /^[A-Za-z]+$/i.test(value);
     }, "Only Alphabets allowed.");
 
     /*========== create user in users ========*/
@@ -856,6 +857,86 @@ jQuery(document).ready(function(){
             engine_no: {
                 required: "Enter engin no.",
                 AlphabetandNumbers: "Enter only alphabets and numbers",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
+    /*===== create postalcode =====*/
+    $('#create_postalcode').validate({ 
+        rules: {
+            postal_code: {
+                required: true,
+                Numbers: true,
+                minlength: 6,
+            },
+            state: {
+                Alphabets: true,
+            },
+            district: {
+                Alphabets: true,
+            },
+            city: {
+                Alphabets: true,
+            },
+        },
+        messages: {
+            postal_code: {
+                required: "Enter postal code",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 6 digits",
+            },
+            state:{
+                Alphabets: "Enter only alphabets",
+            },
+            district:{
+                Alphabets: "Enter only alphabets",
+            },
+            city:{
+                Alphabets: "Enter only alphabets",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
+    /*===== update postalcode =====*/
+    $('#update_postal_code').validate({ 
+        rules: {
+            // postal_code: {
+            //     required: true,
+            //     Numbers: true,
+            //     minlength: 6,
+            // },
+            // state: {
+            //     Alphabets: true,
+            // },
+            // district: {
+            //     Alphabets: true,
+            // },
+            city: {
+                Alphabets: true,
+            },
+        },
+        messages: {
+            // postal_code: {
+            //     required: "Enter postal code",
+            //     Numbers: "Enter only numbers",
+            //     minlength: "Enter at least 6 digits",
+            // },
+            // state:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            // district:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            city:{
+                Alphabets: "Enter only alphabets",
             },
         },
         submitHandler : function(form)
@@ -2031,6 +2112,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-vehiclereceive'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'client-create' || response.page == 'client-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'postalcode-create' || response.page == 'postalcode-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

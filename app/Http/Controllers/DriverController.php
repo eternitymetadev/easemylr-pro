@@ -14,11 +14,11 @@ use URL;
 use Crypt;
 use Helper;
 use Validator;
+use Config;
 use Image;
 use Storage;
 use Session;
 use Auth;
-use Config;
 
 class DriverController extends Controller
 {
@@ -27,12 +27,58 @@ class DriverController extends Controller
         $this->title =  "Drivers Listing";
         $this->segment = \Request::segment(2);
     }
+
+    public function index(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = Driver::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('phone', 'like', '%' . $search . '%')
+                    ->orWhere('license_number', 'like', '%' . $search . '%');
+                });
+            }
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $drivers = $query->orderBy('id', 'DESC')->paginate($peritem);
+            $drivers = $drivers->appends($request->query());
+             // echo'<pre'; print_r($drivers); die;
+             $html = view('drivers.driver-list-ajax', ['prefix' => $this->prefix, 'drivers' => $drivers, 'peritem' => $peritem])->render();
+
+             return response()->json(['html' => $html]);
+        }
+        $drivers = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $drivers = $drivers->appends($request->query());
+  
+        return view('drivers.driver-list',['prefix'=>$this->prefix,'title'=>$this->title,'segment'=>$this->segment,'drivers'=>$drivers, 'peritem' => $peritem]);
+
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index2(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
@@ -190,17 +236,17 @@ class DriverController extends Controller
             $response['errors']      = $errors;
             return response()->json($response);
         }
-        if($request->branch_id){
-            if(($request->branch_id != null) || ($request->branch_id != '')){
-                $branches = array_unique(array_merge($request->branch_id));
-                $branch = implode(',', $branches);
-            }
-            else{
-                $branch ='';
-            }
-        }else{
-                $branch ='';
-            }
+        // if($request->branch_id){
+        //     if(($request->branch_id != null) || ($request->branch_id != '')){
+        //         $branches = array_unique(array_merge($request->branch_id));
+        //         $branch = implode(',', $branches);
+        //     }
+        //     else{
+        //         $branch ='';
+        //     }
+        // }else{
+        //         $branch ='';
+        //     }
 
         $driversave['name']                 = $request->name;
         $driversave['phone']                = $request->phone;
@@ -211,16 +257,16 @@ class DriverController extends Controller
         $driversave['driver_password']      = $request->password;
         $driversave['password']             = bcrypt($request->password);
         // $driversave['app_use']              =  $request->app_use;
-        $driversave['branch_id']            =  $branch;
+        $driversave['branch_id']            =  '';
         $driversave['access_status']        =  $request->access_status;
         $driversave['status']               = '1';
 
         // upload license image
-        if($request->license_image){
-            $license_image = $request->file('license_image');
-            $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
-            $driversave['license_image'] = Storage::disk('s3')->url($path);
-        }
+        // if($request->license_image){
+        //     $license_image = $request->file('license_image');
+        //     $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+        //     $driversave['license_image'] = Storage::disk('s3')->url($path);
+        // }
 
 
         // $images = $request->invoice_image;
@@ -230,12 +276,12 @@ class DriverController extends Controller
         // $addinventory['invoice_image'] = $get_real_names[1];
 
         // ----------------------------------------
-        // if($request->license_image){
-        //     $file = $request->file('license_image');
-        //     $path = 'public/images/driverlicense_images';
-        //     $name = Helper::uploadImage($file,$path);
-        //     $driversave['license_image']  = $name;
-        // }
+        if($request->license_image){
+            $file = $request->file('license_image');
+            $path = 'public/images/driverlicense_images';
+            $name = Helper::uploadImage($file,$path);
+            $driversave['license_image']  = $name;
+        }
 
         $savedriver = Driver::create($driversave); 
         if($savedriver)
@@ -333,12 +379,12 @@ class DriverController extends Controller
                 return response()->json($response);
             }
             
-            if(($request->branch_id != null) || ($request->branches_id[0] != null) || (!empty($request->branch_id)) || (!empty($request->branches_id[0]))){
-            $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
-            $branch = implode(',', $branches);
-            }else{
-                $branch ='';
-            }
+            // if(($request->branch_id != null) || ($request->branches_id[0] != null) || (!empty($request->branch_id)) || (!empty($request->branches_id[0]))){
+            // $branches = array_unique(array_merge($request->branch_id, $request->branches_id));
+            // $branch = implode(',', $branches);
+            // }else{
+            //     $branch ='';
+            // }
 
             $driversave['name']           = $request->name;
             $driversave['phone']          = $request->phone;
@@ -347,24 +393,24 @@ class DriverController extends Controller
             $driversave['fleet_id']       = $request->fleet_id;
             $driversave['login_id']       = $request->login_id;
             $driversave['driver_password']= $request->password;
-            $driversave['branch_id']      = $branch;
+            $driversave['branch_id']      = '';
             $driversave['access_status']  = $request->access_status;
             $driversave['password']       = bcrypt($request->password);
 
             // upload license image
-            if($request->license_image){
-                $license_image = $request->file('license_image');
-                $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
-                $driversave['license_image'] = Storage::disk('s3')->url($path);
-            }
+            // if($request->license_image){
+            //     $license_image = $request->file('license_image');
+            //     $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+            //     $driversave['license_image'] = Storage::disk('s3')->url($path);
+            // }
 
             // upload driver_license image 
-        //     if($request->license_image){
-        //         $file = $request->file('license_image');
-        //         $path = 'public/images/driverlicense_images';
-        //         $name = Helper::uploadImage($file,$path); 
-        //         $driversave['license_image']  = $name;
-        //    }
+            if($request->license_image){
+                $file = $request->file('license_image');
+                $path = 'public/images/driverlicense_images';
+                $name = Helper::uploadImage($file,$path); 
+                $driversave['license_image']  = $name;
+           }
             
             $savedriver = Driver::where('id',$request->driver_id)->update($driversave);
 

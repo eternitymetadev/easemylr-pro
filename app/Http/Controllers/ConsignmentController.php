@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Zone;
+use App\Models\EfDeliveryRating;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -666,13 +667,14 @@ class ConsignmentController extends Controller
         }        
 
         $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
-        // $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
+        $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
+        // dd($getConsignees);
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
-            // $response['consignee'] = $getConsignees;
+            $response['consignee'] = $getConsignees;
             $response['regclient'] = $getregclients;
             $response['get_pin_hub'] = $check_hub;
         } else {
@@ -710,34 +712,36 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    // get consigner address on change
+    // get consignee address on change
     public function getConsignees(Request $request)
     {
-        $get_regclient = RegionalClient::select('id','baseclient_id')->where('id',$request->regclient_id)->first();
+        // $get_regclient = RegionalClient::select('id','baseclient_id')->where('id',$request->regclient_id)->first();
     
-        $getconsignees = Consignee::select('id', 'nick_name','phone')
-        ->where('baseclient_id', $get_regclient->baseclient_id)
-        ->where('nick_name', 'LIKE', '%' . $request->search . '%')
-        ->orderBy('nick_name', 'asc')
-        ->get();
+        // $getconsignees = Consignee::select('id', 'nick_name','phone')
+        // ->where('baseclient_id', $get_regclient->baseclient_id)
+        // ->where('nick_name', 'LIKE', '%' . $request->search . '%')
+        // ->orderBy('nick_name', 'asc')
+        // ->get();
 
-        $check_prsid = ConsignmentNote::select('id','prs_id')->where('id',$request->consignment_id)->first();
-        // $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
-        // $get_pin_hub = '';
-        // if(!empty($get_pin_hub->Branch)){
-        //     $check_hub = $get_pin_hub->Branch->name;
-        // }else{
-        //     $check_hub = Null;
-        // }
+        // $check_prsid = ConsignmentNote::select('id','prs_id')->where('id',$request->consignment_id)->first();
+
+        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone','postal_code')->where(['id' => $request->consignee_id, 'status' => '1'])->first();
+
+        $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
+        if(!empty($get_pin_hub->Branch)){
+            $check_hub = $get_pin_hub->Branch->name;
+        }else{
+            $check_hub = Null;
+        }
         
         if ($getconsignees) {
             $response['success'] = true;
             $response['success_message'] = "Consignee list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsignees;
-            $response['data_prsid'] = $check_prsid;
+            // $response['data_prsid'] = $check_prsid;
 
-            // $response['get_pin_hub'] = $check_hub;
+            $response['get_pin_hub'] = $check_hub;
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consignee list please try again";
@@ -994,30 +998,35 @@ class ConsignmentController extends Controller
         }
 
         // get branch address
-        if(!empty($locations->GstAddress)){
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
-        <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
-        <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
-
-        }else{
-            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-            <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-            <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-            <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        }
-
-        // if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
-        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
-        // <b>' . $branch_add[1]->address . ',</b><br />
-        // <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
-        // <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
-        // } else {
+        // if(!empty($locations->GstAddress)){
         //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        // <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        // <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-        // <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        // }       
+        // <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
+        // <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
+        // <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
+
+        // }else{
+        //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        //     <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        //     <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        //     <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        // }
+
+        if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+        <b>' . $branch_add[1]->address . ',</b><br />
+        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+        }else if ($data['branch_id'] == 32) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+        <b>' . $branch_add[2]->address . ',</b><br />
+        <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
+        } else {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        }       
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {
@@ -1187,7 +1196,7 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
-                <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
+                <!-- <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
                     <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
                         <table style="height: 70px;">
                             <tr>
@@ -2114,7 +2123,7 @@ class ConsignmentController extends Controller
         //     $json = json_decode($createTask, true);
         //     if (!empty($json['data'])) {
         //         $response = $json['data']['deliveries'];
-        //         $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+        //         $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $consignmentId)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         //         foreach ($response as $res) {
         //             $job_id = $res['job_id'];
         //             $orderId = $res['order_id'];
@@ -2129,8 +2138,8 @@ class ConsignmentController extends Controller
         //     }
         // } else {
 
-        $update_transactionsheet = DB::table('transaction_sheets')->whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-        //  }
+        $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
+
         //============ new app =======//
         $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
 
@@ -2153,26 +2162,42 @@ class ConsignmentController extends Controller
 
         $mytime = Carbon::now('Asia/Kolkata');
         $currentdate = $mytime->toDateTimeString();
+        // check app assign ========================================
+         if ($get_driver_details->access_status == 1) {
+            // if (!empty($get_driver_details->branch_id)) {
+                // $driver_branch = explode(',', $get_driver_details->branch_id);
+                // if (in_array($authuser->branch_id, $driver_branch)) {
+                    $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 2]);
+                    
+                    $app_notify = $this->sendNotification($request->driver_id);
+                // }
+            // } else {
+            //     $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
+            // }
+        }else{
+            $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
+        }
 
         foreach ($consignmentId as $c_id) {
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
             // =================== task assign
             $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned','desc'=>'Out for Delivery', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
-    
+
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('id')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);       
-    
-            $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);       
+
+                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            }
             // ==== end started
         }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
 
     public function transactionSheet(Request $request)
@@ -3169,6 +3194,11 @@ class ConsignmentController extends Controller
                 <b>' . $branch_add[1]->address . ',</b><br />
                 <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . 'b</b><br />
                 <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+                }else if ($locations->id == 32) {
+                    $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+                <b>' . $branch_add[2]->address . ',</b><br />
+                <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . 'b</b><br />
+                <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
                 } else {
                     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
                                     <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
@@ -4456,7 +4486,7 @@ class ConsignmentController extends Controller
                 $filename = null;
             }
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
 
                 // =================== task assign ====== //
@@ -4497,6 +4527,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
         $location = Location::whereIn('id',$cc)->first();
+        
         if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
@@ -4526,7 +4557,7 @@ class ConsignmentController extends Controller
                         }
                         
                         if($check_lr_mode->lr_mode == 0){
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                         TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                         }
 
@@ -4549,7 +4580,7 @@ class ConsignmentController extends Controller
                     } else {
                         if (!empty($filename)) {
                             if($check_lr_mode->lr_mode == 0){
-                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename]);
+                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id]);
                             // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                             }
                         }
@@ -4557,7 +4588,7 @@ class ConsignmentController extends Controller
                 }
             }
             $response['success'] = true;
-            $response['messages'] = 'img uploaded successfully';
+            $response['messages'] = 'Image uploaded successfully';
             return Response::json($response);
         }
     }
@@ -4721,8 +4752,8 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
         $app_trail = json_decode($driver_app->trail, true);
-        // ======img
         
+        // ======img
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
 
         if (!empty($job->trail)) {
@@ -4748,8 +4779,8 @@ class ConsignmentController extends Controller
             $response['job_data'] = '';
             $response['job_id'] = '';
             $response['delivery_status'] = $job->delivery_status;
-            $response['cnr_pincode'] = $job->cnr_pincode;
-            $response['cne_pincode'] = $job->cne_pincode;
+            $response['cnr_pincode'] = $driver_app->cnr_pincode;
+            $response['cne_pincode'] = $driver_app->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
             $response['driver_trail'] = $app_trail;
             $response['app_media'] = $app_media;
@@ -4762,6 +4793,7 @@ class ConsignmentController extends Controller
     public function getTimelineapi($lr_id)
     {
         try {
+            $get_delveryrating = EfDeliveryRating::where('lr_id',$lr_id)->first();
             $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode','shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -4775,13 +4807,21 @@ class ConsignmentController extends Controller
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
+
             if($driver_app){
                 $app_trail = json_decode($driver_app->trail, true);
-
+                $status = [2];
+                $result = [];
+                foreach($app_trail as $trail){
+                    if(in_array($trail['type'], $status)){
+                        $result[] = $trail;
+                    }
+                }                
                 if ($driver_app) {
                     return response([
                         'data' => $driver_app,
-                        'driver_trail' => $app_trail,
+                        'driver_trail' => $result,
+                        'delivery_rating' => $get_delveryrating,
                         'status' => 'success',
                         'code' => 1,
                         'message' => 'Data fetched successfully!',
@@ -4796,13 +4836,13 @@ class ConsignmentController extends Controller
                 }
             }
             else{
-            return response([
-                'status' => 'error',
-                'code' => 0,
-                'message' => "Data not found!",
-                'data' => "",
-            ], 200);
-        }
+                return response([
+                    'status' => 'error',
+                    'code' => 0,
+                    'message' => "Data not found!",
+                    'data' => "",
+                ], 200);
+            }
         } catch (\Exception $exception) {
             return response([
                 'status' => 'error',
@@ -5590,7 +5630,7 @@ class ConsignmentController extends Controller
             } else {
                 $filename = null;
             }
-            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //
             $mytime = Carbon::now('Asia/Kolkata');
@@ -5598,7 +5638,7 @@ class ConsignmentController extends Controller
 
             $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('consignment_id')->first();
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
             if (!empty($lastjob->response_data)) {
                 $st = json_decode($lastjob->response_data);
                 array_push($st, $respons2);
@@ -5637,9 +5677,8 @@ class ConsignmentController extends Controller
 
     public function deletePodStatus(Request $request)
     {
-
         $lr_no = $request->lr_id;
-        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null]);
+        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null,'pod_userid' => null]);
 
         if ($mode) {
             $response['success'] = true;
@@ -5654,7 +5693,6 @@ class ConsignmentController extends Controller
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//
     public function sendNotification($request)
     {
-
         $firebaseToken = Driver::where('id', $request)->whereNotNull('device_token')->pluck('device_token')->all();
 
         $SERVER_API_KEY = "AAAAd3UAl0E:APA91bFmxnV3YOAWBLrjOVb8n2CRiybMsXsXqKwDtYdC337SE0IRr1BTFLXWflB5VKD-XUjwFkS4v7I2XlRo9xmEYcgPOqrW0fSq255PzfmEwXurbxzyUVhm_jS37-mtkHFgLL3yRoXh";

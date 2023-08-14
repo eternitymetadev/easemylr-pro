@@ -1,4 +1,5 @@
 <?php $authuser = Auth::user();?>
+<p class="totalcount">Total Count: <span class="reportcount">{{$zones->total()}}</span></p>
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
@@ -6,12 +7,13 @@
                 <th>PIN Code</th>
                 <th>District</th>
                 <th>State</th>
+                <th>City</th>
                 <th>Pickup Hub</th>
-                <th>Service HUB Name </th>
-                <th>Service Hub Code</th>
+                <th>Delivery HUB</th>
+                {{-- <th>Delivery Hub Nick Name</th> --}}
                <?php $authuser = Auth::user();
-                if($authuser->role_id == 1){?>
-                <th>Edit</th>
+                if($authuser->role_id == 1 || $authuser->role_id == 3){?>
+                <th>Action</th>
                 <?php }?>
             </tr>
         </thead>
@@ -21,11 +23,14 @@
                 <td>{{ $zone->postal_code ?? '-'}}</td>
                 <td>{{ $zone->district ?? '-'}}</td>
                 <td>{{ $zone->state ?? '-'}}</td>
+                <td>{{ $zone->city ?? '-'}}</td>
                 <td>{{ $zone->GetLocation->name ?? '-'}}</td>
                 <td>{{ $zone->hub_transfer ?? '-'}}</td>
-                <td>{{ $zone->Branch->hub_nickname ?? '-'}}</td>
-                <?php if($authuser->role_id == 1){?>
-                <td><button type="button" class="btn btn-warning edit_postal" value="{{$zone->id}}">edit</button></td>
+                {{-- <td>{{ $zone->Branch->nick_name ?? '-'}}</td> --}}
+                <?php if($authuser->role_id == 1 || $authuser->role_id == 3){?>
+                <td>
+                    <button type="button" class="edit btn btn-primary btn-sm edit_postal" value="{{$zone->id}}"><span><i class="fa fa-edit"></i></span></button>
+                </td>
                 <?php } ?>
             </tr>
             @endforeach

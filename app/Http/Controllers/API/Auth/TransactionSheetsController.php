@@ -9,6 +9,7 @@ use App\Models\Consignee;
 use App\Models\ConsignmentNote;
 use App\Models\Job;
 use App\Models\TransactionSheet;
+use App\Models\Zone;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -426,15 +427,18 @@ class TransactionSheetsController extends Controller
 
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
-            $respons2 = array('consignment_id' => $id, 'status' => 'Started', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $id, 'status' => 'Started','desc'=>'Started','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);
-            
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
 
-            $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+                
+
+                $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Started', 'type' => '2']);
+            }
 
             if ($res) {
                 return response([
@@ -468,14 +472,16 @@ class TransactionSheetsController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
             // $currentdate = date("d-m-y h:i:sa");
-            $respons2 = array('consignment_id' => $id, 'status' => 'Acknowledge', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $id, 'status' => 'Acknowledge','desc'=>'Acknowledge','location'=>'', 'create_at' => $currentdate, 'type' => '1');
 
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id',$id)->orderby('id','desc')->first();
-            $st = json_decode($lastjob->response_data);
-            array_push($st, $respons2);
-            $sts = json_encode($st);
-            
-            $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Acknowledge', 'type' => '2']);
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+                
+                $start = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Acknowledge', 'type' => '2']);
+            }
 
             if ($res) {
                 return response([
@@ -514,7 +520,6 @@ class TransactionSheetsController extends Controller
     public function destroy($id)
     {
         try {
-
             $res = TransactionSheets::find($id)->delete();
             if ($res) {
                 return response([
@@ -542,7 +547,7 @@ class TransactionSheetsController extends Controller
             ], 500);
 
         }
-
+ 
     }
     public function uploadImage(Request $request, $id)
     {
@@ -556,10 +561,12 @@ class TransactionSheetsController extends Controller
             $path = Storage::disk('s3')->put('images', $images);
 
             $img_path[] = Storage::disk('s3')->url($path);
-            $img_path_save = Storage::disk('s3')->url($path);
+            $img_path_save = Storage::disk('s3')->url($path); 
+            $url_chng = explode(':', $img_path_save);
+            $url_chng = $url_chng[0] . 's:' . $url_chng[1];
 
             $appmedia['consignment_no'] = $id;
-            $appmedia['pod_img'] = $img_path_save;
+            $appmedia['pod_img'] = $url_chng;
             $appmedia['type'] = $type;
 
             $savedata = AppMedia::create($appmedia);
@@ -706,21 +713,32 @@ class TransactionSheetsController extends Controller
     {
         try {
             $update_status = ConsignmentNote::find($id);
+            $get_conee = Consignee::where('id',$update_status->consignee_id)->first();
+            $get_zone = Zone::where('postal_code',$get_conee->postal_code)->first();
+
+            if(isset($get_zone)){
+                $cnee_district = $get_zone->district;
+            }else{
+                $cnee_district = '';
+            }
 
             $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
             
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
-            // $currentdate = date("d-m-y h:i:sa");
-            $respons3 = array('consignment_id' => $id, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
-            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->orderBy('id', 'DESC')->first();
-            $st = json_decode($lastjob->response_data);
             
-            array_push($st, $respons3);
-            $sts = json_encode($st);
+            // $currentdate = date("d-m-y h:i:sa");
+            $respons3 = array('consignment_id' => $id, 'status' => 'Successful','desc'=>'Successful','location'=>$cnee_district, 'create_at' => $currentdate, 'type' => '2');
+            
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                
+                array_push($st, $respons3);
+                $sts = json_encode($st);
 
-            $create = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
-
+                $create = Job::create(['consignment_id' => $id, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+            }
             if ($res) {
                 return response([
                     'status' => 'success',

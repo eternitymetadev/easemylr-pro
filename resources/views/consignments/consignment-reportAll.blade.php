@@ -44,14 +44,13 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Consignment Report2</a></li>
                     </ol>
                 </nav>
             </div>
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
-                    <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000
-                        records. Please select Filters.</h5>
+                    <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000 records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                         <div class="col-sm-2">
                             <label>from</label>
@@ -76,12 +75,6 @@ div.relative {
                                 <option value="">Select All</option>
                             </select>
                         </div>
-                        {{-- <div class="col-sm-2">
-                            <label>Location</label>
-                            <select class="form-control my-select2" name="location_id" id="select_location">
-                                <option value="">Select Location</option>
-                            </select>
-                        </div> --}}
                         
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary"
@@ -129,10 +122,20 @@ div.relative {
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
-    var baseclient_id = $("#select_baseclient").val();
-    var regclient_id = $("#select_regionalclient").val();
-    var location_id = $("#select_location").val();
-    var search = jQuery('#search').val();
+
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+    
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
     
     jQuery.ajax({
         type: 'get',
@@ -142,8 +145,6 @@ jQuery(document).on('click', '#filter_reportall', function() {
             enddate: enddate,
             baseclient_id: baseclient_id,
             regclient_id: regclient_id,
-            location_id: location_id,
-            search: search
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -167,22 +168,17 @@ jQuery(document).on('change', '.report_perpage', function() {
     }
     var url = jQuery(this).attr('data-action');
     var peritem = jQuery(this).val();
-    var search  = jQuery('#search').val();
         jQuery.ajax({
             type      : 'get', 
             url       : url,
-            data      : {peritem:peritem,search:search,startdate:startdate,enddate:enddate},
+            data      : {peritem:peritem,startdate:startdate,enddate:enddate},
             headers   : {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         dataType: 'json',
         success: function(response) {
             if (response.html) {
-                if (response.page == 'lead_note') {
-                    jQuery('#Note .main-table').html(response.html);
-                } else {
-                    jQuery('.main-table').html(response.html);
-                }
+                jQuery('.main-table').html(response.html);
             }
         }
     });
@@ -204,31 +200,24 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     var geturl = jQuery(this).attr('data-action');
     var startdate = jQuery('#startdate').val();
     var enddate = jQuery('#enddate').val();
-    var baseclient_id = jQuery('#select_baseclient').val();
-    var regclient_id = jQuery('#select_regionalclient').val();
 
-    var search = jQuery('#search').val();
+    var base_client_id = $("#select_baseclient").val();
+    var reg_client_id = $("#select_regionalclient").val();
+
+    if(typeof(base_client_id) === "undefined"){
+        var baseclient_id = '';
+    }else{
+        var baseclient_id = base_client_id;
+    }
+    if(typeof(reg_client_id) === "undefined"){
+        var regclient_id = '';
+    }else{
+        var regclient_id = reg_client_id;
+    }
+
     var url = jQuery('#search').attr('data-url');
 
-    if(startdate){
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
-    }else if(search){
-        geturl = geturl + '?search=' + search;
-    }
-    else if(baseclient_id){
-        if(regclient_id){
-            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
-        }else{
-            geturl = geturl + '?baseclient_id=' + baseclient_id;
-        }
-    }
-    else if(regclient_id){
-        if(baseclient_id){
-            geturl = geturl + '?baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
-        }else{
-            geturl = geturl + '?regclient_id=' + regclient_id;
-        }
-    }
+    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
 
     jQuery.ajax({
         url: url,

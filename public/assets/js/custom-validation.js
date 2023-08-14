@@ -32,6 +32,11 @@ jQuery(document).ready(function () {
     });
     /*===== End check box checked create/update user permission page =====*/
 
+    // input type number scroll wheel false
+    $('input').bind("wheel", function() {
+        return false;
+    });
+
     /// search by assign user
 
     jQuery("#searchvehicle").SumoSelect({
@@ -841,6 +846,8 @@ jQuery(document).ready(function () {
 
     /*===== get consigner address on create consignment page =====*/
     $("#select_consigner").change(function (e) {
+        $("#select_consignee").empty();
+        $("#select_ship_to").empty();
         let consigner_id = $(this).val();
         getConsigners(consigner_id);
     });
@@ -856,6 +863,25 @@ jQuery(document).ready(function () {
             dataType: "json",
             success: function (res) {
                 $("#consigner_address").empty();
+                $("#consignee_address").empty();
+                $("#ship_to_address").empty();
+
+                $("#select_consignee").append(
+                    '<option value="">Select Consignee</option>'
+                );
+                $("#select_ship_to").append(
+                    '<option value="">Select Ship To</option>'
+                );
+                console.log(res.consignee);
+                $.each(res.consignee, function (key, value) {
+                    $("#select_consignee, #select_ship_to").append(
+                        '<option value="' +
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
+                    );
+                });
 
                 if (res.data) {
                     console.log(res.data);
@@ -931,6 +957,153 @@ jQuery(document).ready(function () {
                     }
 
                     $("#dispatch").val(res.data.city);
+                }
+            },
+        });
+    }
+
+    /*===== get consignee address on create consignment page =====*/
+    $("#select_consignee").change(function (e) {
+        $("#consignee_address").empty();
+        let consignee_id = $(this).val();
+        getConsignees(consignee_id);
+    });
+
+    function getConsignees(consignee_id) {
+        $.ajax({
+            type: "get",
+            url: APP_URL + "/get_consignees",
+            data: { consignee_id: consignee_id },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            dataType: "json",
+            success: function (res) {
+                console.log(res.data);
+                // $('#consignee_address').empty();
+                if (res.data) {
+                    if (res.data.address_line1 == null) {
+                        var address_line1 = "";
+                    } else {
+                        var address_line1 = res.data.address_line1 + "<br>";
+                    }
+                    if (res.data.address_line2 == null) {
+                        var address_line2 = "";
+                    } else {
+                        var address_line2 = res.data.address_line2 + "<br>";
+                    }
+                    if (res.data.address_line3 == null) {
+                        var address_line3 = "";
+                    } else {
+                        var address_line3 = res.data.address_line3 + "<br>";
+                    }
+                    if (res.data.address_line4 == null) {
+                        var address_line4 = "";
+                    } else {
+                        var address_line4 = res.data.address_line4 + "<br>";
+                    }
+                    if (res.data.gst_number == null) {
+                        var gst_number = "";
+                    } else {
+                        var gst_number =
+                            "GST No: " + res.data.gst_number + "<br>";
+                    }
+                    if (res.data.phone == null) {
+                        var phone = "";
+                    } else {
+                        var phone = "Phone: " + res.data.phone;
+                    }
+
+                    $("#consignee_address").append(
+                        address_line1 +
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
+                    );
+                    if (res.get_pin_hub == null) {
+                        $('#check_hub_delivery').html('No hub found');
+                        $('.disableme').prop('disabled', true);
+                        swal('error','Hub not found','error')
+                    } else {
+                        $('#check_hub_delivery').html(res.get_pin_hub);
+                        $('.disableme').prop('disabled', false);
+                    }
+                }
+            },
+        });
+    }
+
+    $("#select_ship_to").change(function (e) {
+        $("#ship_to_address").empty();
+        let consignee_id = $(this).val();
+        getShipto(consignee_id);
+    });
+
+    function getShipto(consignee_id) {
+        $.ajax({
+            type: "get",
+            url: APP_URL + "/get_consignees",
+            data: { consignee_id: consignee_id },
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            dataType: "json",
+            success: function (res) {
+                if (res.data) {
+                    if (res.data.address_line1 == null) {
+                        var address_line1 = "";
+                    } else {
+                        var address_line1 = res.data.address_line1 + "<br>";
+                    }
+                    if (res.data.address_line2 == null) {
+                        var address_line2 = "";
+                    } else {
+                        var address_line2 = res.data.address_line2 + "<br>";
+                    }
+                    if (res.data.address_line3 == null) {
+                        var address_line3 = "";
+                    } else {
+                        var address_line3 = res.data.address_line3 + "<br>";
+                    }
+                    if (res.data.address_line4 == null) {
+                        var address_line4 = "";
+                    } else {
+                        var address_line4 = res.data.address_line4 + "<br>";
+                    }
+                    if (res.data.gst_number == null) {
+                        var gst_number = "";
+                    } else {
+                        var gst_number =
+                            "GST No: " + res.data.gst_number + "<br>";
+                    }
+                    if (res.data.phone == null) {
+                        var phone = "";
+                    } else {
+                        var phone = "Phone: " + res.data.phone;
+                    }
+
+                    $("#ship_to_address").append(
+                        address_line1 +
+                        " " +
+                        address_line2 +
+                        "" +
+                        address_line3 +
+                        " " +
+                        address_line4 +
+                        " " +
+                        gst_number +
+                        " " +
+                        phone +
+                        ""
+                    );
                 }
             },
         });
@@ -3012,7 +3185,68 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
     });
 });
 
-/*===== get consignee address on create consignment page =====*/
+//get regclient on change baseclient in mis2 mis3 report filter
+$("#select_baseclient").change(function (e) {
+    var baseclient_id = $(this).val();
+    $("#select_regionalclient").empty();
+    $.ajax({
+        url: "/get-regclients",
+        type: "get",
+        cache: false,
+        data: { baseclient_id: baseclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_regionalclient").empty();
+        },
+        success: function (res) {
+            console.log(res.data_regclient);
+            $("#select_regionalclient").append(
+                '<option value="">select All</option>'
+            );
+            $.each(res.data_regclient, function (key, value) {
+                $("#select_regionalclient").append(
+                    '<option value="' +
+                        value.id +
+                        '">' +
+                        value.name +
+                        "</option>"
+                );
+            });
+        },
+    });
+});
+
+/*===== add prs purchase amount =====*/
+// jQuery(document).on("click", ".add-prs-purchase-price", function () {
+//     jQuery("#add_prsamount").modal("show");
+//     var userid = jQuery(this).attr("data-id");
+//     var url = jQuery(this).attr("data-action");
+//     jQuery(document)
+//         .off("click", ".deleteuserconfirm")
+//         .on("click", ".deleteuserconfirm", function () {
+//             jQuery.ajax({
+//                 type: "post",
+//                 url: url,
+//                 data: { userid: userid },
+//                 headers: {
+//                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+//                         "content"
+//                     ),
+//                 },
+//                 dataType: "JSON",
+//                 success: function (data) {
+//                     if (data) {
+//                         jQuery("#deleteuser").modal("hide");
+//                         location.reload();
+//                     }
+//                 },
+//             });
+//         });
+// });
+/*===== End delete User =====*/
 
 // $("#select_consignee").change(function (e) {
 //     $("#consignee_address").empty();
@@ -3020,97 +3254,97 @@ jQuery(document).on("click", ".taskstatus_change", function (event) {
 //     getConsignees(consignee_id);
 // });
 
-function getConsignees(consignee_id) {
-    $.ajax({
-        type: "get",
-        url: APP_URL + "/get-consignees-address",
-        data: {consignee_id: consignee_id},
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        dataType: "json",
-        success: function (res) {
-            // $('#consignee_address').empty();
-            var newOption = new Option(
-                res.data.nick_name,
-                res.data.id,
-                false,
-                false
-            );
-            $("#select_consignee").append(newOption).trigger("change");
-            if (res.data) {
-                if (res.data.address_line1 == null) {
-                    var address_line1 = "";
-                } else {
-                    var address_line1 = res.data.address_line1 + "<br>";
-                }
-                if (res.data.address_line2 == null) {
-                    var address_line2 = "";
-                } else {
-                    var address_line2 = res.data.address_line2 + "<br>";
-                }
-                if (res.data.address_line3 == null) {
-                    var address_line3 = "";
-                } else {
-                    var address_line3 = res.data.address_line3 + "<br>";
-                }
-                if (res.data.address_line4 == null) {
-                    var address_line4 = "";
-                } else {
-                    var address_line4 = res.data.address_line4 ;
-                }
-                if (res.data.postal_code == null) {
-                    var postal_code = "";
-                } else {
-                    var postal_code =
-                        res.data.postal_code + "<br>";
-                }
-                if (res.data.gst_number == null) {
-                    var gst_number = "";
-                } else {
-                    var gst_number =
-                        "GST No: " + res.data.gst_number + "<br>";
-                }
-                if (res.data.phone == null) {
-                    var phone = "";
-                } else {
-                    var phone = "Phone: " + res.data.phone;
-                }
+// function getConsignees(consignee_id) {
+//     $.ajax({
+//         type: "get",
+//         url: APP_URL + "/get-consignees-address",
+//         data: {consignee_id: consignee_id},
+//         headers: {
+//             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+//         },
+//         dataType: "json",
+//         success: function (res) {
+//             // $('#consignee_address').empty();
+//             var newOption = new Option(
+//                 res.data.nick_name,
+//                 res.data.id,
+//                 false,
+//                 false
+//             );
+//             $("#select_consignee").append(newOption).trigger("change");
+//             if (res.data) {
+//                 if (res.data.address_line1 == null) {
+//                     var address_line1 = "";
+//                 } else {
+//                     var address_line1 = res.data.address_line1 + "<br>";
+//                 }
+//                 if (res.data.address_line2 == null) {
+//                     var address_line2 = "";
+//                 } else {
+//                     var address_line2 = res.data.address_line2 + "<br>";
+//                 }
+//                 if (res.data.address_line3 == null) {
+//                     var address_line3 = "";
+//                 } else {
+//                     var address_line3 = res.data.address_line3 + "<br>";
+//                 }
+//                 if (res.data.address_line4 == null) {
+//                     var address_line4 = "";
+//                 } else {
+//                     var address_line4 = res.data.address_line4 ;
+//                 }
+//                 if (res.data.postal_code == null) {
+//                     var postal_code = "";
+//                 } else {
+//                     var postal_code =
+//                         res.data.postal_code + "<br>";
+//                 }
+//                 if (res.data.gst_number == null) {
+//                     var gst_number = "";
+//                 } else {
+//                     var gst_number =
+//                         "GST No: " + res.data.gst_number + "<br>";
+//                 }
+//                 if (res.data.phone == null) {
+//                     var phone = "";
+//                 } else {
+//                     var phone = "Phone: " + res.data.phone;
+//                 }
 
-                $("#consignee_address").append(
-                    address_line1 +
-                    " " +
-                    address_line2 +
-                    "" +
-                    address_line3 +
-                    " " +
-                    address_line4 +
-                    " " +
-                    postal_code +
-                    " " +
-                    gst_number +
-                    " " +
-                    phone +
-                    ""
-                );
-                var url = window.location.href;
-                var theArray = url.split('/');
-                var shortPath = theArray[theArray.length - 1];
-                if(shortPath == "order-book-ptl"){
-                    if (res.get_pin_hub == null) {
-                        $('#check_hub_delivery').html('No hub found');
-                        $('.disableme').prop('disabled', true);
-                        swal('error','Hub not found','error')
-                    } else {
-                        $('#check_hub_delivery').html(res.get_pin_hub);
-                        $('.disableme').prop('disabled', false);
-                    }
-                }
+//                 $("#consignee_address").append(
+//                     address_line1 +
+//                     " " +
+//                     address_line2 +
+//                     "" +
+//                     address_line3 +
+//                     " " +
+//                     address_line4 +
+//                     " " +
+//                     postal_code +
+//                     " " +
+//                     gst_number +
+//                     " " +
+//                     phone +
+//                     ""
+//                 );
+//                 var url = window.location.href;
+//                 var theArray = url.split('/');
+//                 var shortPath = theArray[theArray.length - 1];
+//                 if(shortPath == "order-book-ptl"){
+//                     if (res.get_pin_hub == null) {
+//                         $('#check_hub_delivery').html('No hub found');
+//                         $('.disableme').prop('disabled', true);
+//                         swal('error','Hub not found','error')
+//                     } else {
+//                         $('#check_hub_delivery').html(res.get_pin_hub);
+//                         $('.disableme').prop('disabled', false);
+//                     }
+//                 }
 
-            }
-        },
-    });
-}
+//             }
+//         },
+//     });
+// }
 function getRoutes(consigner_id,consignee_id) {
     $.ajax({
         type: 'get',
@@ -3134,79 +3368,79 @@ function getRoutes(consigner_id,consignee_id) {
 
 
 // for autocomplte consignee list
-jQuery(document).on("keyup", "#select_consignee", function (e) {
-    $("#consignee_address").empty();
-    var searchTerm= $(this).val();
-    var consignment_id= $("#consignment_id").val();
-    var regclient_id= $("#select_regclient").val();
-    var consigner_id= $("#select_consigner").val();
+// jQuery(document).on("keyup", "#select_consignee", function (e) {
+//     $("#consignee_address").empty();
+//     var searchTerm= $(this).val();
+//     var consignment_id= $("#consignment_id").val();
+//     var regclient_id= $("#select_regclient").val();
+//     var consigner_id= $("#select_consigner").val();
 
-    if(e.which != 8){
-        jQuery.ajax({
-            type: "get",
-            url: APP_URL + "/get_consignees",
-            cache: false,
-            data: { search:searchTerm, regclient_id:regclient_id,consignment_id:consignment_id },
-            dataType: "json",
-            headers: {
-                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
-            },
-            processData: true,
-            beforeSend: function () {
-                //console.log(dataToSearch, "payload");
-                jQuery("#loader-section").css('display','flex');
+//     if(e.which != 8){
+//         jQuery.ajax({
+//             type: "get",
+//             url: APP_URL + "/get_consignees",
+//             cache: false,
+//             data: { search:searchTerm, regclient_id:regclient_id,consignment_id:consignment_id },
+//             dataType: "json",
+//             headers: {
+//                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+//             },
+//             processData: true,
+//             beforeSend: function () {
+//                 //console.log(dataToSearch, "payload");
+//                 jQuery("#loader-section").css('display','flex');
     
-            },
-            complete: function () {
-                jQuery("#loader-section").css('display','none');
-            },
+//             },
+//             complete: function () {
+//                 jQuery("#loader-section").css('display','none');
+//             },
     
-            success: function (res) {
-                console.log(res);
-                // $( function() {
-                    $("#consignee_address").empty();
-                $("#select_consignee").autocomplete({
-                    source: function (request, response) {
-                        response(
-                            $.map(res.data, function (obj, key) {
-                                var name = obj.nick_name.toUpperCase();
-                                if(name.indexOf(request.term.toUpperCase()) != -1) {
-                                    return {
-                                        displayLabel: `${obj.nick_name}`,
-                                        label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
-                                        value: obj.id
-                                    }
-                                } else {
-                                    return null;
-                                }
-                            })
-                        );
-                    },
-                    focus: function (event, ui) {
-                        event.preventDefault();
-                    },
-                    select: function (event, ui) {
-                        event.preventDefault();
-                        $("#select_consignee").val(ui.item.displayLabel);
+//             success: function (res) {
+//                 console.log(res);
+//                 // $( function() {
+//                     $("#consignee_address").empty();
+//                 $("#select_consignee").autocomplete({
+//                     source: function (request, response) {
+//                         response(
+//                             $.map(res.data, function (obj, key) {
+//                                 var name = obj.nick_name.toUpperCase();
+//                                 if(name.indexOf(request.term.toUpperCase()) != -1) {
+//                                     return {
+//                                         displayLabel: `${obj.nick_name}`,
+//                                         label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+//                                         value: obj.id
+//                                     }
+//                                 } else {
+//                                     return null;
+//                                 }
+//                             })
+//                         );
+//                     },
+//                     focus: function (event, ui) {
+//                         event.preventDefault();
+//                     },
+//                     select: function (event, ui) {
+//                         event.preventDefault();
+//                         $("#select_consignee").val(ui.item.displayLabel);
 
-                        $("#consignee_id").val(ui.item.value);
-                        getConsignees(ui.item.value);
-                        if((res?.data_prsid?.prs_id )?.length > 0){
-                            getRoutes(consigner_id, ui.item.value);
-                        }
-                        // ... any other tasks (like setting Hidden Fields) go here...
-                        $("#themeLoader").css("display", "flex");
-                        return false;
-                    },
-                });
-                // });
-            },
-        });
-    }else if(e.which == 8){
-        $("#consignee_address").empty();
-        $("#consignee_id").val('');
-    }
-});
+//                         $("#consignee_id").val(ui.item.value);
+//                         getConsignees(ui.item.value);
+//                         if((res?.data_prsid?.prs_id )?.length > 0){
+//                             getRoutes(consigner_id, ui.item.value);
+//                         }
+//                         // ... any other tasks (like setting Hidden Fields) go here...
+//                         $("#themeLoader").css("display", "flex");
+//                         return false;
+//                     },
+//                 });
+//                 // });
+//             },
+//         });
+//     }else if(e.which == 8){
+//         $("#consignee_address").empty();
+//         $("#consignee_id").val('');
+//     }
+// });
 // get ship to address
 // $("#select_ship_to").change(function (e) {
 //     $("#ship_to_address").empty();
@@ -3214,154 +3448,154 @@ jQuery(document).on("keyup", "#select_consignee", function (e) {
 //     getShipto(consignee_id);
 // });
 
-function getShipto(consignee_id) {
-    $.ajax({
-        type: "get",
-        url: APP_URL + "/get-consignees-address",
-        data: { consignee_id: consignee_id },
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        dataType: "json",
-        success: function (res) {
-            if (res.data) {
-                if (res.data.address_line1 == null) {
-                    var address_line1 = "";
-                } else {
-                    var address_line1 = res.data.address_line1 + "<br>";
-                }
-                if (res.data.address_line2 == null) {
-                    var address_line2 = "";
-                } else {
-                    var address_line2 = res.data.address_line2 + "<br>";
-                }
-                if (res.data.address_line3 == null) {
-                    var address_line3 = "";
-                } else {
-                    var address_line3 = res.data.address_line3 + "<br>";
-                }
-                if (res.data.address_line4 == null) {
-                    var address_line4 = "";
-                } else {
-                    var address_line4 = res.data.address_line4;
-                }
-                if (res.data.postal_code == null) {
-                    var postal_code = "";
-                } else {
-                    var postal_code = res.data.postal_code + "<br>";
-                }
-                if (res.data.gst_number == null) {
-                    var gst_number = "";
-                } else {
-                    var gst_number =
-                        "GST No: " + res.data.gst_number + "<br>";
-                }
-                if (res.data.phone == null) {
-                    var phone = "";
-                } else {
-                    var phone = "Phone: " + res.data.phone;
-                }
+// function getShipto(consignee_id) {
+//     $.ajax({
+//         type: "get",
+//         url: APP_URL + "/get-consignees-address",
+//         data: { consignee_id: consignee_id },
+//         headers: {
+//             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+//         },
+//         dataType: "json",
+//         success: function (res) {
+//             if (res.data) {
+//                 if (res.data.address_line1 == null) {
+//                     var address_line1 = "";
+//                 } else {
+//                     var address_line1 = res.data.address_line1 + "<br>";
+//                 }
+//                 if (res.data.address_line2 == null) {
+//                     var address_line2 = "";
+//                 } else {
+//                     var address_line2 = res.data.address_line2 + "<br>";
+//                 }
+//                 if (res.data.address_line3 == null) {
+//                     var address_line3 = "";
+//                 } else {
+//                     var address_line3 = res.data.address_line3 + "<br>";
+//                 }
+//                 if (res.data.address_line4 == null) {
+//                     var address_line4 = "";
+//                 } else {
+//                     var address_line4 = res.data.address_line4;
+//                 }
+//                 if (res.data.postal_code == null) {
+//                     var postal_code = "";
+//                 } else {
+//                     var postal_code = res.data.postal_code + "<br>";
+//                 }
+//                 if (res.data.gst_number == null) {
+//                     var gst_number = "";
+//                 } else {
+//                     var gst_number =
+//                         "GST No: " + res.data.gst_number + "<br>";
+//                 }
+//                 if (res.data.phone == null) {
+//                     var phone = "";
+//                 } else {
+//                     var phone = "Phone: " + res.data.phone;
+//                 }
 
-                $("#ship_to_address").append(
-                    address_line1 +
-                        " " +
-                        address_line2 +
-                        "" +
-                        address_line3 +
-                        " " +
-                        address_line4 +
-                        " " +
-                        postal_code +
-                        " " +
-                        gst_number +
-                        " " +
-                        phone +
-                        ""
-                );
+//                 $("#ship_to_address").append(
+//                     address_line1 +
+//                         " " +
+//                         address_line2 +
+//                         "" +
+//                         address_line3 +
+//                         " " +
+//                         address_line4 +
+//                         " " +
+//                         postal_code +
+//                         " " +
+//                         gst_number +
+//                         " " +
+//                         phone +
+//                         ""
+//                 );
 
-                var url = window.location.href;
-                var theArray = url.split('/');
-                var shortPath = theArray[theArray.length - 1];
-                if(shortPath == "order-book-ptl"){
-                    if (res.get_pin_hub == null) {
-                        $('#checkship_hub_delivery').html('No hub found');
-                        $('.disableme').prop('disabled', true);
-                        swal('error','Hub not found','error')
-                    } else {
-                        $('#checkship_hub_delivery').html(res.get_pin_hub);
-                        $('.disableme').prop('disabled', false);
-                    }
-                }
-            }
-        },
-    });
-}
+//                 var url = window.location.href;
+//                 var theArray = url.split('/');
+//                 var shortPath = theArray[theArray.length - 1];
+//                 if(shortPath == "order-book-ptl"){
+//                     if (res.get_pin_hub == null) {
+//                         $('#checkship_hub_delivery').html('No hub found');
+//                         $('.disableme').prop('disabled', true);
+//                         swal('error','Hub not found','error')
+//                     } else {
+//                         $('#checkship_hub_delivery').html(res.get_pin_hub);
+//                         $('.disableme').prop('disabled', false);
+//                     }
+//                 }
+//             }
+//         },
+//     });
+// }
 
 // for autocomplte ship to list
-jQuery(document).on("keyup", "#select_ship_to", function (e) {
-    $("#ship_to_address").empty();
-    var searchTerm= $(this).val();
-    var regclient_id= $("#select_regclient").val();
+// jQuery(document).on("keyup", "#select_ship_to", function (e) {
+//     $("#ship_to_address").empty();
+//     var searchTerm= $(this).val();
+//     var regclient_id= $("#select_regclient").val();
     
-    if(e.which != 8){
-        jQuery.ajax({
-            type: "get",
-            url: APP_URL + "/get_consignees",
-            cache: false,
-            data: { search:searchTerm, regclient_id:regclient_id },
-            dataType: "json",
-            headers: {
-                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
-            },
-            processData: true,
-            beforeSend: function () {
-                jQuery("#loader-section").css('display','flex');
+//     if(e.which != 8){
+//         jQuery.ajax({
+//             type: "get",
+//             url: APP_URL + "/get_consignees",
+//             cache: false,
+//             data: { search:searchTerm, regclient_id:regclient_id },
+//             dataType: "json",
+//             headers: {
+//                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+//             },
+//             processData: true,
+//             beforeSend: function () {
+//                 jQuery("#loader-section").css('display','flex');
     
-            },
-            complete: function () {
-                jQuery("#loader-section").css('display','none');
-            },
-            success: function (res) {
-                console.log(res.data);
-                $("#select_ship_to").autocomplete({
-                    source: function (request, response) {
-                        response(
-                            $.map(res.data, function (obj, key) {
-                                var name = obj.nick_name.toUpperCase();
-                                if (
-                                    name.indexOf(request.term.toUpperCase()) != -1
-                                ) {
-                                    return {
-                                        displayLabel: `${obj.nick_name}`,
-                                        label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
-                                        value: obj.id
-                                    }
-                                } else {
-                                    return null;
-                                }
-                            })
-                        );
-                    },
-                    focus: function (event, ui) {
-                        event.preventDefault();
-                    },
-                    select: function (event, ui) {
-                        event.preventDefault();
-                        $("#select_ship_to").val(ui.item.displayLabel);
-                        $("#ship_to_id").val(ui.item.value);
-                        getShipto(ui.item.value);
-                        // ... any other tasks (like setting Hidden Fields) go here...
-                        $("#themeLoader").css("display", "flex");
-                        return false;
-                    },
-                });
-            },
-        });
-    }else if(e.which == 8){
-        $("#ship_to_address").empty();
-        $("#ship_to_id").val('');
-    }
-});
+//             },
+//             complete: function () {
+//                 jQuery("#loader-section").css('display','none');
+//             },
+//             success: function (res) {
+//                 console.log(res.data);
+//                 $("#select_ship_to").autocomplete({
+//                     source: function (request, response) {
+//                         response(
+//                             $.map(res.data, function (obj, key) {
+//                                 var name = obj.nick_name.toUpperCase();
+//                                 if (
+//                                     name.indexOf(request.term.toUpperCase()) != -1
+//                                 ) {
+//                                     return {
+//                                         displayLabel: `${obj.nick_name}`,
+//                                         label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+//                                         value: obj.id
+//                                     }
+//                                 } else {
+//                                     return null;
+//                                 }
+//                             })
+//                         );
+//                     },
+//                     focus: function (event, ui) {
+//                         event.preventDefault();
+//                     },
+//                     select: function (event, ui) {
+//                         event.preventDefault();
+//                         $("#select_ship_to").val(ui.item.displayLabel);
+//                         $("#ship_to_id").val(ui.item.value);
+//                         getShipto(ui.item.value);
+//                         // ... any other tasks (like setting Hidden Fields) go here...
+//                         $("#themeLoader").css("display", "flex");
+//                         return false;
+//                     },
+//                 });
+//             },
+//         });
+//     }else if(e.which == 8){
+//         $("#ship_to_address").empty();
+//         $("#ship_to_id").val('');
+//     }
+// });
 
 //get regclient on change baseclient in mis2 report filter
 $("#select_baseclient").change(function (e) {

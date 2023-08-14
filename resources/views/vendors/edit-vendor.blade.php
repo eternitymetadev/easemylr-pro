@@ -215,19 +215,56 @@
 @endsection
 @section('js')
 <script>
-    $(document).on("keyup", "#pan_no", function () {
-        var panVal = $(this).val();
-        var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+    $(document).ready(function(){
+        var panVal = $(this).val().toUpperCase();
 
-        if (regpan.test(panVal)) {
-            $("#lblPANCard").hide();
-        } else {
-            $("#lblPANCard").show();
+        
+        var v_typ = $("#vendor_type").val();
+        if(v_typ != ''){
+            $("#pan_no").prop('disabled', false);
+        }else{
+            $("#pan_no").prop('disabled', true);
         }
-    })
+
+        $(document).on("keyup blur", "#pan_no", function () {
+            var vendor_type = $("#vendor_type").val();
+            var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+            var panVal = $(this).val().toUpperCase();
+
+            if(panVal.length >= 4){
+                var strval =  panVal.charAt(4 - 1);
+                if(strval != 'F' && vendor_type == "Firm"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'P' && (vendor_type == "Individual" || vendor_type == "Proprietorship") ){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'C' && vendor_type == "Company"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }if(strval != 'H' && vendor_type == "HUF"){
+                    $(this).val(panVal.slice(0, 3))
+                    return false;
+                }
+            }
+
+            if (regpan.test(panVal)) {
+                $("#lblPANCard").hide();
+            } else {
+                $("#lblPANCard").show();
+            }
+
+        })
+    });
 
 $('#vendor_type').change(function() {
+    $("#pan_no").val('');
     var v_typ = $(this).val();
+    if(v_typ != ''){
+        $("#pan_no").prop('disabled', false);
+    }else{
+        $("#pan_no").prop('disabled', true);
+    }
     var declaration = ($('input[name=decalaration_available]:checked').val());
     if (declaration == '2') {
         if (v_typ == 'Individual') {

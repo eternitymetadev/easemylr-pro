@@ -60,12 +60,6 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     $zone = '';
                 }
 
-                if(!empty($value->Consigner->nick_name)){
-                    $consigner = $value->Consigner->nick_name;
-                }else{
-                    $consigner = '';
-                }
-
                 if(!empty($value->dealer_type == '1')){
                     $dealer_type = 'Registered';
                 }else{
@@ -76,8 +70,9 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     'consignee_id' =>  $value->id,
                     'nick_name'     => $value->nick_name,
                     'legal_name'    => $value->legal_name,
-                    'baseclient_id'    => $value->baseclient_id,
-                    // 'consigner_id'  => $value->consigner_id,
+                    // 'baseclient_id'    => $value->baseclient_id,
+                    'consigner_id'  => @$value->consigner_id,
+                    'consigner_name' => @$value->Consigner->nick_name,
                     'contact_name'  => $value->contact_name,
                     'email'         => $value->email,
                     'dealer_type'   => $dealer_type,
@@ -104,8 +99,9 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
             'Consignee Id',
             'Consignee Nick Name',
             'Consignee Legal Name',
-            'Base Client',
-            // 'Consigner',
+            // 'Base Client',
+            'Consigner',
+            'Consigner name',
             'Contact Person Name',
             'Email',
             'Type Of Dealer',

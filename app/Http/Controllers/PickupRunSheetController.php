@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
+use App\Models\Job;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -532,6 +533,9 @@ class PickupRunSheetController extends Controller
             // insert prs driver task items
             if (!empty($request->data)) {
                 $authuser = Auth::user();
+                $cc = explode(',', $authuser->branch_id);
+                $location = Location::whereIn('id', $cc)->first();
+
                 $getRegclient = Consigner::select('id', 'regionalclient_id')->where('id', $request->consigner_id)->first();
 
                 $get_data = $request->data;
@@ -580,6 +584,41 @@ class PickupRunSheetController extends Controller
                     $consignmentsave['lr_type'] = 2;
                     if (empty($save_data['lr_id']) && (!empty($savetaskitems->invoice_no))) {
                         $saveconsignment = ConsignmentNote::create($consignmentsave);
+
+                        $mytime = Carbon::now('Asia/Kolkata');
+                        $currentdate = $mytime->toDateTimeString();
+                        
+                        if($saveconsignment){
+                            // task created //
+                            $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=>'Order Placed','create_at' => $currentdate,'location'=>$location->name, 'type' => '2']);
+                            $respons_data = json_encode($respons);
+                            $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                            // ==== end create===//
+                            
+                            // ================= task assign =================//
+                            $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+                            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                            if(!empty($lastjob->response_data)){
+                                $st = json_decode($lastjob->response_data);
+                                array_push($st, $respons2);
+                                $sts = json_encode($st);
+
+                                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                            }
+
+                            // task created //
+                            $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Prs Created', 'desc'=>'Pickup Scheduled','create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+                            
+                            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                            if(!empty($lastjob->response_data)){
+                                $st = json_decode($lastjob->response_data);
+                                array_push($st, $respons3);
+                                $sts = json_encode($st);
+
+                                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
+                            }
+                            // ==== end created===//
+                        }                        
                     } else {
                         ConsignmentNote::where(['id' => $save_data['lr_id']])->update(['prsitem_status' => 1]);
                         $saveconsignment = '';
@@ -608,7 +647,8 @@ class PickupRunSheetController extends Controller
                     }
                     // end create order
                 }
-                PrsDrivertask::where('id', $request->drivertask_id)->update(['status' => 3]);
+                $pickup_Date = Carbon::now()->format('Y-m-d');
+                PrsDrivertask::where('id', $request->drivertask_id)->update(['pickup_Date'=>$pickup_Date,'status' => 3]);
 
                 $countdrivertask_id = PrsDrivertask::where('prs_id', $request->prs_id)->count();
                 $countdrivertask_status = PrsDrivertask::where(['prs_id' => $request->prs_id, 'status' => 3])->count();

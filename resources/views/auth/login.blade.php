@@ -116,10 +116,9 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-
                     <div class="main-container">
                         <div class="container text-center">
-                            <a><img src="{{asset('assets/shipbuddy-logo.svg')}}" class="EE"> </a>
+                            <a><img src="{{asset('assets/ship-rider-logo.svg')}}" class="EE"> </a>
                         </div>
                         <div class="container">
                             <p style="text-align:center; margin: 2rem 0 0.5rem">Please login into your account.</p>

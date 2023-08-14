@@ -8,66 +8,54 @@
             <th>Image</th>
             <th>App Access</th>
             <th>Password</th>
-            <th>Tagged Branch</th>
+            {{-- <th>Tagged Branch</th> --}}
             <th>Action</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
+
             @if(count($drivers)>0)
             @foreach($drivers as $value)
-
             <tr>
                 <td>{{ $value->name ?? "-" }}</td>
                 <td>{{ $value->phone ?? "-" }}</td>
                 <!-- <td>{{ Helper::ShowDayMonthYear($value->regndate) ?? "-" }}</td> -->
                 <td>{{ $value->license_number ?? "-" }}</td>
-               <?php if($value->license_image == null){?>
-                            <td>-</td>
-                        <?php }else{
-                            $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
-                            $img_url = $value->license_image;
-                            if($img_url != '' || $img_url != null){
-                                $explode_url = explode("/",$img_url);
-                                if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                    $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
-                                }else{
-                                    $img_url = '';
-                                }
-                                
-                                if($chk_url == $img_url){?>
-                                    <td><a href={{$value->license_image}} target="_blank">view</a></td>
-                                <?php }else{?>
-                                    <td><a href={{$chk_url.'/'.$value->license_image}} target="_blank">view</a></td>
-                                    <?php }
-                            }else{?>
-                                <td>-</td>
-                                <?php }
-                            }?>
-                   <?php if($value->access_status == 0){
-                            $access_status = 'Not Enabled';
-                        }else{
-                            $access_status = 'Enabled';
-                        } ?>
+                <?php if($value->license_image){
+                    ?>
+                {{-- <td><a href=URL::to("/storage/images/driverlicense_images/".$value->license_image) target="_blank">view</a></td> --}}
+
+                <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td>
+                <?php }else{?>
+                    <td>-</td>
+                <?php }?>
+
+                <?php if($value->access_status == 0){
+                        $access_status = 'Not Enabled';
+                    }else{
+                        $access_status = 'Enabled';
+                    } ?>
                 <td>{{ $access_status ?? "-" }}</td>
                 <td>{{ $value->driver_password ?? "-" }}</td>
-                <?php if($value->branch_id){
-                    $branch_id = explode(',',$value->branch_id);
-                    $branch_ids = array();
-                    foreach($branch_id as $branch){
-                        $location = App\Models\Location::where('id',$branch)->first();
-                        // echo "<pre>"; print_r($location->name);die; 
-                        $branch_ids[] = @$location->name;
-                    }
-                    if($branch_ids){
-                        $branch_name = implode('/', $branch_ids);
-                    }else{
-                    $branch_name = '-';
-                    }
-                }else{
-                    $branch_name = '-';
-                }?>
-                <td>{{ $branch_name ?? "-" }}</td>
-                
+                {{-- <?php 
+                // if($value->branch_id){
+                //     $branch_id = explode(',',$value->branch_id);
+                //     $branch_ids = array();
+                //     foreach($branch_id as $branch){
+                //         $location = App\Models\Location::where('id',$branch)->first();
+                //         // echo "<pre>"; print_r($location->name);die; 
+                //         $branch_ids[] = @$location->name;
+                //     }
+                //     if($branch_ids){
+                //         $branch_name = implode('/', $branch_ids);
+                //     }else{
+                //     $branch_name = '-';
+                //     }
+                // }else{
+                //     $branch_name = '-';
+                // }
+                ?>
+                <td>{{ $branch_name ?? "-" }}</td> --}}                
                 <td>
                     <div class="d-flex" style="gap: 4px">
                         <a href="<?php echo URL::to($prefix.'/drivers/'.Crypt::encrypt($value->id).'/edit')?>"

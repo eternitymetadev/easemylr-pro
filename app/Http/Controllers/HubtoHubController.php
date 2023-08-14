@@ -41,7 +41,6 @@ class HubtoHubController extends Controller
     public function hubtransportation()
     {
         $this->prefix = request()->route()->getPrefix();
-
         return view('hub-transportation.hub-transportation', ['prefix' => $this->prefix]);
     }
 
@@ -113,14 +112,15 @@ class HubtoHubController extends Controller
                 $savehrs = Hrs::create(['hrs_no' => $hrs_id_new, 'consignment_id' => $value, 'branch_id' => $cc, 'to_branch_id' => $next_branch, 'total_hrs_quantity' => $boxes, 'status' => 1]);
             }
 
-            // =================== task assign ====== //
+         
+
+             // =================== task assign ====== //
           $mytime = Carbon::now('Asia/Kolkata');
           $currentdate = $mytime->toDateTimeString();
 
           $respons2 = array('consignment_id' => $value, 'status' => 'Hrs Created','desc'=>'In Transit - Departed from', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
           $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $value)->latest('id')->first();
-          
           if (!empty($lastjob->response_data)) {
               $st = json_decode($lastjob->response_data);
               array_push($st, $respons2);
@@ -278,6 +278,9 @@ class HubtoHubController extends Controller
 
         $consignerId = $request->lr_id;
         $cc = explode(',', $consignerId);
+        $authuser = Auth::user();
+        $loc = explode(',', $authuser->branch_id);
+        $location = Location::whereIn('id', $loc)->first();
         
         $addvechileNo = $request->vehicle_id;
         $adddriverId = $request->driver_id;
@@ -291,24 +294,24 @@ class HubtoHubController extends Controller
         // $mytime = Carbon::now('Asia/Kolkata');
         // $currentdate = $mytime->toDateTimeString();
 
-        // foreach ($cc as $c_id) {
-        //     // =================== task assign
-        //     $respons2 = array('consignment_id' => $c_id, 'status' => 'Hub Transfer', 'create_at' => $currentdate, 'location'=>$location->name, 'type' => '2');
 
-        //     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('id')->first();
-        //     $st = json_decode($lastjob->response_data);
-        //     array_push($st, $respons2);
-        //     $sts = json_encode($st);
-           
+        foreach ($cc as $c_id) {
+            // =================== task assign
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Hub Transfer','desc'=>'In Transit - Arrived at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-        //     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Hub Transfer', 'type' => '2']);
-        //     // ==== end started
-        // }
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->orderBy('id','DESC')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
 
+                $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Hub Transfer', 'type' => '2']);
+            }
+            // ==== end started
+        }
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
 
     public function getHrsSheetDetails(Request $request)
@@ -552,12 +555,15 @@ class HubtoHubController extends Controller
                     $respons2 = array('consignment_id' => $lr, 'status' => 'Received Hub OFD','desc'=>'In Transit - Arrived at Destination City', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $lr)->latest('id')->first();
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
+                    if (!empty($lastjob->response_data)) {
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                        $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub OFD', 'type' => '2']);
+                    }
                     // ==== end started ===//
+                    
                 } else {
                     $get_last_route = ConsignmentNote::where('id', $lr)->first();
                     $get_last_route_branch = $get_last_route->route_branch_id;
@@ -569,15 +575,16 @@ class HubtoHubController extends Controller
                     $respons2 = array('consignment_id' => $lr, 'status' => 'Received Hub','desc'=>'In Transit - Arrived at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $lr)->latest('id')->first();
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
+                    if (!empty($lastjob->response_data)) {
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub', 'type' => '2']);
+                        $start = Job::create(['consignment_id' => $lr, 'response_data' => $sts, 'status' => 'Received Hub', 'type' => '2']);
+                    }
                     // ==== end started ===//
                 }
             }
-
             Hrs::where('hrs_no', $hrs_no)->update(['total_receive_quantity' => $receive_box, 'remarks' => $remarks, 'receving_status' => 2]);
 
             $response['success'] = true;
@@ -597,7 +604,6 @@ class HubtoHubController extends Controller
     ////////////////////////
     public function printHrs(Request $request)
     {
-
         $id = $request->id;
         $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.consigneeDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
             ->whereHas('ConsignmentDetail', function ($q) {

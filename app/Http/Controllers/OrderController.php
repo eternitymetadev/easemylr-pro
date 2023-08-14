@@ -379,9 +379,9 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * line 382-1435
-     */ 
-    public function updateOrder(Request $request){ 
+     */
+      public function updateOrder(Request $request)
+    {
         try {
             DB::beginTransaction();
 
@@ -418,6 +418,7 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
+            
             // $consignmentsave['regclient_id'] = $request->regclient_id;
             // $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -490,7 +491,6 @@ class OrderController extends Controller
                             if (!empty($request->data)) {
                                 $get_data = $request->data;
                                 foreach ($get_data as $key => $save_data) {
-
                                     $savedata['consignment_id'] = $request->consignment_id;
                                     $savedata['order_id'] = $save_data['order_id'];
                                     $savedata['invoice_no'] = $save_data['invoice_no'];
@@ -518,6 +518,7 @@ class OrderController extends Controller
                                                 $netwt_array[] = $save_itemdata['net_weight'];
                                                 $grosswt_array[] = $save_itemdata['gross_weight'];
                                                 $chargewt_array[] = $save_itemdata['chargeable_weight'];
+
 
                                                 $saveitemdata['conitem_id'] = $save_data['item_id'];
                                                 $saveitemdata['item'] = $save_itemdata['item'];
@@ -706,6 +707,7 @@ class OrderController extends Controller
                                     $grosswt_array[] = $save_itemdata['gross_weight'];
                                     $chargewt_array[] = $save_itemdata['chargeable_weight'];
 
+
                                     $saveitemdata['conitem_id'] = $save_data['item_id'];
                                     $saveitemdata['item'] = $save_itemdata['item'];
                                     $saveitemdata['quantity'] = $save_itemdata['quantity'];
@@ -752,6 +754,7 @@ class OrderController extends Controller
                         $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                         $savedata['status'] = 1;
                         $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+
                     }
                 }
             }
@@ -761,8 +764,6 @@ class OrderController extends Controller
             $saveroute['route'] = $request->lr_routes;
 
             $routesave = LrRoute::create($saveroute);
-
-
 
               /////////////////// drs api push ////////////////////////////
 
@@ -1435,6 +1436,7 @@ class OrderController extends Controller
         return response()->json($response);
     }
 
+
     ////////////////////
     public function updateOrderOld(Request $request)
     {
@@ -1994,7 +1996,6 @@ class OrderController extends Controller
 
     public function storeFtlOrder(Request $request)
     {
-
         try {
             DB::beginTransaction();
 
@@ -2017,6 +2018,8 @@ class OrderController extends Controller
 
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
+            
+            $locations = Location::whereIn('id', $cc)->first();
 
             if (empty($request->vehicle_id)) {
                 $status = '2';
@@ -2136,46 +2139,54 @@ class OrderController extends Controller
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
-            // check app assign ========================================
-            if (!empty($get_driver_details->branch_id)) {
-                $driver_branch = explode(',', $get_driver_details->branch_id);
-                if (in_array($authuser->branch_id, $driver_branch)) {
-                    $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+            //         $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+            //         if(!empty($lastjob->response_data)){
+            //             $st = json_decode($lastjob->response_data);
+            //             array_push($st, $respons2);
+            //             $sts = json_encode($st);
 
-                    // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                    $respons_data = json_encode($respons);
-                    $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                    // ==== end create
-                    // =================== task assign
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
+            //             $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            //         }
+            //         // ==== end started
+            //         $app_notify = $this->sendNotification($request->driver_id);
+            //     } else {
+            //         // task created
+            //         $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+            //         $respons_data = json_encode($respons);
+            //         $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+            //         // ==== end create
+            //     }
+            //     // if(!empty($request->driver_id)){
+            //     //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+            //     // }
+            // } else {
+                // task created
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
+                $respons_data = json_encode($respons);
+                $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                // ==== end create
+                // =================== task assign
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                if(!empty($lastjob->response_data)){
                     $st = json_decode($lastjob->response_data);
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                    // ==== end started
-                    $app_notify = $this->sendNotification($request->driver_id);
-                } else {
-                    // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                    $respons_data = json_encode($respons);
-                    $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                    // ==== end create
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                 }
                 // if(!empty($request->driver_id)){
                 //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
                 // }
-            } else {
-                // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                $respons_data = json_encode($respons);
-                $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                // ==== end create
+            // } else {
+            //     // task created
+            //     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+            //     $respons_data = json_encode($respons);
+            //     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+            //     // ==== end create
                 
-            }
+            // }
 
             $url = $this->prefix . '/reserve-lr';
             $response['success'] = true;
@@ -2554,11 +2565,13 @@ class OrderController extends Controller
                     $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
+                    if(!empty($lastjob->response_data)){
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                        $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                    }
                     // ==== end started
                     $app_notify = $this->sendNotification($request->driver_id);
                 } else {
@@ -2582,11 +2595,13 @@ class OrderController extends Controller
                 $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=>'Consignment Menifested at', 'create_at' => $currentdate,'location'=>$pickup_location->name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                $st = json_decode($lastjob->response_data);
-                array_push($st, $respons2);
-                $sts = json_encode($st);
+                if(!empty($lastjob->response_data)){
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
 
-                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                }
                 // ==== end started
                 
             }
@@ -2616,23 +2631,22 @@ class OrderController extends Controller
 
         $update_receve = ConsignmentNote::where('id', $request->lr_id)->update(['prsitem_status' => 2, 'prs_remarks' => $request->prs_remarks]);
 
-          // =================== task assign ====== //
-          $mytime = Carbon::now('Asia/Kolkata');
-          $currentdate = $mytime->toDateTimeString();
+        // =================== task assign ====== //
+        $mytime = Carbon::now('Asia/Kolkata');
+        $currentdate = $mytime->toDateTimeString();
 
-          $respons2 = array('consignment_id' => $request->lr_id, 'status' => 'Prs Created','desc'=>'Pickup Scheduled', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+        $respons2 = array('consignment_id' => $request->lr_id, 'status' => 'Prs Created','desc'=>'Pickup Scheduled', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
 
-          $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $request->lr_id)->latest('id')->first();
-          
-          if (!empty($lastjob->response_data)) {
-              $st = json_decode($lastjob->response_data);
-              array_push($st, $respons2);
-              $sts = json_encode($st);
+        $lastjob = DB::table('jobs')->select('id','response_data')->where('consignment_id', $request->lr_id)->latest('id')->first();
+        
+        if (!empty($lastjob->response_data)) {
+            $st = json_decode($lastjob->response_data);
+            array_push($st, $respons2);
+            $sts = json_encode($st);
 
-              $start = Job::create(['consignment_id' => $request->lr_id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
-          }
-          // ==== end started
-         
+            $start = Job::create(['consignment_id' => $request->lr_id, 'response_data' => $sts, 'status' => 'Prs Created', 'type' => '2']);
+        }
+        // ==== end started         
 
         if ($update_receve) {
             $response['success'] = true;
@@ -2641,7 +2655,7 @@ class OrderController extends Controller
 
         } else {
             $response['success'] = false;
-            $response['error_message'] = "Can not update  please try again";
+            $response['error_message'] = "Can not update please try again";
             $response['error'] = true;
         }
         return response()->json($response);
@@ -2773,6 +2787,7 @@ class OrderController extends Controller
             }
             $authuser = Auth::user();
             $cc = explode(',', $authuser->branch_id);
+            $locations = Location::whereIn('id', $cc)->first();
 
             if ($request->booked_drs == 0) {
                 if (empty($request->vehicle_id)) {
@@ -2886,45 +2901,27 @@ class OrderController extends Controller
 
                 // check app assign ========================================
                 if ($get_driver_details->access_status == 1) {
-                    if (!empty($get_driver_details->branch_id)) {
-                        $driver_branch = explode(',', $get_driver_details->branch_id);
-                        if (in_array($authuser->branch_id, $driver_branch)) {
-                            $update = DB::table('consignment_notes')->where('id', $consignment_id)->update(['lr_mode' => 2]);
-
-                            // // task created
-                            // $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                            // $respons_data = json_encode($respons);
-                            // $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                            // // ==== end create
-                            // =================== task assign
-                            $respons2 = array('consignment_id' => $consignment_id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
-
-                            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('id')->first();
-                            $st = json_decode($lastjob->response_data);
-                            array_push($st, $respons2);
-                            $sts = json_encode($st);
-
-                            $start = Job::create(['consignment_id' => $consignment_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                            // ==== end started
-                            $app_notify = $this->sendNotification($request->driver_id);
-                        } else {
-                            // task created
-                            // $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                            // $respons_data = json_encode($respons);
-                            // $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                            // ==== end create
-                        }
-                        // if(!empty($request->driver_id)){
-                        //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
-                        // }
-                    } else {
-                        // task created
-                        // $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-                        // $respons_data = json_encode($respons);
-                        // $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                        // ==== end create
-                    }
+                    // if (!empty($get_driver_details->branch_id)) {
+                        // $driver_branch = explode(',', $get_driver_details->branch_id);
+                        // if (in_array($authuser->branch_id, $driver_branch)) {
+                    $update = DB::table('consignment_notes')->where('id', $consignment_id)->update(['lr_mode' => 2]);
+                    
+                    $app_notify = $this->sendNotification($request->driver_id);
                 }
+                                   
+                // task created
+                $respons = array('consignment_id' => $consignment_id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                $respons_data = json_encode($respons);
+
+                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('id')->first();
+                if(!empty($lastjob->response_data)){
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons);
+                    $sts = json_encode($st);
+
+                    $start = Job::create(['consignment_id' => $consignment_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                }
+                //==== end create
             }
             // insert consignment items
             if (!empty($request->data)) {
@@ -2955,6 +2952,7 @@ class OrderController extends Controller
         }
         return response()->json($response);
     }
+  
     public function sendNotification($request)
     {
 

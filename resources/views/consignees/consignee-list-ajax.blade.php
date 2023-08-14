@@ -4,8 +4,8 @@
             <tr>
                 <th>Cnee ID</th>
                 <th>Consignee Nick Name</th>
-                <!-- <th>Consigner</th>  -->
-                <th>Base Client</th> 
+                <th>Consigner</th>
+                {{-- <th>Base Client</th>  --}}
                 <th>Contact Person Name</th>
                 <th>Mobile No</th>
                 <th>PIN Code</th>
@@ -22,7 +22,8 @@
             <tr>
                 <td>{{ $value->id ?? "-" }}</td>
                 <td>{{ $value->nick_name ?? "-" }}</td>
-                <td>{{ $value->RegClients->BaseClient->client_name ?? "-" }}</td>
+                <td>{{ $value->GetConsigner->nick_name ?? "-" }}</td>
+                {{-- <td>{{ $value->RegClients->BaseClient->client_name ?? "-" }}</td> --}}
                 <td>{{ $value->contact_name ?? "-" }}</td>
                 <td>{{ $value->phone ?? "-" }}</td>
                 <td>{{ $value->postal_code ?? "-" }}</td>

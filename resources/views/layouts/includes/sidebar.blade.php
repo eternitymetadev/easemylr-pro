@@ -22,6 +22,7 @@
     // dd($permissions);
     ?>
     <div class="shadow-bottom"></div>
+    <?php if($authuser->role_id != 7){ ?>
     <li class="menu">
         <a href="{{$prefixurl.'dashboard'}}" data-active="<?php if($segment == 'dashboard'){?>true<?php }?>"
             class="dropdown-toggle">
@@ -36,7 +37,7 @@
             </div>
         </a>
     </li>
-    <?php
+    <?php }
     if(!empty($permissions)){
     if(in_array('1', $permissions))
     {
@@ -87,7 +88,7 @@
     if(in_array('2', $permissions))
     {
     ?>
-    <li class="menu">
+    {{-- <li class="menu">
         <a href="{{$prefixurl.'branch-connectivity'}}" data-active="<?php if($segment == 'branch-connectivity'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'branch-connectivity')) active @endif">
@@ -100,7 +101,7 @@
                 <span>Branch Connectivity</span>
             </div>
         </a>
-    </li>
+    </li> --}}
     <?php }
     }
     ?>
@@ -109,7 +110,7 @@
     if(in_array('2', $permissions))
     {
     ?>
-    <li class="menu">
+    {{-- <li class="menu">
         <a href="{{$prefixurl.'route-finder'}}" data-active="<?php if($segment == 'route-finder'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'route-finder')) active @endif">
@@ -136,7 +137,7 @@
                 <span>Route List</span>
             </div>
         </a>
-    </li>
+    </li> --}}
     <?php }
     }
     ?>
@@ -323,6 +324,7 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
+            <?php if($authuser->role_id != 7){ ?> 
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
@@ -332,19 +334,21 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create FTL LR</a>
             </li>
+            <?php } ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
+            <?php if($authuser->role_id != 7){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
-          
+            <?php } ?>
         </ul>
     </li>
-
+    <?php if($authuser->role_id != 7){ ?>
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -471,6 +475,7 @@
             </li>
         </ul>
     </li>
+    <?php }?>
 
     <?php if($authuser->role_id == 1 || $authuser->role_id ==2 || $authuser->role_id ==3 || $authuser->role_id ==4){ ?>
     <li class="menu">
@@ -625,7 +630,7 @@
         </ul>
     </li>
     <?php } ?>
-
+    <?php if($authuser->role_id != 7){ ?>
     <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
     <li class="menu">
@@ -653,8 +658,12 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report2'}}"> Mis Report 2 </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report3'}}"> Mis Report 3 </a>
+            </li>
         </ul>
     </li>
+    <?php } ?>
 
     
     <!-- <li class="menu">
@@ -805,8 +814,7 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/bulk-import')}}"> Import Data </a>
             </li>
-            <?php if($authuser->role_id == 1 || $authuser->role_id == 5){ 
-              ?>
+            <?php if($authuser->role_id == 1 || $authuser->role_id == 5){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/settings/branch-address')}}">Company Setup </a>
             </li>
@@ -816,7 +824,6 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/locations')}}">Branches </a>
             </li>
-            <?php ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'clients'}}"> Base Clients </a>
             </li>

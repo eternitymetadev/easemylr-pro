@@ -311,18 +311,18 @@ span.select2.select2-container.mb-4 {
                 <label for="exampleFormControlSelect1">
                     Purchase Freight<span class="text-danger">*</span>
                 </label>
-                <Input type="number" class="form-control" name="freight"> 
+                <input type="number" class="form-control" name="freight"> 
             </div> -->
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
                     Freight on Delivery
                 </label>
-                <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly> 
+                <input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly> 
             </div>
             <div class="form-group col-md-2" id="codFreightBlock">
                 <label for="exampleFormControlSelect1">Cash on delivery
                 </label>
-                <Input type="number" class="form-control" name="cod" id="cod">
+                <input type="number" class="form-control" name="cod" id="cod">
             </div>
             <div class="form-group d-flex col-md-3"> 
 
@@ -371,29 +371,29 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
                 </label>
-                <input id="select_consignee" name="" class="form-control selectConsignee" type="text" placeholder="Search.." />
+                {{-- <input id="select_consignee" name="" class="form-control selectConsignee" type="text" placeholder="Search.." />
 
                 <div class="appendedAddress" id="consignee_address"></div>
-                <input type="hidden" id="consignee_id" name="consignee_id" value="">
+                <input type="hidden" id="consignee_id" name="consignee_id" value=""> --}}
 
-                {{-- <select class="form-control my-select2" name="consignee_id" id="select_consignee">
+                <select class="form-control my-select2" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>
-                <div class="appendedAddress" id="consignee_address"></div> --}}
+                <div class="appendedAddress" id="consignee_address"></div>
             </div>
             <div class="form-group col-md-4">
                 <label>
                     Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
                 </label>
-                <input id="select_ship_to" name="" class="form-control selectShipto" type="text" placeholder="Search.." />
+                {{-- <input id="select_ship_to" name="" class="form-control selectShipto" type="text" placeholder="Search.." />
 
                 <div class="appendedAddress" id="ship_to_address"></div>
-                <input type="hidden" id="ship_to_id" name="ship_to_id" value="">
+                <input type="hidden" id="ship_to_id" name="ship_to_id" value=""> --}}
 
-                {{-- <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
+                <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
                     <option value="">Select Ship To</option>
                 </select>
-                <div class="appendedAddress" id="ship_to_address"></div> --}}
+                <div class="appendedAddress" id="ship_to_address"></div>
             </div>
         </div>
 
@@ -435,7 +435,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                     EDD<span class="text-danger">*</span>
                 </label>
-                <Input type="date" class="form-control form-small" name="edd" />
+                <input type="date" class="form-control form-small" name="edd" />
             </div>
 
             <div class="form-group col-12">
@@ -447,7 +447,7 @@ span.select2.select2-container.mb-4 {
 
                 <div class="form-group col-md-4">
                     <label>Vehicle Name<span class="text-danger">*</span></label>
-                    <Input type="text" class="form-control form-small" name="transporter_name" />
+                    <input type="text" class="form-control form-small" name="transporter_name" />
                 </div>
                 <div class="form-group col-md-4">
                     <label>
@@ -465,7 +465,7 @@ span.select2.select2-container.mb-4 {
                     <label>
                         Purchase Freight<span class="text-danger">*</span>
                     </label>
-                    <Input type="number" class="form-control form-small" name="purchase_price" />
+                    <input type="number" class="form-control form-small" name="purchase_price" />
                 </div>
 
             </div>

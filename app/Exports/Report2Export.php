@@ -29,15 +29,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     protected $enddate;
     protected $baseclient_id;
     protected $regclient_id;
-    // protected $search;
 
     function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
-
-        // $this->search = $search;
     }
 
     public function collection()
@@ -83,16 +80,14 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
         
         if(isset($startdate) && isset($enddate)){
-            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);
-        }else {
-            $query = $query;
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
-        if(isset($baseclient_id)){
+        if($baseclient_id){
             $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
                 $q->where('id', $baseclient_id);
             });
         }
-        if(isset($regclient_id)){
+        if($regclient_id){
             $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
                 $q->where('id', $regclient_id);
             });
@@ -250,7 +245,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                          }else{ 
                             $lr_type = "-";
                             }
-
 
                 $arr[] = [
                     'consignment_id'      => $consignment_id,

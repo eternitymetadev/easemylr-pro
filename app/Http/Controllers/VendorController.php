@@ -6,6 +6,7 @@ use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
 use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
+use App\Exports\DrsPaymentExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
@@ -204,7 +205,6 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -272,12 +272,10 @@ class VendorController extends Controller
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('vehicle_no', 'like', '%' . $search . '%')
                         ->orWhere('drs_no', 'like', '%' . $search . '%');
-
                 });
             }
 
             /// search with vehicle no
-
             if ($request->searchvehicle) {
                 Session::put('searchvehicle', $request->searchvehicle);
             }
@@ -302,6 +300,13 @@ class VendorController extends Controller
             }
 
             $vehicles = TransactionSheet::select('vehicle_no')->distinct()->get();
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
+            }
 
             $paymentlist = $query->orderby('id', 'DESC')->paginate($peritem);
 
@@ -366,6 +371,10 @@ class VendorController extends Controller
         $vendors = Vendor::with('Branch')->get();
 
         return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
+    }
+
+    public function drsPaymentExport(Request $request){
+        return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle, $request->select_vehicle), 'drs_payment.csv');
     }
 
     public function getdrsdetails(Request $request)
@@ -978,28 +987,97 @@ class VendorController extends Controller
     public function requestList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
+        $query = PaymentRequest::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('transaction_id', 'like', '%' . $search . '%')
+                    ->orWhere('total_amount', 'like', '%' . $search . '%')
+                    ->orWhere('advanced', 'like', '%' . $search . '%')
+                    ->orWhere('balance', 'like', '%' . $search . '%')
+                    ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                        $query->where(function ($vndrquery) use ($search, $searchT) {
+                            $vndrquery->where('name', 'like', '%' . $search . '%');
+                        });
+                    });
+                });
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $cc = explode(',', $authuser->branch_id);
+
+            $query = $query->with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
+                ->groupBy('transaction_id');
+
+            if ($authuser->role_id == 2) {
+                $query = $query->where('branch_id', $cc);
+            } else {
+                $query = $query;
+            }
+
+            $vendors = Vendor::all();
+            $vehicletype = VehicleType::select('id', 'name')->get();
+            $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
+
+            $html = view('vendors.request-list-ajax', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $query = $query->with('VendorDetails', 'Branch')
+                ->where('payment_status', '!=', 0)
+                ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
-            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
-                ->where('branch_id', $cc)
-                ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id')
-                ->get();
+            $query = $query->where('branch_id', $cc);
         } else {
-            $requestlists = PaymentRequest::with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id')
-                ->get();
+            $query = $query;
         }
 
         $vendors = Vendor::all();
         $vehicletype = VehicleType::select('id', 'name')->get();
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
-        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
+        $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $requestlists = $requestlists->appends($request->query());
+
+        return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem]);
     }
 
     public function getVendorReqDetails(Request $request)
