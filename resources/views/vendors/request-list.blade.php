@@ -62,10 +62,19 @@
                 </div>
 
                 <div class="widget-content widget-content-area br-6">
+                    
                     <div class="row px-3 mx-0 mt-4 justify-content-end">
-                        <input type="text" class="form-control col-3" placeholder="Search Transaction Id" id="search"
-                            data-action="<?php echo url()->current(); ?>">
+                        <input type="text" class="form-control col-3" placeholder="Search Transaction Id" id="search" data-action="<?php echo url()->current(); ?>">
 
+                        <div class="col-sm-2">
+                            <select class="form-control my-select2" id="status_filter" name="status_id" data-action="<?php echo url()->current(); ?>" placeholder="Search By Status">
+                                <option value="">Search By Status</option>
+                                <option value="0">Failed</option>
+                                <option value="1">Paid</option>
+                                <option value="2">Sent to Account</option>
+                                <option value="3">Partial Paid</option>
+                            </select>
+                        </div>
 
                         <a href="javascript:void();" style="font-size: 15px; padding: 9px;"
                             class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i
@@ -317,5 +326,30 @@
             "pageLength": 100,
 
         });
+
+    // filter by status
+        $('#status_filter').change(function() {
+        var status_id = $(this).val();
+        let url = $('#wines_filters').attr('data-action');
+        $.ajax({
+            url: url,
+            type: "get",
+            cache: false,
+            data: { status_id: status_id },
+            dataType: "json",
+            headers: {
+                "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+            },
+            beforeSend: function () {
+                
+            },
+            success: function (res) {
+                if (res.html) {
+                    jQuery('.main-table').html(res.html);
+                }
+            },
+        });
+        return false;
+    });
     </script>
 @endsection

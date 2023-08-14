@@ -1052,6 +1052,10 @@ class VendorController extends Controller
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            if ($request->status_id) {
+                // dd($request->status_id);
+                $query = $query->where('payment_status', $request->status_id);
+            }
 
             $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
 

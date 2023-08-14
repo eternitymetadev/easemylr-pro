@@ -56,7 +56,7 @@
 
                     <!-- payment Status -->
                     <?php if($requestlist->payment_status == 0){ ?>
-                    <td> <label class="badge badge-dark">Faild</label>
+                    <td> <label class="badge badge-dark">Failed</label>
                     </td>
                     <?php } elseif($requestlist->payment_status == 1) { ?>
                     <td> <label class="badge badge-success">Paid</label> </td>
