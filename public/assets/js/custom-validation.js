@@ -948,7 +948,7 @@ jQuery(document).ready(function () {
                             $("#check_hub").html("No hub found");
                             $(".disableme").prop("disabled", true);
                             $("#select_consignee").prop("disabled", true);
-                            swal("error", "Hub not found", "error");
+                            // swal("error", "Hub not found", "error");
                         } else {
                             $("#check_hub").html(res.get_pin_hub);
                             $(".disableme").prop("disabled", false);
@@ -1035,7 +1035,7 @@ jQuery(document).ready(function () {
                         if (res.get_pin_hub == null) {
                             $('#check_hub_delivery').html('No hub found');
                             $('.disableme').prop('disabled', true);
-                            swal('error','Hub not found','error')
+                            // swal('error','Hub not found','error')
                         } else {
                             $('#check_hub_delivery').html(res.get_pin_hub);
                             $('.disableme').prop('disabled', false);
