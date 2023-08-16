@@ -1028,13 +1028,18 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
-                    if (res.get_pin_hub == null) {
-                        $('#check_hub_delivery').html('No hub found');
-                        $('.disableme').prop('disabled', true);
-                        swal('error','Hub not found','error')
-                    } else {
-                        $('#check_hub_delivery').html(res.get_pin_hub);
-                        $('.disableme').prop('disabled', false);
+                    var url = window.location.href;
+                    var theArray = url.split("/");
+                    var shortPath = theArray[theArray.length - 1];
+                    if (shortPath == "order-book-ptl") {
+                        if (res.get_pin_hub == null) {
+                            $('#check_hub_delivery').html('No hub found');
+                            $('.disableme').prop('disabled', true);
+                            swal('error','Hub not found','error')
+                        } else {
+                            $('#check_hub_delivery').html(res.get_pin_hub);
+                            $('.disableme').prop('disabled', false);
+                        }
                     }
                 }
             },
