@@ -458,15 +458,15 @@ class GlobalFunctions
     {
         $get_lr = ConsignmentNote::where('id',$lr_id)->first();
 
-        if(empty($get_lr->invoice_no)){
+        if(empty(@$get_lr->invoice_no)){
             $get_invcs = ConsignmentItem::where('consignment_id',$lr_id)->get();
             $lr_invoices = array();
-            foreach($get_invcs as $key => $invoice){
-                $lr_invoices[] = $invoice->invoice_no;
+            foreach(@$get_invcs as $key => $invoice){
+                $lr_invoices[] = @$invoice->invoice_no;
             }
             $invoice_nos = implode(',', $lr_invoices);
         }else{
-            $invoice_nos = $get_lr->invoice_no;
+            $invoice_nos = @$get_lr->invoice_no;
         }
         return $invoice_nos;
     }

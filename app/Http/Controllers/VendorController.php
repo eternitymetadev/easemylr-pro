@@ -1057,6 +1057,11 @@ class VendorController extends Controller
                 $query = $query->where('payment_status', $request->status_id);
             }
 
+            if ($request->paymentstatus_id) {
+                // dd($request->status_id);
+                $query = $query->where('payment_status', $request->paymentstatus_id);
+            }
+
             $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
 
             $html = view('vendors.request-list-ajax', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem])->render();
