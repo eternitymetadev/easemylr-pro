@@ -1984,6 +1984,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+            // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '5', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1');
 
@@ -2007,7 +2008,7 @@ class ConsignmentController extends Controller
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
-
+        
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
