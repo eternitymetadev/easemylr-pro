@@ -14,6 +14,7 @@ use App\Imports\ManualDeliveryImport;
 use App\Imports\UpdateLatitudeLongitude;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
+use DB;
 use ZipArchive;
 
 class ImportCsvController extends Controller
@@ -54,9 +55,22 @@ class ImportCsvController extends Controller
             $message = 'Drivers Uploaded Successfully';
         }
         if($request->hasFile('zonesfile')){
-            $data = Excel::import(new ZoneImport,request()->file('zonesfile'));
-            $url  = URL::to($this->prefix.'/postal-code');
-            $message = 'Zones Uploaded Successfully';
+            DB::beginTransaction();
+            try {
+                $data = Excel::import(new ZoneImport,request()->file('zonesfile'));
+
+                DB::commit(); // Commit changes if everything is successful
+
+                $url  = URL::to($this->prefix.'/postal-code');
+                $message = 'Zones Uploaded Successfully';
+            } catch (\Exception $e) {
+                DB::rollback(); // Roll back changes if an error occurs
+                $url  = URL::to($this->prefix.'/bulk-import');
+                $message =  $e->getMessage();
+                // return $message;
+                $data="";
+                // return redirect()->back()->with('error', 'An error occurred during import: ' . $e->getMessage());
+            }
         }
         if($request->hasFile('deliverydatesfile')){
             $data = Excel::import(new DeliveryDateImport,request()->file('deliverydatesfile'));
@@ -103,7 +117,7 @@ class ImportCsvController extends Controller
         }else{
             $response['success']       = false;
             $response['error']         = true;
-            $response['error_message'] = "Can not import consignees please try again";
+            $response['error_message'] = $message;
         }
         return response()->json($response);
     }
