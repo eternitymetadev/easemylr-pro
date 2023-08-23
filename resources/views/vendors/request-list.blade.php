@@ -66,14 +66,14 @@
                     <div class="row px-3 mx-0 mt-4 justify-content-end">
                         <input type="text" class="form-control col-3" placeholder="Search Transaction Id" id="search" data-action="<?php echo url()->current(); ?>">
 
-                        {{-- <div class="col-sm-2">
-                            <select class="form-control my-select2" id="paymentstatus_filter" name="paymentstatus_id" data-action="<?php// echo url()->current(); ?>" placeholder="Search By Status">
+                        <div class="col-sm-2">
+                            <select class="form-control my-select2" id="paymentstatus_filter" name="paymentstatus_id" data-action="<?php echo url()->current(); ?>" placeholder="Search By Status">
                                 <option value="">Search By Payment Status</option>
                                 <option value="1">Fully Paid</option>
                                 <option value="2">Processing</option>
                                 <option value="3">Create payment</option>
                             </select>
-                        </div> --}}
+                        </div>
 
                         {{-- <div class="col-sm-2">
                             <select class="form-control my-select2" id="status_filter" name="status_id" data-action="<?php// echo url()->current(); ?>" placeholder="Search By Status">

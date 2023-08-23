@@ -92,7 +92,7 @@ div.relative {
                                 <th>Zone</th>
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
-                                {{-- <th>Invoice Number</th> --}}
+                                <th>Invoice Number</th>
 
                             </tr>
                         </thead>
@@ -145,7 +145,7 @@ div.relative {
                                 <td>{{ $consignment->zone ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
-                                {{-- <td>{{Helper::InvoiceNumbers($consignment->id)}}</td> --}}
+                                <td>{{Helper::InvoiceNumbers($consignment->id)}}</td>
                                 
                             </tr>
 
