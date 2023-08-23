@@ -878,7 +878,7 @@ class PickupRunSheetController extends Controller
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
 
-            $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
+            $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail','Consignment.ConsignerDetail','Consignment.ConsigneeDetail')->where('request_status', 0)
             ->where('payment_status', 0);
 
             if (!empty($request->search)) {
@@ -945,7 +945,7 @@ class PickupRunSheetController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')->where('request_status', 0)
+        $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail','Consignment.ConsignerDetail','Consignment.ConsigneeDetail')->where('request_status', 0)
             ->where('payment_status', 0);
 
         if ($authuser->role_id == 1) {
