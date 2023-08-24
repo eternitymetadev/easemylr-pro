@@ -9,11 +9,11 @@
                 </th>
                 <?php } ?>
                 <th>Purchase Amount</th> 
-                <th>Pickup ID</th>
-                <th>Pickup Location</th>
+                <th style="max-width: 180px;">Pickup ID</th>
+                <th style="max-width: 180px;">Pickup Location</th>
                 <th>Drop Location</th>
                 <th>Boxes</th>
-                <th>Date</th>
+                <th style="min-width: 110px;">Date</th>
                 <th>Vehicle No.</th>
                 <th>Driver Name </th>
             </tr>
