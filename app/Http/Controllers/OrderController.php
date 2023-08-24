@@ -2320,8 +2320,13 @@ class OrderController extends Controller
 
                 if (!empty($getpin_transfer->hub_transfer)) {
                     $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
-                    $get_branch_id_to = $get_branch->id;
-                    $get_zonebranch = $getpin_transfer->hub_transfer;
+                    if($get_branch){
+                        $get_branch_id_to = $get_branch->id;
+                        $get_zonebranch = $getpin_transfer->hub_transfer;
+                    }else{
+                        $get_branch_id_to = $authuser->branch_id;
+                        $get_zonebranch = $location_name;
+                    }
                 } else {
                     $get_branch_id_to = $authuser->branch_id;
                     $get_zonebranch = $location_name;
