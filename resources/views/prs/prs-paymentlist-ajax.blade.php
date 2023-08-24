@@ -12,6 +12,7 @@
                 <th>Pickup ID</th>
                 <th>Pickup Location</th>
                 <th>Drop Location</th>
+                <th>Boxes</th>
                 <th>Date</th>
                 <th>Vehicle No.</th>
                 <th>Driver Name </th>
@@ -43,6 +44,7 @@
                 <td>{{$value->pickup_id ?? "-"}}</td>
                 <td>{{$value->Consignment->ConsignerDetail->nick_name ?? "-"}}</td>
                 <td>{{$value->Consignment->ConsigneeDetail->nick_name ?? "-"}}</td>
+                <td>{{$value->Consignment->total_quantity ?? "-"}}</td>
                 <td>{{Helper::ShowDayMonthYear($value->prs_date) ?? "-"}}</td>
                 <td>{{ isset($value->VehicleDetail->regn_no) ? $value->VehicleDetail->regn_no : "-"}}</td>
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
