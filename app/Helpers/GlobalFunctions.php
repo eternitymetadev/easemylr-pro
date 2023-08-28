@@ -457,8 +457,7 @@ class GlobalFunctions
     public static function InvoiceNumbers($lr_id)
     {
         $get_lr = ConsignmentNote::where('id',$lr_id)->first();
-
-        if(empty(@$get_lr->invoice_no)){
+        if(empty(@$get_lr)){
             $get_invcs = ConsignmentItem::where('consignment_id',$lr_id)->get();
             $lr_invoices = array();
             foreach(@$get_invcs as $key => $invoice){

@@ -64,32 +64,13 @@ class OrderController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', 5);
             });
         }
-        // $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
-        //     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-        //     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id');
-
-        // if ($authuser->role_id == 1) {
-        //     $data;
-        // }
-        // elseif($authuser->role_id ==4){
-        //     $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        //     // $data = $data->where('consignment_notes.user_id', $authuser->id);
-        // }
-        // elseif($authuser->role_id ==6){
-        //     $data = $data->whereIn('base_clients.id', $baseclient);
-        // } elseif ($authuser->role_id == 7) {
-        //     $data = $data->whereIn('regional_clients.id', $regclient);
-        // } else {
-        //     $data = $data->whereIn('consignment_notes.branch_id', $cc);
-        // }
-        // $data = $data->where('consignment_notes.status','5')->orderBy('id', 'DESC');
 
         $consignments = $query->orderBy('id', 'DESC')->get();
+        // echo "<pre>"; print_r($consignments); die;
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {
@@ -2474,7 +2455,9 @@ class OrderController extends Controller
                     $consignmentsave['total_weight'] = $request->total_weight;
                     $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
                     $consignmentsave['total_freight'] = $request->total_freight;
+                    
                     $saveconsignment = ConsignmentNote::create($consignmentsave);
+                    // dd($saveconsignment);
 
                     if (!empty($request->data)) {
                         $get_data = $request->data;
