@@ -151,22 +151,22 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
                   $invdate = $consignment->invoice_date  ?? '-';
                   $invamt = $consignment->invoice_amount  ?? '-';
                  }
-  
-                 if($consignment->status == 1){
+   
+                if($consignment->status == 0){ 
+                    $status = 'Cancel';
+                }elseif($consignment->status == 1){ 
                     $status = 'Active';
-                 }elseif($consignment->status == 2){
-                   $status = 'Unverified';
-                 }elseif($consignment->status == 0){
-                  $status = 'Cancel';
-                 }else{
-                  $status = 'Unknown';
-                 }
+                }elseif($consignment->status == 2 || $consignment->status == 6){
+                    $status = 'Unverified';
+                }else{
+                    $status = 'Unknown';
+                }
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
-                  }else{
-                   $deliverymode = 'Manual';
-                  }
+                }else{
+                    $deliverymode = 'Manual';
+                }
 
                 // pod status
                 if($consignment->lr_mode == 0){

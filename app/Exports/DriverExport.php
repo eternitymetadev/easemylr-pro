@@ -26,11 +26,18 @@ class DriverExport implements FromCollection, WithHeadings,ShouldQueue
 
         if($driver->count() > 0){
             foreach ($driver as $key => $value){  
-                          
+                if($value->access_status == 0){
+                    $access_status = 'Not Enabled';
+                }else{
+                    $access_status = 'Enabled';
+                }
                 $arr[] = [
                     'phone' => $value->phone,
-                    'license_number' => $value->license_number,
-                    'license_image' => $value->license_image,
+                    'app_access' => $access_status,
+                    'login_id' => @$value->login_id,
+                    'login_password' => @$value->driver_password,
+                    'license_number' => @$value->license_number,
+                    'license_image' => @$value->license_image,
                 ];
             }
         }                 
@@ -40,6 +47,9 @@ class DriverExport implements FromCollection, WithHeadings,ShouldQueue
     {
         return [
             'phone',
+            'App Access',
+            'Login id',
+            'Login Password',
             'license_number',
             'license_image',
         ];

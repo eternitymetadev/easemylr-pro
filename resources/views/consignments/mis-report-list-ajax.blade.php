@@ -116,14 +116,18 @@
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
+                
                 <?php 
                 if($consignment->status == 0){ ?>
-                    <td>Cancel</td>
+                <td>Cancel</td>
                 <?php }elseif($consignment->status == 1){ ?>
-                    <td>Active</td>
-                    <?php }elseif($consignment->status == 2){ ?>
-                    <td>Unverified</td>
-                    <?php } ?>
+                <td>Active</td>
+                <?php }elseif($consignment->status == 2 || $consignment->status == 6){ ?>
+                <td>Unverified</td>
+                <?php }else{?>
+                <td>Unknown</td>
+                <?php   } ?>
+
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date )}}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
                 <?php 

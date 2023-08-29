@@ -197,10 +197,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $drs_date = '-';
                    }
 
-                   if($consignment->lr_mode == 1){
-                    $deliverymode = 'Shadow'; 
+                   if($consignment->lr_mode == 0){
+                    $deliverymode = 'Manual'; 
+                  }elseif($consignment->lr_mode == 1){
+                   $deliverymode = 'Shadow';
                   }else{
-                   $deliverymode = 'Manual';
+                    $deliverymode = 'Shiprider';
                   }
 
                 // pod status
