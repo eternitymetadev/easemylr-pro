@@ -2843,7 +2843,6 @@ class ConsignmentController extends Controller
     //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -2882,9 +2881,8 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
-
+        
         foreach ($lrno as $key => $value) {
-
             $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
             $data = json_decode(json_encode($getdata), true);
 
@@ -3668,8 +3666,7 @@ class ConsignmentController extends Controller
                     $phone = '';
                 }
 
-                $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>
-            ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+                $conr_add = '<p>' . 'CONSIGNOR NAME & ADDRESS' . '</p>' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
                 if ($data['consignee_detail']['nick_name'] != null) {
                     $nick_name = '<p><b>' . $data['consignee_detail']['nick_name'] . '</b></p>';
@@ -3723,8 +3720,7 @@ class ConsignmentController extends Controller
                     $phone = '';
                 }
 
-                $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>
-        ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+                $consnee_add = '<p>' . 'CONSIGNEE NAME & ADDRESS' . '</p>' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
                 if ($data['shipto_detail']['nick_name'] != null) {
                     $nick_name = '<p><b>' . $data['shipto_detail']['nick_name'] . '</b></p>';
@@ -3777,8 +3773,7 @@ class ConsignmentController extends Controller
                     $phone = '';
                 }
 
-                $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>
-        ' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
+                $shiptoadd = '<p>' . 'SHIP TO NAME & ADDRESS' . '</p>' . $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '<p>' . $city . ' ' . $district . ' ' . $postal_code . '</p>' . $gst_number . ' ' . $phone;
 
                 $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                 $output_file = '/qr-code/img-' . time() . '.svg';
