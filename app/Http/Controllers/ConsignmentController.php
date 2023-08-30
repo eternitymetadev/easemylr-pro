@@ -4049,9 +4049,6 @@ class ConsignmentController extends Controller
             $file->cleanDirectory('pdf');
 
         }else{
-            // echo '<script language="javascript">';
-            // echo 'alert("Data not Found!")';
-            // echo '</script>'; 
             return redirect()->back()->with('message', 'Data not Found!');;
         }
 
