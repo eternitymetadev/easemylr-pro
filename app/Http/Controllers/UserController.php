@@ -242,9 +242,13 @@ class UserController extends Controller
         $usersave['role_id']    = $request->role_id;
         $usersave['phone']      = $request->phone;
         $usersave['rm_assign']  = $request->rm_id;
-        // $usersave['branch_id']  = $request->branch_id;
-        $branch = $request->branch_id;
-        $usersave['branch_id']  = implode(',',$branch); 
+        
+        if($request->single_branch_id){
+            $usersave['branch_id'] = $request->single_branch_id;
+        }else{
+            $branch = $request->branch_id;
+            $usersave['branch_id']  = implode(',',$branch); 
+        }
 
         if(!empty($request->password)){
             $usersave['password'] = Hash::make($request->password);

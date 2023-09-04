@@ -55,7 +55,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-4 rm_assign">
                                 <label for="exampleFormControlSelect1">RM Assign</label>
                                 <select name="rm_id" class="form-control" id="rm_id">
                                     <option value="">Select</option>
@@ -72,7 +72,7 @@
                             </div>
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control" id="branch_id" name="branch_id[]">
+                                <select class="form-control" id="branch_id" name="single_branch_id">
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
@@ -87,7 +87,7 @@
                                     ?>
                                 </select>
                             </div>
-                            <!-- <div class="form-group mb-4 multiLocation" style="display: none;">
+                            <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
@@ -103,7 +103,7 @@
                                     }
                                     ?>
                                 </select>
-                            </div> -->
+                            </div>
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
@@ -166,14 +166,18 @@
 @endsection
 @section('js')
 <script>
-$('#role_id').change(function() {
-    var role_id = $(this).val();
+// Define a function to handle the role_id change
+function handleRoleChange() {
+    var role_id = $('#role_id').val();
     var checkbox = $('.chkBoxClass').val();
+
+    // Your if-else conditions go here, as per your original code
     if(role_id == 1) {            //role_id = 1 for Admin
         $('.multiLocation').hide();
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked',true);
         $('.chkBoxClass[value="1"]').prop('checked', true)
@@ -190,9 +194,11 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').show();
     }else if(role_id == '') {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
+        $('.rm_assign').hide();
     }else if(role_id == 3) {            //role_id = 3 for regional manager
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -203,6 +209,7 @@ $('#role_id').change(function() {
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 4) {            //role_id = 4 for branch User
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -213,6 +220,7 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 6) {            //role_id = 6 for client account
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -222,6 +230,7 @@ $('#role_id').change(function() {
         $('.selectClient').hide();
         $('.singleLocation').hide();
         $('.multiLocation').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 7) {            //role_id = 7 for client user
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -231,11 +240,13 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 5) {
         $('.multiLocation').show();
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -246,13 +257,115 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
     }
+
+}
+
+// Call the function when the document is ready
+$(document).ready(function () {
+    // Call the function initially to handle the current role_id value
+    handleRoleChange();
+
+    // Listen for changes to the #role_id element
+    $('#role_id').change(function () {
+        // Call the function when the role_id changes
+        handleRoleChange();
+    });
 });
+
+// $('#role_id').change(function() {
+//     var role_id = $(this).val();
+//     var checkbox = $('.chkBoxClass').val();
+//     if(role_id == 1) {            //role_id = 1 for Admin
+//         $('.multiLocation').hide();
+//         $('.singleLocation').show();
+//         $('.selectClient').hide();
+//         $('.baseclient').hide();
+
+//         $('#ckbCheckAll').attr('checked',true);
+//         $('.chkBoxClass[value="1"]').prop('checked', true)
+//         $('.chkBoxClass[value="2"]').prop('checked', true)
+//         $('.chkBoxClass').prop('checked', true);
+//     }
+//     else if(role_id == 2) {     //role_id = 2 for Branch Manager
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', true)
+//         $('.chkBoxClass[value="1"]').prop('checked', false)
+//         $('.chkBoxClass[value="2"]').prop('checked', false)
+
+//         $('.multiLocation').hide();
+//         $('.singleLocation').show();
+//         $('.selectClient').hide();
+//         $('.baseclient').hide();
+//     }else if(role_id == '') {
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', false)
+//     }else if(role_id == 3) {            //role_id = 3 for regional manager
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', true)
+//         $('.chkBoxClass[value="1"]').prop('checked', false)
+//         $('.chkBoxClass[value="2"]').prop('checked', false)
+
+//         $('.multiLocation').show();
+//         $('.singleLocation').hide();
+//         $('.selectClient').hide();
+//         $('.baseclient').hide();
+//     }else if(role_id == 4) {            //role_id = 4 for branch User
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', true)
+//         $('.chkBoxClass[value="1"]').prop('checked', false)
+//         $('.chkBoxClass[value="2"]').prop('checked', false)
+        
+//         $('.selectClient').show();
+//         $('.singleLocation').show();
+//         $('.multiLocation').hide();
+//         $('.baseclient').hide();
+//     }else if(role_id == 6) {            //role_id = 6 for client account
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', false)
+//         $('.chkBoxClass[value="7"]').prop('checked', true)
+        
+//         $('.baseclient').show();
+//         $('.selectClient').hide();
+//         $('.singleLocation').hide();
+//         $('.multiLocation').hide();
+//     }else if(role_id == 7) {            //role_id = 7 for client user
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', false)
+//         $('.chkBoxClass[value="7"]').prop('checked', true)
+        
+//         $('.selectClient').show();
+//         $('.singleLocation').show();
+//         $('.multiLocation').hide();
+//         $('.baseclient').hide();
+//     }else if(role_id == 5) {
+//         $('.multiLocation').show();
+//         $('.singleLocation').hide();
+//         $('.selectClient').hide();
+//         $('.baseclient').hide();
+
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', true)
+//         $('.chkBoxClass[value="1"]').prop('checked', false)
+//         $('.chkBoxClass[value="2"]').prop('checked', false)
+//     }else{
+//         $('.multiLocation').hide();
+//         $('.singleLocation').show();
+//         $('.selectClient').hide();
+//         $('.baseclient').hide();
+
+//         $('#ckbCheckAll').attr('checked', false);
+//         $('.chkBoxClass').prop('checked', true)
+//         $('.chkBoxClass[value="1"]').prop('checked', false)
+//         $('.chkBoxClass[value="2"]').prop('checked', false)
+//     }
+// });
 
 $('#branch_id').change(function() {
     $('#select_regclient').empty();
