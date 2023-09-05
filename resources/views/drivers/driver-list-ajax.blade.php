@@ -21,15 +21,36 @@
                 <td>{{ $value->phone ?? "-" }}</td>
                 <!-- <td>{{ Helper::ShowDayMonthYear($value->regndate) ?? "-" }}</td> -->
                 <td>{{ $value->license_number ?? "-" }}</td>
-                <?php if($value->license_image){
+                {{-- //////////// --}}
+                <td>
+                    @php
+                    $licenseImage = $value->license_image;
+                    $awsUrl = env('AWS_S3_URL');
+
+                    if ($licenseImage) {
+                        $imgUrlSegments = explode("/", $licenseImage);
+                        $imgPath = count($imgUrlSegments) >= 4 ? implode('/', array_slice($imgUrlSegments, 0, 3)) : '';
+
+                        $licence = '<a href="' . ($awsUrl == $imgPath ? $licenseImage : $awsUrl . '/' . $licenseImage) . '" target="_blank">view</a>';
+                    } else {
+                        $licence = '-';
+                    }
+                    @endphp
+                
+                    {!! $licence !!}
+                </td>
+                
+                {{-- ///////////// --}}
+                <?php //if($value->license_image){
                     ?>
-                {{-- <td><a href=URL::to("/storage/images/driverlicense_images/".$value->license_image) target="_blank">view</a></td> --}}
+                {{-- <td><a href={{$value->license_image}} target="_blank">view</a></td> --}}
                
 
-                <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td>
-                <?php }else{?>
-                    <td>-</td>
-                <?php }?>
+                {{-- <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td> --}}
+
+                <?php //}else{?>
+                    {{-- <td>-</td> --}}
+                <?php// } ?>
                 
 
                 <?php if($value->access_status == 0){

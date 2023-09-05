@@ -75,16 +75,17 @@
 
                                     <?php if(!empty($getdriver->license_image))
                                     { 
-                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
+                                        // $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/driverlicense_images";
+                                        $chk_url = env('AWS_S3_URL');
                                         $img_url = $getdriver->license_image;
                                         if($img_url != '' || $img_url != null){
                                             $explode_url = explode("/",$img_url);
                                             if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2];
                                             }else{
                                                 $img_url = '';
                                             }
-                                            
+                                            // dd($img_url);
                                             if($chk_url == $img_url){
                                                 $licence = $getdriver->license_image;
                                             }else{

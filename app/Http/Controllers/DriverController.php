@@ -217,12 +217,13 @@ class DriverController extends Controller
         $driversave['status']               = '1';
 
         // upload license image
-        // if($request->license_image){
-        //     $license_image = $request->file('license_image');
-        //     $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
-        //     $driversave['license_image'] = Storage::disk('s3')->url($path);
-        // }
-
+        if($request->license_image){
+            $license_image = $request->file('license_image');
+            $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+            $licence_img = Storage::disk('s3')->url($path);
+            $url_img = explode(':', $licence_img);
+            $driversave['license_image'] = $url_img[0] . 's:' . $url_img[1];
+        }
 
         // $images = $request->invoice_image;
         // $path = Storage::disk('s3')->put('invoice_image', $images);
@@ -231,12 +232,12 @@ class DriverController extends Controller
         // $addinventory['invoice_image'] = $get_real_names[1];
 
         // ----------------------------------------
-        if($request->license_image){
-            $file = $request->file('license_image');
-            $path = 'public/images/driverlicense_images';
-            $name = Helper::uploadImage($file,$path);
-            $driversave['license_image']  = $name;
-        }
+        // if($request->license_image){
+        //     $file = $request->file('license_image');
+        //     $path = 'public/images/driverlicense_images';
+        //     $name = Helper::uploadImage($file,$path);
+        //     $driversave['license_image']  = $name;
+        // }
 
         $savedriver = Driver::create($driversave); 
         if($savedriver)
@@ -314,7 +315,6 @@ class DriverController extends Controller
      */
     public function updateDriver(Request $request)
     {
-        // dd($request->branches_id);
         try { 
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
@@ -352,20 +352,21 @@ class DriverController extends Controller
             $driversave['access_status']  = $request->access_status;
             $driversave['password']       = bcrypt($request->password);
 
-            // upload license image
-            // if($request->license_image){
-            //     $license_image = $request->file('license_image');
-            //     $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
-            //     $driversave['license_image'] = Storage::disk('s3')->url($path);
-            // }
-
             // upload driver_license image 
             if($request->license_image){
-                $file = $request->file('license_image');
-                $path = 'public/images/driverlicense_images';
-                $name = Helper::uploadImage($file,$path); 
-                $driversave['license_image']  = $name;
-           }
+                $license_image = $request->file('license_image');
+                $path = Storage::disk('s3')->put('driverlicense_images', $license_image);
+                $licence_img = Storage::disk('s3')->url($path);
+                $url_img = explode(':', $licence_img);
+                $driversave['license_image'] = $url_img[0] . 's:' . $url_img[1];
+            }
+
+            // if($request->license_image){
+            //     $file = $request->file('license_image');
+            //     $path = 'public/images/driverlicense_images';
+            //     $name = Helper::uploadImage($file,$path); 
+            //     $driversave['license_image']  = $name;
+            // }
             
             $savedriver = Driver::where('id',$request->driver_id)->update($driversave);
 
@@ -413,6 +414,70 @@ class DriverController extends Controller
     }
 
     // Delete licence image from edit view
+    public function deletelicenseImage1(Request $request)
+    {
+        // dd($request->input('licenseimgid'));
+        // $driverId = $request->input('licenseimgid');
+        $driverId = $request["licenseimgid"];
+        $driver = Driver::find($driverId);
+        
+        if (!$driver) {
+            $response['success']         = false;
+            $response['error_message']   = "Driver not found";
+            $response['error']           = true;
+            // Handle the case where the driver record does not exist
+            return response()->json($response);
+        }
+    
+        // Get the AWS S3 URL from your environment or configuration
+        $awsS3Url = env('AWS_S3_URL'); // Replace with your AWS S3 URL
+    
+        $licenseImage = $driver->license_image;
+        $awsUrl = env('AWS_S3_URL');
+
+        if ($licenseImage) {
+            $imgUrlSegments = explode("/", $licenseImage);
+            $imgPath = count($imgUrlSegments) >= 4 ? implode('/', array_slice($imgUrlSegments, 0, 3)) : '';
+
+            $licence = $awsUrl == $imgPath ? $licenseImage : $awsUrl . '/' . $licenseImage;
+        } else {
+            $licence = '-';
+        }
+        
+        // Construct the full S3 URL of the license image
+        // $licenseImage = $awsS3Url . '/driverlicense_images/' . $driver->license_image;
+        // Delete the image from AWS S3
+        $s3 = Storage::disk('s3');
+        // Retrieve a file from the S3 bucket
+        $fileContents = $s3->get('driverlicense_images');
+
+        dd($s3->exists($driver->license_image));
+        if ($s3->exists($driver->license_image)) {
+            $s3->delete($driver->license_image);
+        }
+    
+        // Update the database record to remove the license image path
+        // $driver->license_image = '';
+        // $savedriver = $driver->save();
+        $driversave['license_image']  = '';
+        $savedriver = Driver::where('id',$request["licenseimgid"])->update($driversave);
+
+        if($savedriver)
+            {
+                $response['success']         = true;
+                $response['success_message'] = 'Driver license image deleted successfully';
+                $response['error']           = false;
+                $response['deldriver_license'] = "deldriver_license";
+            }
+            else{
+                $response['success']         = false;
+                $response['error_message']   = "Can not delete driver license image please try again";
+                $response['error']           = true;
+            }
+    
+        return response()->json($response);
+    }
+
     public function deletelicenseImage(Request $request)
     {
             $path = 'public/images/driverlicense_images';
