@@ -119,22 +119,22 @@
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6 rc-load">
                                     <label for="exampleFormControlInput2">Vehicle RC File(Optional)</label>
-                                    <?php if(!empty($getvehicle->rc_image))
+                                    <?php $awsUrl = env('AWS_S3_URL');
+                                    if(!empty($getvehicle->rc_image))
                                     { 
-                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                                        // $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
                                         $img_url = $getvehicle->rc_image;
                                         if($img_url != '' || $img_url != null){
                                             $explode_url = explode("/",$img_url);
                                             if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2];
                                             }else{
                                                 $img_url = '';
                                             }
-                                            
-                                            if($chk_url == $img_url){
+                                            if($awsUrl == $img_url){
                                                 $rc_image = $getvehicle->rc_image;
                                             }else{
-                                                $rc_image = $chk_url.'/'.$getvehicle->rc_image;
+                                                $rc_image = $awsUrl.'/'.$getvehicle->rc_image;
                                             }
                                         }else{
                                             $rc_image = '';
@@ -167,20 +167,20 @@
                                     <label for="exampleFormControlInput2">Second Vehicle RC File(Optional)</label>
                                     <?php if(!empty($getvehicle->second_rc_image))
                                     { 
-                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
+                                        // $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
                                         $img_url = $getvehicle->second_rc_image;
                                         if($img_url != '' || $img_url != null){
                                             $explode_url = explode("/",$img_url);
                                             if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
+                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2];
                                             }else{
                                                 $img_url = '';
                                             }
                                             
-                                            if($chk_url == $img_url){
+                                            if($awsUrl == $img_url){
                                                 $second_rc_image = $getvehicle->second_rc_image;
                                             }else{
-                                                $second_rc_image = $chk_url.'/'.$getvehicle->second_rc_image;
+                                                $second_rc_image = $awsUrl.'/'.$getvehicle->second_rc_image;
                                             }
                                         }else{
                                             $second_rc_image = '';

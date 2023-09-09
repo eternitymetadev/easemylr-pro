@@ -26,17 +26,54 @@
                 <td>{{ $value->make ?? "-" }}</td>
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
                 <td>{{ $value->mfg ?? "-" }}</td>
-                <?php if($value->rc_image){ ?>
+
+                <td>
+                    @php
+                    $rcImage = $value->rc_image;
+                    $awsUrl = env('AWS_S3_URL');
+
+                    if ($rcImage) {
+                        $imgUrlSegments = explode("/", $rcImage);
+                        $imgPath = count($imgUrlSegments) >= 4 ? implode('/', array_slice($imgUrlSegments, 0, 3)) : '';
+
+                        $rcImageLink = '<a href="' . ($awsUrl == $imgPath ? $rcImage : $awsUrl . '/vehicle_rc_images/' . $rcImage) . '" target="_blank">view</a>';
+                    } else {
+                        $rcImageLink = '-';
+                    }
+                    @endphp
+
+                    {!! $rcImageLink !!}
+                </td>
+
+                <td>
+                    @php
+                    $secondRcImage = $value->second_rc_image; // Replace with your actual field name
+                    $awsUrl = env('AWS_S3_URL');
+
+                    if ($secondRcImage) {
+                        $imgUrlSegments = explode("/", $secondRcImage);
+                        $imgPath = count($imgUrlSegments) >= 4 ? implode('/', array_slice($imgUrlSegments, 0, 3)) : '';
+
+                        $secondRcImageLink = '<a href="' . ($awsUrl == $imgPath ? $secondRcImage : $awsUrl . '/vehicle_rc_images/' . $secondRcImage) . '" target="_blank">view</a>';
+                    } else {
+                        $secondRcImageLink = '-';
+                    }
+                    @endphp
+
+                    {!! $secondRcImageLink !!}
+                </td>
+
+                {{-- @if($value->rc_image)
                 <td><a href="{{url("/storage/images/vehicle_rc_images/$value->rc_image")}}" target="_blank">view</a></td>
-                <?php }else{ ?>
+                @else
                     <td>-</td>
-                <?php } ?>
+                @endif
                 
                 @if($value->second_rc_image)
                 <td> <a href="{{url("/storage/images/vehicle_rc_images/$value->second_rc_image")}}" target="_blank">view</a></td>
                 @else
-                <td></td>
-                @endif</td>
+                <td>-</td>
+                @endif --}}
                 <td>
                     <div class="d-flex" style="gap: 4px">
                         <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id).'/edit')?>"

@@ -2,14 +2,14 @@
     <table class="table mb-3" style="width:100%">
         <thead>
             <tr>
-            <th>Driver Name</th>
-            <th>Driver Phone</th>
-            <th>Driver License Number</th>
-            <th>Image</th>
-            <th>App Access</th>
-            <th>Password</th>
-            {{-- <th>Tagged Branch</th> --}}
-            <th>Action</th>
+                <th>Driver Name</th>
+                <th>Driver Phone</th>
+                <th>Driver License Number</th>
+                <th>Image</th>
+                <th>App Access</th>
+                <th>Password</th>
+                {{-- <th>Tagged Branch</th> --}}
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -31,7 +31,7 @@
                         $imgUrlSegments = explode("/", $licenseImage);
                         $imgPath = count($imgUrlSegments) >= 4 ? implode('/', array_slice($imgUrlSegments, 0, 3)) : '';
 
-                        $licence = '<a href="' . ($awsUrl == $imgPath ? $licenseImage : $awsUrl . '/' . $licenseImage) . '" target="_blank">view</a>';
+                        $licence = '<a href="' . ($awsUrl == $imgPath ? $licenseImage : $awsUrl . '/driverlicense_images/' . $licenseImage) . '" target="_blank">view</a>';
                     } else {
                         $licence = '-';
                     }
