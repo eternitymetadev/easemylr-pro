@@ -165,7 +165,15 @@
 
                 </td>
 
-                <?php if($authuser->role_id == 7 || $authuser->role_id == 6) { 
+                <?php 
+                $payment_check = Helper::LrPaymentCheck($consignment->id);
+                if($payment_check == 1) { 
+                    $disable = 'disable_n'; 
+                } else{
+                    $disable = '';
+                }
+                
+                if($authuser->role_id == 7 || $authuser->role_id == 6) { 
                     $disable = 'disable_n'; 
                 } else{
                     $disable = '';
