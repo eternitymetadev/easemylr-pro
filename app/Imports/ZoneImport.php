@@ -31,8 +31,8 @@ class ZoneImport implements ToModel,WithHeadingRow
             ]);
         }else{
             $consigner = Zone::where('postal_code', $row['postal_code'])->update([
-                'district'      => $row['district'],
-                'state'         => $row['state'],
+                // 'district'      => $row['district'],
+                // 'state'         => $row['state'],
                 'hub_transfer'  => $row['hub_transfer'],
                 'updated_at'    => time(),
             ]);
