@@ -1510,7 +1510,11 @@ jQuery(document).ready(function () {
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
                     var drs_sign = value.signed_drs;
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    // var storage_img = base_url + "/drs/Image/" + drs_sign;   //old code
+
+                    var awsUrl = data.aws_url;
+                    var storage_img = awsUrl + "/pod_images/" + drs_sign;
+
                     if (value.signed_drs == null) {
                         var field =
                             "<input type='file' name='data[" +
@@ -1728,22 +1732,20 @@ jQuery(document).ready(function () {
                     if (value.job_id != null) {
                         var img_api = [];
 
-                        $.each(
-                            trail_history.task_history,
-                            function (index, history) {
+                        $.each(trail_history.task_history, function (index, history) {
                                 if (history.type == "image_added") {
                                     img_api.push(history.description);
                                 }
                             }
                         );
                     }
-                    //   console.log(img_api); return false;
 
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    var awsUrl = data.aws_url;
+                    var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
@@ -1765,7 +1767,6 @@ jQuery(document).ready(function () {
                     } else if (value.lr_mode == 1) {
                         if (img_api == null || img_api == "") {
                             var field = "No image available";
-
                         } else {
                             var field1 = [];
                             var img_length = img_api.length;
