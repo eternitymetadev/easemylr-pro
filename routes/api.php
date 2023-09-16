@@ -44,6 +44,8 @@ Route::any('img-delete/{id}', 'App\Http\Controllers\API\Auth\TransactionSheetsCo
 Route::post('store-coordinates/{id}', 'App\Http\Controllers\API\Auth\TransactionSheetsController@storeCoordinates')->name('api.auth.verifiedLr.transaction_sheets');
 
 
+
+
 });
 
 Route::post('lastmile-partner', [TrackApiController::class, 'lastmilePartner']);
@@ -62,7 +64,6 @@ Route::group([
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refresh']);   
 });
-
 Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
 
 

@@ -59,6 +59,21 @@
                                         ?>
                                     </select>
                                 </div>
+                                {{-- <div class="form-group col-md-6">
+                                    <label for="exampleFormControlSelect1">Base Client</label>
+                                    <select class="form-control" name="baseclient_id">
+                                        <option value="">Select</option>
+                                        <?php 
+                                        if(count($base_clients)>0) {
+                                            foreach ($base_clients as $key => $base_client) {
+                                        ?>
+                                            <option value="{{ $key }}">{{ucwords($base_client)}}</option>
+                                            <?php 
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div> --}}
                                 
                             </div>
                             <div class="form-row mb-0">     

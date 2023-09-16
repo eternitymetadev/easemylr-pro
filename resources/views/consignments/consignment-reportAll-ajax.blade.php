@@ -219,7 +219,6 @@
                              } ?>
                 <td>{{$lr_type}}</td>
 
-
             </tr>
             @endforeach
             @else

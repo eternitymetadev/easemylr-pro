@@ -33,6 +33,11 @@ jQuery(document).ready(function(){
         return this.optional(element) || /^[A-Za-z0-9]+$/i.test(value);
     }, "Only Alphabets and Numbers allowed.");
 
+    /*========== Alphabets only ========*/
+    $.validator.addMethod("Alphabets", function(value, element) {
+        return this.optional(element) || /^[A-Za-z]+$/i.test(value);
+    }, "Only Alphabets allowed.");
+
     /*========== create user in users ========*/
     // $(document).on('submit','.general_form',function(e){
     //     e.preventDefault();
@@ -859,10 +864,93 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
+
+    /*===== create postalcode =====*/
+    $('#create_postalcode').validate({ 
+        rules: {
+            postal_code: {
+                required: true,
+                Numbers: true,
+                minlength: 6,
+            },
+            state: {
+                Alphabets: true,
+            },
+            district: {
+                Alphabets: true,
+            },
+            city: {
+                Alphabets: true,
+            },
+        },
+        messages: {
+            postal_code: {
+                required: "Enter postal code",
+                Numbers: "Enter only numbers",
+                minlength: "Enter at least 6 digits",
+            },
+            state:{
+                Alphabets: "Enter only alphabets",
+            },
+            district:{
+                Alphabets: "Enter only alphabets",
+            },
+            city:{
+                Alphabets: "Enter only alphabets",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
+    /*===== update postalcode =====*/
+    $('#update_postal_code').validate({ 
+        rules: {
+            // postal_code: {
+            //     required: true,
+            //     Numbers: true,
+            //     minlength: 6,
+            // },
+            // state: {
+            //     Alphabets: true,
+            // },
+            // district: {
+            //     Alphabets: true,
+            // },
+            city: {
+                Alphabets: true,
+            },
+        },
+        messages: {
+            // postal_code: {
+            //     required: "Enter postal code",
+            //     Numbers: "Enter only numbers",
+            //     minlength: "Enter at least 6 digits",
+            // },
+            // state:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            // district:{
+            //     Alphabets: "Enter only alphabets",
+            // },
+            city:{
+                Alphabets: "Enter only alphabets",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
     
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
         rules: {
+            regclient_id: {
+                required: true
+            },
             consigner_id: {
                 required: true
             },
@@ -870,8 +958,14 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
+            description: {
+                Alphabets: true
+            },
+            packing_type: {
+                Alphabets: true
+            },           
            
             'quantity[]': {
                 required: true
@@ -886,6 +980,9 @@ jQuery(document).ready(function(){
            
         },
         messages: {
+            regclient_id: {
+                required: "Select bill to client",
+            },
             consigner_id: {
                 required: "Select consigner address",
             },
@@ -893,7 +990,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address",
             },
             ship_to_id: {
-                required: "Select ship to address",
+                // required: "Select ship to address",
             },
             driver_id : {
                 required: "Select driver",
@@ -940,7 +1037,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
             invoice_no: {
                 // required: true,
@@ -991,7 +1088,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address",
             },
             ship_to_id: {
-                required: "Select ship to address",
+                // required: "Select ship to address",
             },
             invoice_no: {
                 required: "Enter invoice no.",
@@ -1050,7 +1147,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             ship_to_id: {
-                required: true
+                // required: true
             },
         //     'quantity[]': {
         //         required: true
@@ -1072,7 +1169,7 @@ jQuery(document).ready(function(){
                 required: "Select consignee address"
             },
             ship_to_id: {
-                required: "Select ship to address"
+                // required: "Select ship to address"
             },
             // driver_id : {
             //     required: "Select driver"
@@ -1212,6 +1309,9 @@ jQuery(document).ready(function(){
             name: {
                 required: true,
             },
+            hub_nickname: {
+                required: true,
+            },
             nick_name: {
                 required: true,
             },
@@ -1233,6 +1333,9 @@ jQuery(document).ready(function(){
         {
             name: {
                 required: "Location name is required"
+            },
+            hub_nickname: {
+                required: "Hub nick name is required",
             },
             nick_name: {
                 required: "Nick name is required"
@@ -1267,6 +1370,9 @@ jQuery(document).ready(function(){
             name: {
                 required: true,
             },
+            hub_nickname: {
+                required: true,
+            },
             nick_name: {
                 required: true,
             },
@@ -1290,6 +1396,9 @@ jQuery(document).ready(function(){
         {
             name: {
                 required: "Location name is required"
+            },
+            hub_nickname: {
+                required: "Hub nick name is required",
             },
             nick_name: {
                 required: "Nick name is required"
@@ -2003,6 +2112,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-vehiclereceive'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'client-create' || response.page == 'client-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'postalcode-create' || response.page == 'postalcode-update'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

@@ -126,6 +126,38 @@ class ReportController extends Controller
                     $q->where('id', $regclient_id);
                 });
             }
+            elseif(isset($baseclient_id)){
+                if(isset($regclient_id)){
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    })
+                    ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }else{
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    });
+                }
+            }
+            elseif(isset($regclient_id)){
+                if(isset($baseclient_id)){
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                        $q->where('id', $baseclient_id);
+                    })
+                    ->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }else{
+                    $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                        $q->where('id', $regclient_id);
+                    });
+                }
+            }
+            else {
+                $query = $query;
+            }
+            $consignments = $query->orderBy('id','DESC')->paginate($peritem);
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
 
@@ -297,7 +329,6 @@ class ReportController extends Controller
         } else {
             $peritem = Config::get('variable.PER_PAGE');
         }
-
         $query = ConsignmentNote::query();
 
         if ($request->ajax()) {
@@ -470,9 +501,7 @@ class ReportController extends Controller
     public function regionalReport()
     {
         $regional_details = RegionalClient::all();
-
         foreach ($regional_details as $regional) {
-
             date_default_timezone_set('Asia/Kolkata');
             $current_time = date("h:i A");
 
@@ -504,10 +533,8 @@ class ReportController extends Controller
                     });
                 }
             }
-
         }
         return 'Email Sent';
-
     }
 
 

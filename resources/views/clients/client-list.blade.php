@@ -73,6 +73,7 @@ div.relat {
                             <thead> 
                                 <tr>
                                     <th>Sr No.</th>
+                                    <th>Id</th>
                                     <th>Name</th>
                                     <th>Gst</th>
                                     <th>Pan</th>
@@ -87,6 +88,7 @@ div.relat {
                                 ?> 
                                 <tr>
                                     <td>{{ ++$i }}</td>
+                                    <td>{{ $value->id ?? "-" }}</td>
                                     <td>{{ ucwords($value->client_name ?? "-")}}</td>
                                     <td>{{$value->gst_no ?? "-"}}</td>
                                     <td>{{$value->pan ?? "-"}}</td>

@@ -43,15 +43,13 @@
                 {{-- ///////////// --}}
                 <?php //if($value->license_image){
                     ?>
-                {{-- <td><a href={{$value->license_image}} target="_blank">view</a></td> --}}
-               
 
-                {{-- <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td> --}}
+                {{-- <td><a href=URL::to("/storage/images/driverlicense_images/".$value->license_image) target="_blank">view</a></td> --}}
 
-                <?php //}else{?>
-                    {{-- <td>-</td> --}}
-                <?php// } ?>
-                
+                <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td>
+                <?php }else{?>
+                    <td>-</td>
+                <?php }?>
 
                 <?php if($value->access_status == 0){
                         $access_status = 'Not Enabled';
@@ -78,8 +76,7 @@
                 //     $branch_name = '-';
                 // }
                 ?>
-                <td>{{ $branch_name ?? "-" }}</td> --}}
-                
+                <td>{{ $branch_name ?? "-" }}</td> --}}                
                 <td>
                     <div class="d-flex" style="gap: 4px">
                         <a href="<?php echo URL::to($prefix.'/drivers/'.Crypt::encrypt($value->id).'/edit')?>"

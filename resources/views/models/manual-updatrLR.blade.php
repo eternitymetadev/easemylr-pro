@@ -23,27 +23,26 @@
              <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
           </div>
           <div class="" id="lrid">
-                        <table id="get-delvery-dateLR" class="table table-hover"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                            <thead>
-                                <tr>
-                                    <th>LR No</th>
-                                    <th>Consignee</th>
-                                    <th>City</th>
-                                    <th>Delivery Date</th>
-                                    <th>Image</th>
-                             <?php $authuser = Auth::user(); 
-                                if($authuser->role_id != 7){?>
-                                    <th>update</th>
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <table id="get-delvery-dateLR" class="table table-hover"
+                    style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                    <thead>
+                        <tr>
+                            <th>LR No</th>
+                            <th>Consignee</th>
+                            <th>City</th>
+                            <th>Delivery Date</th>
+                            <th>Image</th>
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id != 7){?>
+                            <th>update</th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                            </tbody>
-                        </table>
-
-                    </div>
+                    </tbody>
+                </table>
+            </div>
        </div>
        <!-- Modal footer -->
        <div class="modal-footer">

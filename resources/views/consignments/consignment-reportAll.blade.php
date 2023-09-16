@@ -60,7 +60,6 @@ div.relative {
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
                         </div>
-                        
                         <div class="col-sm-2">
                             <label>Base Client</label>
                             <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
@@ -104,6 +103,22 @@ div.relative {
 @endsection
 @section('js')
 <script>
+    jQuery(function () {
+            $('.my-select2').each(function () {
+                $(this).select2({
+                    theme: "bootstrap-5",
+                    dropdownParent: $(this).parent(), // fix select2 search input focus bug
+                })
+            })
+
+            // fix select2 bootstrap modal scroll bug
+            $(document).on('select2:close', '.my-select2', function (e) {
+                var evt = "scroll.select2"
+                $(e.target).parents().off(evt)
+                $(window).off(evt)
+            })
+        })
+
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
@@ -129,7 +144,7 @@ jQuery(document).on('click', '#filter_reportall', function() {
             startdate: startdate,
             enddate: enddate,
             baseclient_id: baseclient_id,
-            regclient_id: regclient_id
+            regclient_id: regclient_id,
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

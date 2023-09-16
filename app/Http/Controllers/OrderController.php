@@ -16,6 +16,7 @@ use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\LrRoute;
 use App\Models\Zone;
 use Auth;
 use Carbon\Carbon;
@@ -350,60 +351,26 @@ class OrderController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
-        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems', 'RegClient')->where('id', $id)->first();
+        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems','ConsigneeDetail','RegClient')->where('id', $id)->first();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-        //     if ($authuser->role_id == $role_id->id) {
-        //         $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     } else {
-        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     }
-        // } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
-        //     if ($authuser->role_id != 1) {
-        //         $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     } else {
-        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     }
-        // } else {
         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        // }
         // $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        $consignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $getconsignments->consigner_id])->get();
-        // dd($consignees);
+        $consignees = Consignee::select('id', 'nick_name')->where(['id' => $getconsignments->consignee_id])->first();
+        $consignee_shipto = Consignee::select('id', 'nick_name')->where(['id' => $getconsignments->ship_to_id])->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
-        ////////////// Bill to regional clients //////////////
-
-        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-        //     $branch = $authuser->branch_id;
-        //     $branch_loc = explode(',', $branch);
-        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
-        // } elseif ($authuser->role_id == 4) {
-        //     $reg = $authuser->regionalclient_id;
-        //     $regional = explode(',', $reg);
-        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
-        // } else {
+        
         $regionalclient = RegionalClient::select('id', 'name')->get();
-        // }
-
-        // if ($authuser->role_id == 1) {
-        //     $branchs = Location::select('id', 'name')->get();
-        // } elseif ($authuser->role_id == 2) {
-        //     $branchs = Location::select('id', 'name')->where('id', $cc)->get();
-        // } elseif ($authuser->role_id == 5) {
-        //     $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
-        // } else {
         $branchs = Location::select('id', 'name')->get();
-        // }
 
-        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
+        return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees,'consignee_shipto' => $consignee_shipto, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
     }
 
     /**
@@ -451,7 +418,7 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
+            
             // $consignmentsave['regclient_id'] = $request->regclient_id;
             // $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -468,27 +435,28 @@ class OrderController extends Controller
             $consignmentsave['transporter_name'] = $request->transporter_name;
             $consignmentsave['vehicle_type'] = $request->vehicle_type;
             $consignmentsave['purchase_price'] = $request->purchase_price;
-
+            
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            // $consignmentsave['branch_id'] = $authuser->branch_id;
+             $consignmentsave['route_branch_id'] = $authuser->branch_id;
 
             $consignmentsave['edd'] = $request->edd;
             // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
 
-            $regional_email = [];
+            $regional_email=[];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();
-            if ($regional_id->is_email_sent == 1) {
+            if($regional_id->is_email_sent == 1){
                 $regional_email[] = $regional_id->email;
             }
             $consigner_id = Consigner::where('id', $request->consigner_id)->first();
-            if ($consigner_id->is_email_sent == 1) {
+            if($consigner_id->is_email_sent == 1){
                 $regional_email[] = $consigner_id->email;
             }
 
-            if ($request->lr_type == 1 || $request->lr_type == 2) {
+            if($request->lr_type == 1 || $request->lr_type == 2){  
                 $consignee = Consignee::where('id', $request->consignee_id)->first();
+                
                 $consignee_pincode = $consignee->postal_code;
 
                 $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
@@ -496,291 +464,315 @@ class OrderController extends Controller
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
                 $location_name = $get_location->name;
-
-                if (!empty($getpin_transfer->hub_transfer)) {
+                
+                if(!empty($getpin_transfer->hub_transfer)){
                     $get_branch = Location::where('name', $getpin_transfer->hub_transfer)->first();
                     $get_branch_id = $get_branch->id;
                     $get_zonebranch = $getpin_transfer->hub_transfer;
-                } else {
+                    }else{
                     $get_branch_id = $authuser->branch_id;
                     $get_zonebranch = $location_name;
-                }
-
+                    }
+               
                 $consignmentsave['to_branch_id'] = $get_branch_id;
 
-                ///h2h branch check
-                if ($location_name == $get_zonebranch) {
-                    if (!empty($request->vehicle_id)) {
-                        $consignmentsave['delivery_status'] = "Started";
-                    } else {
-                        $consignmentsave['delivery_status'] = "Unassigned";
-                    }
-                    $consignmentsave['hrs_status'] = 3;
-                    $consignmentsave['h2h_check'] = 'lm';
-                    ///same location check
-                    if ($request->invoice_check == 1 || $request->invoice_check == 2) {
-                        $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
-                        if (!empty($request->data)) {
-                            $get_data = $request->data;
-                            foreach ($get_data as $key => $save_data) {
+                    ///h2h branch check
+                    if($location_name == $get_zonebranch){
+                        if (!empty($request->vehicle_id)) {
+                            $consignmentsave['delivery_status'] = "Started";
+                        } else {
+                            $consignmentsave['delivery_status'] = "Unassigned";
+                        }
+                        $consignmentsave['hrs_status'] = 3;
+                        $consignmentsave['h2h_check'] = 'lm';
+                        ///same location check
+                        if ($request->invoice_check == 1 || $request->invoice_check == 2) {
+                            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                            if (!empty($request->data)) {
+                                $get_data = $request->data;
+                                foreach ($get_data as $key => $save_data) {
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                                    
+                                    if ($saveconsignmentitems) {
+                                        if (!empty($save_data['item_data'])) {
+                                            $qty_array = array();
+                                            $netwt_array = array();
+                                            $grosswt_array = array();
+                                            $chargewt_array = array();
+                                            foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                                $qty_array[] = $save_itemdata['quantity'];
+                                                $netwt_array[] = $save_itemdata['net_weight'];
+                                                $grosswt_array[] = $save_itemdata['gross_weight'];
+                                                $chargewt_array[] = $save_itemdata['chargeable_weight'];
 
-                                $savedata['consignment_id'] = $request->consignment_id;
-                                $savedata['order_id'] = $save_data['order_id'];
-                                $savedata['invoice_no'] = $save_data['invoice_no'];
-                                $savedata['invoice_date'] = $save_data['invoice_date'];
-                                $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                                $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                                $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-                                $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
 
-                                if ($saveconsignmentitems) {
-                                    // dd($save_data['item_data']);
-                                    if (!empty($save_data['item_data'])) {
-                                        $qty_array = array();
-                                        $netwt_array = array();
-                                        $grosswt_array = array();
-                                        $chargewt_array = array();
-                                        foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                            // echo "<pre>"; print_r($save_itemdata); die;
-                                            $qty_array[] = $save_itemdata['quantity'];
-                                            $netwt_array[] = $save_itemdata['net_weight'];
-                                            $grosswt_array[] = $save_itemdata['gross_weight'];
-                                            $chargewt_array[] = $save_itemdata['chargeable_weight'];
-
-                                            $saveitemdata['conitem_id'] = $save_data['item_id'];
-                                            $saveitemdata['item'] = $save_itemdata['item'];
-                                            $saveitemdata['quantity'] = $save_itemdata['quantity'];
-                                            $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
-                                            $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
-                                            $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
-                                            $saveitemdata['status'] = 1;
-
-                                            $savesubitems = ConsignmentSubItem::where('id', $save_itemdata['subitem_id'])->update($saveitemdata);
+                                                $saveitemdata['conitem_id'] = $save_data['item_id'];
+                                                $saveitemdata['item'] = $save_itemdata['item'];
+                                                $saveitemdata['quantity'] = $save_itemdata['quantity'];
+                                                $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
+                                                $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
+                                                $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
+                                                $saveitemdata['status'] = 1;
+                
+                                                $savesubitems = ConsignmentSubItem::where('id',$save_itemdata['subitem_id'])->update($saveitemdata);
+                                            }
+                                            
+                                            $quantity_sum = array_sum($qty_array);
+                                            $netwt_sum = array_sum($netwt_array);
+                                            $grosswt_sum = array_sum($grosswt_array);
+                                            $chargewt_sum = array_sum($chargewt_array);
+                
+                                            ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+                
+                                            ConsignmentNote::where('id', $saveconsignment->id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
                                         }
-
-                                        $quantity_sum = array_sum($qty_array);
-                                        $netwt_sum = array_sum($netwt_array);
-                                        $grosswt_sum = array_sum($grosswt_array);
-                                        $chargewt_sum = array_sum($chargewt_array);
-
-                                        ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
-
-                                        ConsignmentNote::where('id', $saveconsignment->id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
                                     }
                                 }
+                
                             }
-
-                        }
-                    } else {
-                        $consignmentsave['total_quantity'] = $request->total_quantity;
-                        $consignmentsave['total_weight'] = $request->total_weight;
-                        $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-                        $consignmentsave['total_freight'] = $request->total_freight;
-                        $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
-
-                        if (!empty($request->data)) {
-                            $get_data = $request->data;
-                            foreach ($get_data as $key => $save_data) {
-                                $savedata['consignment_id'] = $request->consignment_id;
-                                $savedata['order_id'] = $save_data['order_id'];
-                                $savedata['invoice_no'] = $save_data['invoice_no'];
-                                $savedata['invoice_date'] = $save_data['invoice_date'];
-                                $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                                $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                                $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-                                $savedata['quantity'] = $save_data['quantity'];
-                                $savedata['weight'] = $save_data['weight'];
-                                $savedata['gross_weight'] = $save_data['gross_weight'];
-                                $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
-                            }
-                        }
-                    }
-                } else {
-
-                    $consignmentsave['h2h_check'] = 'h2h';
-                    $consignmentsave['hrs_status'] = 2;
-
-                    if ($request->invoice_check == 1 || $request->invoice_check == 2) {
-                        $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
-                        if (!empty($request->data)) {
-                            $get_data = $request->data;
-                            foreach ($get_data as $key => $save_data) {
-                                $savedata['consignment_id'] = $request->consignment_id;
-                                $savedata['order_id'] = $save_data['order_id'];
-                                $savedata['invoice_no'] = $save_data['invoice_no'];
-                                $savedata['invoice_date'] = $save_data['invoice_date'];
-                                $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                                $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                                $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-
-                                $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
-                                // $save_data['consignment_id'] = $saveconsignment->id;
-                                // $save_data['status'] = 1;
-                                // $saveconsignmentitems = ConsignmentItem::create($save_data);
-
-                                if ($saveconsignmentitems) {
-                                    // dd($save_data['item_data']);
-                                    if (!empty($save_data['item_data'])) {
-                                        $qty_array = array();
-                                        $netwt_array = array();
-                                        $grosswt_array = array();
-                                        $chargewt_array = array();
-                                        foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                            // echo "<pre>"; print_r($save_itemdata); die;
-                                            $qty_array[] = $save_itemdata['quantity'];
-                                            $netwt_array[] = $save_itemdata['net_weight'];
-                                            $grosswt_array[] = $save_itemdata['gross_weight'];
-                                            $chargewt_array[] = $save_itemdata['chargeable_weight'];
-
-                                            $saveitemdata['conitem_id'] = $save_data['item_id'];
-                                            $saveitemdata['item'] = $save_itemdata['item'];
-                                            $saveitemdata['quantity'] = $save_itemdata['quantity'];
-                                            $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
-                                            $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
-                                            $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
-                                            $saveitemdata['status'] = 1;
-
-                                            $savesubitems = ConsignmentSubItem::where('id', $save_itemdata['subitem_id'])->update($saveitemdata);
-
-                                            // $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
-                                            // $save_itemdata['status'] = 1;
-
-                                            // $savesubitems = ConsignmentSubItem::create($save_itemdata);
-                                        }
-
-                                        $quantity_sum = array_sum($qty_array);
-                                        $netwt_sum = array_sum($netwt_array);
-                                        $grosswt_sum = array_sum($grosswt_array);
-                                        $chargewt_sum = array_sum($chargewt_array);
-
-                                        ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
-
-                                        ConsignmentNote::where('id', $request->consignment_id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
+                        } else {
+                            $consignmentsave['total_quantity'] = $request->total_quantity;
+                            $consignmentsave['total_weight'] = $request->total_weight;
+                            $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+                            $consignmentsave['total_freight'] = $request->total_freight;
+                            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                
+                            if (!empty($request->data)) {
+                                $get_data = $request->data;
+                                foreach ($get_data as $key => $save_data) {
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
                                     }
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    $savedata['quantity'] = $save_data['quantity'];
+                                    $savedata['weight'] = $save_data['weight'];
+                                    $savedata['gross_weight'] = $save_data['gross_weight'];
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
                                 }
                             }
                         }
-                    } else {
-                        $consignmentsave['total_quantity'] = $request->total_quantity;
-                        $consignmentsave['total_weight'] = $request->total_weight;
-                        $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-                        $consignmentsave['total_freight'] = $request->total_freight;
-                        $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                    }else{
+                     
+                        $consignmentsave['h2h_check'] = 'h2h';
+                        $consignmentsave['hrs_status'] = 2;
 
-                        if (!empty($request->data)) {
-                            $get_data = $request->data;
-                            foreach ($get_data as $key => $save_data) {
-                                $savedata['consignment_id'] = $request->consignment_id;
-                                $savedata['order_id'] = $save_data['order_id'];
-                                $savedata['invoice_no'] = $save_data['invoice_no'];
-                                $savedata['invoice_date'] = $save_data['invoice_date'];
-                                $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                                $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                                $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-                                $savedata['quantity'] = $save_data['quantity'];
-                                $savedata['weight'] = $save_data['weight'];
-                                $savedata['gross_weight'] = $save_data['gross_weight'];
-                                $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                        if ($request->invoice_check == 1 || $request->invoice_check == 2) {
+                            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                            if (!empty($request->data)) {
+                                $get_data = $request->data;
+                                foreach ($get_data as $key => $save_data) {
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                                                    
+                                    if ($saveconsignmentitems) {
+                                        if (!empty($save_data['item_data'])) {
+                                            $qty_array = array();
+                                            $netwt_array = array();
+                                            $grosswt_array = array();
+                                            $chargewt_array = array();
+                                            foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                                $qty_array[] = $save_itemdata['quantity'];
+                                                $netwt_array[] = $save_itemdata['net_weight'];
+                                                $grosswt_array[] = $save_itemdata['gross_weight'];
+                                                $chargewt_array[] = $save_itemdata['chargeable_weight'];
+                                                
+                                                $saveitemdata['conitem_id'] = $save_data['item_id'];
+                                                $saveitemdata['item'] = $save_itemdata['item'];
+                                                $saveitemdata['quantity'] = $save_itemdata['quantity'];
+                                                $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
+                                                $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
+                                                $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
+                                                $saveitemdata['status'] = 1;
+                
+                                                $savesubitems = ConsignmentSubItem::where('id',$save_itemdata['subitem_id'])->update($saveitemdata);
+                                            }
+                                            
+                                            $quantity_sum = array_sum($qty_array);
+                                            $netwt_sum = array_sum($netwt_array);
+                                            $grosswt_sum = array_sum($grosswt_array);
+                                            $chargewt_sum = array_sum($chargewt_array);
+                
+                                            ConsignmentItem::where('id', $savesubitems->conitem_id)->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+                
+                                            ConsignmentNote::where('id', $request->consignment_id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            $consignmentsave['total_quantity'] = $request->total_quantity;
+                            $consignmentsave['total_weight'] = $request->total_weight;
+                            $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+                            $consignmentsave['total_freight'] = $request->total_freight;
+                            $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                
+                            if (!empty($request->data)) {
+                                $get_data = $request->data;
+                                foreach ($get_data as $key => $save_data) {
+                                    $savedata['consignment_id'] = $request->consignment_id;
+                                    $savedata['order_id'] = $save_data['order_id'];
+                                    $savedata['invoice_no'] = $save_data['invoice_no'];
+                                    $savedata['invoice_date'] = $save_data['invoice_date'];
+                                    // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                                        $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                                    }else{
+                                        $savedata['invoice_amount'] = 0;
+                                    }
+                                    $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                                    $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                                    $savedata['quantity'] = $save_data['quantity'];
+                                    $savedata['weight'] = $save_data['weight'];
+                                    $savedata['gross_weight'] = $save_data['gross_weight'];
+                                    $savedata['status'] = 1;
+                                    // unset($save_data['item_id']);
+                                    $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                                }
+                            }
+                        }
+                    }
+               
+            }else{
+                //regular same flow 
+                //h2h branch check
+             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
+                $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    // dd($get_data);
+                    foreach ($get_data as $key => $save_data) {
+                        $savedata['consignment_id'] = $request->consignment_id;
+                        $savedata['order_id'] = $save_data['order_id'];
+                        $savedata['invoice_no'] = $save_data['invoice_no'];
+                        $savedata['invoice_date'] = $save_data['invoice_date'];
+                        // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
+                            $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        }else{
+                            $savedata['invoice_amount'] = 0;
+                        }
+                        $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                        $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                        $savedata['status'] = 1;
+                        // unset($save_data['item_id']);
+                        $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
+                        
+                        if ($saveconsignmentitems) {
+                            if (!empty($save_data['item_data'])) {
+                                $qty_array = array();
+                                $netwt_array = array();
+                                $grosswt_array = array();
+                                $chargewt_array = array();
+                                foreach ($save_data['item_data'] as $key => $save_itemdata) {
+                                    $qty_array[] = $save_itemdata['quantity'];
+                                    $netwt_array[] = $save_itemdata['net_weight'];
+                                    $grosswt_array[] = $save_itemdata['gross_weight'];
+                                    $chargewt_array[] = $save_itemdata['chargeable_weight'];
+
+
+                                    $saveitemdata['conitem_id'] = $save_data['item_id'];
+                                    $saveitemdata['item'] = $save_itemdata['item'];
+                                    $saveitemdata['quantity'] = $save_itemdata['quantity'];
+                                    $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
+                                    $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
+                                    $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
+                                    $saveitemdata['status'] = 1;
+    
+                                    $savesubitems = ConsignmentSubItem::where('id',$save_itemdata['subitem_id'])->update($saveitemdata);
+                                }
+                                $quantity_sum = array_sum($qty_array);
+                                $netwt_sum = array_sum($netwt_array);
+                                $grosswt_sum = array_sum($grosswt_array);
+                                $chargewt_sum = array_sum($chargewt_array);
+    
+                                ConsignmentItem::where('id', $save_data['item_id'])->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
+    
+                                ConsignmentNote::where('id', $request->consignment_id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
                             }
                         }
                     }
                 }
-
             } else {
-                //regular same flow
-                //h2h branch check
-                if ($request->invoice_check == 1 || $request->invoice_check == 2) {
-                    $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
-                    if (!empty($request->data)) {
-                        $get_data = $request->data;
-                        // dd($get_data);
-                        foreach ($get_data as $key => $save_data) {
-                            $savedata['consignment_id'] = $request->consignment_id;
-                            $savedata['order_id'] = $save_data['order_id'];
-                            $savedata['invoice_no'] = $save_data['invoice_no'];
-                            $savedata['invoice_date'] = $save_data['invoice_date'];
+                $consignmentsave['total_quantity'] = $request->total_quantity;
+                $consignmentsave['total_weight'] = $request->total_weight;
+                $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
+                $consignmentsave['total_freight'] = $request->total_freight;
+                $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+    
+                if (!empty($request->data)) {
+                    $get_data = $request->data;
+                    foreach ($get_data as $key => $save_data) {
+                        $savedata['consignment_id'] = $request->consignment_id;
+                        $savedata['order_id'] = $save_data['order_id'];
+                        $savedata['invoice_no'] = $save_data['invoice_no'];
+                        $savedata['invoice_date'] = $save_data['invoice_date'];
+                        // $savedata['invoice_amount'] = $save_data['invoice_amount'];
+                        if($save_data['invoice_amount'] != '' || $save_data['invoice_amount'] != null){
                             $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                            $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                            $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-                            $savedata['status'] = 1;
-                            // unset($save_data['item_id']);
-                            $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
-                            // dd($saveconsignmentitems);
-                            if ($saveconsignmentitems) {
-                                // dd($save_data['item_data']);
-                                if (!empty($save_data['item_data'])) {
-                                    $qty_array = array();
-                                    $netwt_array = array();
-                                    $grosswt_array = array();
-                                    $chargewt_array = array();
-                                    foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                        // echo "<pre>"; print_r($save_itemdata); die;
-                                        $qty_array[] = $save_itemdata['quantity'];
-                                        $netwt_array[] = $save_itemdata['net_weight'];
-                                        $grosswt_array[] = $save_itemdata['gross_weight'];
-                                        $chargewt_array[] = $save_itemdata['chargeable_weight'];
-
-                                        $saveitemdata['conitem_id'] = $save_data['item_id'];
-                                        $saveitemdata['item'] = $save_itemdata['item'];
-                                        $saveitemdata['quantity'] = $save_itemdata['quantity'];
-                                        $saveitemdata['net_weight'] = $save_itemdata['net_weight'];
-                                        $saveitemdata['gross_weight'] = $save_itemdata['gross_weight'];
-                                        $saveitemdata['chargeable_weight'] = $save_itemdata['chargeable_weight'];
-                                        $saveitemdata['status'] = 1;
-
-                                        $savesubitems = ConsignmentSubItem::where('id', $save_itemdata['subitem_id'])->update($saveitemdata);
-                                    }
-                                    $quantity_sum = array_sum($qty_array);
-                                    $netwt_sum = array_sum($netwt_array);
-                                    $grosswt_sum = array_sum($grosswt_array);
-                                    $chargewt_sum = array_sum($chargewt_array);
-
-                                    ConsignmentItem::where('id', $save_data['item_id'])->update(['quantity' => $quantity_sum, 'weight' => $netwt_sum, 'gross_weight' => $grosswt_sum, 'chargeable_weight' => $chargewt_sum]);
-
-                                    ConsignmentNote::where('id', $request->consignment_id)->update(['total_quantity' => $quantity_sum, 'total_weight' => $netwt_sum, 'total_gross_weight' => $grosswt_sum]);
-                                }
-                            }
+                        }else{
+                            $savedata['invoice_amount'] = 0;
                         }
-                    }
-                } else {
-                    $consignmentsave['total_quantity'] = $request->total_quantity;
-                    $consignmentsave['total_weight'] = $request->total_weight;
-                    $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
-                    $consignmentsave['total_freight'] = $request->total_freight;
-                    $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
+                        $savedata['e_way_bill'] = $save_data['e_way_bill'];
+                        $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
+                        $savedata['status'] = 1;
+                        $saveconsignmentitems = ConsignmentItem::where('id',$save_data['item_id'])->update($savedata);
 
-                    if (!empty($request->data)) {
-                        $get_data = $request->data;
-                        foreach ($get_data as $key => $save_data) {
-                            $savedata['consignment_id'] = $request->consignment_id;
-                            $savedata['order_id'] = $save_data['order_id'];
-                            $savedata['invoice_no'] = $save_data['invoice_no'];
-                            $savedata['invoice_date'] = $save_data['invoice_date'];
-                            $savedata['invoice_amount'] = $save_data['invoice_amount'];
-                            $savedata['e_way_bill'] = $save_data['e_way_bill'];
-                            $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-                            $savedata['status'] = 1;
-                            $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
-                        }
                     }
                 }
             }
-            /////////////////// drs api push ////////////////////////////
+            }
 
-            $consignment_id = $request->consignment_id;
-            //  ======================== Send Email  ===================================//
-            if (!empty($regional_email)) {
+            $saveroute['lr_id'] = $request->consignment_id;
+            $saveroute['route'] = $request->lr_routes;
+
+            $routesave = LrRoute::create($saveroute);
+
+              /////////////////// drs api push ////////////////////////////
+
+             $consignment_id = $request->consignment_id;
+                //  ======================== Send Email  ===================================//
+            if(!empty($regional_email)){
                 $getdata = ConsignmentNote::where('id', $consignment_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
                 $data = json_decode(json_encode($getdata), true);
-
+    
                 if (isset($data['consigner_detail']['legal_name'])) {
                     $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -831,9 +823,9 @@ class OrderController extends Controller
                 } else {
                     $phone = '';
                 }
-
+    
                 $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
+    
                 if (isset($data['consignee_detail']['legal_name'])) {
                     $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -874,7 +866,7 @@ class OrderController extends Controller
                 } else {
                     $postal_code = '';
                 }
-
+    
                 if (isset($data['consignee_detail']['gst_number'])) {
                     $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
                 } else {
@@ -885,9 +877,9 @@ class OrderController extends Controller
                 } else {
                     $phone = '';
                 }
-
+    
                 $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
+    
                 if (isset($data['shipto_detail']['legal_name'])) {
                     $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
                 } else {
@@ -938,16 +930,16 @@ class OrderController extends Controller
                 } else {
                     $phone = '';
                 }
-
+    
                 $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
+    
                 $generate_qrcode = QrCode::size(150)->generate('' . $consignment_id . '');
                 $output_file = '/qr-code/img-' . time() . '.svg';
                 Storage::disk('public')->put($output_file, $generate_qrcode);
                 $fullpath = storage_path('app/public/' . $output_file);
                 //  dd($generate_qrcode);
                 $no_invoive = count($data['consignment_items']);
-
+    
                 if ($request->typeid == 1) {
                     $adresses = '<table width="100%">
                         <tr>
@@ -964,7 +956,7 @@ class OrderController extends Controller
                             </tr>
                         </table>';
                 }
-
+    
                 // get branch address
                 if ($locations->id == 2 || $locations->id == 6 || $locations->id == 26) {
                     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
@@ -977,7 +969,7 @@ class OrderController extends Controller
             <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
             <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
                 }
-
+    
                 // relocate cnr cnee address check for sale to return case
                 if ($data['is_salereturn'] == '1') {
                     $cnradd_heading = '<div class="container">
@@ -1030,7 +1022,7 @@ class OrderController extends Controller
                     </div>
                 </td>';
                 }
-
+    
                 $logo = public_path('assets/img/logo_2.png');
                 $waterMark = public_path('assets/img/eternity-forwarders-logo-square.png');
                 if (!empty($data['consigner_detail']['get_zone']['state'])) {
@@ -1038,16 +1030,16 @@ class OrderController extends Controller
                 } else {
                     $cnr_state = '';
                 }
-
+    
                 $html = '<!DOCTYPE html>
                 <html lang="en">
                     <head>
                         <!-- Required meta tags -->
                         <meta charset="utf-8" />
                         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    
                         <!-- Bootstdap CSS -->
-
+    
                         <style>
                             * {
                                 box-sizing: border-box;
@@ -1056,8 +1048,8 @@ class OrderController extends Controller
                                 padding: 12px 12px 12px 0;
                                 display: inline-block;
                             }
-
-
+    
+    
                             /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
                             @media screen and (max-width: 600px) {
                             }
@@ -1095,7 +1087,7 @@ class OrderController extends Controller
                    left: 0;
                    bottom: 50px;
                    padding: 10px 2rem;
-
+    
                 }
                 .vl {
                     border-left: solid;
@@ -1110,12 +1102,12 @@ class OrderController extends Controller
                   left: 30px;
                 }
                 .mini-table1{
-
+    
                     border: 1px solid;
                     border-radius: 13px;
                     width: 429px;
                     height: 72px;
-
+    
                 }
                 .mini-th{
                   width:90px;
@@ -1156,31 +1148,31 @@ class OrderController extends Controller
                     width: 100%;
                     margin-inline: 2rem;
                 }
-
-
+    
+    
                         </style>
                     <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                     </head>
                     <body style="font-family:Arial Helvetica,sans-serif;">
-                    <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
+                    <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
                         <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px; padding: 0 2rem ">
                             <table style="height: 70px; margin-inline: 1rem;">
                                 <tr>
                                 <td class="a" style="font-size: 10px;">
                                 ' . $branch_address . '
                                 </td>
-
+    
                                     <td class="a">
                                     <b>	Email & Phone</b><br />
                                     <b>	' . @$locations->email . '</b><br />
                                     ' . @$locations->phone . '<br />
-
+    
                                     </td>
                                      <td>
                                      <img class="logoImg" src="' . $logo . '" style="width: 100%;"/>
                                      </td>
                                 </tr>
-
+    
                             </table>
                             <hr />
                             <table style="margin-inline: 1rem;">
@@ -1208,21 +1200,21 @@ class OrderController extends Controller
                                                 <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
                                                 <th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
                                                 <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>
-
+    
                                             </tr>
                                         </table>
                             </div>
                                     </td>
                                 </tr>
                             </table>
-
+    
                             <div class="loc">
                                 <table style="margin-inline: 1rem;">
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">
                                         <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-
+    
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                             </div>
                                         </td>
@@ -1245,7 +1237,7 @@ class OrderController extends Controller
                                     </tr>
                                 </table>
                             </div>
-
+    
                             <div class="container">
                                     <div class="row">
                                         <div class="col-sm-12 ">
@@ -1287,7 +1279,7 @@ class OrderController extends Controller
                                         <th>' . $data['total_gross_weight'] . ' Kgs.</th>
                                     </tr>
                                 </table>
-
+    
                             <div class="inputfiled">
                                     <table style=" border-collapse:collapse; width: 690px;height: 45px; font-size: 10px; background-color:#e0dddc40; text-align: center;" border="1" >
                                          <tr>
@@ -1302,10 +1294,10 @@ class OrderController extends Controller
                                               <th style="width:70px ">Gross Weight</th>
                                           </tr>
                                       ';
-                $counter = 0;
-                foreach ($data['consignment_items'] as $k => $dataitem) {
-                    $counter = $counter + 1;
-                    $html .= ' <tr>
+                                    $counter = 0;
+                                    foreach ($data['consignment_items'] as $k => $dataitem) {
+                                        $counter = $counter + 1;
+                                        $html .= ' <tr>
                                                         <td style="width:70px ">' . $dataitem['order_id'] . '</td>
                                                         <td style="width: 70px">' . $dataitem['invoice_no'] . '</td>
                                                         <td style="width:70px ">' . Helper::ShowDayMonthYear($dataitem['invoice_date']) . '</td>
@@ -1316,8 +1308,8 @@ class OrderController extends Controller
                                                         <td style="width:70px ">' . $dataitem['weight'] . ' Kgs. </td>
                                                         <td style="width:70px "> ' . $dataitem['gross_weight'] . ' Kgs.</td>
                                                    </tr>';
-                }
-                $html .= '</table>
+                                    }
+                                $html .= '</table>
                                 <div>
                                         <table style="margin-top:0px;">
                                             <tr>
@@ -1329,7 +1321,7 @@ class OrderController extends Controller
                                 </table>
                             </div>
                             </div>
-
+    
                             <div class="footer">
                                 <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soilage by sun ran ,fire and any other damage caused.</p>
@@ -1346,14 +1338,14 @@ class OrderController extends Controller
                            </div>
                         </div>
                         <!-- Optional JavaScript; choose one of the two! -->
-
+    
                         <!-- Option 1: Bootstdap Bundle with Popper -->
                         <script
                             src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
                             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
                             crossorigin="anonymous"
                         ></script>
-
+    
                         <!-- Option 2: Separate Popper and Bootstdap JS -->
                         <!--
                     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
@@ -1362,22 +1354,22 @@ class OrderController extends Controller
                     </body>
                 </html>
                 ';
-
+    
                 $pdf = \App::make('dompdf.wrapper');
                 $pdf->loadHTML($html);
                 $pdf->setPaper('legal', 'portrait');
-
-                $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' => $data['consignee_detail']['postal_code'], 'net_weigth' => $data['total_weight'], 'cases' => $data['total_quantity'], 'client' => $regional_id->name];
+    
+                $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' =>$data['consignee_detail']['postal_code'], 'net_weigth'=> $data['total_weight'], 'cases' => $data['total_quantity'],'client' => $regional_id->name];
                 $user['to'] = $regional_email;
-                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
+                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf,$consignment_id) {
                     $messges->to($user['to']);
-                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
+                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. '.$consignment_id.'');
                     $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
-
+    
                 });
             }
             // ================================end Send Email ============================= //
-            //===================== Create DRS in LR ================================= //
+             //===================== Create DRS in LR ================================= //
 
             if (!empty($request->vehicle_id)) {
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
@@ -1426,14 +1418,14 @@ class OrderController extends Controller
                     $update = DB::table('consignment_notes')->where('id', $lid)->update(['job_id' => $job_id, 'tracking_link' => $tracking_link, 'lr_mode' => 1]);
                 }
             }
-
-            $url = $this->prefix . '/consignments';
-            $response['success'] = true;
-            $response['success_message'] = "Consignment Added successfully";
-            $response['error'] = false;
-            // $response['resetform'] = true;
-            $response['page'] = 'create-consignment';
-            $response['redirect_url'] = $url;
+            
+                $url = $this->prefix . '/consignments';
+                $response['success'] = true;
+                $response['success_message'] = "Consignment Added successfully";
+                $response['error'] = false;
+                // $response['resetform'] = true;
+                $response['page'] = 'create-consignment';
+                $response['redirect_url'] = $url;
             DB::commit();
         } catch (Exception $e) {
             $response['error'] = false;
@@ -2147,20 +2139,6 @@ class OrderController extends Controller
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             $get_driver_details = Driver::select('branch_id')->where('id', $request->driver_id)->first();
 
-            // check app assign ========================================
-            // if (!empty($get_driver_details->branch_id)) {
-            //     $driver_branch = explode(',', $get_driver_details->branch_id);
-            //     if (in_array($authuser->branch_id, $driver_branch)) {
-            //         $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
-
-            //         // task created
-            //         $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
-            //         $respons_data = json_encode($respons);
-            //         $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-            //         // ==== end create
-            //         // =================== task assign
-            //         $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned', 'create_at' => $currentdate, 'type' => '2');
-
             //         $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
             //         if(!empty($lastjob->response_data)){
             //             $st = json_decode($lastjob->response_data);
@@ -2198,7 +2176,16 @@ class OrderController extends Controller
 
                     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
                 }
-                // ==== end started
+                // if(!empty($request->driver_id)){
+                //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
+                // }
+            // } else {
+            //     // task created
+            //     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'create_at' => $currentdate, 'type' => '2']);
+            //     $respons_data = json_encode($respons);
+            //     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+            //     // ==== end create
+                
             // }
 
             $url = $this->prefix . '/reserve-lr';
@@ -2356,9 +2343,7 @@ class OrderController extends Controller
                     $get_branch_id = $authuser->branch_id;
                     $get_zonebranch = $location_name;
                 }
-
             }
-
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -2731,27 +2716,13 @@ class OrderController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $id = decrypt($id);
-        $getconsignments = ConsignmentNote::where('id', $id)->first();
+        $getconsignments = ConsignmentNote::with('ConsignmentItem.ConsignmentSubItems','ConsigneeDetail','RegClient')->where('id', $id)->first();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-        //     if ($authuser->role_id == $role_id->id) {
-        //         $consigners = Consigner::whereIn('branch_id', $cc)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     } else {
-        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     }
-        // } else if ($authuser->role_id != 2 || $authuser->role_id != 3) {
-        //     if ($authuser->role_id != 1) {
-        //         $consigners = Consigner::whereIn('regionalclient_id', $regclient)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     } else {
-        //         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        //     }
-        // } else {
         $consigners = Consigner::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        // }
         $consignees = Consignee::orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
 
         $getconsignment = Location::select('id', 'name', 'consignment_no')->whereIn('id', $cc)->latest('id')->first();
@@ -2781,21 +2752,7 @@ class OrderController extends Controller
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        ////////////// Bill to regional clients //////////////
-
-        // if ($authuser->role_id == 2 || $authuser->role_id == 3) {
-        //     $branch = $authuser->branch_id;
-        //     $branch_loc = explode(',', $branch);
-        //     $regionalclient = RegionalClient::whereIn('location_id', $branch_loc)->select('id', 'name')->get();
-
-        // } elseif ($authuser->role_id == 4) {
-        //     $reg = $authuser->regionalclient_id;
-        //     $regional = explode(',', $reg);
-        //     $regionalclient = RegionalClient::whereIn('id', $regional)->select('id', 'name')->get();
-
-        // } else {
         $regionalclient = RegionalClient::select('id', 'name')->get();
-        // }
 
         return view('orders.update-reserve', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'consignmentno' => $consignmentno, 'drivers' => $drivers, 'regionalclient' => $regionalclient]);
     }

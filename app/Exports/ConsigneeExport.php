@@ -29,24 +29,25 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
         $regclient = explode(',',$authuser->regionalclient_id);
         $cc = explode(',',$authuser->branch_id);
         
-        $query = Consignee::with('Consigner','Zone');
+        // $query = Consignee::with('Consigner','Zone');
+        $query = Consignee::with('RegClients.BaseClient','Zone');
         // $query = DB::table('consignees')->select('consignees.*', 'consigners.nick_name as consigner_id', 'zones.postal_code as postal_code')
         // ->join('consigners', 'consigners.id', '=', 'consignees.consigner_id')
         // ->join('zones', 'zones.postal_code', '=', 'consignees.postal_code');
 
-        if($authuser->role_id == 1){
-            $query = $query;
-        }
-        else if($authuser->role_id == 2 || $authuser->role_id == 3){
-            $query = $query->whereHas('Consigner', function($query) use($cc){
-                $query->whereIn('branch_id', $cc);
-            });
-        }
-        else{
-            $query = $query->whereHas('Consigner', function($query) use($regclient){
-                $query->whereIn('regionalclient_id', $regclient);
-            });
-        }
+        // if($authuser->role_id == 1){
+        //     $query = $query;
+        // }
+        // else if($authuser->role_id == 2 || $authuser->role_id == 3){
+        //     $query = $query->whereHas('Consigner', function($query) use($cc){
+        //         $query->whereIn('branch_id', $cc);
+        //     });
+        // }
+        // else{
+        //     $query = $query->whereHas('Consigner', function($query) use($regclient){
+        //         $query->whereIn('regionalclient_id', $regclient);
+        //     });
+        // }
 
         $consignee = $query->orderby('created_at','DESC')->get();
 
@@ -59,12 +60,6 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     $zone = '';
                 }
 
-                if(!empty($value->Consigner->nick_name)){
-                    $consigner = $value->Consigner->nick_name;
-                }else{
-                    $consigner = '';
-                }
-
                 if(!empty($value->dealer_type == '1')){
                     $dealer_type = 'Registered';
                 }else{
@@ -75,7 +70,8 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
                     'consignee_id' =>  $value->id,
                     'nick_name'     => $value->nick_name,
                     'legal_name'    => $value->legal_name,
-                    'consigner_id'  => $value->consigner_id,
+                    // 'baseclient_id'    => $value->baseclient_id,
+                    'consigner_id'  => @$value->consigner_id,
                     'consigner_name' => @$value->Consigner->nick_name,
                     'contact_name'  => $value->contact_name,
                     'email'         => $value->email,
@@ -103,6 +99,7 @@ class ConsigneeExport implements FromCollection, WithHeadings,ShouldQueue
             'Consignee Id',
             'Consignee Nick Name',
             'Consignee Legal Name',
+            // 'Base Client',
             'Consigner',
             'Consigner name',
             'Contact Person Name',

@@ -331,7 +331,7 @@ span.select2.select2-container.mb-4 {
             <input type="hidden" name="invoice_check" id="inv_check" />
             <div class="form-group col-md-2">
                 <label for="exampleFormControlSelect1">
-                    Payment Term<span class="text-danger">*</span>
+                    Payment Term
                 </label>
                 <select class="form-control my-select2" name="payment_type" onchange="togglePaymentAction()"
                     id="paymentType">
@@ -353,7 +353,7 @@ span.select2.select2-container.mb-4 {
                 <Input type="number" class="form-control" id="freight_on_delivery" name="freight_on_delivery" readonly>
             </div>
             <div class="form-group col-md-2" id="codFreightBlock">
-                <label for="exampleFormControlSelect1">Cash to Collect<span class="text-danger">*</span>
+                <label for="exampleFormControlSelect1">Cash to Collect
                 </label>
                 <Input type="number" class="form-control" name="cod" id="cod" >
             </div>
@@ -389,31 +389,53 @@ span.select2.select2-container.mb-4 {
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Pickup Location (Consigner)<span class="text-danger">*</span>
+                    Select Pickup Location (Consigner)<span class="text-danger">*</span><span id="check_hub" style="color:red;"></span>
                 </label>
                 <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                     <option value="">Select Consignor</option>
-                    {{--                        @foreach($consigners as $consigner)--}}
-                    {{--                            <option value="{{$consigner->id}}">{{$consigner->nick_name}}--}}
-                    {{--                            </option>--}}
-                    {{--                        @endforeach--}}
+        
                 </select>
                 <div class="appendedAddress" id="consigner_address"></div>
             </div>
+
+
+            {{-- <div class="form-group" style="max-width: 320px">
+                <label for="exampleFormControlSelect1">
+                    Select Consignee<span class="text-danger">*</span>
+                </label>
+                <input id="consigneeID" class="form-control" type="text" placeholder="Search.." />
+            </div> --}}
+
+
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span>
+                    Select Drop location (Bill To Consignee)<span class="text-danger">*</span><span id="check_hub_delivery" style="color:red;"></span>
                 </label>
-                <select class="form-control my-select2" name="consignee_id" id="select_consignee">
+
+                {{-- <label for="exampleFormControlSelect1">
+                    Select Consignee<span class="text-danger">*</span>
+                </label> --}}
+                {{-- <input id="select_consignee" name="" class="form-control selectConsignee" type="text" placeholder="Search.." />
+
+                <div class="appendedAddress" id="consignee_address"></div>
+                <input type="hidden" id="consignee_id" name="consignee_id" value=""> --}}
+                <select class="form-control my-select2 selectConsignee" name="consignee_id" id="select_consignee">
                     <option value="">Select Consignee</option>
                 </select>
                 <div class="appendedAddress" id="consignee_address"></div>
+                
             </div>
             <div class="form-group col-md-4">
                 <label>
-                    Select Drop Location (Ship To Consignee)<span class="text-danger">*</span>
+                    Select Drop Location (Ship To Consignee)<span class="text-danger">*</span><span id="checkship_hub_delivery" style="color:red;"></span>
                 </label>
-                <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
+
+                {{-- <input id="select_ship_to" name="" class="form-control selectShipto" type="text" placeholder="Search.." />
+
+                <div class="appendedAddress" id="ship_to_address"></div>
+                <input type="hidden" id="ship_to_id" name="ship_to_id" value=""> --}}
+
+               <select class="form-control my-select2" name="ship_to_id" id="select_ship_to">
                     <option value="">Select Ship To</option>
                 </select>
                 <div class="appendedAddress" id="ship_to_address"></div>
@@ -497,7 +519,7 @@ span.select2.select2-container.mb-4 {
 
         <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
             {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
-            <button type="submit" class="mt-2 btn btn-primary disableme"
+            <button type="submit" class="mt-2 btn btn-primary disableme" id="amit"
                 style="height: 40px; width: 200px">Submit</button>
         </div>
 

@@ -419,7 +419,7 @@ jQuery(document).ready(function () {
             });
     });
 
-    /*===== delete location =====*/
+    /*===== delete location and connectivity branch =====*/
     jQuery(document).on("click", ".delete_location", function () {
         jQuery("#deletelocation").modal("show");
         var location_id = jQuery(this).attr("data-id");
@@ -524,6 +524,7 @@ jQuery(document).ready(function () {
                 $("#select_consigner").empty();
             },
             success: function (res) {
+                console.log(res);
                 $("#consigner_address").empty();
                 $("#consignee_address").empty();
                 $("#ship_to_address").empty();
@@ -532,20 +533,32 @@ jQuery(document).ready(function () {
                 $("#select_consigner").append(
                     '<option value="">select consigner</option>'
                 );
-                $("#select_consignee").append(
-                    '<option value="">Select Consignee</option>'
-                );
-                $("#select_ship_to").append(
-                    '<option value="">Select Ship To</option>'
-                );
+                // $("#select_consignee").append(
+                //     '<option value="">Select Consignee</option>'
+                // );
+                // $("#select_ship_to").append(
+                //     '<option value="">Select Ship To</option>'
+                // );
+                //////////
+
+                $.each(res.data_consignee, function (key, value) {
+                    $("#select_consignee, #select_ship_to").append(
+                        '<option value="' +
+                            value.id +
+                            '">' +
+                            value.nick_name +
+                            "</option>"
+                    );
+                });
+                ///////////
 
                 $.each(res.data, function (index, value) {
                     $("#select_consigner").append(
                         '<option value="' +
-                        value.id +
-                        '">' +
-                        value.nick_name +
-                        "</option>"
+                            value.id +
+                            '">' +
+                            value.nick_name +
+                            "</option>"
                     );
                 });
 
@@ -578,10 +591,10 @@ jQuery(document).ready(function () {
                             res.data_regclient.is_multiple_invoice;
                     }
                 }
-                $('#inv_check').val(multiple_invoice);
+                $("#inv_check").val(multiple_invoice);
 
                 if (multiple_invoice == 1 || multiple_invoice == 2) {
-                    let isInsertabelMore = (multiple_invoice == 1);
+                    let isInsertabelMore = multiple_invoice == 1;
                     let blockToAppend = `<div class="form-row">
                     <h6 class="col-12">Order Information</h6>
     
@@ -595,7 +608,7 @@ jQuery(document).ready(function () {
                             </div>
                             <div class="col-md-3">
                                 <label>Mode of Packing</label>
-                                <input type="text" class="form-control" value="Case/s"
+                                <input type="text" class="form-control" value="Cases"
                                        name="packing_type">
                             </div>
                             <div class="col-md-2">
@@ -726,14 +739,15 @@ jQuery(document).ready(function () {
                             </tbody>
                         </table>
                     </div>`;
-                    blockToAppend += (!isInsertabelMore) ? `<span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>` : '';
+                    blockToAppend += !isInsertabelMore
+                        ? `<span class="addRowButton" onclick="insertMaintableRow()">+ Add Row</span>`
+                        : "";
                     blockToAppend += `</div> `;
 
-
-                    $('.orderInfoBlock').html(blockToAppend);
-                    $('.my-select2').select2();
+                    $(".orderInfoBlock").html(blockToAppend);
+                    $(".my-select2").select2();
                 } else {
-                    let isInsertabelMore = (multiple_invoice == 4);
+                    let isInsertabelMore = multiple_invoice == 4;
                     let blockToAppend = `<div class="col-lg-12 layout-spacing">
                     <div class="widget-header">
                         <div class="row">
@@ -753,7 +767,7 @@ jQuery(document).ready(function () {
                             </tr>
                             <tr>
                                 <td><input type="text" class="form-control form-small" value="Pesticide" name="description" list="json-datalist" onkeyup="showResult(this.value)"><datalist id="json-datalist"></datalist></td>
-                                <td><input type="text" class="form-control form-small" value="Case/s" name="packing_type"></td>
+                                <td><input type="text" class="form-control form-small" value="Cases" name="packing_type"></td>
                                 <td align="center"><span id="tot_qty">
                                         <?php echo "0";?>
                                     </span></td>
@@ -809,7 +823,9 @@ jQuery(document).ready(function () {
                                                 <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
                                                 <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
                                                 <td>`;
-                    blockToAppend += (isInsertabelMore) ? `<button type="button" class="btn btn-default btn-rounded insert-more"> + </button>` : ``;
+                    blockToAppend += isInsertabelMore
+                        ? `<button type="button" class="btn btn-default btn-rounded insert-more"> + </button>`
+                        : ``;
                     blockToAppend += `</td>
                                             </tr>
                                         </tbody>
@@ -820,7 +836,7 @@ jQuery(document).ready(function () {
                     </div>
     
                 </div>`;
-                    $('.orderInfoBlock').html(blockToAppend);
+                    $(".orderInfoBlock").html(blockToAppend);
 
                     // $(".insert-more").attr("disabled", true);
                 }
@@ -856,6 +872,7 @@ jQuery(document).ready(function () {
                 $("#select_ship_to").append(
                     '<option value="">Select Ship To</option>'
                 );
+                console.log(res.consignee);
                 $.each(res.consignee, function (key, value) {
                     $("#select_consignee, #select_ship_to").append(
                         '<option value="' +
@@ -865,6 +882,7 @@ jQuery(document).ready(function () {
                         "</option>"
                     );
                 });
+
                 if (res.data) {
                     console.log(res.data);
                     $("#regclient_id").val(res.data.regionalclient_id);
@@ -887,7 +905,12 @@ jQuery(document).ready(function () {
                     if (res.data.address_line4 == null) {
                         var address_line4 = "";
                     } else {
-                        var address_line4 = res.data.address_line4 + "<br>";
+                        var address_line4 = res.data.address_line4;
+                    }
+                    if (res.data.postal_code == null) {
+                        var postal_code = "";
+                    } else {
+                        var postal_code = res.data.postal_code + "<br>";
                     }
                     if (res.data.gst_number == null) {
                         var gst_number = "";
@@ -903,18 +926,35 @@ jQuery(document).ready(function () {
 
                     $("#consigner_address").append(
                         address_line1 +
-                        " " +
-                        address_line2 +
-                        "" +
-                        address_line3 +
-                        " " +
-                        address_line4 +
-                        " " +
-                        gst_number +
-                        " " +
-                        phone +
-                        ""
+                            " " +
+                            address_line2 +
+                            "" +
+                            address_line3 +
+                            " " +
+                            address_line4 +
+                            " " +
+                            postal_code +
+                            " " +
+                            gst_number +
+                            " " +
+                            phone +
+                            ""
                     );
+                    var url = window.location.href;
+                    var theArray = url.split("/");
+                    var shortPath = theArray[theArray.length - 1];
+                    if (shortPath == "order-book-ptl") {
+                        if (res.get_pin_hub == null) {
+                            $("#check_hub").html("No hub found");
+                            $(".disableme").prop("disabled", true);
+                            $("#select_consignee").prop("disabled", true);
+                            // swal("error", "Hub not found", "error");
+                        } else {
+                            $("#check_hub").html(res.get_pin_hub);
+                            $(".disableme").prop("disabled", false);
+                            $("#select_consignee").prop("disabled", false);
+                        }
+                    }
 
                     $("#dispatch").val(res.data.city);
                 }
@@ -939,6 +979,7 @@ jQuery(document).ready(function () {
             },
             dataType: "json",
             success: function (res) {
+                console.log(res.data);
                 // $('#consignee_address').empty();
                 if (res.data) {
                     if (res.data.address_line1 == null) {
@@ -987,6 +1028,19 @@ jQuery(document).ready(function () {
                         phone +
                         ""
                     );
+                    var url = window.location.href;
+                    var theArray = url.split("/");
+                    var shortPath = theArray[theArray.length - 1];
+                    if (shortPath == "order-book-ptl") {
+                        if (res.get_pin_hub == null) {
+                            $('#check_hub_delivery').html('No hub found');
+                            $('.disableme').prop('disabled', true);
+                            // swal('error','Hub not found','error')
+                        } else {
+                            $('#check_hub_delivery').html(res.get_pin_hub);
+                            $('.disableme').prop('disabled', false);
+                        }
+                    }
                 }
             },
         });
@@ -1307,14 +1361,28 @@ jQuery(document).ready(function () {
         $("#total_weight").val(total_net_weight);
         $("#total_gross_weight").val(total_gross_weight);
     }
+    $(document).on("blur", ".gross", function () {
+        var grossval = $(this).val(); // less
+        var netval = $(this).parent().siblings().children(".net").val(); // greater
+        if (parseInt(netval) > parseInt(grossval)) {
+            $(this).val("");
+        }
+    });
+    $(document).on("blur", ".net", function () {
+        var netval = $(this).val(); // greater
+        var grossval = $(this).parent().siblings().children(".gross").val(); // less
+        if (parseInt(netval) > parseInt(grossval)) {
+            $(this).val("");
+        }
+    });
 
     /*===== get location on edit click =====*/
     jQuery(document).on("click", ".editlocation", function () {
         var locationid = jQuery(this).attr("data-id");
         jQuery(".locationid").val(locationid);
         var action = jQuery(this).attr("data-action");
-        jQuery('.is_hub_yes').attr("checked", false);
-        jQuery('.is_hub_no').attr("checked", false);
+        jQuery(".is_hub_yes").attr("checked", false);
+        jQuery(".is_hub_no").attr("checked", false);
         jQuery(".radio_vehicleno_yes").attr("checked", false);
         jQuery(".radio_vehicleno_no").attr("checked", false);
         jQuery(".app_use_eternity").attr("checked", false);
@@ -1329,6 +1397,7 @@ jQuery(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 jQuery("#nameup").val(response.newcata.name);
+                jQuery("#hub_nicknameup").val(response.newcata.hub_nickname);
                 jQuery("#nick_nameup").val(response.newcata.nick_name);
                 jQuery("#team_idup").val(response.newcata.team_id);
                 jQuery("#consignment_noup").val(
@@ -1346,21 +1415,20 @@ jQuery(document).ready(function () {
 
                 // alert(response.newcata.is_hub)
                 if (response.newcata.is_hub == 1) {
-                    jQuery('.is_hub_yes').attr("checked", true);
-                    jQuery('.is_hub_no').attr("checked", false);
+                    jQuery(".is_hub_yes").attr("checked", true);
+                    jQuery(".is_hub_no").attr("checked", false);
                 } else {
-                    jQuery('.is_hub_yes').attr("checked", false);
-                    jQuery('.is_hub_no').attr("checked", true);
+                    jQuery(".is_hub_yes").attr("checked", false);
+                    jQuery(".is_hub_no").attr("checked", true);
                 }
 
-                if (response.newcata.app_use == 'Eternity') {
-                    jQuery('.app_use_eternity').attr("checked", true);
-                    jQuery('.app_use_shadow').attr("checked", false);
+                if (response.newcata.app_use == "Eternity") {
+                    jQuery(".app_use_eternity").attr("checked", true);
+                    jQuery(".app_use_shadow").attr("checked", false);
                 } else {
-                    jQuery('.app_use_eternity').attr("checked", false);
-                    jQuery('.app_use_shadow').attr("checked", true);
+                    jQuery(".app_use_eternity").attr("checked", false);
+                    jQuery(".app_use_shadow").attr("checked", true);
                 }
-
             },
         });
     });
@@ -1503,7 +1571,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-date").dataTable().fnClearTable();
                 $("#get-delvery-date").dataTable().fnDestroy();
             },
-            complete: function () { },
+            complete: function () {},
 
             success: function (data) {
                 var consignmentID = [];
@@ -1555,32 +1623,32 @@ jQuery(document).ready(function () {
 
                     $("#get-delvery-date tbody").append(
                         "<tr><td><input type='hidden' name='data[" +
-                        i +
-                        "][lrno]' class='delivery_d' value='" +
-                        value.consignment_no +
-                        "'>" +
-                        value.consignment_no +
-                        "</td><td><input type='hidden' name='data[" +
-                        i +
-                        "][lr_date]' class='c_date' value='" +
-                        value.consignment_date +
-                        "'>" +
-                        value.consignee_id +
-                        " </td><td><input type='hidden' name='data[" +
-                        i +
-                        "][job_id]' class='c_date' value='" +
-                        value.job_id +
-                        "'>" +
-                        value.city +
-                        "</td><td>" +
-                        edd_date +
-                        "</td><td>" +
-                        deliverydate +
-                        "</td><td>" +
-                        field +
-                        "</td><td><button type='button'  data-id=" +
-                        value.consignment_no +
-                        " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                            i +
+                            "][lrno]' class='delivery_d' value='" +
+                            value.consignment_no +
+                            "'>" +
+                            value.consignment_no +
+                            "</td><td><input type='hidden' name='data[" +
+                            i +
+                            "][lr_date]' class='c_date' value='" +
+                            value.consignment_date +
+                            "'>" +
+                            value.consignee_id +
+                            " </td><td><input type='hidden' name='data[" +
+                            i +
+                            "][job_id]' class='c_date' value='" +
+                            value.job_id +
+                            "'>" +
+                            value.city +
+                            "</td><td>" +
+                            edd_date +
+                            "</td><td>" +
+                            deliverydate +
+                            "</td><td>" +
+                            field +
+                            "</td><td><button type='button'  data-id=" +
+                            value.consignment_no +
+                            " class='btn btn-primary remover_lr'>remove</button></td></tr>"
                     );
                     i++;
                 });
@@ -1707,8 +1775,8 @@ jQuery(document).ready(function () {
         var data = { lr_no: lr_no };
         var base_url = window.location.origin;
         jQuery.ajax({
-            url: "get-delivery-dateLR", 
-            type: "get", 
+            url: "get-delivery-dateLR",
+            type: "get",
             cache: false,
             data: data,
             dataType: "json",
@@ -1721,7 +1789,7 @@ jQuery(document).ready(function () {
                 $("#get-delvery-dateLR").dataTable().fnDestroy();
                 $("#lr_status").empty();
             },
-            complete: function () { },
+            complete: function () {},
 
             success: function (data) {
                 var consignmentID = [];
@@ -1762,7 +1830,6 @@ jQuery(document).ready(function () {
                                 "<a href='" +
                                 storage_img +
                                 "' target='_blank' class='btn btn-warning'>view</a>";
-
                         }
                     } else if (value.lr_mode == 1) {
                         if (img_api == null || img_api == "") {
@@ -1786,16 +1853,12 @@ jQuery(document).ready(function () {
                     } else {
                         var app_img = [];
 
-                        $.each(
-                            data.app_media,
-                            function (index, media) {
-                                    app_img.push(media.pod_img);
-                            }
-                        );
+                        $.each(data.app_media, function (index, media) {
+                            app_img.push(media.pod_img);
+                        });
 
                         if (app_img == null || app_img == "") {
                             var field = "No image available";
-
                         } else {
                             var field1 = [];
                             var img_length = app_img.length;
@@ -1812,7 +1875,6 @@ jQuery(document).ready(function () {
                             });
                             var field = field1.join(" ");
                         }
-
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
@@ -1860,10 +1922,9 @@ jQuery(document).ready(function () {
                         if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
-                    }else if(value.lr_mode == 1){
+                    } else if (value.lr_mode == 1) {
                         row += "<td>Update from shadow</td>";
                     } else {
-
                         row += "<td>Update from Shiprider</td>";
                     }
                     row += "</tr>";
@@ -1873,7 +1934,6 @@ jQuery(document).ready(function () {
             },
         });
     });
-
 
     //for setting branch address edit
     jQuery(document).on("click", ".editBranchadd", function () {
@@ -1957,33 +2017,33 @@ jQuery(document).ready(function () {
     // });
 
     $("#paymentType").change(function (e) {
-        $('#freight_on_delivery').val('');
-        $('#cod').val('');
+        $("#freight_on_delivery").val("");
+        $("#cod").val("");
         var payment_val = $(this).val();
-        if(payment_val == 'To Pay' || payment_val == 'Paid'){
-            var frieght_val = $('#freight_on_delivery').val();
-            if(frieght_val == ''){
-                $('#freight_on_delivery').css("border-color", "red");
-                $('#freight_on_delivery').attr('required', true);
-            }else{
+        if (payment_val == "To Pay" || payment_val == "Paid") {
+            var frieght_val = $("#freight_on_delivery").val();
+            if (frieght_val == "") {
+                $("#freight_on_delivery").css("border-color", "red");
+                $("#freight_on_delivery").attr("required", true);
+            } else {
                 $("#freight_on_delivery").css("border-color", "#bfc9d4");
-                $("#freight_on_delivery").removeAttr('required');
+                $("#freight_on_delivery").removeAttr("required");
             }
-        }else{
+        } else {
             $("#freight_on_delivery").css("border-color", "#bfc9d4");
-            $("#freight_on_delivery").removeAttr('required');
+            $("#freight_on_delivery").removeAttr("required");
         }
     });
 
     $(document).on("keyup", "#freight_on_delivery", function () {
         var frieght_val = $(this).val();
-            if(frieght_val == ''){
-                $(this).css("border-color", "red");
-                $(this).attr('required', true);
-            }else{
-                $(this).css("border-color", "#bfc9d4");
-                $(this).removeAttr('required');
-            }
+        if (frieght_val == "") {
+            $(this).css("border-color", "red");
+            $(this).attr("required", true);
+        } else {
+            $(this).css("border-color", "#bfc9d4");
+            $(this).removeAttr("required");
+        }
     });
 
     // for vehicle tonnage capacity calculation
@@ -2082,7 +2142,7 @@ function get_delivery_date() {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             dataType: "json",
-            success: function (result) { },
+            success: function (result) {},
         });
     });
 }
@@ -2149,24 +2209,23 @@ $(document).on("click", ".onelrupdate", function () {
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
-        beforeSend: function () { },
+        beforeSend: function () {},
         success: function (data) {
             // alert(data.success);
             if (data.success == true) {
                 swal("success", data.messages, "success");
                 location.reload();
             } else {
-                swal("error", data.messages , "error");
+                swal("error", data.messages, "error");
             }
         },
     });
 });
-//////////////////////////
+
+//update delivery date and pod img in multiple lr//
 $("#allsave").submit(function (e) {
     e.preventDefault();
-
     var formData = new FormData(this);
-
     $.ajax({
         url: "all-save-deliverydate",
         headers: {
@@ -2244,18 +2303,18 @@ $("#all_inv_save").submit(function (e) {
                     }
                     $("#view_invoices tbody").append(
                         "<tr><input type='hidden' name='data[" +
-                        i +
-                        "][id]' value=" +
-                        value.id +
-                        " ><td>" +
-                        value.consignment_id +
-                        "</td><td>" +
-                        value.invoice_no +
-                        "</td><td>" +
-                        billno +
-                        "</td><td>" +
-                        billdate +
-                        "</td></tr>"
+                            i +
+                            "][id]' value=" +
+                            value.id +
+                            " ><td>" +
+                            value.consignment_id +
+                            "</td><td>" +
+                            value.invoice_no +
+                            "</td><td>" +
+                            billno +
+                            "</td><td>" +
+                            billdate +
+                            "</td></tr>"
                     );
 
                     i++;
@@ -2433,7 +2492,7 @@ $("#vendor-master").submit(function (e) {
     if (!pan_no) {
         swal("Error!", "Please Enter Pan No", "error");
         return false;
-    }else{
+    } else {
         var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
 
         if (regpan.test(pan_no)) {
@@ -2458,7 +2517,7 @@ $("#vendor-master").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () { },
+        beforeSend: function () {},
         success: (data) => {
             if (data.success === true) {
                 swal("success", data.success_message, "success");
@@ -2528,7 +2587,7 @@ $("#purchase_amt_form").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () { },
+        beforeSend: function () {},
         success: (data) => {
             if (data.success == true) {
                 swal("success", data.success_message, "success");
@@ -2558,7 +2617,7 @@ $("#vendor_import").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () { },
+        beforeSend: function () {},
         success: (data) => {
             if (data.success == true) {
                 if (data.ignorecount > 0) {
@@ -2569,7 +2628,7 @@ $("#vendor_import").submit(function (e) {
                     swal(
                         "success",
                         data.ignorecount +
-                        " ignored, These Vendor Ifsc code is less than 11 digit",
+                            " ignored, These Vendor Ifsc code is less than 11 digit",
                         "success"
                     );
                 } else {
@@ -2694,10 +2753,10 @@ $(".searchclientreport").click(function (e) {
             $.each(res.data, function (index, value) {
                 $("#select_consigner").append(
                     '<option value="' +
-                    value.id +
-                    '">' +
-                    value.nick_name +
-                    "</option>"
+                        value.id +
+                        '">' +
+                        value.nick_name +
+                        "</option>"
                 );
             });
 
@@ -2776,18 +2835,18 @@ $("#all_inv_save").submit(function (e) {
 
                     $("#view_invoices tbody").append(
                         "<tr><input type='hidden' name='data[" +
-                        i +
-                        "][id]' value=" +
-                        value.id +
-                        " ><td>" +
-                        value.consignment_id +
-                        "</td><td>" +
-                        value.invoice_no +
-                        "</td><td>" +
-                        billno +
-                        "</td><td>" +
-                        billdate +
-                        "</td></tr>"
+                            i +
+                            "][id]' value=" +
+                            value.id +
+                            " ><td>" +
+                            value.consignment_id +
+                            "</td><td>" +
+                            value.invoice_no +
+                            "</td><td>" +
+                            billno +
+                            "</td><td>" +
+                            billdate +
+                            "</td></tr>"
                     );
 
                     i++;
@@ -2822,10 +2881,10 @@ $("#create_request_form").submit(function (e) {
         beforeSend: function () {
             $(".indicator-progress").show();
             $(".indicator-label").hide();
-            $('.disableme').prop('disabled', true);
+            $(".disableme").prop("disabled", true);
         },
         success: (data) => {
-            $('.disableme').prop('disabled', true);
+            $(".disableme").prop("disabled", true);
             $(".indicator-progress").hide();
             $(".indicator-label").show();
             if (data.success == true) {
@@ -2853,7 +2912,7 @@ $("#update_purchase_amt_form").submit(function (e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function () { },
+        beforeSend: function () {},
         success: (data) => {
             if (data.success == true) {
                 swal("success", data.success_message, "success");
@@ -2952,7 +3011,10 @@ function onChangePrsRegClient(_this) {
             console.log(res.data);
             $.each(res.data, function (index, value) {
                 console.log($(_this).html());
-                $(_this).parents().siblings("td").find(".consigner_prs")
+                $(_this)
+                    .parents()
+                    .siblings("td")
+                    .find(".consigner_prs")
                     .append(
                         `<option value="${value.id}">${value.nick_name}</option>`
                     );
@@ -2993,7 +3055,6 @@ $(document).on("click", ".receive-vehicle", function () {
 
                         var item_ids = qtyval.id;
                         ids_arr.push(item_ids);
-
                     });
                     var toNumbers = qtyarr.map(Number);
                     var qty_sum = toNumbers.reduce((x, y) => x + y);
@@ -3002,8 +3063,13 @@ $(document).on("click", ".receive-vehicle", function () {
                         '<tr><td><input class="dialogInput form-control-sm cnr_id" style="width: 170px;" type="text" name="" value="' +
                         value.consigner_detail.nick_name +
                         '" readonly><input type="hidden" name="data[' +
-                        index + '][consigner_id]" value="' + value.consigner_detail.id +
-                        '" readonly"><input type="hidden" name="data[' + index + '][item_id]" value="' + ids_arr +
+                        index +
+                        '][consigner_id]" value="' +
+                        value.consigner_detail.id +
+                        '" readonly"><input type="hidden" name="data[' +
+                        index +
+                        '][item_id]" value="' +
+                        ids_arr +
                         '" readonly"></td>';
                     rows +=
                         '<td><input class="dialogInput form-control-sm invc_no" style="width: 120px;" type="text" name="data[' +
@@ -3030,8 +3096,6 @@ $(document).on("click", ".receive-vehicle", function () {
                         index +
                         '][remaining_qty]" readonly></td>';
 
-
-
                     rows +=
                         '<td><input class="dialogInput form-control-sm remarks" style="min-width: 200px; visibility: hidden" type="text" name="data[' +
                         index +
@@ -3045,21 +3109,42 @@ $(document).on("click", ".receive-vehicle", function () {
 });
 
 jQuery(document).on("click", ".verify_status", function (event) {
-    $(this).closest('td').next('td').find('input').val('');
+    $(this).closest("td").next("td").find("input").val("");
     verify_val = $(this).val();
-    if (verify_val == '1') {
-        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'hidden');
-        $(this).closest('td').next('td').find('.remaining_qty').css('visibility', 'hidden');
-        $(this).closest('td').next('td').find('.remarks').css('visibility', 'hidden');
-
+    if (verify_val == "1") {
+        $(this)
+            .closest("td")
+            .siblings("td")
+            .find(".receive_qty")
+            .css("visibility", "hidden");
+        $(this)
+            .closest("td")
+            .next("td")
+            .find(".remaining_qty")
+            .css("visibility", "hidden");
+        $(this)
+            .closest("td")
+            .next("td")
+            .find(".remarks")
+            .css("visibility", "hidden");
     } else {
-        $(this).closest('td').siblings('td').find('.receive_qty').css('visibility', 'visible');
-        $(this).closest('td').siblings('td').find('.remaining_qty').css('visibility', 'visible');
-        $(this).closest('td').siblings('td').find('.remarks').css('visibility', 'visible');
+        $(this)
+            .closest("td")
+            .siblings("td")
+            .find(".receive_qty")
+            .css("visibility", "visible");
+        $(this)
+            .closest("td")
+            .siblings("td")
+            .find(".remaining_qty")
+            .css("visibility", "visible");
+        $(this)
+            .closest("td")
+            .siblings("td")
+            .find(".remarks")
+            .css("visibility", "visible");
     }
-
 });
-
 
 // prs driver task status change
 jQuery(document).on("click", ".taskstatus_change", function (event) {
@@ -3170,3 +3255,385 @@ $("#select_baseclient").change(function (e) {
 // });
 /*===== End delete User =====*/
 
+// $("#select_consignee").change(function (e) {
+//     $("#consignee_address").empty();
+//     let consignee_id = $(this).attr('data-val');
+//     getConsignees(consignee_id);
+// });
+
+// function getConsignees(consignee_id) {
+//     $.ajax({
+//         type: "get",
+//         url: APP_URL + "/get-consignees-address",
+//         data: {consignee_id: consignee_id},
+//         headers: {
+//             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+//         },
+//         dataType: "json",
+//         success: function (res) {
+//             // $('#consignee_address').empty();
+//             var newOption = new Option(
+//                 res.data.nick_name,
+//                 res.data.id,
+//                 false,
+//                 false
+//             );
+//             $("#select_consignee").append(newOption).trigger("change");
+//             if (res.data) {
+//                 if (res.data.address_line1 == null) {
+//                     var address_line1 = "";
+//                 } else {
+//                     var address_line1 = res.data.address_line1 + "<br>";
+//                 }
+//                 if (res.data.address_line2 == null) {
+//                     var address_line2 = "";
+//                 } else {
+//                     var address_line2 = res.data.address_line2 + "<br>";
+//                 }
+//                 if (res.data.address_line3 == null) {
+//                     var address_line3 = "";
+//                 } else {
+//                     var address_line3 = res.data.address_line3 + "<br>";
+//                 }
+//                 if (res.data.address_line4 == null) {
+//                     var address_line4 = "";
+//                 } else {
+//                     var address_line4 = res.data.address_line4 ;
+//                 }
+//                 if (res.data.postal_code == null) {
+//                     var postal_code = "";
+//                 } else {
+//                     var postal_code =
+//                         res.data.postal_code + "<br>";
+//                 }
+//                 if (res.data.gst_number == null) {
+//                     var gst_number = "";
+//                 } else {
+//                     var gst_number =
+//                         "GST No: " + res.data.gst_number + "<br>";
+//                 }
+//                 if (res.data.phone == null) {
+//                     var phone = "";
+//                 } else {
+//                     var phone = "Phone: " + res.data.phone;
+//                 }
+
+//                 $("#consignee_address").append(
+//                     address_line1 +
+//                     " " +
+//                     address_line2 +
+//                     "" +
+//                     address_line3 +
+//                     " " +
+//                     address_line4 +
+//                     " " +
+//                     postal_code +
+//                     " " +
+//                     gst_number +
+//                     " " +
+//                     phone +
+//                     ""
+//                 );
+//                 var url = window.location.href;
+//                 var theArray = url.split('/');
+//                 var shortPath = theArray[theArray.length - 1];
+//                 if(shortPath == "order-book-ptl"){
+//                     if (res.get_pin_hub == null) {
+//                         $('#check_hub_delivery').html('No hub found');
+//                         $('.disableme').prop('disabled', true);
+//                         swal('error','Hub not found','error')
+//                     } else {
+//                         $('#check_hub_delivery').html(res.get_pin_hub);
+//                         $('.disableme').prop('disabled', false);
+//                     }
+//                 }
+
+//             }
+//         },
+//     });
+// }
+function getRoutes(consigner_id,consignee_id) {
+    $.ajax({
+        type: 'get',
+        url: APP_URL + '/get_route',
+        data: {
+            consigner_id: consigner_id,
+            consignee_id: consignee_id
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: 'json',
+        success: function(response) {
+            $('#routeList').html(response);
+        },
+        error: function() {
+            $('#routeList').html('<p>Error occurred. Please try again.</p>');
+        }
+    });
+}
+
+
+// for autocomplte consignee list
+// jQuery(document).on("keyup", "#select_consignee", function (e) {
+//     $("#consignee_address").empty();
+//     var searchTerm= $(this).val();
+//     var consignment_id= $("#consignment_id").val();
+//     var regclient_id= $("#select_regclient").val();
+//     var consigner_id= $("#select_consigner").val();
+
+//     if(e.which != 8){
+//         jQuery.ajax({
+//             type: "get",
+//             url: APP_URL + "/get_consignees",
+//             cache: false,
+//             data: { search:searchTerm, regclient_id:regclient_id,consignment_id:consignment_id },
+//             dataType: "json",
+//             headers: {
+//                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+//             },
+//             processData: true,
+//             beforeSend: function () {
+//                 //console.log(dataToSearch, "payload");
+//                 jQuery("#loader-section").css('display','flex');
+    
+//             },
+//             complete: function () {
+//                 jQuery("#loader-section").css('display','none');
+//             },
+    
+//             success: function (res) {
+//                 console.log(res);
+//                 // $( function() {
+//                     $("#consignee_address").empty();
+//                 $("#select_consignee").autocomplete({
+//                     source: function (request, response) {
+//                         response(
+//                             $.map(res.data, function (obj, key) {
+//                                 var name = obj.nick_name.toUpperCase();
+//                                 if(name.indexOf(request.term.toUpperCase()) != -1) {
+//                                     return {
+//                                         displayLabel: `${obj.nick_name}`,
+//                                         label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+//                                         value: obj.id
+//                                     }
+//                                 } else {
+//                                     return null;
+//                                 }
+//                             })
+//                         );
+//                     },
+//                     focus: function (event, ui) {
+//                         event.preventDefault();
+//                     },
+//                     select: function (event, ui) {
+//                         event.preventDefault();
+//                         $("#select_consignee").val(ui.item.displayLabel);
+
+//                         $("#consignee_id").val(ui.item.value);
+//                         getConsignees(ui.item.value);
+//                         if((res?.data_prsid?.prs_id )?.length > 0){
+//                             getRoutes(consigner_id, ui.item.value);
+//                         }
+//                         // ... any other tasks (like setting Hidden Fields) go here...
+//                         $("#themeLoader").css("display", "flex");
+//                         return false;
+//                     },
+//                 });
+//                 // });
+//             },
+//         });
+//     }else if(e.which == 8){
+//         $("#consignee_address").empty();
+//         $("#consignee_id").val('');
+//     }
+// });
+// get ship to address
+// $("#select_ship_to").change(function (e) {
+//     $("#ship_to_address").empty();
+//     let consignee_id = $(this).val();
+//     getShipto(consignee_id);
+// });
+
+// function getShipto(consignee_id) {
+//     $.ajax({
+//         type: "get",
+//         url: APP_URL + "/get-consignees-address",
+//         data: { consignee_id: consignee_id },
+//         headers: {
+//             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+//         },
+//         dataType: "json",
+//         success: function (res) {
+//             if (res.data) {
+//                 if (res.data.address_line1 == null) {
+//                     var address_line1 = "";
+//                 } else {
+//                     var address_line1 = res.data.address_line1 + "<br>";
+//                 }
+//                 if (res.data.address_line2 == null) {
+//                     var address_line2 = "";
+//                 } else {
+//                     var address_line2 = res.data.address_line2 + "<br>";
+//                 }
+//                 if (res.data.address_line3 == null) {
+//                     var address_line3 = "";
+//                 } else {
+//                     var address_line3 = res.data.address_line3 + "<br>";
+//                 }
+//                 if (res.data.address_line4 == null) {
+//                     var address_line4 = "";
+//                 } else {
+//                     var address_line4 = res.data.address_line4;
+//                 }
+//                 if (res.data.postal_code == null) {
+//                     var postal_code = "";
+//                 } else {
+//                     var postal_code = res.data.postal_code + "<br>";
+//                 }
+//                 if (res.data.gst_number == null) {
+//                     var gst_number = "";
+//                 } else {
+//                     var gst_number =
+//                         "GST No: " + res.data.gst_number + "<br>";
+//                 }
+//                 if (res.data.phone == null) {
+//                     var phone = "";
+//                 } else {
+//                     var phone = "Phone: " + res.data.phone;
+//                 }
+
+//                 $("#ship_to_address").append(
+//                     address_line1 +
+//                         " " +
+//                         address_line2 +
+//                         "" +
+//                         address_line3 +
+//                         " " +
+//                         address_line4 +
+//                         " " +
+//                         postal_code +
+//                         " " +
+//                         gst_number +
+//                         " " +
+//                         phone +
+//                         ""
+//                 );
+
+//                 var url = window.location.href;
+//                 var theArray = url.split('/');
+//                 var shortPath = theArray[theArray.length - 1];
+//                 if(shortPath == "order-book-ptl"){
+//                     if (res.get_pin_hub == null) {
+//                         $('#checkship_hub_delivery').html('No hub found');
+//                         $('.disableme').prop('disabled', true);
+//                         swal('error','Hub not found','error')
+//                     } else {
+//                         $('#checkship_hub_delivery').html(res.get_pin_hub);
+//                         $('.disableme').prop('disabled', false);
+//                     }
+//                 }
+//             }
+//         },
+//     });
+// }
+
+// for autocomplte ship to list
+// jQuery(document).on("keyup", "#select_ship_to", function (e) {
+//     $("#ship_to_address").empty();
+//     var searchTerm= $(this).val();
+//     var regclient_id= $("#select_regclient").val();
+    
+//     if(e.which != 8){
+//         jQuery.ajax({
+//             type: "get",
+//             url: APP_URL + "/get_consignees",
+//             cache: false,
+//             data: { search:searchTerm, regclient_id:regclient_id },
+//             dataType: "json",
+//             headers: {
+//                 "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+//             },
+//             processData: true,
+//             beforeSend: function () {
+//                 jQuery("#loader-section").css('display','flex');
+    
+//             },
+//             complete: function () {
+//                 jQuery("#loader-section").css('display','none');
+//             },
+//             success: function (res) {
+//                 console.log(res.data);
+//                 $("#select_ship_to").autocomplete({
+//                     source: function (request, response) {
+//                         response(
+//                             $.map(res.data, function (obj, key) {
+//                                 var name = obj.nick_name.toUpperCase();
+//                                 if (
+//                                     name.indexOf(request.term.toUpperCase()) != -1
+//                                 ) {
+//                                     return {
+//                                         displayLabel: `${obj.nick_name}`,
+//                                         label: `${obj.nick_name}, ${obj.phone}`, // Label for Display
+//                                         value: obj.id
+//                                     }
+//                                 } else {
+//                                     return null;
+//                                 }
+//                             })
+//                         );
+//                     },
+//                     focus: function (event, ui) {
+//                         event.preventDefault();
+//                     },
+//                     select: function (event, ui) {
+//                         event.preventDefault();
+//                         $("#select_ship_to").val(ui.item.displayLabel);
+//                         $("#ship_to_id").val(ui.item.value);
+//                         getShipto(ui.item.value);
+//                         // ... any other tasks (like setting Hidden Fields) go here...
+//                         $("#themeLoader").css("display", "flex");
+//                         return false;
+//                     },
+//                 });
+//             },
+//         });
+//     }else if(e.which == 8){
+//         $("#ship_to_address").empty();
+//         $("#ship_to_id").val('');
+//     }
+// });
+
+//get regclient on change baseclient in mis2 report filter
+$("#select_baseclient").change(function (e) {
+    var baseclient_id = $(this).val();
+    $("#select_regionalclient").empty();
+    $.ajax({
+        url: "/get-regclients",
+        type: "get",
+        cache: false,
+        data: { baseclient_id: baseclient_id },
+        dataType: "json",
+        headers: {
+            "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr("content"),
+        },
+        beforeSend: function () {
+            $("#select_consigner").empty();
+        },
+        success: function (res) {
+            console.log(res.data_regclient);
+            $("#select_regionalclient").append(
+                '<option value="">select All</option>'
+            );
+            $.each(res.data_regclient, function (key, value) {
+                $("#select_regionalclient").append(
+                    '<option value="' +
+                        value.id +
+                        '">' +
+                        value.name +
+                        "</option>"
+                );
+            });
+        },
+    });
+});

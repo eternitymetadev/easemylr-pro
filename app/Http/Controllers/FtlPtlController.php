@@ -114,8 +114,11 @@ class FtlPtlController extends Controller
             }
 
             $authuser = Auth::user();
+
             $cc = explode(',', $authuser->branch_id);
             $locations = Location::whereIn('id', $cc)->first();
+            $branch_add = BranchAddress::get();
+
             $branch_add = BranchAddress::get();
 
             if (empty($request->vehicle_id)) {
@@ -678,7 +681,7 @@ class FtlPtlController extends Controller
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">
-                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
 
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 
@@ -1419,7 +1422,6 @@ class FtlPtlController extends Controller
         }
         //echo "<pre>";print_r($response);echo "</pre>";die;
         return $response;
-
     }
 
     // Multiple Deliveries at once
@@ -1495,7 +1497,6 @@ class FtlPtlController extends Controller
 
         curl_close($curl);
         return $response;
-
     }
 
     //+++++++++++++++++++++++ webhook for status update +++++++++++++++++++++++++//

@@ -40,7 +40,6 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
             $query = $query->whereIn('regionalclient_id', $regclient);
         }
         $consigners = $query->get();
-
         if($consigners->count() > 0){
             foreach ($consigners as $key => $value){  
             
@@ -51,7 +50,7 @@ class ConsignerExport implements FromCollection, WithHeadings,ShouldQueue
                     'gst_number'    => $value->gst_number,
                     'contact_name'  => $value->contact_name,
                     'phone'         => $value->phone,
-                    'regionalclient_id' => @$value->regional_clientname,
+                    'regionalclient_id' => @$value->regionalclient_id,
                     'email'         => $value->email,
                     'address_line1' => $value->address_line1,
                     'address_line2' => $value->address_line2,

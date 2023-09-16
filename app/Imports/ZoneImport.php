@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Models\Zone;
+use App\Models\Location;
 use DB;
 
 class ZoneImport implements ToModel,WithHeadingRow
@@ -17,24 +18,32 @@ class ZoneImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-     
-         $zone = DB::table('zones')->select('postal_code')->where('postal_code', $row['postal_code'])->first();
+        $zone = Zone::where('postal_code', $row['postal_code'])->first();
+        $pickup_location = Location::where('name',$row['pickup_hub'])->first();
+        $delivery_location = Location::where('name',$row['delivery_hub'])->first();
+        
         if(empty($zone)){
             return new Zone([
-                'primary_zone'  => $row['primary_zone'],
-                'postal_code'   => (float)$row['postal_code'],
-                'district'      => $row['district'],
-                'state'         => $row['state'],
-                'hub_transfer'    => $row['hub_transfer'],
+                'postal_code'   => @$row['postal_code'],
+                'city'          => @$row['city'],
+                'state'         => @$row['state'],
+                'district'      => @$row['district'],
+                'pickup_hub'    => @$pickup_location->id,
+                'hub_transfer'  => @$delivery_location->name,
+                'hub_nickname'  => @$delivery_location->id,
                 'status'        => "1",
                 'created_at'    => time(),
             ]);
         }else{
-            $consigner = Zone::where('postal_code', $row['postal_code'])->update([
-                // 'district'      => $row['district'],
-                // 'state'         => $row['state'],
-                'hub_transfer'  => $row['hub_transfer'],
-                'updated_at'    => time(),
+            $zoneUpdate = Zone::where('postal_code', $row['postal_code'])->update([
+                'city'           =>  @$row['city'],
+                'state'          =>  @$row['state'],
+                'district'       =>  @$row['district'],
+                // 'pickup_hub'     =>  @$row['pickup_hub'],
+                'pickup_hub'     =>  @$pickup_location->id,
+                'hub_transfer'   =>  @$delivery_location->name,
+                'hub_nickname'   =>  @$delivery_location->id,
+                'updated_at'     =>  time(),
             ]);
         }
 

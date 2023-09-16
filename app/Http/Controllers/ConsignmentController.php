@@ -657,10 +657,18 @@ class ConsignmentController extends Controller
     // get consigner address on change
     public function getConsigners(Request $request)
     {
-        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id', 'regionalclient_id')->with('GetRegClient', 'GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
+        $getconsigners = Consigner::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone', 'city', 'branch_id', 'regionalclient_id','postal_code')->with('GetRegClient', 'GetBranch')->where(['id' => $request->consigner_id, 'status' => '1'])->first();
+
+        $get_pin_hub = Zone::with('GetLocation')->where('postal_code',$getconsigners->postal_code)->first();
+        if(!empty($get_pin_hub->GetLocation)){
+            $check_hub = $get_pin_hub->GetLocation->name;
+        }else{
+            $check_hub = Null;
+        }        
 
         $getregclients = RegionalClient::select('id', 'is_multiple_invoice')->where('id', $request->regclient_id)->first();
         $getConsignees = Consignee::select('id', 'nick_name')->where(['consigner_id' => $request->consigner_id])->get();
+        // dd($getConsignees);
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
@@ -668,6 +676,7 @@ class ConsignmentController extends Controller
             $response['data'] = $getconsigners;
             $response['consignee'] = $getConsignees;
             $response['regclient'] = $getregclients;
+            $response['get_pin_hub'] = $check_hub;
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consigner list please try again";
@@ -684,12 +693,14 @@ class ConsignmentController extends Controller
         $getregclients = RegionalClient::where('id', $request->regclient_id)->first();
 
         $itemlists = ItemMaster::where('status', '1')->get();
+        // $getconsignees = Consignee::where('baseclient_id', $getregclients->baseclient_id)->get();
 
         if ($getconsigners) {
             $response['success'] = true;
             $response['success_message'] = "Consigner list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsigners;
+            // $response['data_consignee'] = $getconsignees;
             $response['data_regclient'] = $getregclients;
             $response['data_items'] = $itemlists;
 
@@ -701,16 +712,68 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    // get consigner address on change
+    // get consignee address on change
     public function getConsignees(Request $request)
     {
-        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone')->where(['id' => $request->consignee_id, 'status' => '1'])->first();
+        // $get_regclient = RegionalClient::select('id','baseclient_id')->where('id',$request->regclient_id)->first();
+    
+        // $getconsignees = Consignee::select('id', 'nick_name','phone')
+        // ->where('baseclient_id', $get_regclient->baseclient_id)
+        // ->where('nick_name', 'LIKE', '%' . $request->search . '%')
+        // ->orderBy('nick_name', 'asc')
+        // ->get();
 
+        // $check_prsid = ConsignmentNote::select('id','prs_id')->where('id',$request->consignment_id)->first();
+
+        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone','postal_code')->where(['id' => $request->consignee_id, 'status' => '1'])->first();
+
+        $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
+        if(!empty($get_pin_hub->Branch)){
+            $check_hub = $get_pin_hub->Branch->name;
+        }else{
+            $check_hub = Null;
+        }
+        
         if ($getconsignees) {
             $response['success'] = true;
             $response['success_message'] = "Consignee list fetch successfully";
             $response['error'] = false;
             $response['data'] = $getconsignees;
+            // $response['data_prsid'] = $check_prsid;
+
+            $response['get_pin_hub'] = $check_hub;
+        } else {
+            $response['success'] = false;
+            $response['error_message'] = "Can not fetch consignee list please try again";
+            $response['error'] = true;
+        }
+        return response()->json($response);
+    }
+
+    // get consigner address on change
+    public function getConsigneesAdd(Request $request)
+    {
+        $getconsignees = Consignee::select('address_line1', 'address_line2', 'address_line3', 'address_line4', 'gst_number', 'phone','postal_code')
+        ->where('id', $request->consignee_id)
+        ->first();
+
+        // $get_pin_hub = '';
+        $get_pin_hub = Zone::with('Branch')->where('postal_code',$getconsignees->postal_code)->first();
+        if(!empty($get_pin_hub->Branch)){
+            $check_hub = $get_pin_hub->Branch->name;
+        }else{
+            $check_hub = Null;
+        }
+        // get routes
+       
+        //
+
+        if($getconsignees){
+            $response['success'] = true;
+            $response['success_message'] = "Consignee list fetch successfully";
+            $response['error'] = false;
+            $response['data'] = $getconsignees;
+            $response['get_pin_hub'] = $check_hub;
         } else {
             $response['success'] = false;
             $response['error_message'] = "Can not fetch consignee list please try again";
@@ -2029,9 +2092,9 @@ class ConsignmentController extends Controller
         $transporterName = $request->transporter_name;
         $purchasePrice = $request->purchase_price;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'purchase_price' => $purchasePrice, 'delivery_status' => 'Assigned']);
+        $update_consignment = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['vehicle_id' => $addvechileNo, 'driver_id' => $adddriverId, 'transporter_name' => $transporterName, 'vehicle_type' => $vehicleType, 'purchase_price' => $purchasePrice, 'delivery_status' => 'Assigned']);
 
-        $consignees = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
+        $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_name', 'consignees.phone as phone', 'consignees.email as email', 'vehicles.regn_no as vehicle_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'drivers.name as driver_id', 'drivers.phone as driver_phone', 'drivers.team_id as team_id', 'drivers.fleet_id as fleet_id')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->join('vehicles', 'vehicles.id', '=', 'consignment_notes.vehicle_id')
@@ -2039,8 +2102,8 @@ class ConsignmentController extends Controller
             ->whereIn('consignment_notes.id', $consignmentId)
             ->get(['consignees.city']);
 
-        $simplyfy = json_decode(json_encode($consignees), true);
-        foreach ($simplyfy as $value) {
+        $consignment_data = json_decode(json_encode($consignments), true);
+        foreach ($consignment_data as $value) {
             $consignment_no = $value['consignment_no'];
             $vehicle_no = $value['vehicle_id'];
             $consignee_name = $value['consignee_name'];
@@ -2057,7 +2120,7 @@ class ConsignmentController extends Controller
         // $tooken_details = json_decode(json_encode($chk_tooken), true);
         // // Push to tooken if Team Id & Fleet Id Available
         // if (!empty($tooken_details[0]['fleet_id'])) {
-        //     $createTask = $this->createTookanMultipleTasks($simplyfy);
+        //     $createTask = $this->createTookanMultipleTasks($consignment_data);
         //     $json = json_decode($createTask, true);
         //     if (!empty($json['data'])) {
         //         $response = $json['data']['deliveries'];
@@ -2077,9 +2140,27 @@ class ConsignmentController extends Controller
         // } else {
 
         $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
-        //  }
-        // =============new app
+
+        //============ new app =======//
         $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
+
+        //======= check app assign ==========//
+        if ($get_driver_details->access_status == 1) {
+            if (!empty($get_driver_details->branch_id)) {
+                $driver_branch = explode(',', $get_driver_details->branch_id);
+                if (in_array($authuser->branch_id, $driver_branch)) {
+                    $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 2]);
+                    
+                    $app_notify = $this->sendNotification($request->driver_id);
+                }
+            } else {
+                $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
+                
+            }
+        }else{
+            $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
+        }
+
         $mytime = Carbon::now('Asia/Kolkata');
         $currentdate = $mytime->toDateTimeString();
         // check app assign ========================================
@@ -2118,7 +2199,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
 
     public function transactionSheet(Request $request)
@@ -2690,10 +2770,10 @@ class ConsignmentController extends Controller
 
     public function CreateEdd(Request $request)
     {
-
         $consignmentId = $_POST['consignmentID'];
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
+        $location = Location::where('id',$cc)->first();
 
         /////check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
@@ -2738,11 +2818,25 @@ class ConsignmentController extends Controller
 
             $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
         }
+        // foreach ($consignmentId as $c_id) {
+        //     $mytime = Carbon::now('Asia/Kolkata');
+        //     $currentdate = $mytime->toDateTimeString();
+        //     // =================== task assign
+        //     $respons2 = array('consignment_id' => $c_id, 'status' => 'DRS Created','desc'=>'Out for Delivery', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+
+        //     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('id')->first();
+        //     $st = json_decode($lastjob->response_data);
+        //     array_push($st, $respons2);
+        //     $sts = json_encode($st);
+           
+
+        //     $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'DRS Created', 'type' => '2']);
+        //     // ==== end started
+        // }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
 
     public function updateSuffle(Request $request)
@@ -4446,14 +4540,12 @@ class ConsignmentController extends Controller
                 return Response::json($response);
 
             }
-
         } catch (\Exception $e) {
             $bug = $e->getMessage();
             $response['success'] = false;
             $response['messages'] = $bug;
             return Response::json($response);
         }
-
     }
 
     public function allSaveDRS(Request $request)
@@ -4461,7 +4553,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
         $location = Location::whereIn('id',$cc)->first();
-
+        
         if (!empty($request->data)) {
             $get_data = $request->data;
             foreach ($get_data as $key => $save_data) {
@@ -4686,14 +4778,16 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
         ////
-        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
+        $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode','shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->join('consignees as shipto', 'shipto.id', '=', 'consignment_notes.ship_to_id')
             ->join('locations', 'locations.id', '=', 'consignment_notes.branch_id')
             ->leftjoin('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
             ->leftjoin('locations as to_branch_name', 'to_branch_name.id', '=', 'consignment_notes.to_branch_id')
             ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+            // ->leftjoin('consignees', 'consignees.id', '=', 'consignment_notes.ship_to_id')
             ->leftjoin('jobs', function ($data) {
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
@@ -4701,7 +4795,6 @@ class ConsignmentController extends Controller
         $app_trail = json_decode($driver_app->trail, true);
         
         // ======img
-    // echo "<pre>"; print_r($newArray); die;
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
 
         if (!empty($job->trail)) {
@@ -4734,7 +4827,7 @@ class ConsignmentController extends Controller
             $response['app_media'] = $app_media;
             $response['driver_app'] = $driver_app;
         }
-
+    // echo "<pre>"; print_r($response); die;
         return response()->json($response);
     }
 
@@ -4755,7 +4848,7 @@ class ConsignmentController extends Controller
                 $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
-            // return ($driver_app);
+
             if($driver_app){
                 $app_trail = json_decode($driver_app->trail, true);
                 $status = [2];
@@ -4764,8 +4857,7 @@ class ConsignmentController extends Controller
                     if(in_array($trail['type'], $status)){
                         $result[] = $trail;
                     }
-                }
-                
+                }                
                 if ($driver_app) {
                     return response([
                         'data' => $driver_app,

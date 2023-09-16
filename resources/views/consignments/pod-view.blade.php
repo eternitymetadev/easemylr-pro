@@ -295,7 +295,7 @@ $("#update_image_pod").submit(function(e) {
     if (c_date > d_date) {
         swal("Error", "delivery date can't be less than lr date", "error");
         return false;
-    }
+    } 
 
 
     $.ajax({

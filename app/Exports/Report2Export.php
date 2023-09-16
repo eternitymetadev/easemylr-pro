@@ -25,7 +25,6 @@ use DB;
 
 class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 {
-
     protected $startdate;
     protected $enddate;
     protected $baseclient_id;
@@ -50,7 +49,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $enddate = $this->enddate;
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
-
+        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -69,7 +68,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        ); 
+        );
 
         if($authuser->role_id ==1)
         {
@@ -79,7 +78,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }else{
             $query = $query->whereIn('branch_id', $cc);
         }
-
+        
         if(isset($startdate) && isset($enddate)){
             $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
@@ -238,7 +237,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                         $pod= 'Not Available'; 
                     }
                 }
-              
                 // lr type //
                 if($consignment->lr_type == 0){ 
                     $lr_type = "FTL";

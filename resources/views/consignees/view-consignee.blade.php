@@ -49,6 +49,12 @@
                                         {{isset($getconsignee->GetConsigner->nick_name) ? ucfirst($getconsignee->GetConsigner->nick_name) : "-" }}
                                     </td>
                                 </tr>
+                                {{-- <tr>
+                                    <th scope="row">BaseClient</th>
+                                    <td> 
+                                        {{isset($getconsignee->RegClients->BaseClient->client_name) ? ucfirst($getconsignee->RegClients->BaseClient->client_name) : "-" }}
+                                    </td>
+                                </tr> --}}
                                 <tr>
                                     <th scope="row">Type Of Dealer</th>
                                     <td><?php if($getconsignee->dealer_type == 1){

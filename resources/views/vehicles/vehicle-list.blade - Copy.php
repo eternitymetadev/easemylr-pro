@@ -1,10 +1,5 @@
 @extends('layouts.main')
-@section('content')
-<!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/custom_dt_html5.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/dt-global_style.css')}}">
-<!-- END PAGE LEVEL CUSTOM STYLES -->    
+@section('content') 
 <style>
 div.relative {
     position: absolute;
@@ -22,7 +17,6 @@ div.relat {
     width: 95px;
     height: 34px;
 }
-
 </style>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">

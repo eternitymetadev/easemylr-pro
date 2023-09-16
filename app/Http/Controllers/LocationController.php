@@ -79,6 +79,9 @@ class LocationController extends Controller
         if(!empty($request->name)){
             $addlocation['name'] = $request->name;
         }
+        if(!empty($request->hub_nickname)){
+            $addlocation['hub_nickname'] = $request->hub_nickname;
+        }
         if(!empty($request->nick_name)){
             $addlocation['nick_name'] = $request->nick_name;
         }
@@ -136,6 +139,9 @@ class LocationController extends Controller
         }
         if(!empty($request->name)){
             $locationsave['name']       = $request->name;
+        }
+        if(!empty($request->hub_nickname)){
+            $locationsave['hub_nickname']  = $request->hub_nickname;
         }
         if(!empty($request->nick_name)){
             $locationsave['nick_name']  = $request->nick_name;

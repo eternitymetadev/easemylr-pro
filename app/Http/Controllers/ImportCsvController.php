@@ -55,7 +55,7 @@ class ImportCsvController extends Controller
         }
         if($request->hasFile('zonesfile')){
             $data = Excel::import(new ZoneImport,request()->file('zonesfile'));
-            $url  = URL::to($this->prefix.'/zones');
+            $url  = URL::to($this->prefix.'/postal-code');
             $message = 'Zones Uploaded Successfully';
         }
         if($request->hasFile('deliverydatesfile')){

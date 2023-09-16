@@ -632,6 +632,7 @@ a.badge.alert.bg-secondary.shadow-sm {
     padding: 2px 14px;
 }
 </style>
+<link href="{{asset('assets/css/timeline-style.css')}}" rel="stylesheet" type="text/css"/>
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">

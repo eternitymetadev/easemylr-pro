@@ -480,7 +480,7 @@
         });
 
 
-        // get filter data on filter btn 
+        // get filter data on filter btn
         jQuery(document).on('click', '#filter_drspayment', function() {
             var startdate = $("#startdate").val();
             var enddate = $("#enddate").val();
@@ -504,6 +504,7 @@
             });
             return false;
         });
+
 
         jQuery(document).on('click', '.paymentReportEx', function(event) {
             event.preventDefault();
