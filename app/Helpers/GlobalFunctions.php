@@ -5,6 +5,7 @@ use App\Models\Branch;
 use App\Models\Consignee;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
+use App\Models\ConsignmentItem;
 use App\Models\Hrs;
 use App\Models\Location;
 use App\Models\PrsDrivertask;
@@ -459,6 +460,7 @@ class GlobalFunctions
         return $data;
     }
 
+
     public static function getNextHub($lr_id)
     {
         $data = ConsignmentNote::with('LrRoute')->where('id', $lr_id)->first();
@@ -491,6 +493,23 @@ class GlobalFunctions
         $next_branch = $routeArr[$current_branch + 1];
 
         return $next_branch;
+    }
+
+    public static function InvoiceNumbers($lr_id)
+    {
+        $get_lr = ConsignmentNote::where('id',$lr_id)->first();
+
+        if(empty(@$get_lr->invoice_no)){
+            $get_invcs = ConsignmentItem::where('consignment_id',$lr_id)->get();
+            $lr_invoices = array();
+            foreach(@$get_invcs as $key => $invoice){
+                $lr_invoices[] = @$invoice->invoice_no;
+            }
+            $invoice_nos = implode(',', $lr_invoices);
+        }else{
+            $invoice_nos = @$get_lr->invoice_no;
+        }
+        return $invoice_nos;
     }
 
 }

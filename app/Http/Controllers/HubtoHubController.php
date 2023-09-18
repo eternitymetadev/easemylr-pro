@@ -684,31 +684,31 @@ class HubtoHubController extends Controller
                         <table class="drs_t" style="width:100%">
                             <tr class="drs_r">
                                 <th class="drs_h">HRS No. & Date</th>
-                                <th class="drs_h">DRS-' . $details['hrs_no'] . '</th>
+                                <th class="drs_h">DRS-' . @$details['hrs_no'] . '</th>
                                 <th class="drs_h">Hrs Date</th>
-                                <th class="drs_h">' . $drsDate . '</th>
+                                <th class="drs_h">' . @$drsDate . '</th>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">HRS Created</td>
-                                <td class="drs_d">' . $details['branch']['name'] . '</td>
+                                <td class="drs_d">' . @$details['branch']['name'] . '</td>
                                 <td class="drs_d">Receiving</td>
-                                <td class="drs_d">' . $details['to_branch']['name'] . '</td>
+                                <td class="drs_d">' . @$details['to_branch']['name'] . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">No. of LRs</td>
-                                <td class="drs_d">' . $no_of_deliveries . '</td>
+                                <td class="drs_d">' . @$no_of_deliveries . '</td>
                                 <td class="drs_d">Vehicle No.</td>
-                                <td class="drs_d">' . $details['vehicle_detail']['regn_no'] . '</td>
+                                <td class="drs_d">' . @$details['vehicle_detail']['regn_no'] . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">Total Quantity</td>
-                                <td class="drs_d">' . $total_quantity . '</td>
+                                <td class="drs_d">' . @$total_quantity . '</td>
                                 <td class="drs_d">Driver Name</td>
                                 <td class="drs_d">' . @$details['driver_detail']['name'] . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">Total Weight</td>
-                                <td class="drs_d">' . $total_weight . '</td>
+                                <td class="drs_d">' . @$total_weight . '</td>
                                 <td class="drs_d">Driver No.</td>
                                 <td class="drs_d">' . @$details['driver_detail']['phone'] . '</td>
                             </tr>
@@ -717,7 +717,7 @@ class HubtoHubController extends Controller
 
                     </div>
                      <div class="column" style="margin-left: 56px;">
-                        <img src="' . $pay . '" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
+                        <img src="' . @$pay . '" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
                     </div>
                 </div>
                 <br>
