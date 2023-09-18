@@ -2760,7 +2760,12 @@ class ConsignmentController extends Controller
         //
         $consignmentId = $_GET['consignment_id'];
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['status' => '2']);
-        $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->delete();
+        $drs_count = TransactionSheet::where('consignment_no', $consignmentId)->orderby('id', 'DESC')->first();
+        if ($srs_count == 1) {
+            $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->update(['status' => '0']);
+        } else {
+            $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->delete();
+        }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
