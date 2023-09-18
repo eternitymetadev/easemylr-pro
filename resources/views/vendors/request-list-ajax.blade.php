@@ -1,3 +1,4 @@
+<p class="totalcount">Total Count: <span class="reportcount">{{$requestlists->total()}}</span></p>
 <div class="custom-table">
     <table id="unverified-table" class="table table-hover" style="width:100%">
         <thead>
@@ -22,7 +23,6 @@
                     $date = date('d-m-Y',strtotime($requestlist->created_at));
                 ?>
                 <tr>
-
                     <td>{{ $requestlist->transaction_id ?? "-" }}</td>
                     <td>{{ $date }}</td>
                     <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
@@ -34,29 +34,27 @@
                     <td>{{ $requestlist->advanced ?? "-"}}</td>
                     <td>{{ $requestlist->balance ?? "-" }}</td>
                     <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
+                    
                     <?php if($requestlist->payment_status == 1){?>
                     <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
                             Paid</button></td>
                     <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
                     <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
                     <?php } else if($requestlist->payment_status == 0){ ?>
-                    <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
-                            Payment</button></td>
+                    <td><button class="btn btn-danger" value="{{$requestlist->transaction_id}}" disabled>Failed</button></td>
                     <?php }else{
-                    if($requestlist->balance < 1){ ?>
-                        <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
-                            Paid</button></td>
-                    <?php }else{ ?>
-                    <td><button class="btn btn-warning payment_button"
-                            value="{{$requestlist->transaction_id}}">Create Payment</button></td>
-                    <?php  }
-                            ?>
-                    
-                    <?php } ?>
+                        if($requestlist->balance < 1){ ?>
+                            <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
+                                Paid</button></td>
+                        <?php }else{ ?>
+                        <td><button class="btn btn-warning payment_button"
+                                value="{{$requestlist->transaction_id}}">Create Payment</button></td>
+                        <?php  }
+                        } ?>
 
                     <!-- payment Status -->
                     <?php if($requestlist->payment_status == 0){ ?>
-                    <td> <label class="badge badge-dark">Faild</label>
+                    <td> <label class="badge badge-dark">Failed</label>
                     </td>
                     <?php } elseif($requestlist->payment_status == 1) { ?>
                     <td> <label class="badge badge-success">Paid</label> </td>

@@ -92,6 +92,7 @@ div.relative {
                                 <th>Zone</th>
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
+                                <th>Invoice Number</th>
 
                             </tr>
                         </thead>
@@ -99,7 +100,7 @@ div.relative {
                             <?php 
                             $i = 1;
                                 foreach ($consignments as $key => $consignment) {     
-                                    $authuser = Auth::user();  
+                                    $authuser = Auth::user();
                                 ?>
                             <tr>
                                 <?php if($consignment->lr_type == 0){?>
@@ -144,6 +145,8 @@ div.relative {
                                 <td>{{ $consignment->zone ?? "-" }}</td>
                                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                                 <td>{{ $consignment->total_weight ?? "-" }}</td>
+                                <td>{{Helper::InvoiceNumbers($consignment->id)}}</td>
+                                
                             </tr>
 
                             <?php  $i++; } ?>
@@ -211,6 +214,7 @@ $('#unverified-table').DataTable({
             // { extend: 'print', className: 'btn btn-sm' }
         ]
     },
+
     "oLanguage": {
         "oPaginate": {
             "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',

@@ -1029,7 +1029,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
+                // ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id');
 
             if ($authuser->role_id == 2) {
@@ -1052,6 +1052,14 @@ class VendorController extends Controller
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            if ($request->status_id) {
+                // dd($request->status_id);
+                $query = $query->where('payment_status', $request->status_id);
+            }
+           
+            if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
+                $query = $query->where('payment_status', $request->paymentstatus_id);
+            }
 
             $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
 
@@ -1061,7 +1069,7 @@ class VendorController extends Controller
         }
 
         $query = $query->with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
+                // ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
