@@ -41,8 +41,7 @@
                     <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
                     <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
                     <?php } else if($requestlist->payment_status == 0){ ?>
-                    <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
-                            Payment</button></td>
+                    <td><button class="btn btn-danger" value="{{$requestlist->transaction_id}}" disabled>Failed</button></td>
                     <?php }else{
                         if($requestlist->balance < 1){ ?>
                             <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
