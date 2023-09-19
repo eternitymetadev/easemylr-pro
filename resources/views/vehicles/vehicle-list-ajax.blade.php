@@ -26,17 +26,23 @@
                 <td>{{ $value->make ?? "-" }}</td>
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
                 <td>{{ $value->mfg ?? "-" }}</td>
-                <?php if($value->rc_image){ ?>
-                <td><a href="{{url("/storage/images/vehicle_rc_images/$value->rc_image")}}" target="_blank">view</a></td>
+
+                <?php if($value->rc_image){ 
+                    $awsUrl = env('AWS_S3_URL');
+                    $image_url = $awsUrl."/vehicle_rc_images/";
+                    ?>
+                <td><a href="{{$image_url.$value->rc_image}}" target="_blank">view</a></td>
                 <?php }else{ ?>
                     <td>-</td>
-                <?php } ?>
+                <?php } 
                 
-                @if($value->second_rc_image)
-                <td> <a href="{{url("/storage/images/vehicle_rc_images/$value->second_rc_image")}}" target="_blank">view</a></td>
-                @else
-                <td></td>
-                @endif</td>
+                if($value->second_rc_image)
+                { ?>
+                <td> <a href="{{$image_url.$value->second_rc_image}}" target="_blank">view</a></td>
+                <?php }else{ ?>
+                <td>-</td>
+                <?php } ?>
+
                 <td>
                     <div class="d-flex" style="gap: 4px">
                         <a href="<?php echo URL::to($prefix.'/vehicles/'.Crypt::encrypt($value->id).'/edit')?>"

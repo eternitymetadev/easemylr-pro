@@ -62,14 +62,20 @@
                                 <td>{{$vendor->pan ?? '-'}}</td>
                                 <td>{{$vendor->vendor_type ?? '-'}}</td>
                                 <td>{{$vendor->tds_rate ?? '-'}}</td>
-                                <?php if(!empty($vendor->upload_pan)){?>
-                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$img}}"
+                                <?php 
+                                $awsUrl = env('AWS_S3_URL');
+                                if(!empty($vendor->upload_pan)){
+                                    $image_pan = $awsUrl."/vendor_pans/".$vendor->upload_pan;
+                                    ?>
+                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$image_pan}}"
                                         role="button">Pan</a></td>
                                 <?php }else{ ?>
                                 <td>-</td>
                                 <?php } ?>
-                                <?php if(!empty($vendor->declaration_file)){?>
-                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$decl}}"
+                                <?php if(!empty($vendor->declaration_file)){
+                                    $image_decl = $awsUrl."/vendor_declarations/".$vendor->declaration_file;
+                                    ?>
+                                <td><a class="btn btn-sm btn-warning" target='_blank' href="{{$image_decl}}"
                                         role="button">Declaration</a></td>
                                 <?php }else{ ?>
                                 <td>-</td>

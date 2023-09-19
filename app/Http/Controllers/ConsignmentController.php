@@ -2832,8 +2832,10 @@ class ConsignmentController extends Controller
             ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->whereIn('transaction_sheets.status', ['1', '0', '3'])->get();
         $result = json_decode(json_encode($transcationview), true);
         //echo'<pre>'; print_r($result); exit;
-        $response['fetch'] = $result;
+        $awsUrl = env('AWS_S3_URL');
 
+        $response['aws_url'] = $awsUrl;
+        $response['fetch'] = $result;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         echo json_encode($response);
@@ -4069,9 +4071,11 @@ class ConsignmentController extends Controller
 
         $result = json_decode(json_encode($transcationview), true);
 
+        $awsUrl = env('AWS_S3_URL');
         $getapp = AppMedia::where('consignment_no', $request->lr_no)->get();
 
         $response['fetch'] = $result;
+        $response['aws_url'] = $awsUrl;
         $response['role_id'] = $role;
         $response['app_media'] = $getapp;
         $response['success'] = true;
@@ -4390,14 +4394,22 @@ class ConsignmentController extends Controller
             //     return Response::json($response);
             // }
 
-            $deliverydate = $request->delivery_date;
-            $file = $request->file('file');
-            if (!empty($file)) {
-                $filename = $file->getClientOriginalName();
-                $file->move(public_path('drs/Image'), $filename);
-            } else {
+            if($request->file){
+                $pod_image = $request->file('file');                
+                $originalFilename = uniqid() . '_' . $pod_image->getClientOriginalName();
+            
+                if (Storage::disk('s3')->putFileAs('pod_images', $pod_image, $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $filename = end($imagePath);
+                } else {
+                    $filename = null;
+                }
+            }else{
                 $filename = null;
             }
+
+            $deliverydate = $request->delivery_date;
+
             if (!empty($deliverydate)) {
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
                 TransactionSheet::where('consignment_no', $request->lr)->update(['delivery_status' => 'Successful']);
@@ -4449,16 +4461,24 @@ class ConsignmentController extends Controller
                 // echo'<pre>'; print_r($save_data); die;
                 $lrno = $save_data['lrno'];
                 $deliverydate = @$save_data['delivery_date'];
-                $pic = @$save_data['img'];
+                $pod_img = @$save_data['img'];
 
                 if ($save_data['job_id'] == 'null') {
 
-                    if (!empty($pic)) {
-                        $filename = $pic->getClientOriginalName();
-                        $pic->move(public_path('drs/Image'), $filename);
-                    } else {
+                    if($pod_img){
+                        // prev folder name- drs/Image
+                        $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
+                    
+                        if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
+                            $imagePath = explode('/', $originalFilename);
+                            $filename = end($imagePath);
+                        } else {
+                            $filename = null;
+                        }
+                    }else{
                         $filename = null;
                     }
+
                     $check_lr_mode = ConsignmentNote::where('id', $lrno)->first();
                     if (!empty($deliverydate)) {
                         $dateTimestamp1 = strtotime($save_data['lr_date']);
@@ -5538,13 +5558,21 @@ class ConsignmentController extends Controller
             //     return Response::json($response);
             // }
 
-            $file = $request->file('pod');
-            if (!empty($file)) {
-                $filename = $file->getClientOriginalName();
-                $file->move(public_path('drs/Image'), $filename);
+            $pod_img = $request->file('pod');
+            //     $file->move(public_path('drs/Image'), $filename);
+            if ($pod_img) {
+                $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
+            
+                if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $filename = end($imagePath);
+                } else {
+                    $filename = null;
+                }
             } else {
                 $filename = null;
             }
+            
             ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
 
             // =================== task assign ====== //

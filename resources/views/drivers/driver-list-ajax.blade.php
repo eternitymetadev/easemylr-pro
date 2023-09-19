@@ -22,11 +22,11 @@
                 <!-- <td>{{ Helper::ShowDayMonthYear($value->regndate) ?? "-" }}</td> -->
                 <td>{{ $value->license_number ?? "-" }}</td>
                 <?php if($value->license_image){
+                    $awsUrl = env('AWS_S3_URL');
+                    $image_url = $awsUrl."/driverlicense_images/";
                     ?>
-                {{-- <td><a href=URL::to("/storage/images/driverlicense_images/".$value->license_image) target="_blank">view</a></td> --}}
-               
 
-                <td><a href="{{url("/storage/images/driverlicense_images/$value->license_image")}}" target="_blank">view</a></td>
+                <td><a href="{{$image_url.$value->license_image}}" target="_blank">view</a></td>
                 <?php }else{?>
                     <td>-</td>
                 <?php }?>

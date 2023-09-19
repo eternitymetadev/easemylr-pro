@@ -28,6 +28,7 @@ use Excel;
 use Helper;
 use Illuminate\Http\Request;
 use Session;
+use Storage;
 use URL;
 use Validator;
 
@@ -113,29 +114,51 @@ class VendorController extends Controller
                 return response()->json($response);
             }
 
-            $panupload = $request->file('pan_upload');
-            if (!empty($panupload)) {
-                $panfile = $panupload->getClientOriginalName();
-                $panupload->move(public_path('drs/uploadpan'), $panfile);
+            // old path (public_path('drs/uploadpan'), $panfile);
+            
+            if($request->file('pan_upload')){
+                $originalFilename = uniqid() . '_' . $request->file('pan_upload')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_pans', $request->file('pan_upload'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $panfile = end($imagePath);
+                } else {
+                    $panfile = null;
+                }
             } else {
                 $panfile = null;
             }
 
-            $cheaque = $request->file('cancel_cheaque');
-            if (!empty($cheaque)) {
-                $cheaquefile = $cheaque->getClientOriginalName();
-                $cheaque->move(public_path('drs/cheaque'), $cheaquefile);
+            // old path (public_path('drs/cheaque'), $cheaquefile);
+            
+            if($request->file('cancel_cheaque')){
+                $originalFilename = uniqid() . '_' . $request->file('cancel_cheaque')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_cheaques', $request->file('cancel_cheaque'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $cheaquefile = end($imagePath);
+                } else {
+                    $cheaquefile = null;
+                }
             } else {
                 $cheaquefile = null;
             }
 
-            $dec_file = $request->file('declaration_file');
-            if (!empty($dec_file)) {
-                $decl_file = $dec_file->getClientOriginalName();
-                $dec_file->move(public_path('drs/declaration'), $decl_file);
+            // old path (public_path('drs/declaration')
+
+            if($request->file('declaration_file')){
+                $originalFilename = uniqid() . '_' . $request->file('declaration_file')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_declarations', $request->file('declaration_file'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $decl_file = end($imagePath);
+                } else {
+                    $decl_file = null;
+                }
             } else {
                 $decl_file = null;
             }
+
             /////declaration file check
             if ($request->decalaration_available == 1) {
                 if (empty($decl_file)) {
@@ -748,22 +771,64 @@ class VendorController extends Controller
             $vendorsave['driver_id'] = $request->driver_id;
             $vendorsave['bank_details'] = json_encode($bankdetails);
             $vendorsave['pan'] = $request->pan;
-            // $vendorsave['upload_pan'] = $panfile;
-            // $vendorsave['cancel_cheaque'] = $cheaquefile;
             $vendorsave['other_details'] = json_encode($otherdetail);
             $vendorsave['vendor_type'] = $request->vendor_type;
             $vendorsave['declaration_available'] = $request->decalaration_available;
-            // $vendorsave['declaration_file'] = $decl_file;
             $vendorsave['tds_rate'] = $request->tds_rate;
             $vendorsave['branch_id'] = $request->branch_id;
             $vendorsave['gst_register'] = $request->gst_register;
             $vendorsave['gst_no'] = $request->gst_no;
 
-            Vendor::where('id', $request->vendor_id)->update($vendorsave);
+            if($request->file('pan_upload')){
+                $originalFilename = uniqid() . '_' . $request->file('pan_upload')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_pans', $request->file('pan_upload'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($vendor->upload_pan)) {
+                        Storage::disk('s3')->delete('vendor_pans/' . $vendor->upload_pan);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $vendorsave['upload_pan'] = end($imagePath);
+                }
+            }
 
-            $response['success'] = true;
-            $response['success_message'] = "Vendor Updated Successfully";
-            $response['error'] = false;
+            if($request->file('cancel_cheaque')){
+                $originalFilename = uniqid() . '_' . $request->file('cancel_cheaque')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_cheaques', $request->file('cancel_cheaque'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($vendor->cancel_cheaque)) {
+                        Storage::disk('s3')->delete('vendor_cheaques/' . $vendor->cancel_cheaque);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $vendorsave['cancel_cheaque'] = end($imagePath);
+                }
+            }
+
+            if($request->file('declaration_file')){
+                $originalFilename = uniqid() . '_' . $request->file('declaration_file')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vendor_declarations', $request->file('declaration_file'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($vendor->declaration_file)) {
+                        Storage::disk('s3')->delete('vendor_declarations/' . $vendor->declaration_file);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $vendorsave['declaration_file'] = end($imagePath);
+                } 
+            }
+
+            $updateVendor = Vendor::where('id', $request->vendor_id)->update($vendorsave);
+            if($updateVendor){
+                $url = $this->prefix . '/vendor-list';
+                $response['success'] = true;
+                $response['success_message'] = "Vendor Updated Successfully";
+                $response['redirect_url'] = $url;
+            }else{
+                $response['success'] = false;
+                $response['success_message'] = "Vendor not Updated please try again";
+                $response['error'] = true;
+            }
         } catch (Exception $e) {
             $response['error'] = false;
             $response['error_message'] = $e;

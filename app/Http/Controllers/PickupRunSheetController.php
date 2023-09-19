@@ -547,10 +547,19 @@ class PickupRunSheetController extends Controller
 
                     // upload invoice image
                     if (isset($save_data['invc_img'])) {
-                        // if($save_data['invc_img']){
-                        $save_data['invoice_image'] = $save_data['invc_img']->getClientOriginalName();
-                        $save_data['invc_img']->move(public_path('images/invoice_images'), $save_data['invoice_image']);
+                        // Get the original filename
+                        $originalFilename = uniqid() . '_' . $save_data['invc_img']->getClientOriginalName();
+                    
+                        // Upload the file to AWS S3
+                        if (Storage::disk('s3')->putFileAs('prs_invoices', $save_data['invc_img'], $originalFilename)) {
+                            // Update the 'invoice_image' field with the original filename
+                            $imagePath = explode('/', $originalFilename);
+                            $save_data['invoice_image'] = end($imagePath);
+                        }
                     }
+
+                    // old path (public_path('images/invoice_images')
+                    
                     $savetaskitems = PrsTaskItem::create($save_data);
 
                     // create order start

@@ -1510,7 +1510,10 @@ jQuery(document).ready(function () {
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
                     var drs_sign = value.signed_drs;
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    // var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    var awsUrl = data.aws_url;
+                    var storage_img = awsUrl + "/pod_images/" + drs_sign;
+
                     if (value.signed_drs == null) {
                         var field =
                             "<input type='file' name='data[" +
@@ -1743,7 +1746,9 @@ jQuery(document).ready(function () {
                     consignmentID.push(alldata.consignment_no);
                     var drs_sign = value.signed_drs;
                     /////pod img
-                    var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    // var storage_img = base_url + "/drs/Image/" + drs_sign;
+                    var awsUrl = data.aws_url;
+                    var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
@@ -2648,6 +2653,7 @@ $("#update_vendor").validate({
             success: function (response) {
                 if (response.success === true) {
                     swal("success", response.success_message, "success");
+                    window.location.href = response.redirect_url;
                 } else {
                     swal("error", data.error_message, "error");
                 }

@@ -243,34 +243,33 @@ class VehicleController extends Controller
         $vehiclesave['owner_name']     = $request->owner_name;
         $vehiclesave['owner_phone']    = $request->owner_phone;
         $vehiclesave['status']         = '1';
+       
+        // upload rc image
+        if($request->file('rc_image')){
+            $originalFilename = uniqid() . '_' . $request->file('rc_image')->getClientOriginalName();
 
-        // upload rc image1
-        // if($request->rc_image){
-        //     $rc_image = $request->file('rc_image');
-        //     $path = Storage::disk('s3')->put('vehicle_rc_images', $rc_image);
-        //     $vehiclesave['rc_image'] = Storage::disk('s3')->url($path);
-        // }
-        // upload rc image2
-        // if($request->second_rc_image){
-        //     $second_rc_image = $request->file('second_rc_image');
-        //     $path = Storage::disk('s3')->put('vehicle_rc_images', $second_rc_image);
-        //     $vehiclesave['second_rc_image'] = Storage::disk('s3')->url($path);
-        // }
+            if (Storage::disk('s3')->putFileAs('vehicle_rc_images', $request->file('rc_image'), $originalFilename)) {
+                $imagePath = explode('/', $originalFilename);
+                $vehiclesave['rc_image'] = end($imagePath);
+            }
+        }
+
+        if($request->file('second_rc_image')){
+            $originalFilename = uniqid() . '_' . $request->file('second_rc_image')->getClientOriginalName();
+
+            if (Storage::disk('s3')->putFileAs('vehicle_rc_images', $request->file('second_rc_image'), $originalFilename)) {
+                $imagePath = explode('/', $originalFilename);
+                $vehiclesave['second_rc_image'] = end($imagePath);
+            }
+        }
 
         // upload rc image
-        if($request->rc_image){
-            $file = $request->file('rc_image');
-            $path = 'public/images/vehicle_rc_images';
-            $name = Helper::uploadImage($file,$path);
-            $vehiclesave['rc_image']  = $name;
-        }
-        //  // upload rc image
-        if($request->second_rc_image){
-            $file = $request->file('second_rc_image');
-            $path = 'public/images/vehicle_rc_images';
-            $second_name = Helper::uploadImage($file,$path);
-            $vehiclesave['second_rc_image']  = $second_name;
-        }
+        // if($request->rc_image){
+        //     $file = $request->file('rc_image');
+        //     $path = 'public/images/vehicle_rc_images';
+        //     $name = Helper::uploadImage($file,$path);
+        //     $vehiclesave['rc_image']  = $name;
+        // }
         
         $savevehicle = Vehicle::create($vehiclesave); 
         if($savevehicle)
@@ -363,30 +362,38 @@ class VehicleController extends Controller
             $vehiclesave['status']         = '1';
 
             // upload rc image1
-            // if($request->rc_image){
-            //     $rc_image = $request->file('rc_image');
-            //     $path = Storage::disk('s3')->put('vehicle_rc_images', $rc_image);
-            //     $vehiclesave['rc_image'] = Storage::disk('s3')->url($path);
-            // }
+            if($request->file('rc_image')){
+                $originalFilename = uniqid() . '_' . $request->file('rc_image')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vehicle_rc_images', $request->file('rc_image'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($vehicle->rc_image)) {
+                        Storage::disk('s3')->delete('vehicle_rc_images/' . $vehicle->rc_image);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $vehiclesave['rc_image'] = end($imagePath);
+                }
+            }
             // upload rc image2
-            // if($request->second_rc_image){
-            //     $second_rc_image = $request->file('second_rc_image');
-            //     $path = Storage::disk('s3')->put('vehicle_rc_images', $second_rc_image);
-            //     $vehiclesave['second_rc_image'] = Storage::disk('s3')->url($path);
-            // }
+            if($request->file('second_rc_image')){
+                $originalFilename = uniqid() . '_' . $request->file('second_rc_image')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('vehicle_rc_images', $request->file('second_rc_image'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($vehicle->second_rc_image)) {
+                        Storage::disk('s3')->delete('vehicle_rc_images/' . $vehicle->second_rc_image);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $vehiclesave['second_rc_image'] = end($imagePath);
+                }
+            }
 
-            if($request->rc_image){
-                $file = $request->file('rc_image');
-                $path = 'public/images/vehicle_rc_images';
-                $name = Helper::uploadImage($file,$path); 
-                $vehiclesave['rc_image']  = $name;
-            }
-            if($request->second_rc_image){
-                $file = $request->file('second_rc_image');
-                $path = 'public/images/vehicle_rc_images';
-                $second_name = Helper::uploadImage($file,$path); 
-                $vehiclesave['second_rc_image']  = $second_name;
-            }
+            // if($request->rc_image){
+            //     $file = $request->file('rc_image');
+            //     $path = 'public/images/vehicle_rc_images';
+            //     $name = Helper::uploadImage($file,$path); 
+            //     $vehiclesave['rc_image']  = $name;
+            // }
             
             Vehicle::where('id',$request->vehicle_id)->update($vehiclesave);
             
