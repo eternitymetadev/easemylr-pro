@@ -121,30 +121,12 @@
                                     <label for="exampleFormControlInput2">Vehicle RC File(Optional)</label>
                                     <?php if(!empty($getvehicle->rc_image))
                                     { 
-                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
-                                        $img_url = $getvehicle->rc_image;
-                                        if($img_url != '' || $img_url != null){
-                                            $explode_url = explode("/",$img_url);
-                                            if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
-                                            }else{
-                                                $img_url = '';
-                                            }
-                                            
-                                            if($chk_url == $img_url){
-                                                $rc_image = $getvehicle->rc_image;
-                                            }else{
-                                                $rc_image = $chk_url.'/'.$getvehicle->rc_image;
-                                            }
-                                        }else{
-                                            $rc_image = '';
-                                        }
+                                        $awsUrl = env('AWS_S3_URL');
+                                        $image_url = $awsUrl."/vehicle_rc_images/";
                                         ?> 
                                         <input type="file" class="form-control rcfile" name="rc_image" value="" placeholder="">
 
-                                        <div class="image_upload"><img src="{{$rc_image}}" class="rcshow image-fluid" id="img-tag" width="320" height="240"></div>
-
-                                        <!-- <div class="image_upload"><img src="{{url("storage/images/vehicle_rc_images/$getvehicle->rc_image")}}" class="rcshow image-fluid" id="img-tag" width="320" height="240"></div>   -->
+                                        <div class="image_upload"><img src="{{$image_url.$getvehicle->rc_image}}" class="rcshow image-fluid" id="img-tag" width="320" height="240"></div>
                                     <?php }
                                     else{
                                         ?>  
@@ -166,29 +148,10 @@
                                 <div class="form-group col-md-6 rc-load">
                                     <label for="exampleFormControlInput2">Second Vehicle RC File(Optional)</label>
                                     <?php if(!empty($getvehicle->second_rc_image))
-                                    { 
-                                        $chk_url = "https://easemylr.s3.us-east-2.amazonaws.com/vehicle_rc_images";
-                                        $img_url = $getvehicle->second_rc_image;
-                                        if($img_url != '' || $img_url != null){
-                                            $explode_url = explode("/",$img_url);
-                                            if(isset($explode_url[0]) && isset($explode_url[1]) && isset($explode_url[2]) && isset($explode_url[3])){
-                                                $img_url = $explode_url[0].'/'.$explode_url[1].'/'.$explode_url[2].'/'.$explode_url[3];
-                                            }else{
-                                                $img_url = '';
-                                            }
-                                            
-                                            if($chk_url == $img_url){
-                                                $second_rc_image = $getvehicle->second_rc_image;
-                                            }else{
-                                                $second_rc_image = $chk_url.'/'.$getvehicle->second_rc_image;
-                                            }
-                                        }else{
-                                            $second_rc_image = '';
-                                        }
-                                        ?> 
+                                    { ?> 
                                         <input type="file" class="form-control second_rcfile" name="second_rc_image" value="" placeholder="">
 
-                                        <div class="image_upload"><img src="{{$second_rc_image}}" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>  
+                                        <div class="image_upload"><img src="{{$image_url.$getvehicle->second_rc_image}}" class="second_rcshow image-fluid" id="img-tag" width="320" height="240"></div>
                                     <?php }
                                     else{
                                         ?>  

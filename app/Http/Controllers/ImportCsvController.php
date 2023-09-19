@@ -103,7 +103,7 @@ class ImportCsvController extends Controller
         }else{
             $response['success']       = false;
             $response['error']         = true;
-            $response['error_message'] = "Can not import consignees please try again";
+            $response['error_message'] = "Can not import pods please try again";
         }
         return response()->json($response);
     }
