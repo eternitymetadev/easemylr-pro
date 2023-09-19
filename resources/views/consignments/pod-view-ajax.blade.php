@@ -161,7 +161,11 @@
                 }?>
 
                 <?php if ($consignment->lr_mode == 0) {
-                     $img = URL::to('/drs/Image/' . $consignment->signed_drs);
+                    // old path ('/drs/Image/' . $consignment->signed_drs);
+
+                    $awsUrl = env('AWS_S3_URL');
+                    $img = $awsUrl.'/pod_images/' . $consignment->signed_drs;
+
                     $pdfcheck = explode('.',$consignment->signed_drs);
                 ?>
 
