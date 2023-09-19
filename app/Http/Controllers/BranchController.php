@@ -11,7 +11,7 @@ use App\Models\Broker;
 use App\Models\User;
 use App\Models\BranchImage;
 use App\Models\Location;
-use App\Models\BranchConnectivity;
+use App\Models\BranchConnectivity; 
 use DB;
 use URL;
 use Helper;
