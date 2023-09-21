@@ -1,4 +1,3 @@
-
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="edit_amt" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -19,7 +18,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Vehicle Type</label>
-                            <select class="form-control my-select2" id="vehicle_type_edit" name="vehicle_type" >
+                            <select class="form-control my-select2" id="vehicle_type_edit" name="vehicle_type">
                                 @foreach($vehicletype as $vehicle)
                                 <option value="{{$vehicle->id}}">{{$vehicle->name}}
                                 </option>
@@ -52,19 +51,19 @@
             </div>
             <!-- Modal body -->
             <div class="modal-body">
-           
-            <table id="show_drs_table" class="table table-hover"
-                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;"> 
-                            <thead>
-                                <tr>
-                                    <th>Drs No</th> 
-                                 
-                                </tr>
-                            </thead>
-                            <tbody>
 
-                            </tbody>
-                        </table> 
+                <table id="show_drs_table" class="table table-hover"
+                    style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                    <thead>
+                        <tr>
+                            <th>Drs No</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
@@ -93,37 +92,37 @@
                 <form id="payment_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-4">
-                            <input type="hidden" class="form-control" id="drs_no_request" name="drs_no" value="">
+                            <input type="hidden" class="form-control" id="drs_no_request" name="drs_no" value="" />
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no" value="">
+                            <input type="hidden" class="form-control" id="vendor_no_request" name="vendor_no"
+                                value="" />
                         </div>
                         <div class="form-group col-md-4">
                             <input type="hidden" class="form-control" id="transaction_id_2" name="transaction_id"
-                                value="">
+                                value="" />
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                    <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Branch Location</label>
-                                    <select class="form-control" id="branch_id" name="branch_id"
-                                        tabindex="-1">
-                                        <?php $countbranch = count($branchs); 
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Branch Location</label>
+                            <select class="form-control" id="branch_id" name="branch_id" tabindex="-1">
+                                <?php $countbranch = count($branchs); 
                                         if($countbranch > 1){?>
-                                          <option selected disabled>select location </option>
-                                       <?php } ?>
-                                        @foreach($branchs as $branch)
-                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <option selected disabled>select location </option>
+                                <?php } ?>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Vendor Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="" readonly>
                         </div>
-                        <div class="form-group col-md-6"> 
+                        <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Purchase Amount</label>
                             <input type="text" class="form-control" id="total_clam_amt" name="claimed_amount" value=""
                                 readonly>
@@ -162,7 +161,7 @@
                         </div>
                     </div>
                     <div class="form-row mb-0" style="display: none">
-                    <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label for="location_name">Pan</label>
                             <input type="text" class="form-control" id="pan" name="pan" value="">
                         </div>
@@ -170,7 +169,7 @@
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
                             <label for="location_name">Type</label>
-                            <select class="form-control" id="p_type" name="p_type" tabindex="-1"> 
+                            <select class="form-control" id="p_type" name="p_type" tabindex="-1">
 
                             </select>
                         </div>
@@ -186,23 +185,26 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Payble Amount after tds Deduction </label>
-                            <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value="" readonly>
+                            <input type="text" class="form-control" id="tds_dedut" name="final_payable_amount" value=""
+                                readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
                             Discard</button>
                         <!-- <button type="submit" id="crt_pytm" class="btn btn-warning">Create Payment</button> -->
-                        <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Create Payment</span>
-                        <span class="indicator-progress" style="display: none;">Please wait...
-            	        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                        <button type="submit" class="btn btn-primary" id="crt_pytm"><span class="indicator-label">Create
+                                Payment</span>
+                            <span class="indicator-progress" style="display: none;">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 </div>
+
+
 <!-- ================================================================================================== -->
 <!-- Modal -->
 <div class="modal fade bd-example-modal-xl" id="view_drs_lrmodel" tabindex="-1" role="dialog"
@@ -324,7 +326,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form id="create_request_form">
+                <form id="create_request_form">
                     <div class="form-row mb-0">
                         <div class="form-group col-md-3">
                             <input type="hidden" class="form-control" id="drs_no_1" name="drs_no" value="">
@@ -337,27 +339,25 @@
                                 value="">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="hidden" class="form-control" id="name_1" name="v_name"
-                                value="">
+                            <input type="hidden" class="form-control" id="name_1" name="v_name" value="">
                         </div>
                     </div>
                     <div class="form-row mb-0">
-                    <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Branch Location</label>
-                                    <select class="form-control" id="branch_id_1" name="branch_id"
-                                        tabindex="-1">
-                                        <?php $countbranch = count($branchs); 
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Branch Location</label>
+                            <select class="form-control" id="branch_id_1" name="branch_id" tabindex="-1">
+                                <?php $countbranch = count($branchs); 
                                         if($countbranch > 1){?>
-                                          <option selected disabled>select location </option>
-                                       <?php } ?>
-                                        @foreach($branchs as $branch)
-                                        <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <option selected disabled>select location </option>
+                                <?php } ?>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="form-row mb-0">
-                    <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label for="location_name">Vendor</label>
                             <select class="form-control my-select2" id="vendor_id_1" name="vendor_name" tabindex="-1">
                                 <option value="" selected disabled>Select Vendor</option>
@@ -366,7 +366,9 @@
                                 $bank_details = json_decode($vendor->bank_details, true);
                                 
                                 ?>
-                                <option value="{{$vendor->id}}">{{$vendor->name}}-{{$bank_details['account_no']}}-{{$vendor->Branch->name ?? '-'}}</option>
+                                <option value="{{$vendor->id}}">
+                                    {{$vendor->name}}-{{$bank_details['account_no']}}-{{$vendor->Branch->name ?? '-'}}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -376,7 +378,7 @@
                                 readonly>
                         </div>
                     </div>
-                    <div class="form-row mb-0"  style="display: none">
+                    <div class="form-row mb-0" style="display: none">
 
                         <div class="form-group col-md-6">
                             <label for="exampleFormControlInput2">Beneficiary Name</label>
@@ -409,7 +411,7 @@
                         </div>
                     </div>
                     <div class="form-row mb-0" style="display: none">
-                    <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label for="location_name">Pan</label>
                             <input type="text" class="form-control" id="pan_1" name="pan" value="">
                         </div>
@@ -425,7 +427,7 @@
                             <label for="exampleFormControlInput2">Amount</label>
                             <input type="text" class="form-control" id="amt_1" name="pay_amt" value="">
                         </div>
-                        
+
                     </div>
                     <div class="form-row mb-0">
                         <div class="form-group col-md-6">
@@ -434,19 +436,153 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="location_name">Payble Amount after tds Deduction </label>
-                            <input type="text" class="form-control" id="tds_dedut_1" name="final_payable_amount" value="" readonly>
+                            <input type="text" class="form-control" id="tds_dedut_1" name="final_payable_amount"
+                                value="" readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
                             Discard</button>
-                        <button type="submit" id="crt_pytm" class="btn btn-primary disableme"><span class="indicator-label">Create Payment</span>
-                        <span class="indicator-progress" style="display: none;">Please wait...
-            	        <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button> 
+                        <button type="submit" id="crt_pytm" class="btn btn-primary disableme"><span
+                                class="indicator-label">Create Payment</span>
+                            <span class="indicator-progress" style="display: none;">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+</div>
 
+
+<div class="modal fade" id="repay_modal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myExtraLargeModalLabel">Repay Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-x">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="repay_payment_form">
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="repay_drs_no" name="drs_no" value="">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="repay_vendor_no" name="vendor_no" value="">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="repay_transaction_id" name="transaction_id"
+                                value="">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="hidden" class="form-control" id="repay_name" name="v_name" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlSelect1">Branch Location</label>
+                            <select class="form-control" id="repay_branch_id" name="branch_id" tabindex="-1">
+                                <?php $countbranch = count($branchs); 
+                                        if($countbranch > 1){?>
+                                <option selected disabled>select location </option>
+                                <?php } ?>
+                                @foreach($branchs as $branch)
+                                <option value="{{ $branch->id }}">{{ucwords($branch->name)}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Vendor</label>
+                            <input type="text" class="form-control" id="repay_vendor_name" name="" value="" readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Purchase Amount</label>
+                            <input type="text" class="form-control" id="repay_total_clam_amt" name="claimed_amount"
+                                value="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Beneficiary Name</label>
+                            <input type="text" class="form-control" id="repay_beneficiary_name" name="beneficiary_name"
+                                value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Branch Name</label>
+                            <input type="text" class="form-control" id="repay_branch_name" name="branch_name" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Account No</label>
+                            <input type="text" class="form-control" id="repay_bank_acc" name="acc_no" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Ifsc Code</label>
+                            <input type="text" class="form-control" id="repay_ifsc_code" name="ifsc" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Bank Name</label>
+                            <input type="text" class="form-control" id="repay_bank_name" name="bank_name" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Email</label>
+                            <input type="text" class="form-control" id="repay_email" name="email" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Pan</label>
+                            <input type="text" class="form-control" id="repay_pan" name="pan" value="">
+                        </div>
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Type</label>
+                            <input type="text" class="form-control" id="repay_p_type" name="p_type" value="" readonly>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="exampleFormControlInput2">Amount</label>
+                            <input type="text" class="form-control" id="repay_amt" name="pay_amt" value="" readonly>
+                        </div>
+
+                    </div>
+                    <div class="form-row mb-0">
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Tds rate</label>
+                            <input type="text" class="form-control" id="repay_tds_rate" name="tds_rate" value=""
+                                readonly>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="location_name">Payble Amount after tds Deduction </label>
+                            <input type="text" class="form-control" id="repay_tds_dedut" name="final_payable_amount"
+                                value="" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
+                            Discard</button>
+                        <button type="submit" id="crt_pytm" class="btn btn-primary disableme"><span
+                                class="indicator-label">Create Payment</span>
+                            <span class="indicator-progress" style="display: none;">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

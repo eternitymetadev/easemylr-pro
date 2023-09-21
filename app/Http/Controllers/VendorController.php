@@ -507,7 +507,7 @@ class VendorController extends Controller
 
                 TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
 
-                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $advance, 'balance' => $balance, 'payment_status' => 2, 'current_paid_amt' => $request->payable_amount]);
 
                 $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
@@ -545,7 +545,7 @@ class VendorController extends Controller
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
-                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2]);
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->payable_amount, 'balance' => $balance_amt, 'payment_status' => 2, 'current_paid_amt' => $request->payable_amount]);
 
                 TransactionSheet::whereIn('drs_no', $drs)->update(['payment_status' => 2]);
             }
@@ -828,7 +828,7 @@ class VendorController extends Controller
             if ($request->p_type == 'Advance') {
                 $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'current_paid_amt' => $request->pay_amt,'payment_status' => 0, 'status' => '1']);
             } else {
                 $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
@@ -839,7 +839,7 @@ class VendorController extends Controller
                 $advance = $request->pay_amt;
                 // dd($advance);
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user,'current_paid_amt' => $request->pay_amt, 'payment_status' => 0, 'status' => '1']);
             }
 
         }
@@ -972,6 +972,10 @@ class VendorController extends Controller
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
+                PaymentRequest::where('transaction_id', $transaction_id_new)->delete();
+                PaymentHistory::where('transaction_id', $transaction_id_new)->delete();
+                TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '0']);
+
             }
             $url = $this->prefix . '/request-list';
             $new_response['redirect_url'] = $url;
@@ -1029,7 +1033,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
+                // ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id');
 
             if ($authuser->role_id == 2) {
@@ -1057,7 +1061,7 @@ class VendorController extends Controller
                 $query = $query->where('payment_status', $request->status_id);
             }
 
-            if ($request->paymentstatus_id) {
+            if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
                 // dd($request->status_id);
                 $query = $query->where('payment_status', $request->paymentstatus_id);
             }
@@ -1070,7 +1074,7 @@ class VendorController extends Controller
         }
 
         $query = $query->with('VendorDetails', 'Branch')
-                ->where('payment_status', '!=', 0)
+                // ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
@@ -1750,6 +1754,233 @@ class VendorController extends Controller
         }
 
         return 1;
+    }
+
+    public function getRepayDetails(Request $request)
+    {
+        $payment_details = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)->first();
+
+        $get_drs_no = PaymentRequest::where('transaction_id',$request->trans_id)->get();
+        $drs_no = array();
+        foreach($get_drs_no as $drs){
+            $drs_no[] = $drs->drs_no;
+        }
+        $payment_drs = implode(',',$drs_no);
+        
+        $response['payment_details'] = $payment_details;
+        $response['payment_drs'] = $payment_drs;
+        $response['success'] = true;
+        $response['success_message'] = "Data Fetched Successfully";
+        return response()->json($response);
+    }
+
+    public function repayRequest(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $url_header = $_SERVER['HTTP_HOST'];
+        // echo'<pre>'; print_r($request->all()); die;
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = $authuser->branch_id;
+        $user = $authuser->id;
+        $bm_email = $authuser->email;
+
+        if (empty($request->acc_no) || empty($request->ifsc)) {
+
+            $new_response['error'] = true;
+            $new_response['message'] = 'Please enter a Bank Details';
+            return response()->json($new_response);
+        }
+
+        $branch_name = Location::where('id', '=', $request->branch_id)->first();
+
+        //deduct balance
+        $deduct_balance = $request->pay_amt - $request->final_payable_amount;
+
+        $drsno = explode(',', $request->drs_no);
+        $consignment = TransactionSheet::whereIn('drs_no', $drsno)
+            ->groupby('drs_no')
+            ->get();
+        $simplyfy = json_decode(json_encode($consignment), true);
+        $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
+       
+
+        $i = 0;
+        $sent_vehicle = array();
+        foreach ($simplyfy as $value) {
+            $i++;
+            $drs_no = $value['drs_no'];
+            $vendor_id = $request->vendor_name;
+            $vehicle_no = $value['vehicle_no'];
+            $sent_vehicle[] = $value['vehicle_no'];
+
+        }
+        $unique = array_unique($sent_vehicle);
+        $sent_venicle_no = implode(',', $unique);
+
+        TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
+
+            // ============== Sent to finfect
+            $pfu = 'ETF';
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $this->req_link,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => "[{
+            \"unique_code\": \"$request->vendor_no\",
+            \"name\": \"$request->v_name\",
+            \"acc_no\": \"$request->acc_no\",
+            \"beneficiary_name\": \"$request->beneficiary_name\",
+            \"ifsc\": \"$request->ifsc\",
+            \"bank_name\": \"$request->bank_name\",
+            \"baddress\": \"$request->branch_name\",
+            \"payable_amount\": \"$request->final_payable_amount\",
+            \"claimed_amount\": \"$request->claimed_amount\",
+            \"pfu\": \"$pfu\",
+            \"ptype\": \"$request->p_type\",
+            \"email\": \"$bm_email\",
+            \"terid\": \"$request->transaction_id\",
+            \"branch\": \"$branch_name->name\",
+            \"vehicle\": \"$sent_venicle_no\",
+            \"pan\": \"$request->pan\",
+            \"amt_deducted\": \"$deduct_balance\",
+            \"txn_route\": \"DRS\"
+            }]",
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    'Access-Control-Request-Headers:' . $url_header,
+
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $res_data = json_decode($response);
+            // ============== Success Response
+            // $cs = 'success';
+             
+            if ($res_data->message == 'success') {
+
+                if ($request->p_type == 'Fully' || $request->p_type == 'Balance') {
+                    $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                    if (!empty($getadvanced->balance)) {
+                        $balance = $getadvanced->balance - $request->pay_amt;
+                    } else {
+                        $balance = 0;
+                    }
+                    $advance = $request->pay_amt;
+
+                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+
+                    PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2 , 'remarks' => NULL]);
+
+                    $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                    $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                    $paymentresponse['transaction_id'] = $request->transaction_id;
+                    $paymentresponse['drs_no'] = $request->drs_no;
+                    $paymentresponse['bank_details'] = json_encode($bankdetails);
+                    $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                    $paymentresponse['payment_type'] = $request->p_type;
+                    $paymentresponse['advance'] = $request->claimed_amount;
+                    $paymentresponse['balance'] = $balance;
+                    $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                    $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                    $paymentresponse['payment_status'] = 2;
+
+                    $paymentresponse = PaymentHistory::create($paymentresponse);
+
+                } else {
+
+                    $balance_amt = $request->claimed_amount - $request->pay_amt;
+                    //======== Payment History save =========//
+                    $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                    $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                    $paymentresponse['transaction_id'] = $request->transaction_id;
+                    $paymentresponse['drs_no'] = $request->drs_no;
+                    $paymentresponse['bank_details'] = json_encode($bankdetails);
+                    $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                    $paymentresponse['payment_type'] = $request->p_type;
+                    $paymentresponse['advance'] = $request->pay_amt;
+                    $paymentresponse['balance'] = $balance_amt;
+                    $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                    $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                    $paymentresponse['payment_status'] = 2;
+
+                    $paymentresponse = PaymentHistory::create($paymentresponse);
+                    PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2, 'remarks' => NULL]);
+
+                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+                }
+
+                $new_response['success'] = true;
+                $new_response['message'] = $res_data->message;
+
+            } else {
+
+                $new_response['message'] = $res_data->message;
+                $new_response['success'] = false;
+
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                $paymentresponse['payment_status'] = 4;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+
+            }
+            $url = $this->prefix . '/request-list';
+            $new_response['redirect_url'] = $url;
+            $new_response['success_message'] = "Data Imported successfully";
+       
+        return response()->json($new_response);
+
+    }
+
+    public function rejectPaymentApi(Request $request,$id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $reject = PaymentRequest::where('transaction_id', $id)->update(['remarks' => $request->remarks, 'payment_status' => 0]);
+
+            if ($reject) {
+               
+                PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
+
+                $response['success'] = true;
+                $response['success_message'] = "Successfully update";
+            } else {
+
+                $response['success'] = false;
+                $response['error_message'] = "Can not update status";
+                $response['error'] = true;
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+        
     }
 
 }

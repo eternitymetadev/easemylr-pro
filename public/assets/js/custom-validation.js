@@ -2804,8 +2804,13 @@ $("#create_request_form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var vendor = $("#vendor_id_1").val();
+    var amt = $("#amt_1").val();
     if (!vendor) {
         swal("Error!", "Please select a vendor", "error");
+        return false;
+    }
+    if (!amt) {
+        swal("Error!", "Please enter amount", "error");
         return false;
     }
     var base_url = window.location.origin;

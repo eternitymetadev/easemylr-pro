@@ -20,6 +20,8 @@ class PaymentRequest extends Model
         'tds_deduct_balance',
         'branch_id',
         'user_id',
+        'current_paid_amt',
+        'remarks',
         'payment_status',
         'status',
         'created_at',
