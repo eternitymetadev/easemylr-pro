@@ -1269,7 +1269,7 @@ class VendorController extends Controller
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $url = 'https://shiprider.etfbeta.in/api/get_payment_response_drs/' . $trans_id;
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
