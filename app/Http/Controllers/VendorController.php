@@ -1262,7 +1262,7 @@ class VendorController extends Controller
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
-        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->whereDate('created_at','>=','2023-09-20')->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
