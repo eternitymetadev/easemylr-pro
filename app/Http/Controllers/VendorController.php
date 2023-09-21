@@ -2029,12 +2029,13 @@ class VendorController extends Controller
                 $payment_rejected = PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
 
                 return $payment_rejected;
+                DB::commit();
             } else {
 
                 return 0;
             }
 
-            DB::commit();
+            
         } catch (Exception $e) {
             $response['error'] = false;
             $response['error_message'] = $e;
