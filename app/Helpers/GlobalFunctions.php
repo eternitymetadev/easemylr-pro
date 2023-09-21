@@ -13,6 +13,7 @@ use App\Models\RegionalClient;
 use App\Models\State;
 use App\Models\TransactionSheet;
 use App\Models\Vehicle;
+use App\Models\PaymentRequest;
 use DB;
 use Image;
 use Storage;
@@ -469,6 +470,23 @@ class GlobalFunctions
             $invoice_nos = @$get_lr->invoice_no;
         }
         return $invoice_nos;
+    }
+
+    public static function DrsPaymentCheck($lr_id)
+    {
+        $checkdrs = TransactionSheet::where('consignment_no',$lr_id)->first();
+        if($checkdrs){
+            $checkPayment = PaymentRequest::where('drs_no',$checkdrs->drs_no)->first();
+            if($checkPayment){
+                $payment_id = $checkPayment->id;
+             }else{
+                $payment_id = '';
+             }
+        }else{
+            $payment_id = '';
+         }
+         return $payment_id;
+
     }
 
 }
