@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DrsPaymentExport;
 use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
 use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
-use App\Exports\DrsPaymentExport;
 use App\Imports\VendorImport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
@@ -115,10 +115,10 @@ class VendorController extends Controller
             }
 
             // old path (public_path('drs/uploadpan'), $panfile);
-            
-            if($request->file('pan_upload')){
+
+            if ($request->file('pan_upload')) {
                 $originalFilename = uniqid() . '_' . $request->file('pan_upload')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_pans', $request->file('pan_upload'), $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $panfile = end($imagePath);
@@ -130,10 +130,10 @@ class VendorController extends Controller
             }
 
             // old path (public_path('drs/cheaque'), $cheaquefile);
-            
-            if($request->file('cancel_cheaque')){
+
+            if ($request->file('cancel_cheaque')) {
                 $originalFilename = uniqid() . '_' . $request->file('cancel_cheaque')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_cheaques', $request->file('cancel_cheaque'), $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $cheaquefile = end($imagePath);
@@ -146,9 +146,9 @@ class VendorController extends Controller
 
             // old path (public_path('drs/declaration')
 
-            if($request->file('declaration_file')){
+            if ($request->file('declaration_file')) {
                 $originalFilename = uniqid() . '_' . $request->file('declaration_file')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_declarations', $request->file('declaration_file'), $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $decl_file = end($imagePath);
@@ -396,7 +396,8 @@ class VendorController extends Controller
         return view('vendors.drs-paymentlist', ['prefix' => $this->prefix, 'paymentlist' => $paymentlist, 'vendors' => $vendors, 'peritem' => $peritem, 'vehicles' => $vehicles, 'vehicletype' => $vehicletype, 'branchs' => $branchs]);
     }
 
-    public function drsPaymentExport(Request $request){
+    public function drsPaymentExport(Request $request)
+    {
         return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle, $request->select_vehicle), 'drs_payment.csv');
     }
 
@@ -721,7 +722,7 @@ class VendorController extends Controller
     // Edit Vendor====================== //
     public function editViewVendor(Request $request)
     {
-        $this->prefix = request()->route()->getPrefix(); 
+        $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
@@ -779,9 +780,9 @@ class VendorController extends Controller
             $vendorsave['gst_register'] = $request->gst_register;
             $vendorsave['gst_no'] = $request->gst_no;
 
-            if($request->file('pan_upload')){
+            if ($request->file('pan_upload')) {
                 $originalFilename = uniqid() . '_' . $request->file('pan_upload')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_pans', $request->file('pan_upload'), $originalFilename)) {
                     // Delete the old file (if exists)
                     if (!empty($vendor->upload_pan)) {
@@ -792,9 +793,9 @@ class VendorController extends Controller
                 }
             }
 
-            if($request->file('cancel_cheaque')){
+            if ($request->file('cancel_cheaque')) {
                 $originalFilename = uniqid() . '_' . $request->file('cancel_cheaque')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_cheaques', $request->file('cancel_cheaque'), $originalFilename)) {
                     // Delete the old file (if exists)
                     if (!empty($vendor->cancel_cheaque)) {
@@ -805,9 +806,9 @@ class VendorController extends Controller
                 }
             }
 
-            if($request->file('declaration_file')){
+            if ($request->file('declaration_file')) {
                 $originalFilename = uniqid() . '_' . $request->file('declaration_file')->getClientOriginalName();
-    
+
                 if (Storage::disk('s3')->putFileAs('vendor_declarations', $request->file('declaration_file'), $originalFilename)) {
                     // Delete the old file (if exists)
                     if (!empty($vendor->declaration_file)) {
@@ -815,16 +816,16 @@ class VendorController extends Controller
                     }
                     $imagePath = explode('/', $originalFilename);
                     $vendorsave['declaration_file'] = end($imagePath);
-                } 
+                }
             }
 
             $updateVendor = Vendor::where('id', $request->vendor_id)->update($vendorsave);
-            if($updateVendor){
+            if ($updateVendor) {
                 $url = $this->prefix . '/vendor-list';
                 $response['success'] = true;
                 $response['success_message'] = "Vendor Updated Successfully";
                 $response['redirect_url'] = $url;
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['success_message'] = "Vendor not Updated please try again";
                 $response['error'] = true;
@@ -893,7 +894,7 @@ class VendorController extends Controller
             if ($request->p_type == 'Advance') {
                 $balance_amt = $request->claimed_amount - $request->pay_amt;
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'current_paid_amt' => $request->pay_amt,'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'branch_id' => $request->branch_id, 'user_id' => $user, 'current_paid_amt' => $request->pay_amt, 'payment_status' => 0, 'status' => '1']);
             } else {
                 $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $transaction_id_new)->first();
                 if (!empty($getadvanced->balance)) {
@@ -904,7 +905,7 @@ class VendorController extends Controller
                 $advance = $request->pay_amt;
                 // dd($advance);
 
-                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user,'current_paid_amt' => $request->pay_amt, 'payment_status' => 0, 'status' => '1']);
+                $transaction = PaymentRequest::create(['transaction_id' => $transaction_id_new, 'drs_no' => $drs_no, 'vendor_id' => $vendor_id, 'vehicle_no' => $vehicle_no, 'payment_type' => $request->p_type, 'total_amount' => $request->claimed_amount, 'advanced' => $advance, 'balance' => $balance, 'branch_id' => $request->branch_id, 'user_id' => $user, 'current_paid_amt' => $request->pay_amt, 'payment_status' => 0, 'status' => '1']);
             }
 
         }
@@ -1082,14 +1083,14 @@ class VendorController extends Controller
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('transaction_id', 'like', '%' . $search . '%')
-                    ->orWhere('total_amount', 'like', '%' . $search . '%')
-                    ->orWhere('advanced', 'like', '%' . $search . '%')
-                    ->orWhere('balance', 'like', '%' . $search . '%')
-                    ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
-                        $query->where(function ($vndrquery) use ($search, $searchT) {
-                            $vndrquery->where('name', 'like', '%' . $search . '%');
+                        ->orWhere('total_amount', 'like', '%' . $search . '%')
+                        ->orWhere('advanced', 'like', '%' . $search . '%')
+                        ->orWhere('balance', 'like', '%' . $search . '%')
+                        ->orWhereHas('VendorDetails', function ($query) use ($search, $searchT) {
+                            $query->where(function ($vndrquery) use ($search, $searchT) {
+                                $vndrquery->where('name', 'like', '%' . $search . '%');
+                            });
                         });
-                    });
                 });
             }
 
@@ -1098,7 +1099,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('VendorDetails', 'Branch')
-                // ->where('payment_status', '!=', 0)
+            // ->where('payment_status', '!=', 0)
                 ->groupBy('transaction_id');
 
             if ($authuser->role_id == 2) {
@@ -1139,8 +1140,8 @@ class VendorController extends Controller
         }
 
         $query = $query->with('VendorDetails', 'Branch')
-                // ->where('payment_status', '!=', 0)
-                ->groupBy('transaction_id');
+        // ->where('payment_status', '!=', 0)
+            ->groupBy('transaction_id');
 
         if ($authuser->role_id == 2) {
             $query = $query->where('branch_id', $cc);
@@ -1261,7 +1262,7 @@ class VendorController extends Controller
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
-        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
@@ -1289,88 +1290,96 @@ class VendorController extends Controller
                 $received_data = json_decode($response);
                 // echo'<pre>'; print_r($response); die;
                 $status_code = $received_data->status_code;
-                if ($status_code == 2) {
-                    if ($p_type == 'Fully' || $p_type == 'Balance') {
+                // if ($status_code == 2) {
+                //     if ($p_type == 'Fully' || $p_type == 'Balance') {
 
-                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
+                //         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                //         PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+                //         $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
-                        foreach ($get_drs as $drs) {
-                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
-                        }
-                    } else {
-                        $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
+                //         foreach ($get_drs as $drs) {
+                //             TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
+                //         }
+                //     } else {
+                //         $update_status = PaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+                //         PaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                        $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
+                //         $get_drs = PaymentRequest::select('drs_no')->where('transaction_id', $trans_id)->get();
 
-                        foreach ($get_drs as $drs) {
-                            TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
-                        }
+                //         foreach ($get_drs as $drs) {
+                //             TransactionSheet::where('drs_no', $drs->drs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
+                //         }
 
-                    }
+                //     }
+                // }else
+                if($status_code == 4){
+
+                    $reject = PaymentRequest::where('transaction_id', $trans_id)->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
+            
+           
+                 PaymentHistory::where('transaction_id', $trans_id)->orderBy('id', 'DESC')->first()->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
+
                 }
             }
         }
         // =============check prs==================
-        $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
-        $size = sizeof($get_data_db);
+        // $get_data_db = DB::table('prs_payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2, 3])->get()->toArray();
+        // $size = sizeof($get_data_db);
 
-        for ($i = 0; $i < $size; $i++) {
-            $trans_id = $get_data_db[$i]->transaction_id;
-            $p_type = $get_data_db[$i]->payment_type;
+        // for ($i = 0; $i < $size; $i++) {
+        //     $trans_id = $get_data_db[$i]->transaction_id;
+        //     $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
-            $curl = curl_init();
+        //     $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
+        //     $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-            ));
+        //     curl_setopt_array($curl, array(
+        //         CURLOPT_URL => $url,
+        //         CURLOPT_RETURNTRANSFER => true,
+        //         CURLOPT_ENCODING => '',
+        //         CURLOPT_MAXREDIRS => 10,
+        //         CURLOPT_TIMEOUT => 0,
+        //         CURLOPT_FOLLOWLOCATION => true,
+        //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //         CURLOPT_CUSTOMREQUEST => 'GET',
+        //     ));
 
-            $response = curl_exec($curl);
+        //     $response = curl_exec($curl);
 
-            curl_close($curl);
-            if ($response) {
-                $received_data = json_decode($response);
-                $status_code = $received_data->status_code;
-                if ($status_code == 2) {
-                    if ($p_type == 'Fully' || $p_type == 'Balance') {
+        //     curl_close($curl);
+        //     if ($response) {
+        //         $received_data = json_decode($response);
+        //         $status_code = $received_data->status_code;
+        //         if ($status_code == 2) {
+        //             if ($p_type == 'Fully' || $p_type == 'Balance') {
 
-                        $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
+        //                 $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 1]);
 
-                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+        //                 PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 1, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                        $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
+        //                 $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
 
-                        foreach ($get_prs as $prs) {
-                            pickupRunSheet::where('pickup_id', $prs->prs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
-                        }
-                    } else {
-                        $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
+        //                 foreach ($get_prs as $prs) {
+        //                     pickupRunSheet::where('pickup_id', $prs->prs_no)->where('payment_status', 2)->update(['payment_status' => 1]);
+        //                 }
+        //             } else {
+        //                 $update_status = PrsPaymentRequest::where('transaction_id', $trans_id)->update(['payment_status' => 3]);
 
-                        PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+        //                 PrsPaymentHistory::where('transaction_id', $trans_id)->where('payment_status', 2)->update(['payment_status' => 3, 'finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
 
-                        $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
+        //                 $get_prs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $trans_id)->get();
 
-                        foreach ($get_prs as $prs) {
-                            pickupRunSheet::where('pickup_id', $prs->prs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
-                        }
+        //                 foreach ($get_prs as $prs) {
+        //                     pickupRunSheet::where('pickup_id', $prs->prs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
+        //                 }
 
-                    }
-                }
-            }
-        }
+        //             }
+        //         }
+        //     }
+        // }
         return 1;
     }
 
@@ -1507,7 +1516,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail','PrsPaymentRequest.Branch','PrsPaymentRequest.PickupRunSheet.Consignments.RegClient','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems','PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype','PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');;
+            $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail', 'PrsPaymentRequest.Branch', 'PrsPaymentRequest.PickupRunSheet.Consignments.RegClient', 'PrsPaymentRequest.VendorDetails', 'PrsPaymentRequest.VendorDetails', 'PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems', 'PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype', 'PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');
 
             if ($authuser->role_id == 2) {
                 $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
@@ -1569,7 +1578,7 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail','PrsPaymentRequest.Branch','PrsPaymentRequest.PickupRunSheet.Consignments.RegClient','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.VendorDetails','PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems','PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype','PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');
+        $query = PrsPaymentHistory::with('PrsPaymentRequest.PickupRunSheet.Consignments.ShiptoDetail', 'PrsPaymentRequest.Branch', 'PrsPaymentRequest.PickupRunSheet.Consignments.RegClient', 'PrsPaymentRequest.VendorDetails', 'PrsPaymentRequest.VendorDetails', 'PrsPaymentRequest.PickupRunSheet.Consignments.ConsignmentItems', 'PrsPaymentRequest.PickupRunSheet.Consignments.vehicletype', 'PrsPaymentRequest.PickupRunSheet.Consignments.VehicleDetail');
 
         if ($authuser->role_id == 2) {
             $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
@@ -1609,12 +1618,12 @@ class VendorController extends Controller
 
     public function exportPaymentReport(Request $request)
     {
-        return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx'); 
+        return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx');
     }
 
     public function exportPrsPaymentReport(Request $request)
     {
-        return Excel::download(new PrsPaymentReportExport($request->startdate, $request->enddate), 'PrsPaymentReport.xlsx'); 
+        return Excel::download(new PrsPaymentReportExport($request->startdate, $request->enddate), 'PrsPaymentReport.xlsx');
     }
 
     public function handshakeReport(Request $request)
@@ -1740,14 +1749,14 @@ class VendorController extends Controller
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
         $month = date('m');
-        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Fully')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type', 'created_at')->where('payment_type', 'Fully')->whereRaw('MONTH(created_at) = ?', [$month])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs_fully/'.$trans_id.'/fully';
+            $url = 'https://finfect.biz/api/get_payment_response_drs_fully/' . $trans_id . '/fully';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1769,8 +1778,8 @@ class VendorController extends Controller
                 $status_code = $received_data->status_code;
                 if ($status_code == 2) {
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Fully')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
-                   
+                    PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Fully')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
                 }
             }
         }
@@ -1783,14 +1792,14 @@ class VendorController extends Controller
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
         $month = date('m');
-        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type','created_at')->where('payment_type', 'Advance')->whereRaw('MONTH(created_at) = ?',[$month])->get()->toArray();
+        $get_data_db = DB::table('payment_histories')->select('transaction_id', 'payment_type', 'created_at')->where('payment_type', 'Advance')->whereRaw('MONTH(created_at) = ?', [$month])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs_advance/'.$trans_id.'/advance';
+            $url = 'https://finfect.biz/api/get_payment_response_drs_advance/' . $trans_id . '/advance';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1812,8 +1821,8 @@ class VendorController extends Controller
                 $status_code = $received_data->status_code;
                 if ($status_code == 2) {
 
-                        PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Advance')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
-                   
+                    PaymentHistory::where('transaction_id', $trans_id)->where('payment_type', 'Advance')->update(['finfect_status' => $received_data->status, 'paid_amt' => $received_data->amount, 'bank_refrence_no' => $received_data->bank_refrence_no, 'payment_date' => $received_data->payment_date]);
+
                 }
             }
         }
@@ -1825,13 +1834,13 @@ class VendorController extends Controller
     {
         $payment_details = PaymentRequest::with('VendorDetails')->where('transaction_id', $request->trans_id)->first();
 
-        $get_drs_no = PaymentRequest::where('transaction_id',$request->trans_id)->get();
+        $get_drs_no = PaymentRequest::where('transaction_id', $request->trans_id)->get();
         $drs_no = array();
-        foreach($get_drs_no as $drs){
+        foreach ($get_drs_no as $drs) {
             $drs_no[] = $drs->drs_no;
         }
-        $payment_drs = implode(',',$drs_no);
-        
+        $payment_drs = implode(',', $drs_no);
+
         $response['payment_details'] = $payment_details;
         $response['payment_drs'] = $payment_drs;
         $response['success'] = true;
@@ -1869,7 +1878,6 @@ class VendorController extends Controller
             ->get();
         $simplyfy = json_decode(json_encode($consignment), true);
         $transactionId = DB::table('payment_requests')->select('transaction_id')->latest('transaction_id')->first();
-       
 
         $i = 0;
         $sent_vehicle = array();
@@ -1886,19 +1894,19 @@ class VendorController extends Controller
 
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
 
-            // ============== Sent to finfect
-            $pfu = 'ETF';
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $this->req_link,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => "[{
+        // ============== Sent to finfect
+        $pfu = 'ETF';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->req_link,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => "[{
             \"unique_code\": \"$request->vendor_no\",
             \"name\": \"$request->v_name\",
             \"acc_no\": \"$request->acc_no\",
@@ -1918,115 +1926,116 @@ class VendorController extends Controller
             \"amt_deducted\": \"$deduct_balance\",
             \"txn_route\": \"DRS\"
             }]",
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json',
-                    'Access-Control-Request-Headers:' . $url_header,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Access-Control-Request-Headers:' . $url_header,
 
-                ),
-            ));
+            ),
+        ));
 
-            $response = curl_exec($curl);
-            curl_close($curl);
-            $res_data = json_decode($response);
-            // ============== Success Response
-            // $cs = 'success';
-             
-            if ($res_data->message == 'success') {
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $res_data = json_decode($response);
+        // ============== Success Response
+        // $cs = 'success';
 
-                if ($request->p_type == 'Fully' || $request->p_type == 'Balance') {
-                    $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
-                    if (!empty($getadvanced->balance)) {
-                        $balance = $getadvanced->balance - $request->pay_amt;
-                    } else {
-                        $balance = 0;
-                    }
-                    $advance = $request->pay_amt;
+        if ($res_data->message == 'success') {
 
-                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
-
-                    PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2 , 'remarks' => NULL]);
-
-                    $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
-
-                    $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
-                    $paymentresponse['transaction_id'] = $request->transaction_id;
-                    $paymentresponse['drs_no'] = $request->drs_no;
-                    $paymentresponse['bank_details'] = json_encode($bankdetails);
-                    $paymentresponse['purchase_amount'] = $request->claimed_amount;
-                    $paymentresponse['payment_type'] = $request->p_type;
-                    $paymentresponse['advance'] = $request->claimed_amount;
-                    $paymentresponse['balance'] = $balance;
-                    $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
-                    $paymentresponse['current_paid_amt'] = $request->pay_amt;
-                    $paymentresponse['payment_status'] = 2;
-
-                    $paymentresponse = PaymentHistory::create($paymentresponse);
-
+            if ($request->p_type == 'Fully' || $request->p_type == 'Balance') {
+                $getadvanced = PaymentRequest::select('advanced', 'balance')->where('transaction_id', $request->transaction_id)->first();
+                if (!empty($getadvanced->balance)) {
+                    $balance = $getadvanced->balance - $request->pay_amt;
                 } else {
-
-                    $balance_amt = $request->claimed_amount - $request->pay_amt;
-                    //======== Payment History save =========//
-                    $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
-
-                    $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
-                    $paymentresponse['transaction_id'] = $request->transaction_id;
-                    $paymentresponse['drs_no'] = $request->drs_no;
-                    $paymentresponse['bank_details'] = json_encode($bankdetails);
-                    $paymentresponse['purchase_amount'] = $request->claimed_amount;
-                    $paymentresponse['payment_type'] = $request->p_type;
-                    $paymentresponse['advance'] = $request->pay_amt;
-                    $paymentresponse['balance'] = $balance_amt;
-                    $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
-                    $paymentresponse['current_paid_amt'] = $request->pay_amt;
-                    $paymentresponse['payment_status'] = 2;
-
-                    $paymentresponse = PaymentHistory::create($paymentresponse);
-                    PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2, 'remarks' => NULL]);
-
-                    TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
+                    $balance = 0;
                 }
+                $advance = $request->pay_amt;
 
-                $new_response['success'] = true;
-                $new_response['message'] = $res_data->message;
+                TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
 
-            } else {
-
-                $new_response['message'] = $res_data->message;
-                $new_response['success'] = false;
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_status' => 2, 'remarks' => null]);
 
                 $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
 
-                //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
                 $paymentresponse['transaction_id'] = $request->transaction_id;
                 $paymentresponse['drs_no'] = $request->drs_no;
                 $paymentresponse['bank_details'] = json_encode($bankdetails);
                 $paymentresponse['purchase_amount'] = $request->claimed_amount;
                 $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->claimed_amount;
+                $paymentresponse['balance'] = $balance;
                 $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
                 $paymentresponse['current_paid_amt'] = $request->pay_amt;
-                $paymentresponse['payment_status'] = 4;
+                $paymentresponse['payment_status'] = 2;
 
                 $paymentresponse = PaymentHistory::create($paymentresponse);
 
+            } else {
+
+                $balance_amt = $request->claimed_amount - $request->pay_amt;
+                //======== Payment History save =========//
+                $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+                $paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+                $paymentresponse['transaction_id'] = $request->transaction_id;
+                $paymentresponse['drs_no'] = $request->drs_no;
+                $paymentresponse['bank_details'] = json_encode($bankdetails);
+                $paymentresponse['purchase_amount'] = $request->claimed_amount;
+                $paymentresponse['payment_type'] = $request->p_type;
+                $paymentresponse['advance'] = $request->pay_amt;
+                $paymentresponse['balance'] = $balance_amt;
+                $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+                $paymentresponse['current_paid_amt'] = $request->pay_amt;
+                $paymentresponse['payment_status'] = 2;
+
+                $paymentresponse = PaymentHistory::create($paymentresponse);
+                PaymentRequest::where('transaction_id', $request->transaction_id)->update(['payment_type' => $request->p_type, 'advanced' => $request->pay_amt, 'balance' => $balance_amt, 'payment_status' => 2, 'remarks' => null]);
+
+                TransactionSheet::whereIn('drs_no', $drsno)->update(['payment_status' => 2]);
             }
-            $url = $this->prefix . '/request-list';
-            $new_response['redirect_url'] = $url;
-            $new_response['success_message'] = "Data Imported successfully";
-       
+
+            $new_response['success'] = true;
+            $new_response['message'] = $res_data->message;
+
+        } else {
+
+            $new_response['message'] = $res_data->message;
+            $new_response['success'] = false;
+
+            $bankdetails = array('acc_holder_name' => $request->beneficiary_name, 'account_no' => $request->acc_no, 'ifsc_code' => $request->ifsc, 'bank_name' => $request->bank_name, 'branch_name' => $request->branch_name, 'email' => $bm_email);
+
+            //$paymentresponse['refrence_transaction_id'] = $res_data->refrence_transaction_id;
+            $paymentresponse['transaction_id'] = $request->transaction_id;
+            $paymentresponse['drs_no'] = $request->drs_no;
+            $paymentresponse['bank_details'] = json_encode($bankdetails);
+            $paymentresponse['purchase_amount'] = $request->claimed_amount;
+            $paymentresponse['payment_type'] = $request->p_type;
+            $paymentresponse['tds_deduct_balance'] = $request->final_payable_amount;
+            $paymentresponse['current_paid_amt'] = $request->pay_amt;
+            $paymentresponse['payment_status'] = 4;
+
+            $paymentresponse = PaymentHistory::create($paymentresponse);
+
+        }
+        $url = $this->prefix . '/request-list';
+        $new_response['redirect_url'] = $url;
+        $new_response['success_message'] = "Data Imported successfully";
+
         return response()->json($new_response);
 
     }
 
-    public function rejectPaymentApi(Request $request,$id)
+    public function rejectPaymentApi(Request $request, $id)
     {
         try {
             DB::beginTransaction();
 
             $reject = PaymentRequest::where('transaction_id', $id)->update(['remarks' => $request->remarks, 'payment_status' => 0]);
-
+            
             if ($reject) {
-               
-                PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
+
+                 PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
+                
 
                 $response['success'] = true;
                 $response['success_message'] = "Successfully update";
@@ -2045,7 +2054,7 @@ class VendorController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
-        
+
     }
 
 }
