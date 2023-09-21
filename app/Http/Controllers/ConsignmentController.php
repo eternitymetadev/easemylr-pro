@@ -63,13 +63,15 @@ class ConsignmentController extends Controller
         $query = ConsignmentNote::query();
 
         if ($request->ajax()) {
+            $authuser = Auth::user();
+
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'delivery_status' => 'Cancel']);
+                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
                 ConsignmentItem::where('consignment_id', $request->id)->update(['status' => $request->status]);
 
                 $url = $this->prefix . '/consignments';
@@ -82,7 +84,7 @@ class ConsignmentController extends Controller
                 return response()->json($response);
             }
 
-            $authuser = Auth::user();
+            
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $baseclient = explode(',', $authuser->baseclient_id);
             $regclient = explode(',', $authuser->regionalclient_id);

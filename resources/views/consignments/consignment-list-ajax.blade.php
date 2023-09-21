@@ -63,13 +63,13 @@
 
                     <!-- relocate cnr cnee check for sale to return case -->
                     <?php 
-                if($consignment->is_salereturn == 1){
-                    $cnr_nickname = $consignment->ConsigneeDetail->nick_name;
-                    $cne_nickname = $consignment->ConsignerDetail->nick_name;
-                }else{
-                    $cnr_nickname = $consignment->ConsignerDetail->nick_name;
-                    $cne_nickname = @$consignment->ConsigneeDetail->nick_name;
-                } ?>
+                    if($consignment->is_salereturn == 1){
+                        $cnr_nickname = $consignment->ConsigneeDetail->nick_name;
+                        $cne_nickname = $consignment->ConsignerDetail->nick_name;
+                    }else{
+                        $cnr_nickname = $consignment->ConsignerDetail->nick_name;
+                        $cne_nickname = @$consignment->ConsigneeDetail->nick_name;
+                    } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
                             <div class="ant-timeline-item-tail"></div>
@@ -165,10 +165,19 @@
 
                 </td>
 
-                <?php if($authuser->role_id == 7 || $authuser->role_id == 6) { 
-                    $disable = 'disable_n'; 
-                } else{
-                    $disable = '';
+                <?php if($authuser->role_id == 2){
+                    if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
+                        $existPaymentRequest = Helper::DrsPaymentCheck($consignment->id);
+                        if(!$existPaymentRequest){
+                            $disable = '';
+                        }else{
+                            $disable = 'disable_n' ;
+                        }
+                    }else{
+                        $disable = 'disable_n' ;
+                    }
+                }else{
+                    $disable = 'disable_n';
                 } ?>
                 <td>
                     <?php if ($consignment->status == 0) { ?>
