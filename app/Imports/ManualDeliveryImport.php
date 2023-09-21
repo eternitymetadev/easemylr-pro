@@ -20,7 +20,7 @@ class ManualDeliveryImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {        
         $lr_no = ConsignmentNote::where('id', $row['lr_no'])->first();
-
+        // job_id in consignment_notes table value come from eternity app now not use 
         if(!empty($lr_no->job_id)){
             ConsignmentNote::where('id', $row['lr_no'])->update(['lr_mode' => 0]);
         }

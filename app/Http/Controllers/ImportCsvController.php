@@ -14,7 +14,9 @@ use App\Imports\ManualDeliveryImport;
 use App\Imports\UpdateLatitudeLongitude;
 use Maatwebsite\Excel\Facades\Excel;
 use URL;
+use Storage;
 use ZipArchive;
+use Aws\S3\S3Client;
 
 class ImportCsvController extends Controller
 {
@@ -73,27 +75,118 @@ class ImportCsvController extends Controller
             $url  = URL::to($this->prefix.'/consignments');
             $message = 'Latitude longitude Uploaded Successfully';
         }
-        if($request->hasFile('podsfile')){
-            $url  = URL::to($this->prefix.'/consignments');
-            $fileName = $_FILES['podsfile']['name'];
-            $fileNameArr = explode(".",$fileName);
-            if($fileNameArr[count($fileNameArr)-1]=='zip'){
-                $fileName = $fileNameArr[0];
-                $zip = new ZipArchive();
-                if($zip->open($_FILES['podsfile']['tmp_name'])===True){
-                    // $rand = rand(111111111,999999999);
-                    $data = $zip->extractTo("drs/");
-                    $zip->close();
-                    $message = 'Unzip done!';
-                }else{
-                    $message = 'Something went wrong!';
-                }
-                $message = 'PODs Uploaded Successfully';
-            }else{
-                $message = 'Please select zip file';
+
+        // multiple pod images upload
+        if ($request->hasFile('podsfile')) {
+            $url  = URL::to($this->prefix.'/bulk-import');
+            // Get the uploaded ZIP file
+            $uploadedFile = $request->file('podsfile');
+
+            // Create a temporary directory to extract the files
+            $tempDir = storage_path('app/temp/');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
             }
-            
+
+            // Extract the ZIP file
+            $zip = new ZipArchive;
+            if ($zip->open($uploadedFile->path()) === true) {
+                // Specify the directory where you want to extract the files
+                $extractedDir = $tempDir ;
+                if (!file_exists($extractedDir)) {
+                    mkdir($extractedDir, 0755, true);
+                }
+
+                // Extract all files from the ZIP archive
+                $zip->extractTo($extractedDir);
+                $zip->close();
+                $imgPath = $extractedDir.'/pod_images';
+                // Loop through the extracted files
+                $successfulUploads = [];
+                $failedUploads = [];
+                foreach (scandir($imgPath) as $file) {
+                    if ($file !== '.' && $file !== '..') {
+                        // Construct the full path to the extracted file
+                        $filePath = $extractedDir .'pod_images/'. $file;
+
+                        // Check if the file is an image (you can add more image extensions if needed)
+                        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                        $fileExtension = pathinfo(trim($file), PATHINFO_EXTENSION);
+                        // dd('File Extension: ' . $fileExtension);
+
+                        if (empty($fileExtension)) {
+                            // You can change 'unknown' to a default extension of your choice
+                            $fileExtension = 'unknown';
+                        }
+                        
+                        if (in_array(strtolower($fileExtension), $imageExtensions)) {
+                            
+                            // Construct the full S3 URL using AWS_S3_URL
+                            $s3Url = env('AWS_S3_URL') . 'pod_images/' . $file;
+
+                            // Update the message with the S3 URL
+                            // $message[] = 'Image Uploaded to S3: ' . $s3Url;
+                            // Ensure the file exists before attempting to upload it
+                            if (file_exists($filePath)) {
+                                // Upload the file to AWS S3
+                                // dd($file);
+                                if (Storage::disk('s3')->putFileAs('pod_images', $filePath, $file)) {
+                                    // Upload was successful
+                                    $successfulUploads[] = $file;
+                                } else {
+                                    // Upload failed
+                                    $failedUploads[] = $file;
+                                    // You can log the error or take other appropriate actions here
+                                }
+                            } else {
+                                $failedUploads[] = $file;
+                            }
+                        }
+                    }
+                }
+
+                if($successfulUploads){
+                    $data = true;
+                    $message = 'Files successfully uploaded: ' . implode(', ', $successfulUploads);
+                }else{
+                    $message = 'Files not uploaded: ' . implode(', ', $failedUploads);
+                }
+                // $message = [
+                //     'success' => 'Files successfully uploaded: ' . implode(', ', $successfulUploads),
+                //     'failure' => 'Files not uploaded: ' . implode(', ', $failedUploads),
+                // ];
+
+                // Clean up the temporary directories
+                Storage::disk('local')->deleteDirectory('temp');
+                Storage::disk('local')->deleteDirectory('pod_images');
+
+            }else{
+                $message = 'Files not uploaded';
+            } 
         }
+        
+        // if($request->hasFile('podsfile1')){
+        //     $url  = URL::to($this->prefix.'/consignments');
+        //     $fileName = $_FILES['podsfile']['name'];
+        //     $fileNameArr = explode(".",$fileName);
+        //     if($fileNameArr[count($fileNameArr)-1]=='zip'){
+        //         $fileName = $fileNameArr[0];
+        //         $zip = new ZipArchive();
+        //         if($zip->open($_FILES['podsfile']['tmp_name'])===True){
+        //             // $rand = rand(111111111,999999999);
+        //             $data = $zip->extractTo("drs/");
+        //             $zip->close();
+        //             $message = 'Unzip done!';
+        //         }else{
+        //             $message = 'Something went wrong!';
+        //         }
+        //         $message = 'PODs Uploaded Successfully';
+        //     }else{
+        //         $message = 'Please select zip file';
+        //     }
+            
+        // }
+        
         if($data){            
             $response['success']    = true;
             $response['page']       = 'bulk-imports';
