@@ -12,6 +12,7 @@ use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
 use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
+use App\Models\EfDeliveryRating;
 use App\Models\ItemMaster;
 use App\Models\Job;
 use App\Models\Location;
@@ -22,7 +23,6 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Zone;
-use App\Models\EfDeliveryRating;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -97,7 +97,7 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query =  $query->where(function ($query) use ($cc){
+                $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
 
                 });
@@ -165,7 +165,7 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
             // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
@@ -938,13 +938,13 @@ class ConsignmentController extends Controller
         // if(!empty($locations->GstAddress)){
         //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
         // <b>' . $locations->GstAddress->address_line_1 . ',</b><br />
-        // <b>	' . $locations->GstAddress->address_line_2 . '</b><br />
+        // <b>    ' . $locations->GstAddress->address_line_2 . '</b><br />
         // <b>GST No. : ' . $locations->GstAddress->gst_no . '</b><br />';
 
         // }else{
         //     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        //     <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        //     <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        //     <b>    Plot no: ' . $branch_add[0]->address . ',</b><br />
+        //     <b>    ' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
         //     <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
         // }
 
@@ -953,7 +953,7 @@ class ConsignmentController extends Controller
         <b>' . $branch_add[1]->address . ',</b><br />
         <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
         <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
-        }else if ($data['branch_id'] == 32) {
+        } else if ($data['branch_id'] == 32) {
             $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
         <b>' . $branch_add[2]->address . ',</b><br />
         <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
@@ -963,7 +963,7 @@ class ConsignmentController extends Controller
         <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
         <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
         <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
-        }       
+        }
 
         // relocate cnr cnee address check for sale to return case
         if ($data['is_salereturn'] == '1') {
@@ -1133,12 +1133,12 @@ class ConsignmentController extends Controller
                 <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
                 </head>
                 <body style="font-family:Arial Helvetica,sans-serif;">
-                <!-- <img src="'. $waterMark .'" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
+                <!-- <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
                     <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
                         <table style="height: 70px;">
                             <tr>
                             <td class="a" style="font-size: 10px;">
-                            ' . $branch_address . ' 
+                            ' . $branch_address . '
                             </td>
 
                                 <td class="a">
@@ -1174,15 +1174,15 @@ class ConsignmentController extends Controller
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-                                            if ($data['is_salereturn'] == '1') {
-                                                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
+            if ($data['is_salereturn'] == '1') {
+                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
                                             <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-                                            }else{
-                                                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+            } else {
+                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
                                             <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
-                                            }
+            }
 
-                                            $html .= '</tr>
+            $html .= '</tr>
                                     </table>
                         </div>
                                 </td>
@@ -1225,15 +1225,15 @@ class ConsignmentController extends Controller
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">';
-                                            if ($data['is_salereturn'] == '1') {
-                                                $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                    if ($data['is_salereturn'] == '1') {
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
                                                 <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
-                                            }else{
-                                                $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                    } else {
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                                            }
-                                            $html .= ' </div>
+                    }
+                    $html .= ' </div>
                                         </td>
                                         <td class="width_set">
                                             <table border="1px solid" class="table3">
@@ -1249,7 +1249,7 @@ class ConsignmentController extends Controller
                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                 </tr>
-                                                
+
                                             </table>
                                         </td>
                                     </tr>
@@ -1285,7 +1285,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    
+
                                                 </table>
                                             </td>
                                         </tr>
@@ -1297,14 +1297,14 @@ class ConsignmentController extends Controller
                                         <tr>
                                             <td class="width_set">
                                                 <div style="margin-left: 20px">';
-                                                if($data['is_salereturn'] == 1){
-                                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                    if ($data['is_salereturn'] == 1) {
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
-                                                }else{
-                                                    $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                    } else {
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
                                                 <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                                                }
-                                                $html .= '</div>
+                    }
+                    $html .= '</div>
                                             </td>
                                             <td class="width_set">
                                                 <table border="1px solid" class="table3">
@@ -1320,7 +1320,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    
+
                                                 </table>
                                             </td>
                                         </tr>
@@ -1352,7 +1352,7 @@ class ConsignmentController extends Controller
                                                         <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                         <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                     </tr>
-                                                    
+
                                                 </table>
                                             </td>
                                         </tr>
@@ -1984,7 +1984,7 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
+        // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '5', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1');
 
@@ -2008,7 +2008,7 @@ class ConsignmentController extends Controller
         }
         $data = $data->orderBy('id', 'DESC');
         $consignments = $data->get();
-        
+
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
@@ -2079,22 +2079,22 @@ class ConsignmentController extends Controller
         $transaction = DB::table('transaction_sheets')->whereIn('consignment_no', $consignmentId)->where('status', 1)->update(['vehicle_no' => $vehicle_no, 'driver_name' => $driverName, 'driver_no' => $driverPhone, 'delivery_status' => 'Assigned']);
         //  }
         // =============new app
-        $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
+        $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
         $mytime = Carbon::now('Asia/Kolkata');
         $currentdate = $mytime->toDateTimeString();
         // check app assign ========================================
-         if ($get_driver_details->access_status == 1) {
+        if ($get_driver_details->access_status == 1) {
             // if (!empty($get_driver_details->branch_id)) {
-                // $driver_branch = explode(',', $get_driver_details->branch_id);
-                // if (in_array($authuser->branch_id, $driver_branch)) {
-                    $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 2]);
-                    
-                    $app_notify = $this->sendNotification($request->driver_id);
-                // }
+            // $driver_branch = explode(',', $get_driver_details->branch_id);
+            // if (in_array($authuser->branch_id, $driver_branch)) {
+            $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 2]);
+
+            $app_notify = $this->sendNotification($request->driver_id);
+            // }
             // } else {
             //     $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
             // }
-        }else{
+        } else {
             $update = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['lr_mode' => 0]);
         }
 
@@ -2102,13 +2102,13 @@ class ConsignmentController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
             // =================== task assign
-            $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned','desc'=>'Out for Delivery', 'create_at' => $currentdate,'location'=>$location->name, 'type' => '2');
+            $respons2 = array('consignment_id' => $c_id, 'status' => 'Assigned', 'desc' => 'Out for Delivery', 'create_at' => $currentdate, 'location' => $location->name, 'type' => '2');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $c_id)->latest('id')->first();
-            if(!empty($lastjob->response_data)){
+            if (!empty($lastjob->response_data)) {
                 $st = json_decode($lastjob->response_data);
                 array_push($st, $respons2);
-                $sts = json_encode($st);       
+                $sts = json_encode($st);
 
                 $start = Job::create(['consignment_id' => $c_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
             }
@@ -2681,7 +2681,13 @@ class ConsignmentController extends Controller
         //
         $consignmentId = $_GET['consignment_id'];
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['status' => '2']);
-        $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->delete();
+        $drs_count = TransactionSheet::where('consignment_no', $consignmentId)->orderby('id', 'DESC')->first();
+        $srs_count = TransactionSheet::where('drs_no', $drs_count->drs_no)->count();
+        if ($srs_count == 1) {
+            $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->update(['status' => '0']);
+        } else {
+            $transac = DB::table('transaction_sheets')->where('consignment_no', $consignmentId)->delete();
+        }
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -2885,9 +2891,7 @@ class ConsignmentController extends Controller
         $branch_add = BranchAddress::get();
         $locations = Location::whereIn('id', $cc)->first();
 
-       
-
-        if(!is_null($lrno)){
+        if (!is_null($lrno)) {
             foreach ($lrno as $key => $value) {
 
                 $getdata = ConsignmentNote::where('id', $value)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail')->first();
@@ -3106,7 +3110,7 @@ class ConsignmentController extends Controller
                     <b>' . $branch_add[1]->address . ',</b><br />
                     <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . 'b</b><br />
                     <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
-                    }else if ($locations->id == 32) {
+                    } else if ($locations->id == 32) {
                         $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
                     <b>' . $branch_add[2]->address . ',</b><br />
                     <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . 'b</b><br />
@@ -3289,15 +3293,15 @@ class ConsignmentController extends Controller
                                             </td>
                                         </tr>
                                     </table>';
-                                    if($data['payment_type'] == 'To be Billed' || $data['payment_type'] == NULL){ 
-                                        if(!empty($data['cod'])){
-                                            $html .=  ' <div class="loc">
+                        if ($data['payment_type'] == 'To be Billed' || $data['payment_type'] == null) {
+                            if (!empty($data['cod'])) {
+                                $html .= ' <div class="loc">
                                             <table>
                                                 <tr>
                                                     <td valign="middle" style="position:relative; width: 200px">
                                                     <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
                                                         <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.@$data['cod'].'
+                                                        <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . @$data['cod'] . '
                                                         </h2>
                                                     </td>
                                                     <td class="width_set">
@@ -3319,8 +3323,8 @@ class ConsignmentController extends Controller
                                                 </tr>
                                             </table>
                                         </div>';
-                                        }else{
-                                            $html .= '   <div class="loc">
+                            } else {
+                                $html .= '   <div class="loc">
                                             <table>
                                                 <tr>
                                                     <td class="width_set">
@@ -3343,26 +3347,26 @@ class ConsignmentController extends Controller
                                                                 <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                 <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                             </tr>
-                                                            
+
                                                         </table>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>';
-                                        }
-                                    }
-            
-                                        if($data['payment_type'] == 'To Pay'){
-                                            if(!empty($data['freight_on_delivery']) || !empty($data['cod'])){
-                                                $total_cod_sum = @$data['freight_on_delivery'] + @$data['cod'];
-            
-                                                $html .=  ' <div class="loc">
+                            }
+                        }
+
+                        if ($data['payment_type'] == 'To Pay') {
+                            if (!empty($data['freight_on_delivery']) || !empty($data['cod'])) {
+                                $total_cod_sum = @$data['freight_on_delivery']+@$data['cod'];
+
+                                $html .= ' <div class="loc">
                                                 <table>
                                                     <tr>
                                                         <td valign="middle" style="position:relative; width: 200px">
                                                         <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
                                                             <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>'.$total_cod_sum.'
+                                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . $total_cod_sum . '
                                                             </h2>
                                                         </td>
                                                         <td class="width_set">
@@ -3379,26 +3383,26 @@ class ConsignmentController extends Controller
                                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                                 </tr>
-                                                                
+
                                                             </table>
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </div>';
-                                            }else{
-                                                $html .= '   <div class="loc">
+                            } else {
+                                $html .= '   <div class="loc">
                                                 <table>
                                                     <tr>
                                                         <td class="width_set">
                                                             <div style="margin-left: 20px">';
-                                                            if($data['is_salereturn'] == 1){
-                                                                $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                if ($data['is_salereturn'] == 1) {
+                                    $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
-                                                            }else{
-                                                        $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                } else {
+                                    $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
                                                             <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                                                            }
-                                                            $html .= '</div>
+                                }
+                                $html .= '</div>
                                                         </td>
                                                         <td class="width_set">
                                                             <table border="1px solid" class="table3">
@@ -3414,19 +3418,19 @@ class ConsignmentController extends Controller
                                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                                 </tr>
-                                                                
+
                                                             </table>
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </div>';
-                                            }
-            
-                                        }
-            
-                                        if($data['payment_type'] == 'Paid'){
-            
-                                                $html .=  ' <div class="loc">
+                            }
+
+                        }
+
+                        if ($data['payment_type'] == 'Paid') {
+
+                            $html .= ' <div class="loc">
                                                 <table>
                                                     <tr>
                                                         <td valign="middle" style="position:relative; width: 200px">
@@ -3446,16 +3450,16 @@ class ConsignmentController extends Controller
                                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
                                                                     <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
                                                                 </tr>
-                                                                
+
                                                             </table>
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </div>';
-                                        
-                                        }
 
-                                        $html .= '<div class="container">
+                        }
+
+                        $html .= '<div class="container">
                                             <div class="row">
                                                 <div class="col-sm-12 ">
                                                     <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
@@ -4040,7 +4044,7 @@ class ConsignmentController extends Controller
                     }
                 }
             }
-        
+
             $pdfMerger = PDFMerger::init();
             foreach ($pdf_name as $pdf) {
                 $pdfMerger->addPDF(public_path() . '/bulk/' . $pdf);
@@ -4050,8 +4054,8 @@ class ConsignmentController extends Controller
             $file = new Filesystem;
             $file->cleanDirectory('pdf');
 
-        }else{
-            return redirect()->back()->with('message', 'Data not Found!');;
+        } else {
+            return redirect()->back()->with('message', 'Data not Found!');
         }
 
     }
@@ -4374,7 +4378,7 @@ class ConsignmentController extends Controller
         try {
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
-            $location = Location::where('id',$login_branch)->first();
+            $location = Location::where('id', $login_branch)->first();
 
             // $get_delivery_branch = ConsignmentNote::where('id', $request->lr)->first();
             // if ($get_delivery_branch->lr_type == 0) {
@@ -4418,7 +4422,7 @@ class ConsignmentController extends Controller
                 $mytime = Carbon::now('Asia/Kolkata');
                 $currentdate = $mytime->toDateTimeString();
 
-                $respons2 = array('consignment_id'=>$request->lr, 'status'=>'Successful', 'desc'=>'Delivered', 'create_at'=>$currentdate, 'location'=>$location->name, 'type' => '2');
+                $respons2 = array('consignment_id' => $request->lr, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate, 'location' => $location->name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $request->lr)->latest('id')->first();
                 if (!empty($lastjob->response_data)) {
@@ -4453,7 +4457,7 @@ class ConsignmentController extends Controller
     {
         $authuser = Auth::user();
         $cc = explode(',', $authuser->branch_id);
-        $location = Location::whereIn('id',$cc)->first();
+        $location = Location::whereIn('id', $cc)->first();
 
         if (!empty($request->data)) {
             $get_data = $request->data;
@@ -4490,17 +4494,17 @@ class ConsignmentController extends Controller
                             $response['messages'] = 'Delivery date cannot be less than LR Date';
                             return Response::json($response);
                         }
-                        
-                        if($check_lr_mode->lr_mode == 0){
-                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                        TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+
+                        if ($check_lr_mode->lr_mode == 0) {
+                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                            TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                         }
 
                         // =================== task assign ====== //
                         $mytime = Carbon::now('Asia/Kolkata');
                         $currentdate = $mytime->toDateTimeString();
 
-                        $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful','desc'=>'Delivered', 'create_at'=>$currentdate, 'location'=>$location->name, 'type' => '2');
+                        $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate, 'location' => $location->name, 'type' => '2');
 
                         $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->latest('id')->first();
                         if (!empty($lastjob->response_data)) {
@@ -4514,9 +4518,9 @@ class ConsignmentController extends Controller
 
                     } else {
                         if (!empty($filename)) {
-                            if($check_lr_mode->lr_mode == 0){
-                            ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename,'pod_userid' => $authuser->login_id]);
-                            // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                            if ($check_lr_mode->lr_mode == 0) {
+                                ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id]);
+                                // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
                             }
                         }
                     }
@@ -4528,7 +4532,7 @@ class ConsignmentController extends Controller
         }
     }
 
-    public function addmoreLr(Request $request) 
+    public function addmoreLr(Request $request)
     {
 
         $this->prefix = request()->route()->getPrefix();
@@ -4543,8 +4547,8 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', ['2','5','6']);
-            // ->where('consignment_notes.status', '!=', 5);
+            ->where('consignment_notes.status', '=', ['2', '5', '6']);
+        // ->where('consignment_notes.status', '!=', 5);
 
         if ($authuser->role_id == 1) {
             $data;
@@ -4555,8 +4559,8 @@ class ConsignmentController extends Controller
         } elseif ($authuser->role_id == 7) {
             $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc){
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5','6']);
+            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5', '6']);
             });
             // $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
@@ -4685,9 +4689,9 @@ class ConsignmentController extends Controller
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
             })->first();
         $app_trail = json_decode($driver_app->trail, true);
-        
+
         // ======img
-    // echo "<pre>"; print_r($newArray); die;
+        // echo "<pre>"; print_r($newArray); die;
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
 
         if (!empty($job->trail)) {
@@ -4727,31 +4731,31 @@ class ConsignmentController extends Controller
     public function getTimelineapi($lr_id)
     {
         try {
-            $get_delveryrating = EfDeliveryRating::where('lr_id',$lr_id)->first();
-            $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode','shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
-            ->where('consignment_notes.id', $lr_id)
-            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
-            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
-            ->join('consignees as shipto', 'shipto.id', '=', 'consignment_notes.ship_to_id')
-            ->join('locations', 'locations.id', '=', 'consignment_notes.branch_id')
-            ->leftjoin('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
-            ->leftjoin('locations as to_branch_name', 'to_branch_name.id', '=', 'consignment_notes.to_branch_id')
-            ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
-            ->leftjoin('jobs', function ($data) {
-                $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
-                    ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
-            })->first();
+            $get_delveryrating = EfDeliveryRating::where('lr_id', $lr_id)->first();
+            $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'shipto.city as shipto_city', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
+                ->where('consignment_notes.id', $lr_id)
+                ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+                ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+                ->join('consignees as shipto', 'shipto.id', '=', 'consignment_notes.ship_to_id')
+                ->join('locations', 'locations.id', '=', 'consignment_notes.branch_id')
+                ->leftjoin('locations as fall_in_branch', 'fall_in_branch.id', '=', 'consignment_notes.fall_in')
+                ->leftjoin('locations as to_branch_name', 'to_branch_name.id', '=', 'consignment_notes.to_branch_id')
+                ->leftjoin('drivers', 'drivers.id', '=', 'consignment_notes.driver_id')
+                ->leftjoin('jobs', function ($data) {
+                    $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
+                        ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
+                })->first();
             // return ($driver_app);
-            if($driver_app){
+            if ($driver_app) {
                 $app_trail = json_decode($driver_app->trail, true);
                 $status = [2];
                 $result = [];
-                foreach($app_trail as $trail){
-                    if(in_array($trail['type'], $status)){
+                foreach ($app_trail as $trail) {
+                    if (in_array($trail['type'], $status)) {
                         $result[] = $trail;
                     }
                 }
-                
+
                 if ($driver_app) {
                     return response([
                         'data' => $driver_app,
@@ -4761,7 +4765,7 @@ class ConsignmentController extends Controller
                         'code' => 1,
                         'message' => 'Data fetched successfully!',
                     ], 200);
-                }else{
+                } else {
                     return response([
                         'status' => 'error',
                         'code' => 0,
@@ -4769,8 +4773,7 @@ class ConsignmentController extends Controller
                         'data' => "",
                     ], 200);
                 }
-            }
-            else{
+            } else {
                 return response([
                     'status' => 'error',
                     'code' => 0,
@@ -4867,7 +4870,7 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query =  $query->where(function ($query) use ($cc){
+                $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
 
                 });
@@ -4926,7 +4929,7 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
             // $query = $query->whereIn('branch_id', $cc);
-            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
         }
@@ -4975,7 +4978,7 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query =  $query->where(function ($query) use ($cc){
+                $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
 
                 });
@@ -5001,7 +5004,7 @@ class ConsignmentController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $reg_client = RegionalClient::select('id','name');
+            $reg_client = RegionalClient::select('id', 'name');
             if ($authuser->role_id == 1) {
                 $reg_client = $reg_client;
             } elseif ($authuser->role_id == 4) {
@@ -5016,8 +5019,8 @@ class ConsignmentController extends Controller
 
             $regclients = $reg_client->orderBy('name', 'ASC')->get();
 
-            if(isset($request->regclient_id)){
-                $query = $query->where('regclient_id',$request->regclient_id);
+            if (isset($request->regclient_id)) {
+                $query = $query->where('regclient_id', $request->regclient_id);
             }
 
             $startdate = $request->startdate;
@@ -5029,7 +5032,7 @@ class ConsignmentController extends Controller
                 $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             }
 
-            $html = view('consignments.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem,'regclients'=>$regclients])->render();
+            $html = view('consignments.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem, 'regclients' => $regclients])->render();
             // $consignments = $consignments->appends($request->query());
 
             return response()->json(['html' => $html]);
@@ -5053,12 +5056,12 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
             // $query = $query->whereIn('branch_id', $cc);
-            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc){
+            $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
         }
-        
-        $reg_client = RegionalClient::select('id','name');
+
+        $reg_client = RegionalClient::select('id', 'name');
         if ($authuser->role_id == 1) {
             $reg_client = $reg_client;
         } elseif ($authuser->role_id == 4) {
@@ -5075,7 +5078,7 @@ class ConsignmentController extends Controller
 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
-        return view('consignments.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'regclients'=>$regclients]);
+        return view('consignments.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'regclients' => $regclients]);
     }
 
     //////////////////////////////New Create Lr Form ///////////////////////////////////
@@ -5528,14 +5531,14 @@ class ConsignmentController extends Controller
 
     public function exportPodFile(Request $request)
     {
-        return Excel::download(new PodExport($request->startdate,$request->enddate,$request->regclient_id), 'Pod.xlsx');
+        return Excel::download(new PodExport($request->startdate, $request->enddate, $request->regclient_id), 'Pod.xlsx');
     }
 
     public function updatePod(Request $request)
     {
         try {
 
-            $lr_no = $request->lr_no; 
+            $lr_no = $request->lr_no;
 
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
@@ -5621,7 +5624,7 @@ class ConsignmentController extends Controller
     public function deletePodStatus(Request $request)
     {
         $lr_no = $request->lr_id;
-        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null,'pod_userid' => null]);
+        $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null, 'pod_userid' => null]);
 
         if ($mode) {
             $response['success'] = true;

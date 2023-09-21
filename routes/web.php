@@ -425,6 +425,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
     
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
+    Route::any('repay-request', [VendorController::class, 'repayRequest']);
     Route::any('request-list', [VendorController::class, 'requestList']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
@@ -439,6 +440,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
 
     Route::get('drswise-report', [VendorController::class, 'drsWiseReport']);
     Route::get('export-drswise-report', [VendorController::class, 'exportdrsWiseReport']);
+    Route::any('get-repay-details', [VendorController::class, 'getRepayDetails']);
 
     Route::resource('prs', PickupRunSheetController::class);
     Route::post('/prs/update-prs', [PickupRunSheetController::class, 'UpdatePrs']);

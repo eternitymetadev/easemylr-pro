@@ -40,9 +40,14 @@
                             Paid</button></td>
                     <?php }elseif($requestlist->payment_status == 2 || $requestlist->payment_status == 1){ ?>
                     <td><button class="btn btn-warning payment_button" value="{{$requestlist->transaction_id}}" disabled>Processing...</button></td>
-                    <?php } else if($requestlist->payment_status == 0){ ?>
-                    <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Create
-                            Payment</button></td>
+                    <?php } else if($requestlist->payment_status == 0){
+                        if(!empty($requestlist->current_paid_amt)){
+                         ?>
+                    <td><button class="btn btn-danger repay swan-tooltip" data-tooltip="{{$requestlist->remarks}}" value="{{$requestlist->transaction_id}}">Failed</button></td>
+                    <?php } else{ ?>
+                        <td><button class="btn btn-danger" value="{{$requestlist->transaction_id}}">Failed</button></td>
+                        <?php } ?>
+                    
                     <?php }else{
                         if($requestlist->balance < 1){ ?>
                             <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
