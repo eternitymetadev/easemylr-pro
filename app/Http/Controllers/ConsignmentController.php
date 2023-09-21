@@ -2688,6 +2688,7 @@ class ConsignmentController extends Controller
         echo json_encode($response);
     }
 
+    // create drs function
     public function CreateEdd(Request $request)
     {
 
