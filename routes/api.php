@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Auth\TransactionSheetsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\API\TrackApiController;
+use App\Http\Controllers\VendorController;
 
 /*
 
@@ -53,6 +54,7 @@ Route::post('career', [TrackApiController::class, 'career']);
 Route::post('contact-us', [TrackApiController::class, 'contactUs']);
 Route::post('shipnow', [TrackApiController::class, 'shipnow']);
 Route::post('delivery-rating', [TrackApiController::class, 'deliveryRating']);
+Route::post('reject-payment/{id}', [VendorController::class, 'rejectPaymentApi']);
 
 
 Route::group([

@@ -23,6 +23,7 @@ class PaymentHistory extends Model
         'paid_amt',
         'bank_refrence_no',
         'payment_date',
+        'remarks',
         'payment_status',
         'created_at',
         'updated_at'
