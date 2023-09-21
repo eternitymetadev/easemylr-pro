@@ -2026,15 +2026,12 @@ class VendorController extends Controller
 
             if ($reject) {
                
-                PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
+                $payment_rejected = PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
 
-                $response['success'] = true;
-                $response['success_message'] = "Successfully update";
+                return $payment_rejected;
             } else {
 
-                $response['success'] = false;
-                $response['error_message'] = "Can not update status";
-                $response['error'] = true;
+                return 0;
             }
 
             DB::commit();
