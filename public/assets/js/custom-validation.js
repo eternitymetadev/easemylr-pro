@@ -2095,6 +2095,7 @@ function get_delivery_date() {
 }
 /*======upload drs delevery img============================== */
 $(document).on("click", ".onelrupdate", function () {
+    $(".onelrupdate").prop('disabled', true);
     var lr_no = $(this).closest("tr").find("td").eq(0).text();
     var consignment_date = $(this)
         .closest("tr")
@@ -2158,7 +2159,7 @@ $(document).on("click", ".onelrupdate", function () {
         },
         beforeSend: function () { },
         success: function (data) {
-            // alert(data.success);
+            $(".onelrupdate").prop('disabled', false);
             if (data.success == true) {
                 swal("success", data.messages, "success");
                 location.reload();

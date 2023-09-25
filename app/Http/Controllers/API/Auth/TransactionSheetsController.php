@@ -228,7 +228,20 @@ class TransactionSheetsController extends Controller
 
         try {
 
-            $consignments = ConsignmentNote::with('ConsignerDetail','TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
+            // $consignments = ConsignmentNote::with('ConsignerDetail:nick_name,phone,address_line1,address_line2,address_line3,address_line4,postal_code','TransactionSheet:drs_no', 'ConsigneeDetail:nick_name,phone,address_line1,address_line2,address_line3,address_line4,postal_code,latitude,longitude', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
+            //     ->take(300)->get();
+
+                $consignments = ConsignmentNote::with([
+                    'ConsignerDetail:id,nick_name,phone,address_line1,address_line2,address_line3,address_line4,postal_code',
+                    'TransactionSheet:id,drs_no',
+                    'ConsigneeDetail:id,nick_name,phone,address_line1,address_line2,address_line3,address_line4,postal_code,latitude,longitude',
+                    'ConsignmentItems',
+                    'AppMedia',
+                    'Jobs'
+                ])
+                ->where('driver_id', $id)
+                ->where('lr_mode', 2)
+                ->take(200)
                 ->get();
             // echo'<pre>'; print_r($consignments); die;
          
@@ -266,26 +279,26 @@ class TransactionSheetsController extends Controller
 
                 $data[] = [
                     'lr_no' => $value->id,
-                    'lr_date' => $value->consignment_date,
-                    'edd' => $value->edd,
-                    'total_gross_weight' => $value->total_gross_weight,
-                    'total_quantity' => $value->total_quantity,
+                    'lr_date' => @$value->consignment_date,
+                    'edd' => @$value->edd,
+                    'total_gross_weight' => @$value->total_gross_weight,
+                    'total_quantity' => @$value->total_quantity,
                     'drs_no' => @$value->TransactionSheet->drs_no,
-                    'consignor_name' => $value->ConsignerDetail->nick_name,
-                    'consignor_mobile' => $value->ConsignerDetail->phone,
-                    'consignor_address' => $value->ConsignerDetail->address_line1 . ',' . @$value->ConsignerDetail->address_line2 . ',' . @$value->ConsignerDetail->address_line3 . ',' . @$value->ConsignerDetail->address_line4,
-                    'consignor_pincode' => $value->ConsignerDetail->postal_code,
-                    'consignee_name' => $value->ConsigneeDetail->nick_name,
-                    'consignee_mobile' => $value->ConsigneeDetail->phone,
-                    'consignee_address' => $value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
+                    'consignor_name' => @$value->ConsignerDetail->nick_name,
+                    'consignor_mobile' => @$value->ConsignerDetail->phone,
+                    'consignor_address' => @$value->ConsignerDetail->address_line1 . ',' . @$value->ConsignerDetail->address_line2 . ',' . @$value->ConsignerDetail->address_line3 . ',' . @$value->ConsignerDetail->address_line4,
+                    'consignor_pincode' => @$value->ConsignerDetail->postal_code,
+                    'consignee_name' => @$value->ConsigneeDetail->nick_name,
+                    'consignee_mobile' => @$value->ConsigneeDetail->phone,
+                    'consignee_address' => @$value->ConsigneeDetail->address_line1 . ',' . @$value->ConsigneeDetail->address_line2 . ',' . @$value->ConsigneeDetail->address_line3 . ',' . @$value->ConsigneeDetail->address_line4,
                     'consignee_pincode' => $value->ConsigneeDetail->postal_code,
-                    'latitude' => $value->ConsigneeDetail->latitude,
-                    'longitude' => $value->ConsigneeDetail->longitude,
-                    'order_id' => $order_item['orders'],
-                    'invoice_no' => $order_item['invoices'],
-                    'delivery_status' => $value->delivery_status,
-                    'delivery_notes' => $value->delivery_notes,
-                    'img' => $pod_img,
+                    'latitude' => @$value->ConsigneeDetail->latitude,
+                    'longitude' => @$value->ConsigneeDetail->longitude,
+                    'order_id' => @$order_item['orders'],
+                    'invoice_no' => @$order_item['invoices'],
+                    'delivery_status' => @$value->delivery_status,
+                    'delivery_notes' => @$value->delivery_notes,
+                    'img' => @$pod_img,
                     'success_time' => @$successtime,
                 ];
             }

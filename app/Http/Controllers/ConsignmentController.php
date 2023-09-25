@@ -4399,8 +4399,7 @@ class ConsignmentController extends Controller
             //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
             //     return Response::json($response);
             // }
-
-            if($request->file){
+            if($request->file('file')){
                 $pod_image = $request->file('file');                
                 $originalFilename = uniqid() . '_' . $pod_image->getClientOriginalName();
             
