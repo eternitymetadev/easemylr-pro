@@ -1396,7 +1396,10 @@ jQuery(document).ready(function () {
             jQuery("#commonconfirm").modal("show");
             jQuery(".commonconfirmclick").one("click", function () {
                 var reason_to_cancel = jQuery("#reason_to_cancel").val();
-
+                if(!reason_to_cancel){
+                    swal("Error", "Enter Reason to cancel", "error");
+                    return false;
+                }
                 var data = {
                     id: user_id,
                     status: datastatus,
