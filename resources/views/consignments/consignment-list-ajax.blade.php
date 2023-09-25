@@ -194,7 +194,7 @@
                     <?php }
                         } elseif($consignment->status == 2){ ?>
                     <span class="badge alert bg-success activestatus {{$disable}}"
-                        data-id="{{$consignment->id}}">Unverified</span>
+                    data-status="0" data-id="{{$consignment->id}}">Unverified</span>
                     <?php } elseif($consignment->status == 3){ ?>
                     <span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>
                     <?php } ?>

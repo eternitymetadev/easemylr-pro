@@ -1639,7 +1639,6 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
-        //
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1648,8 +1647,6 @@ class VendorController extends Controller
         } else {
             $peritem = Config::get('variable.PER_PAGE');
         }
-
-        // $query = PaymentRequest::query();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -1722,7 +1719,6 @@ class VendorController extends Controller
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
 

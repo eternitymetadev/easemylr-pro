@@ -60,15 +60,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail.GetZone',
-            'ConsigneeDetail.GetZone',
-            'ShiptoDetail.GetZone',
+            'ConsigneeDetail.GetZone:id,state,district',
+            'ShiptoDetail.GetZone:id,state,district',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
+            // 'ConsignerDetail.GetZone',
         ); 
 
         if($authuser->role_id ==1)
@@ -97,10 +97,11 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $consignments = $query->orderBy('id','ASC')->get();
         
         if($consignments->count() > 0){
-            foreach ($consignments as $key => $consignment){
-            
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
+            foreach ($consignments->chunk(1000) as $key => $consignment_chunks){
+            foreach ($consignment_chunks as $key => $consignment){
+            // echo "<pre>"; print_r($consignment); die;
+                $start_date = strtotime(@$consignment->consignment_date);
+                $end_date = strtotime(@$consignment->delivery_date);
                 $tat = ($end_date - $start_date)/60/60/24;
                 if(empty($consignment->delivery_date)){
                     $tatday = '-';
@@ -298,6 +299,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 ];
             }
         }
+    }
         return collect($arr);
     }
 
