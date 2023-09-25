@@ -13,7 +13,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 class Driver extends Authenticatable implements JWTSubject
 { 
     protected $table = "drivers";
-    public $timestamps = false;
+    public $timestamps = true;
     public $boolean = 1;
     protected $primaryKey = 'id';
     use HasFactory, Notifiable;
