@@ -766,8 +766,8 @@ class TransactionSheetsController extends Controller
         try {
 
             $update_status = ConsignmentNote::find($id);
-            $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel', 'reason_to_cancel' => $request->reason_to_cancel]);
-
+            // $res = $update_status->update(['status' => 0, 'delivery_status' => 'Cancel', 'reason_to_cancel' => $request->reason_to_cancel]);
+            $res = 0;
             if ($res) {
                 return response([
                     'status' => 'success',
