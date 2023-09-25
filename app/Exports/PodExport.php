@@ -171,6 +171,8 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
+                  }else if($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
                   }else{
                    $deliverymode = 'Manual';
                   }
