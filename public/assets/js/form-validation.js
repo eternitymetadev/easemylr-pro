@@ -47,34 +47,34 @@ jQuery(document).ready(function(){
         let name = $(this).attr('name');
         $('#'+name+'-error').hide();
     });
-
+    
     // user login
     jQuery('#loginform').validate({
         rules:
         {
-            login_id: {
-                required: true,
-            },
-            email: {
-                // required: true,
-                regex: "",
-                email: true,
-            },
-            password: {
-                required: true,
-            },
+            // login_id: {
+            //     required: true,
+            // },
+            // email: {
+            //     // required: true,
+            //     regex: "",
+            //     email: true,
+            // },
+            // password: {
+            //     required: true,
+            // },
         },
         messages:
         {
-            login_id: {
-                required: "Please enter login id",
-            },
-            email: {
-              required: "Email address is required",
-             },
-            password: {
-              required: "Password is required",
-             }, 
+            // login_id: {
+            //     required: "Please enter login id",
+            // },
+            // email: {
+            //   required: "Email address is required",
+            //  },
+            // password: {
+            //   required: "Password is required",
+            //  }, 
         },
         submitHandler : function(form)
         {
