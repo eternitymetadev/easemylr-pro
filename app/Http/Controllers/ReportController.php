@@ -472,42 +472,41 @@ class ReportController extends Controller
         $regional_details = RegionalClient::all();
 
         foreach ($regional_details as $regional) {
+            if($regional->is_misemail == 1){
+                date_default_timezone_set('Asia/Kolkata');
+                $current_time = date("h:i A");
 
-            date_default_timezone_set('Asia/Kolkata');
-            $current_time = date("h:i A");
+                $consignment_details = ConsignmentNote::where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
+                if (!empty($regional->email)) {
 
-            $consignment_details = ConsignmentNote::where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
-            if (!empty($regional->email)) {
+                    if (!empty($consignment_details)) {
+                        $path = 'regional/Shprider Auto MIS 910003.xlsx';
 
-                if (!empty($consignment_details)) {
-                    $path = 'regional/Shprider Auto MIS 910003.xlsx';
+                        Excel::store(new RegionalReport($regional->id), $path, 'public');
+                        $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
 
-                    Excel::store(new RegionalReport($regional->id), $path, 'public');
-                    $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
+                        $data = ['client_name' => $regional->name, 'current_time' => $current_time];
 
-                    $data = ['client_name' => $regional->name, 'current_time' => $current_time];
-
-                    $user['to'] = $regional->email;
-                    $sec_emails = explode(',', $regional->secondary_email);
-                    if(!empty($sec_emails)){
-                        $user['cc'] = $sec_emails;
-                    }
-
-                    Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
-                        $messges->to($user['to']);
+                        $user['to'] = $regional->email;
+                        $sec_emails = explode(',', $regional->secondary_email);
                         if(!empty($sec_emails)){
-                        $messges->cc($user['cc']);
+                            $user['cc'] = $sec_emails;
                         }
-                        $messges->subject('ShipRider Auto MIS 910003');
-                        $messges->attach($get_file);
 
-                    });
+                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
+                            $messges->to($user['to']);
+                            if(!empty($sec_emails)){
+                            $messges->cc($user['cc']);
+                            }
+                            $messges->subject('ShipRider Auto MIS 910003');
+                            $messges->attach($get_file);
+
+                        });
+                    }
                 }
             }
-
         }
         return 'Email Sent';
-
     }
 
 
