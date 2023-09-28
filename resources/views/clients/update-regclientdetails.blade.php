@@ -104,7 +104,7 @@
                         </div>
                     </div> -->
                     <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label for="exampleFormControlInput2">Multiple Invoice<span
                                     class="text-danger">*</span></label>
                             <select class="form-control is_multiple_invoice" name="is_multiple_invoice">
@@ -119,43 +119,67 @@
                                     Multiple invoice-Without item</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label for="exampleFormControlInput2">Pickup not Required<span
                                     class="text-danger">*</span></label>
-                            <div class="check-box d-flex">
-                                <div class="checkbox radio">
-                                    <label class="check-label">Yes
-                                        <input type="radio" value='1' name="is_prs_pickup"
+                                    <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                       <div class="checkbox radio">
+                                        <label class="check-label d-flex align-items-center" style="gap: 4px">
+                                            <input type="radio" value='1' name="is_prs_pickup"
                                             {{ ($regclient_name->is_prs_pickup=="1")? "checked" : "" }}>
                                         <span class="checkmark"></span>
+                                        Yes
                                     </label>
                                 </div>
                                 <div class="checkbox radio"> 
-                                    <label class="check-label">No
+                                    <label class="check-label d-flex align-items-center" style="gap: 4px">
                                         <input type="radio" name="is_prs_pickup" value='0'
                                             {{ ($regclient_name->is_prs_pickup=="0")? "checked" : "" }}>
                                         <span class="checkmark"></span>
+                                        No
                                     </label>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-row mb-0">
-                        <div class="form-group col-md-6">
+                   
+                        <div class="form-group col-md-3">
                             <label for="exampleFormControlInput2">Email Sent<span class="text-danger">*</span></label>
-                            <div class="check-box d-flex">
+                            <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
                                 <div class="checkbox radio">
-                                    <label class="check-label">Yes
+                                    <label class="check-label d-flex align-items-center" style="gap: 4px">
                                         <input type="radio" value='1' name="is_email_sent"
                                             {{ ($regclient_name->is_email_sent=="1")? "checked" : "" }}>
                                         <span class="checkmark"></span>
+                                        Yes
                                     </label>
                                 </div>
                                 <div class="checkbox radio">
-                                    <label class="check-label">No
+                                    <label class="check-label d-flex align-items-center" style="gap: 4px">
                                         <input type="radio" name="is_email_sent" value='0'
                                             {{ ($regclient_name->is_email_sent=="0")? "checked" : "" }}>
                                         <span class="checkmark"></span>
+                                        No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="exampleFormControlInput2">Email MIS Report3 Sent<span class="text-danger">*</span></label>
+                            <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                <div class="checkbox radio">
+                                    <label class="check-label d-flex align-items-center" style="gap: 4px">
+                                        <input type="radio" value='1' name="is_misemail"
+                                            {{ ($regclient_name->is_misemail=="1")? "checked" : "" }}>
+                                        <span class="checkmark"></span>
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="checkbox radio">
+                                    <label class="check-label d-flex align-items-center" style="gap: 4px">
+                                        <input type="radio" name="is_misemail" value='0'
+                                            {{ ($regclient_name->is_misemail=="0")? "checked" : "" }}>
+                                        <span class="checkmark"></span>
+                                        No
                                     </label>
                                 </div>
                             </div>

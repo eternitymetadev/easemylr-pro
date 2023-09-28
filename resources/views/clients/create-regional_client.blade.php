@@ -26,8 +26,7 @@
                     <nav class="breadcrumb-one" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Clients</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create
-                                    Regional Client</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Create Regional Client</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -118,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div class="form-row mb-0">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-3">
                                         <label for="exampleFormControlInput2">Multiple Invoice<span
                                                 class="text-danger">*</span></label>
                                         <select class="form-control is_multiple_invoice" name="is_multiple_invoice">
@@ -129,72 +128,65 @@
                                             <option value="4">LR Multiple invoice-Without item</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="exampleFormControlInput2">Pickup not Required<span
-                                                class="text-danger">*</span></label>
-                                        <div class="check-box d-flex">
+                                    <div class="form-group col-md-3">
+                                        <label for="exampleFormControlInput2">Pickup not Required</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
                                             <div class="checkbox radio">
-                                                <label class="check-label">Yes
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" value='1' name="is_prs_pickup">
                                                     <span class="checkmark"></span>
+                                                    Yes
                                                 </label>
                                             </div>
                                             <div class="checkbox radio">
-                                                <label class="check-label">No
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" name="is_prs_pickup" value='0' checked>
                                                     <span class="checkmark"></span>
+                                                    No
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-row mb-0">
-                                    <div class="form-group col-md-6">
-                                        <label for="exampleFormControlInput2">Email Sent<span
-                                                class="text-danger">*</span></label>
-                                        <div class="check-box d-flex">
+                             
+                                    <div class="form-group col-md-3">
+                                        <label for="exampleFormControlInput2">Email Sent</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
                                             <div class="checkbox radio">
-                                                <label class="check-label">Yes
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" value='1' name="is_email_sent">
                                                     <span class="checkmark"></span>
+                                                        Yes
                                                 </label>
                                             </div>
                                             <div class="checkbox radio">
-                                                <label class="check-label">No
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" name="is_email_sent" value='0' checked>
                                                     <span class="checkmark"></span>
+                                                    No
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- <div class="form-group col-md-6">
-                                                    <label for="exampleFormControlInput2">Select Payment Terms<span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="check-box d-flex" style="margin: 6px 0 0 6px">
-                                                        <div class="checkbox radio">
-                                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                                                <span class="checkmark"></span>
-                                                                <input type="checkbox" value='To be Billed' name="payment_term[]" />
-                                                                TBB
-                                                            </label>
-                                                        </div>
-                                                        <div class="checkbox radio">
-                                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                                                <span class="checkmark"></span>
-                                                                <input type="checkbox" name="payment_term[]" value='To Pay' checked />
-                                                                To Pay
-                                                            </label>
-                                                        </div>
-                                                        <div class="checkbox radio">
-                                                            <label class="check-label d-flex align-items-center" style="gap: 6px">
-                                                                <span class="checkmark"></span>
-                                                                <input type="checkbox" name="payment_term[]" value='Paid' checked />
-                                                                Paid
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
+                                    <div class="form-group col-md-3">
+                                        <label for="exampleFormControlInput2">Email MIS Report3 Sent</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                            <div class="checkbox radio">
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
+                                                    <input type="radio" value='1' name="is_misemail">
+                                                    <span class="checkmark"></span>
+                                                    Yes
+                                                </label>
+                                            </div>
+                                            <div class="checkbox radio">
+                                                <label class="check-label d-flex align-items-center" style="gap: 4px">
+                                                    <input type="radio" name="is_misemail" value='0' checked>
+                                                    <span class="checkmark"></span>
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <label for="exampleFormControlInput2">Alertnate Emails</label>
