@@ -478,7 +478,13 @@ class ReportController extends Controller
 
                 if (!empty($regional->email)) {
 
-                    $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
+                    $consignment_details = ConsignmentNote::where('status', '!=', 5)
+                        ->where('regclient_id', $regional->id)
+                        ->whereDate('consignment_date', '>=', now()->subDays(45))
+                        ->first();
+                        // ->whereDate('consignment_date', '<=', now())
+                        
+                    // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
                     
                     if (!empty($consignment_details)) {
                         $path = 'regional/Shprider Auto MIS 910003.xlsx';
