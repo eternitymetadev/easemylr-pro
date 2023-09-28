@@ -327,6 +327,7 @@ class VehicleController extends Controller
     public function updateVehicle(Request $request)
     {
         try { 
+            $vehicle = Vehicle::find($request->vehicle_id);
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
                 'regn_no' => 'required|unique:vehicles,regn_no,'.$request->vehicle_id,

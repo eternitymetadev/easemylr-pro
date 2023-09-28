@@ -308,8 +308,8 @@ class DriverController extends Controller
      */
     public function updateDriver(Request $request)
     {
-        // dd($request->branches_id);
         try { 
+            $driver = Driver::find($request->driver_id);
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
                 'name' => 'required',
