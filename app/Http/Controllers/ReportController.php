@@ -476,9 +476,10 @@ class ReportController extends Controller
                 date_default_timezone_set('Asia/Kolkata');
                 $current_time = date("h:i A");
 
-                $consignment_details = ConsignmentNote::where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
                 if (!empty($regional->email)) {
 
+                    $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
+                    
                     if (!empty($consignment_details)) {
                         $path = 'regional/Shprider Auto MIS 910003.xlsx';
 

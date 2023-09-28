@@ -505,6 +505,7 @@ class ClientController extends Controller
             $regionalupdate['is_multiple_invoice'] = $request->is_multiple_invoice;
             $regionalupdate['is_prs_pickup'] = $request->is_prs_pickup;
             $regionalupdate['is_email_sent'] = $request->is_email_sent;
+            $regionalupdate['is_misemail'] = $request->is_misemail;
             $regionalupdate['location_id'] = $request->branch_id;
 
             if($request->secondary_email){

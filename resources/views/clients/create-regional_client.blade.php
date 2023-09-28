@@ -129,10 +129,9 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="exampleFormControlInput2">Pickup not Required<span
-                                                class="text-danger">*</span></label>
-                                                <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
-                                                    <div class="checkbox radio">
+                                        <label for="exampleFormControlInput2">Pickup not Required</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                            <div class="checkbox radio">
                                                 <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" value='1' name="is_prs_pickup">
                                                     <span class="checkmark"></span>
@@ -150,14 +149,13 @@
                                     </div>
                              
                                     <div class="form-group col-md-3">
-                                        <label for="exampleFormControlInput2">Email Sent<span
-                                                class="text-danger">*</span></label>
-                                                <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
-                                                                                                        <div class="checkbox radio">
+                                        <label for="exampleFormControlInput2">Email Sent</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                            <div class="checkbox radio">
                                                 <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" value='1' name="is_email_sent">
                                                     <span class="checkmark"></span>
-                                                    Yes
+                                                        Yes
                                                 </label>
                                             </div>
                                             <div class="checkbox radio">
@@ -171,10 +169,9 @@
                                     </div>
 
                                     <div class="form-group col-md-3">
-                                        <label for="exampleFormControlInput2">Email MIS Report3 Sent<span
-                                                class="text-danger">*</span></label>
-                                            <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
-                                                <div class="checkbox radio">
+                                        <label for="exampleFormControlInput2">Email MIS Report3 Sent</label>
+                                        <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
+                                            <div class="checkbox radio">
                                                 <label class="check-label d-flex align-items-center" style="gap: 4px">
                                                     <input type="radio" value='1' name="is_misemail">
                                                     <span class="checkmark"></span>
