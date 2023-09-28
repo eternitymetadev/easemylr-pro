@@ -253,7 +253,7 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
                 $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(10);
                 $event->sheet->getDelegate()->getColumnDimension('C')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('D')->setWidth(15);
-                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(16);
+                $event->sheet->getDelegate()->getColumnDimension('E')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('F')->setWidth(25);
                 $event->sheet->getDelegate()->getColumnDimension('G')->setWidth(15);
                 $event->sheet->getDelegate()->getColumnDimension('H')->setWidth(16);
