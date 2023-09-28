@@ -69,6 +69,8 @@ div.relative {
                                 <th>Name</th>
                                 <th>Location Id</th>
                                 <th>Gst</th>
+                                <th style="display:none">Email</th>
+                                <th style="display:none">Secondary Email</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -85,13 +87,12 @@ div.relative {
                                 </td>
                                 <td>{{$value->Location->name ?? "-"}}</td>
                                 <td>{{$value->gst_no ?? "-"}}</td>
+                                <td style="display:none">{{$value->email ?? "-"}}</td>
+                                <td style="display:none">{{$value->secondary_email ?? "-"}}</td>
                                 <td>
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i
                                                 class="fa fa-edit" aria-hidden="true"></i> Edit<span></a>
-                                    <!-- <a class="btn btn-primary"
-                                        href="{{url($prefix.'/'.$segment.'/view-regclient-detail/'.Crypt::encrypt($value->id))}}"><span><i
-                                                class="fa fa-eye" aria-hidden="true"></i> View</span></a> -->
                                 </td>
                             </tr>
                             <?php 

@@ -60,23 +60,14 @@ class RegionalReport implements FromCollection, WithHeadings, ShouldQueue, WithE
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
         )->where('regclient_id',$regional_client)
-        ->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'));
+        ->whereDate('consignment_date', '>=', now()->subDays(45));
+        // ->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'));
 
-        $consignments = $query->orderBy('id','ASC')->get();
+        $consignments = $query->orderBy('id','desc')->get();
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
-                // ageing formula = deliverydate - createdate
-                // $start_date = strtotime($consignment->consignment_date);
-                // $end_date = strtotime($consignment->delivery_date);
-                // $age_diff = ($end_date - $start_date)/60/60/24;
-
-                // if($age_diff < 0){
-                //     $ageing_day = '-';
-                // }else{
-                //     $ageing_day = $age_diff;
-                // }
                 $start_date = $consignment->consignment_date;
                 $end_date = $consignment->delivery_date;
 
