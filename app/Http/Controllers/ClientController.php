@@ -100,24 +100,78 @@ class ClientController extends Controller
             }
 
             // ======= gst upload
-            $gstupload = $request->file('upload_gst');
-            $path = Storage::disk('s3')->put('clients', $gstupload);
-            $gst_img_path_save = Storage::disk('s3')->url($path);
+            // $gstupload = $request->file('upload_gst');
+            // $path = Storage::disk('s3')->put('clients', $gstupload);
+            // $gst_img_path_save = Storage::disk('s3')->url($path);
+
+            // upload gst image
+            if($request->file('upload_gst')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_gst')->getClientOriginalName();
+
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_gst'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $gst_img_path_save = end($imagePath);
+                }else{
+                    $gst_img_path_save = null;
+                }
+            }else{
+                $gst_img_path_save = null;
+            }
+            
 
             //  ======= pan upload
-            $panupload = $request->file('upload_pan');
-            $pan_path = Storage::disk('s3')->put('clients', $panupload);
-            $pan_img_path_save = Storage::disk('s3')->url($pan_path);
+            // $panupload = $request->file('upload_pan');
+            // $pan_path = Storage::disk('s3')->put('clients', $panupload);
+            // $pan_img_path_save = Storage::disk('s3')->url($pan_path);
+
+            if($request->file('upload_pan')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_pan')->getClientOriginalName();
+
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_pan'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $pan_img_path_save = end($imagePath);
+                }else{
+                    $pan_img_path_save = null;
+                }
+            }else{
+                $pan_img_path_save = null;
+            }
 
             // // ======= tan upload
-            $tanupload = $request->file('upload_tan');
-            $tan_path = Storage::disk('s3')->put('clients', $tanupload);
-            $tan_img_path_save = Storage::disk('s3')->url($tan_path);
+            // $tanupload = $request->file('upload_tan');
+            // $tan_path = Storage::disk('s3')->put('clients', $tanupload);
+            // $tan_img_path_save = Storage::disk('s3')->url($tan_path);
+
+            if($request->file('upload_tan')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_tan')->getClientOriginalName();
+
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_tan'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $tan_img_path_save = end($imagePath);
+                }else{
+                    $tan_img_path_save = null;
+                }
+            }else{
+                $tan_img_path_save = null;
+            }
 
             // // ======= moa upload
-            $moaupload = $request->file('upload_moa');
-            $moa_path = Storage::disk('s3')->put('clients', $moaupload);
-            $moa_img_path_save = Storage::disk('s3')->url($moa_path);
+            // $moaupload = $request->file('upload_moa');
+            // $moa_path = Storage::disk('s3')->put('clients', $moaupload);
+            // $moa_img_path_save = Storage::disk('s3')->url($moa_path);
+
+            if($request->file('upload_moa')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_moa')->getClientOriginalName();
+
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_moa'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $moa_img_path_save = end($imagePath);
+                }else{
+                    $moa_img_path_save = null;
+                }
+            }else{
+                $moa_img_path_save = null;
+            }
 
             $client['tan'] = $request->tan;
             $client['gst_no'] = $request->gst_no;
@@ -716,17 +770,36 @@ class ClientController extends Controller
                 return response()->json($response);
             }
 
-            // ======= gst upload
-            $gstupload = $request->file('upload_gst');
-            $path = Storage::disk('s3')->put('clients', $gstupload);
-            $gst_img_path_save = Storage::disk('s3')->url($path);
+            // gst upload //
+            // $gstupload = $request->file('upload_gst');
+            // $path = Storage::disk('s3')->put('clients', $gstupload);
+            // $gst_img_path_save = Storage::disk('s3')->url($path);
 
-            //  ======= pan upload
-            $panupload = $request->file('upload_pan');
-            $pan_path = Storage::disk('s3')->put('clients', $panupload);
-            $pan_img_path_save = Storage::disk('s3')->url($pan_path);
+            if($request->file('upload_gst')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_gst')->getClientOriginalName();
 
-            // $payment_term = implode(',', $request->payment_term);
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_gst'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $gst_img_path_save = end($imagePath);
+                }else{
+                    $gst_img_path_save = null;
+                }
+            }else{
+                $gst_img_path_save = null;
+            }
+            // pan upload //
+            if($request->file('upload_pan')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_pan')->getClientOriginalName();
+
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_pan'), $originalFilename)) {
+                    $imagePath = explode('/', $originalFilename);
+                    $pan_img_path_save = end($imagePath);
+                }else{
+                    $pan_img_path_save = null;
+                }
+            }else{
+                $pan_img_path_save = null;
+            }
 
             $client['baseclient_id'] = $request->base_client_id;
             $client['name'] = $request->name;
@@ -776,10 +849,11 @@ class ClientController extends Controller
 
         return view('clients.update-baseclient', ['prefix' => $this->prefix, 'baseClient' => $baseClient]);
     }
-    // =========
+    // ==== update base client
     public function updateBaseClient(Request $request)
     {
         try {
+            $baseClient = BaseClient::find($request->base_client);
             DB::beginTransaction();
 
             $this->prefix = request()->route()->getPrefix();
@@ -802,37 +876,66 @@ class ClientController extends Controller
                 $client['client_name'] = $request->client_name;
             }
 
-             // ======= gst upload //
-            if (!empty($request->file('upload_gst'))) {
-                $gstupload = $request->file('upload_gst');
-                $path = Storage::disk('s3')->put('clients', $gstupload);
-                $gst_img_path_save = Storage::disk('s3')->url($path);
-                $client['upload_gst'] = $gst_img_path_save;
-            }
+            // ======= gst upload //           
+            if($request->file('upload_gst')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_gst')->getClientOriginalName();
     
-            //  ======= pan upload //
-            if (!empty($request->file('upload_pan'))) {
-                $panupload = $request->file('upload_pan');
-                $pan_path = Storage::disk('s3')->put('clients', $panupload);
-                $pan_img_path_save = Storage::disk('s3')->url($pan_path);
-                $client['upload_pan'] = $pan_img_path_save;
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_gst'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($baseClient->upload_gst)) {
+                        Storage::disk('s3')->delete('client_images/' . $baseClient->upload_gst);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $client['upload_gst'] = end($imagePath);
+                }
             }
+
+            if($request->file('upload_pan')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_pan')->getClientOriginalName();
     
-            // ======= tan upload //
-            if (!empty($request->file('upload_tan'))) {
-                $tanupload = $request->file('upload_tan');
-                $tan_path = Storage::disk('s3')->put('clients', $tanupload);
-                $tan_img_path_save = Storage::disk('s3')->url($tan_path);
-                $client['upload_tan'] = $tan_img_path_save;
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_pan'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($baseClient->upload_pan)) {
+                        Storage::disk('s3')->delete('client_images/' . $baseClient->upload_pan);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $client['upload_pan'] = end($imagePath);
+                }
             }
+
+            if($request->file('upload_tan')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_tan')->getClientOriginalName();
     
-            // ======= moa upload //
-            if (!empty($request->file('upload_moa'))) {
-                $moaupload = $request->file('upload_moa');
-                $moa_path = Storage::disk('s3')->put('clients', $moaupload);
-                $moa_img_path_save = Storage::disk('s3')->url($moa_path);
-                $client['upload_moa'] = $moa_img_path_save;
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_tan'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($baseClient->upload_tan)) {
+                        Storage::disk('s3')->delete('client_images/' . $baseClient->upload_tan);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $client['upload_tan'] = end($imagePath);
+                }
             }
+
+            if($request->file('upload_moa')){
+                $originalFilename = uniqid() . '_' . $request->file('upload_moa')->getClientOriginalName();
+    
+                if (Storage::disk('s3')->putFileAs('client_images', $request->file('upload_moa'), $originalFilename)) {
+                    // Delete the old file (if exists)
+                    if (!empty($baseClient->upload_moa)) {
+                        Storage::disk('s3')->delete('client_images/' . $baseClient->upload_moa);
+                    }
+                    $imagePath = explode('/', $originalFilename);
+                    $client['upload_moa'] = end($imagePath);
+                }
+            }
+
+            // ======= gst upload //
+            // if (!empty($request->file('upload_gst'))) {
+            //     $gstupload = $request->file('upload_gst');
+            //     $path = Storage::disk('s3')->put('client_images', $gstupload);  // old folder "clients"
+            //     $gst_img_path_save = Storage::disk('s3')->url($path);
+            //     $client['upload_gst'] = $gst_img_path_save;
+            // }
 
             $client['tan'] = $request->tan;
             $client['gst_no'] = $request->gst_no;

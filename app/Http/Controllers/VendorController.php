@@ -745,7 +745,7 @@ class VendorController extends Controller
     public function updateVendor(Request $request)
     {
         try {
-
+            $vendor = Vendor::find($request->vendor_id);
             $this->prefix = request()->route()->getPrefix();
             $rules = array(
                 'name' => 'required',

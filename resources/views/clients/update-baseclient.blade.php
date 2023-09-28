@@ -73,10 +73,6 @@
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/update-base-client')}}" id="update_baseclient">
-                            <!-- <div class="form-group mb-4">
-                                <label for="exampleFormControlInput2">Client Name<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="client_name" id="client_name" placeholder="">
-                            </div> -->
                             <input type="hidden" name="base_client" value="{{$baseClient->id}}">
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
@@ -106,7 +102,16 @@
                                         <input type="file" name="upload_gst" accept="image/png, image/jpeg, image/jpg"
                                             class="imgInput"
                                             value="{{old('upload_gst', isset($baseClient->upload_gst) ? $baseClient->upload_gst : '')}}">
-                                        <img src="{{old('upload_gst', isset($baseClient->upload_gst) ? $baseClient->upload_gst : '')}}"
+                                            <?php 
+                                                $awsUrl = env('AWS_S3_URL');
+                                                if(!empty($baseClient->upload_gst))
+                                                { 
+                                                    $image_url = $awsUrl."/client_images/".$baseClient->upload_gst;
+                                                }else{
+                                                    $image_url = "";
+                                                }
+                                            ?>
+                                        <img src="{{$image_url}}"
                                             class="imagePreview" alt="" />
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -122,8 +127,16 @@
                                     <div class="imageInput">
                                         <input type="file" name="upload_pan" accept="image/png, image/jpeg, image/jpg"
                                             class="imgInput"
-                                            value="{{old('upload_pan', isset($baseClient->upload_pan) ? $baseClient->upload_gst : '')}}">
-                                        <img src="{{old('upload_pan', isset($baseClient->upload_pan) ? $baseClient->upload_pan : '')}}"
+                                            value="{{old('upload_pan', isset($baseClient->upload_pan) ? $baseClient->upload_pan : '')}}">
+                                            <?php 
+                                                if(!empty($baseClient->upload_pan))
+                                                { 
+                                                    $image_url = $awsUrl."/client_images/".$baseClient->upload_pan;
+                                                }else{
+                                                    $image_url = "";
+                                                }
+                                            ?>
+                                        <img src="{{$image_url}}"
                                             class="imagePreview" alt="" />
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -139,8 +152,16 @@
                                     <div class="imageInput">
                                         <input type="file" name="upload_tan" accept="image/png, image/jpeg, image/jpg"
                                             class="imgInput"
-                                            value="{{old('upload_tan', isset($baseClient->upload_tan) ? $baseClient->upload_gst : '')}}">
-                                        <img src="{{old('upload_tan', isset($baseClient->upload_tan) ? $baseClient->upload_tan : '')}}"
+                                            value="{{old('upload_tan', isset($baseClient->upload_tan) ? $baseClient->upload_tan : '')}}">
+                                            <?php 
+                                                if(!empty($baseClient->upload_tan))
+                                                { 
+                                                    $image_url = $awsUrl."/client_images/".$baseClient->upload_tan;
+                                                }else{
+                                                    $image_url = "";
+                                                }
+                                            ?>
+                                        <img src="{{$image_url}}"
                                             class="imagePreview" alt="" />
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -157,7 +178,15 @@
                                         <input type="file" name="upload_moa" accept="image/png, image/jpeg, image/jpg"
                                             class="imgInput"
                                             value="{{old('upload_moa', isset($baseClient->upload_moa) ? $baseClient->upload_moa : '')}}">
-                                        <img src="{{old('upload_moa', isset($baseClient->upload_moa) ? $baseClient->upload_moa : '')}}"
+                                            <?php 
+                                                if(!empty($baseClient->upload_moa))
+                                                { 
+                                                    $image_url = $awsUrl."/client_images/".$baseClient->upload_moa;
+                                                }else{
+                                                    $image_url = "";
+                                                }
+                                            ?>
+                                        <img src="{{$image_url}}"
                                             class="imagePreview" alt="" />
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
