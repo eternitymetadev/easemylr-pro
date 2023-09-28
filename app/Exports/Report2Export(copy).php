@@ -31,7 +31,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     protected $baseclient_id;
     protected $regclient_id;
 
-    function __construct($startdate, $enddate, $baseclient_id, $regclient_id) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         $this->baseclient_id = $baseclient_id;
@@ -40,17 +40,24 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
     public function collection()
     {
-        // ini_set('memory_limit', '2048M');
-        // set_time_limit ( 6000 );
-        // $arr = array();
-        // $query = ConsignmentNote::query();
+        ini_set('memory_limit', '2048M');
+        set_time_limit ( 6000 );
+        $arr = array();
+
+        $query = ConsignmentNote::query();
+
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+        $baseclient_id = $this->baseclient_id;
+        $regclient_id = $this->regclient_id;
 
         $authuser = Auth::user();
-        $role_id = $authuser->role_id;
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-
-        $query = ConsignmentNote::where('status', '!=', 5)
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        
+        $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsignerDetail.GetZone',
@@ -62,27 +69,28 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        );
+        ); 
 
-        if ($role_id == 4) {
-            $query->whereIn('regclient_id', $regclient);
-        } elseif ($role_id != 1) {
-            $query->whereIn('branch_id', $cc);
+        if($authuser->role_id ==1)
+        {
+            $query = $query;            
+        }elseif($authuser->role_id == 4){
+            $query = $query->whereIn('regclient_id', $regclient);   
+        }else{
+            $query = $query->whereIn('branch_id', $cc);
         }
 
-        if (isset($this->startdate) && isset($this->enddate)) {
-            $query->whereBetween('consignment_date', [$this->startdate, $this->enddate]);
+        if(isset($startdate) && isset($enddate)){
+            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
-
-        if ($this->baseclient_id) {
-            $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function ($q) {
-                $q->where('id', $this->baseclient_id);
+        if($baseclient_id){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+                $q->where('id', $baseclient_id);
             });
         }
-
-        if ($this->regclient_id) {
-            $query->whereHas('ConsignerDetail.GetRegClient', function ($q) {
-                $q->where('id', $this->regclient_id);
+        if($regclient_id){
+            $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+                $q->where('id', $regclient_id);
             });
         }
 

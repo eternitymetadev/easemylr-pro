@@ -46,6 +46,38 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
         $query = ConsignmentNote::query();
 
+        // Select only the necessary columns
+        $query = $query->select([
+            'id',
+            'lr_type',
+            'regclient_id',
+            'consigner_id',
+            'consignee_id',
+            'ship_to_id',
+            'consignment_date',
+            'payment_type',
+            'vehicle_id',
+            'total_quantity',
+            'total_weight',
+            'total_gross_weight',
+            'total_freight',
+            'transporter_name',
+            'vehicle_type',
+            'purchase_price',
+            'freight_on_delivery',
+            'cod',
+            'user_id',
+            'branch_id',
+            'driver_id',
+            'edd',
+            'status',
+            'lr_mode',
+            'delivery_status',
+            'delivery_date',
+            'signed_drs',
+            'job_id'
+        ]);
+
         $startdate = $this->startdate;
         $enddate = $this->enddate;
         $baseclient_id = $this->baseclient_id;
@@ -197,48 +229,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $drs_date = '-';
                    }
 
-                   if($consignment->lr_mode == 1){
-                    $deliverymode = 'Shadow'; 
-                  }else{
-                   $deliverymode = 'Manual';
-                  }
-
-                // pod status
-                if($consignment->lr_mode == 0){
-                    if(empty($consignment->signed_drs)){
-                        $pod= 'Not Available'; 
-                    } else {
-                        $pod= 'Available';
-                    } 
-                } else if($consignment->lr_mode == 1){ 
-                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
-        
-                    if(!empty($job->response_data)){
-                        $trail_decorator = json_decode($job->response_data);
-                        $img_group = array();
-                        foreach($trail_decorator->task_history as $task_img){
-                            if($task_img->type == 'image_added'){
-                                $img_group[] = $task_img->description;
-                            }
-                        }
-                        if(empty($img_group)){
-                            $pod= 'Not Available';
-                        } else {
-                            $pod= 'Available';
-                        }
-                    }else{
-                        $pod= 'Not Available';
-                    }
-                }else{
-                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
-                    $count_arra = count($getjobimg);
-                    if ($count_arra > 1) { 
-                        $pod= 'Available';
-                    }else{
-                        $pod= 'Not Available'; 
-                    }
-                }
-              
                 // lr type //
                 if($consignment->lr_type == 0){ 
                     $lr_type = "FTL";
@@ -288,8 +278,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'tat'                 => $tatday,
-                    'delivery_mode'       => $deliverymode,
-                    'pod'                 => $pod,
+                    //'delivery_mode'       => $deliverymode,
+                    //'pod'                 => $pod,
                     'payment_type'        => @$consignment->payment_type,
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
