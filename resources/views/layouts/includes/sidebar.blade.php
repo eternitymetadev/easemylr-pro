@@ -110,7 +110,7 @@
     if(in_array('2', $permissions))
     {
     ?>
-    {{-- <li class="menu">
+    <li class="menu">
         <a href="{{$prefixurl.'route-finder'}}" data-active="<?php if($segment == 'route-finder'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'route-finder')) active @endif">
@@ -137,7 +137,7 @@
                 <span>Route List</span>
             </div>
         </a>
-    </li> --}}
+    </li>
     <?php }
     }
     ?>
