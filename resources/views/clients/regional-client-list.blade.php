@@ -68,9 +68,11 @@ div.relative {
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Location Id</th>
-                                <th>Gst</th>
+                                <th>Gsts</th>
                                 <th style="display:none">Email</th>
                                 <th style="display:none">Secondary Email</th>
+                                <th style="">Order Email Status</th>
+                                <th style="">MIS Report Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -89,6 +91,18 @@ div.relative {
                                 <td>{{$value->gst_no ?? "-"}}</td>
                                 <td style="display:none">{{$value->email ?? "-"}}</td>
                                 <td style="display:none">{{$value->secondary_email ?? "-"}}</td>
+                                <?php if($value->is_email_sent == 1){
+                                    $order_status = 'Yes';
+                                 }else{
+                                    $order_status = 'No';
+                                 } ?>
+                                <td style="">{{$order_status}}</td>
+                                <?php if($value->is_misemail == 1){
+                                    $mis_status = 'Yes';
+                                 }else{
+                                    $mis_status = 'No';
+                                 } ?>
+                                <td style="">{{$mis_status }}</td>
                                 <td>
                                     <a class="btn btn-primary"
                                         href="{{url($prefix.'/regclient-detail/'.Crypt::encrypt($value->id).'/edit')}}"><span><i
