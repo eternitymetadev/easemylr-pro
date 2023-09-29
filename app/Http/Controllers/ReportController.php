@@ -505,7 +505,7 @@ class ReportController extends Controller
                             if(!empty($sec_emails)){
                             $messges->cc($user['cc']);
                             }
-                            $messges->subject('ShipRider Auto MIS 910003');
+                            $messges->subject('ShipRider Auto MIS 910003-test');
                             $messges->attach($get_file);
 
                         });
