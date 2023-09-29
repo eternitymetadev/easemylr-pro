@@ -482,7 +482,6 @@ class ReportController extends Controller
                         ->where('regclient_id', $regional->id)
                         ->whereDate('consignment_date', '>=', now()->subDays(45))
                         ->first();
-                        // ->whereDate('consignment_date', '<=', now())
                         
                     // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
                     
