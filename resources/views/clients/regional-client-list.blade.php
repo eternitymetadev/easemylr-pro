@@ -68,7 +68,7 @@ div.relative {
                                 <th>Id</th>
                                 <th>Name</th>
                                 <th>Location Id</th>
-                                <th>Gsts</th>
+                                <th>Gst</th>
                                 <th style="display:none">Email</th>
                                 <th style="display:none">Secondary Email</th>
                                 <th style="">Order Email Status</th>
