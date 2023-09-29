@@ -88,7 +88,7 @@
     if(in_array('2', $permissions))
     {
     ?>
-    {{-- <li class="menu">
+    <li class="menu">
         <a href="{{$prefixurl.'branch-connectivity'}}" data-active="<?php if($segment == 'branch-connectivity'){?>true<?php }?>"
             class="dropdown-toggle">
             <div class="@if(str_contains($currentURL, 'branch-connectivity')) active @endif">
@@ -101,7 +101,7 @@
                 <span>Branch Connectivity</span>
             </div>
         </a>
-    </li> --}}
+    </li>
     <?php }
     }
     ?>
