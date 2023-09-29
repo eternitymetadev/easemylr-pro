@@ -500,7 +500,7 @@ class ReportController extends Controller
                             $user['cc'] = $sec_emails;
                         }
 
-                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file,$sec_emails) {
+                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file) {
                             $messges->to($user['to']);
                             if(!empty($sec_emails)){
                             $messges->cc($user['cc']);
