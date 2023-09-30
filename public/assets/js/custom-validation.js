@@ -1709,7 +1709,7 @@ jQuery(document).ready(function () {
         var data = { lr_no: lr_no };
         var base_url = window.location.origin;
         jQuery.ajax({
-            url: "get-delivery-dateLR", 
+            url: "get-delivery-dateLR",  
             type: "get", 
             cache: false,
             data: data,
