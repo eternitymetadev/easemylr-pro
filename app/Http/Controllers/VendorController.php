@@ -1125,8 +1125,10 @@ class VendorController extends Controller
             if ($request->status_id) {
                 $query = $query->where('payment_status', $request->status_id);
             }
-            if ($request->paymentstatus_id) {
-                $query = $query->where('payment_status', $request->paymentstatus_id);
+            if ($request->paymentstatus_id !== null) {
+                if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
+                    $query = $query->where('payment_status', $request->paymentstatus_id);
+                }
             }
 
             $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
