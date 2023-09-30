@@ -406,24 +406,26 @@ class SettingController extends Controller
 
         $graph = [];
         foreach ($connected_hubs as $hub) {
+           
             $location = $hub->efpl_hub;
             $neighbors = explode(',', $hub->direct_connectivity);
-            $graph[$location] = $neighbors;
+            $graph[$location] = $neighbors;            
         }
-
+        
         $pincode_locations = Zone::all();
 
         $pincodeLocations = [];
         foreach ($pincode_locations as $pincode_location) {
             $pincodeLocations[$pincode_location->postal_code] = $pincode_location->hub_nickname;
-        }
+        }        
 
-        $response = '';
+        $response = '';        
 
         if (isset($pincodeLocations[$startingPincode]) && isset($pincodeLocations[$endingPincode])) {
+                       
             $startingLocation = $pincodeLocations[$startingPincode];
             $endingLocation = $pincodeLocations[$endingPincode];
-
+            
             $response .= "<h3>Routes between $startingPincode and $endingPincode :</h3>";
 
             // Initialize visited and route arrays
@@ -447,17 +449,13 @@ class SettingController extends Controller
                         $getbranch = DB::table('locations')->where('id', $r)->first();
                         $new[]= $getbranch->name;
                     }
-                    $response .= "<p>" . implode(' -> ', $new) . "</p>";
-   
-                }
-              
+                    $response .= "<p>" . implode(' -> ', $new) . "</pre>";
+                }              
             }
         } else {
             $response .= "<p>Invalid pincode entered.</p>";
         }
-
         echo $response;
-
     }
 
     public function findRoutes($graph, $start, $end, $visited, $route)
