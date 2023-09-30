@@ -1123,13 +1123,12 @@ class VendorController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
             if ($request->status_id) {
-                // dd($request->status_id);
                 $query = $query->where('payment_status', $request->status_id);
             }
-
-            if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
-                // dd($request->status_id);
-                $query = $query->where('payment_status', $request->paymentstatus_id);
+            if ($request->paymentstatus_id !== null) {
+                if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
+                    $query = $query->where('payment_status', $request->paymentstatus_id);
+                }
             }
 
             $requestlists = $query->orderBy('id', 'DESC')->paginate($peritem);
