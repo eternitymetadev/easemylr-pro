@@ -75,7 +75,7 @@ div.relative {
                             <option value="1">Fully Paid</option>
                             <option value="2">Processing</option>
                             <option value="3">Create payment</option>
-                            <option value="0">Failed</option>
+                            {{-- <option value="0">Failed</option> --}}
                         </select>
                     </div>
 

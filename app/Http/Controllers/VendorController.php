@@ -1093,7 +1093,7 @@ class VendorController extends Controller
                         });
                 });
             }
-
+                
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $cc = explode(',', $authuser->branch_id);
@@ -1123,12 +1123,9 @@ class VendorController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
             if ($request->status_id) {
-                // dd($request->status_id);
                 $query = $query->where('payment_status', $request->status_id);
             }
-
-            if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
-                // dd($request->status_id);
+            if ($request->paymentstatus_id) {
                 $query = $query->where('payment_status', $request->paymentstatus_id);
             }
 
