@@ -72,6 +72,9 @@ Route::get('/', function () {
         else if($userrole == 7) {
             return redirect('/client-user/consignments');
         }
+        else if($userrole == 8) {
+            return redirect('/lr-access/consignments');
+        }
     }
    else
     {
@@ -1011,6 +1014,22 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
     Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);
+    Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
+    Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
+    Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
+
+    Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
+    Route::get('pod-view', [ConsignmentController::class, 'podView']);
+    Route::get('pod-list', [ConsignmentController::class, 'podList']);
+
+});
+Route::group(['prefix'=>'lr-access', 'middleware'=>['auth','PermissionCheck']], function()
+{
+    Route::resource('consignments', ConsignmentController::class);
+    Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
+    Route::any('print-sticker/{id}', [ConsignmentController::class, 'printSticker']);
+    Route::any('consignment-misreport', [ReportController::class, 'consignmentReports']);
+    Route::any('update-lrstatus', [ConsignmentController::class, 'updateLrStatus']);
     Route::any('reports/export1', [ReportController::class, 'exportExcelReport1']);
     Route::any('get-filter-report', [ConsignmentController::class, 'getFilterReport']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
