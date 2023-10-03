@@ -7,7 +7,7 @@
                 <th>LR Details</th>
                 <th>Route</th>
                 <th>Dates</th>
-                <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
+                <?php if($authuser->role_id !=6 && $authuser->role_id !=7 && $authuser->role_id !=8){ ?>
                 <th>Printing options</th>
                 <?php }?>
                 <th>Dlvry Status</th>
@@ -121,7 +121,7 @@
                         $disable = '';
                     }
                 } 
-                if($authuser->role_id != 7 && $authuser->role_id != 6){
+                if($authuser->role_id != 7 && $authuser->role_id != 6 && $authuser->role_id != 8){
                 ?>
                 <td>
                     <?php 
@@ -165,7 +165,7 @@
 
                 </td>
 
-                <?php if($authuser->role_id == 2){
+                <?php if($authuser->role_id == 2 || $authuser->role_id == 8){
                     if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
                         $existPaymentRequest = Helper::DrsPaymentCheck($consignment->id);
                         if(!$existPaymentRequest){

@@ -97,6 +97,8 @@ class ConsignmentController extends Controller
                 $query = $query->whereIn('regclient_id', $regclient);
             } elseif ($authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
+            } elseif($authuser->role_id == 8){
+                $query;
             } else {
                 $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
@@ -165,7 +167,9 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        } elseif($authuser->role_id == 8){
+            $query;
+        }else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
@@ -4077,7 +4081,7 @@ class ConsignmentController extends Controller
 
         $result = json_decode(json_encode($transcationview), true);
 
-        $awsUrl = env('AWS_S3_URL');
+        $awsUrl = env('AWS_S3_URL'); 
         $getapp = AppMedia::where('consignment_no', $request->lr_no)->get();
 
         $response['fetch'] = $result;
@@ -4694,7 +4698,7 @@ class ConsignmentController extends Controller
         // ======img
         // echo "<pre>"; print_r($newArray); die;
         $app_media = AppMedia::where('consignment_no', $request->lr_id)->get();
-
+        $awsUrl = env('AWS_S3_URL'); 
         if (!empty($job->trail)) {
             $job_data = json_decode($job->trail);
             $tracking_history = array_reverse($job_data->task_history);
@@ -4710,6 +4714,7 @@ class ConsignmentController extends Controller
             $response['cnr_pincode'] = $job->cnr_pincode;
             $response['cne_pincode'] = $job->cne_pincode;
             $response['tracking_link'] = $job->tracking_link;
+            $response['aws_url'] = $awsUrl;
         } else {
             $url = URL::to($this->prefix . '/consignments');
             $response['success'] = true;
@@ -4724,6 +4729,7 @@ class ConsignmentController extends Controller
             $response['driver_trail'] = $app_trail;
             $response['app_media'] = $app_media;
             $response['driver_app'] = $driver_app;
+            $response['aws_url'] = $awsUrl;
         }
 
         return response()->json($response);
@@ -5543,6 +5549,7 @@ class ConsignmentController extends Controller
 
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
+            $location = Location::where('id', $login_branch)->first();
 
             // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
             // if ($get_delivery_branch->lr_type == 0) {
@@ -5583,7 +5590,7 @@ class ConsignmentController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
 
-            $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate,'location' => $location->name, 'type' => '2');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
             if (!empty($lastjob->response_data)) {

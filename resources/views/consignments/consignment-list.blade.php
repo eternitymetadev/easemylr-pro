@@ -746,6 +746,8 @@ function row_click(row_id, job_id, url) {
             ),
         },
         success: function(response) {
+            var aws = response.aws_url;
+        
             if (response.success) {
                 var modal_html = '';
                 var trackinglink = '';
@@ -831,6 +833,7 @@ function row_click(row_id, job_id, url) {
                     $('.cbp_tmtimeline').append(modal_html);
 
                 } else {
+                    
                 // new changes start here
                     if (response.driver_trail) {
                         var trail_reverse = response.driver_trail;
@@ -843,9 +846,14 @@ function row_click(row_id, job_id, url) {
                                 var base_url = window.location.origin;
                                 var cc = '<ul class="cbp_tmtimeline">';
                                 $.each(array_trail, function(index, task) {
-                                    console.log(task); 
+                                    
                                     if (task.status == 'Successful') {
-                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                        
+                                        var db_path = response.driver_app.signed_drs;
+                                        var stringWithPercent = db_path.replace(/ /g, '%20');
+                                        var imgaws = aws + "/pod_images/" + stringWithPercent;
+                                    
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+imgaws+ ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
                                     }else{
                                         manual_img = '';
                                     }
@@ -918,6 +926,7 @@ function row_click(row_id, job_id, url) {
                                 $('.append-modal').html(modal_html1);
                             }
                         } else {
+                            
                             // ftl timeline
                             // ============================  PTL LR Trail ========================= //
                             if (response.driver_app.lr_mode == 0) {
@@ -927,7 +936,11 @@ function row_click(row_id, job_id, url) {
                                 $.each(array_trail, function(index, task) {
                                     console.log(task); 
                                     if (task.status == 'Successful') {
-                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                        var db_path = response.driver_app.signed_drs;
+                                        var stringWithPercent = db_path.replace(/ /g, '%20');
+                                        var imgaws = aws + "/pod_images/" + stringWithPercent;
+                                        
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+imgaws + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
                                     }else{
                                         manual_img = '';
                                     }
