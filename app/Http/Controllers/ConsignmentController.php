@@ -5545,6 +5545,7 @@ class ConsignmentController extends Controller
 
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
+            $location = Location::where('id', $login_branch)->first();
 
             // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
             // if ($get_delivery_branch->lr_type == 0) {
@@ -5585,7 +5586,7 @@ class ConsignmentController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
 
-            $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'create_at' => $currentdate, 'type' => '2');
+            $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate,'location' => $location->name, 'type' => '2');
 
             $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
             if (!empty($lastjob->response_data)) {

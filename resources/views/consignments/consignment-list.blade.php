@@ -848,7 +848,10 @@ function row_click(row_id, job_id, url) {
                                 $.each(array_trail, function(index, task) {
                                     
                                     if (task.status == 'Successful') {
-                                        var imgaws = aws + "/pod_images/" + response.driver_app.signed_drs;
+                                        
+                                        var db_path = response.driver_app.signed_drs;
+                                        var stringWithPercent = db_path.replace(/ /g, '%20');
+                                        var imgaws = aws + "/pod_images/" + stringWithPercent;
                                     
                                         manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+imgaws+ ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
                                     }else{
@@ -933,7 +936,11 @@ function row_click(row_id, job_id, url) {
                                 $.each(array_trail, function(index, task) {
                                     console.log(task); 
                                     if (task.status == 'Successful') {
-                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+base_url+ "/drs/Image/" + response.driver_app.signed_drs + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
+                                        var db_path = response.driver_app.signed_drs;
+                                        var stringWithPercent = db_path.replace(/ /g, '%20');
+                                        var imgaws = aws + "/pod_images/" + stringWithPercent;
+                                        
+                                        manual_img = '<div class="append-mannual-images d-flex flex-wrap" style="gap: 16px; margin-bottom: 1rem; flex: 1;"><div class="timelineImagesBlock" style="flex: 3"><p>POD</p><img src='+imgaws + ' class="viewImageInNewTab" data-toggle="modal"data-target="#exampleModal" style="width: 100%;"/></div></div>';
                                     }else{
                                         manual_img = '';
                                     }
