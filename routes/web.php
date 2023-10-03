@@ -73,7 +73,7 @@ Route::get('/', function () {
             return redirect('/client-user/consignments');
         }
         else if($userrole == 8) {
-            return redirect('/lr-access/consignments');
+            return redirect('/lr-cancel/consignments');
         }
     }
    else
@@ -1023,7 +1023,7 @@ Route::group(['prefix'=>'client-user', 'middleware'=>['auth','PermissionCheck']]
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
 
 });
-Route::group(['prefix'=>'lr-access', 'middleware'=>['auth','PermissionCheck']], function()
+Route::group(['prefix'=>'lr-cancel', 'middleware'=>['auth','PermissionCheck']], function()
 {
     Route::resource('consignments', ConsignmentController::class);
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
