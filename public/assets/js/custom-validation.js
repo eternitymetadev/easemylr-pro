@@ -1755,7 +1755,7 @@ jQuery(document).ready(function () {
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
-                            if (data.role_id == 7) {
+                            if (data.role_id == 7 || data.role_id == 8) {
                                 var field = "-";
                             } else {
                                 var field =
@@ -1823,7 +1823,7 @@ jQuery(document).ready(function () {
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7) {
+                        if (data.role_id == 7 || data.role_id == 8) {
                             var deliverydat = "-";
                         } else {
                             var deliverydat =
@@ -1864,7 +1864,7 @@ jQuery(document).ready(function () {
                         field +
                         "</td>";
                     if (value.lr_mode == 0) {
-                        if (data.role_id != 7) {
+                        if (data.role_id != 7 && data.role_id != 8) {
                             row += "<td>" + buton + "</td>";
                         }
                     }else if(value.lr_mode == 1){
