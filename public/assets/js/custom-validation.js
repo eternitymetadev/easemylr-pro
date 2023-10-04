@@ -1306,6 +1306,15 @@ jQuery(document).ready(function () {
         $("#total_quantity").val(total_quantity);
         $("#total_weight").val(total_net_weight);
         $("#total_gross_weight").val(total_gross_weight);
+
+        var totalNetWeight = $("#total_weight").val();
+        // console.log(totalNetWeight, typeof(+totalNetWeight), 'qwerty')
+        if(+totalNetWeight > 2000){
+            $('.ptlBookButton').attr('disabled', true);
+            swal('error', 'Create an FTL order for weight more than 2000kg.', 'error')
+        } else{
+            $('.ptlBookButton').removeAttr('disabled');
+        }
     }
 
     /*===== get location on edit click =====*/
