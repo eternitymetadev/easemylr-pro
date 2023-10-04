@@ -1262,13 +1262,14 @@ class VendorController extends Controller
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
         $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
+        
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $url = 'https://finfect.biz/api/get_payment_response_drs/70009550';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1286,8 +1287,9 @@ class VendorController extends Controller
 
             curl_close($curl);
             if ($response) {
+                // echo'<pre>'; print_r($trans_id);
                 $received_data = json_decode($response);
-                echo'<pre>'; print_r($received_data);
+                
 
                 // $status_code = $received_data->status_code;
                 // if ($status_code == 2) {
