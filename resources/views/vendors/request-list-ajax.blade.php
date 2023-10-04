@@ -43,7 +43,7 @@
                     <?php } else if($requestlist->payment_status == 0){
                         if(!empty($requestlist->current_paid_amt)){
                          ?>
-                    <td><button class="btn btn-warning repay swan-tooltip" data-tooltip="{{$requestlist->remarks}}" value="{{$requestlist->transaction_id}}">Repay</button></td>
+                    <td><button class="btn btn-warning swan-tooltip" data-tooltip="{{$requestlist->remarks}}" value="{{$requestlist->transaction_id}}">Repay</button></td>
                     <?php } else{ ?>
                         <td><button class="btn btn-danger" value="{{$requestlist->transaction_id}}">Failed</button></td>
                         <?php } ?>
