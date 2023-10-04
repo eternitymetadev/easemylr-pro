@@ -1313,11 +1313,6 @@ class VendorController extends Controller
                         }
 
                     }
-                }elseif($status_code == 4){
-                    $reject = PaymentRequest::where('transaction_id', $trans_id)->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
-           
-                 PaymentHistory::where('transaction_id', $trans_id)->orderBy('id', 'DESC')->first()->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
-
                 }
             }
         }
