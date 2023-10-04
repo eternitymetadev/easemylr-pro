@@ -1261,7 +1261,7 @@ class VendorController extends Controller
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
-        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->where('transaction_id', '70009550')->get()->toArray();
         
         $size = sizeof($get_data_db);
 
@@ -1269,7 +1269,7 @@ class VendorController extends Controller
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://finfect.biz/api/get_payment_response_drs/70009550';
+            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
