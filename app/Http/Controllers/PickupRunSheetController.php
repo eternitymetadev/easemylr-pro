@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PrsExport;
 use App\Models\Consigner;
 use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
@@ -23,6 +22,8 @@ use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
 use App\Models\Job;
+use App\Exports\PrsExport;
+use App\Exports\PickupLoadExport;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -871,7 +872,6 @@ class PickupRunSheetController extends Controller
     //download excel/csv
     public function exportExcel()
     {
-    
         return Excel::download(new PrsExport, 'prs.csv');
     }
 
@@ -1060,7 +1060,7 @@ class PickupRunSheetController extends Controller
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
 
-            $html = view('prs.pickupload-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem, 'branchs' => $branchs])->render();
+            $html = view('prs.pickupload-list-ajax', ['prefix' => $this->prefix, 'segment' => $this->segment, 'consignments' => $consignments, 'peritem' => $peritem, 'branchs' => $branchs])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -1101,7 +1101,13 @@ class PickupRunSheetController extends Controller
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
-        return view('prs.pickupload-list', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem, 'branchs' => $branchs]);
+        return view('prs.pickupload-list', ['prefix' => $this->prefix, 'segment' => $this->segment, 'consignments' => $consignments, 'peritem' => $peritem, 'branchs' => $branchs]);
+    }
+
+    //export PickupLoad list
+    public function exportPickupLoad()
+    {
+        return Excel::download(new PickupLoadExport, 'pickup-load.csv');
     }
 
     public function UpdatePrs(Request $request)
