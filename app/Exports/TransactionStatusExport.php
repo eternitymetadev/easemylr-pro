@@ -20,7 +20,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
     protected $startdate;
     protected $enddate;
     protected $paymentstatus_id;
-    protected $select_vehicle;
+    protected $search;
 
     function __construct($startdate,$enddate,$paymentstatus_id,$search) {
         $this->startdate = $startdate;
