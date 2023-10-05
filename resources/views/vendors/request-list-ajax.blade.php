@@ -28,7 +28,6 @@
                     <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
                         {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                     </td>
-                    <!-- <td style="max-width: 200px; word-wrap: break-word; white-space: break-spaces;">{{ Helper::showDrsNo($requestlist->transaction_id) ?? "" }}</td> -->
                     <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
                     <td>{{ $requestlist->total_amount ?? "-"}}</td>
                     <td>{{ $requestlist->advanced ?? "-"}}</td>

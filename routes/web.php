@@ -430,6 +430,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('repay-request', [VendorController::class, 'repayRequest']);
     Route::any('request-list', [VendorController::class, 'requestList']);
+    Route::get('transaction-status-export', [VendorController::class, 'exportTransactionStatus']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
@@ -637,6 +638,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
+    Route::get('transaction-status-export', [VendorController::class, 'exportTransactionStatus']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
@@ -966,6 +968,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('view-drslr/{id}', [VendorController::class, 'viewdrsLr']);
     Route::any('create-payment_request', [VendorController::class, 'createPaymentRequestVendor']);
     Route::any('request-list', [VendorController::class, 'requestList']);
+    Route::get('transaction-status-export', [VendorController::class, 'exportTransactionStatus']);
     Route::any('get-vender-req-details', [VendorController::class, 'getVendorReqDetails']);
     Route::any('show-drs', [VendorController::class, 'showDrs']);
     Route::get('edit-purchase-price', [VendorController::class, 'editPurchasePrice']);
