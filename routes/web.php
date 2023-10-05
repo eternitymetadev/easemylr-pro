@@ -249,7 +249,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
-    Route::get('pickup-loads/export/excel', [PickupRunSheetController::class, 'exportPickupLoad']);
+    Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
@@ -456,7 +456,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
-    Route::get('pickup-loads/export/excel', [PickupRunSheetController::class, 'exportPickupLoad']);
+    Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
     Route::any('update-purchas-price-prs', [PickupRunSheetController::class, 'updatePurchasePricePrs']);
     Route::any('get-prs-details', [PickupRunSheetController::class, 'getPrsdetails']);
@@ -664,7 +664,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
-    Route::get('pickup-loads/export/excel', [PickupRunSheetController::class, 'exportPickupLoad']);
+    Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
     Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
     Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);
@@ -867,7 +867,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('add-receive-vehicle', [PickupRunSheetController::class,'createReceiveVehicle']);
     Route::any('getlr-item', [PickupRunSheetController::class, 'getlrItems']);
     Route::get('pickup-loads', [PickupRunSheetController::class, 'pickupLoads']);
-    Route::get('pickup-loads/export/excel', [PickupRunSheetController::class, 'exportPickupLoad']);
+    Route::get('pickup-loads/export', [PickupRunSheetController::class, 'exportPickupLoad']);
     Route::any('prs-payment-request', [PickupRunSheetController::class, 'createPrsPayment']);
     Route::any('prs-request-list', [PickupRunSheetController::class, 'prsRequestList']);
     Route::any('get-vender-req-details-prs', [PickupRunSheetController::class, 'getVendorReqDetailsPrs']);

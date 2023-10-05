@@ -15,34 +15,42 @@
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
                     <div class="container-fluid">
-                        <div class="row winery_row_n spaceing_2n mb-3">
-                            <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                <h4 class="win-h4">List</h4>
-                            </div> -->
-                            <div class="col d-flex pr-0">
-                                <div class="search-inp w-100">
-                                    <form class="navbar-form" role="search">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search" id="search"
-                                                data-action="<?php echo url()->current(); ?>">
-                                            <!-- <div class="input-group-btn">
-                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                            </div> -->
-                                        </div>
-                                    </form>
+                        <div class="row px-3 mx-0 mt-4 justify-content-between" style="gap: 12px; flex-wrap: wrap">
+                            <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
+                                <div style="width: 300px">
+                                    <label>Search</label>
+                                    <input type="text" class="form-control" placeholder="Search" id="search"
+                                        data-action="<?php echo url()->current(); ?>">
                                 </div>
-                            </div>
-                            <div class="col-lg lead_bladebtop1_n pl-0">
-                                <div class="winery_btn_n btn-section px-0 text-right">
-                                    <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" class="btn btn-primary btn-cstm downloadEx ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" download><span>
-                                        <i class="fa fa-download"></i> Export</span></a>
-                                    <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
-                                        style="font-size: 15px; padding: 9px;"
-                                        data-action="<?php echo url()->current(); ?>"><span><i
-                                                class="fa fa-refresh"></i> Reset Filters</span></a>
+    
+                                <div style="width: 156px">
+                                    <label>From</label>
+                                    <input type="date" id="startdate" class="form-control" name="startdate">
                                 </div>
+                                <div style="width: 156px">
+                                    <label>To</label>
+                                    <input type="date" id="enddate" class="form-control" name="enddate">
+                                </div>
+                          
+    
+                                <button type="button" id="filter_reportall" class="btn btn-primary"
+                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px">
+                                    <span class="indicator-label">Filter</span>
+                                </button>
+    
+                                <button type="button" class="btn btn-primary reset_filter"
+                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px"
+                                    data-action="<?php echo url()->current(); ?>">
+                                    <span class="indicator-label">Reset</span>
+                                </button>
                             </div>
-                        </div>
+    
+                            <a href="<?php echo URL::to($prefix . '/pickup-loads/export'); ?>" data-url="<?php echo URL::to($prefix . '/pickup-loads'); ?>"
+                                class="consignmentReportEx btn btn-white btn-cstm"
+                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                data-action="<?php echo URL::to($prefix . '/pickup-loads/export'); ?>" download><span><i class="fa fa-download"></i>
+                                    Export</span></a>          
+                        </div>                       
                     </div>
 
                     @csrf
@@ -55,4 +63,83 @@
     </div>
 </div>
 
+@endsection
+@section('js')
+<script>
+    jQuery(document).on('click', '#filter_reportall', function() {
+        var startdate = $("#startdate").val();
+        var enddate = $("#enddate").val();
+        var search = jQuery('#search').val();
+        
+        jQuery.ajax({
+            type: 'get',
+            url: 'pickup-loads',
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.html) {
+                    jQuery('.main-table').html(response.html);
+                }
+            }
+        });
+        return false;
+    });
+
+    jQuery(document).on('click', '.consignmentReportEx', function(event) {
+    event.preventDefault();
+
+        var totalcount = jQuery('.totalcount').text();
+        if (totalcount > 30000) {
+            jQuery('.limitmessage').show();
+            setTimeout(function() {
+                jQuery('.limitmessage').fadeOut();
+            }, 5000);
+            return false;
+        }
+
+        var geturl = jQuery(this).attr('data-action');
+        var startdate = jQuery('#startdate').val();
+        var enddate = jQuery('#enddate').val();
+        var search = jQuery('#search').val();
+
+        var url = jQuery('#search').attr('data-url');
+        if (startdate)
+            geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+        else if (search)
+            geturl = geturl + '?search=' + search;
+
+        jQuery.ajax({
+            url: url,
+            type: 'get',
+            cache: false,
+            data: {
+                startdate: startdate,
+                enddate: enddate,
+                search: search
+            },
+            headers: {
+                'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+            },
+            processData: true,
+            beforeSend: function() {
+                //jQuery(".load-main").show();
+            },
+            complete: function() {
+                //jQuery(".load-main").hide();
+            },
+            success: function(response) {
+                setTimeout(() => {
+                    window.location.href = geturl
+                }, 10);
+            }
+        });
+    });
+</script>
 @endsection

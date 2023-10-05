@@ -982,18 +982,6 @@ class PickupRunSheetController extends Controller
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
-            if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel]);
-
-                $url = $this->prefix . '/orders';
-                $response['success'] = true;
-                $response['success_message'] = "Order updated successfully";
-                $response['error'] = false;
-                $response['page'] = 'order-statusupdate';
-                $response['redirect_url'] = $url;
-
-                return response()->json($response);
-            }
 
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -1015,18 +1003,14 @@ class PickupRunSheetController extends Controller
 
             if ($authuser->role_id == 1) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } elseif ($authuser->role_id == 6) {
                 $query = $query->whereIn('base_clients.id', $baseclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
             } else {
                 $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                     $query->whereIn('fall_in', $cc);
                 });
-
-                // $query = $query->whereIn('branch_id', $cc);
             }
 
             if (!empty($request->search)) {
@@ -1057,6 +1041,13 @@ class PickupRunSheetController extends Controller
                 // });
             }
 
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
+            }
+
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
 
@@ -1085,14 +1076,11 @@ class PickupRunSheetController extends Controller
 
         if ($authuser->role_id == 1) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id == 6) {
             $query = $query->whereIn('base_clients.id', $baseclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc);
             });
@@ -1105,9 +1093,9 @@ class PickupRunSheetController extends Controller
     }
 
     //export PickupLoad list
-    public function exportPickupLoad()
+    public function exportPickupLoad(Request $request)
     {
-        return Excel::download(new PickupLoadExport, 'pickup-load.csv');
+        return Excel::download(new PickupLoadExport($request->startdate, $request->enddate,$request->search), 'pickup-load.csv');
     }
 
     public function UpdatePrs(Request $request)
