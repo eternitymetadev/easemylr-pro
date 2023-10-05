@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\DrsPaymentExport;
 use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
+use App\Exports\PaymentReportExport2;
 use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
 use App\Imports\VendorImport;
@@ -1610,6 +1611,11 @@ class VendorController extends Controller
     public function exportPaymentReport(Request $request)
     {
         return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx');
+    }
+
+    public function exportPaymentReport2(Request $request)
+    {
+        return Excel::download(new PaymentReportExport2($request->startdate, $request->enddate), 'PaymentReport.xlsx');
     }
 
     public function exportPrsPaymentReport(Request $request)

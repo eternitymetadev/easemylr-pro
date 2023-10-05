@@ -71,6 +71,13 @@ div.relative {
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
                                 data-action="<?php echo URL::to($prefix.'/payment-reportExport'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
+
+                                <a href="<?php echo URL::to($prefix.'/payment-reportExport2'); ?>"
+                                    data-url="<?php echo URL::to($prefix.'/payment-report-view'); ?>"
+                                    class="consignmentReportEx2 btn btn-white btn-cstm"
+                                    style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                    data-action="<?php echo URL::to($prefix.'/payment-reportExport2'); ?>" download><span><i class="fa fa-download"></i> Export2</span></a>
+
                             <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
@@ -194,5 +201,56 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         }
     });
 });
+
+jQuery(document).on('click', '.consignmentReportEx2', function(event) {
+    event.preventDefault();
+
+    var totalcount = jQuery('.totalcount').text();
+    if (totalcount > 30000) {
+        jQuery('.limitmessage').show();
+        setTimeout(function() {
+            jQuery('.limitmessage').fadeOut();
+        }, 5000);
+        return false;
+    }
+
+    var geturl = jQuery(this).attr('data-action');
+    var startdate = jQuery('#startdate').val();
+    var enddate = jQuery('#enddate').val();
+
+    var search = jQuery('#search').val();
+    var url = jQuery('#search').attr('data-url');
+    if (startdate)
+        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
+    else if (search)
+        geturl = geturl + '?search=' + search;
+    console.log(geturl);
+    jQuery.ajax({
+        url: url,
+        type: 'get',
+        cache: false,
+        data: {
+            startdate: startdate,
+            enddate: enddate
+        },
+        headers: {
+            'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')
+        },
+        processData: true,
+        beforeSend: function() {
+            //jQuery(".load-main").show();
+        },
+        complete: function() {
+            //jQuery(".load-main").hide();
+        },
+        success: function(response) {
+            // jQuery(".load-main").hide();
+            setTimeout(() => {
+                window.location.href = geturl
+            }, 10);
+        }
+    });
+});
+
 </script>
 @endsection
