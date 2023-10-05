@@ -1261,14 +1261,14 @@ class VendorController extends Controller
     {
         ini_set('max_execution_time', 0); // 0 = Unlimited
         // check drs=====
-        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->whereDate('created_at','>','2022-10-01')->get()->toArray();
+        $get_data_db = DB::table('payment_requests')->select('transaction_id', 'payment_type')->whereIn('payment_status', [2])->get()->toArray();
         $size = sizeof($get_data_db);
 
         for ($i = 0; $i < $size; $i++) {
             $trans_id = $get_data_db[$i]->transaction_id;
             $p_type = $get_data_db[$i]->payment_type;
 
-            $url = 'https://uat.finfect.biz/api/get_payment_response_drs/' . $trans_id;
+            $url = 'https://finfect.biz/api/get_payment_response_drs/' . $trans_id;
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -1313,11 +1313,6 @@ class VendorController extends Controller
                         }
 
                     }
-                }elseif($status_code == 4){
-                    $reject = PaymentRequest::where('transaction_id', $trans_id)->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
-           
-                 PaymentHistory::where('transaction_id', $trans_id)->orderBy('id', 'DESC')->first()->update(['remarks' => $received_data->bank_refrence_no, 'payment_status' => 0]);
-
                 }
             }
         }
