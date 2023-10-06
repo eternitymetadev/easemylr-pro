@@ -97,7 +97,7 @@
                                 <span class="indicator-label">Filter</span>
                             </button>
 
-                            <button type="button" id="filter_reportall" class="btn btn-primary reset_filter"
+                            <button type="button" class="btn btn-primary reset_filter"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px"
                                 data-action="<?php echo url()->current(); ?>">
                                 <span class="indicator-label">Reset</span>
