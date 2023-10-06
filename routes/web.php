@@ -678,6 +678,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
     Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
     Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::get('hrs-sheet/export/excel', [HubtoHubController::class, 'exportHrsSheet']);
     Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
     Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
     Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
@@ -832,6 +833,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
     Route::any('create-hrs', [HubtoHubController::class, 'createHrs']);
     Route::any('hrs-sheet', [HubtoHubController::class, 'hrsSheet']);
+    Route::get('hrs-sheet/export/excel', [HubtoHubController::class, 'exportHrsSheet']);
     Route::any('view-hrsdetails/{id}', [HubtoHubController::class, 'view_saveHrsDetails']);
     Route::any('update_vehicle_hrs', [HubtoHubController::class, 'updateVehicleHrs']);
     Route::any('view-hrsSheetDetails/{id}', [HubtoHubController::class, 'getHrsSheetDetails']);
