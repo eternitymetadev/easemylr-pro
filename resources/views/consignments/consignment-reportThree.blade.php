@@ -51,46 +51,64 @@ div.relative {
             <div class="widget-content widget-content-area br-6">
                 <div class="mb-4 mt-4">
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000 records. Please select Filters.</h5>
-                    <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
-                        <div class="col-sm-2">
-                            <label>from</label>
+                    <div class="d-flex mt-4 align-items-end px-3 mb-4" style="flex-wrap: wrap; gap: 1rem">
+                        <div style="flex: 0 0 160px">
+                            <label>From</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
                         </div>
-                        <div class="col-sm-2">
+                        <div style="flex: 0 0 160px">
                             <label>To</label>
                             <input type="date" id="enddate" class="form-control" name="enddate">
-                        </div> 
-
-                        <div class="col-sm-4">
+                        </div>
+                        
+                        <div style="flex: 0 0 200px">
                             <label>Base Client</label>
                             <select class="form-control my-select2" id="select_baseclient" name="baseclient_id">
                                 <option value="">Select</option>
                                 @foreach($getbaseclients as $value)
-
                                 <option value="{{ $value->id }}">{{ucwords($value->client_name)}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-4">
+                        <div style="flex: 0 0 180px">
                             <label>Regional Client</label>
                             <select class="form-control my-select2" name="regclient_id" id="select_regionalclient">
                                 <option value="">Select All</option>
                             </select>
                         </div>
+
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id == 3 || $authuser->role_id == 5){ ?>
+                        <div style="flex: 0 0 180px">
+                            <label>Select Branch</label>
+                            <select class="form-control my-select2" id="branch_filter"
+                                name="branch_id" data-action="<?php echo url()->current(); ?>"
+                                placeholder="Search By Status">
+                                <option value="" selected>--select status--</option>
+                                <?php foreach($branchs as $branch){ ?>
+                                <option value="{{$branch->id}}">{{$branch->name}}</option>
+                                <?php } ?>
+                                
+                            </select>
+                        </div>
+                        <?php } ?>
+                    
+                        <button type="button" id="filter_reportall" class="btn btn-primary"
+                            style="font-size: 15px; padding: 9px; width: 80px ">
+                            <span class="indicator-label">Filter</span>
+                        </button>
                         
-                        <div class="col-6">
-                            <button type="button" id="filter_reportall" class="btn btn-primary"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px">
-                                <span class="indicator-label">Filter Data</span>
-                            </button>
+                        <a href="javascript:void();" style="font-size: 15px; padding: 9px; width: 80px" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span>Reset</span></a>
+
+                        <div class="d-flex justify-content-end align-items-end" style="flex: 1">
                             <a href="<?php echo URL::to($prefix.'/reports/export3'); ?>"
                                 data-url="<?php echo URL::to($prefix.'/consignment-report3'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
                                 data-action="<?php echo URL::to($prefix.'/reports/export3'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
-                            <a href="javascript:void();" style="margin-top: 31px; font-size: 15px; padding: 9px;" class="btn btn-primary btn-cstm ml-2 reset_filter" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
                         </div>
                     </div>
+                    
                     @csrf
                     <div class="main-table table-responsive">
                         @include('consignments.consignment-reportThree-ajax')
@@ -106,11 +124,11 @@ div.relative {
 @section('js')
 <script>
 jQuery(document).on('click', '#filter_reportall', function() {
-    
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
     var base_client_id = $("#select_baseclient").val();
     var reg_client_id = $("#select_regionalclient").val();
+    var branche_id = jQuery('#branch_filter').val();
     
     if(typeof(base_client_id) === "undefined"){
         var baseclient_id = '';
@@ -122,6 +140,12 @@ jQuery(document).on('click', '#filter_reportall', function() {
     }else{
         var regclient_id = reg_client_id;
     }
+
+    if(typeof(branche_id) === "undefined"){
+        var branch_id = '';
+    }else{
+        var branch_id = branche_id;
+    }
     
     
     jQuery.ajax({
@@ -131,7 +155,8 @@ jQuery(document).on('click', '#filter_reportall', function() {
             startdate: startdate,
             enddate: enddate,
             baseclient_id: baseclient_id,
-            regclient_id: regclient_id
+            regclient_id: regclient_id,
+            branch_id: branch_id
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -192,6 +217,7 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
 
     var base_client_id = $("#select_baseclient").val();
     var reg_client_id = $("#select_regionalclient").val();
+    var branche_id = jQuery('#branch_filter').val();
 
     if(typeof(base_client_id) === "undefined"){
         var baseclient_id = '';
@@ -204,9 +230,15 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         var regclient_id = reg_client_id;
     }
 
+    if(typeof(branche_id) === "undefined"){
+        var branch_id = '';
+    }else{
+        var branch_id = branche_id;
+    }
+
     var url = jQuery('#search').attr('data-url');
 
-    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id;
+    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&baseclient_id=' + baseclient_id + '&regclient_id=' + regclient_id + '&branch_id=' + branch_id;
 
     jQuery.ajax({
         url: url,
@@ -216,7 +248,8 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
             startdate: startdate,
             enddate: enddate,
             baseclient_id: baseclient_id,
-            regclient_id: regclient_id
+            regclient_id: regclient_id,
+            branch_id: branch_id
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

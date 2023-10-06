@@ -108,6 +108,12 @@ class ReportController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
+            if ($request->branch_id !== null) {
+                if ($request->branch_id) {
+                    $query = $query->where('branch_id', $request->branch_id);
+                }
+            }
+
             $startdate = $request->startdate;
             $enddate = $request->enddate;
             $baseclient_id = $request->baseclient_id;
@@ -165,10 +171,12 @@ class ReportController extends Controller
             $query = $query->whereIn('branch_id', $cc);
         }
 
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
-        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
+        return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'branchs' => $branchs, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
     }
 
     // MIS report3 get records
@@ -242,6 +250,12 @@ class ReportController extends Controller
                 });
             }
 
+            if ($request->branch_id !== null) {
+                if ($request->branch_id) {
+                    $query = $query->where('branch_id', $request->branch_id);
+                }
+            }
+
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
 
             $html = view('consignments.consignment-reportThree-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
@@ -280,10 +294,12 @@ class ReportController extends Controller
             $query = $query->whereIn('branch_id', $cc);
         }
 
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
-        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
+        return view('consignments.consignment-reportThree', ['consignments' => $consignments, 'branchs' => $branchs, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
     }
 
     // MIS report1 get records
@@ -357,6 +373,11 @@ class ReportController extends Controller
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
+            if ($request->branch_id !== null) {
+                if ($request->branch_id) {
+                    $query = $query->where('branch_id', $request->branch_id);
+                }
+            }
 
             $startdate = $request->startdate;
             $enddate = $request->enddate;
@@ -366,7 +387,8 @@ class ReportController extends Controller
             } else {
                 $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             }
-
+            
+            
             $html = view('consignments.mis-report-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
             // $consignments = $consignments->appends($request->query());
 
@@ -392,11 +414,13 @@ class ReportController extends Controller
         } else {
             $query = $query->whereIn('branch_id', $cc);
         }
+        
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
 
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
-        return view('consignments.mis-report-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+        return view('consignments.mis-report-list', ['consignments' => $consignments, 'branchs' => $branchs, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
 
     // =============================Admin Report ============================= //
@@ -437,12 +461,12 @@ class ReportController extends Controller
 
     public function exportExcelReport1(Request $request)
     {
-        return Excel::download(new Report1Export($request->startdate, $request->enddate), 'mis_report1.csv');
+        return Excel::download(new Report1Export($request->startdate, $request->enddate,$request->branch_id), 'mis_report1.csv');
     }
 
     public function exportExcelReport2(Request $request)
     {
-        return Excel::download(new Report2Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id), 'mis_report2.csv');
+        return Excel::download(new Report2Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report2.csv');
     }
 
     public function exportExcelReport3(Request $request)
