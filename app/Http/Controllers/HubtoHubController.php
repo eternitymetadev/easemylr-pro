@@ -13,11 +13,13 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
+use App\Exports\HrsSheetExport;
 use Auth;
 use Config;
 use DB;
 use Helper;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Response;
 use Session;
 use Carbon\Carbon;
@@ -195,7 +197,7 @@ class HubtoHubController extends Controller
             $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
             $hrssheets = $hrssheets->appends($request->query());
 
-            $html = view('transportation.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            $html = view('hub-transportation.hrs-sheet-ajax', ['peritem' => $peritem, 'segment' => $this->segment, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -232,9 +234,15 @@ class HubtoHubController extends Controller
         $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
         $hrssheets = $hrssheets->appends($request->query());
 
-        return view('hub-transportation.hrs-sheet', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
-
+        return view('hub-transportation.hrs-sheet', ['peritem' => $peritem, 'segment' => $this->segment, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
+
+    //download excel/csv
+    public function exportHrsSheet()
+    {
+        return Excel::download(new HrsSheetExport, 'hrsSheet.csv');
+    }
+
     public function view_saveHrsDetails(Request $request)
     {
         $id = $_GET['hrs_id'];

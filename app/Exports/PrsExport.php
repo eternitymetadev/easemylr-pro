@@ -34,36 +34,36 @@ class PrsExport implements FromCollection, WithHeadings,ShouldQueue
             $query = $query->whereIn('branch_id', $cc);
         }
        
-        $prs_report = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail','Consignment')->orderBy('id', 'DESC')->get();
-//  echo "<pre>"; print_r($prs_report);exit;
+        $prsdata = $query->with('PrsRegClients.RegClient','VehicleDetail','DriverDetail','Consignment')->orderBy('id', 'DESC')->get();
+        
+//  echo "<pre>"; print_r($prsdata);exit;
 
-        if($prs_report->count() > 0){
-            foreach ($prs_report as $key => $value){  
-                $reg_client_name = array();
-                foreach($value->PrsRegClients as $regclients)
-                {
-                $reg_client_name[]=$regclients->RegClient->name;
+        if($prsdata->count() > 0){
+            foreach ($prsdata as $value){  
+                if(count($value->PrsRegClients)>0){
+                    $reg_client_name = array();
+                    foreach($value->PrsRegClients as $regclients){
+                        if($regclients->RegClient){
+                            $reg_client_name[] = $regclients->RegClient->name;
+                        }
+                    }
                 }
-                // for($i=0;$i<sizeof($reg_client_name);$i++)
-                // {
-                //     $string[]=$reg_client_name[$i];
-                // }
-                
+                $prs_regclients = implode('/', $reg_client_name);
+                                
                 $consigner_name = array();
-               $reg_client=implode(',',$reg_client_name);
-               foreach($value->PrsRegClients as $regcnrs)
-               foreach($regcnrs->RegConsigner as $regcnr)
-               {
-                $consigner_name[]= $regcnr->Consigner->nick_name ;
-               }
-
-              $pickup_point=implode(',',$consigner_name);
+                foreach($value->PrsRegClients as $regcnrs){
+                    foreach($regcnrs->RegConsigner as $regcnr)
+                    {
+                        $consigner_name[]= $regcnr->Consigner->nick_name;
+                    }
+                }
+                $pickup_point=implode('/',$consigner_name);
              
                 $arr[] = [
                     'pickup_id' => $value->pickup_id,
-                    'regional_client' => $reg_client,
-                    'pickup_points' => $pickup_point,
-                    'date' => $value->prs_date,
+                    'regional_client' => @$prs_regclients,
+                    'pickup_points' => @$pickup_point,
+                    'date' => @$value->prs_date,
                     'vehicle_no' => @$value->VehicleDetail->regn_no,
                     'driver_name' => @$value->DriverDetail->name,
                     'quantity' => @$value->Consignment->total_quantity,
