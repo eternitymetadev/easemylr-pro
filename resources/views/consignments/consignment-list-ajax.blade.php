@@ -7,7 +7,7 @@
                 <th>LR Details</th>
                 <th>Route</th>
                 <th>Dates</th>
-                <?php if($authuser->role_id !=6 && $authuser->role_id !=7){ ?>
+                <?php if($authuser->role_id !=6 && $authuser->role_id !=7 && $authuser->role_id !=8){ ?>
                 <th>Printing options</th>
                 <?php }?>
                 <th>Dlvry Status</th>
@@ -121,7 +121,7 @@
                         $disable = '';
                     }
                 } 
-                if($authuser->role_id != 7 && $authuser->role_id != 6){
+                if($authuser->role_id != 7 && $authuser->role_id != 6 && $authuser->role_id != 8){
                 ?>
                 <td>
                     <?php 
@@ -165,23 +165,21 @@
 
                 </td>
 
-                <?php if($authuser->role_id == 2){
-                    if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
+                <?php if($authuser->role_id == 8){
+                    // if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
                         $existPaymentRequest = Helper::DrsPaymentCheck($consignment->id);
                         if(!$existPaymentRequest){
                             $disable = '';
                         }else{
                             $disable = 'disable_n' ;
                         }
-                    }else{
-                        $disable = 'disable_n' ;
-                    }
+                    
                 }else{
                     $disable = 'disable_n';
                 } ?>
                 <td>
                     <?php if ($consignment->status == 0) { ?>
-                    <span class="alert badge alert bg-secondary shadow-sm">Cancel</span>
+                    <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}">Cancel</span>
                     <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
                     <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
@@ -190,7 +188,7 @@
                     <?php }else{ ?>
                     <a class="alert activestatus btn btn-success {{$disable}}" data-id="{{$consignment->id}}"
                         data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
-                            Active</span></a>
+                            Active</span></a> 
                     <?php }
                         } elseif($consignment->status == 2){ ?>
                     <span class="badge alert bg-success activestatus {{$disable}}"

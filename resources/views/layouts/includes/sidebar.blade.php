@@ -22,7 +22,7 @@
     // dd($permissions);
     ?>
     <div class="shadow-bottom"></div>
-    <?php if($authuser->role_id != 7){ ?>
+    <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
     <li class="menu">
         <a href="{{$prefixurl.'dashboard'}}" data-active="<?php if($segment == 'dashboard'){?>true<?php }?>"
             class="dropdown-toggle">
@@ -266,7 +266,7 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
-            <?php if($authuser->role_id != 7){ ?> 
+            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?> 
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
@@ -280,7 +280,7 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
-            <?php if($authuser->role_id != 7){ ?>
+            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
@@ -290,7 +290,7 @@
             <?php } ?>
         </ul>
     </li>
-    <?php if($authuser->role_id != 7){ ?>
+    <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -572,7 +572,7 @@
         </ul>
     </li>
     <?php } ?>
-    <?php if($authuser->role_id != 7){ ?>
+    <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
     <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
     <li class="menu">
