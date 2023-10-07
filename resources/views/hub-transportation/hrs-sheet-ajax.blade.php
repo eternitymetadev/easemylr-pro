@@ -25,9 +25,9 @@
                 <td>HRS-{{$hrssheet->hrs_no}}</td>
                 <td>{{$date->format('Y-m-d')}}</td>
                 <td>{{@$hrssheet->ToBranch->name}}</td>
-                <td>{{$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
-                <td>{{$hrssheet->DriverDetail->name ?? '-'}}</td>
-                <td>{{$hrssheet->DriverDetail->phone ?? '-'}}</td>
+                <td>{{@$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
+                <td>{{@$hrssheet->DriverDetail->name ?? '-'}}</td>
+                <td>{{@$hrssheet->DriverDetail->phone ?? '-'}}</td>
                 <td>
                     @if(empty($hrssheet->vehicle_id) || empty($hrssheet->driver_id))
                     <button class="flex1 btn btn-warning view-sheet" value="{{$hrssheet->hrs_no}}"
@@ -40,7 +40,7 @@
                     <a class="btn btn-primary" target="_blank" href="{{url($prefix.'/print-hrs/'.$hrssheet->hrs_no)}}"
                         role="button">Print</a>
                     @endif
-                    </td>
+                </td>
                 <td>
                     @if($hrssheet->receving_status == 1)
                      <button class="flex1 btn btn-primary " value="{{$hrssheet->hrs_no}}"

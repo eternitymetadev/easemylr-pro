@@ -1306,6 +1306,15 @@ jQuery(document).ready(function () {
         $("#total_quantity").val(total_quantity);
         $("#total_weight").val(total_net_weight);
         $("#total_gross_weight").val(total_gross_weight);
+
+        var totalNetWeight = $("#total_weight").val();
+        // console.log(totalNetWeight, typeof(+totalNetWeight), 'qwerty')
+        if(+totalNetWeight > 2000){
+            $('.ptlBookButton').attr('disabled', true);
+            swal('error', 'Create an FTL order for weight more than 2000kg.', 'error')
+        } else{
+            $('.ptlBookButton').removeAttr('disabled');
+        }
     }
 
     /*===== get location on edit click =====*/
@@ -1394,7 +1403,7 @@ jQuery(document).ready(function () {
                 statustext = "enable";
             }
             jQuery("#commonconfirm").modal("show");
-            jQuery(".commonconfirmclick").one("click", function () {
+            jQuery(".commonconfirmclick").on("click", function () {
                 var reason_to_cancel = jQuery("#reason_to_cancel").val();
                 if(!reason_to_cancel){
                     swal("Error", "Enter Reason to cancel", "error");
@@ -1843,10 +1852,14 @@ jQuery(document).ready(function () {
                     ) {
                         var buton = "Successful";
                     } else {
+                        if(data.role_id == 7 || data.role_id == 8){
+                            var buton = "-";
+                        }else{
                         var buton =
                             "<button type='button'  data-id=" +
                             value.consignment_no +
                             " class='btn btn-primary onelrupdate'>Save</button>";
+                        }
                     }
 
                     row =
@@ -1864,7 +1877,7 @@ jQuery(document).ready(function () {
                         field +
                         "</td>";
                     if (value.lr_mode == 0) {
-                        if (data.role_id != 7 && data.role_id != 8) {
+                        if (data.role_id != 7 || data.role_id != 8) {
                             row += "<td>" + buton + "</td>";
                         }
                     }else if(value.lr_mode == 1){

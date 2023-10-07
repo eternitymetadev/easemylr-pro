@@ -27,12 +27,12 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
 
     protected $startdate;
     protected $enddate;
-    // protected $search;
+    protected $branch_id;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$branch_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        // $this->search = $search;
+        $this->branch_id = $branch_id;
     }
 
     public function collection()
@@ -45,6 +45,7 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $branch_id = $this->branch_id;
 
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
@@ -76,6 +77,12 @@ class Report1Export implements FromCollection, WithHeadings, ShouldQueue
         }
         else{
             $query = $query->whereIn('branch_id', $cc);
+        }
+
+        if ($branch_id !== null) {
+            if ($branch_id) {
+                $query = $query->where('branch_id', $branch_id);
+            }
         }
 
         if(isset($startdate) && isset($enddate)){

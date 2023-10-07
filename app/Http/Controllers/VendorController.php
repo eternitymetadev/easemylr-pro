@@ -8,6 +8,7 @@ use App\Exports\PaymentReportExport;
 use App\Exports\PrsPaymentReportExport;
 use App\Exports\VendorExport;
 use App\Imports\VendorImport;
+use App\Exports\TransactionStatusExport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
 use App\Models\Location;
@@ -1093,7 +1094,7 @@ class VendorController extends Controller
                         });
                 });
             }
-                
+
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
             $cc = explode(',', $authuser->branch_id);
@@ -1122,9 +1123,14 @@ class VendorController extends Controller
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
             }
-            if ($request->status_id) {
-                $query = $query->where('payment_status', $request->status_id);
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if(isset($startdate) && isset($enddate)){
+                $query = $query->whereBetween('created_at',[$startdate,$enddate]);                
             }
+            
             if ($request->paymentstatus_id !== null) {
                 if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
                     $query = $query->where('payment_status', $request->paymentstatus_id);
@@ -1156,6 +1162,11 @@ class VendorController extends Controller
         $requestlists = $requestlists->appends($request->query());
 
         return view('vendors.request-list', ['prefix' => $this->prefix, 'requestlists' => $requestlists, 'vendors' => $vendors, 'vehicletype' => $vehicletype, 'branchs' => $branchs, 'peritem' => $peritem]);
+    }
+
+    public function exportTransactionStatus(Request $request)
+    {
+        return Excel::download(new TransactionStatusExport($request->startdate, $request->enddate,$request->paymentstatus_id,$request->search), 'transaction-status-report.csv');
     }
 
     public function getVendorReqDetails(Request $request)
