@@ -58,7 +58,7 @@ div.relative {
                     <form id="filter_report">
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
-                                <label>from</label>
+                                <label>From</label>
                                 <input type="date" class="form-control" name="first_date">
                             </div>
                             <div class="col-sm-4">

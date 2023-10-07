@@ -73,7 +73,7 @@
                             </div>
 
                             <div style="width: 156px">
-                                <label>from</label>
+                                <label>From</label>
                                 <input type="date" id="startdate" class="form-control" name="startdate">
                             </div>
                             <div style="width: 156px">
