@@ -1309,11 +1309,18 @@ jQuery(document).ready(function () {
 
         var totalNetWeight = $("#total_weight").val();
         // console.log(totalNetWeight, typeof(+totalNetWeight), 'qwerty')
-        if(+totalNetWeight > 2000){
-            $('.ptlBookButton').attr('disabled', true);
-            swal('error', 'Create an FTL order for weight more than 2000kg.', 'error')
-        } else{
-            $('.ptlBookButton').removeAttr('disabled');
+        var url      = window.location.href; 
+        var segments = url.split('/');
+        var lastSegment = segments[segments.length - 1];
+        // console.log(lastSegment);
+        
+        if(lastSegment == 'order-book-ptl'){
+            if(+totalNetWeight > 2000){
+                $('.ptlBookButton').attr('disabled', true);
+                swal('error', 'Create an FTL order for weight more than 2000kg.', 'error')
+            } else{
+                $('.ptlBookButton').removeAttr('disabled');
+            }
         }
     }
 
