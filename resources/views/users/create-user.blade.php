@@ -269,6 +269,12 @@ $('#role_id').change(function() {
         $('.chkBoxClass').prop('checked', true)
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
+    }else if(role_id == 8){
+        $('.singleLocation').hide();
+        $('.rm_assign').hide();
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false)
+        $('.chkBoxClass[value="7"]').prop('checked', true)
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
