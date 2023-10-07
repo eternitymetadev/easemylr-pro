@@ -1312,14 +1312,18 @@ jQuery(document).ready(function () {
         var url      = window.location.href; 
         var segments = url.split('/');
         var lastSegment = segments[segments.length - 1];
+        var prslastSegment = segments[segments.length - 3];
         // console.log(lastSegment);
-        
-        if(lastSegment == 'order-book-ptl'){
+        var formId = $(".net").closest('form').attr('id');
+        console.log(formId);
+
+        if(formId == 'updateorder' || formId == 'createconsignment'){
+        // if(lastSegment == 'order-book-ptl' || prslastSegment == 'order'){
             if(+totalNetWeight > 2000){
-                $('.ptlBookButton').attr('disabled', true);
-                swal('error', 'Create an FTL order for weight more than 2000kg.', 'error')
+                $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
+                swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
             } else{
-                $('.ptlBookButton').removeAttr('disabled');
+                $('.ptlBookButton, .updateOrderButton').removeAttr('disabled');
             }
         }
     }

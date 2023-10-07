@@ -2704,9 +2704,8 @@ class OrderController extends Controller
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
-        $data = $data->where('consignment_notes.status', '5')->orderBy('id', 'DESC');
-
-        $consignments = $data->get();
+        
+        $consignments = $data->where('consignment_notes.status', '5')->orderBy('id', 'DESC')->get();
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {

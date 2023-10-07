@@ -875,7 +875,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
             <div class=" col-12 d-flex justify-content-end align-items-center" style="gap: 1rem; margin-top: 3rem;">
                 {{-- <a class="mt-2 btn btn-outline-primary" href="{{url($prefix.'/consignments') }}"> Back</a>--}}
-                <button type="submit" class="mt-2 btn btn-primary disableme"
+                <button type="submit" class="mt-2 btn btn-primary updateOrderButton disableme"
                     style="height: 40px; width: 200px">Submit</button>
             </div>
 
