@@ -165,17 +165,14 @@
 
                 </td>
 
-                <?php if($authuser->role_id == 2 || $authuser->role_id == 8){
-                    if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
+                <?php if($authuser->role_id == 8){
+                    // if (date('Y-m-d', strtotime($consignment->consignment_date)) === date('Y-m-d')){
                         $existPaymentRequest = Helper::DrsPaymentCheck($consignment->id);
                         if(!$existPaymentRequest){
                             $disable = '';
                         }else{
                             $disable = 'disable_n' ;
                         }
-                    }else{
-                        $disable = 'disable_n' ;
-                    }
                 }else{
                     $disable = 'disable_n';
                 } ?>

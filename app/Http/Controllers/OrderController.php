@@ -1369,12 +1369,12 @@ class OrderController extends Controller
 
                 $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' => $data['consignee_detail']['postal_code'], 'net_weigth' => $data['total_weight'], 'cases' => $data['total_quantity'], 'client' => $regional_id->name];
                 $user['to'] = $regional_email;
-                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
-                    $messges->to($user['to']);
-                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
-                    $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
+                // Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
+                //     $messges->to($user['to']);
+                //     $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
+                //     $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
 
-                });
+                // });
             }
             // ================================end Send Email ============================= //
             //===================== Create DRS in LR ================================= //

@@ -1385,13 +1385,15 @@ jQuery(document).ready(function () {
     });
 
     // consignment status change onchange
+
+    var lr_id = null;
     jQuery(document).on(
         "click",
         ".activestatus,.inactivestatus",
         function (event) {
             event.stopPropagation();
 
-            let user_id = jQuery(this).attr("data-id");
+            lr_id = jQuery(this).attr("data-id");
 
             var dataaction = jQuery(this).attr("data-action");
             var datastatus = jQuery(this).attr("data-status");
@@ -1410,7 +1412,7 @@ jQuery(document).ready(function () {
                     return false;
                 }
                 var data = {
-                    id: user_id,
+                    id: lr_id,
                     status: datastatus,
                     updatestatus: updatestatus,
                     reason_to_cancel: reason_to_cancel,
