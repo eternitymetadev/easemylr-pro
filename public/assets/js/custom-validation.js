@@ -1314,10 +1314,10 @@ jQuery(document).ready(function () {
         var lastSegment = segments[segments.length - 1];
         var prslastSegment = segments[segments.length - 3];
         // console.log(lastSegment);
-        var formId = $(".net").closest('form').attr('id');
-        console.log(formId);
+        var formClass = $(".net").closest('form').attr('class');
+        console.log(formClass);
 
-        if(formId == 'updateorder' || formId == 'createconsignment'){
+        if (formClass.indexOf('mtcheckload') !== -1) {
         // if(lastSegment == 'order-book-ptl' || prslastSegment == 'order'){
             if(+totalNetWeight > 2000){
                 $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
