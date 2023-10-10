@@ -500,13 +500,7 @@ class ReportController extends Controller
         $mailPort = env('MAIL_PORT');
         $mailUsername = env('MAIL_USERNAME');
         $mailPassword = env('MAIL_PASSWORD');
-        dd([
-            'Host' => $mailHost,
-            'Port' => $mailPort,
-            'Username' => $mailUsername,
-            'Password' => $mailPassword,
-        ]);
-        
+
         // Create a new PHPMailer instance
         $mail = new PHPMailer(true);
 
