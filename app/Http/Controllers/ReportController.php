@@ -496,26 +496,39 @@ class ReportController extends Controller
 
     public function regionalReport()
     {
+        $mailHost = env('MAIL_HOST');
+        $mailPort = env('MAIL_PORT');
+        $mailUsername = env('MAIL_USERNAME');
+        $mailPassword = env('MAIL_PASSWORD');
+
+        // Create a new PHPMailer instance
         $mail = new PHPMailer(true);
-        $mail->IsSMTP();
-        $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'tls';
-        $mail->Host = 'smtp.office365.com';
-        $mail->Port = 587;
-        $mail->Username = 'no-reply@eternityforwarders.com';
-        $mail->Password = 'Norep898@$#';
-        
-        // Set your email content and recipients
-        $mail->setFrom('no-reply@eternityforwarders.com', 'No reply');
-        $mail->addAddress('vikas.singh@eternitysolutions.net', 'Vikas');
-        $mail->Subject = 'Subject';
-        $mail->Body = 'Message body';
-        
-        // Send the email
-        if ($mail->send()) {
-            echo 'Email sent successfully.';
-        } else {
-            echo 'Email could not be sent. Mailer Error: ' . $mail->ErrorInfo;
+
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = $mailHost;
+            $mail->Port = $mailPort;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'tls';
+            $mail->Username = $mailUsername;
+            $mail->Password = $mailPassword;
+
+            // Sender and recipient
+            $mail->setFrom($mailUsername, 'Your Name');
+            $mail->addAddress('vikas.singh@eternitysolutions.net', 'Recipient Name');
+
+            // Email subject and content
+            $mail->Subject = 'Your Subject';
+            $mail->isHTML(true);
+            $mail->Body = '<html><body><h1>Hello,</h1><p>This is the email content.</p></body></html>';
+
+            // Send the email
+            $mail->send();
+
+            return 'Email sent successfully!';
+        } catch (Exception $e) {
+            return 'Email could not be sent. Mailer Error: ' . $mail->ErrorInfo;
         }
 
     }
