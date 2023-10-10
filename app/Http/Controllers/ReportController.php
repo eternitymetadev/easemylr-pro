@@ -517,21 +517,23 @@ class ReportController extends Controller
 
                         $data = ['client_name' => $regional->name, 'current_time' => $current_time];
 
-                        $user['to'] = $regional->email;
+                        // $user['to'] = $regional->email;
+                        $user['to'] = 'vikas.singh@eternitysolutions.net';
                         $sec_emails = explode(',', $regional->secondary_email);
                         if(!empty($sec_emails)){
-                            $user['cc'] = $sec_emails;
+                            // $user['cc'] = $sec_emails;
+                            $user['cc'] = '';
                         }
                         
-                        // Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
-                        //     $messges->to($user['to']);
-                        //     if(!empty($sec_emails)){
-                        //         $messges->cc($sec_emails);
-                        //     }
-                        //     $messges->subject('ShipRider Auto MIS 910003');
-                        //     $messges->attach($get_file);
+                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
+                            $messges->to($user['to']);
+                            if(!empty($sec_emails)){
+                                $messges->cc($sec_emails);
+                            }
+                            $messges->subject('ShipRider Auto MIS 910003');
+                            $messges->attach($get_file);
 
-                        // });
+                        });
                     }
                 }
             }
