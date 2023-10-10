@@ -523,15 +523,15 @@ class ReportController extends Controller
                             $user['cc'] = $sec_emails;
                         }
                         
-                        // Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
-                        //     $messges->to($user['to']);
-                        //     if(!empty($sec_emails)){
-                        //         $messges->cc($sec_emails);
-                        //     }
-                        //     $messges->subject('ShipRider Auto MIS 910003');
-                        //     $messges->attach($get_file);
+                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
+                            $messges->to($user['to']);
+                            if(!empty($sec_emails)){
+                                $messges->cc($sec_emails);
+                            }
+                            $messges->subject('ShipRider Auto MIS 910003');
+                            $messges->attach($get_file);
 
-                        // });
+                        });
                     }
                 }
             }
