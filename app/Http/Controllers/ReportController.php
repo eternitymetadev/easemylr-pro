@@ -23,7 +23,6 @@ use Response;
 use Session;
 use URL;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class ReportController extends Controller
@@ -496,41 +495,25 @@ class ReportController extends Controller
 
     public function regionalReport()
     {
-        $mailHost = env('MAIL_HOST');
-        $mailPort = env('MAIL_PORT');
-        $mailUsername = env('MAIL_USERNAME');
-        $mailPassword = env('MAIL_PASSWORD');
+        $recipientEmail = 'vikas.singh@eternitysolutions.net';
 
-        // Create a new PHPMailer instance
-        $mail = new PHPMailer(true);
+        // Define the email subject
+        $emailSubject = 'Test';
 
-        try {
-            // Server settings
-            $mail->isSMTP();
-            $mail->Host = $mailHost;
-            $mail->Port = $mailPort;
-            $mail->SMTPAuth = true;
-            $mail->SMTPSecure = 'tls';
-            $mail->Username = $mailUsername;
-            $mail->Password = $mailPassword;
+        // Define the email content (HTML)
+        $emailContent = '<html><body>';
+        $emailContent .= '<h1>Hello,</h1>';
+        $emailContent .= '<p>This is the email content.</p>';
+        $emailContent .= '</body></html>';
 
-            // Sender and recipient
-            $mail->setFrom($mailUsername, 'Your Name');
-            $mail->addAddress('vikas.singh@eternitysolutions.net', 'Recipient Name');
+        // Send the email
+        Mail::raw($emailContent, function ($message) use ($recipientEmail, $emailSubject) {
+            $message->to($recipientEmail)
+                ->subject($emailSubject);
+        });
 
-            // Email subject and content
-            $mail->Subject = 'Your Subject';
-            $mail->isHTML(true);
-            $mail->Body = '<html><body><h1>Hello,</h1><p>This is the email content.</p></body></html>';
-
-            // Send the email
-            $mail->send();
-
-            return 'Email sent successfully!';
-        } catch (Exception $e) {
-            return 'Email could not be sent. Mailer Error: ' . $mail->ErrorInfo;
-        }
-
+        // You can return a response or a view here
+        return 'Email sent successfully to ' . $recipientEmail;
     }
 
 
