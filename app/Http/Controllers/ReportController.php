@@ -537,6 +537,7 @@ class ReportController extends Controller
                     }
                 }
             }
+            die;
         }
         return 'Email Sent';
     }
