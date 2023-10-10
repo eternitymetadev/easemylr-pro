@@ -23,6 +23,7 @@ use Response;
 use Session;
 use URL;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class ReportController extends Controller
