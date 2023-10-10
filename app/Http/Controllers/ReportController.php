@@ -493,53 +493,25 @@ class ReportController extends Controller
 
     public function regionalReport()
     {
-        $regional_details = RegionalClient::all();
+        $recipientEmail = 'vikas.singh@eternitysolutions.net';
 
-        foreach ($regional_details as $regional) {
-            if($regional->is_misemail == 1){
-                date_default_timezone_set('Asia/Kolkata');
-                $current_time = date("h:i A");
+        // Define the email subject
+        $emailSubject = 'Test';
 
-                if (!empty($regional->email)) {
+        // Define the email content (HTML)
+        $emailContent = '<html><body>';
+        $emailContent .= '<h1>Hello,</h1>';
+        $emailContent .= '<p>This is the email content.</p>';
+        $emailContent .= '</body></html>';
 
-                    $consignment_details = ConsignmentNote::where('status', '!=', 5)
-                        ->where('regclient_id', $regional->id)
-                        ->whereDate('consignment_date', '>=', now()->subDays(45))
-                        ->first();
-                        
-                    // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
-                    
-                    if (!empty($consignment_details)) {
-                        $path = 'regional/Shprider Auto MIS 910003.xlsx';
+        // Send the email
+        Mail::raw($emailContent, function ($message) use ($recipientEmail, $emailSubject) {
+            $message->to($recipientEmail)
+                ->subject($emailSubject);
+        });
 
-                        Excel::store(new RegionalReport($regional->id), $path, 'public');
-                        $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
-
-                        $data = ['client_name' => $regional->name, 'current_time' => $current_time];
-
-                        // $user['to'] = $regional->email;
-                        $user['to'] = 'vikas.singh@eternitysolutions.net';
-                        $sec_emails = explode(',', $regional->secondary_email);
-                        if(!empty($sec_emails)){
-                            // $user['cc'] = $sec_emails;
-                            $user['cc'] = '';
-                        }
-                        
-                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
-                            $messges->to($user['to']);
-                            if(!empty($sec_emails)){
-                                $messges->cc($sec_emails);
-                            }
-                            $messges->subject('ShipRider Auto MIS 910003');
-                            $messges->attach($get_file);
-
-                        });
-                    }
-                }
-            }
-            die;
-        }
-        return 'Email Sent';
+        // You can return a response or a view here
+        return 'Email sent successfully to ' . $recipientEmail;
     }
 
 
