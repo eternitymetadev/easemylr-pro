@@ -22,6 +22,7 @@ use Mail;
 use Response;
 use Session;
 use URL;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -499,6 +500,9 @@ class ReportController extends Controller
             if($regional->is_misemail == 1){
                 date_default_timezone_set('Asia/Kolkata');
                 $current_time = date("h:i A");
+                $currentDate = Carbon::now();
+                // Format the date as "12-Oct-2023"
+                $formattedDate = $currentDate->format('d-M-Y');
 
                 if (!empty($regional->email)) {
 
@@ -515,7 +519,7 @@ class ReportController extends Controller
                         Excel::store(new RegionalReport($regional->id), $path, 'public');
                         $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
 
-                        $data = ['client_name' => $regional->name, 'current_time' => $current_time];
+                        $data = ['client_name' => $regional->name, 'current_time' => $current_time, 'formattedDate' => $formattedDate];
 
                         $user['to'] = $regional->email;
                         $sec_emails = explode(',', $regional->secondary_email);
