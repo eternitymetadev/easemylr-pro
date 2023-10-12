@@ -225,15 +225,14 @@ class TransactionSheetsController extends Controller
 
     public function show($id)
     {
-
         try {
-
-            $consignments = ConsignmentNote::with('ConsignerDetail','TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
-                ->get();
-            // echo'<pre>'; print_r($consignments); die;
-         
+            $consignments = ConsignmentNote::with('ConsignerDetail', 'TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')
+            ->where('driver_id', $id)
+            ->where('lr_mode', 2)
+            ->whereDate('consignment_date', '>=', now()->subDays(15))
+            ->get();
+                
             foreach($consignments as $value){
-            //    echo'<pre>'; print_r($value->ConsignmentItems); die;
                     $order = array();
                     $invoices = array();
                     $pod_img = array();
