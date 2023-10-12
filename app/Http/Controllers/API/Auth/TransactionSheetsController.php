@@ -227,11 +227,12 @@ class TransactionSheetsController extends Controller
     {
 
         try {
-
-            $consignments = ConsignmentNote::with('ConsignerDetail','TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')->where('driver_id', $id)->where('lr_mode', 2)
-                ->get();
-            // echo'<pre>'; print_r($consignments); die;
-         
+            $consignments = ConsignmentNote::with('ConsignerDetail', 'TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')
+            ->where('driver_id', $id)
+            ->where('lr_mode', 2)
+            ->get();
+            // ->whereDate('consignment_date', '>=', now()->subDays(15))
+                
             foreach($consignments as $value){
             //    echo'<pre>'; print_r($value->ConsignmentItems); die;
                     $order = array();
