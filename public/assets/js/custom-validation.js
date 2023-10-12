@@ -1376,14 +1376,13 @@ jQuery(document).ready(function () {
     });
 
     // consignment status change onchange
-    var lr_id = null;
     jQuery(document).on(
         "click",
         ".activestatus,.inactivestatus",
         function (event) {
             event.stopPropagation();
 
-             lr_id = jQuery(this).attr("data-id");
+            let user_id = jQuery(this).attr("data-id");
 
             var dataaction = jQuery(this).attr("data-action");
             var datastatus = jQuery(this).attr("data-status");
@@ -1394,17 +1393,15 @@ jQuery(document).ready(function () {
             } else {
                 statustext = "enable";
             }
-
-            jQuery("#reason_to_cancel").val("");
             jQuery("#commonconfirm").modal("show");
-            jQuery(".commonconfirmclick").on("click", function () {
+            jQuery(".commonconfirmclick").one("click", function () {
                 var reason_to_cancel = jQuery("#reason_to_cancel").val();
                 if(!reason_to_cancel){
                     swal("Error", "Enter Reason to cancel", "error");
                     return false;
                 }
                 var data = {
-                    id: lr_id,
+                    id: user_id,
                     status: datastatus,
                     updatestatus: updatestatus,
                     reason_to_cancel: reason_to_cancel,
@@ -1558,34 +1555,26 @@ jQuery(document).ready(function () {
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
+                    console.log('asdf', deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
-                        "<tr><td><input type='hidden' name='data[" +
-                        i +
-                        "][lrno]' class='delivery_d' value='" +
-                        value.consignment_no +
-                        "'>" +
-                        value.consignment_no +
-                        "</td><td><input type='hidden' name='data[" +
-                        i +
-                        "][lr_date]' class='c_date' value='" +
-                        value.consignment_date +
-                        "'>" +
-                        value.consignee_id +
-                        " </td><td><input type='hidden' name='data[" +
-                        i +
-                        "][job_id]' class='c_date' value='" +
-                        value.job_id +
-                        "'>" +
-                        value.city +
-                        "</td><td>" +
-                        edd_date +
-                        "</td><td>" +
-                        deliverydate +
-                        "</td><td>" +
-                        field +
-                        "</td><td><button type='button'  data-id=" +
-                        value.consignment_no +
-                        " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                        `<tr>
+                            <td>
+                                <input type='hidden' name='data[${i}][lrno]' class='delivery_d' value='${value.consignment_no}'>
+                                ${value.consignment_no}
+                            </td>
+                            <td>
+                                <input type='hidden' name='data[${i}][lr_date]' class='c_date' value='${value.consignment_date}'>
+                                ${value.consignee_id}
+                            </td>
+                            <td>
+                                <input type='hidden' name='data[${i}][job_id]' class='c_date' value='${value.job_id}'>
+                                ${value.city}
+                            </td>
+                            <td>${edd_date}</td>
+                            <td>${deliverydate}</td>
+                            <td>${field}</td>
+                            <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                        </tr>`
                     );
                     i++;
                 });
@@ -1758,7 +1747,7 @@ jQuery(document).ready(function () {
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
-                            if (data.role_id == 7 || data.role_id == 8) {
+                            if (data.role_id == 7) {
                                 var field = "-";
                             } else {
                                 var field =
@@ -1826,7 +1815,7 @@ jQuery(document).ready(function () {
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7 || data.role_id == 8) {
+                        if (data.role_id == 7) {
                             var deliverydat = "-";
                         } else {
                             var deliverydat =
@@ -1846,14 +1835,10 @@ jQuery(document).ready(function () {
                     ) {
                         var buton = "Successful";
                     } else {
-                        if(data.role_id == 7 || data.role_id == 8){
-                            var buton = "-";
-                        }else{
                         var buton =
                             "<button type='button'  data-id=" +
                             value.consignment_no +
                             " class='btn btn-primary onelrupdate'>Save</button>";
-                        }
                     }
 
                     row =
@@ -1871,7 +1856,7 @@ jQuery(document).ready(function () {
                         field +
                         "</td>";
                     if (value.lr_mode == 0) {
-                        if (data.role_id != 7 || data.role_id != 8) {
+                        if (data.role_id != 7) {
                             row += "<td>" + buton + "</td>";
                         }
                     }else if(value.lr_mode == 1){
