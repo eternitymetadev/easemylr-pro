@@ -486,8 +486,6 @@ class ReportController extends Controller
                         ->where('regclient_id', $regional->id)
                         ->whereDate('consignment_date', '>=', now()->subDays(45))
                         ->first();
-                        
-                    // $consignment_details = ConsignmentNote::where('status', '!=', 5)->where('regclient_id', $regional->id)->whereMonth('consignment_date', date('m'))->whereYear('consignment_date', date('Y'))->first();
                     
                     if (!empty($consignment_details)) {
                         $path = 'regional/Shprider Auto MIS 910003.xlsx';
@@ -495,10 +493,15 @@ class ReportController extends Controller
                         Excel::store(new RegionalReport($regional->id), $path, 'public');
                         $get_file = storage_path('app/public/regional/Shprider Auto MIS 910003.xlsx');
 
-                        $data = ['client_name' => $regional->name, 'current_time' => $current_time, 'formattedDate' => $formattedDate];
+                        $data = [
+                            'client_name' => $regional->name,
+                            'current_time' => $current_time,
+                            'formattedDate' => $formattedDate,
+                        ];
 
                         $user['to'] = $regional->email;
-                        $sec_emails = explode(',', $regional->secondary_email);
+                        $emailString = str_replace([' ', "\t", "\n", "\r"], '', $regional->secondary_email);
+                        $sec_emails = explode(',', $emailString);
                         if(!empty($sec_emails)){
                             $user['cc'] = $sec_emails;
                         }
