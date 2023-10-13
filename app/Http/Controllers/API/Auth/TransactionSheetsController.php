@@ -229,7 +229,7 @@ class TransactionSheetsController extends Controller
             $consignments = ConsignmentNote::with('ConsignerDetail', 'TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')
             ->where('driver_id', $id)
             ->where('lr_mode', 2)
-            ->whereDate('consignment_date', '>=', now()->subDays(15))
+            ->whereDate('consignment_date', '>=', now()->subDays(30))
             ->get();
                 
             foreach($consignments as $value){
