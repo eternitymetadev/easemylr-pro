@@ -96,8 +96,8 @@
                     }else{
                         $disable = 'disable_n';
                     }?>
-
-                <td><a class="active_drs btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
+                    {{--include when acces to cancel drs class="active_drs btn btn-success {{$disable}}" --}}
+                <td><a class="btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
                 <?php }?>
                 <!-- ------- payment status -->
                 <?php if ($trns->payment_status == 0) {
