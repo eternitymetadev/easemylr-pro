@@ -36,7 +36,7 @@
                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
                 <!-- action button -->
                 <?php 
-if ($trns->status == 0) {?>
+                if ($trns->status == 0) {?>
                 <td>
                     <label class="badge badge-dark">Cancelled</label>
                 </td>
@@ -49,8 +49,8 @@ if ($trns->status == 0) {?>
                         style="margin-right:4px;">Save</button>
                     <?php }?>
                     <?php if (!empty($trns->vehicle_no)) {
-    if (!empty($new)) {
-        ?>
+                    if (!empty($new)) {
+                    ?>
                     <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
                         role="button">Print</a>
                     <?php } else {?>
@@ -58,7 +58,7 @@ if ($trns->status == 0) {?>
                         role="button">Print</a>
                     <?php }}?>
                     <?php
-if ($trns->delivery_status == 'Unassigned') {?>
+                    if ($trns->delivery_status == 'Unassigned') {?>
                     <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Unassigned</button>
                     <?php } elseif ($lr == 0) {?>
@@ -94,7 +94,7 @@ if ($trns->delivery_status == 'Unassigned') {?>
                     if($status == 'Successful'){
                         $disable = 'disable_n';
                     }else{
-                        $disable = '';
+                        $disable = 'disable_n';
                     }?>
 
                 <td><a class="active_drs btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
