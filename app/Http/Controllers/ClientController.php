@@ -805,7 +805,15 @@ class ClientController extends Controller
             $client['baseclient_id'] = $request->base_client_id;
             $client['name'] = $request->name;
             $client['regional_client_nick_name'] = $request->regional_client_nick_name;
-            $client['email'] = $request->email;
+
+            if($request->email){
+                $email_string = $request->email;
+                $email = str_replace(' ', '', $email_string);
+            }else{
+                $email = '';
+            }
+            $client['email'] = $email;
+
             $client['phone'] = $request->phone;
             $client['gst_no'] = $request->gst_no;
             $client['pan'] = $request->pan;
@@ -817,7 +825,11 @@ class ClientController extends Controller
             $client['upload_gst'] = $gst_img_path_save;
             $client['upload_pan'] = $pan_img_path_save;
             if($request->secondary_email){
-                $secondary_email = implode(',', $request->secondary_email);
+                $secemail_string = $request->secondary_email;
+                $secemail_noSpaces = str_replace(' ', '', $secemail_string);
+                $secondary_email = implode(',', $secemail_noSpaces);
+            }else{
+                $secondary_email = '';
             }
             $client['secondary_email'] = $secondary_email;
             // $client['payment_term'] = $payment_term;
