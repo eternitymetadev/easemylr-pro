@@ -1428,6 +1428,7 @@ jQuery(document).ready(function(){
             phone: {
                 required: true,
                 Numbers: true,
+                maxlength:10,
                 minlength:10,
             },
             gst_no: {
