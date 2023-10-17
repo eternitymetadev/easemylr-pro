@@ -258,7 +258,7 @@ $('#role_id').change(function() {
         $('.chkBoxClass').prop('checked', true)
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
-    }
+    } 
 });
 
 $('#branch_id').change(function() {
