@@ -1306,6 +1306,26 @@ jQuery(document).ready(function () {
         $("#total_quantity").val(total_quantity);
         $("#total_weight").val(total_net_weight);
         $("#total_gross_weight").val(total_gross_weight);
+
+        var totalNetWeight = $("#total_weight").val();
+        // console.log(totalNetWeight, typeof(+totalNetWeight), 'qwerty')
+        var url      = window.location.href; 
+        var segments = url.split('/');
+        var lastSegment = segments[segments.length - 1];
+        var prslastSegment = segments[segments.length - 3];
+        // console.log(lastSegment);
+        var formClass = $(".net").closest('form').attr('class');
+        console.log(formClass);
+
+        if (formClass.indexOf('mtcheckload') !== -1) {
+        // if(lastSegment == 'order-book-ptl' || prslastSegment == 'order'){
+            if(+totalNetWeight > 2000){
+                $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
+                swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
+            } else{
+                $('.ptlBookButton, .updateOrderButton').removeAttr('disabled');
+            }
+        }
     }
 
     /*===== get location on edit click =====*/
@@ -1376,13 +1396,15 @@ jQuery(document).ready(function () {
     });
 
     // consignment status change onchange
+
+    var lr_id = null;
     jQuery(document).on(
         "click",
         ".activestatus,.inactivestatus",
         function (event) {
             event.stopPropagation();
 
-            let user_id = jQuery(this).attr("data-id");
+            lr_id = jQuery(this).attr("data-id");
 
             var dataaction = jQuery(this).attr("data-action");
             var datastatus = jQuery(this).attr("data-status");
@@ -1394,14 +1416,14 @@ jQuery(document).ready(function () {
                 statustext = "enable";
             }
             jQuery("#commonconfirm").modal("show");
-            jQuery(".commonconfirmclick").one("click", function () {
+            jQuery(".commonconfirmclick").on("click", function () {
                 var reason_to_cancel = jQuery("#reason_to_cancel").val();
                 if(!reason_to_cancel){
                     swal("Error", "Enter Reason to cancel", "error");
                     return false;
                 }
                 var data = {
-                    id: user_id,
+                    id: lr_id,
                     status: datastatus,
                     updatestatus: updatestatus,
                     reason_to_cancel: reason_to_cancel,
@@ -1747,7 +1769,7 @@ jQuery(document).ready(function () {
 
                     if (value.lr_mode == 0) {
                         if (value.signed_drs == null) {
-                            if (data.role_id == 7) {
+                            if (data.role_id == 7 || data.role_id == 8) {
                                 var field = "-";
                             } else {
                                 var field =
@@ -1815,7 +1837,7 @@ jQuery(document).ready(function () {
                     }
                     // delivery date check
                     if (value.delivery_date == null) {
-                        if (data.role_id == 7) {
+                        if (data.role_id == 7 || data.role_id == 8) {
                             var deliverydat = "-";
                         } else {
                             var deliverydat =
@@ -1835,10 +1857,14 @@ jQuery(document).ready(function () {
                     ) {
                         var buton = "Successful";
                     } else {
+                        if(data.role_id == 7 || data.role_id == 8){
+                            var buton = "-";
+                        }else{
                         var buton =
                             "<button type='button'  data-id=" +
                             value.consignment_no +
                             " class='btn btn-primary onelrupdate'>Save</button>";
+                        }
                     }
 
                     row =
@@ -1856,7 +1882,7 @@ jQuery(document).ready(function () {
                         field +
                         "</td>";
                     if (value.lr_mode == 0) {
-                        if (data.role_id != 7) {
+                        if (data.role_id != 7 || data.role_id != 8) {
                             row += "<td>" + buton + "</td>";
                         }
                     }else if(value.lr_mode == 1){

@@ -143,7 +143,7 @@
                         </div>
                    
                         <div class="form-group col-md-3">
-                            <label for="exampleFormControlInput2">Email Sent<span class="text-danger">*</span></label>
+                            <label for="exampleFormControlInput2">Order Email notification<span class="text-danger">*</span></label>
                             <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
                                 <div class="checkbox radio">
                                     <label class="check-label d-flex align-items-center" style="gap: 4px">
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="exampleFormControlInput2">Email MIS Report3 Sent<span class="text-danger">*</span></label>
+                            <label for="exampleFormControlInput2">MIS Report3 Email notification<span class="text-danger">*</span></label>
                             <div class="check-box d-flex align-items-center px-2" style="gap: 16px; height: calc(1.4em + 1.4rem + 2px)">
                                 <div class="checkbox radio">
                                     <label class="check-label d-flex align-items-center" style="gap: 4px">

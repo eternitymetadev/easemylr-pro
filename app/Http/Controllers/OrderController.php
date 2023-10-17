@@ -1369,12 +1369,12 @@ class OrderController extends Controller
 
                 $data = ['Lr_No' => $consignment_id, 'consignor' => $data['consigner_detail']['legal_name'], 'consignee_name' => $data['consignee_detail']['legal_name'], 'consignee_pin' => $data['consignee_detail']['postal_code'], 'net_weigth' => $data['total_weight'], 'cases' => $data['total_quantity'], 'client' => $regional_id->name];
                 $user['to'] = $regional_email;
-                Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
-                    $messges->to($user['to']);
-                    $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
-                    $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
+                // Mail::send('consignments.email-template', $data, function ($messges) use ($user, $pdf, $consignment_id) {
+                //     $messges->to($user['to']);
+                //     $messges->subject('Your Order has been picked & is ready to Ship : LR No. ' . $consignment_id . '');
+                //     $messges->attachData($pdf->output(), "LR .$consignment_id.pdf");
 
-                });
+                // });
             }
             // ================================end Send Email ============================= //
             //===================== Create DRS in LR ================================= //
@@ -2704,9 +2704,8 @@ class OrderController extends Controller
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
-        $data = $data->where('consignment_notes.status', '5')->orderBy('id', 'DESC');
-
-        $consignments = $data->get();
+        
+        $consignments = $data->where('consignment_notes.status', '5')->orderBy('id', 'DESC')->get();
 
         if ($request->ajax()) {
             if (isset($request->updatestatus)) {

@@ -225,7 +225,6 @@ class TransactionSheetsController extends Controller
 
     public function show($id)
     {
-
         try {
             $consignments = ConsignmentNote::with('ConsignerDetail', 'TransactionSheet', 'ConsigneeDetail', 'ConsignmentItems', 'AppMedia', 'Jobs')
             ->where('driver_id', $id)
@@ -234,7 +233,6 @@ class TransactionSheetsController extends Controller
             ->get();
                 
             foreach($consignments as $value){
-            //    echo'<pre>'; print_r($value->ConsignmentItems); die;
                     $order = array();
                     $invoices = array();
                     $pod_img = array();

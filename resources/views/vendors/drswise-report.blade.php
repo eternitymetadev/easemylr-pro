@@ -54,7 +54,7 @@ div.relative {
                         records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                         <div class="col-sm-3">
-                            <label>from</label>
+                            <label>From</label>
                             <input type="date" id="startdate" class="form-control" name="startdate">
                         </div>
                         <div class="col-sm-3">
