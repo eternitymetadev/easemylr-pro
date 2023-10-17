@@ -1577,34 +1577,26 @@ jQuery(document).ready(function () {
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
+                    console.log('asdf', deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
-                        "<tr><td><input type='hidden' name='data[" +
-                        i +
-                        "][lrno]' class='delivery_d' value='" +
-                        value.consignment_no +
-                        "'>" +
-                        value.consignment_no +
-                        "</td><td><input type='hidden' name='data[" +
-                        i +
-                        "][lr_date]' class='c_date' value='" +
-                        value.consignment_date +
-                        "'>" +
-                        value.consignee_id +
-                        " </td><td><input type='hidden' name='data[" +
-                        i +
-                        "][job_id]' class='c_date' value='" +
-                        value.job_id +
-                        "'>" +
-                        value.city +
-                        "</td><td>" +
-                        edd_date +
-                        "</td><td>" +
-                        deliverydate +
-                        "</td><td>" +
-                        field +
-                        "</td><td><button type='button'  data-id=" +
-                        value.consignment_no +
-                        " class='btn btn-primary remover_lr'>remove</button></td></tr>"
+                        `<tr>
+                            <td>
+                                <input type='hidden' name='data[${i}][lrno]' class='delivery_d' value='${value.consignment_no}'>
+                                ${value.consignment_no}
+                            </td>
+                            <td>
+                                <input type='hidden' name='data[${i}][lr_date]' class='c_date' value='${value.consignment_date}'>
+                                ${value.consignee_id}
+                            </td>
+                            <td>
+                                <input type='hidden' name='data[${i}][job_id]' class='c_date' value='${value.job_id}'>
+                                ${value.city}
+                            </td>
+                            <td>${edd_date}</td>
+                            <td>${deliverydate}</td>
+                            <td>${field}</td>
+                            <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                        </tr>`
                     );
                     i++;
                 });

@@ -55,7 +55,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-4 rm_assign">
                                 <label for="exampleFormControlSelect1">RM Assign</label>
                                 <select name="rm_id" class="form-control" id="rm_id">
                                     <option value="">Select</option>
@@ -87,7 +87,8 @@
                                     ?>
                                 </select>
                             </div>
-                            <!-- <div class="form-group mb-4 multiLocation" style="display: none;">
+                            
+                            <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control tagging" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
@@ -103,7 +104,7 @@
                                     }
                                     ?>
                                 </select>
-                            </div> -->
+                            </div>
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
@@ -166,14 +167,16 @@
 @endsection
 @section('js')
 <script>
-$('#role_id').change(function() {
-    var role_id = $(this).val();
+// $('#role_id').change(function() {
+$(document).ready(function() {
+    var role_id = $('#role_id').val();
     var checkbox = $('.chkBoxClass').val();
     if(role_id == 1) {            //role_id = 1 for Admin
         $('.multiLocation').hide();
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked',true);
         $('.chkBoxClass[value="1"]').prop('checked', true)
@@ -190,9 +193,11 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').show();
     }else if(role_id == '') {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
+        $('.rm_assign').hide();
     }else if(role_id == 3) {            //role_id = 3 for regional manager
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -203,6 +208,7 @@ $('#role_id').change(function() {
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 4) {            //role_id = 4 for branch User
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -213,6 +219,7 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 6) {            //role_id = 6 for client account
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -222,6 +229,7 @@ $('#role_id').change(function() {
         $('.selectClient').hide();
         $('.singleLocation').hide();
         $('.multiLocation').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 7) {            //role_id = 7 for client user
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
@@ -231,11 +239,13 @@ $('#role_id').change(function() {
         $('.singleLocation').show();
         $('.multiLocation').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else if(role_id == 5) {
         $('.multiLocation').show();
         $('.singleLocation').hide();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)
@@ -247,12 +257,12 @@ $('#role_id').change(function() {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
         $('.chkBoxClass[value="7"]').prop('checked', true)
-    }
-    else{
+    }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
         $('.selectClient').hide();
         $('.baseclient').hide();
+        $('.rm_assign').hide();
 
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', true)

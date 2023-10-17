@@ -103,7 +103,7 @@ div.relative {
                                 <th>Net Weight</th>
                                 <th>Booking Mode</th>
                                 <th>Pickup Status</th>
-                                <th>Action</th>
+                                <!-- <th>Action</th> -->
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -145,7 +145,7 @@ div.relative {
 
 
                                 <!-- ---Action Button ----->
-                                <?php if(!empty($consignment->fall_in)){ 
+                                <!-- <?php if(!empty($consignment->fall_in)){ 
                                 $authuser = Auth::user();
                                if($authuser->branch_id == $consignment->fall_in){ ?>
                                 <td>
@@ -172,7 +172,7 @@ div.relative {
                                         href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span><i class="fa fa-edit"></i></span></a>
                                         <?php } ?>
                                 </td>
-                                <?php } ?>
+                                <?php } ?> -->
                                 <!-- -------- Status Button ------------>
                                 <?php if(!empty($consignment->fall_in)){ 
                                 $authuser = Auth::user();
