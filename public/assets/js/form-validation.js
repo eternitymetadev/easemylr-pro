@@ -343,6 +343,9 @@ jQuery(document).ready(function(){
     /*===== create consigner =====*/
     $('#createconsigner').validate({ 
         rules: {
+            regionalclient_id: {
+                required: true
+            },
             nick_name: {
                 required: true
             },
@@ -374,6 +377,9 @@ jQuery(document).ready(function(){
             },
         },
         messages: {
+            regionalclient_id: {
+                required: "Select regional client",
+            },
             nick_name: {
                 required: "Enter name",
             },
@@ -412,6 +418,9 @@ jQuery(document).ready(function(){
     /*===== update consigner =====*/
     $('#updateconsigner').validate({ 
         rules: {
+            regionalclient_id: {
+                required: true
+            },
             nick_name: {
                 required: true
             },
@@ -443,6 +452,9 @@ jQuery(document).ready(function(){
             },
         },
         messages: {
+            regionalclient_id: {
+                required: "Select regional client",
+            },
             nick_name: {
                 required: "Enter name",
             },
