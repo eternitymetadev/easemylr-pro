@@ -130,7 +130,7 @@
                                     <tr>
                                         <th>LR No</th>
                                         <th>Consignee Name</th>
-                                        <th>city</th>
+                                        <th>City</th>
                                         <th>Pin Code</th>
                                         <th style='text-align: right'>Boxes</th>
                                         <th style='text-align: right'>Net Weight</th>
