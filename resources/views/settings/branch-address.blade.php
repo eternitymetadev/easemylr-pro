@@ -6,7 +6,7 @@
         <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <!-- <div class="breadcrumb-title pe-3"><h5>Update Consigner</h5></div> -->
+                    <!-- <div class="breadcrumb-title pe-3"><h5>Update Consignor</h5></div> -->
 
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">

@@ -222,9 +222,9 @@ span.round-tab:hover {
                 <div class="widget-content">
                     <div class="row">
                         <div class="col-sm-4 ">
-                            <p>Select Pickup Location (Consigner)</p>
+                            <p>Select Pickup Location (Consignor)</p>
                             <select id="select_consigner" class="my-select2 form-seteing" type="text" name="consigner_id" disabled>
-                                <option value="">Select Consigner</option>
+                                <option value="">Select Consignor</option>
                                 @if(count($consigners) > 0)
                                 @foreach($consigners as $k => $consigner)
                                 <option value="{{ $k }}" {{ $k == $getconsignments->consigner_id ? 'selected' : ''}}>{{ucwords($consigner)}}

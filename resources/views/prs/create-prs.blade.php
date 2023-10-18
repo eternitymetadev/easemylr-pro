@@ -83,7 +83,7 @@ tbody tr:last-child .rowAddButton {
                                         <thead>
                                             <tr>
                                                 <th>Regional Client*</th>
-                                                <th>Consigner</th>
+                                                <th>Consignor</th>
                                                 <th width="24px"></th>
                                             </tr>
                                         </thead>

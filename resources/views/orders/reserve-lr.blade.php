@@ -57,7 +57,7 @@ div.relative {
                                 <tr>
                                     <!-- <th> </th> -->
                                     <th>LR No</th>
-                                    <th>Consigner Name</th>
+                                    <th>Consignor Name</th>
                                     <th>Consignee Name</th>
                                     <th>City</th>
                                     <!-- <th>Pin Code</th> 

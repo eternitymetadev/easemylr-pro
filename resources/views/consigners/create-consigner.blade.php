@@ -3,7 +3,7 @@
 
     <div class="layout-px-spacing">
         <div class="page-header layout-spacing">
-            <h2 class="pageHeading">Create Consigner</h2>
+            <h2 class="pageHeading">Create Consignor</h2>
         </div>
 
         <div class="widget-content widget-content-area shadow-lg " style="border-radius: 12px">
@@ -47,12 +47,12 @@
                         <?php } ?>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="exampleFormControlInput2">Consigner Nick Name<span
+                        <label for="exampleFormControlInput2">Consignor Nick Name<span
                                 class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="nick_name" placeholder="" required>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="exampleFormControlInput2">Consigner Legal Name<span
+                        <label for="exampleFormControlInput2">Consignor Legal Name<span
                                 class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="legal_name" placeholder="" required>
                     </div>
@@ -120,7 +120,7 @@
                     </div>
 
                     <div class="col-md-12 d-flex justify-content-end align-items-center" style="gap: 1rem;">
-                        <a class="btn btn-outline-primary" href="{{url($prefix.'/consigners') }}"> View Consigners</a>
+                        <a class="btn btn-outline-primary" href="{{url($prefix.'/consigners') }}"> View Consignors</a>
 
                         <button type="submit" style="min-width: 120px" name="time" class="mt-4 mb-4 btn btn-primary">
                             Submit

@@ -45,7 +45,7 @@
                                     <input type="tel" class="form-control mbCheckNm" name="phone" placeholder="Enter 10 digit mobile no" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
+                                    <label for="exampleFormControlSelect1">Consignor</label>
                                     <select class="form-control" name="consigner_id">
                                         <option value="">Select</option>
                                         <?php 

@@ -406,10 +406,10 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
 
             <div class="form-group col-md-4">
                 <label>
-                    Select Pickup Location (Consigner)<span class="text-danger">*</span>
+                    Select Pickup Location (Consignor)<span class="text-danger">*</span>
                 </label>
                 <select id="select_consigner" class="my-select2 form-seteing" type="text" name="consigner_id" disabled>
-                    <option value="">Select Consigner</option>
+                    <option value="">Select Consignor</option>
                     @if(count($consigners) > 0)
                     @foreach($consigners as $k => $consigner)
                     <option value="{{ $k }}" {{ $k == $getconsignments->consigner_id ? 'selected' : ''}}>

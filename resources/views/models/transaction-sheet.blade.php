@@ -361,7 +361,7 @@
                                             </th>
                                             <th>LR No</th>
                                             <th>Consignment Date</th>
-                                            <th>Consigner Name</th>
+                                            <th>Consignor Name</th>
                                             <th>Consignee</th>
                                             <th>City</th>
                                             <th>District</th>

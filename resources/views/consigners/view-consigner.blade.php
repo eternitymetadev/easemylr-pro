@@ -7,8 +7,8 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consigner</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">View Consigner</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignor</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">View Consignor</a></li>
                     </ol>
                 </nav>
             </div>
@@ -16,7 +16,7 @@
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                     <!-- <div class="breadcrumb-title pe-3"><h5>Consigner Details</h5></div> -->
                     <!-- <div class="col-md-9 text-right">
-                        <a href="{{url($prefix.'/consigners/'.Crypt::encrypt($getconsigner->id).'/edit')}}" class="btn my-3" href="" style="background:#fff;" title="Edit Consigner"><i class="fa fa-edit m-0"></i></a>
+                        <a href="{{url($prefix.'/consigners/'.Crypt::encrypt($getconsigner->id).'/edit')}}" class="btn my-3" href="" style="background:#fff;" title="Edit Consignor"><i class="fa fa-edit m-0"></i></a>
                     </div> -->
                 </div>
                 <div class="col-lg-12 col-12 layout-spacing">
@@ -30,11 +30,11 @@
                                     </td>                                       
                                 </tr>
                                 <tr>
-                                    <th scope="row">Consigner Nick Name</th>
+                                    <th scope="row">Consignor Nick Name</th>
                                     <td>{{isset($getconsigner->nick_name)?ucfirst($getconsigner->nick_name):'-'}} </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Consigner Legal Name</th>
+                                    <th scope="row">Consignor Legal Name</th>
                                     <td>{{isset($getconsigner->legal_name)?ucfirst($getconsigner->legal_name):'-'}} </td>
                                 </tr>
                                 <tr>

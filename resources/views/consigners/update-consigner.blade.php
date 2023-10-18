@@ -7,8 +7,8 @@
             <div class="page-header">
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consigner</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update Consigner</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:void(0);">Consignor</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update Consignor</a></li>
                     </ol>
                 </nav>
             </div>
@@ -21,7 +21,7 @@
             ?>
             <div class="widget-content widget-content-area br-6">
                 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                    <!-- <div class="breadcrumb-title pe-3"><h5>Update Consigner</h5></div> -->
+                    <!-- <div class="breadcrumb-title pe-3"><h5>Update Consignor</h5></div> -->
                 </div>  
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
@@ -65,13 +65,13 @@
                                     <?php } ?>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Consigner Nick Name<span class="text-danger">*</span></label>
+                                    <label for="exampleFormControlInput2">Consignor Nick Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control {{$disable}}" name="nick_name" value="{{old('nick_name',isset($getconsigner->nick_name)?$getconsigner->nick_name:'')}}" placeholder="">
                                 </div>
                             </div>        
                             <div class="form-row mb-0">
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlInput2">Consigner Legal Name</label>
+                                    <label for="exampleFormControlInput2">Consignor Legal Name</label>
                                     <input type="text" class="form-control {{$disable}}" name="legal_name" value="{{old('legal_name',isset($getconsigner->legal_name)?$getconsigner->legal_name:'')}}" placeholder="">
                                 </div>
                                 <div class="form-group col-md-6">

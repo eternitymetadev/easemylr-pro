@@ -12,8 +12,8 @@
                             <line x1="12" y1="8" x2="12" y2="12"></line>
                             <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
-                        <h5 class="my-2">Delete Consigner</h5>
-                        <span>Are you sure you want to delete this consigner?</span>
+                        <h5 class="my-2">Delete Consignor</h5>
+                        <span>Are you sure you want to delete this consignor?</span>
                     </div>
                 </div>
 

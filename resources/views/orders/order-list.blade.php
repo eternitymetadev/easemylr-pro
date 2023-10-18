@@ -92,8 +92,8 @@ div.relative {
                                 <th>Pickup Zone</th>
                                 <th>Delivery Zone</th>
                                 <th>Billing Client</th>
-                                <th>Consigner Name</th>
-                                <th>Consigner Pin Code</th>
+                                <th>Consignor Name</th>
+                                <th>Consignor Pin Code</th>
                                 <th>Consignee Name</th>
                                 <th>Pin Code</th>
                                 <th>Delivery City</th>

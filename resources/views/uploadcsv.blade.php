@@ -23,7 +23,7 @@
                 <?php if($authuser->role_id == 1){ ?>
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
-                        <h4 class="win-h4">Browse Consigners Sheet</h4>
+                        <h4 class="win-h4">Browse Consignors Sheet</h4>
                     </div>
                     <div class="col-lg-4 col-md-9 col-sm-12">
                         <input type="file" name="consignersfile" id="consignerfile" class="consignerfile"> 

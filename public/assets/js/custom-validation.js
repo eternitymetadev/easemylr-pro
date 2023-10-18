@@ -110,7 +110,7 @@ jQuery(document).ready(function () {
     });
     /*===== End delete Branch =====*/
 
-    /*===== delete Consigner =====*/
+    /*===== delete Consignor =====*/
     jQuery(document).on("click", ".delete_consigner", function () {
         jQuery("#deleteconsigner").modal("show");
         var consignerid = jQuery(this).attr("data-id");
@@ -137,7 +137,7 @@ jQuery(document).ready(function () {
                 });
             });
     });
-    /*===== End delete Consigner =====*/
+    /*===== End delete Consignor =====*/
 
     /*===== delete Consignee =====*/
     jQuery(document).on("click", ".delete_consignee", function () {
@@ -504,7 +504,7 @@ jQuery(document).ready(function () {
     }
     /*===== End get driver detail on create vehicle page =====*/
 
-    /*======get consigner on regional client =====*/
+    /*======get consignor on regional client =====*/
     $("#select_regclient").change(function (e) {
         // $("#items_table").find("tr:gt(1)").remove();
         var regclient_id = $(this).val();
@@ -530,7 +530,7 @@ jQuery(document).ready(function () {
                 // $("#paymentType").empty();
 
                 $("#select_consigner").append(
-                    '<option value="">select consigner</option>'
+                    '<option value="">select consignor</option>'
                 );
                 $("#select_consignee").append(
                     '<option value="">Select Consignee</option>'
@@ -2709,7 +2709,7 @@ $(".searchclientreport").click(function (e) {
             $("#ship_to_address").empty();
 
             $("#select_consigner").append(
-                '<option value="">select consigner</option>'
+                '<option value="">select consignor</option>'
             );
             $("#select_consignee").append(
                 '<option value="">Select Consignee</option>'
@@ -2960,7 +2960,7 @@ $("#item_master").submit(function (e) {
     });
 });
 
-/*====== In create PRS  get consigner on click regional client =====*/
+/*====== In create PRS  get consignor on click regional client =====*/
 
 // $(".select_prsregclient").change(function (e) {
 function onChangePrsRegClient(_this) {

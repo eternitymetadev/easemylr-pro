@@ -8,7 +8,7 @@
                 <th>Driver Phone</th>
                 <th>Vehicle No</th>
                 <th>Date</th>
-                <th>Consigner </th>
+                <th>Consignor </th>
                 <th>City</th>
                 <th>Status </th>
                 <!-- <th>Action</th> -->

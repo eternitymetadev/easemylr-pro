@@ -385,7 +385,7 @@
 
                 <div class="form-group col-md-4">
                     <label>
-                        Select Pickup Location (Consigner)<span class="text-danger">*</span>
+                        Select Pickup Location (Consignor)<span class="text-danger">*</span>
                     </label>
                     <select class="form-control my-select2" id="select_consigner" name="consigner_id">
                         <option value="">Select Consignor</option>
