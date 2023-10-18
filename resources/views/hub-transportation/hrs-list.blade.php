@@ -103,7 +103,7 @@
                                 <th>LR No</th>
                                 <th>CN Date</th>
                                 <th>Hub Transfer</th>
-                                <th>Consigner Name</th>
+                                <th>Consignor Name</th>
                                 <th>Consignee Name</th>
                                 <th>Location</th>
                                 <th>Quantity</th>

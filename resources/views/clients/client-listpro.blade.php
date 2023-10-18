@@ -83,7 +83,7 @@
                                             <tr>
                                                 <th style="width:180px;">Location</th>
                                                 <th style="width:180px;">Regional Client</th>
-                                                <th style="width:180px;">Consigner</th>
+                                                <th style="width:180px;">Consignor</th>
                                                 <th style="width:180px;"> Consignee</th>
                                             </tr>
 					                    </table>

@@ -160,7 +160,7 @@ a.badge.alert.bg-secondary.shadow-sm {
                                     </th>
                                     <th>LR No.</th>
                                     <th>LR Date</th>
-                                    <th>Consigner</th>
+                                    <th>Consignor</th>
                                     <th>Consignee</th>
                                     <th>City</th>
                                 </tr>

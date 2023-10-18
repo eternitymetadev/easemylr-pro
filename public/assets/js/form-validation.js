@@ -340,7 +340,7 @@ jQuery(document).ready(function(){
         }
     });
 
-    /*===== create consigner =====*/
+    /*===== create consignor =====*/
     $('#createconsigner').validate({ 
         rules: {
             regionalclient_id: {
@@ -415,7 +415,7 @@ jQuery(document).ready(function(){
         }
     });
 
-    /*===== update consigner =====*/
+    /*===== update consignor =====*/
     $('#updateconsigner').validate({ 
         rules: {
             regionalclient_id: {
@@ -539,7 +539,7 @@ jQuery(document).ready(function(){
                 minlength: "Enter at least 15 digits",
             },
             consigner_id: {
-                required: "Please select consigner",
+                required: "Please select consignor",
             },
             postal_code: {
                 required: "Enter pin code",
@@ -600,7 +600,7 @@ jQuery(document).ready(function(){
                 minlength: "Enter at least 15 digits",
             },
             consigner_id: {
-                required: "Please select consigner",
+                required: "Please select consignor",
             },
             postal_code: {
                 required: "Enter pin code",
@@ -899,7 +899,7 @@ jQuery(document).ready(function(){
         },
         messages: {
             consigner_id: {
-                required: "Select consigner address",
+                required: "Select consignor address",
             },
             consignee_id: {
                 required: "Select consignee address",
@@ -997,7 +997,7 @@ jQuery(document).ready(function(){
         },
         messages: {
             consigner_id: {
-                required: "Select consigner address",
+                required: "Select consignor address",
             },
             consignee_id: {
                 required: "Select consignee address",
@@ -1078,7 +1078,7 @@ jQuery(document).ready(function(){
         },
         messages: {
             consigner_id: {
-                required: "Select consigner address"
+                required: "Select consignor address"
             },
             consignee_id: {
                 required: "Select consignee address"
@@ -1688,7 +1688,7 @@ jQuery(document).ready(function(){
                 required: "Select regional client",
             },
             consigner_id: {
-                required: "Select consigner",
+                required: "Select consignor",
             },
             vehicle_id: {
                 required: "",
@@ -1707,7 +1707,7 @@ jQuery(document).ready(function(){
         $(this).rules('add', {
                 required: true,
                 messages: {
-                    required: "Select Consigner."
+                    required: "Select Consignor."
                 },
             });
     });
@@ -1736,7 +1736,7 @@ jQuery(document).ready(function(){
                 required: "Select regional client",
             },
             consigner_id: {
-                required: "Select consigner",
+                required: "Select consignor",
             },
             vehicle_id: {
                 required: "",

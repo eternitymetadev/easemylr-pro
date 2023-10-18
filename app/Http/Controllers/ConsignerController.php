@@ -22,7 +22,7 @@ class ConsignerController extends Controller
 {
     public function __construct()
     {
-        $this->title = "Consigners";
+        $this->title = "Consignors";
         $this->segment = \Request::segment(2);
 
     }
@@ -68,10 +68,10 @@ class ConsignerController extends Controller
                     }
                     $regnl_row = '<td valign="middle" style="max-width: 350px">
                             <p class="consigner">
-                                <span class="legalName" title="consigner legal name">
+                                <span class="legalName" title="consignor legal name">
                                     '.$regional.'
                                 </span>
-                                <span title="consigner name">
+                                <span title="consignor name">
                                     '.$row->nick_name.'
                                 </span>
                             </p>
@@ -342,7 +342,7 @@ class ConsignerController extends Controller
         return Excel::download(new ConsignerExport, 'consigners.csv');
     }
 
-    // get locations on client change in create consigner
+    // get locations on client change in create consignor
     public function regLocations(Request $request)
     {
         $getlocation = Location::select('id', 'name')->where(['id' => $request->location_id, 'status' => '1'])->first();

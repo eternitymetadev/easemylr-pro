@@ -79,7 +79,7 @@ td p.consigner span.legalName {
 <div class="layout-px-spacing">
 
     <div class="page-header layout-spacing">
-        <h2 class="pageHeading">Consigner List</h2>
+        <h2 class="pageHeading">Consignor List</h2>
         <div class="d-flex align-content-center" style="gap: 1rem;">
             <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>"
                 class="downloadEx btn btn-primary pull-right"
@@ -101,7 +101,7 @@ td p.consigner span.legalName {
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                Consigner
+                Consignor
             </button>
         </div>
     </div>
@@ -138,7 +138,7 @@ td p.consigner span.legalName {
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 1100px)">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createConsignerLabel">Create Consigner</h5>
+                    <h5 class="modal-title" id="createConsignerLabel">Create Consignor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -187,13 +187,13 @@ td p.consigner span.legalName {
                                 <?php } ?>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Consigner Nick Name<span
+                                <label for="exampleFormControlInput2">Consignor Nick Name<span
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-sm" name="nick_name" placeholder=""
                                     required>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Consigner Legal Name<span
+                                <label for="exampleFormControlInput2">Consignor Legal Name<span
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-sm" name="legal_name" placeholder=""
                                     required>
@@ -296,7 +296,7 @@ td p.consigner span.legalName {
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 1100px)">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="consignerDetailsModalLabel">Consigner Details</h5>
+                    <h5 class="modal-title" id="consignerDetailsModalLabel">Consignor Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -384,7 +384,7 @@ td p.consigner span.legalName {
         <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: min(95%, 1100px)">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="consignerDetailsEditModalLabel">Edit Consigner</h5>
+                    <h5 class="modal-title" id="consignerDetailsEditModalLabel">Edit Consignor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -433,13 +433,13 @@ td p.consigner span.legalName {
                                 <?php } ?>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Consigner Nick Name<span
+                                <label for="exampleFormControlInput2">Consignor Nick Name<span
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-sm" name="nick_name" placeholder=""
                                     required>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="exampleFormControlInput2">Consigner Legal Name<span
+                                <label for="exampleFormControlInput2">Consignor Legal Name<span
                                         class="text-danger">*</span></label>
                                 <input type="text" class="form-control form-control-sm" name="legal_name" placeholder=""
                                     required>

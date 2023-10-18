@@ -44,7 +44,7 @@
                                     <td>{{isset($getconsignee->phone)?ucfirst($getconsignee->phone):'-'}}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Consigner</th>
+                                    <th scope="row">Consignor</th>
                                     <td> 
                                         {{isset($getconsignee->GetConsigner->nick_name) ? ucfirst($getconsignee->GetConsigner->nick_name) : "-" }}
                                     </td>

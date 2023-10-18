@@ -8,9 +8,9 @@
                 <th>Type of Shipment</th>
                 <th>Invoice Number</th>
                 <th>Regional Client</th>
-                <th>Consigner Name</th>
-                <th>Consigner District</th>
-                <th>Consigner Pincode</th>
+                <th>Consignor Name</th>
+                <th>Consignor District</th>
+                <th>Consignor Pincode</th>
                 <th>Consignee Name</th>
                 <th>Consignee District</th>
                 <th>Consignee Pincode</th>

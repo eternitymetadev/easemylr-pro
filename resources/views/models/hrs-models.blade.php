@@ -163,7 +163,7 @@
                                                        style="width: 16px; height:16px;">
                                             </th>
                                             <th>LR No</th>
-                                            <th>Consigner Name</th>
+                                            <th>Consignor Name</th>
                                             <th>Consignee</th>
                                             <th>Location</th>
                                         </tr>

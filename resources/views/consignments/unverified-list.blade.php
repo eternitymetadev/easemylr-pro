@@ -84,7 +84,7 @@ div.relative {
                                 </th>
                                 <th>LR No</th>
                                 <th>CN Date</th>
-                                <th>Consigner Name</th>
+                                <th>Consignor Name</th>
                                 <th>Consignee Name</th>
                                 <th>District</th>
                                 <th>City</th>

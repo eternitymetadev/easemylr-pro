@@ -56,7 +56,7 @@
                                     <input type="text" class="form-control mbCheckNm" name="phone" value="{{old('phone',isset($getconsignee->phone)?$getconsignee->phone:'')}}" placeholder="Phone" maxlength="10">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="exampleFormControlSelect1">Consigner</label>
+                                    <label for="exampleFormControlSelect1">Consignor</label>
                                     <select class="form-control" name="consigner_id">
                                         <option value="">Select</option>
                                         <?php 

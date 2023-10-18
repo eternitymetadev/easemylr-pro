@@ -10,7 +10,7 @@
                 <th>LR No</th>
                 <th>LR Date</th>
                 <th>Client</th>
-                <th>Consigner</th>
+                <th>Consignor</th>
                 <th>PIN</th>
                 <th>City</th>
                 <th>Quantity</th>

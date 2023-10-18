@@ -72,7 +72,7 @@ div.relative {
                                         <th>Sr No</th>
                                         <th>Base Client</th>
                                         <th>Regional Client</th>
-                                        <th>Consigner Nick Name</th>
+                                        <th>Consignor Nick Name</th>
                                         <th>Contact Person Name</th>
                                         <th>Mobile No.</th>
                                         <th>Pin Code</th> 

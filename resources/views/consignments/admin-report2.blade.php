@@ -75,7 +75,7 @@ div.relative {
                                         <th>Regional Location</th>
                                         <th>Base Client</th>
                                         <th>Regional Client</th>
-                                        <th>Consigner </th> 
+                                        <th>Consignor </th> 
                                         <th>Lr Status</th> 
                                         <th>Dispatch Date</th> 
                                         <th>Delivery Date</th>

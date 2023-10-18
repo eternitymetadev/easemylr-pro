@@ -74,7 +74,7 @@ div.relat {
                             <tr>
                                 <th>Cnee ID</th>
                                 <th>Consignee Nick Name</th>
-                                <th>Consigner</th> 
+                                <th>Consignor</th> 
                                 <th>Contact Person Name</th>
                                 <th>Mobile No.</th>
                                 <th>PIN Code</th>
