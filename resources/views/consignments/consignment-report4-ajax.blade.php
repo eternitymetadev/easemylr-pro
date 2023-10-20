@@ -8,9 +8,10 @@
                 <th>LR Date</th>
                 <th>Drs No</th>
                 <th>Drs Date</th>
-                <th>Order No</th>
+                {{-- <th>Order No</th> --}}
                 <th>Base Client</th>
                 <th>Regional Client</th>
+                <th>Invoice No</th>
                 {{-- <th>Consignor</th>
                 <th>Consignor City</th>
                 <th>Consignee Name</th>
@@ -25,7 +26,6 @@
                 <th>Ship To pin code</th>
                 <th>Ship To District</th>
                 <th>Ship To State</th>
-                <th>Invoice No</th>
                 <th>Invoice Date</th>
                 <th>Invoice Amount</th>
                 <th>Vehicle No</th>
@@ -74,34 +74,15 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <td>DRS-{{ @$consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{$drs_date}}</td>
-                <?php if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
-                    $order = array();
-                    $invoices = array();
-                    $inv_date = array();
-                    $inv_amt = array();
-                    foreach($consignment->ConsignmentItems as $orders){ 
-                        
-                        $order[] = $orders->order_id;
-                        $invoices[] = $orders->invoice_no;
-                        $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                        $inv_amt[] = $orders->invoice_amount;
-                    }
-                    //echo'<pre>'; print_r($order); die;
-                    $order_item['orders'] = implode(',', $order);
-                    $order_item['invoices'] = implode(',', $invoices);
-                    $invoice['date'] = implode(',', $inv_date);
-                    $invoice['amt'] = implode(',', $inv_amt);?>
-
-                <td>{{ $orders->order_id ?? "-" }}</td>
-
-                <?php }else{ ?>
-                <td>-</td>
-                <?php } }else{ ?>
-                <td>{{ $consignment->order_id ?? "-" }}</td>
-                <?php  } ?>
+               
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
+                <?php if(empty($consignment->invoice_no)){ ?>
+                    <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                    <?php  } else{ ?>
+                    <td>{{ $consignment->invoice_no ?? "-" }}</td>
+                    <?php  } ?>
+
                 {{-- <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->nick_name ?? "-" }}</td>

@@ -126,45 +126,32 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                     $consignment_date = '-';
                 }
 
-                // if(empty($consignment->order_id)){ 
-                //     if(!empty($consignment->ConsignmentItems)){
-                //         $order = array();
-                //         $invoices = array();
-                //         $inv_date = array();
-                //         $inv_amt = array();
-                //         foreach($consignment->ConsignmentItems as $orders){ 
-                            
-                //             $order[] = $orders->order_id;
-                //             $invoices[] = $orders->invoice_no;
-                //             $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                //             $inv_amt[] = $orders->invoice_amount;
-                //         }
-                //         // $order_item['orders'] = implode('/', $order);
-                //         // $order_item['invoices'] = implode('/', $invoices);
-                //         // $invoice['date'] = implode(',', $inv_date);
-                //         // $invoice['amt'] = implode(',', $inv_amt);
+                if(empty($consignment->order_id)){ 
+                    if(!empty($consignment->ConsignmentItems)){
+                        $invoices = array();
+                        foreach($consignment->ConsignmentItems as $orders){ 
+                            $invoices[] = $orders->invoice_no;
+                        }
+                        $order_item['invoices'] = implode('/', $invoices);
 
-                //         if(!empty($orders->order_id)){
-                //             $order_id = $orders->order_id;
-                //         }else{
-                //             $order_id = '-';
-                //         }
-                //     }else{
-                //         $order_id = '-';
-                //     }
-                // }else{
-                //     $order_id = $consignment->order_id;
-                // }
+                        if(!empty($orders->order_id)){
+                            $order_id = $orders->order_id;
+                        }else{
+                            $order_id = '-';
+                        }
+                    }else{
+                        $order_id = '-';
+                    }
+                }else{
+                    $order_id = $consignment->order_id;
+                }
+                ///////////////
 
-                // if(empty($consignment->invoice_no)){
-                //     $invno =  $order_item['invoices'] ?? '-';
-                //     $invdate = $invoice['date']  ?? '-';
-                //     $invamt = $invoice['amt']  ?? '-';
-                //  }else{
-                //   $invno =  $consignment->invoice_no ?? '-';
-                //   $invdate = $consignment->invoice_date  ?? '-';
-                //   $invamt = $consignment->invoice_amount  ?? '-';
-                //  }
+                if(empty($consignment->invoice_no)){
+                    $invno =  $order_item['invoices'] ?? '-';
+                 }else{
+                  $invno =  $consignment->invoice_no ?? '-';
+                 }
   
                 if($consignment->status == 1){
                     $status = 'Active';
@@ -204,42 +191,6 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                    $deliverymode = 'Manual';
                 }
-
-                // pod status
-                // if($consignment->lr_mode == 0){
-                //     if(empty($consignment->signed_drs)){
-                //         $pod= 'Not Available'; 
-                //     } else {
-                //         $pod= 'Available';
-                //     } 
-                // } else if($consignment->lr_mode == 1){ 
-                //     $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id','desc')->first();
-        
-                //     if(!empty($job->response_data)){
-                //         $trail_decorator = json_decode($job->response_data);
-                //         $img_group = array();
-                //         foreach($trail_decorator->task_history as $task_img){
-                //             if($task_img->type == 'image_added'){
-                //                 $img_group[] = $task_img->description;
-                //             }
-                //         }
-                //         if(empty($img_group)){
-                //             $pod= 'Not Available';
-                //         } else {
-                //             $pod= 'Available';
-                //         }
-                //     }else{
-                //         $pod= 'Not Available';
-                //     }
-                // }else{
-                //     $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
-                //     $count_arra = count($getjobimg);
-                //     if ($count_arra > 1) { 
-                //         $pod= 'Available';
-                //     }else{
-                //         $pod= 'Not Available'; 
-                //     }
-                // }
 
                 //pod img status
                 $awsUrl = env('AWS_S3_URL');
@@ -327,7 +278,7 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                     // 'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
                     // 'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
                     // 'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
-                    // 'invoice_no'          => $invno,
+                    'invoice_no'          => $invno,
                     // 'invoice_date'        => $invdate,
                     // 'invoice_amt'         => $invamt,
                     // 'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
@@ -382,7 +333,7 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
             // 'ShipTo pin',            
             // 'ShipTo District',            
             // 'ShipTo State',           
-            // 'Invoice No',
+            'Invoice No',
             // 'Invoice Date',
             // 'Invoice Amount',
             // 'Vehicle No',
