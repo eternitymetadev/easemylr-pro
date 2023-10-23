@@ -294,6 +294,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
 
+
                 ];
             }
         }
