@@ -27,18 +27,20 @@
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
                 <td>{{ $value->mfg ?? "-" }}</td>
 
-                <?php if($value->rc_image){ 
-                    $awsUrl = env('AWS_S3_URL');
-                    @$image_url = $awsUrl."/vehicle_rc_images/";
+                <?php
+                 $awsUrl = env('AWS_S3_URL');
+                 $image_url = $awsUrl."/vehicle_rc_images/";
+                if($value->rc_image){ 
+                   
                     ?>
-                <td><a href="{{@$image_url.$value->rc_image}}" target="_blank">view</a></td>
+                <td><a href="{{$image_url.$value->rc_image}}" target="_blank">view</a></td>
                 <?php }else{ ?>
                     <td>-</td>
                 <?php } 
                 
                 if($value->second_rc_image)
                 { ?>
-                <td> <a href="{{@$image_url.$value->second_rc_image}}" target="_blank">view</a></td>
+                <td> <a href="{{$image_url.$value->second_rc_image}}" target="_blank">view</a></td>
                 <?php }else{ ?>
                 <td>-</td>
                 <?php } ?>
