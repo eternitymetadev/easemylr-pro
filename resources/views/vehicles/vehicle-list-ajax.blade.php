@@ -27,11 +27,10 @@
                 <td>{{ $value->tonnage_capacity ?? "-" }}</td>
                 <td>{{ $value->mfg ?? "-" }}</td>
 
-                <?php
+                <?php 
                  $awsUrl = env('AWS_S3_URL');
                  $image_url = $awsUrl."/vehicle_rc_images/";
                 if($value->rc_image){ 
-                   
                     ?>
                 <td><a href="{{$image_url.$value->rc_image}}" target="_blank">view</a></td>
                 <?php }else{ ?>
