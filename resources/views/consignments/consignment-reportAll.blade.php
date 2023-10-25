@@ -30,6 +30,13 @@ div.relative {
 
     font-size: 10px;
 }
+.select2-container--default .select2-selection--multiple {
+    padding: 5px 16px !important;
+    background: #fff !important;
+}
+.select2-container.mb-4{
+    margin-bottom: 0 !important;
+}
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -79,12 +86,12 @@ div.relative {
 
                         <?php $authuser = Auth::user(); 
                         if($authuser->role_id == 3 || $authuser->role_id == 5){ ?>
-                        <div style="flex: 0 0 180px">
+                        <div style="flex: 0 0 400px">
                             <label>Select Branch</label>
-                            <select class="form-control my-select2" id="branch_filter"
+                            <select class="form-control tagging" id="branch_filter"
                                 name="branch_id" data-action="<?php echo url()->current(); ?>"
-                                placeholder="Search By Status">
-                                <option value="" selected>--select status--</option>
+                                placeholder="Search By Status" multiple="multiple">
+                                {{-- <option value="" selected>--select status--</option> --}}
                                 <?php foreach($branchs as $branch){ ?>
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
                                 <?php } ?>

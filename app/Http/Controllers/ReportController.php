@@ -112,7 +112,7 @@ class ReportController extends Controller
 
             if ($request->branch_id !== null) {
                 if ($request->branch_id) {
-                    $query = $query->where('branch_id', $request->branch_id);
+                    $query = $query->whereIn('branch_id', $request->branch_id);
                 }
             }
 
@@ -257,7 +257,7 @@ class ReportController extends Controller
 
             if ($request->branch_id !== null) {
                 if ($request->branch_id) {
-                    $query = $query->where('branch_id', $request->branch_id);
+                    $query = $query->whereIn('branch_id', $request->branch_id);
                 }
             }
 
@@ -399,7 +399,7 @@ class ReportController extends Controller
 
             if ($request->branch_id !== null) {
                 if ($request->branch_id) {
-                    $query = $query->where('branch_id', $request->branch_id);
+                    $query = $query->whereIn('branch_id', $request->branch_id);
                 }
             }
 
@@ -522,7 +522,7 @@ class ReportController extends Controller
             }
             if ($request->branch_id !== null) {
                 if ($request->branch_id) {
-                    $query = $query->where('branch_id', $request->branch_id);
+                    $query = $query->whereIn('branch_id', $request->branch_id);
                 }
             }
 
@@ -618,7 +618,7 @@ class ReportController extends Controller
 
     public function exportExcelReport3(Request $request)
     {
-        return Excel::download(new Report3Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id), 'mis_report3.xlsx');
+        return Excel::download(new Report3Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report3.xlsx');
     }
 
     public function exportExcelReport4(Request $request)

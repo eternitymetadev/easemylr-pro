@@ -1,5 +1,15 @@
 @extends('layouts.main')
 @section('content')
+    <style>
+        .select2-container--default .select2-selection--multiple {
+            padding: 5px 16px !important;
+            background: #fff !important;
+        }
+
+        .select2-container.mb-4 {
+            margin-bottom: 0 !important;
+        }
+    </style>
     <!-- END PAGE LEVEL CUSTOM STYLES -->
 
     <div class="layout-px-spacing">
@@ -20,19 +30,19 @@
                             records. Please select Filters.</h5>
 
                         <div class="row px-3 mx-0 mt-4 justify-content-between" style="gap: 12px; flex-wrap: wrap">
-                            <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
+                            <div class="d-flex align-items-end" style="flex: 1; gap: 12px; flex-wrap: wrap">
                                 <?php $authuser = Auth::user(); 
                                 if($authuser->role_id == 3 || $authuser->role_id == 5){ ?>
-                                <div style="width: 210px">
+                                <div style="flex: 0 0 400px">
                                     <label>Select Branch</label>
-                                    <select class="form-control my-select2" id="branch_filter"
-                                        name="branch_id" data-action="<?php echo url()->current(); ?>"
-                                        placeholder="Search By Status">
-                                        <option value="" selected>--select status--</option>
+                                    <select class="form-control tagging" id="branch_filter" name="branch_id"
+                                        data-action="<?php echo url()->current(); ?>" placeholder="Search By Status"
+                                        multiple="multiple">
+                                        {{-- <option value="" selected>Select Branch</option> --}}
                                         <?php foreach($branchs as $branch){ ?>
-                                        <option value="{{$branch->id}}">{{$branch->name}}</option>
+                                        <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                                         <?php } ?>
-                                        
+
                                     </select>
                                 </div>
                                 <?php } ?>
@@ -44,7 +54,7 @@
                                     <label>To</label>
                                     <input type="date" id="enddate" class="form-control" name="enddate">
                                 </div>
-                                
+
                                 <button type="button" id="filter_reportall" class="btn btn-primary"
                                     style="margin-top: 31px; font-size: 15px; padding: 9px; width: 100px">
                                     <span class="indicator-label">Filter</span>
@@ -56,7 +66,7 @@
                                     <span class="indicator-label">Reset</span>
                                 </button>
                             </div>
-                                    
+
                             <a href="<?php echo URL::to($prefix . '/reports/export1'); ?>" data-url="<?php echo URL::to($prefix . '/consignment-misreport'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
                                 style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"

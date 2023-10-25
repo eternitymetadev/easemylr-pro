@@ -29,14 +29,14 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
     protected $enddate;
     protected $baseclient_id;
     protected $regclient_id;
-    // protected $awsUrl;
+    protected $branch_id;
 
-    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id,$branch_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
-        // $this->awsUrl = $awsUrl;
+        $this->branch_id = $branch_id;
     }
 
     public function collection()
@@ -51,8 +51,8 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
         $enddate = $this->enddate;
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
-        // $awsUrl = $this->awsUrl;
-        // dd($awsUrl);
+        $branch_id = $this->branch_id;
+        
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -80,6 +80,13 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereIn('regclient_id', $regclient);   
         }else{
             $query = $query->whereIn('branch_id', $cc);
+        }
+
+        if ($branch_id !== null) {
+            if ($branch_id) {
+                $branch_arr = explode(",",$branch_id);
+                $query = $query->whereIn('branch_id', $branch_arr);
+            }
         }
 
         if(isset($startdate) && isset($enddate)){
