@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/table/datatable/dt-global_style.css') }}">
     <!-- END PAGE LEVEL CUSTOM STYLES -->
     <style>
+        --btnColor: var(--primaryColor);
+
         .select2-results__options {
             list-style: none;
             margin: 0;
@@ -31,6 +33,14 @@
         .btn {
             font-size: 10px;
         }
+
+        .reAttemptBtn {
+            white-space: nowrap;
+            padding: 2px 12px;
+            border-radius: 12px;
+            background: var(--btnColor) !important;
+            border-color: var(--btnColor) !important;
+        }
     </style>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -48,13 +58,13 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
                         <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix . '/export-drs-table') }}">Export
-                            data</a> -->
+                                data</a> -->
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
                                 <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                        <h4 class="win-h4">List</h4>
-                                    </div> -->
+                                            <h4 class="win-h4">List</h4>
+                                        </div> -->
                                 <div class="col d-flex pr-0">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
@@ -62,8 +72,8 @@
                                                 <input type="text" class="form-control" placeholder="Search"
                                                     id="search" data-action="<?php echo url()->current(); ?>">
                                                 <!-- <div class="input-group-btn">
-                                                        <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                                    </div> -->
+                                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                        </div> -->
                                             </div>
                                         </form>
                                     </div>
@@ -71,9 +81,9 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                                style="font-size: 15px; padding: 9px; width: 130px"
-                                                href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
-                                                    New</span></a> -->
+                                                    style="font-size: 15px; padding: 9px; width: 130px"
+                                                    href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
+                                                        New</span></a> -->
                                         <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                             style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
