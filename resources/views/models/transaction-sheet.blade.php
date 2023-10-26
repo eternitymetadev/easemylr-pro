@@ -92,7 +92,6 @@
                                       <th>City</th>
                                       <th>EDD</th>
                                       <th>Delivery Date</th>
-                                      <th>Status</th>
                                       <th>Upload Image</th>
                                       <th>Action</th>
                                   </tr>
@@ -396,44 +395,3 @@
   </div>
   <!--===========================Delevery Status ========================================== -->
 
-
-
-  <!-- model for re-attempt -->
-  <div class="modal fade" id="reAttemptModel" tabindex="-1" role="dialog" aria-labelledby="reAttemptModelLabel"
-      aria-hidden="false">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content" style="background: #fdecbe;border: 2px solid #e2a03f;margin-top: 5rem;">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="reAttemptModelLabel">Re-Attempt</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <div class="d-flex flex-column align-items-center" style="min-height: 150px;">
-                      <div class="form-group" style="width: 90%">
-                          <label for="reason">Example select</label>
-                          <select class="form-control form-control-sm" id="reason" style="border-radius: 12px;">
-                              <option value="Customer shop closed">Customer shop closed</option>
-                              <option value="Material refused by customer">Material refused by customer</option>
-                              <option value="Material Damaged">Material Damaged</option>
-                              <option value="Material Loss">Material Loss</option>
-                              <option value="Material Short">Material Short</option>
-                              <option value="Wrong Invoice Address">Wrong Invoice Address</option>
-                              <option value="Other">Other</option>
-                          </select>
-                      </div>
-                      <button type="button" class="btn btn-primary" style="font-size: 14px;max-width: 180px;margin-top: 1rem;">Confirm
-                          Re-Attempt</button>
-
-                  </div>
-
-              </div>
-          </div>
-      </div>
-  </div>

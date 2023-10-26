@@ -1594,12 +1594,6 @@ jQuery(document).ready(function () {
                             </td>
                             <td>${edd_date}</td>
                             <td>${deliverydate}</td>
-                            <td>${
-                                value.dd == null
-                                ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
-                                : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" style="--btnColor: #d8ffd8">Delivered</a>`
-                                }
-                        </td>
                             <td>${field}</td>
                             <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
                         </tr>`
