@@ -1071,6 +1071,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('get-items', [ConsignmentController::class, 'getItems']);
 
     Route::get('/get-regclients', [ReportController::class, 'getRegclients']);
+    
 
 });
 

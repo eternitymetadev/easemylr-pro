@@ -400,7 +400,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Vehicle Number<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                <select class="form-control form-small my-select2 select_vehiclecheck" id="vehicle_no" name="vehicle_id" tabindex="-1">
                     <option value="">Select vehicle no</option>
                     @foreach($vehicles as $vehicle)
                     <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}

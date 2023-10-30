@@ -68,7 +68,19 @@ class FtlPtlController extends Controller
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
 
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $consignmentNotes = ConsignmentNote::select('vehicle_id')->whereNotNull('vehicle_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->get();
+
+        $vehicleIds = $consignmentNotes->pluck('vehicle_id'); // Get an array of unique vehicle_ids from consignmentNotes
+
+        $vehicles = Vehicle::where('status', '1')
+        ->whereNotIn('id', $vehicleIds)
+        ->select('id', 'regn_no')
+        ->get();
+
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
@@ -1536,4 +1548,5 @@ class FtlPtlController extends Controller
 
         return $response;
     }
+
 }
