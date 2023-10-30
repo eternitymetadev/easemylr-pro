@@ -110,7 +110,7 @@ class ImportCsvController extends Controller
                         $filePath = $extractedDir .'pod_images/'. $file;
 
                         // Check if the file is an image (you can add more image extensions if needed)
-                        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
                         $fileExtension = pathinfo(trim($file), PATHINFO_EXTENSION);
                         // dd('File Extension: ' . $fileExtension);
 
