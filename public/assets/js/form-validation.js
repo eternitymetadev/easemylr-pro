@@ -1217,6 +1217,25 @@ jQuery(document).ready(function(){
         }
     });
 
+    // reattampt reason
+    $('#reattempt-reason').validate({ 
+        rules: {
+            reattempt_reason: {
+                required: true
+            },
+                
+        },
+        messages: {
+            reattempt_reason: {
+                required: "Enter origin",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
     /*===== Create location =====*/
     jQuery('#createlocation').validate({
         rules:
@@ -2016,6 +2035,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-vehiclereceive'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'client-create' || response.page == 'client-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-reattempt'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

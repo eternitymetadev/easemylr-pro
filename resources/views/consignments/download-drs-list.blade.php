@@ -112,6 +112,22 @@
         integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
+            $(document).on('click', '.reAttemptBtn', function() {
+                var get_lrid = $(this).attr("data-lrid");
+                $("#reattempt_lrid").val(get_lrid);
+            });
+
+
+            $("#reason").change(function() {
+                $("#otherText").val('');
+                if ($(this).val() === "other") {
+                    $("#otherInput").show();
+                    $("#otherText").attr('required', true);
+                } else {
+                    $("#otherInput").hide();
+                    $("#otherText").removeAttr('required');
+                }
+            });
 
             jQuery(function() {
                 $('.my-select2').each(function() {

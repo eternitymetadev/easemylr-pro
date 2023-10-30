@@ -380,6 +380,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
     Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+    Route::post('transaction-sheet/create-reattempt', [ConsignmentController::class, 'storeReattempt']);
 
 
     Route::get('/get-consigner-regional', [ConsignmentController::class, 'uploadDrsImgss']);

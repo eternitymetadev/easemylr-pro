@@ -1171,7 +1171,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
-                    '][quantity]"></td>';
+                    '][quantity]" type="number"></td>';
                 // tds +=
                 //     '<td><input type="number" class="form-control form-small net" name="data[' +
                 //     item_no +
@@ -1185,7 +1185,7 @@ jQuery(document).ready(function () {
                     item_no +
                     '][invc_img]" accept="image/*"/></td>';
                 tds +=
-                    '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                    '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row1"> - </button></td>';
                 tds += "</tr>";
             }
 
@@ -1196,7 +1196,6 @@ jQuery(document).ready(function () {
             }
         });
     });
-
     //Remove the current row
     $(document).on("click", ".remove-row", function () {
         var current_val = $(this).parent().siblings(":first").text();
@@ -1318,7 +1317,6 @@ jQuery(document).ready(function () {
         console.log(formClass);
 
         if (formClass.indexOf('mtcheckload') !== -1) {
-        // if(lastSegment == 'order-book-ptl' || prslastSegment == 'order'){
             if(+totalNetWeight > 2000){
                 $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
                 swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
@@ -1594,6 +1592,12 @@ jQuery(document).ready(function () {
                             </td>
                             <td>${edd_date}</td>
                             <td>${deliverydate}</td>
+                            <td>${
+                                value.dd == null
+                                ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
+                                : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`
+                                }
+                        </td>
                             <td>${field}</td>
                             <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
                         </tr>`

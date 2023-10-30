@@ -192,7 +192,10 @@ class GlobalFunctions
 
     public static function getCountDrs($drs_number)
     {
-        $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)->where('status', '!=', 2)->count();
+        // $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)->whereIn('status', '!=', [2,4])->count();
+        $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)
+        ->whereNotIn('status', [2, 4])->count();
+        
         return $data;
     }
     //////////
@@ -219,11 +222,11 @@ class GlobalFunctions
         return $data;
     }
 
-    public static function getdeleveryStatus($drs_number)
+    public static function getdeleveryStatus1($drs_number)
     {
         $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
-
-        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
+        // echo "<pre>"; print_r(json_decode($get_lrs)); die;
+        // $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
         $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
 
@@ -239,6 +242,31 @@ class GlobalFunctions
 
         return $status;
     }
+
+    public static function getdeleveryStatus($drs_number)
+    {
+        // Get the consignment numbers related to the provided drs_number
+        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
+
+        // Count the number of delivered and empty consignments
+        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
+        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNull('delivery_date')->count();
+
+        // Calculate the total number of consignments
+        $total_lr = count($get_lrs);
+
+        // Determine the delivery status
+        if ($total_deldate == $total_lr) {
+            $status = "Successful";
+        } elseif ($total_deldate == 0) {
+            $status = "Started";
+        } else {
+            $status = "Partial Delivered";
+        }
+
+        return $status;
+    }
+
 
     public static function oldnewLr($drs_number)
     {

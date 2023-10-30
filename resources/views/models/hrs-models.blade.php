@@ -143,10 +143,19 @@
                                     </tbody>
                                 </table>
 
-                                <button type="button" class="btn btn-primary" id="addlr_in_hrs"
+                                <div class="d-flex justify-content-between" style="gap: 1rem; align-items: center">
+                                    <div style="color: #333; font-weight: 500;">
+                                        Total Boxes : <span id="total_box_count"></span><br/>
+                                        Total Net Weight : <span id="total_netweight"></span>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="addlr_in_hrs"
                                         style=" float: right; font-size: 12px;">
                                     Add LR
                                 </button>
+                                </div>
+
+
+
 
                                 <div style="display: none; width: 100%;" id="unverifiedlist">
                                     <input type="hidden" class="form-control" id="current_hrs" name="" value="">

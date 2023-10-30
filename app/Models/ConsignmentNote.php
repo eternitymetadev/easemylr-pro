@@ -45,6 +45,8 @@ class ConsignmentNote extends Model
         'driver_id',
         'bar_code',
         'reason_to_cancel',
+        'cancel_userid',
+        'reattempt_reason',
         'edd',
         'order_id',
         'status',

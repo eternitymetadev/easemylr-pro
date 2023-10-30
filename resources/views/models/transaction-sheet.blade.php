@@ -92,6 +92,7 @@
                                       <th>City</th>
                                       <th>EDD</th>
                                       <th>Delivery Date</th>
+                                      <th>Status</th>
                                       <th>Upload Image</th>
                                       <th>Action</th>
                                   </tr>
@@ -395,3 +396,52 @@
   </div>
   <!--===========================Delevery Status ========================================== -->
 
+
+
+  <!-- model for re-attempt -->
+  <div class="modal fade" id="reAttemptModel" tabindex="-1" role="dialog" aria-labelledby="reAttemptModelLabel"
+      data-keyboard="false" data-backdrop="static" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content" style="background: #fdecbe;border: 2px solid #e2a03f;margin-top: 5rem;">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="reAttemptModelLabel">Re-Attempt</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form id="reattempt-reason" class="d-flex flex-column align-items-center" style="min-height: 150px;" method="POST" action="{{url($prefix.'/transaction-sheet/create-reattempt')}}">
+                    @csrf
+                    <input type="hidden" name="lr_id" id="reattempt_lrid" value="" />
+                      <div class="form-group" style="width: 90%">
+                          <label for="reason">Reason Select</label>
+                          <select class="form-control form-control-sm" id="reason" name="reattempt_reason" style="border-radius: 12px;"
+                              required>
+                              <option value="">--Select Reason--</option>
+                              <option value="Customer shop closed">Customer shop closed</option>
+                              <option value="Material refused by customer">Material refused by customer</option>
+                              <option value="Material Damaged">Material Damaged</option>
+                              <option value="Material Loss">Material Loss</option>
+                              <option value="Material Short">Material Short</option>
+                              <option value="Wrong Invoice Address">Wrong Invoice Address</option>
+                              <option value="other">Other</option>
+                          </select>
+                      </div>
+                      <div id="otherInput" style="display: none; width: 90%">
+                          <input class="form-control form-control-sm" style="border-radius: 12px;" type="text"
+                              id="otherText" placeholder="Enter other option">
+                      </div>
+                      <button type="submit" class="btn btn-primary"
+                          style="font-size: 14px;max-width: 180px;margin-top: 1rem;">Confirm
+                          Re-Attempt</button>
+                  </form>
+
+              </div>
+          </div>
+      </div>
+  </div>

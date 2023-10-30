@@ -2128,6 +2128,8 @@ class ConsignmentController extends Controller
 
     public function transactionSheet(Request $request)
     {
+        ini_set('max_execution_time', -1);
+        
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = TransactionSheet::query();
@@ -2171,24 +2173,24 @@ class ConsignmentController extends Controller
                 ->groupBy('drs_no');
 
             if ($authuser->role_id == 1) {
-                $query = $query->with('ConsignmentDetail');
+                $query->with('ConsignmentDetail');
             } elseif ($authuser->role_id == 4) {
-                $query = $query
+                $query
                     ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                         $query->whereIn('regclient_id', $regclient);
                     });
             } elseif ($authuser->role_id == 6) {
-                $query = $query
-                    ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                        $query->whereIn('base_clients.id', $baseclient);
+                $query
+                    ->whereHas('ConsignmentDetail.base_clients', function ($query) use ($baseclient) {
+                        $query->whereIn('id', $baseclient);
                     });
             } elseif ($authuser->role_id == 7) {
-                $query = $query
+                $query
                     ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
                         $query->whereIn('id', $regclient);
                     });
             } else {
-                $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+                $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
             }
 
             if (!empty($request->search)) {
@@ -2232,26 +2234,26 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->with('ConsignmentDetail')
+        $query = $query
             ->whereIn('status', ['1', '0', '3'])
             ->groupBy('drs_no');
 
         if ($authuser->role_id == 1) {
-            $query = $query->with('ConsignmentDetail');
+            $query->with('ConsignmentDetail');
         } elseif ($authuser->role_id == 4) {
-            $query = $query
+            $query
                 ->whereHas('ConsignmentDetail', function ($query) use ($regclient) {
                     $query->whereIn('regclient_id', $regclient);
                 });
         } elseif ($authuser->role_id == 6) {
-            $query = $query
-                ->whereHas('ConsignmentDetail', function ($query) use ($baseclient) {
-                    $query->whereIn('base_clients.id', $baseclient);
+            $query
+                ->whereHas('ConsignmentDetail.base_clients', function ($query) use ($baseclient) {
+                    $query->whereIn('id', $baseclient);
                 });
         } elseif ($authuser->role_id == 7) {
-            $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+            $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
         } else {
-            $query = $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
+            $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
         $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
         $transaction = $transaction->appends($request->query());
@@ -5681,4 +5683,83 @@ class ConsignmentController extends Controller
 
         return $response;
     }
+
+    //create reattempt reason from drs list
+    public function storeReattempt(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $this->prefix = request()->route()->getPrefix();
+            $rules = array(
+                'reattempt_reason' => 'required',
+            );
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors();
+                $response['success'] = false;
+                $response['validation'] = false;
+                $response['formErrors'] = true;
+                $response['errors'] = $errors;
+                return response()->json($response);
+            }
+
+            $authuser = Auth::user();
+            $cc = explode(',', $authuser->branch_id);
+
+            $mytime = Carbon::now('Asia/Kolkata');
+            $currentdate = $mytime->toDateTimeString();
+
+            $check_reattempt = ConsignmentNote::where('id',$request->lr_id)->pluck('reattempt_reason')->first();
+            if ($check_reattempt == null || $check_reattempt == '') {
+                $respons = array('reattempt_reason' => $request->reattempt_reason, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+                $respons_data = json_encode($respons);
+            } else {
+                $respons2 = array('reattempt_reason' => $request->reattempt_reason, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+
+                $lastreattempt = ConsignmentNote::select('reattempt_reason')->where('id', $request->lr_id)->first();
+          
+                if (!empty($lastreattempt->reattempt_reason)) {
+                    $st = json_decode($lastreattempt->reattempt_reason);
+                    array_push($st, $respons2);
+                    $respons_data = json_encode($st);
+
+                }
+            }
+            
+
+            $consignmentsave['reattempt_reason'] = $respons_data;
+            $consignmentsave['delivery_status'] = "Unassigned";
+            $consignmentsave['driver_id'] = null;
+            $consignmentsave['vehicle_id'] = null;
+            $consignmentsave['vehicle_type'] = null;
+            $consignmentsave['status'] = 2;
+
+            $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->update($consignmentsave);
+            TransactionSheet::where('consignment_no',$request->lr_id)->update(['status' => 4]);
+
+            if($saveconsignment){
+                $url = $this->prefix . '/transaction-sheet';
+                $response['success'] = true;
+                $response['success_message'] = "Reattempt Added successfully";
+                $response['error'] = false;
+                // $response['resetform'] = true;
+                $response['page'] = 'create-reattempt';
+                $response['redirect_url'] = $url;
+            } else {
+                $response['success'] = false;
+                $response['error_message'] = "Can not created reattempt please try again";
+                $response['error'] = true;
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            $response['error'] = false;
+            $response['error_message'] = $e;
+            $response['success'] = false;
+            $response['redirect_url'] = $url;
+        }
+        return response()->json($response);
+
+    }
+    
 }
