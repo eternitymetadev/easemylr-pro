@@ -100,7 +100,7 @@ class ImportCsvController extends Controller
                 // Extract all files from the ZIP archive
                 $zip->extractTo($extractedDir);
                 $zip->close();
-                $imgPath = $extractedDir.'/pod_images';
+                $imgPath = $extractedDir.'pod_images';
                 // Loop through the extracted files
                 $successfulUploads = [];
                 $failedUploads = [];
