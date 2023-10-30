@@ -68,20 +68,38 @@ class FtlPtlController extends Controller
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
 
-        $consignmentNotes = ConsignmentNote::select('vehicle_id')->whereNotNull('vehicle_id')
-        ->where('delivery_status', '!=', 'successful')
+        $consignmentVehicles = ConsignmentNote::select('vehicle_id')->whereNotNull('vehicle_id')
+            ->where('delivery_status', '!=', 'successful')
+            ->get();
+
+        $vehicleIds = $consignmentVehicles->pluck('vehicle_id'); // Get an array of unique vehicle_ids from consignmentNotes
+
+        $hrsVehicles = Hrs::select('vehicle_id')->whereNotNull('vehicle_id')
+        ->where('receving_status', '!=', '2')
         ->get();
 
-        $vehicleIds = $consignmentNotes->pluck('vehicle_id'); // Get an array of unique vehicle_ids from consignmentNotes
+        $hrsvehicleIds = $hrsVehicles->pluck('vehicle_id');
+
+        $uniqueVehicleMergedArray = array_unique($mergedArray);
 
         $vehicles = Vehicle::where('status', '1')
         ->whereNotIn('id', $vehicleIds)
         ->select('id', 'regn_no')
         ->get();
 
+        $consignmentDrivers = ConsignmentNote::select('driver_id')->whereNotNull('driver_id')
+            ->where('delivery_status', '!=', 'successful')
+            ->get();
+
+        $driverIds = $consignmentDrivers->pluck('driver_id'); // Get an array of unique driver_ids from consignmentNotes
+
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('id', $driverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
 

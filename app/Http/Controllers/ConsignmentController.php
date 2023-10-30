@@ -2135,10 +2135,7 @@ class ConsignmentController extends Controller
         $query = TransactionSheet::query();
 
         $this->prefix = request()->route()->getPrefix();
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-
+        
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
@@ -2215,8 +2212,31 @@ class ConsignmentController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-            $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+            $consignmentVehicles = ConsignmentNote::select('vehicle_id')->whereNotNull('vehicle_id')
+            ->where('delivery_status', '!=', 'successful')
+            ->get();
+
+            $vehicleIds = $consignmentVehicles->pluck('vehicle_id'); // Get an array of unique vehicle_ids from consignmentNotes
+
+            $vehicles = Vehicle::where('status', '1')
+            ->whereNotIn('id', $vehicleIds)
+            ->select('id', 'regn_no')
+            ->get();
+
+            $consignmentDrivers = ConsignmentNote::select('driver_id')->whereNotNull('driver_id')
+            ->where('delivery_status', '!=', 'successful')
+            ->get();
+
+            $driverIds = $consignmentDrivers->pluck('driver_id'); // Get an array of unique driver_ids from consignmentNotes
+
+            $drivers = Driver::where('status', '1')
+            ->whereNotIn('id', $driverIds)
+            ->select('id', 'name', 'phone')
+            ->get();
+
+
+            // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+            // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
             $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
             $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
@@ -2257,6 +2277,32 @@ class ConsignmentController extends Controller
         }
         $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
         $transaction = $transaction->appends($request->query());
+
+        $consignmentVehicles = ConsignmentNote::select('vehicle_id')->whereNotNull('vehicle_id')
+            ->where('delivery_status', '!=', 'successful')
+            ->get();
+
+        $vehicleIds = $consignmentVehicles->pluck('vehicle_id'); // Get an array of unique vehicle_ids from consignmentNotes
+
+        $vehicles = Vehicle::where('status', '1')
+        ->whereNotIn('id', $vehicleIds)
+        ->select('id', 'regn_no')
+        ->get();
+
+        $consignmentDrivers = ConsignmentNote::select('driver_id')->whereNotNull('driver_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->get();
+
+        $driverIds = $consignmentDrivers->pluck('driver_id'); // Get an array of unique driver_ids from consignmentNotes
+
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('id', $driverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
@@ -2774,7 +2820,6 @@ class ConsignmentController extends Controller
 
     public function view_saveDraft(Request $request)
     {
-        //echo'hi';
         $id = $_GET['draft_id'];
 
         $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
