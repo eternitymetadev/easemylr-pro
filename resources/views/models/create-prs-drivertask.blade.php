@@ -44,6 +44,10 @@
                         <button type="submit" id="task_savebtn" class="btn-cstm btn-success btn btn-modal">Complete Pickup</button>
                         <a type="" class="btn btn-danger btn-modal" data-dismiss="modal">Close</a>
                     </div>
+                    <div style="color: #333; font-weight: 500;">
+                        Total Boxes: <span id="total_box_count"></span><br/>
+                        {{-- Total Net Weight : <span id="total_netweight"></span> --}}
+                    </div>
                 </div>
             </form>
         </div>

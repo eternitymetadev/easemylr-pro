@@ -9,6 +9,7 @@ use App\Models\ConsignmentItem;
 use App\Models\ConsignmentNote;
 use App\Models\ConsignmentSubItem;
 use App\Models\Driver;
+use App\Models\Hrs;
 use App\Models\ItemMaster;
 use App\Models\Job;
 use App\Models\Location;
@@ -17,6 +18,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\PickupRunSheet;
 use App\Models\Zone;
 use Auth;
 use Carbon\Carbon;
@@ -32,7 +34,6 @@ use Validator;
 
 class FtlPtlController extends Controller
 {
-
     public $prefix;
     public $title;
     public $segment;
@@ -67,9 +68,64 @@ class FtlPtlController extends Controller
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
+        // get vehicles
+        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->where('status', '!=', 0)
+        ->pluck('vehicle_id')
+        ->toArray();
 
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        // Get vehicle IDs from Hrs
+        $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
+        ->where('receving_status', '!=', '2')
+        ->where('status', '!=', 0)
+        ->pluck('vehicle_id')
+        ->toArray();
+
+        // Get vehicle IDs from PickupRunSheet
+        $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
+        ->where('status', '!=', '3')
+        ->pluck('vehicle_id')
+        ->toArray();
+
+        // Merge and deduplicate the vehicle IDs
+        $mergedVehicleIds = array_unique(array_merge($consignmentVehicleIds, $hrsVehicleIds, $prsVehicleIds));
+
+        // Fetch vehicles that are not in the merged array
+        $vehicles = Vehicle::where('status', '1')
+        ->whereNotIn('id', $mergedVehicleIds)
+        ->select('id', 'regn_no')
+        ->get();
+
+        // get drivers
+        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->pluck('driver_id')
+        ->toArray();
+
+        // Get driver IDs from Hrs
+        $hrsDriverIds = Hrs::whereNotNull('driver_id')
+        ->where('receving_status', '!=', '2')
+        ->pluck('driver_id')
+        ->toArray();
+
+        // Get driver IDs from PickupRunSheet
+        $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
+        ->where('status', '!=', '3')
+        ->pluck('driver_id')
+        ->toArray();
+
+        // Merge and deduplicate the driver IDs
+        $mergedDriverIds = array_unique(array_merge($consignmentDriverIds, $hrsDriverIds, $prsDriverIds));
+
+        // Fetch drivers who are not in the merged array
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('id', $mergedDriverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
 
@@ -1536,4 +1592,5 @@ class FtlPtlController extends Controller
 
         return $response;
     }
+
 }
