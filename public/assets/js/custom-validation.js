@@ -1532,20 +1532,14 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
+                    console.log(value);
                     var drs_sign = value.signed_drs;
                     // var storage_img = base_url + "/drs/Image/" + drs_sign;
                     var awsUrl = data.aws_url;
                     var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
                     if (value.signed_drs == null) {
-                        var field =
-                            "<input type='file' name='data[" +
-                            i +
-                            "][img]' data-id='" +
-                            value.consignment_no +
-                            "' placeholder='Choose image' class='drs_image value='" +
-                            value.signed_drs +
-                            "'>";
+                        var field = `<input type='file' name="data[${i}][img]" data-id="${value.consignment_no}" placeholder="Choose image" class="drs_image ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.signed_drs}" ${value.lr_mode == 2 && 'disabled'} />`;
                     } else {
                         var field =
                             "<a href='" +
@@ -1554,14 +1548,8 @@ jQuery(document).ready(function () {
                     }
                     // delivery date//
                     if (value.dd == null) {
-                        var deliverydate =
-                            "<input type='date' name='data[" +
-                            i +
-                            "][delivery_date]' data-id=" +
-                            value.consignment_no +
-                            " class='delivery_d' value='" +
-                            value.dd +
-                            "' onkeydown='return false'>";
+                        var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown='return false'>`;
+                           
                     } else {
                         var deliverydate = value.dd;
                     }

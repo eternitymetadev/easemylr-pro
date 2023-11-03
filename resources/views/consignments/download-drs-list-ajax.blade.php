@@ -42,13 +42,15 @@
                 </td>
                 <?php } else {?>
                 <td>
-                    <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
+                    <?php //if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {
+                        if($trns->is_started != 1){
+                        ?>
                     <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Draft</button>
-                    <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}"
+                    <button type="button" class="btn btn-danger start-sheet" data-drsid="{{$trns->drs_no}}"
                         style="margin-right:4px;">Save</button>
                     <?php }?>
-                    <?php if (!empty($trns->vehicle_no)) {
+                    <?php if($trns->is_started == 1){
                     if (!empty($new)) {
                     ?>
                     <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
@@ -58,13 +60,17 @@
                         role="button">Print</a>
                     <?php }}?>
                     <?php
-                    if ($trns->delivery_status == 'Unassigned') {?>
-                    <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
-                        style="margin-right:4px;">Unassigned</button>
-                    <?php } elseif ($lr == 0) {?>
+                    //if ($trns->delivery_status == 'Unassigned') {?>
+                    {{-- <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Unassigned</button> --}}
+                    <?php// } elseif ($lr == 0) {?>
+                    {{-- <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Assigned</button> --}}
+                    <?php //}
+                    if ($trns->is_started == 1) {?>
                     <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Assigned</button>
-                    <?php }?>
+                        <?php } ?>
                 </td>
                 <?php }?>
                 <!------- end Action ---- -->

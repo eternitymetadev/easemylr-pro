@@ -33,11 +33,11 @@ class TransactionSheet extends Model
 
     protected $fillable = [
 
-        'drs_no','consignment_no','consignee_id','consignment_date','city','pincode','total_quantity','total_weight','order_no','vehicle_no','driver_name','driver_no','branch_id','delivery_status','delivery_date','job_id','status','created_at','updated_at'
+        'drs_no','consignment_no','consignee_id','consignment_date','city','pincode','total_quantity','total_weight','order_no','vehicle_no','driver_name','driver_no','branch_id','delivery_status','delivery_date','job_id','status','is_started','created_at','updated_at'
 
     ];
 
-
+    //status = 4 for reattempt drs lr
 
      /**
 

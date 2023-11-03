@@ -58,13 +58,13 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
                         <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix . '/export-drs-table') }}">Export
-                                data</a> -->
+                                                    data</a> -->
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
                                 <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                            <h4 class="win-h4">List</h4>
-                                        </div> -->
+                                                                <h4 class="win-h4">List</h4>
+                                                            </div> -->
                                 <div class="col d-flex pr-0">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
@@ -72,8 +72,8 @@
                                                 <input type="text" class="form-control" placeholder="Search"
                                                     id="search" data-action="<?php echo url()->current(); ?>">
                                                 <!-- <div class="input-group-btn">
-                                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                                        </div> -->
+                                                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                                            </div> -->
                                             </div>
                                         </form>
                                     </div>
@@ -81,9 +81,9 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                                    style="font-size: 15px; padding: 9px; width: 130px"
-                                                    href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
-                                                        New</span></a> -->
+                                                                        style="font-size: 15px; padding: 9px; width: 130px"
+                                                                        href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
+                                                                            New</span></a> -->
                                         <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                             style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
@@ -204,6 +204,7 @@
                     $("#total_box").html("No Of Boxes: " + totalBox);
                     $("#totalweight").html("Net Weight: " + totalweight);
                     $("#total").html(rowCount);
+                    $(".draft-sheet").attr("data-drsid", cat_id);
                 }
             });
         });
@@ -211,7 +212,15 @@
         /////////////Draft Sheet///////////////////
         $(document).on('click', '.draft-sheet', function() {
             $('.inner-tr').hide();
-            var draft_id = $(this).val();
+            $('#unverifiedlist').hide();
+            $("#vehicle_no").val('').trigger('change');
+            $("#driver_id").val('').trigger('change');
+            $("#vehicle_type").val('').trigger('change');
+            $("#Transporter").val('');
+            $("#draft_purchase").val('');
+
+            // var draft_id = $(this).val();
+            var draft_id = jQuery(this).attr("data-drsid");
             $('#save-draft').modal('show');
             $.ajax({
                 type: "GET",
@@ -262,6 +271,100 @@
                     $("#totallr").append(rowCount);
 
                     showLibrary();
+
+                    $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
+                    $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
+                    $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
+                    $("#Transporter").val(re.fetch_lrs.transporter_name);
+                    $("#draft_purchase").val(re.fetch_lrs.purchase_price);
+
+                    // Create a new option element
+                    var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                    if(re.fetchVehicle.id != ''){
+                        $('#vehicle_no').append(newVehicleOption);
+                    }
+
+                    var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                    if(re.fetchDriver.id != ''){
+                        $('#driver_id').append(newDriverOption);
+                    }
+                }
+            });
+        });
+
+        /////////////Start btn drs list///////////////////
+        $(document).on('click', '.start-sheet', function() {
+            $('.inner-tr').hide();
+            // var draft_id = $(this).val();
+            var draft_id = jQuery(this).attr("data-drsid");
+            $('#start-draft').modal('show');
+            $.ajax({
+                type: "GET",
+                url: "start-draftSheet/" + draft_id,
+                data: {
+                    draft_id: draft_id
+                },
+                beforeSend: //reinitialize Datatables
+                    function() {
+                        $('#start-DraftSheet').dataTable().fnClearTable();
+                        $('#start-DraftSheet').dataTable().fnDestroy();
+                        $("#start-totalboxes").empty();
+                        $("#start-totalweights").empty();
+                        $("#start-totallr").empty();
+                    },
+                success: function(data) {
+                    var re = jQuery.parseJSON(data)
+                    // console.log(re);
+                    var consignmentID = [];
+                    var totalBoxes = 0;
+                    var totalweights = 0;
+                    var i = 0;
+                    $.each(re.fetch, function(index, value) {
+                        i++;
+                        var alldata = value;
+                        consignmentID.push(alldata.consignment_no);
+                        totalBoxes += parseInt(value.consignment_detail.total_quantity);
+                        totalweights += parseInt(value.consignment_detail.total_weight);
+
+                        $('#start-DraftSheet tbody').append("<tr class='outer-tr' id=" + value
+                            .id +
+                            "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
+                            value.consignment_no +
+                            ">Edit</a></td><td><input type='date' name='edd[]' data-id=" +
+                            value
+                            .consignment_no + " class='new_edd' value='" + value
+                            .consignment_detail.edd + "'></td><td>" + value.consignment_no +
+                            "</td><td>" + value.consignment_date + "</td><td>" + value
+                            .consignee_id + "</td><td>" + value.city + "</td><td>" + value
+                            .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
+                            value
+                            .total_weight + "</td></tr>");
+                    });
+                    $("#starttrn_id").val(consignmentID);
+                    var rowCount = $("#start-DraftSheet tbody tr").length;
+                    $("#start-totalboxes").append("No Of Boxes: " + totalBoxes);
+                    $("#start-totalweights").append("Net Weight: " + totalweights);
+                    $("#start-totallr").append(rowCount);
+
+                    // showLibrary();
+                    console.log(re.fetch_lrs);
+                    $("#start-vehicle").val(re.fetch_lrs.vehicle_id).trigger('change');
+                    $("#start-driver").val(re.fetch_lrs.driver_id).trigger('change');
+                    $("#start-vehicletype").val(re.fetch_lrs.vehicle_type).trigger('change');
+                    $("#start-transporter").val(re.fetch_lrs.transporter_name);
+                    $("#start-purchase").val(re.fetch_lrs.purchase_price);
+
+                    // Create a new option element
+                    var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                    if(re.fetchVehicle.id != ''){
+                        $('#start-vehicle').append(newVehicleOption);
+                    }
+
+                    var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                    if(re.fetchDriver.id != ''){
+                        $('#start-driver').append(newDriverOption);
+                    }
+
                 }
             });
         });
@@ -356,16 +459,24 @@
             printData();
 
         })
-        ////////////////////////////
+
+        $('.discardButton').click(function() {
+            $('.indicator-progress').removeAttr('disabled');
+            $('.indicator-label').removeAttr('disabled');
+            $(".indicator-progress").hide();
+            $(".indicator-label").show();
+        })
+
+        //save add driver data on draft modal //
         $('#updt_vehicle').submit(function(e) {
             e.preventDefault();
 
             var consignmentID = [];
             $('input[name="edd[]"]').each(function() {
-                if (this.value == '') {
-                    swal('error', 'Please enter EDD', 'error');
-                    exit;
-                }
+                // if (this.value == '') {
+                //     swal('error', 'Please enter EDD', 'error');
+                //     exit;
+                // }
                 consignmentID.push(this.value);
             });
 
@@ -374,14 +485,14 @@
 
             var vehicle = $('#vehicle_no').val();
             var driver = $('#driver_id').val();
-            if (vehicle == '') {
-                swal('error', 'Please select vehicle', 'error');
-                return false;
-            }
-            if (driver == '') {
-                swal('error', 'Please select driver', 'error');
-                return false;
-            }
+            // if (vehicle == '') {
+            //     swal('error', 'Please select vehicle', 'error');
+            //     return false;
+            // }
+            // if (driver == '') {
+            //     swal('error', 'Please select driver', 'error');
+            //     return false;
+            // }
 
             $.ajax({
                 url: "update_unverifiedLR",
@@ -417,7 +528,70 @@
                 }
             });
         });
-        //////////
+
+        //start update start status on drs list start modal //
+        $('#startupdt_vehicle').submit(function(e) {
+            e.preventDefault();
+
+            var consignmentID = [];
+            $('input[name="edd[]"]').each(function() {
+                if (this.value == '') {
+                    swal('error', 'Please enter EDD', 'error');
+                    exit;
+                }
+                consignmentID.push(this.value);
+            });
+
+            var ct = consignmentID.length;
+            var rowCount = $("#start-DraftSheet tbody tr").length;
+
+            var vehicle = $('#start-vehicle').val();
+            var driver = $('#start-driver').val();
+            if (vehicle == '') {
+                swal('error', 'Please select vehicle', 'error');
+                return false;
+            }
+            if (driver == '') {
+                swal('error', 'Please select driver', 'error');
+                return false;
+            }
+
+            $.ajax({
+                url: "start-unverifiedLR",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                beforeSend: function() {
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
+
+                    $(".indicator-progress").show();
+                    $(".indicator-label").hide();
+                },
+                complete: function(response) {
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
+                },
+                success: (data) => {
+                    $(".indicator-progress").hide();
+                    $(".indicator-label").show();
+                    if (data.success == true) {
+                        alert('Data Updated Successfully');
+                        location.reload();
+                    } else if (data.success == false) {
+                        alert(data.error_message);
+                    } else {
+                        alert('something wrong');
+                    }
+                }
+            });
+        });
+
+        ///update edd on add driver draft modal ///////
         function showLibrary() {
             $('.new_edd').blur(function() {
                 var consignment_id = $(this).attr('data-id');
@@ -598,6 +772,37 @@
                     });
                 }
             });
+        });
+
+
+        jQuery(document).on('click', '#ckbCheckAll', function() {
+            if (this.checked) {
+                $('.disableDrs').removeAttr('disabled');
+                jQuery('.chkBoxClass').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                jQuery('.chkBoxClass').each(function() {
+                    this.checked = false;
+                });
+                $('.disableDrs').attr('disabled', true);
+            }
+        });
+
+        jQuery(document).on('click', '.chkBoxClass', function() {
+            if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
+                $('#ckbCheckAll').prop('checked', true);
+                $('.disableDrs').removeAttr('disabled');
+            } else {
+                var checklength = $('.chkBoxClass:checked').length;
+                if (checklength < 1) {
+                    $('.disableDrs').attr('disabled', true);
+                } else {
+                    $('.disableDrs').removeAttr('disabled');
+                }
+
+                $('#ckbCheckAll').prop('checked', false);
+            }
         });
 
         //////

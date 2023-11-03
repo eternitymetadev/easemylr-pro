@@ -349,6 +349,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::post('consignments/createlritem', [ConsignmentController::class, 'storeLRItem']);
     Route::get('unverified-list', [ConsignmentController::class, 'unverifiedList']);
     Route::any('update_unverifiedLR', [ConsignmentController::class, 'updateUnverifiedLr']);
+    Route::any('start-unverifiedLR', [ConsignmentController::class, 'startUnverifiedLr']);
     Route::post('consignments/update-consignment', [ConsignmentController::class, 'updateConsignment']);
     Route::post('consignments/delete-consignment', [ConsignmentController::class, 'deleteConsignment']);
     Route::post('consignments/get-consign-details', [ConsignmentController::class, 'getConsigndetails']);
@@ -363,6 +364,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
     Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']);
     Route::any('view-draftSheet/{id}', [ConsignmentController::class, 'view_saveDraft']);
+    Route::any('start-draftSheet/{id}', [ConsignmentController::class, 'start_saveDraft']);
     Route::any('update-delivery/{id}', [ConsignmentController::class, 'updateDelivery']);
     Route::any('update-delivery-status', [ConsignmentController::class, 'updateDeliveryStatus']);
     Route::any('update-delivery-date', [ConsignmentController::class, 'updateDeliveryDateOneBy']);

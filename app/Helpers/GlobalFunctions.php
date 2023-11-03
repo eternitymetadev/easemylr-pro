@@ -26,12 +26,6 @@ class GlobalFunctions
         if ($status == 1) {
             $status = 'Assigned';
         }
-        // else if($status == 2){
-        //     $status = 'Acknowledged';
-        // }
-        // else if($status == 3){
-        //     $status = 'Started';
-        // }
         else if ($status == 2) {
             $status = 'Pickup done';
         } else if ($status == 3) {

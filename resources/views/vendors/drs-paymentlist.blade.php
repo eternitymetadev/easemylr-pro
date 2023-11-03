@@ -404,7 +404,6 @@
                     $("#vehicle_type_edit").val(response.drs_price.consignment_detail.vehicle_type)
                         .change();
 
-
                 }
             });
 
