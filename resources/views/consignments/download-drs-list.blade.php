@@ -485,14 +485,6 @@
 
             var vehicle = $('#vehicle_no').val();
             var driver = $('#driver_id').val();
-            // if (vehicle == '') {
-            //     swal('error', 'Please select vehicle', 'error');
-            //     return false;
-            // }
-            // if (driver == '') {
-            //     swal('error', 'Please select driver', 'error');
-            //     return false;
-            // }
 
             $.ajax({
                 url: "update_unverifiedLR",
@@ -555,40 +547,45 @@
                 swal('error', 'Please select driver', 'error');
                 return false;
             }
+            var data = new FormData(this);
+            jQuery('#start-commonconfirm').modal('show');
+            jQuery(".confirmStartClick").one("click", function(){
+                // if (confirm("Are you sure you want to submit the form?")) {
+                $.ajax({
+                    url: "start-unverifiedLR",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $('.indicator-progress').prop('disabled', true);
+                        $('.indicator-label').prop('disabled', true);
 
-            $.ajax({
-                url: "start-unverifiedLR",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
-
-                    $(".indicator-progress").show();
-                    $(".indicator-label").hide();
-                },
-                complete: function(response) {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if (data.success == true) {
-                        alert('Data Updated Successfully');
-                        location.reload();
-                    } else if (data.success == false) {
-                        alert(data.error_message);
-                    } else {
-                        alert('something wrong');
+                        $(".indicator-progress").show();
+                        $(".indicator-label").hide();
+                    },
+                    complete: function(response) {
+                        $('.indicator-progress').prop('disabled', true);
+                        $('.indicator-label').prop('disabled', true);
+                    },
+                    success: (data) => {
+                        $(".indicator-progress").hide();
+                        $(".indicator-label").show();
+                        if (data.success == true) {
+                            alert('Data Updated Successfully');
+                            location.reload();
+                        } else if (data.success == false) {
+                            alert(data.error_message);
+                        } else {
+                            alert('something wrong');
+                        }
                     }
-                }
+                });
             });
+            return false;
         });
 
         ///update edd on add driver draft modal ///////

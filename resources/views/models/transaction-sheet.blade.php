@@ -3,7 +3,6 @@
   <div class="modal fade" id="drs_commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
           <div class="modal-content">
-              <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
               <!-- Modal Header -->
               <div class="modal-header text-center">
                   <h4 class="modal-title">Confirm</h4>
@@ -11,10 +10,8 @@
               <!-- Modal body -->
               <div class="modal-body">
                   <div class="Delt-content text-center">
-                      <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
                       <p class="confirmtext">Are You Sure You Want To Cancel It ?</p>
                   </div>
-
               </div>
               <!-- Modal footer -->
               <div class="modal-footer">
@@ -27,66 +24,57 @@
       </div>
   </div>
   <!-- =========================================================================== -->
-  <div class="modal fade bd-example-modal-xl" id="commonconfirm" tabindex="-1" role="dialog" aria-hidden="true"
+    <div class="modal fade bd-example-modal-xl" id="commonconfirm" tabindex="-1" role="dialog" aria-hidden="true"
       aria-labelledby="myExtraLargeModalLabel">
-      <div class="modal-dialog modal-xl">
-          <div class="modal-content">
-              <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-              <!-- Modal Header -->
-              <div class="modal-header text-center">
-                  <h4 class="modal-title">Update DRS Status</h4>
-              </div>
-              <!-- Modal body -->
-              <form id="allsave">
-                  <div class="modal-body">
-
-                      <div class="Delt-content text-center">
-                          <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
-                          <!-- <p class="confirmtext">Are You Sure You Want To Cancel It ?</p> -->
-                      </div>
-                      <div class="table-responsive" id="opi">
-                          <table id="get-delvery-date" class="table table-hover"
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header text-center">
+                    <h4 class="modal-title">Update DRS Status</h4>
+                </div>
+                <!-- Modal body -->
+                <form id="allsave">
+                    <div class="modal-body">
+                        <div class="Delt-content text-center">
+                        </div>
+                        <div class="table-responsive" id="opi">
+                            <table id="get-delvery-date" class="table table-hover"
                               style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                              <thead>
-                                  <tr>
-                                      <th>LR No</th>
-                                      <th>Consignee</th>
-                                      <th>City</th>
-                                      <th>EDD</th>
-                                      <th>Delivery Date</th>
-                                      <th>Status</th>
-                                      <th>Upload Image</th>
-                                      <th>Action</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
+                                <thead>
+                                    <tr>
+                                        <th>LR No</th>
+                                        <th>Consignee</th>
+                                        <th>City</th>
+                                        <th>EDD</th>
+                                        <th>Delivery Date</th>
+                                        <th>Status</th>
+                                        <th>Upload Image</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                              </tbody>
-                          </table>
-
-                      </div>
-                  </div>
-                  <!-- Modal footer -->
-                  <div class="modal-footer">
-                      <div class="btn-section w-100 P-0">
-                          <!-- <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave" >Save</button> -->
-
-                          <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave"><span
-                                  class="indicator-label">Update</span>
-                              <span class="indicator-progress" style="display: none;">Please wait...
-                                  <span
-                                      class="spinner-border spinner-border-sm align-middle ms-2"></span></span></button>
-                          <a type="" class="btn btn-modal btn-warning" data-dismiss="modal">Cancel</a>
-              </form>
-          </div>
-      </div>
-
-  </div>
-
-
-  </div>
-  </div>
-
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <div class="btn-section w-100 P-0">
+                            <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave">
+                                <span class="indicator-label">Update</span>
+                                <span class="indicator-progress" style="display: none;">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                            <a type="" class="btn btn-modal btn-warning" data-dismiss="modal">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
   <!-- Modal -->
   <div class="modal fade" id="delivery" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true">
@@ -266,7 +254,6 @@
               </div>
               <div class="modal-body">
                   <form id="updt_vehicle" method="post">
-
                       <input type="hidden" class="form-control" id="transaction_id" name="transaction_id"
                           value="">
                       <div class="form-row mb-0">
@@ -365,7 +352,7 @@
               </div>
 
               <div class="modal-footer">
-                  <button class="btn discardButton" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                  <button class="btn bg-danger discardButton" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
                   <!-- <button type="submit" class="btn btn-primary">Save</button> -->
                   <button type="submit" class="btn btn-primary"><span class="indicator-label">Update</span>
                       <span class="indicator-progress" style="display: none;">Please wait...
@@ -486,7 +473,7 @@
               </div>
 
               <div class="modal-footer">
-                  <button class="btn discardButton" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                  <button class="btn bg-danger discardButton" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
                   <!-- <button type="submit" class="btn btn-primary">Save</button> -->
                   <button type="submit" class="btn btn-primary"><span class="indicator-label">Start</span>
                       <span class="indicator-progress" style="display: none;">Please wait...
@@ -548,41 +535,68 @@
   </div>
 
     <!-- #modal 2 -->
-    <div class="modal fade bd-example-modal-xl" id="modal-2" tabindex="-1" role="dialog"
-    aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content" style="min-height: calc(100vh - 3.5rem)">
-            <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
-                <h4 class="modal-title">Update Invoices</h4> 
+    <div class="modal fade bd-example-modal-xl" id="modal-2" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="min-height: calc(100vh - 3.5rem)">
+                <div class="modal-header">
+                    <!-- <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
+                    <h4 class="modal-title">Update Invoices</h4> 
+                </div>
+                <div class="modal-body">
+                    <form id="all_inv_save">
+                        <input type="hidden" name="cn_no" id="cn_no" value="">
+                        <table id="view_invoices" class="table table-hover"
+                            style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
+                            <thead>
+                                <tr>
+                                    <th>LR No</th>
+                                    <th>Invoice no</th>
+                                    <th>e-way bill no</th>
+                                    <th>e-way bill Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                        <a href="#save-draft" class="btn btn-primary" data-toggle="modal" data-dismiss="modal">Back</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    {{-- start confirm modal --}}
+    <div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header text-center">
+                    <h4 class="modal-title">Confirm</h4>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="Delt-content text-center">
+                        <p class="confirmtext">Are You Sure You Want To Start It ?</p>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div class="btn-section w-100 P-0">
+                        <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal confirmStartClick">Yes</a>
+                        <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="all_inv_save">
-                    <input type="hidden" name="cn_no" id="cn_no" value="">
-                    <table id="view_invoices" class="table table-hover"
-                        style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
-                        <thead>
-                            <tr>
-                                <th>LR No</th>
-                                <th>Invoice no</th>
-                                <th>e-way bill no</th>
-                                <th>e-way bill Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
+        </div>
+    </div>
+    {{-- end start confirm modal --}}
+  
 
 
-                    <a href="#save-draft" class="btn btn-primary" data-toggle="modal" data-dismiss="modal">Back</a>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
