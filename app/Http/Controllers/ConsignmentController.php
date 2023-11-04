@@ -2194,10 +2194,9 @@ class ConsignmentController extends Controller
                         $query->whereIn('id', $baseclient);
                     });
             } elseif ($authuser->role_id == 7) {
-                $query
-                    ->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($baseclient) {
-                        $query->whereIn('id', $regclient);
-                    });
+                $query->with('ConsignmentDetail')->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($regclient) {
+                    $query->whereIn('id', $regclient);
+                });
             } else {
                 $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
             }
@@ -2316,12 +2315,13 @@ class ConsignmentController extends Controller
                     $query->whereIn('id', $baseclient);
                 });
         } elseif ($authuser->role_id == 7) {
-            $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
+            $query->with('ConsignmentDetail')->whereHas('ConsignmentDetail.ConsignerDetail.RegClient', function ($query) use ($regclient) {
+                $query->whereIn('id', $regclient);
+            });
         } else {
             $query->with('ConsignmentDetail')->whereIn('branch_id', $cc);
         }
-        $transaction = $query->orderBy('id', 'DESC')->paginate(10);
-        // $transaction = $query->orderBy('id', 'DESC')->take(20);$peritem
+        $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
         $transaction = $transaction->appends($request->query());
 
         // get vehicles
@@ -2379,7 +2379,6 @@ class ConsignmentController extends Controller
         ->whereNotIn('id', $mergedDriverIds)
         ->select('id', 'name', 'phone')
         ->get();
-
 
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
