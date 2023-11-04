@@ -572,34 +572,6 @@
     </div><!-- /.modal -->
 
     {{-- start confirm modal --}}
-    <div class="modal fade" id="start-commonconfirm1" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
-            <!-- Modal Header -->
-            <div class="modal-header text-center">
-                 <h4 class="modal-title">Confirm</h4>
-            </div>
-            <!-- Modal body -->
-            <div class="modal-body">
-               <div class="Delt-content text-center">
-                 <!-- <img src="/assets/images/sucess.png" class="img-fluid mb-2">  -->
-                  <p class="confirmtext">Are you sure want to start?</p>
-               </div>
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <div class="btn-section w-100 P-0">
-                    <a class="btn-cstm btn-white btn btn-modal delete-btn-modal confirmStartClick1">Ok</a> 
-                    <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
-                </div>
-            </div>
-          </div>
-        </div>
-    </div>
-    {{-- end start confirm modal --}}
-
-
     <div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -623,6 +595,8 @@
             </div>
         </div>
     </div>
+    {{-- end start confirm modal --}}
+  
 
 
 
