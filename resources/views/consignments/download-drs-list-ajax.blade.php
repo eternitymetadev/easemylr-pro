@@ -1,4 +1,6 @@
-<?php $authuser = Auth::user();?>
+@php
+    $authuser = Auth::user();
+@endphp
 <div class="custom-table">
     <table class="table mb-3" style="width:100%">
         <thead>
@@ -18,18 +20,16 @@
         <tbody id="accordion" class="accordion">
             @if(count($transaction)>0)
             @foreach($transaction as $trns)
-            <?php
-
-            $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
-            $date->setTimezone(new DateTimeZone('IST'));
-            $getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
-            $new = Helper::oldnewLr($trns->drs_no) ?? "";
-            $lr = Helper::deliveryDate($trns->drs_no);
-
-?>
+            @php
+                $date = new DateTime($trns->created_at, new DateTimeZone('GMT-7'));
+                $date->setTimezone(new DateTimeZone('IST'));
+                $getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
+                $new = Helper::oldnewLr($trns->drs_no) ?? "";
+                $lr = Helper::deliveryDate($trns->drs_no);
+            @endphp
             <tr>
                 <td>DRS-{{$trns->drs_no}}</td>
-                <td>{{Helper::ShowDayMonthYear($trns->created_at)?? ''}}</td>
+                <td>{{Helper::ShowDayMonthYear($trns->created_at) ?? ''}}</td>
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>
@@ -103,7 +103,7 @@
                         $disable = 'disable_n';
                     }?>
                     {{--include when acces to cancel drs class="active_drs btn btn-success {{$disable}}" --}}
-                <td><a class="btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
+                    <td><a class="btn btn-success {{$disable}}" drs-no="{{$trns->drs_no}}"><span><i class="fa fa-check-circle-o"></i> Active</span></a></td>
                 <?php }?>
                 <!-- ------- payment status -->
                 <?php if ($trns->payment_status == 0) {
@@ -120,7 +120,6 @@
                 <?php }?>
 
                 <!-- end payment status -->
-
             </tr>
 
             @endforeach
