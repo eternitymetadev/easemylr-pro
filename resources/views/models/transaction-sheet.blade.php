@@ -597,6 +597,3 @@
     </div>
     {{-- end start confirm modal --}}
   
-
-
-
