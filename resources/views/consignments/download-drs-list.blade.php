@@ -230,6 +230,9 @@
                 },
                 beforeSend: //reinitialize Datatables
                     function() {
+                        $("#mainLoader").show();
+                        $(".loader").show();
+
                         $('#save-DraftSheet').dataTable().fnClearTable();
                         $('#save-DraftSheet').dataTable().fnDestroy();
                         $("#total_boxes").empty();
@@ -237,6 +240,8 @@
                         $("#totallr").empty();
                     },
                 success: function(data) {
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
                     var re = jQuery.parseJSON(data)
                     console.log(re);
                     var consignmentID = [];
@@ -306,11 +311,17 @@
                 },
                 beforeSend: //reinitialize Datatables
                     function() {
+                        $("#mainLoader").show();
+                        $(".loader").show();
+
                         $('#start-DraftSheet').dataTable().fnClearTable();
                         $('#start-DraftSheet').dataTable().fnDestroy();
                         $("#start-totalboxes").empty();
                         $("#start-totalweights").empty();
                         $("#start-totallr").empty();
+                    },
+                    complete: function (response) {
+                        
                     },
                 success: function(data) {
                     var re = jQuery.parseJSON(data)
@@ -320,6 +331,8 @@
                     var totalweights = 0;
                     var i = 0;
                     $.each(re.fetch, function(index, value) {
+                        $("#mainLoader").hide();
+                        $(".loader").hide();
                         i++;
                         var alldata = value;
                         consignmentID.push(alldata.consignment_no);
@@ -340,6 +353,7 @@
                             value
                             .total_weight + "</td></tr>");
                     });
+
                     $("#starttrn_id").val(consignmentID);
                     var rowCount = $("#start-DraftSheet tbody tr").length;
                     $("#start-totalboxes").append("No Of Boxes: " + totalBoxes);
