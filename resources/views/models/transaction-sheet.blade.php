@@ -582,7 +582,7 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="Delt-content text-center">
-                        <p class="confirmtext">Are You Sure You Want To Start It ?</p>
+                        <p class="confirmtext">Are you sure you want to start this task? Once you start it, you will not be able to make any changes in this DRS.</p>
                     </div>
                 </div>
                 <!-- Modal footer -->
