@@ -183,7 +183,8 @@
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />  
                         @endif
                         </div>
-                        <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
+                        {{-- delete image of pods //its working delte pod commented now--}}
+                        {{-- <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
                             data-id="{{$consignment->id}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -195,7 +196,7 @@
                                 <line x1="10" y1="11" x2="10" y2="17"></line>
                                 <line x1="14" y1="11" x2="14" y2="17"></line>
                             </svg>
-                        </a>
+                        </a> --}}
                     </div>
                     @else
                     <div style="min-height: 50px" class="d-flex align-items-center">
