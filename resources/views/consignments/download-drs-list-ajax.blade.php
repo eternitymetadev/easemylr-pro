@@ -26,7 +26,7 @@
                 $getdeldate = Helper::getdeleveryStatus($trns->drs_no) ?? "";
                 $new = Helper::oldnewLr($trns->drs_no) ?? "";
                 $lr = Helper::deliveryDate($trns->drs_no);
-            @endphp
+            @endphp 
             <tr>
                 <td>DRS-{{$trns->drs_no}}</td>
                 <td>{{Helper::ShowDayMonthYear($trns->created_at) ?? ''}}</td>
