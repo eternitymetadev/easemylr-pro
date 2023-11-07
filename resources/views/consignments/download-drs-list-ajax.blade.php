@@ -10,6 +10,7 @@
                 <th>Vehicle No</th>
                 <th>Driver Name</th>
                 <th>Driver Number</th>
+                <th>Action</th>
                 <th>Delivery Status</th>
                 
             </tr>
@@ -18,7 +19,7 @@
             @if(count($transaction)>0)
             @foreach($transaction as $trns)
             @php
-               
+               $new = Helper::oldnewLr($trns->drs_no) ?? "";
                 
             @endphp 
             <tr>
@@ -27,6 +28,50 @@
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>
+                <!-- action button -->
+                <?php 
+                if ($trns->status == 0) {?>
+                <td>
+                    <label class="badge badge-dark">Cancelled</label>
+                </td>
+                <?php } else {?>
+                <td>
+                    <?php //if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {
+                        if($trns->is_started != 1){
+                            if(!empty($trns->vehicle_no) && !empty($trns->driver_name)){
+                                $color_class = 'btn-danger';
+                            }else{
+                                $color_class = 'bg-secondary!important';
+                            }
+                        ?>
+                    <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Draft</button>
+                        <button type="button" class="btn start-sheet {{$color_class}}" data-drsid="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Start</button>
+                    <?php } if($trns->is_started == 1){
+                    if (!empty($new)) {
+                    ?>
+                    <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
+                        role="button">Print</a>
+                    <?php } else {?>
+                    <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}"
+                        role="button">Print</a>
+                    <?php }}?>
+                    <?php
+                    //if ($trns->delivery_status == 'Unassigned') {?>
+                    {{-- <button type="button" class="btn btn-danger" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Unassigned</button> --}}
+                    <?php// } elseif ($lr == 0) {?>
+                    {{-- <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Assigned</button> --}}
+                    <?php //}
+                    if ($trns->is_started == 1) {?>
+                    <button type="button" class="btn btn-warning" value="{{$trns->drs_no}}"
+                        style="margin-right:4px;">Assigned</button>
+                        <?php } ?>
+                </td>
+                <?php }?>
+                <!------- end Action ---- -->
                 <!-- delivery Status ---- -->
 
                 <td>
