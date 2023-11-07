@@ -10,6 +10,7 @@
                 <th>Vehicle No</th>
                 <th>Driver Name</th>
                 <th>Driver Number</th>
+                <th>Delivery Status</th>
                 
             </tr>
         </thead>
@@ -26,7 +27,22 @@
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>
-                
+                <!-- delivery Status ---- -->
+
+                <td>
+                    <?php if ($trns->status == 0) {?>
+                    <label class="badge badge-dark">Cancelled</label>
+                    <?php } else {?>
+                    <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
+                    <label class="badge badge-secondary">No Status</label>
+                    <?php } else {?>
+                    <a class="drs_cancel btn btn-success" drs-no="{{$trns->drs_no}}" data-text="consignment"
+                        data-status="0"
+                        data-action="<?php echo URL::current(); ?>"><span>{{ Helper::getdeleveryStatus($trns->drs_no) }}</span></a>
+                    <?php }?>
+                    <?php }?>
+                </td>
+                <!-- END Delivery Status  -------------  -->
 
             </tr>
 
