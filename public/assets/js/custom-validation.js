@@ -1506,6 +1506,7 @@ jQuery(document).ready(function () {
     });
     ///////////////////////get data successful model++++++++++++++++++++++++++++
 
+
     jQuery(document).on("click", ".drs_cancel", function (event) {
         event.stopPropagation();
 
@@ -1594,6 +1595,7 @@ jQuery(document).ready(function () {
                 });
             },
         });
+     
     });
     ///// Drs Cncel status update ////////
     jQuery(document).on("click", ".drs_cancel", function (event) {
@@ -2217,7 +2219,7 @@ $("#all_inv_save").submit(function (e) {
     e.preventDefault();
 
     var formData = new FormData(this);
-
+    console.log(formData);
     $.ajax({
         url: "all-invoice-save",
         headers: {
@@ -2278,6 +2280,7 @@ $("#all_inv_save").submit(function (e) {
 
                     i++;
                 });
+                $("#modal-2").modal("hide");
                 // location.reload();
             } else {
                 swal("error", "Something went wrong", "error");
@@ -2738,82 +2741,6 @@ $(".searchclientreport").click(function (e) {
                 $(".insert-more").attr("disabled", false);
             } else {
                 $(".insert-more").attr("disabled", true);
-            }
-        },
-    });
-});
-
-//////////////////////////////////
-$("#all_inv_save").submit(function (e) {
-    e.preventDefault();
-
-    var formData = new FormData(this);
-
-    $.ajax({
-        url: "all-invoice-save",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        type: "POST",
-        data: new FormData(this),
-        processData: false,
-        contentType: false,
-        beforeSend: function () {
-            $("#view_invoices").dataTable().fnClearTable();
-            $("#view_invoices").dataTable().fnDestroy();
-            $(".indicator-progress").show();
-            $(".indicator-label").hide();
-        },
-        success: (data) => {
-            $(".indicator-progress").hide();
-            $(".indicator-label").show();
-            if (data.success == true) {
-                swal("success", "Data Updated successfully", "success");
-
-                var i = 1;
-                $.each(data.fetch, function (index, value) {
-                    if (value.e_way_bill == null || value.e_way_bill == "") {
-                        var billno =
-                            "<input type='text' name='data[" +
-                            i +
-                            "][e_way_bill]' >";
-                    } else {
-                        var billno = value.e_way_bill;
-                    }
-
-                    if (
-                        value.e_way_bill_date == null ||
-                        value.e_way_bill_date == ""
-                    ) {
-                        var billdate =
-                            "<input type='date' name='data[" +
-                            i +
-                            "][e_way_bill_date]' >";
-                    } else {
-                        var billdate = value.e_way_bill_date;
-                    }
-
-                    $("#view_invoices tbody").append(
-                        "<tr><input type='hidden' name='data[" +
-                        i +
-                        "][id]' value=" +
-                        value.id +
-                        " ><td>" +
-                        value.consignment_id +
-                        "</td><td>" +
-                        value.invoice_no +
-                        "</td><td>" +
-                        billno +
-                        "</td><td>" +
-                        billdate +
-                        "</td></tr>"
-                    );
-
-                    i++;
-                });
-                // location.reload();
-            } else {
-                swal("error", "Something went wrong", "error");
             }
         },
     });

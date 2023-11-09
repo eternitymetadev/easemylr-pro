@@ -216,27 +216,6 @@ class GlobalFunctions
         return $data;
     }
 
-    public static function getdeleveryStatus1($drs_number)
-    {
-        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
-        // echo "<pre>"; print_r(json_decode($get_lrs)); die;
-        // $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
-        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
-        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
-
-        $total_lr = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->count();
-
-        if ($total_deldate == $total_lr) {
-            $status = "Successful";
-        } elseif ($total_lr == $total_empty) {
-            $status = "Started";
-        } else {
-            $status = "Partial Delivered";
-        }
-
-        return $status;
-    }
-
     public static function getdeleveryStatus($drs_number)
     {
         // Get the consignment numbers related to the provided drs_number
@@ -244,7 +223,6 @@ class GlobalFunctions
 
         // Count the number of delivered and empty consignments
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
-        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNull('delivery_date')->count();
 
         // Calculate the total number of consignments
         $total_lr = count($get_lrs);
@@ -253,14 +231,34 @@ class GlobalFunctions
         if ($total_deldate == $total_lr) {
             $status = "Successful";
         } elseif ($total_deldate == 0) {
+            $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
+            if($check_started){
             $status = "Started";
+            }else{
+                $status = "Unassigned";
+            }
         } else {
-            $status = "Partial Delivered";
+            $status = "Partial";
         }
 
         return $status;
     }
 
+    public static function drsPaymentStatus($paymentStatus)
+    {
+        if ($paymentStatus == 0) {
+            $status = "Unpaid";
+        } else if ($paymentStatus == 1) {
+            $status = "Paid";
+        } elseif ($paymentStatus == 2) {
+            $status = "Processing";
+        } elseif ($paymentStatus == 3) {
+            $status = "Partial";
+        } else {
+            $status = "unknown";
+        }
+        return $status;
+    }
 
     public static function oldnewLr($drs_number)
     {

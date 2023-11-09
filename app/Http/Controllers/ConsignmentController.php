@@ -2026,6 +2026,7 @@ class ConsignmentController extends Controller
     //draft btn driver update in drs list
     public function updateUnverifiedLr(Request $request)
     {
+        // dd($request->vehicle_id);
         $authuser = Auth::user();
         $location = Location::where('id', $authuser->branch_id)->first();
 
@@ -2047,11 +2048,11 @@ class ConsignmentController extends Controller
         if($request->purchase_price){
             $updateData['purchase_price'] = $request->purchase_price;
         }
-        if($request->delivery_status){
-            $updateData['delivery_status'] = $request->delivery_status;
-        }
+        // if($request->delivery_status){
+        //     $updateData['delivery_status'] = $request->delivery_status;
+        // }
         $updateData['delivery_status'] = 'Assigned';
-
+// dd($consignmentId);
         $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
 
         $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
@@ -2064,11 +2065,58 @@ class ConsignmentController extends Controller
             }
             if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
                 $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
-            }            
+            }
             $trnUpdate['delivery_status'] = 'Assigned';
 
             $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
         }
+
+        if($request->is_started == 1){
+            // Bulk update for TransactionSheet records
+            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+            
+            // Get driver details
+            $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
+
+            $mytime = Carbon::now('Asia/Kolkata');
+            $currentdate = $mytime->toDateTimeString();
+            
+            // Bulk update for ConsignmentNote records
+            $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
+            ConsignmentNote::whereIn('id', $consignmentId)
+            ->update(['lr_mode' => $lr_mode]);
+
+            // Prepare an array of job data
+            foreach ($consignmentId as $c_id) {
+                // =================== task assign
+                $respons2 = [
+                    'consignment_id' => $c_id,
+                    'status' => 'Assigned',
+                    'desc' => 'Out for Delivery',
+                    'create_at' => $currentdate,
+                    'location' => $location->name,
+                    'type' => '2',
+                ];
+
+                $lastjob = Job::where('consignment_id', $c_id)->latest('id')->first();
+
+                if (!empty($lastjob->response_data)) {
+                    $st = json_decode($lastjob->response_data);
+                    array_push($st, $respons2);
+                    $sts = json_encode($st);
+
+                    $jobData[] = [
+                        'consignment_id' => $c_id,
+                        'response_data' => $sts,
+                        'status' => 'Assigned',
+                        'type' => '2',
+                    ];
+                    Job::insert($jobData);
+                }
+                // ==== end started
+            }
+        }
+
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -2140,15 +2188,15 @@ class ConsignmentController extends Controller
 
     public function transactionSheet(Request $request)
     {
+        $this->segment == 'transaction-sheet';
         ini_set('max_execution_time', -1);
         
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = TransactionSheet::query();
-
-        $this->prefix = request()->route()->getPrefix();
         
         if ($request->ajax()) {
+            $this->segment == 'transaction-sheet';
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
@@ -2285,7 +2333,7 @@ class ConsignmentController extends Controller
             $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
 
-            $html = view('consignments.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            $html = view('consignments.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix,'segment'=>$this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -2384,32 +2432,106 @@ class ConsignmentController extends Controller
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
+        return view('consignments.download-drs-list', ['peritem' => $peritem, 'prefix' => $this->prefix,'segment'=>$this->segment, 'transaction' => $transaction, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }
 
-    public function getTransactionDetails(Request $request)
+    public function getDriverdrs(Request $request)
     {
-        $id = $_GET['cat_id'];
-        $query = TransactionSheet::query();
-        $query = $query->where('drs_no', $id)
-            ->with('ConsignmentDetail', function ($query) {
-                $query->whereIn('status', [1, 5]);
-            });
-        $query = $query
-            ->orderby('order_no', 'asc')
+        $vehicles = Vehicle::where('vehicles.status', '1')
+            ->leftJoin('consignment_notes', function ($join) {
+                $join->on('vehicles.id', '=', 'consignment_notes.vehicle_id')
+                    ->where('consignment_notes.delivery_status', '!=', 'successful')
+                    ->where('consignment_notes.status', '!=', 0);
+            })
+            ->leftJoin('hrs', function ($join) {
+                $join->on('vehicles.id', '=', 'hrs.vehicle_id')
+                    ->where('hrs.receving_status', '!=', '2')
+                    ->where('hrs.status', '!=', 0);
+            })
+            ->leftJoin('pickup_run_sheets', function ($join) {
+                $join->on('vehicles.id', '=', 'pickup_run_sheets.vehicle_id')
+                    ->where('pickup_run_sheets.status', '!=', '3');
+            })
+            ->whereNull('consignment_notes.vehicle_id')
+            ->whereNull('hrs.vehicle_id')
+            ->whereNull('pickup_run_sheets.vehicle_id')
+            ->select('vehicles.id', 'vehicles.regn_no')
             ->get();
+    
+            $drivers = Driver::where('drivers.status', '1')
+            ->leftJoin('consignment_notes', function ($join) {
+                $join->on('drivers.id', '=', 'consignment_notes.driver_id')
+                    ->where('consignment_notes.delivery_status', '!=', 'successful');
+            })
+            ->leftJoin('hrs', function ($join) {
+                $join->on('drivers.id', '=', 'hrs.driver_id')
+                    ->where('hrs.receving_status', '!=', '2')
+                    ->where('hrs.status', '!=', 0);
+            })
+            ->leftJoin('pickup_run_sheets', function ($join) {
+                $join->on('drivers.id', '=', 'pickup_run_sheets.driver_id')
+                    ->where('pickup_run_sheets.status', '!=', '3');
+            })
+            ->whereNull('consignment_notes.driver_id')
+            ->whereNull('hrs.driver_id')
+            ->whereNull('pickup_run_sheets.driver_id')
+            ->select('drivers.id', 'drivers.name', 'drivers.phone')
+            ->get();  
 
+            $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
-        // $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.consignment_no as c_no')
-        //     ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $id)->where('consignment_notes.status', '1')->orderby('order_no', 'asc')->get();
-        $result = json_decode(json_encode($query), true);
-
-        $response['fetch'] = $result;
+        $response['vehicles'] = $vehicles;
+        $response['drivers'] = $drivers;
+        $response['vehicletypes'] = $vehicletypes;
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
-        echo json_encode($response);
+
+        return response()->json($response);
+    }
+
+    public function viewDrslist($drs_id)
+    {
+        
+        $this->prefix = request()->route()->getPrefix();
+        $id = decrypt($drs_id);
+
+        return view('consignments.view-drs',['segment'=>$this->segment,'prefix'=>$this->prefix]);
 
     }
+    // on unassigned click in drs list 
+    public function getTransactionDetails(Request $request)
+    {
+        $drsId = $_GET['drsId'];
+
+        $result = TransactionSheet::where('drs_no', $drsId)
+            ->with(['ConsignmentDetail' => function ($query) {
+                $query->whereIn('status', [1, 5]);
+            }])
+            ->orderBy('order_no', 'asc')
+            ->get();
+
+            $lr_ids = TransactionSheet::where('drs_no', $drsId)->where('status',1)
+            ->pluck('consignment_no')
+            ->toArray();
+
+            // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
+            $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
+            $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
+            $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
+            $getVehicleType = VehicleType::where('id',$get_lrs->vehicle_type)->first();
+
+
+        $response['fetch'] = $result;
+        $response['fetch_lrs'] = $get_lrs;
+        $response['fetchVehicle'] = $getVehicle;
+        $response['fetchDriver'] = $getDriver;
+        $response['fetchVehicleType'] = $getVehicleType;
+        $response['success'] = true;
+        $response['success_message'] = "Data Imported successfully";
+        
+        return response()->json($response);
+    }
+    
     public function printTransactionsheetold(Request $request)
     {
         $id = $request->id;
@@ -2907,23 +3029,19 @@ class ConsignmentController extends Controller
         $response['success_message'] = " Data suffle updated successfully";
         return response()->json($response);
     }
-
+    //on driver button click
     public function view_saveDraft(Request $request)
     {
-        $id = $_GET['draft_id'];
-
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
+        $id = $request->drsId;
+        $result = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
             ->whereHas('ConsignmentDetail', function ($query) {
                 $query->whereIn('status', ['1', '5']);
             })
             ->orderby('order_no', 'asc')->get();
 
-        $result = json_decode(json_encode($transcationview), true);
-        // echo'<pre>'; print_r($result); die;
+        
 
         $lr_ids = TransactionSheet::where('drs_no', $id)->where('status',1)
-        // ->whereNotNull('vehicle_no')
-        // ->whereNotNull('driver_no')
         ->pluck('consignment_no')
         ->toArray();
 
@@ -2932,6 +3050,7 @@ class ConsignmentController extends Controller
         $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
         $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
 
+
         $response['fetch'] = $result;
         $response['fetch_lrs'] = $get_lrs;
         $response['fetchVehicle'] = $getVehicle;
@@ -2939,7 +3058,7 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
 
-        echo json_encode($response);
+        return response()->json($response);
     }
 
     //use on start drs button in drs list
@@ -4764,7 +4883,18 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $consignmentId)->update(['status' => '1']);
+        $getdrs = TransactionSheet::where('drs_no',$drs_no)->where('status',1)->first();
+        $getConsignment = ConsignmentNote::select('vehicle_id','driver_id','vehicle_type')->where('id',$getdrs->consignment_no)->first();
+
+        if($getConsignment->vehicle_id){
+            $vehicle = Vehicle::where('id', $getConsignment->vehicle_id)->first();
+            $driver = Driver::where('id', $getConsignment->driver_id)->first();
+            
+            ConsignmentNote::whereIn('id', $consignmentId)->update(['vehicle_id'=>$vehicle->id,'driver_id'=>$driver->id,'vehicle_type'=>$getConsignment->vehicle_type,'status' => '1']);
+            TransactionSheet::where('drs_no', $getdrs->drs_no)->where('status',1)->update(['vehicle_no'=>$vehicle->regn_no,'driver_name'=>$driver->name,'driver_no'=>$driver->phone]);
+        }else{
+            ConsignmentNote::whereIn('id', $consignmentId)->update(['status' => '1']);
+        }
         $consignment = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -4772,8 +4902,8 @@ class ConsignmentController extends Controller
             ->get(['consignees.city']);
         $simplyfy = json_decode(json_encode($consignment), true);
 
-        $drs_order_no = DB::table('transaction_sheets')->select('order_no')->where('drs_no', $drs_no)->latest('order_no')->first();
-        $orderno = $drs_order_no->order_no;
+        
+        $orderno = $getdrs->order_no;
 
         $i = $orderno;
         foreach ($simplyfy as $value) {

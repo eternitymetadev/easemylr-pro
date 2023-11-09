@@ -41,6 +41,71 @@
             background: var(--btnColor) !important;
             border-color: var(--btnColor) !important;
         }
+
+
+        /* for tabs */
+        .tasks {
+
+            width: 96vw;
+            max-width: 400px;
+            background: #ffffff;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            border-radius: 50vh;
+            padding: 2px;
+            outline: 2px solid #f9b808;
+            margin: auto;
+            gap: 4px;
+            position: relative;
+        }
+
+
+
+        .taskOption {
+            cursor: pointer;
+            background: transparent;
+            flex: 1;
+            background: #f9b80820;
+            border-radius: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem !important;
+            font-weight: 600;
+            color: #000 !important;
+            z-index: 1;
+            transition: all 260ms ease-in-out;
+        }
+
+        .taskOption.activeTab {
+            background: #f9b808;
+            transition: all 260ms ease-in-out;
+        }
+
+        /* for appended div */
+        #taskAppendDiv {
+            padding: 1rem;
+            background: #f9b8081a;
+            border-radius: 18px;
+        }
+
+        .submitButton {
+            min-width: auto;
+            font-size: 14px !important;
+            padding-inline: 16px;
+        }
+
+        .form-control {
+            height: auto !important;
+            border-radius: 12px
+        }
+
+        .tableContainer {
+            border-radius: 12px;
+            box-shadow: 0 0 12px -3px #83838380 inset;
+        }
     </style>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -58,13 +123,13 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
                         <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix . '/export-drs-table') }}">Export
-                                                    data</a> -->
+                                                                                                                data</a> -->
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
                                 <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                                                <h4 class="win-h4">List</h4>
-                                                            </div> -->
+                                                                                                                            <h4 class="win-h4">List</h4>
+                                                                                                                        </div> -->
                                 <div class="col d-flex pr-0">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
@@ -72,8 +137,8 @@
                                                 <input type="text" class="form-control" placeholder="Search"
                                                     id="search" data-action="<?php echo url()->current(); ?>">
                                                 <!-- <div class="input-group-btn">
-                                                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                                                            </div> -->
+                                                                                                                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                                                                                                        </div> -->
                                             </div>
                                         </form>
                                     </div>
@@ -81,9 +146,9 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                                                        style="font-size: 15px; padding: 9px; width: 130px"
-                                                                        href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
-                                                                            New</span></a> -->
+                                                                                                                                    style="font-size: 15px; padding: 9px; width: 130px"
+                                                                                                                                    href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
+                                                                                                                                        New</span></a> -->
                                         <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                             style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
@@ -153,14 +218,14 @@
                 ]
             });
         });
-        $(document).on('click', '.view-sheet', function() {
-            var cat_id = $(this).val();
-            $('#opm').modal('show');
+
+
+        function fetchLrDetails(drsId){
             $.ajax({
                 type: "GET",
-                url: "view-transactionSheet/" + cat_id,
+                url: "view-transactionSheet/" + drsId,
                 data: {
-                    cat_id: cat_id
+                    drsId: drsId
                 },
                 beforeSend: //reinitialize Datatables
                     function() {
@@ -172,19 +237,25 @@
                         $("#drsdate").empty();
                     },
                 success: function(data) {
-                    var re = jQuery.parseJSON(data)
+                    console.log(data.fetch[0].consignment_detail.driver_id);
+                    // var re = jQuery.parseJSON(data)
+                    var re = data;
                     var drs_no = re.fetch[0]['drs_no'];
                     $('#current_drs').val(drs_no);
 
+                    var consignmentID = [];
                     var totalBox = 0;
                     var totalweight = 0;
                     $.each(re.fetch, function(index, value) {
                         var alldata = value;
+                        consignmentID.push(value.consignment_no);
                         totalBox += parseInt(value.total_quantity);
                         totalweight += parseInt(value.total_weight);
 
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
+                                        <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
+                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd' value="${value.consignment_detail.edd}" /></td>
                                         <td>${value.consignment_no}</td>
                                         <td>${value.consignment_date}</td>
                                         <td>${value.consignee_id}</td>
@@ -192,11 +263,7 @@
                                         <td>${value.pincode}</td>
                                         <td>${value.consignment_detail.total_quantity}</td>
                                         <td>${value.consignment_detail.total_weight}</td>
-                                        <td>
-                                            <button type='button' data-id="${value.consignment_no}" 
-                                            ${re.fetch.length == 1 ? ' disabled ' : ' '}
-                                            class='btn btn-primary remover_lr'>remove</button>
-                                        </td>
+                                        <td><button type='button' data-id="${value.consignment_no}" ${re.fetch.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
                                     </tr>`);
 
                     });
@@ -204,7 +271,215 @@
                     $("#total_box").html("No Of Boxes: " + totalBox);
                     $("#totalweight").html("Net Weight: " + totalweight);
                     $("#total").html(rowCount);
-                    $(".draft-sheet").attr("data-drsid", cat_id);
+                    $(".draft-sheet").attr("data-drsid", drsId);
+
+
+                    $("#transaction_id").val(consignmentID);
+                    var rowCount = $("#save-DraftSheet tbody tr").length;
+                    $("#total_boxes").append("No Of Boxes: " + totalBox);
+                    $("#totalweights").append("Net Weight: " + totalweight);
+                    $("#totallr").append(rowCount);
+
+                    showLibrary();
+
+                    $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
+                    $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
+                    $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
+                    $("#Transporter").val(re.fetch_lrs.transporter_name);
+                    $("#draft_purchase").val(re.fetch_lrs.purchase_price);
+
+                    // Create a new option element
+                    var newVehicleOption =
+                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                    if (re.fetchVehicle.id != '') {
+                        $('#vehicle_no').append(newVehicleOption);
+                    }
+
+                    var newDriverOption =
+                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                    if (re.fetchDriver.id != '') {
+                        $('#driver_id').append(newDriverOption);
+                    }
+
+                    var newVehicleTypeOption =
+                        `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
+                    if (re.fetchVehicleType.id != '') {
+                        $('#vehicle_type').append(newVehicleTypeOption);
+                    }
+                }
+            });
+        }
+        $(document).on('click', '.view-sheet', function() {
+            var drsId = $(this).attr('value');
+
+            $("#addlr").attr('data-drsId', drsId);
+
+            $('#opm').modal('show');
+            fetchLrDetails(drsId)
+
+
+            $("#mainLoader").show();
+            $(".loader").show();
+            var drsId = $(this).attr('value');
+            $(this).addClass('activeTab');
+
+            $('#addlr').removeClass('activeTab');
+            $.ajax({
+                type: "GET",
+                url: "view-draftSheet/" + drsId,
+                data: {
+                    drsId: drsId,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: //reinitialize Datatables
+                    function() {
+                        // $('#unverifiedlrlist').dataTable().fnClearTable();             
+                        // $('#unverifiedlrlist').dataTable().fnDestroy();
+                    },
+                success: function(data) {
+                    // console.log(data);
+                    let addDriverForm = `<form id="updt_vehicle" method="post">
+                                                <input type="hidden" class="form-control" id="transaction_id"
+                                                    name="transaction_id" value="" />
+                                                <div class="form-row mb-0">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="location_name">Vehicle No.</label>
+
+                                                        <select class="form-control my-select2" id="vehicle_no"
+                                                            name="vehicle_id" tabindex="-1">
+                                                            <option value="">Select vehicle</option>
+                                                            @foreach ($vehicles as $vehicle)
+                                                                <option value="{{ $vehicle->id }}">{{ $vehicle->regn_no }}
+                                                                </option>
+                                                            @endforeach
+                                                            
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="exampleFormControlInput2">Driver Name</label>
+                                                        <select class="form-control my-select2" id="driver_id"
+                                                            name="driver_id" tabindex="-1">
+                                                            <option value="">Select driver</option>
+                                                            @foreach ($drivers as $driver)
+                                                                <option value="{{ $driver->id }}">
+                                                                    {{ ucfirst($driver->name) ?? '-' }}-{{ $driver->phone ?? '-' }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-row mb-0">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="exampleFormControlInput2">Vehicle Type</label>
+                                                        <select class="form-control my-select2" id="vehicle_type"
+                                                            name="vehicle_type" tabindex="-1">
+                                                            <option value="">Select vehicle type</option>
+                                                            @foreach ($vehicletypes as $vehicle)
+                                                                <option value="{{ $vehicle->id }}">{{ $vehicle->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="exampleFormControlInput2">Transporter Name</label>
+                                                        <input type="text" class="form-control" id="Transporter"
+                                                            name="transporter_name" value="">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="exampleFormControlInput2">Purchase Price</label>
+                                                        <input type="text" class="form-control" id="draft_purchase"
+                                                            name="purchase_price" value="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="table-responsive tableContainer">
+                                                    <table id="sheet" class="table table-hover" style="width:100%; text-align:left;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>E-Way</th>
+                                                                <th>EDD</th>
+                                                                <th>LR No</th>
+                                                                <th>Consignment Date</th>
+                                                                <th>Consignee Name</th>
+                                                                <th>city</th>
+                                                                <th>Pin Code</th>
+                                                                <th>Number Of Boxes</th>
+                                                                <th>Net Weight</th>
+                                                                <th>Action</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="suffle">
+
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <td colspan="8">
+                                                                    <div class="d-flex align-items-center" style="gap: 1rem">
+                                                                        <span style="font-weight: bold">
+                                                                            Total: <span id="total"></span>
+                                                                        </span>
+                                                                        |
+                                                                        <span id="total_box" style="font-weight: bold"></span>
+                                                                        |
+                                                                        <span id="totalweight" style="font-weight: bold"></span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                        </tfoot>
+
+                                                    </table>
+                                                </div>
+
+                                                <div class="d-flex align-items-center justify-content-end mt-3" style="gap: 1rem">
+                                                    <button type="submit" class="btn btn-primary submitButton ">
+                                                        <span class="indicator-label">Update</span>
+                                                        <span class="indicator-progress" style="display: none;">
+                                                            Please wait...
+                                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </form>`;
+                    // document.getElementById('taskAppendDiv').innerHTML = addDriverForm;
+
+                    var re = data;
+                    console.log(data.fetch);
+                    var consignmentID = [];
+                    var totalBoxes = 0;
+                    var totalweights = 0;
+                    var i = 0;
+                    $.each(re.fetch, function(index, value) {
+                        $("#mainLoader").hide();
+                        $(".loader").hide();
+                        i++;
+                        var alldata = value;
+                        consignmentID.push(alldata.consignment_no);
+                        totalBoxes += parseInt(value.consignment_detail.total_quantity);
+                        totalweights += parseInt(value.consignment_detail.total_weight);
+
+                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value
+                            .id +
+                            "><td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id=" +
+                            value.consignment_no +
+                            ">Edit</a></td><td><input type='date' name='edd[]' data-id=" +
+                            value
+                            .consignment_no + " class='new_edd' value='" + value
+                            .consignment_detail.edd + "'></td><td>" + value.consignment_no +
+                            "</td><td>" + value.consignment_date + "</td><td>" + value
+                            .consignee_id + "</td><td>" + value.city + "</td><td>" + value
+                            .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
+                            value
+                            .total_weight + "</td></tr>");
+                    });
+
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
                 }
             });
         });
@@ -257,7 +532,7 @@
 
                         $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value
                             .id +
-                            "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
+                            "><td><a href='#' data-toggle='modal' data-target='#modal-2' class='btn btn-danger ewayupdate' data-id=" +
                             value.consignment_no +
                             ">Edit</a></td><td><input type='date' name='edd[]' data-id=" +
                             value
@@ -284,13 +559,15 @@
                     $("#draft_purchase").val(re.fetch_lrs.purchase_price);
 
                     // Create a new option element
-                    var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
-                    if(re.fetchVehicle.id != ''){
+                    var newVehicleOption =
+                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                    if (re.fetchVehicle.id != '') {
                         $('#vehicle_no').append(newVehicleOption);
                     }
 
-                    var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
-                    if(re.fetchDriver.id != ''){
+                    var newDriverOption =
+                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                    if (re.fetchDriver.id != '') {
                         $('#driver_id').append(newDriverOption);
                     }
                 }
@@ -320,9 +597,9 @@
                         $("#start-totalweights").empty();
                         $("#start-totallr").empty();
                     },
-                    complete: function (response) {
-                        
-                    },
+                complete: function(response) {
+
+                },
                 success: function(data) {
                     var re = jQuery.parseJSON(data)
                     // console.log(re);
@@ -369,13 +646,15 @@
                     $("#start-purchase").val(re.fetch_lrs.purchase_price);
 
                     // Create a new option element
-                    var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
-                    if(re.fetchVehicle.id != ''){
+                    var newVehicleOption =
+                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                    if (re.fetchVehicle.id != '') {
                         $('#start-vehicle').append(newVehicleOption);
                     }
 
-                    var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
-                    if(re.fetchDriver.id != ''){
+                    var newDriverOption =
+                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                    if (re.fetchDriver.id != '') {
                         $('#start-driver').append(newDriverOption);
                     }
 
@@ -425,7 +704,6 @@
                             .consignment_id +
                             "</td><td>" + value.invoice_no + "</td><td>" + billno +
                             "</td><td>" + billdate + "</td></tr>");
-
                         i++;
                     });
 
@@ -482,7 +760,95 @@
         })
 
         //save add driver data on draft modal //
-        $('#updt_vehicle').submit(function(e) {
+        function drsSubmit(is_started) {
+            $("#mainLoader").show();
+            $(".loader").show();
+            this.event.preventDefault();
+
+            var consignmentID = [];
+            $('input[name="edd[]"]').each(function() {
+                if(is_started == 1){
+                    if (!(this.value)) {
+                        $("#mainLoader").hide();
+                        $(".loader").hide();
+
+                        swal('error', 'Please enter EDD', 'error');
+                        exit;
+                    }
+                }
+                consignmentID.push(this.value);
+            });
+
+
+
+            var ct = consignmentID.length;
+            var rowCount = $("#save-DraftSheet tbody tr").length;
+
+            var vehicle = $('#vehicle_no').val();
+            var driver = $('#driver_id').val();
+            if(is_started == 1){
+                if (!vehicle) {
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
+
+                    swal('error', 'Please select vehicle', 'error');
+                    return false;
+                }
+                if (!driver) {
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
+
+                    swal('error', 'Please select driver', 'error');
+                    return false;
+                }
+            }
+
+            const drsForm = new FormData();
+            drsForm.append('vehicle_id', $('#vehicle_no').val());
+            drsForm.append('driver_id', $('#driver_id').val());
+            drsForm.append('vehicle_type', $('#vehicle_type').val());
+            drsForm.append('transporter_name', $('#Transporter').val());
+            drsForm.append('purchase_price', $('#draft_purchase').val());
+            drsForm.append('transaction_id', $('#transaction_id').val());
+            drsForm.append('is_started', is_started);
+
+            $.ajax({
+                url: "update_unverifiedLR",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                data: drsForm,
+                processData: false,
+                contentType: false,
+                beforeSend: function() {
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
+
+                    $(".indicator-progress").show();
+                    $(".indicator-label").hide();
+                },
+                complete: function(response) {
+                    $('.indicator-progress').prop('disabled', true);
+                    $('.indicator-label').prop('disabled', true);
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
+                },
+                success: (data) => {
+                    $(".indicator-progress").hide();
+                    $(".indicator-label").show();
+                    if (data.success == true) {
+                        alert('Data Updated Successfully');
+                        location.reload();
+                    } else if (data.success == false) {
+                        alert(data.error_message);
+                    } else {
+                        alert('something wrong');
+                    }
+                }
+            });
+        }
+        $('#updt_vehicle1').submit(function(e) {
             e.preventDefault();
 
             var consignmentID = [];
@@ -563,7 +929,7 @@
             }
             var data = new FormData(this);
             jQuery('#start-commonconfirm').modal('show');
-            jQuery(".confirmStartClick").one("click", function(){
+            jQuery(".confirmStartClick").one("click", function() {
                 // if (confirm("Are you sure you want to submit the form?")) {
                 $.ajax({
                     url: "start-unverifiedLR",
@@ -754,7 +1120,11 @@
 
         /////////////
         $(document).on('click', '#addlr', function() {
-            $('#unverifiedlist').show();
+            const drsId = $(this).attr('data-drsId');
+            $("#mainLoader").show();
+            $(".loader").show();
+            $(this).addClass('activeTab');
+            $('#addDriver').removeClass('activeTab');
             $.ajax({
                 type: "post",
                 url: "get-add-lr",
@@ -770,21 +1140,103 @@
                         // $('#unverifiedlrlist').dataTable().fnDestroy();
                     },
                 success: function(data) {
-                    $.each(data.lrlist, function(index, value) {
-                        $('#unverifiedlrlist tbody').append(
-                            "<tr><td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value=" +
-                            value.id + " style='width: 30px; height:30px;'></td><td>" +
-                            value
-                            .id + "</td><td>" + value.consignment_date + "</td><td>" + value
-                            .consigner_id + "</td><td>" + value.consignee_id + "</td><td>" +
-                            value.consignee_city + "</td><td>" +
-                            value.consignee_district + "</td><td>" + value.pincode +
-                            "</td><td>" + value.zone + "</td></tr>");
-                    });
+                    let addLrtable = `
+                                    <input type="hidden" class="form-control" id="current_drs" name=""
+                                        value="">
+                                    <button type="button" disabled class="btn btn-warning disableDrs mt-3"
+                                        id="add_unverified_lr" data-drsid="${drsId}" onclick="addUnverifiedLr(${drsId})" style="font-size: 11px; margin: 0px 0px 10px 15px;">
+                                        Create DSR
+                                    </button>
+                                    <div class="col-sm-12">
+                                        <table id="unverifiedlrlist" class="table table-hover"
+                                            style="width:100%; text-align:left;">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" name="" id="ckbCheckAll" style="width: 18px; height:18px;" /></th>
+                                                    <th>LR No</th>
+                                                    <th>Consignment Date</th>
+                                                    <th>Consignor Name</th>
+                                                    <th>Consignee</th>
+                                                    <th>City</th>
+                                                    <th>District</th>
+                                                    <th>Pin Code</th>
+                                                    <th>Zone</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${data.lrlist.map((value) => `
+                                                                            <tr>
+                                                                                <td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="${value.id}" style='width: 18px; height: 18px;'></td>
+                                                                                <td>${value.id}</td>
+                                                                                <td>${value.consignment_date}</td>
+                                                                                <td>${value.consigner_id}</td>
+                                                                                <td>${value.consignee_id}</td>
+                                                                                <td>${value.consignee_city}</td>
+                                                                                <td>${value.consignee_district}</td>
+                                                                                <td>${value.pincode}</td>
+                                                                                <td>${value.zone}</td>
+                                                                            </tr>
+                                                                        `).join('')}
+                                            </tbody>
+
+                                        </table>
+                                    </div>`;
+                    document.getElementById('addLrDiv').innerHTML = addLrtable;
+                    $("#mainLoader").hide();
+                    $(".loader").hide();
                 }
+
             });
         });
 
+        $(document).on('click', '#discarddraftForm', function() {
+            $('#addLrDiv').html('');
+            $('#addLrDiv').html('');
+            $('#opm').modal('hide');
+
+        });
+
+        // $('#add_unverified_lr').click(function() {
+
+        // });
+        function addUnverifiedLr(drs_no) {
+            // var drs_no = $(this).attr("data-drsid");
+            var consignmentID = [];
+            $(':checkbox[name="checked_consign[]"]:checked').each(function() {
+                consignmentID.push(this.value);
+            });
+            $.ajax({
+                url: "add-unverified-lr",
+                method: "POST",
+                data: {
+                    consignmentID: consignmentID,
+                    drs_no: drs_no
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $('.disableDrs').prop('disabled', true);
+
+                },
+                complete: function(response) {
+                    $('.disableDrs').prop('disabled', true);
+                },
+                success: function(data) {
+                    if (data.success == true) {
+                        swal('success', 'Drs Created Successfully', 'success');
+                        fetchLrDetails(drs_no);
+                        $('#addLrDiv').html('');
+
+                        // window.location.href = "transaction-sheet";
+
+                    } else {
+                        swal('error', 'something wrong', 'error');
+                    }
+                }
+            })
+        }
 
         jQuery(document).on('click', '#ckbCheckAll', function() {
             if (this.checked) {
@@ -814,42 +1266,6 @@
 
                 $('#ckbCheckAll').prop('checked', false);
             }
-        });
-
-        //////
-        $('#add_unverified_lr').click(function() {
-            var drs_no = $('#current_drs').val();
-            var consignmentID = [];
-            $(':checkbox[name="checked_consign[]"]:checked').each(function() {
-                consignmentID.push(this.value);
-            });
-            $.ajax({
-                url: "add-unverified-lr",
-                method: "POST",
-                data: {
-                    consignmentID: consignmentID,
-                    drs_no: drs_no
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $('.disableDrs').prop('disabled', true);
-
-                },
-                complete: function(response) {
-                    $('.disableDrs').prop('disabled', true);
-                },
-                success: function(data) {
-                    if (data.success == true) {
-                        swal('success', 'Drs Created Successfully', 'success');
-                        window.location.href = "transaction-sheet";
-                    } else {
-                        swal('error', 'something wrong', 'error');
-                    }
-                }
-            })
         });
 
         // Remove Lr From The Draft //

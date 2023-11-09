@@ -1233,6 +1233,8 @@ jQuery(document).ready(function(){
         submitHandler : function(form)
         {
             formSubmitRedirect(form);
+            $(`#reAttemptModel`).modal('hide');
+            $(`#commonconfirm`).modal('hide');
         }
     });
 
