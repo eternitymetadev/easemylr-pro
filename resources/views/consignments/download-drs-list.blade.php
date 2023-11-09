@@ -123,13 +123,13 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
                         <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix . '/export-drs-table') }}">Export
-                                                                                                                data</a> -->
+                                                                                                                        data</a> -->
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
                                 <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                                                                                                            <h4 class="win-h4">List</h4>
-                                                                                                                        </div> -->
+                                                                                                                                    <h4 class="win-h4">List</h4>
+                                                                                                                                </div> -->
                                 <div class="col d-flex pr-0">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
@@ -137,8 +137,8 @@
                                                 <input type="text" class="form-control" placeholder="Search"
                                                     id="search" data-action="<?php echo url()->current(); ?>">
                                                 <!-- <div class="input-group-btn">
-                                                                                                                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                                                                                                                        </div> -->
+                                                                                                                                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                                                                                                                </div> -->
                                             </div>
                                         </form>
                                     </div>
@@ -146,9 +146,9 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                                                                                                                    style="font-size: 15px; padding: 9px; width: 130px"
-                                                                                                                                    href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
-                                                                                                                                        New</span></a> -->
+                                                                                                                                            style="font-size: 15px; padding: 9px; width: 130px"
+                                                                                                                                            href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
+                                                                                                                                                New</span></a> -->
                                         <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                             style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
@@ -220,7 +220,7 @@
         });
 
 
-        function fetchLrDetails(drsId){
+        function fetchLrDetails(drsId) {
             $.ajax({
                 type: "GET",
                 url: "view-transactionSheet/" + drsId,
@@ -255,7 +255,7 @@
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
                                         <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
-                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd' value="${value.consignment_detail.edd}" /></td>
+                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail.edd ?? ''}" /></td>
                                         <td>${value.consignment_no}</td>
                                         <td>${value.consignment_date}</td>
                                         <td>${value.consignee_id}</td>
@@ -484,184 +484,8 @@
             });
         });
 
-        /////////////Draft Sheet///////////////////
-        $(document).on('click', '.draft-sheet', function() {
-            $('.inner-tr').hide();
-            $('#unverifiedlist').hide();
-            $("#vehicle_no").val('').trigger('change');
-            $("#driver_id").val('').trigger('change');
-            $("#vehicle_type").val('').trigger('change');
-            $("#Transporter").val('');
-            $("#draft_purchase").val('');
-
-            // var draft_id = $(this).val();
-            var draft_id = jQuery(this).attr("data-drsid");
-            $('#save-draft').modal('show');
-            $.ajax({
-                type: "GET",
-                url: "view-draftSheet/" + draft_id,
-                data: {
-                    draft_id: draft_id
-                },
-                beforeSend: //reinitialize Datatables
-                    function() {
-                        $("#mainLoader").show();
-                        $(".loader").show();
-
-                        $('#save-DraftSheet').dataTable().fnClearTable();
-                        $('#save-DraftSheet').dataTable().fnDestroy();
-                        $("#total_boxes").empty();
-                        $("#totalweights").empty();
-                        $("#totallr").empty();
-                    },
-                success: function(data) {
-                    $("#mainLoader").hide();
-                    $(".loader").hide();
-                    var re = jQuery.parseJSON(data)
-                    console.log(re);
-                    var consignmentID = [];
-                    var totalBoxes = 0;
-                    var totalweights = 0;
-                    var i = 0;
-                    $.each(re.fetch, function(index, value) {
-                        i++;
-                        var alldata = value;
-                        consignmentID.push(alldata.consignment_no);
-                        totalBoxes += parseInt(value.consignment_detail.total_quantity);
-                        totalweights += parseInt(value.consignment_detail.total_weight);
-
-                        $('#save-DraftSheet tbody').append("<tr class='outer-tr' id=" + value
-                            .id +
-                            "><td><a href='#' data-toggle='modal' data-target='#modal-2' class='btn btn-danger ewayupdate' data-id=" +
-                            value.consignment_no +
-                            ">Edit</a></td><td><input type='date' name='edd[]' data-id=" +
-                            value
-                            .consignment_no + " class='new_edd' value='" + value
-                            .consignment_detail.edd + "'></td><td>" + value.consignment_no +
-                            "</td><td>" + value.consignment_date + "</td><td>" + value
-                            .consignee_id + "</td><td>" + value.city + "</td><td>" + value
-                            .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
-                            value
-                            .total_weight + "</td></tr>");
-                    });
-                    $("#transaction_id").val(consignmentID);
-                    var rowCount = $("#save-DraftSheet tbody tr").length;
-                    $("#total_boxes").append("No Of Boxes: " + totalBoxes);
-                    $("#totalweights").append("Net Weight: " + totalweights);
-                    $("#totallr").append(rowCount);
-
-                    showLibrary();
-
-                    $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
-                    $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
-                    $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
-                    $("#Transporter").val(re.fetch_lrs.transporter_name);
-                    $("#draft_purchase").val(re.fetch_lrs.purchase_price);
-
-                    // Create a new option element
-                    var newVehicleOption =
-                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
-                    if (re.fetchVehicle.id != '') {
-                        $('#vehicle_no').append(newVehicleOption);
-                    }
-
-                    var newDriverOption =
-                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
-                    if (re.fetchDriver.id != '') {
-                        $('#driver_id').append(newDriverOption);
-                    }
-                }
-            });
-        });
-
         /////////////Start btn drs list///////////////////
-        $(document).on('click', '.start-sheet', function() {
-            $('.inner-tr').hide();
-            // var draft_id = $(this).val();
-            var draft_id = jQuery(this).attr("data-drsid");
-            $('#start-draft').modal('show');
-            $.ajax({
-                type: "GET",
-                url: "start-draftSheet/" + draft_id,
-                data: {
-                    draft_id: draft_id
-                },
-                beforeSend: //reinitialize Datatables
-                    function() {
-                        $("#mainLoader").show();
-                        $(".loader").show();
-
-                        $('#start-DraftSheet').dataTable().fnClearTable();
-                        $('#start-DraftSheet').dataTable().fnDestroy();
-                        $("#start-totalboxes").empty();
-                        $("#start-totalweights").empty();
-                        $("#start-totallr").empty();
-                    },
-                complete: function(response) {
-
-                },
-                success: function(data) {
-                    var re = jQuery.parseJSON(data)
-                    // console.log(re);
-                    var consignmentID = [];
-                    var totalBoxes = 0;
-                    var totalweights = 0;
-                    var i = 0;
-                    $.each(re.fetch, function(index, value) {
-                        $("#mainLoader").hide();
-                        $(".loader").hide();
-                        i++;
-                        var alldata = value;
-                        consignmentID.push(alldata.consignment_no);
-                        totalBoxes += parseInt(value.consignment_detail.total_quantity);
-                        totalweights += parseInt(value.consignment_detail.total_weight);
-
-                        $('#start-DraftSheet tbody').append("<tr class='outer-tr' id=" + value
-                            .id +
-                            "><td><a href='#' data-toggle='modal' class='btn btn-danger ewayupdate' data-dismiss='modal' data-id=" +
-                            value.consignment_no +
-                            ">Edit</a></td><td><input type='date' name='edd[]' data-id=" +
-                            value
-                            .consignment_no + " class='new_edd' value='" + value
-                            .consignment_detail.edd + "'></td><td>" + value.consignment_no +
-                            "</td><td>" + value.consignment_date + "</td><td>" + value
-                            .consignee_id + "</td><td>" + value.city + "</td><td>" + value
-                            .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
-                            value
-                            .total_weight + "</td></tr>");
-                    });
-
-                    $("#starttrn_id").val(consignmentID);
-                    var rowCount = $("#start-DraftSheet tbody tr").length;
-                    $("#start-totalboxes").append("No Of Boxes: " + totalBoxes);
-                    $("#start-totalweights").append("Net Weight: " + totalweights);
-                    $("#start-totallr").append(rowCount);
-
-                    // showLibrary();
-                    console.log(re.fetch_lrs);
-                    $("#start-vehicle").val(re.fetch_lrs.vehicle_id).trigger('change');
-                    $("#start-driver").val(re.fetch_lrs.driver_id).trigger('change');
-                    $("#start-vehicletype").val(re.fetch_lrs.vehicle_type).trigger('change');
-                    $("#start-transporter").val(re.fetch_lrs.transporter_name);
-                    $("#start-purchase").val(re.fetch_lrs.purchase_price);
-
-                    // Create a new option element
-                    var newVehicleOption =
-                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
-                    if (re.fetchVehicle.id != '') {
-                        $('#start-vehicle').append(newVehicleOption);
-                    }
-
-                    var newDriverOption =
-                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
-                    if (re.fetchDriver.id != '') {
-                        $('#start-driver').append(newDriverOption);
-                    }
-
-                }
-            });
-        });
-
+    
         $(document).on('click', '.ewayupdate', function() {
 
             var consignment_id = $(this).attr('data-id');
@@ -757,27 +581,48 @@
             $('.indicator-label').removeAttr('disabled');
             $(".indicator-progress").hide();
             $(".indicator-label").show();
+            $('#save-DraftSheet tbody').html('');
         })
 
         //save add driver data on draft modal //
         function drsSubmit(is_started) {
-            $("#mainLoader").show();
-            $(".loader").show();
+            // $("#mainLoader").show();
+            // $(".loader").show();
             this.event.preventDefault();
 
             var consignmentID = [];
-            $('input[name="edd[]"]').each(function() {
+            // Get all elements with class 'edd'
+            var elements = document.getElementsByClassName('eddInput');
+
+            // Loop through the elements
+            for (var i = 0; i < elements.length; i++) {
+                // console.log(`qwe - ${i}`, elements[i].value)
                 if(is_started == 1){
-                    if (!(this.value)) {
+                    // Check if the element has a value
+                    if (!elements[i].value) {
                         $("#mainLoader").hide();
                         $(".loader").hide();
+                    // console.log(`qwe - ${i}`, elements[i].value);
 
                         swal('error', 'Please enter EDD', 'error');
-                        exit;
+                        return;
                     }
                 }
                 consignmentID.push(this.value);
-            });
+            }
+
+            // $('input[name="edd[]"]').each(function() {
+            //     if (is_started == 1) {
+            //         if (!($(this).val())) {
+            //             console.log($(this).val(), '1');
+            //             $("#mainLoader").hide();
+            //             $(".loader").hide();
+            //             swal('error', 'Please enter EDD', 'error');
+            //             return 1;
+            //         }
+            //     }
+            //     consignmentID.push(this.value);
+            // });
 
 
 
@@ -786,7 +631,7 @@
 
             var vehicle = $('#vehicle_no').val();
             var driver = $('#driver_id').val();
-            if(is_started == 1){
+            if (is_started == 1) {
                 if (!vehicle) {
                     $("#mainLoader").hide();
                     $(".loader").hide();
@@ -812,41 +657,56 @@
             drsForm.append('transaction_id', $('#transaction_id').val());
             drsForm.append('is_started', is_started);
 
-            $.ajax({
-                url: "update_unverifiedLR",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                data: drsForm,
-                processData: false,
-                contentType: false,
-                beforeSend: function() {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
+            function draftsaveAjax() {
+                $.ajax({
+                    url: "update_unverifiedLR",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: drsForm,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $('.indicator-progress').prop('disabled', true);
+                        $('.indicator-label').prop('disabled', true);
 
-                    $(".indicator-progress").show();
-                    $(".indicator-label").hide();
-                },
-                complete: function(response) {
-                    $('.indicator-progress').prop('disabled', true);
-                    $('.indicator-label').prop('disabled', true);
-                    $("#mainLoader").hide();
-                    $(".loader").hide();
-                },
-                success: (data) => {
-                    $(".indicator-progress").hide();
-                    $(".indicator-label").show();
-                    if (data.success == true) {
-                        alert('Data Updated Successfully');
-                        location.reload();
-                    } else if (data.success == false) {
-                        alert(data.error_message);
-                    } else {
-                        alert('something wrong');
+                        $(".indicator-progress").show();
+                        $(".indicator-label").hide();
+                    },
+                    complete: function(response) {
+                        $('.indicator-progress').prop('disabled', true);
+                        $('.indicator-label').prop('disabled', true);
+                        $("#mainLoader").hide();
+                        $(".loader").hide();
+                    },
+                    success: (data) => {
+                        $(".indicator-progress").hide();
+                        $(".indicator-label").show();
+                        if (data.success == true) {
+                            swal('success', 'Data Updated Successfully', 'success');
+                            location.reload();
+                        } else if (data.success == false) {
+                            swal('error', data.error_message, 'error');
+                        } else {
+                            swal('error', 'something wrong', 'error');
+                        }
+                        $("#mainLoader").show();
+                        $(".loader").show();
+                        $("#opm").hide();
+                        $("#start-commonconfirm").hide();
                     }
-                }
-            });
+                });
+            }
+            if (is_started == 1) {
+                jQuery('#start-commonconfirm').modal('show');
+                jQuery(".confirmStartClick").one("click", function() {
+                    draftsaveAjax();
+                });
+            } else {
+                draftsaveAjax()
+            }
+
         }
         $('#updt_vehicle1').submit(function(e) {
             e.preventDefault();
@@ -970,7 +830,8 @@
 
         ///update edd on add driver draft modal ///////
         function showLibrary() {
-            $('.new_edd').blur(function() {
+            // $('.new_edd').blur(function() {
+            jQuery(document).on("change", ".new_edd", function() {
                 var consignment_id = $(this).attr('data-id');
                 var drs_edd = $(this).val();
                 var _token = $('input[name="_token"]').val();
@@ -1165,18 +1026,18 @@
                                             </thead>
                                             <tbody>
                                                 ${data.lrlist.map((value) => `
-                                                                            <tr>
-                                                                                <td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="${value.id}" style='width: 18px; height: 18px;'></td>
-                                                                                <td>${value.id}</td>
-                                                                                <td>${value.consignment_date}</td>
-                                                                                <td>${value.consigner_id}</td>
-                                                                                <td>${value.consignee_id}</td>
-                                                                                <td>${value.consignee_city}</td>
-                                                                                <td>${value.consignee_district}</td>
-                                                                                <td>${value.pincode}</td>
-                                                                                <td>${value.zone}</td>
-                                                                            </tr>
-                                                                        `).join('')}
+                                                                                    <tr>
+                                                                                        <td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="${value.id}" style='width: 18px; height: 18px;'></td>
+                                                                                        <td>${value.id}</td>
+                                                                                        <td>${value.consignment_date}</td>
+                                                                                        <td>${value.consigner_id}</td>
+                                                                                        <td>${value.consignee_id}</td>
+                                                                                        <td>${value.consignee_city}</td>
+                                                                                        <td>${value.consignee_district}</td>
+                                                                                        <td>${value.pincode}</td>
+                                                                                        <td>${value.zone}</td>
+                                                                                    </tr>
+                                                                                `).join('')}
                                             </tbody>
 
                                         </table>

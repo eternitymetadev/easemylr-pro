@@ -12,7 +12,7 @@
                 <th>Driver Number</th>
                 <th>Total LR</th>
                 <th>Delivery Status</th>
-                <th>Payment Status</th>
+                <th class="text-center">Payment Status</th>
                 
             </tr>
         </thead>
@@ -33,10 +33,10 @@
                 
                 <td>
                     <?php if ($trns->status == 0) {?>
-                    <label class="badge badge-dark">Cancelled</label>
+                    <label class="statusBtn btn" style="--statusColor: #df015e;">Cancelled</label>
                     <?php } else {?>
                     <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
-                    <button class="delBtn statusBtn btn view-sheet" value="{{$trns->drs_no}}" style="--statusColor: #b61880;">Unassigned</button>
+                    <button class="delBtn statusBtn btn view-sheet" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;">Unassigned</button>
                     <?php } else {
                         $status = Helper::getdeleveryStatus($trns->drs_no);
                         if($status == 'Started' && $trns->status == 0) $statusColor = '#187fb6';
@@ -46,13 +46,9 @@
 
                         if($status == 'Unassigned'){
                         ?>
-                        <button class="delBtn statusBtn btn view-sheet" value="{{$trns->drs_no}}" style="--statusColor: #b61880;">Unassigned</button>
+                        <button class="delBtn statusBtn btn view-sheet" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;">Unassigned</button>
                         <?php }else{ ?>
-                    <a class="delBtn statusBtn drs_cancel btn"
-                    style="--statusColor: {{$statusColor}};" 
-                    drs-no="{{$trns->drs_no}}" data-text="consignment"
-                        data-status="0"
-                        data-action="<?php echo URL::current(); ?>"><span>{{$status}}</span></a>
+                    <a class="delBtn statusBtn drs_cancel btn" style="--statusColor: {{$statusColor}};" drs-no="{{$trns->drs_no}}" data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>"><span>{{$status}}</span></a>
                     <?php }}?>
                     <?php }?>
                 </td>
@@ -66,7 +62,7 @@
                     else if($status == 'Processing') $statusColor = '#b69d18';
                     else $statusColor = '#18b69b';
                     ?>
-                <td><a class="statusBtn btn" style="--statusColor: {{$statusColor}}">{{$status}}</a></td>
+                <td class="text-center"><a style="color: {{$statusColor}}; text-align: center">{{$status}}</a></td>
                 <!-- END payment Status  -------------  -->
  
             </tr>

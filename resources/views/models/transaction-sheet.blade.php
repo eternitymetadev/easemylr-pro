@@ -140,110 +140,112 @@
                 <div id="www">
                     <div class="row">
                         <div class="col-sm-12">
-                        
+
                             <div id="taskAppendDiv">
-                                    <input type="hidden" class="form-control" id="transaction_id"
-                                        name="transaction_id" value="" />
-                                    <div class="form-row mb-0">
-                                        <div class="form-group col-md-6">
-                                            <label for="location_name">Vehicle No.</label>
+                                <input type="hidden" class="form-control" id="transaction_id" name="transaction_id"
+                                    value="" />
+                                <div class="form-row mb-0">
+                                    <div class="form-group col-md-6">
+                                        <label for="location_name">Vehicle No.</label>
 
-                                            <select class="form-control my-select2" id="vehicle_no"
-                                                name="vehicle_id" tabindex="-1">
-                                                <option value="">Select vehicle</option>
-                                                @foreach ($vehicles as $vehicle)
-                                                    <option value="{{ $vehicle->id }}">{{ $vehicle->regn_no }}
-                                                    </option>
-                                                @endforeach
-                                                
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="exampleFormControlInput2">Driver Name</label>
-                                            <select class="form-control my-select2" id="driver_id"
-                                                name="driver_id" tabindex="-1">
-                                                <option value="">Select driver</option>
-                                                @foreach ($drivers as $driver)
-                                                    <option value="{{ $driver->id }}">
-                                                        {{ ucfirst($driver->name) ?? '-' }}-{{ $driver->phone ?? '-' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                        <select class="form-control my-select2" id="vehicle_no" name="vehicle_id"
+                                            tabindex="-1">
+                                            <option value="">Select vehicle</option>
+                                            @foreach ($vehicles as $vehicle)
+                                                <option value="{{ $vehicle->id }}">{{ $vehicle->regn_no }}
+                                                </option>
+                                            @endforeach
 
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="exampleFormControlInput2">Driver Name</label>
+                                        <select class="form-control my-select2" id="driver_id" name="driver_id"
+                                            tabindex="-1">
+                                            <option value="">Select driver</option>
+                                            @foreach ($drivers as $driver)
+                                                <option value="{{ $driver->id }}">
+                                                    {{ ucfirst($driver->name) ?? '-' }}-{{ $driver->phone ?? '-' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
 
-                                    <div class="form-row mb-0">
-                                        <div class="form-group col-md-4">
-                                            <label for="exampleFormControlInput2">Vehicle Type</label>
-                                            <select class="form-control my-select2" id="vehicle_type"
-                                                name="vehicle_type" tabindex="-1">
-                                                <option value="">Select vehicle type</option>
-                                                @foreach ($vehicletypes as $vehicle)
-                                                    <option value="{{ $vehicle->id }}">{{ $vehicle->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label for="exampleFormControlInput2">Transporter Name</label>
-                                            <input type="text" class="form-control" id="Transporter"
-                                                name="transporter_name" value="">
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label for="exampleFormControlInput2">Purchase Price</label>
-                                            <input type="text" class="form-control" id="draft_purchase"
-                                                name="purchase_price" value="">
-                                        </div>
-                                    </div>
+                                </div>
 
-                                    <div class="table-responsive tableContainer">
-                                        <table id="sheet" class="table table-hover" style="width:100%; text-align:left;">
-                                            <thead>
-                                                <tr>
-                                                    <th>E-Way</th>
-                                                    <th>EDD</th>
-                                                    <th>LR No</th>
-                                                    <th>Consignment Date</th>
-                                                    <th>Consignee Name</th>
-                                                    <th>city</th>
-                                                    <th>Pin Code</th>
-                                                    <th>Number Of Boxes</th>
-                                                    <th>Net Weight</th>
-                                                    <th>Action</th>
-        
-                                                </tr>
-                                            </thead>
-                                            <tbody id="suffle">
-        
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="8">
-                                                        <div class="d-flex align-items-center" style="gap: 1rem">
-                                                            <span style="font-weight: bold">
-                                                                Total: <span id="total"></span>
-                                                            </span>
-                                                            |
-                                                            <span id="total_box" style="font-weight: bold"></span>
-                                                            |
-                                                            <span id="totalweight" style="font-weight: bold"></span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-        
-                                            </tfoot>
-        
-                                        </table>
+                                <div class="form-row mb-0">
+                                    <div class="form-group col-md-4">
+                                        <label for="exampleFormControlInput2">Vehicle Type</label>
+                                        <select class="form-control my-select2" id="vehicle_type" name="vehicle_type"
+                                            tabindex="-1">
+                                            <option value="">Select vehicle type</option>
+                                            @foreach ($vehicletypes as $vehicle)
+                                                <option value="{{ $vehicle->id }}">{{ $vehicle->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
-
-                                    <div class="d-flex align-items-center justify-content-start mt-3" style="gap: 1rem">
-                                        <a id="addlr" class="btn btn-outline-primary ">
-                                            Add LR
-                                        </a>
+                                    <div class="form-group col-md-4">
+                                        <label for="exampleFormControlInput2">Transporter Name</label>
+                                        <input type="text" class="form-control" id="Transporter"
+                                            name="transporter_name" value="">
                                     </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="exampleFormControlInput2">Purchase Price</label>
+                                        <input type="text" class="form-control" id="draft_purchase"
+                                            name="purchase_price" value="">
+                                    </div>
+                                </div>
 
-                                    <div id="addLrDiv" class="table-responsive tableContainer my-3" style="max-height: 400px; overflow: auto;"></div>
+                                <div class="table-responsive tableContainer">
+                                    <table id="sheet" class="table table-hover"
+                                        style="width:100%; text-align:left;">
+                                        <thead>
+                                            <tr>
+                                                <th>E-Way</th>
+                                                <th>EDD</th>
+                                                <th>LR No</th>
+                                                <th>Consignment Date</th>
+                                                <th>Consignee Name</th>
+                                                <th>city</th>
+                                                <th>Pin Code</th>
+                                                <th>Number Of Boxes</th>
+                                                <th>Net Weight</th>
+                                                <th>Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="suffle">
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="8">
+                                                    <div class="d-flex align-items-center" style="gap: 1rem">
+                                                        <span style="font-weight: bold">
+                                                            Total: <span id="total"></span>
+                                                        </span>
+                                                        |
+                                                        <span id="total_box" style="font-weight: bold"></span>
+                                                        |
+                                                        <span id="totalweight" style="font-weight: bold"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        </tfoot>
+
+                                    </table>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-start mt-3" style="gap: 1rem">
+                                    <a id="addlr" class="btn btn-outline-primary ">
+                                        Add LR
+                                    </a>
+                                </div>
+
+                                <div id="addLrDiv" class="table-responsive tableContainer my-3"
+                                    style="max-height: 400px; overflow: auto;"></div>
                             </div>
 
                         </div>
@@ -254,29 +256,31 @@
             </div>
             <div class="modal-footer">
                 <div class="col-12 d-flex align-items-center justify-content-between" style="gap: 1rem">
-                    <button type="button" class="btn submitButton delete-btn-modal" id="discarddraftForm">
+                    <button type="button" class="btn submitButton delete-btn-modal" id="discarddraftForm" style="color: #333 !important; border: 1px solid; font-weight: 600;">
                         <span class="indicator-label">Discard & Close</span>
                     </button>
 
                     <div class="d-flex align-items-center justify-content-end" style="gap: 1rem; flex: 1;">
-                       
-                        <button type="button" onclick="drsSubmit(0)" class="btn btn-outline-primary submitButton  delete-btn-modal allsave">
+
+                        <button type="button" onclick="drsSubmit(0)"
+                            class="btn btn-outline-primary submitButton  delete-btn-modal allsave">
                             <span class="indicator-label">Save as Draft</span>
                             <span class="indicator-progress" style="display: none;">Submitting...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>
 
-                        <button type="button" onclick="drsSubmit(1)" class="btn btn-primary submitButton delete-btn-modal allsave">
+                        <button type="button" onclick="drsSubmit(1)"
+                            class="btn btn-primary submitButton delete-btn-modal allsave">
                             <span class="indicator-label">Start</span>
                             <span class="indicator-progress" style="display: none;">Submitting...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>
-                      
+
                     </div>
-                    
-                    
+
+
                 </div>
             </div>
         </form>
@@ -611,25 +615,28 @@
 </div><!-- /.modal -->
 
 {{-- start confirm modal --}}
-<div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static"  aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="background: #fdecbe;border: 2px solid #e2a03f;margin-top: 5rem;">
             <!-- Modal Header -->
-            <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
-            </div>
             <!-- Modal body -->
-            <div class="modal-body">
+            <div class="modal-body d-flex align-items-end justify-content-center" style="min-height: 150px;">
                 <div class="Delt-content text-center">
-                    <p class="confirmtext">Are you sure you want to start this task? Once you start it, you will not be
-                        able to make any changes in this DRS.</p>
+                    <h4 style="margin-bottom: 22px; font-size: 22px; font-weight: 600; ">Are you sure to start this task?</h4>
+                    <p style="color: #080808; max-width: 350px;" >
+                        Please note: Once you start it, you will not be able to make any changes in this DRS.
+                    </p>
                 </div>
             </div>
             <!-- Modal footer -->
             <div class="modal-footer">
-                <div class="btn-section w-100 P-0">
-                    <a class="btn-cstm btn-danger btn btn-modal delete-btn-modal confirmStartClick">Yes</a>
-                    <a type="" class="btn btn-modal" data-dismiss="modal">Cancel</a>
+                <div class="col-12 d-flex align-items-center justify-content-end" style="gap: 1rem">
+                    <button type="button" class="btn btn-outline-primary submitButton" data-dismiss="modal">
+                        <span class="indicator-label">Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-primary submitButton confirmStartClick">
+                        <span class="indicator-label">Yes</span>
+                    </button>
                 </div>
             </div>
         </div>
