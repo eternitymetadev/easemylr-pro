@@ -106,6 +106,17 @@
             border-radius: 12px;
             box-shadow: 0 0 12px -3px #83838380 inset;
         }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered{
+            border-radius:12px !important;
+            height: auto !important;
+            padding: 0.5rem 1.25rem !important;
+            margin-bottom: 0 !important;
+        }
+        .select2-container--open .select2-dropdown--below {
+            margin-left: 1.5rem;
+            margin-top: 1.5rem;
+        }
     </style>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -176,6 +187,23 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
         integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
     <script>
+        jQuery(function() {
+                $('.my-select2').each(function() {
+                    $(this).select2({
+                        theme: "bootstrap-5",
+                        dropdownParent: $(this)
+                            .parent(), // fix select2 search input focus bug
+                    })
+                })
+
+                // fix select2 bootstrap modal scroll bug
+                $(document).on('select2:close', '.my-select2', function(e) {
+                    var evt = "scroll.select2"
+                    $(e.target).parents().off(evt)
+                    $(window).off(evt)
+                })
+            })
+
         $(document).ready(function() {
             $(document).on('click', '.reAttemptBtn', function() {
                 var get_lrid = $(this).attr("data-lrid");
@@ -194,22 +222,7 @@
                 }
             });
 
-            jQuery(function() {
-                $('.my-select2').each(function() {
-                    $(this).select2({
-                        theme: "bootstrap-5",
-                        dropdownParent: $(this)
-                            .parent(), // fix select2 search input focus bug
-                    })
-                })
-
-                // fix select2 bootstrap modal scroll bug
-                $(document).on('select2:close', '.my-select2', function(e) {
-                    var evt = "scroll.select2"
-                    $(e.target).parents().off(evt)
-                    $(window).off(evt)
-                })
-            })
+            
 
             $('#sheet').DataTable({
                 dom: 'Bfrtip',
@@ -339,115 +352,7 @@
                         // $('#unverifiedlrlist').dataTable().fnDestroy();
                     },
                 success: function(data) {
-                    // console.log(data);
-                    let addDriverForm = `<form id="updt_vehicle" method="post">
-                                                <input type="hidden" class="form-control" id="transaction_id"
-                                                    name="transaction_id" value="" />
-                                                <div class="form-row mb-0">
-                                                    <div class="form-group col-md-6">
-                                                        <label for="location_name">Vehicle No.</label>
-
-                                                        <select class="form-control my-select2" id="vehicle_no"
-                                                            name="vehicle_id" tabindex="-1">
-                                                            <option value="">Select vehicle</option>
-                                                            @foreach ($vehicles as $vehicle)
-                                                                <option value="{{ $vehicle->id }}">{{ $vehicle->regn_no }}
-                                                                </option>
-                                                            @endforeach
-                                                            
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="exampleFormControlInput2">Driver Name</label>
-                                                        <select class="form-control my-select2" id="driver_id"
-                                                            name="driver_id" tabindex="-1">
-                                                            <option value="">Select driver</option>
-                                                            @foreach ($drivers as $driver)
-                                                                <option value="{{ $driver->id }}">
-                                                                    {{ ucfirst($driver->name) ?? '-' }}-{{ $driver->phone ?? '-' }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="form-row mb-0">
-                                                    <div class="form-group col-md-4">
-                                                        <label for="exampleFormControlInput2">Vehicle Type</label>
-                                                        <select class="form-control my-select2" id="vehicle_type"
-                                                            name="vehicle_type" tabindex="-1">
-                                                            <option value="">Select vehicle type</option>
-                                                            @foreach ($vehicletypes as $vehicle)
-                                                                <option value="{{ $vehicle->id }}">{{ $vehicle->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="exampleFormControlInput2">Transporter Name</label>
-                                                        <input type="text" class="form-control" id="Transporter"
-                                                            name="transporter_name" value="">
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="exampleFormControlInput2">Purchase Price</label>
-                                                        <input type="text" class="form-control" id="draft_purchase"
-                                                            name="purchase_price" value="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="table-responsive tableContainer">
-                                                    <table id="sheet" class="table table-hover" style="width:100%; text-align:left;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>E-Way</th>
-                                                                <th>EDD</th>
-                                                                <th>LR No</th>
-                                                                <th>Consignment Date</th>
-                                                                <th>Consignee Name</th>
-                                                                <th>city</th>
-                                                                <th>Pin Code</th>
-                                                                <th>Number Of Boxes</th>
-                                                                <th>Net Weight</th>
-                                                                <th>Action</th>
-
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="suffle">
-
-                                                        </tbody>
-                                                        <tfoot>
-                                                            <tr>
-                                                                <td colspan="8">
-                                                                    <div class="d-flex align-items-center" style="gap: 1rem">
-                                                                        <span style="font-weight: bold">
-                                                                            Total: <span id="total"></span>
-                                                                        </span>
-                                                                        |
-                                                                        <span id="total_box" style="font-weight: bold"></span>
-                                                                        |
-                                                                        <span id="totalweight" style="font-weight: bold"></span>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-
-                                                        </tfoot>
-
-                                                    </table>
-                                                </div>
-
-                                                <div class="d-flex align-items-center justify-content-end mt-3" style="gap: 1rem">
-                                                    <button type="submit" class="btn btn-primary submitButton ">
-                                                        <span class="indicator-label">Update</span>
-                                                        <span class="indicator-progress" style="display: none;">
-                                                            Please wait...
-                                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </form>`;
-                    // document.getElementById('taskAppendDiv').innerHTML = addDriverForm;
-
+                    
                     var re = data;
                     console.log(data.fetch);
                     var consignmentID = [];
@@ -477,6 +382,9 @@
                             value
                             .total_weight + "</td></tr>");
                     });
+                    $('#vehicle_no').select2();
+                    $('#driver_id').select2();
+                    $('#vehicle_type').select2();
 
                     $("#mainLoader").hide();
                     $(".loader").hide();
