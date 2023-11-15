@@ -47,6 +47,7 @@
                 <th>Freignt on Delivery</th>
                 <th>Cash on Delivery</th>
                 <th>LR Type</th>
+                <th>No of Reattempt</th>
             </tr>
         </thead>
         <tbody>
@@ -218,7 +219,13 @@
                             $lr_type = "-";
                              } ?>
                 <td>{{$lr_type}}</td>
-
+                <?php // No of reattempt
+                if($consignment->reattempt_reason != null){
+                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
+                }else{
+                    $no_reattempt = '';
+                }?>
+                <td>{{$no_reattempt}}</td>
 
             </tr>
             @endforeach

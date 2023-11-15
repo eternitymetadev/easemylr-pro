@@ -77,7 +77,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'delivery_status',
             'delivery_date',
             'signed_drs',
-            'job_id'
+            'job_id',
+            'reattempt_reason',
         ]);
 
         $startdate = $this->startdate;
@@ -247,6 +248,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                             $lr_type = "-";
                             }
 
+                // No of reattempt
+                if($consignment->reattempt_reason != null){
+                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
+                }else{
+                    $no_reattempt = '';
+                }
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
@@ -294,8 +302,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
-
-
+                    'reattempt_reason'   => @$no_reattempt,
+ 
                 ];
             }
         }
@@ -351,6 +359,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Freight on Delivery',
             'COD',
             'LR Type',
+            'No of Reattempt',
         ];
     }
 }
