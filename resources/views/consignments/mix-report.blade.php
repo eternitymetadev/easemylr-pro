@@ -92,6 +92,8 @@ jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
     var search = jQuery('#search').val();
+    $("#mainLoader").show();
+    $(".loader").show();
     
     jQuery.ajax({
         type: 'get',
@@ -106,6 +108,8 @@ jQuery(document).on('click', '#filter_reportall', function() {
         },
         dataType: 'json',
         success: function(response) {
+            $("#mainLoader").hide();
+            $(".loader").hide();
             if (response.html) {
                 jQuery('.main-table').html(response.html);
             }
@@ -168,6 +172,8 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     else if (search)
         geturl = geturl + '?search=' + search;
 
+        $("#mainLoader").show();
+    $(".loader").show();
     jQuery.ajax({
         url: url,
         type: 'get',
@@ -187,7 +193,8 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
             //jQuery(".load-main").hide();
         },
         success: function(response) {
-            // jQuery(".load-main").hide();
+            $("#mainLoader").hide();
+            $(".loader").hide();
             setTimeout(() => {
                 window.location.href = geturl
             }, 10);
