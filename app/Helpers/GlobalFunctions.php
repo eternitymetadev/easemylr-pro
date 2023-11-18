@@ -548,11 +548,13 @@ class GlobalFunctions
         }
 
         $district_consignee = implode(',',$cong_distt);
-        $vehicle_type  = implode(',',$vehicle_type);
+        $vehicle_type  = array_unique($vehicle_type);
+        $vehicle_type_un  = implode(',',$vehicle_type);
+        
        
         return (object)[
             'district_consignee' => $district_consignee,
-            'vehicle_type' => $vehicle_type,
+            'vehicle_type' => $vehicle_type_un,
             
         ];
     }
