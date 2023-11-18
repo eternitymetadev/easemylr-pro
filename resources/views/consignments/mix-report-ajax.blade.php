@@ -11,6 +11,8 @@
                 <th>Box Count</th>
                 <th>Gross Wt</th>
                 <th>Net Weight</th>
+                <th>Consignee Distt</th>
+                <th>Vehicle Type</th>
 
             </tr>
         </thead>
@@ -24,21 +26,8 @@
             $i++; 
                      $date = date('d-m-Y',strtotime($drswiseReport->created_at));
                      $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
+                     $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
                     
-                    $lrgr = array();
-                    $vel_type = array();
-                        foreach($drswiseReport->TransactionDetails as $lrgroup){
-                               $lrgr[] =  $lrgroup->ConsignmentNote->id;
-                               
-                               $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
-                               $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
-                        }
-                        $lr = implode('/', $lrgr);
-
-                        $unique_veltype = array_unique($vel_type);
-                        $vehicle_type = implode('/', $unique_veltype);
-                        
-
                     ?>
             <tr>
                 <td>{{$date}}</td>
@@ -49,6 +38,8 @@
                 <td>{{$result->total_quantity}}</td>
                 <td>{{$result->total_gross}}</td>
                 <td>{{$result->total_weight}}</td>
+                <td>{{$consignee->district_consignee}}</td>
+                <td>{{$consignee->vehicle_type}}</td>
             </tr>
             @endforeach
         </tbody>

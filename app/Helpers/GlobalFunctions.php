@@ -497,10 +497,7 @@ class GlobalFunctions
             $drs_no[] = $get_drs_no->drs_no;
         }
         $trans_sheet = TransactionSheet::whereIn('drs_no', $drs_no)->where('status', '!=', '0')->count();
-        
         return $trans_sheet;
-
-
     }
 
     public static function totalQuantityMixReport($transaction_id)
@@ -523,6 +520,32 @@ class GlobalFunctions
             'total_quantity' => $total_quantity,
             'total_gross' => $total_gross,
             'total_weight' => $total_weight,
+        ];
+    }
+
+    public static function mixReportConsignee($transaction_id)
+    {
+        $get_drs_nos = PaymentRequest::with('TransactionDetails')->where('transaction_id', $transaction_id)->get();
+        $drs_no = array();
+        foreach($get_drs_nos as $get_drs_no){
+            $drs_no[] = $get_drs_no->drs_no;
+        }
+        $trans_sheet = TransactionSheet::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype')->whereIn('drs_no', $drs_no)->where('status', '!=', '0')->get();
+        
+        $cong_distt = array();
+        $vehicle_type = array();
+        foreach($trans_sheet as $consignee){
+                $cong_distt[] = @$consignee->ConsignmentDetail->ConsigneeDetail->district;        
+                $vehicle_type[] = @$consignee->ConsignmentDetail->vehicletype->name;        
+        }
+
+        $district_consignee = implode(',',$cong_distt);
+        $vehicle_type  = implode(',',$vehicle_type);
+       
+        return (object)[
+            'district_consignee' => $district_consignee,
+            'vehicle_type' => $vehicle_type,
+            
         ];
     }
 

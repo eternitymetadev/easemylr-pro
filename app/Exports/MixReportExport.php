@@ -62,6 +62,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $date = date('d-m-Y',strtotime($drswiseReport->created_at));
                 $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
                 $lr_count = Helper::LrCountMix($drswiseReport->transaction_id);
+                $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
 
                $lrgr = array();
                $regnclt = array();
@@ -88,6 +89,8 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'box_count' => @$result->total_quantity,
                     'total_gross' => @$result->total_gross,
                     'total_weight' => @$result->total_weight,
+                    'consignee_distt' => @$consignee->district_consignee,
+                    'vehicle_type' => @$consignee->vehicle_type,
                     
                 ];
             }
@@ -106,6 +109,8 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
             'Box Count',
             'Gross Wt',
             'Net Wt',
+            'Consignee Distt',
+            'Vehicle Type',
 
         ];
     }

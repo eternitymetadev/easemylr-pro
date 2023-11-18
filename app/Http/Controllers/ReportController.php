@@ -634,7 +634,7 @@ class ReportController extends Controller
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0)
+        $query = PaymentRequest::where('payment_status', '!=', 0)
         ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
         ->groupBy('transaction_id');
 
