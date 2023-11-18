@@ -101,6 +101,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'no_of_case' => @$no_ofcases,
                     'net_wt' => @$totlwt,
                     'gross_wt' => @$grosswt,
+                    'status' => Helper::getdeleveryStatus(@$drswiseReport->drs_no),
 
                 ];
             }
@@ -126,6 +127,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             'No Of Cases',
             'Net Weight',
             'Gross Weight',
+            'Status',
 
         ];
     }

@@ -19,6 +19,7 @@
                 <th>No. of cases</th>
                 <th>Net Weight</th>
                 <th>Gross Wt</th>
+                <th>Status</th>
 
             </tr>
         </thead>
@@ -54,6 +55,7 @@
                         }else{
                             $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
                         }
+                        
 
                     ?>
             <tr>
@@ -72,6 +74,9 @@
                 <td>{{$no_ofcases}}</td>
                 <td>{{$totlwt}}</td>
                 <td>{{$grosswt}}</td>
+                <td>
+                {{ Helper::getdeleveryStatus($drswiseReport->drs_no) }}
+                </td>
             </tr>
             @endforeach
         </tbody>
