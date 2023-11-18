@@ -535,8 +535,16 @@ class GlobalFunctions
         $cong_distt = array();
         $vehicle_type = array();
         foreach($trans_sheet as $consignee){
-                $cong_distt[] = @$consignee->ConsignmentDetail->ConsigneeDetail->district;        
-                $vehicle_type[] = @$consignee->ConsignmentDetail->vehicletype->name;        
+            $congDist = @$consignee->ConsignmentDetail->ConsigneeDetail->district;
+            $vehicleType = @$consignee->ConsignmentDetail->vehicletype->name;
+        
+            if ($congDist !== null && $congDist !== '') {
+                $cong_distt[] = $congDist;
+            }
+        
+            if ($vehicleType !== null && $vehicleType !== '') {
+                $vehicle_type[] = $vehicleType;
+            }      
         }
 
         $district_consignee = implode(',',$cong_distt);

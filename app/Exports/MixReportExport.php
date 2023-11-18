@@ -64,21 +64,6 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $lr_count = Helper::LrCountMix($drswiseReport->transaction_id);
                 $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
 
-               $lrgr = array();
-               $regnclt = array();
-               $vel_type = array();
-                   foreach($drswiseReport->TransactionDetails as $lrgroup){
-                          $lrgr[] =  $lrgroup->ConsignmentNote->id;
-                          $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
-                          $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
-                          $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
-                   }
-                   $lr = implode('/', $lrgr);
-                   $unique_regn = array_unique($regnclt);
-                   $regn = implode('/', $unique_regn);
-
-                   $unique_veltype = array_unique($vel_type);
-                   $vehicle_type = implode('/', $unique_veltype);
 
                 $arr[] = [
                     'date' => @$date,
