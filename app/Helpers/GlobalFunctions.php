@@ -489,4 +489,41 @@ class GlobalFunctions
 
     }
 
+    public static function LrCountMix($transaction_id)
+    {
+        $get_drs_nos = PaymentRequest::with('TransactionDetails')->where('transaction_id', $transaction_id)->get();
+        $drs_no = array();
+        foreach($get_drs_nos as $get_drs_no){
+            $drs_no[] = $get_drs_no->drs_no;
+        }
+        $trans_sheet = TransactionSheet::whereIn('drs_no', $drs_no)->where('status', '!=', '0')->count();
+        
+        return $trans_sheet;
+
+
+    }
+
+    public static function totalQuantityMixReport($transaction_id)
+    {
+        $get_drs_nos = PaymentRequest::with('TransactionDetails')->where('transaction_id', $transaction_id)->get();
+        $drs_no = array();
+        foreach($get_drs_nos as $get_drs_no){
+            $drs_no[] = $get_drs_no->drs_no;
+        }
+
+        $get_lrs = TransactionSheet::select('consignment_no')->whereIn('drs_no', $drs_no)->get();
+
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_quantity');
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_gross_weight');
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_weight');
+
+        return (object)[
+            'total_quantity' => $total_quantity,
+            'total_gross' => $total_gross,
+            'total_weight' => $total_weight,
+        ];
+    }
+
 }

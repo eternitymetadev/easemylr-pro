@@ -705,6 +705,9 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
 
+    Route::get('mix-report', [ReportController::class, 'mixReport']);
+    Route::get('export-mix-report', [ReportController::class, 'exportmixReport']);
+
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
 {
@@ -878,6 +881,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    
 
 });
 

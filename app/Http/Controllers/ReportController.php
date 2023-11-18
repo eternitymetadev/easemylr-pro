@@ -6,6 +6,7 @@ use App\Exports\RegionalReport;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
 use App\Exports\Report3Export;
+use App\Exports\MixReportExport;
 use App\Models\BaseClient;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
@@ -13,6 +14,7 @@ use App\Models\Location;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\PaymentRequest;
 use Auth;
 use Config;
 use DB;
@@ -541,6 +543,117 @@ class ReportController extends Controller
             }
         }
         return 'Email Sent';
+    }
+
+    public function mixReport(Request $request)
+    {
+
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        // $query = PaymentRequest::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0)
+            ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
+            ->groupBy('transaction_id');
+
+            if ($authuser->role_id == 2) {
+                $query->whereIn('branch_id', $cc);
+            } else {
+                $query = $query;
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        });
+
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+
+            if (isset($startdate) && isset($enddate)) {
+                $drswiseReports = $query->whereBetween('created_at', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
+            } else {
+                $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
+            }
+
+            $html = view('consignments.mix-report-ajax', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports, 'peritem' => $peritem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+        // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0)
+        ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
+        ->groupBy('transaction_id');
+
+        if ($authuser->role_id == 2) {
+            $query->whereIn('branch_id', $cc);
+        } else {
+            $query = $query;
+        }
+
+        $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $drswiseReports = $drswiseReports->appends($request->query());
+
+        return view('consignments.mix-report', ['drswiseReports' => $drswiseReports, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+
+    public function exportmixReport(Request $request)
+    {
+
+        return Excel::download(new MixReportExport($request->startdate, $request->enddate), 'MixReport.xlsx');
     }
 
 
