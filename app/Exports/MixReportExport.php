@@ -61,7 +61,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
 
 
                 $arr[] = [
-                    'date' => @$drswiseReport->transaction_date,
+                    'date' => Helper::ShowDayMonthYear($drswiseReport->transaction_date),
                     'transaction_id' => @$drswiseReport->transaction_id,
                     'drs_no' => 'DRS-'.$drswiseReport->drs_no,
                     'drs_count' => @$drswiseReport->no_of_drs,
