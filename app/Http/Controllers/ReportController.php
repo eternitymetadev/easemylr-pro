@@ -6,6 +6,7 @@ use App\Exports\RegionalReport;
 use App\Exports\Report1Export;
 use App\Exports\Report2Export;
 use App\Exports\Report3Export;
+use App\Exports\Report4Export;
 use App\Models\BaseClient;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
@@ -178,6 +179,151 @@ class ReportController extends Controller
         $consignments = $consignments->appends($request->query());
 
         return view('consignments.consignment-reportAll', ['consignments' => $consignments, 'branchs' => $branchs, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
+    }
+
+    // MIS report4 get records
+    public function consignmentReport4(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+
+        $sessionperitem = Session::get('peritem');
+        if (!empty($sessionperitem)) {
+            $peritem = $sessionperitem;
+        } else {
+            $peritem = Config::get('variable.PER_PAGE');
+        }
+
+        $query = ConsignmentNote::query();
+
+        if ($request->ajax()) {
+            if (isset($request->resetfilter)) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authuser = Auth::user();
+            $role_id = Role::where('id', '=', $authuser->role_id)->first();
+            $regclient = explode(',', $authuser->regionalclient_id);
+            $cc = explode(',', $authuser->branch_id);
+            $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+            $query = $query
+                ->where('status', '!=', 5)
+                ->with(
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                );
+
+            if ($authuser->role_id == 1) {
+                $query = $query;
+            } elseif ($authuser->role_id == 4) {
+                $query = $query->whereIn('regclient_id', $regclient);
+            } else {
+                $query = $query->whereIn('branch_id', $cc);
+            }
+
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cnrquery) use ($search, $searchT) {
+                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                            $query->where(function ($cneequery) use ($search, $searchT) {
+                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                            });
+                        });
+
+                });
+            }
+
+            if ($request->peritem) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem');
+            if (!empty($peritem)) {
+                $peritem = $peritem;
+            } else {
+                $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            if ($request->branch_id !== null) {
+                if ($request->branch_id) {
+                    $query = $query->where('branch_id', $request->branch_id);
+                }
+            }
+
+            $startdate = $request->startdate;
+            $enddate = $request->enddate;
+            $baseclient_id = $request->baseclient_id;
+            $regclient_id = $request->regclient_id;
+
+            if (isset($startdate) && isset($enddate)) {
+                $query = $query->whereBetween('consignment_date', [$startdate, $enddate]);
+            }
+            if ($baseclient_id) {
+                $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function ($q) use ($baseclient_id) {
+                    $q->where('id', $baseclient_id);
+                });
+            }
+            if ($regclient_id) {
+                $query = $query->whereHas('ConsignerDetail.GetRegClient', function ($q) use ($regclient_id) {
+                    $q->where('id', $regclient_id);
+                });
+            }
+
+            $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+
+            $html = view('consignments.consignment-report4-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
+            // $consignments = $consignments->appends($request->query());
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+
+        $regclients = RegionalClient::with('BaseClient:id,client_name')->select('id', 'name', 'location_id', 'baseclient_id')->whereIn('location_id', $cc)->get();
+
+        $base_clients = [];
+        foreach ($regclients as $val) {
+            $base_clients[] = json_decode($val->BaseClient);
+        }
+
+        $uniqueData = array_unique($base_clients, SORT_REGULAR);
+        $getbaseclients = array_values($uniqueData); // Resetting array keys
+
+        $query = $query
+            ->where('status', '!=', 5)
+            ->with(
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+            );
+
+        if ($authuser->role_id == 1) {
+            $query = $query;
+        } elseif ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } else {
+            $query = $query->whereIn('branch_id', $cc);
+        }
+
+        $branchs = Location::select('id', 'name')->whereIn('id', $cc)->get();
+
+        $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $consignments = $consignments->appends($request->query());
+
+        return view('consignments.consignment-report4', ['consignments' => $consignments, 'branchs' => $branchs, 'prefix' => $this->prefix, 'peritem' => $peritem, 'getbaseclients' => $getbaseclients]);
     }
 
     // MIS report3 get records
@@ -473,6 +619,11 @@ class ReportController extends Controller
     public function exportExcelReport3(Request $request)
     {
         return Excel::download(new Report3Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id), 'mis_report3.xlsx');
+    }
+
+    public function exportExcelReport4(Request $request)
+    {
+        return Excel::download(new Report4Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report4.csv');
     }
 
     // get reg client on Baseclient change filter in MIS2
