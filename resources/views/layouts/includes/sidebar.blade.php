@@ -603,6 +603,9 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report3'}}"> Mis Report 3 </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'mix-report'}}">Mix Report </a>
+            </li>
         </ul>
     </li>
     <?php } ?>
