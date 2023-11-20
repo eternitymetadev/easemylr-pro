@@ -75,21 +75,8 @@ class FtlPtlController extends Controller
         ->pluck('vehicle_id')
         ->toArray();
 
-        // Get vehicle IDs from Hrs
-        $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
-        ->where('receving_status', '!=', '2')
-        ->where('status', '!=', 0)
-        ->pluck('vehicle_id')
-        ->toArray();
-
-        // Get vehicle IDs from PickupRunSheet
-        $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-        ->where('status', '!=', '3')
-        ->pluck('vehicle_id')
-        ->toArray();
-
         // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique(array_merge($consignmentVehicleIds, $hrsVehicleIds, $prsVehicleIds));
+        $mergedVehicleIds = array_unique($consignmentVehicleIds);
 
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::where('status', '1')
@@ -103,20 +90,8 @@ class FtlPtlController extends Controller
         ->pluck('driver_id')
         ->toArray();
 
-        // Get driver IDs from Hrs
-        $hrsDriverIds = Hrs::whereNotNull('driver_id')
-        ->where('receving_status', '!=', '2')
-        ->pluck('driver_id')
-        ->toArray();
-
-        // Get driver IDs from PickupRunSheet
-        $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-        ->where('status', '!=', '3')
-        ->pluck('driver_id')
-        ->toArray();
-
         // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique(array_merge($consignmentDriverIds, $hrsDriverIds, $prsDriverIds));
+        $mergedDriverIds = array_unique($consignmentDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')

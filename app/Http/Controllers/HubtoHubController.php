@@ -192,28 +192,15 @@ class HubtoHubController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
-            // get vehicles
-            $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
-            ->where('delivery_status', '!=', 'successful')
-            ->where('status', '!=', 0)
-            ->pluck('vehicle_id')
-            ->toArray();
-
-            // Get vehicle IDs from Hrs
+            // Get vehicles
             $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
             ->where('status', '!=', 0)
             ->where('receving_status', '!=', '2')
             ->pluck('vehicle_id')
             ->toArray();
 
-            // Get vehicle IDs from PickupRunSheet
-            $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-            ->where('status', '!=', '3')
-            ->pluck('vehicle_id')
-            ->toArray();
-
             // Merge and deduplicate the vehicle IDs
-            $mergedVehicleIds = array_unique(array_merge($consignmentVehicleIds, $hrsVehicleIds, $prsVehicleIds));
+            $mergedVehicleIds = array_unique($hrsVehicleIds);
 
             // Fetch vehicles that are not in the merged array
             $vehicles = Vehicle::where('status', '1')
@@ -222,25 +209,13 @@ class HubtoHubController extends Controller
             ->get();
 
             // get drivers
-            $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
-            ->where('delivery_status', '!=', 'successful')
-            ->pluck('driver_id')
-            ->toArray();
-
-            // Get driver IDs from Hrs
             $hrsDriverIds = Hrs::whereNotNull('driver_id')
             ->where('receving_status', '!=', '2')
             ->pluck('driver_id')
             ->toArray();
 
-            // Get driver IDs from PickupRunSheet
-            $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-            ->where('status', '!=', '3')
-            ->pluck('driver_id')
-            ->toArray();
-
             // Merge and deduplicate the driver IDs
-            $mergedDriverIds = array_unique(array_merge($consignmentDriverIds, $hrsDriverIds, $prsDriverIds));
+            $mergedDriverIds = array_unique($hrsDriverIds);
 
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')
@@ -289,27 +264,14 @@ class HubtoHubController extends Controller
         $hrssheets = $hrssheets->appends($request->query());
 
         // get vehicles
-        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
-        ->where('delivery_status', '!=', 'successful')
-        ->where('status', '!=', 0)
-        ->pluck('vehicle_id')
-        ->toArray();
-
-        // Get vehicle IDs from Hrs
         $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
         ->where('receving_status', '!=', '2')
         ->where('status', '!=', 0)
         ->pluck('vehicle_id')
         ->toArray();
 
-        // Get vehicle IDs from PickupRunSheet
-        $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-        ->where('status', '!=', '3')
-        ->pluck('vehicle_id')
-        ->toArray();
-
         // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique(array_merge($consignmentVehicleIds, $hrsVehicleIds, $prsVehicleIds));
+        $mergedVehicleIds = array_unique($hrsVehicleIds);
 
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::where('status', '1')
@@ -318,25 +280,13 @@ class HubtoHubController extends Controller
         ->get();
 
         // get drivers
-        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
-        ->where('delivery_status', '!=', 'successful')
-        ->pluck('driver_id')
-        ->toArray();
-
-        // Get driver IDs from Hrs
         $hrsDriverIds = Hrs::whereNotNull('driver_id')
         ->where('receving_status', '!=', '2')
         ->pluck('driver_id')
         ->toArray();
 
-        // Get driver IDs from PickupRunSheet
-        $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-        ->where('status', '!=', '3')
-        ->pluck('driver_id')
-        ->toArray();
-
         // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique(array_merge($consignmentDriverIds, $hrsDriverIds, $prsDriverIds));
+        $mergedDriverIds = array_unique($hrsDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
