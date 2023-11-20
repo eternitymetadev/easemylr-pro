@@ -656,21 +656,11 @@ class ReportController extends Controller
 
     public function storeMixReport(Request $request)
     {
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $cc = explode(',', $authuser->branch_id);
-
-        
 
         $query = PaymentRequest::where('payment_status', '!=', 0)
         ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
         ->groupBy('transaction_id');
 
-        if ($authuser->role_id == 2) {
-            $query->whereIn('branch_id', $cc);
-        } else {
-            $query = $query;
-        }
         $last_id = MixReport::latest('transaction_id')->first();
         
         if(empty($last_id)){
