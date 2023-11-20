@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Auth;
 use App\Models\Role;
+use App\Models\MixReport;
 use Helper;
 use DB;
 
@@ -38,44 +39,38 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0)
-        ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
-        ->groupBy('transaction_id');
-        
-        if ($authuser->role_id == 2) {
-            $query->whereIn('branch_id', $cc);
-        } else {
-            $query = $query;
-        }
+
+        $query = MixReport::query();
+
+            if ($authuser->role_id == 2) {
+                $query->whereIn('branch_id', $cc);
+            } else {
+                $query = $query;
+            }
 
         
         if(isset($startdate) && isset($enddate)){
-            $drswiseReports = $query->whereBetween('created_at',[$startdate,$enddate])->where('payment_status', '!=', 0)->orderby('created_at','ASC')->get();
+            $drswiseReports = $query->whereBetween('transaction_date',[$startdate,$enddate])->orderby('transaction_date','ASC')->get();
         }else {
-            $drswiseReports = $query->orderBy('id','ASC')->where('payment_status', '!=', 0)->get();
+            $drswiseReports = $query->orderBy('id','ASC')->get();
         }
       
         if ($drswiseReports->count() > 0) {
             $i = 0;
             foreach ($drswiseReports as $key => $drswiseReport) { 
-                $i++;
-                $date = date('d-m-Y',strtotime($drswiseReport->created_at));
-                $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
-                $lr_count = Helper::LrCountMix($drswiseReport->transaction_id);
-                $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
 
 
                 $arr[] = [
-                    'date' => @$date,
+                    'date' => @$drswiseReport->transaction_date,
                     'transaction_id' => @$drswiseReport->transaction_id,
-                    'drs_no' => 'DRS-'.$drswiseReport->drs_no_list,
-                    'drs_count' => @$drswiseReport->drs_no_count,
-                    'lr_count' => $lr_count,
-                    'box_count' => @$result->total_quantity,
-                    'total_gross' => @$result->total_gross,
-                    'total_weight' => @$result->total_weight,
-                    'consignee_distt' => @$consignee->district_consignee,
-                    'vehicle_type' => @$consignee->vehicle_type,
+                    'drs_no' => 'DRS-'.$drswiseReport->drs_no,
+                    'drs_count' => @$drswiseReport->no_of_drs,
+                    'lr_count' => @$drswiseReport->no_of_lrs,
+                    'box_count' => @$drswiseReport->box_count,
+                    'total_gross' => @$drswiseReport->gross_wt,
+                    'total_weight' => @$drswiseReport->net_wt,
+                    'consignee_distt' => @$drswiseReport->consignee_distt,
+                    'vehicle_type' => @$drswiseReport->vehicle_type,
                     
                 ];
             }

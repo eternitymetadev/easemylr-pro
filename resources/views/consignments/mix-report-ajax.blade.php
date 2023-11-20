@@ -17,29 +17,20 @@
             </tr>
         </thead>
         <tbody>
-            <?php $i = 0; ?>
+
             @foreach($drswiseReports as $drswiseReport)
 
-            <?php 
-             $lr_count = Helper::LrCountMix($drswiseReport->transaction_id);
-           
-            $i++; 
-                     $date = date('d-m-Y',strtotime($drswiseReport->created_at));
-                     $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
-                     $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
-                    
-                    ?>
             <tr>
-                <td>{{$date}}</td>
+                <td>{{Helper::ShowDayMonthYear($drswiseReport->transaction_date)}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
-                <td>DRS-{{$drswiseReport->drs_no_list}}</td>
-                <td>{{$drswiseReport->drs_no_count}}</td>
-                <td>{{$lr_count}}</td>
-                <td>{{$result->total_quantity}}</td>
-                <td>{{$result->total_gross}}</td>
-                <td>{{$result->total_weight}}</td>
-                <td>{{$consignee->district_consignee}}</td>
-                <td>{{$consignee->vehicle_type}}</td>
+                <td>{{$drswiseReport->drs_no}}</td> 
+                <td>{{$drswiseReport->no_of_drs}}</td>
+                <td>{{$drswiseReport->no_of_lrs}}</td>
+                <td>{{$drswiseReport->box_count}}</td>
+                <td>{{$drswiseReport->gross_wt}}</td>
+                <td>{{$drswiseReport->net_wt}}</td>
+                <td>{{$drswiseReport->consignee_distt}}</td>
+                <td>{{$drswiseReport->vehicle_type}}</td>
             </tr>
             @endforeach
         </tbody>

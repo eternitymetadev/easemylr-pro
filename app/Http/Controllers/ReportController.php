@@ -15,6 +15,7 @@ use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\PaymentRequest;
+use App\Models\MixReport;
 use Auth;
 use Config;
 use DB;
@@ -25,6 +26,7 @@ use Response;
 use Session;
 use URL;
 use Carbon\Carbon;
+use Helper;
 
 class ReportController extends Controller
 {
@@ -572,9 +574,7 @@ class ReportController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0)
-            ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
-            ->groupBy('transaction_id');
+            $query = MixReport::query();
 
             if ($authuser->role_id == 2) {
                 $query->whereIn('branch_id', $cc);
@@ -619,7 +619,7 @@ class ReportController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $drswiseReports = $query->whereBetween('created_at', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
+                $drswiseReports = $query->whereBetween('transaction_date', [$startdate, $enddate])->orderby('transaction_date', 'DESC')->paginate($peritem);
             } else {
                 $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
             }
@@ -633,6 +633,34 @@ class ReportController extends Controller
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
+        
+        $query = MixReport::query();
+        if ($authuser->role_id == 2) {
+            $query->whereIn('branch_id', $cc);
+        } else {
+            $query = $query;
+        }
+
+        $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
+        $drswiseReports = $drswiseReports->appends($request->query());
+      
+
+        return view('consignments.mix-report', ['drswiseReports' => $drswiseReports, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+
+    public function exportmixReport(Request $request)
+    {
+
+        return Excel::download(new MixReportExport($request->startdate, $request->enddate), 'MixReport.xlsx');
+    }
+
+    public function storeMixReport(Request $request)
+    {
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $cc = explode(',', $authuser->branch_id);
+
+        
 
         $query = PaymentRequest::where('payment_status', '!=', 0)
         ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
@@ -643,17 +671,44 @@ class ReportController extends Controller
         } else {
             $query = $query;
         }
+        $last_id = MixReport::latest('transaction_id')->first();
+        
+        if(empty($last_id)){
+        $drswiseReports = $query->take(10)->get();
+        }else{
+           
+         $drswiseReports = $query->where('transaction_id', '>', $last_id->transaction_id)->take(200)->get();
+        }
 
-        $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
-        $drswiseReports = $drswiseReports->appends($request->query());
+        foreach($drswiseReports as $drswiseReport){
 
-        return view('consignments.mix-report', ['drswiseReports' => $drswiseReports, 'prefix' => $this->prefix, 'peritem' => $peritem]);
-    }
+            $check_duplicate = MixReport::where('transaction_id', $drswiseReport->transaction_id)->first();
 
-    public function exportmixReport(Request $request)
-    {
+            if(empty($check_duplicate)){
+                
+            $lr_count = Helper::LrCountMix($drswiseReport->transaction_id);
+            $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
+            $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
 
-        return Excel::download(new MixReportExport($request->startdate, $request->enddate), 'MixReport.xlsx');
+            $saveReport['transaction_date'] = $drswiseReport->created_at;
+            $saveReport['transaction_id'] = $drswiseReport->transaction_id;
+            $saveReport['drs_no'] = 'DRS-'.$drswiseReport->drs_no_list;
+            $saveReport['no_of_drs'] = $drswiseReport->drs_no_count;
+            $saveReport['no_of_lrs'] = $lr_count;
+            $saveReport['box_count'] = $result->total_quantity;
+            $saveReport['gross_wt'] = $result->total_gross;
+            $saveReport['net_wt'] = $result->total_weight;
+            $saveReport['consignee_distt'] = $consignee->district_consignee;
+            $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['branch_id'] = $drswiseReport->branch_id;
+
+            $savevendor = MixReport::create($saveReport);
+
+            }
+
+        }
+        return 1 ;
+
     }
 
 
