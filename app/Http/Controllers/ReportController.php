@@ -710,7 +710,7 @@ class ReportController extends Controller
         if (empty($last_id)) {
             $drswiseReports = $query->take(10)->where('payment_status', '!=', 0)->get();
         } else {
-            $drswiseReports = $query->where('id', '>', $last_id->payment_request_id)->where('payment_status', '!=', 0)->take(150)->get();
+            $drswiseReports = $query->where('id', '>', $last_id->payment_request_id)->where('payment_status', '!=', 0)->take(350)->get();
         }
 
         foreach ($drswiseReports as $drswiseReport) {
