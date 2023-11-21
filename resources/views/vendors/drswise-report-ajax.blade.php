@@ -36,7 +36,7 @@
                     @$paid_amt = @$trans_id[0]->tds_deduct_balance;
                 }
 
-                if($drswiseReport->DrsDetails->status == '0' ){
+                if(@$drswiseReport->DrsDetails->status == '0' ){
                         $drs_status = 'Cancelled';
                 }else{
                     $drs_status = 'Active';

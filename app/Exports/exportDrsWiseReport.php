@@ -67,10 +67,10 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     @$paid_amt = @$trans_id[0]->tds_deduct_balance;
                 }
                 
-                if($drswiseReport->DrsDetails->status == '0' ){
-                    $drs_status = 'Cancelled';
+                if(@$drswiseReport->DrsDetails->status == '0' ){
+                    @$drs_status = 'Cancelled';
                     }else{
-                        $drs_status = 'Active';
+                        @$drs_status = 'Active';
                     }
 
                 $arr[] = [
@@ -88,7 +88,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'no_of_case' => @$drswiseReport->no_of_cases,
                     'net_wt' => @$drswiseReport->net_wt,
                     'gross_wt' => @$drswiseReport->gross_wt,
-                    'status' => $drs_status,
+                    'status' => @$drs_status,
 
                 ];
             }
