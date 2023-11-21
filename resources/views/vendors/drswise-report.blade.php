@@ -103,7 +103,9 @@ div.relative {
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
-    var search = jQuery('#search').val();
+    var search = jQuery('#search').val(); 
+    $("#mainLoader").show();
+    $(".loader").show();
     
     jQuery.ajax({
         type: 'get',
@@ -118,6 +120,8 @@ jQuery(document).on('click', '#filter_reportall', function() {
         },
         dataType: 'json',
         success: function(response) {
+            $("#mainLoader").hide();
+            $(".loader").hide();
             if (response.html) {
                 jQuery('.main-table').html(response.html);
             }
