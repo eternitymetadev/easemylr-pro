@@ -1090,5 +1090,6 @@ Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_stat
 Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
 Route::any('regional-report', [ReportController::class, 'regionalReport']);
 Route::any('store-mix-report', [ReportController::class, 'storeMixReport']);
+Route::any('store-drs-wise', [ReportController::class, 'storeDrsWiseReport']);
 
 

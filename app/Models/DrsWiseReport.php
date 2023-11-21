@@ -10,6 +10,7 @@ class DrsWiseReport extends Model
     use HasFactory;
 
     protected $fillable = [
+        'payment_request_id',
         'drs_no',
         'date',
         'vehicle_no',
@@ -27,4 +28,8 @@ class DrsWiseReport extends Model
         'status',
         'branch_id',
     ];
+
+    public function DrsDetails(){
+        return $this->hasOne('App\Models\TransactionSheet','drs_no','drs_no');
+    }
 }

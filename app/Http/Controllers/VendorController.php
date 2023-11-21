@@ -6,9 +6,9 @@ use App\Exports\DrsPaymentExport;
 use App\Exports\exportDrsWiseReport;
 use App\Exports\PaymentReportExport;
 use App\Exports\PrsPaymentReportExport;
+use App\Exports\TransactionStatusExport;
 use App\Exports\VendorExport;
 use App\Imports\VendorImport;
-use App\Exports\TransactionStatusExport;
 use App\Models\ConsignmentNote;
 use App\Models\Driver;
 use App\Models\Location;
@@ -22,6 +22,7 @@ use App\Models\TransactionSheet;
 use App\Models\User;
 use App\Models\VehicleType;
 use App\Models\Vendor;
+use App\Models\DrsWiseReport;
 use Auth;
 use Config;
 use DB;
@@ -1127,10 +1128,10 @@ class VendorController extends Controller
             $startdate = $request->startdate;
             $enddate = $request->enddate;
 
-            if(isset($startdate) && isset($enddate)){
-                $query = $query->whereBetween('created_at',[$startdate,$enddate]);                
+            if (isset($startdate) && isset($enddate)) {
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
             }
-            
+
             if ($request->paymentstatus_id !== null) {
                 if ($request->paymentstatus_id || $request->paymentstatus_id == 0) {
                     $query = $query->where('payment_status', $request->paymentstatus_id);
@@ -1166,7 +1167,7 @@ class VendorController extends Controller
 
     public function exportTransactionStatus(Request $request)
     {
-        return Excel::download(new TransactionStatusExport($request->startdate, $request->enddate,$request->paymentstatus_id,$request->search), 'transaction-status-report.csv');
+        return Excel::download(new TransactionStatusExport($request->startdate, $request->enddate, $request->paymentstatus_id, $request->search), 'transaction-status-report.csv');
     }
 
     public function getVendorReqDetails(Request $request)
@@ -1298,7 +1299,7 @@ class VendorController extends Controller
             curl_close($curl);
             if ($response) {
                 $received_data = json_decode($response);
-                
+
                 $status_code = $received_data->status_code;
                 if ($status_code == 2) {
                     if ($p_type == 'Fully' || $p_type == 'Balance') {
@@ -1666,8 +1667,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
-
+            $query = DrsWiseReport::query();
             if ($authuser->role_id == 2) {
                 $query->whereIn('branch_id', $cc);
             } else {
@@ -1711,7 +1711,7 @@ class VendorController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $drswiseReports = $query->whereBetween('created_at', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
+                $drswiseReports = $query->whereBetween('date', [$startdate, $enddate])->orderby('date', 'DESC')->paginate($peritem);
             } else {
                 $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
             }
@@ -1726,8 +1726,7 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
-
+        $query = DrsWiseReport::with('DrsDetails');
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -2033,11 +2032,10 @@ class VendorController extends Controller
             DB::beginTransaction();
 
             $reject = PaymentRequest::where('transaction_id', $id)->update(['remarks' => $request->remarks, 'payment_status' => 0]);
-            
+
             if ($reject) {
 
-                 PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
-                
+                PaymentHistory::where('transaction_id', $id)->orderBy('id', 'DESC')->first()->update(['remarks' => $request->remarks, 'payment_status' => 0]);
 
                 $response['success'] = true;
                 $response['success_message'] = "Successfully update";

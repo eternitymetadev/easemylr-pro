@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Auth;
 use App\Models\Role;
+use App\Models\DrsWiseReport;
 use Helper;
 use DB;
 
@@ -38,7 +39,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
+        $query = DrsWiseReport::query();
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -47,61 +48,47 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
 
         
         if(isset($startdate) && isset($enddate)){
-            $drswiseReports = $query->whereBetween('created_at',[$startdate,$enddate])->where('payment_status', '!=', 0)->orderby('created_at','ASC')->get();
+            $drswiseReports = $query->whereBetween('date',[$startdate,$enddate])->orderby('date','ASC')->get();
         }else {
-            $drswiseReports = $query->orderBy('id','ASC')->where('payment_status', '!=', 0)->get();
+            $drswiseReports = $query->orderBy('id','ASC')->get();
         }
       
         if ($drswiseReports->count() > 0) {
             $i = 0;
             foreach ($drswiseReports as $key => $drswiseReport) { 
-                $i++;
-                $date = date('d-m-Y',strtotime($drswiseReport->created_at));
-                $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
-                $totlwt = Helper::totalWeight($drswiseReport->drs_no);
-                $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
-               $lrgr = array();
-               $regnclt = array();
-               $vel_type = array();
-                   foreach($drswiseReport->TransactionDetails as $lrgroup){
-                          $lrgr[] =  $lrgroup->ConsignmentNote->id;
-                          $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
-                          $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
-                          $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
-                   }
-                   $lr = implode('/', $lrgr);
-                   $unique_regn = array_unique($regnclt);
-                   $regn = implode('/', $unique_regn);
+                
 
-                   $unique_veltype = array_unique($vel_type);
-                   $vehicle_type = implode('/', $unique_veltype);
-                   $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
-                        $histrycount = count($trans_id);
-                        
-                        if($histrycount > 1){
-                           $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
-                        }else{
-                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
-                        }
+                $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                $histrycount = count($trans_id);
 
+                if ($histrycount > 1) {
+                    @$paid_amt = @$trans_id[0]->tds_deduct_balance + @$trans_id[1]->tds_deduct_balance;
+                } else {
+                    @$paid_amt = @$trans_id[0]->tds_deduct_balance;
+                }
+                
+                if($drswiseReport->DrsDetails->status == '0' ){
+                    $drs_status = 'Cancelled';
+                    }else{
+                        $drs_status = 'Active';
+                    }
 
                 $arr[] = [
-                    'sr_no' => $i,
                     'drs_no' => 'DRS-'.$drswiseReport->drs_no,
-                    'date' => @$date,
+                    'date' => Helper::ShowDayMonthYear($drswiseReport->date),
                     'vehicle_no' => @$drswiseReport->vehicle_no,
-                    'vehicle_type' => @$vehicle_type,
-                    'purchase_amt' => @$purchase,
+                    'vehicle_type' => @$drswiseReport->vehicle_type,
+                    'purchase_amt' => @$drswiseReport->purchase_amount,
                     'transaction_id' => $drswiseReport->transaction_id,
-                    'transaction_idamt' => @$drswiseReport->total_amount,
+                    'transaction_idamt' => @$drswiseReport->transaction_id_amt,
                     'paid_amt' => @$paid_amt,
-                    'client' => @$regn,
-                    'location' => @$drswiseReport->Branch->name,
-                    'lr_no' => @$lr,
-                    'no_of_case' => @$no_ofcases,
-                    'net_wt' => @$totlwt,
-                    'gross_wt' => @$grosswt,
-                    'status' => Helper::getdeleveryStatus(@$drswiseReport->drs_no),
+                    'client' => @$drswiseReport->client,
+                    'location' => @$drswiseReport->branch_id,
+                    'lr_no' => @$drswiseReport->lr_no,
+                    'no_of_case' => @$drswiseReport->no_of_cases,
+                    'net_wt' => @$drswiseReport->net_wt,
+                    'gross_wt' => @$drswiseReport->gross_wt,
+                    'status' => $drs_status,
 
                 ];
             }
@@ -112,7 +99,6 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
     public function headings(): array
     {
         return [
-            'Sr No',
             'Drs No',
             'Date',
             'Vehicle No',

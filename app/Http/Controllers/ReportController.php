@@ -10,13 +10,13 @@ use App\Exports\Report3Export;
 use App\Models\BaseClient;
 use App\Models\Consigner;
 use App\Models\ConsignmentNote;
+use App\Models\DrsWiseReport;
 use App\Models\Location;
 use App\Models\MixReport;
 use App\Models\PaymentRequest;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\DrsWiseReport;
 use Auth;
 use Carbon\Carbon;
 use Config;
@@ -703,15 +703,15 @@ class ReportController extends Controller
     public function storeDrsWiseReport()
     {
 
-        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
+        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
 
-        if ($authuser->role_id == 2) {
-            $query->whereIn('branch_id', $cc);
+        $last_id = DrsWiseReport::latest('transaction_id')->first();
+
+        if (empty($last_id)) {
+            $drswiseReports = $query->take(10)->where('payment_status', '!=', 0)->get();
         } else {
-            $query = $query;
+            $drswiseReports = $query->where('id', '>', $last_id->payment_request_id)->where('payment_status', '!=', 0)->take(150)->get();
         }
-
-        $drswiseReports = $query->orderBy('id', 'DESC')->take(50)->get();
 
         foreach ($drswiseReports as $drswiseReport) {
 
@@ -719,58 +719,73 @@ class ReportController extends Controller
 
             if (empty($check_duplicate)) {
 
-            $date = date('d-m-Y', strtotime($drswiseReport->created_at));
-            $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
-            $totlwt = Helper::totalWeight($drswiseReport->drs_no);
-            $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
-            $lrgr = array();
-            $regnclt = array();
-            $vel_type = array();
-            foreach ($drswiseReport->TransactionDetails as $lrgroup) {
-                $lrgr[] = $lrgroup->ConsignmentNote->id;
-                $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
-                $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
-                $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
-            }
-            $lr = implode('/', $lrgr);
-            $unique_regn = array_unique($regnclt);
-            $regn = implode('/', $unique_regn);
+                $date = date('d-m-Y', strtotime($drswiseReport->created_at));
+                $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
+                $totlwt = Helper::totalWeight($drswiseReport->drs_no);
+                $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
+                $lrgr = array();
+                $regnclt = array();
+                $vel_type = array();
+                foreach ($drswiseReport->TransactionDetails as $lrgroup) {
+                    $lrgr[] = $lrgroup->ConsignmentNote->id;
+                    $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
+                    $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
+                    $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
+                }
+                $lr = implode('/', $lrgr);
+                $unique_regn = array_unique($regnclt);
+                $regn = implode('/', $unique_regn);
 
-            $unique_veltype = array_unique($vel_type);
-            $vehicle_type = implode('/', $unique_veltype);
-            $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
-            $histrycount = count($trans_id);
+                $unique_veltype = array_unique($vel_type);
+                $vehicle_type = implode('/', $unique_veltype);
+                $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                $histrycount = count($trans_id);
 
-            if ($histrycount > 1) {
-                $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                if ($histrycount > 1) {
+                    @$paid_amt = @$drswiseReport->PaymentHistory[0]->tds_deduct_balance+@$drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                } else {
+                    @$paid_amt = @$drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+                }
+
+                $saveDrsReport['payment_request_id'] = $drswiseReport->id;
+                $saveDrsReport['drs_no'] = $drswiseReport->drs_no;
+                $saveDrsReport['date'] = $drswiseReport->created_at;
+                $saveDrsReport['vehicle_no'] = $drswiseReport->vehicle_no;
+                $saveDrsReport['vehicle_type'] = $vehicle_type;
+                $saveDrsReport['purchase_amount'] = $purchase;
+                $saveDrsReport['transaction_id'] = $drswiseReport->transaction_id;
+                $saveDrsReport['transaction_id_amt'] = $drswiseReport->total_amount;
+                $saveDrsReport['paid_amount'] = @$paid_amt;
+                $saveDrsReport['client'] = $regn;
+                $saveDrsReport['location'] = @$drswiseReport->Branch->name;
+                $saveDrsReport['lr_no'] = $lr;
+                $saveDrsReport['no_of_cases'] = $no_ofcases;
+                $saveDrsReport['net_wt'] = $totlwt;
+                $saveDrsReport['gross_wt'] = $grosswt;
+                $saveDrsReport['status'] = Helper::getdeleveryStatus($drswiseReport->drs_no);
+                $saveDrsReport['branch_id'] = $drswiseReport->branch_id;
+
+                $savevendor = DrsWiseReport::create($saveDrsReport);
+
             } else {
-                $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+
+                $status = Helper::getdeleveryStatus($drswiseReport->drs_no);
+
+                $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                $histrycount = count($trans_id);
+
+                if ($histrycount > 1) {
+                    $paid_amt = @$drswiseReport->PaymentHistory[0]->tds_deduct_balance+@$drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                } else {
+                    @$paid_amt = @$drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+                }
+
+                $savevendor = DrsWiseReport::where('drs_no', $drswiseReport->drs_no)->update(['paid_amount' => $paid_amt, 'status' => $status]);
+
             }
 
-            $saveDrsReport['drs_no'] = $drswiseReport->drs_no;
-            $saveDrsReport['date'] = $date;
-            $saveDrsReport['drs_no'] = $drswiseReport->vehicle_no;
-            $saveDrsReport['vehicle_type'] = $vehicle_type;
-            $saveDrsReport['purchase_amount'] = $purchase;
-            $saveDrsReport['transaction_id'] = $drswiseReport->transaction_id;
-            $saveDrsReport['transaction_id_amt'] = $result->total_gross;
-            $saveDrsReport['paid_amount'] = $result->total_weight;
-            $saveDrsReport['client'] = $consignee->district_consignee;
-            $saveDrsReport['location'] = $consignee->vehicle_type;
-            $saveDrsReport['lr_no'] = $drswiseReport->branch_id;
-            $saveDrsReport['no_of_cases'] = $drswiseReport->branch_id;
-            $saveDrsReport['net_wt'] = $drswiseReport->branch_id;
-            $saveDrsReport['gross_wt'] = $drswiseReport->branch_id;
-            $saveDrsReport['status'] = $drswiseReport->branch_id;
-            $saveDrsReport['branch_id'] = $drswiseReport->branch_id;
-
-            $savevendor = DrsWiseReport::create($saveDrsReport);
-
         }
-
-
-
-        }
+        return 1;
 
     }
 
