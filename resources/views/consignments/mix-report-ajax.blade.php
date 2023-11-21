@@ -14,7 +14,7 @@
                 <th>Consignee Distt</th>
                 <th>Vehicle Type</th>
 
-            </tr>
+            </tr> 
         </thead>
         <tbody>
 

@@ -167,9 +167,9 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } elseif($authuser->role_id == 8){
+        }elseif($authuser->role_id == 8){
             $query;
-        }else {
+        } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
@@ -1991,7 +1991,7 @@ class ConsignmentController extends Controller
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
         // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '5', '6']);
-            // ->where('consignment_notes.booked_drs', '!=', '1');
+            //->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
             $data;

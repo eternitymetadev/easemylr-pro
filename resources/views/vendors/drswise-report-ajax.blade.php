@@ -4,7 +4,6 @@
         <thead>
             <tr>
 
-                <th>Sr No</th>
                 <th>Drs No</th>
                 <th>Date</th>
                 <th>Vehicle No</th>
@@ -24,58 +23,43 @@
             </tr>
         </thead>
         <tbody>
-            <?php $i = 0; ?>
+            <?php $i = 0;?>
             @foreach($drswiseReports as $drswiseReport)
+            <?php
+              
+                $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
+                $histrycount = count($trans_id);
 
-            <?php $i++; 
-                     $date = date('d-m-Y',strtotime($drswiseReport->created_at));
-                     $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
-                     $totlwt = Helper::totalWeight($drswiseReport->drs_no);
-                     $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
-                    $lrgr = array();
-                    $regnclt = array();
-                    $vel_type = array();
-                        foreach($drswiseReport->TransactionDetails as $lrgroup){
-                               $lrgr[] =  $lrgroup->ConsignmentNote->id;
-                               $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
-                               $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
-                               $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
-                        }
-                        $lr = implode('/', $lrgr);
-                        $unique_regn = array_unique($regnclt);
-                        $regn = implode('/', $unique_regn);
+                if ($histrycount > 1) {
+                    @$paid_amt = @$trans_id[0]->tds_deduct_balance + @$trans_id[1]->tds_deduct_balance;
+                } else {
+                    @$paid_amt = @$trans_id[0]->tds_deduct_balance;
+                }
 
-                        $unique_veltype = array_unique($vel_type);
-                        $vehicle_type = implode('/', $unique_veltype);
-                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
-                        $histrycount = count($trans_id);
-                        
-                        if($histrycount > 1){
-                           $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
-                        }else{
-                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
-                        }
-                        
+                if($drswiseReport->DrsDetails->status == '0' ){
+                        $drs_status = 'Cancelled';
+                }else{
+                    $drs_status = 'Active';
+                }
+            ?>
 
-                    ?>
             <tr>
-                <td>{{$i}}</td>
                 <td>DRS-{{$drswiseReport->drs_no}}</td>
-                <td>{{$date}}</td>
+                <td>{{ Helper::ShowDayMonthYear($drswiseReport->date )}}</td>
                 <td>{{$drswiseReport->vehicle_no}}</td>
-                <td>{{$vehicle_type}}</td>
-                <td>{{$purchase}}</td>
+                <td>{{$drswiseReport->vehicle_type}}</td>
+                <td>{{$drswiseReport->purchase_amount}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
-                <td>{{$drswiseReport->total_amount}}</td>
-                <td>{{$paid_amt}}</td>
-                <td>{{$regn}}</td>
-                <td>{{@$drswiseReport->Branch->name}}</td>
-                <td>{{$lr}}</td>
-                <td>{{$no_ofcases}}</td>
-                <td>{{$totlwt}}</td>
-                <td>{{$grosswt}}</td>
+                <td>{{$drswiseReport->transaction_id_amt}}</td>
+                <td>{{@$paid_amt}}</td>
+                <td>{{$drswiseReport->client}}</td>
+                <td>{{@$drswiseReport->location}}</td>
+                <td>{{$drswiseReport->lr_no}}</td>
+                <td>{{$drswiseReport->no_of_cases}}</td>
+                <td>{{$drswiseReport->net_wt}}</td>
+                <td>{{$drswiseReport->gross_wt}}</td>
                 <td>
-                {{ Helper::getdeleveryStatus($drswiseReport->drs_no) }}
+                    {{ $drs_status }}
                 </td>
             </tr>
             @endforeach
