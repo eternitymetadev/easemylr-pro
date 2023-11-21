@@ -55,11 +55,11 @@ div.relative {
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                         <div class="col-sm-3">
                             <label>From</label>
-                            <input type="date" id="startdate" class="form-control" name="startdate">
+                            <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                         </div>
                         <div class="col-sm-3">
                             <label>To</label>
-                            <input type="date" id="enddate" class="form-control" name="enddate">
+                            <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                         </div>
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary" 
@@ -88,6 +88,18 @@ div.relative {
 @endsection
 @section('js')
 <script>
+    document.getElementById('startdate').addEventListener('change', function() {
+    var startDate = new Date(this.value);
+    var endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 30);
+
+    var endDateInput = document.getElementById('enddate');
+    endDateInput.value = endDate.toISOString().split('T')[0];
+    // endDateInput.setAttribute('max', `${endDate.toISOString().split('T')[0]}`);
+    endDateInput.setAttribute('min', startDate.toISOString().split('T')[0]);
+    endDateInput.setAttribute('max', endDate.toISOString().split('T')[0]);
+});
+
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
