@@ -55,7 +55,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
 
         
         if(isset($startdate) && isset($enddate)){
-            $drswiseReports = $query->whereBetween('transaction_date',[$startdate,$enddate])->orderby('transaction_date','ASC')->get();
+            $drswiseReports = $query->whereDate('transaction_date', '>=' ,$startdate)->whereDate('transaction_date','<=', $enddate)->orderby('transaction_date','ASC')->get();
         }else {
             $drswiseReports = $query->orderBy('id','ASC')->get();
         }

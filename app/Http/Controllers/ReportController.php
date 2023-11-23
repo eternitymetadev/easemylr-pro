@@ -613,7 +613,7 @@ class ReportController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $drswiseReports = $query->whereBetween('transaction_date', [$startdate, $enddate])->orderby('transaction_date', 'DESC')->paginate($peritem);
+                $drswiseReports = $query->whereDate('transaction_date', '>=' ,$startdate)->whereDate('transaction_date','<=', $enddate)->orderby('transaction_date', 'DESC')->paginate($peritem);
             } else {
                 $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
             }
