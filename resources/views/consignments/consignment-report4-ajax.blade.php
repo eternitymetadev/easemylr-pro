@@ -8,10 +8,11 @@
                 <th>LR Date</th>
                 <th>Drs No</th>
                 <th>Drs Date</th>
-                {{-- <th>Order No</th> --}}
+                <th>Order No</th>
                 <th>Base Client</th>
                 <th>Regional Client</th>
                 <th>Invoice No</th>
+                <th>Invoice Date</th>
                 {{-- <th>Consignor</th>
                 <th>Consignor City</th>
                 <th>Consignee Name</th>
@@ -19,22 +20,21 @@
                 <th>Consignee Phone</th>
                 <th>City</th>
                 <th>Pin Code</th>
-                <th>District</th>
-                <th>State</th>
-                <th>Ship To Name</th>
+                <th>District</th> --}}
+                <th>Consignee State</th>
+                {{-- <th>Ship To Name</th>
                 <th>Ship To City</th>
                 <th>Ship To pin code</th>
                 <th>Ship To District</th>
                 <th>Ship To State</th>
-                <th>Invoice Date</th>
                 <th>Invoice Amount</th>
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
-                <th>Transporter Name</th>
+                <th>Transporter Name</th> --}}
                 <th>Boxes</th>
                 <th>Net Weight</th>
                 <th>Gross Weight</th>
-                <th>Driver Name</th>
+                {{-- <th>Driver Name</th>
                 <th>Driver Number</th>
                 <th>Driver Fleet</th> --}}
                 <th>LR Status</th>
@@ -74,13 +74,43 @@
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
                 <td>DRS-{{ @$consignment->DrsDetail->drs_no ?? "-" }}</td>
                 <td>{{$drs_date}}</td>
-               
+
+                {{-- start order id --}}
+                <?php if(empty($consignment->order_id)){ 
+                    if(!empty($consignment->ConsignmentItems)){
+                    // $order = array();
+                    $invoices = array();
+                    $inv_date = array();
+                    $inv_amt = array();
+                    foreach($consignment->ConsignmentItems as $orders){ 
+                        
+                        $order[] = $orders->order_id;
+                        $invoices[] = $orders->invoice_no;
+                        $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+                        $inv_amt[] = $orders->invoice_amount;
+                    }
+                    //echo'<pre>'; print_r($order); die;
+                    // $order_item['orders'] = implode(',', $order);
+                    $order_item['invoices'] = implode(',', $invoices);
+                    $invoice['date'] = implode(',', $inv_date);
+                    // $invoice['amt'] = implode(',', $inv_amt);?>
+
+                <td>{{ $orders->order_id ?? "-" }}</td>
+                <?php }else{ ?>
+                    <td>-</td>
+                    <?php } }else{ ?>
+                    <td>{{ $consignment->order_id ?? "-" }}</td>
+                <?php  } ?>
+                {{-- end order id --}}
+
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <?php if(empty($consignment->invoice_no)){ ?>
                     <td>{{ $order_item['invoices'] ?? "-" }}</td>
+                    <td>{{ $invoice['date'] ?? '-'}}</td>
                     <?php  } else{ ?>
                     <td>{{ $consignment->invoice_no ?? "-" }}</td>
+                    <td>{{ Helper::ShowDayMonthYearslash($consignment->invoice_date ?? "-" )}}</td>
                     <?php  } ?>
 
                 {{-- <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
@@ -90,29 +120,29 @@
                 <td>{{ $consignment->ConsigneeDetail->phone ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ConsigneeDetail->postal_code ?? "-" }}</td>
-                <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td>
+                <td>{{ $consignment->ConsigneeDetail->district ?? "-" }}</td> --}}
                 <td>{{ $consignment->ConsigneeDetail->Zone->state ?? "-" }}</td>
-                <td>{{ $consignment->ShiptoDetail->nick_name ?? "-" }}</td>
+                {{-- <td>{{ $consignment->ShiptoDetail->nick_name ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->city ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->postal_code ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->district ?? "-" }}</td>
                 <td>{{ $consignment->ShiptoDetail->Zone->state ?? "-" }}</td>
-                <?php if(empty($consignment->invoice_no)){ ?>
+                <?php// if(empty($consignment->invoice_no)){ ?>
                 <td>{{ $order_item['invoices'] ?? "-" }}</td>
                 <td>{{ $invoice['date'] ?? '-'}}</td>
                 <td>{{ $invoice['amt'] ?? '-' }}</td>
-                <?php  } else{ ?>
+                <?php // } else{ ?>
                 <td>{{ $consignment->invoice_no ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->invoice_date ?? "-" )}}</td>
                 <td>{{ $consignment->invoice_amount ?? "-" }}</td>
-                <?php  } ?>
+                <?php // } ?>
                 <td>{{ $consignment->VehicleDetail->regn_no ?? "Pending" }}</td>
                 <td>{{ $consignment->vehicletype->name ?? "-" }}</td>
-                <td>{{ $consignment->transporter_name ?? "-" }}</td>
+                <td>{{ $consignment->transporter_name ?? "-" }}</td>--}}
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
                 <td>{{ $consignment->total_gross_weight ?? "-" }}</td>
-                <td>{{ $consignment->DriverDetail->name ?? "-" }}</td>
+                {{-- <td>{{ $consignment->DriverDetail->name ?? "-" }}</td>
                 <td>{{ $consignment->DriverDetail->phone ?? "-" }}</td>
                 <td>{{ $consignment->DriverDetail->fleet_id ?? "-" }}</td> --}}
 
@@ -146,13 +176,16 @@
                 <td> - </td>
                 <?php }else{?>
                 <td>{{ $tat }}</td>
-                <?php } if($consignment->lr_mode == 0){?>
-                <td>Manual</td>
-                <?php }else if($consignment->lr_mode == 1){ ?>
-                <td>Shadow</td>
-                <?php  }else{?>
-                <td>Shiprider</td>
                 <?php } ?>
+
+                <?php if($consignment->lr_mode == 1){
+                    $deliverymode = 'Shadow';
+                  }elseif($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
+                  }else{
+                   $deliverymode = 'Manual';
+                  } ?>
+                <td>{{$deliverymode}}</td>
 
                 <?php if($consignment->lr_mode == 0){
             if(empty($consignment->signed_drs)){

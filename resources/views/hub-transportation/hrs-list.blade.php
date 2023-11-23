@@ -231,8 +231,7 @@
 
                     }
                 })
-
-});
+        });
 
 
         $('#unverified-table').DataTable(

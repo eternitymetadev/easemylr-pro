@@ -187,23 +187,21 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
         integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
     <script>
-        jQuery(function() {
-                $('.my-select2').each(function() {
-                    $(this).select2({
-                        theme: "bootstrap-5",
-                        dropdownParent: $(this)
-                            .parent(), // fix select2 search input focus bug
-                    })
-                })
-
-                // fix select2 bootstrap modal scroll bug
-                $(document).on('select2:close', '.my-select2', function(e) {
-                    var evt = "scroll.select2"
-                    $(e.target).parents().off(evt)
-                    $(window).off(evt)
+      jQuery(function () {
+            $('.my-select2').each(function () {
+                $(this).select2({
+                    theme: "bootstrap-5",
+                    dropdownParent: $(this).parent(), // fix select2 search input focus bug
                 })
             })
-
+            // fix select2 bootstrap modal scroll bug
+            $(document).on('select2:close', '.my-select2', function (e) {
+                var evt = "scroll.select2"
+                $(e.target).parents().off(evt)
+                $(window).off(evt)
+            })
+        })
+        
         $(document).ready(function() {
             $(document).on('click', '.reAttemptBtn', function() {
                 var get_lrid = $(this).attr("data-lrid");
@@ -300,25 +298,26 @@
                     $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
                     $("#Transporter").val(re.fetch_lrs.transporter_name);
                     $("#draft_purchase").val(re.fetch_lrs.purchase_price);
-
+                // alert(re.fetchVehicle);
                     // Create a new option element
-                    var newVehicleOption =
-                        `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
-                    if (re.fetchVehicle.id != '') {
+                    if (re.fetchVehicle) {
+                        var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
                         $('#vehicle_no').append(newVehicleOption);
-                    }
 
-                    var newDriverOption =
+                        if (re.fetchDriver) {
+                        var newDriverOption =
                         `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
-                    if (re.fetchDriver.id != '') {
                         $('#driver_id').append(newDriverOption);
+                        }
+                        
+                        if (re.fetchVehicleType) {
+                            var newVehicleTypeOption =
+                            `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
+                            $('#vehicle_type').append(newVehicleTypeOption);
+                        }
                     }
-
-                    var newVehicleTypeOption =
-                        `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
-                    if (re.fetchVehicleType.id != '') {
-                        $('#vehicle_type').append(newVehicleTypeOption);
-                    }
+                    
+                   
                 }
             });
         }
@@ -328,6 +327,7 @@
             $("#addlr").attr('data-drsId', drsId);
 
             $('#opm').modal('show');
+        
             fetchLrDetails(drsId)
 
 
@@ -381,10 +381,30 @@
                             .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
                             value
                             .total_weight + "</td></tr>");
+
+                            
+                            
                     });
-                    $('#vehicle_no').select2();
-                    $('#driver_id').select2();
-                    $('#vehicle_type').select2();
+                   
+
+                    // $('#vehicle_no').select2();
+                    // $('#driver_id').select2();
+                    // $('#vehicle_type').select2();
+                    jQuery(function () {
+                        $('.my-select2').each(function () {
+                            $(this).select2({
+                                theme: "bootstrap-5",
+                                dropdownParent: $(this).parent(), // fix select2 search input focus bug
+                            })
+                        })
+                        // fix select2 bootstrap modal scroll bug
+                        $(document).on('select2:close', '.my-select2', function (e) {
+                            var evt = "scroll.select2"
+                            $(e.target).parents().off(evt)
+                            $(window).off(evt)
+                        })
+                    })
+                    
 
                     $("#mainLoader").hide();
                     $(".loader").hide();
@@ -410,7 +430,6 @@
                         $('#view_invoices').dataTable().fnDestroy();
                     },
                 success: function(data) {
-
                     var i = 1;
                     // console.log(data.fetch[0].consignment_id );
                     $('#cn_no').val(data.fetch[0].consignment_id)

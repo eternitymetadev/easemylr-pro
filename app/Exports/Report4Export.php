@@ -128,11 +128,17 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
 
                 if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
+                        // $order = array();
                         $invoices = array();
+                        $inv_date = array();
                         foreach($consignment->ConsignmentItems as $orders){ 
+                            // $order[] = $orders->order_id;
                             $invoices[] = $orders->invoice_no;
+                            $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
                         }
+                        // $order_item['orders'] = implode('/', $order);
                         $order_item['invoices'] = implode('/', $invoices);
+                        $invoice['date'] = implode(',', $inv_date);
 
                         if(!empty($orders->order_id)){
                             $order_id = $orders->order_id;
@@ -149,8 +155,10 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
 
                 if(empty($consignment->invoice_no)){
                     $invno =  $order_item['invoices'] ?? '-';
+                    $invdate = $invoice['date']  ?? '-';
                  }else{
                   $invno =  $consignment->invoice_no ?? '-';
+                  $invdate = $consignment->invoice_date  ?? '-';
                  }
   
                 if($consignment->status == 1){
@@ -187,10 +195,12 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                 }
 
                 if($consignment->lr_mode == 1){
-                    $deliverymode = 'Shadow'; 
-                }else{
+                    $deliverymode = 'Shadow';
+                  }elseif($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
+                  }else{
                    $deliverymode = 'Manual';
-                }
+                  }
 
                 //pod img status
                 $awsUrl = env('AWS_S3_URL');
@@ -261,7 +271,7 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'drs_no'              => $drs,
                     'drs_date'            => $drs_date,
-                    // 'order_id'            => $order_id,
+                    'order_id'            => $order_id,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     // 'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
@@ -272,21 +282,21 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                     // 'consignee_city'      => @$consignment->ConsigneeDetail->city,
                     // 'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
                     // 'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
-                    // 'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
+                    'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
                     // 'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
                     // 'Ship_to_city'        => @$consignment->ShiptoDetail->city,
                     // 'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
                     // 'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
                     // 'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
                     'invoice_no'          => $invno,
-                    // 'invoice_date'        => $invdate,
+                    'invoice_date'        => $invdate,
                     // 'invoice_amt'         => $invamt,
                     // 'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
                     // 'vehicle_type'        => @$consignment->vehicletype->name,
                     // 'transporter_name'    => @$consignment->transporter_name,
-                    // 'total_quantity'      => $consignment->total_quantity,
-                    // 'total_weight'        => $consignment->total_weight,
-                    // 'total_gross_weight'  => $consignment->total_gross_weight,
+                    'total_quantity'      => $consignment->total_quantity,
+                    'total_weight'        => $consignment->total_weight,
+                    'total_gross_weight'  => $consignment->total_gross_weight,
                     // 'driver_name'         => @$consignment->DriverDetail->name,
                     // 'driver_phone'        => @$consignment->DriverDetail->phone,
                     // 'driver_fleet'        => @$consignment->DriverDetail->fleet_id,
@@ -295,8 +305,8 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'tat'                 => $tatday,
-                    'delivery_mode'       => $deliverymode,
-                    'pod'                 => $pod_img,
+                    'delivery_mode'       => @$deliverymode,
+                    'pod'                 => @$pod_img,
                     'payment_type'        => @$consignment->payment_type,
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
@@ -316,7 +326,7 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
             'LR Date',
             'DRS No',
             'DRS Date',
-            // 'Order No',
+            'Order No',
             'Base Client',
             'Regional Client',
             // 'Consignor',
@@ -327,21 +337,21 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
             // 'Consignee city',
             // 'Consignee Pin Code',
             // 'Consignee District', 
-            // 'Consignee State',
+            'Consignee State',
             // 'ShipTo Name',
             // 'ShipTo City', 
             // 'ShipTo pin',            
             // 'ShipTo District',            
             // 'ShipTo State',           
             'Invoice No',
-            // 'Invoice Date',
+            'Invoice Date',
             // 'Invoice Amount',
             // 'Vehicle No',
             // 'Vehicle Type',
             // 'Transporter Name',
-            // 'Boxes',
-            // 'Net Weight',
-            // 'Gross Weight',
+            'Boxes',
+            'Net Weight',
+            'Gross Weight',
             // 'Driver Name',
             // 'Driver Phone',
             // 'Driver Fleet',

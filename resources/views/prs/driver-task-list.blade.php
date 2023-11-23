@@ -124,8 +124,8 @@
                                         .invoice_date +
                                         '></td>';
                                     rows +=
-                                        '<td><input type="text" class="form-control form-small qnt" name="data[' +
-                                        i + '][quantity]" type="number" value=' + value.quantity +
+                                        '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                                        i + '][quantity]" value=' + value.quantity +
                                         '></td>';
                                     // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value='+value.weight+'></td>';
                                     // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value='+value.gross_weight+'></td>';
@@ -153,8 +153,8 @@
                                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                                     i + '][invoice_date]" value=""></td>';
                                 rows +=
-                                    '<td><input type="text" class="form-control form-small qnt" name="data[' +
-                                    i + '][quantity]" type="number" value=""></td>';
+                                    '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                                    i + '][quantity]" value=""></td>';
                                 // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
                                 // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                                 rows +=
@@ -179,8 +179,8 @@
                             '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                             i + '][invoice_date]" value=""></td>';
                         rows +=
-                            '<td><input type="text" class="form-control form-small qnt" name="data[' +
-                            i + '][quantity]" type="number" value=""></td>';
+                            '<td><input type="number" class="form-control form-small qnt" name="data[' +
+                            i + '][quantity]" value=""></td>';
                         // rows += '<td><input type="text" class="form-control form-small net" name="data['+i+'][net_weight]" value=""></td>';
                         // rows += '<td><input type="text" class="form-control form-small gross" name="data['+i+'][gross_weight]" value=""></td>';
                         rows +=

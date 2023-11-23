@@ -502,7 +502,7 @@
                 },
                 success: function(data) {
                     if (data.success == true) {
-                        swal('success', 'Hrs Added Successfully', 'success');
+                        swal('success', 'LR Added Successfully', 'success');
                         window.location.href = "hrs-sheet";
                     } else {
                         swal('error', 'something wrong', 'error');
@@ -527,7 +527,7 @@
                 success: function(data) {
                     var re = jQuery.parseJSON(data)
                     if (re.success == true) {
-                        swal('success', 'HRS Removed Successfully', 'success');
+                        swal('success', 'LR Removed Successfully', 'success');
                         location.reload();
                     } else {
                         swal('error', 'something wrong', 'error');

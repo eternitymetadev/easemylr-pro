@@ -146,7 +146,7 @@
                                     value="" />
                                 <div class="form-row mb-0">
                                     <div class="form-group col-md-6">
-                                        <label for="location_name">Vehicle No.</label>
+                                        <label for="location_name">Vehicle Nos.</label>
 
                                         <select class="form-control my-select2" id="vehicle_no" name="vehicle_id"
                                             tabindex="-1">
