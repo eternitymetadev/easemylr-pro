@@ -603,9 +603,11 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report3'}}"> Mis Report 3 </a>
             </li>
+            <?php if($authuser->role_id == 3){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'mix-report'}}">Mix Report </a>
             </li>
+            <?php } ?>
         </ul>
     </li>
     <?php } ?>

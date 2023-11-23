@@ -3,16 +3,18 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                 <th>Transaction Date</th>
-                 <th>Transaction Id</th>
-                <th>Drs No</th>
-                <th>No of Drs</th>
+                <th>Type</th>
+                <th>Transaction Date</th>
+                <th>Transaction Id</th>
+                <th>Drs / Prs / Hrs</th>
+                <th>No of Drs/Prs/Hrs</th>
                 <th>No of Lrs</th>
                 <th>Box Count</th>
                 <th>Gross Wt</th>
                 <th>Net Weight</th>
                 <th>Consignee Distt</th>
                 <th>Vehicle Type</th>
+                <th>Vehicle No</th>
 
             </tr>
         </thead>
@@ -21,6 +23,7 @@
             @foreach($drswiseReports as $drswiseReport)
 
             <tr>
+            <td>{{@$drswiseReport->type}}</td>
                 <td>{{Helper::ShowDayMonthYear($drswiseReport->transaction_date)}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
                 <td>{{$drswiseReport->drs_no}}</td> 
@@ -31,6 +34,7 @@
                 <td>{{$drswiseReport->net_wt}}</td>
                 <td>{{$drswiseReport->consignee_distt}}</td>
                 <td>{{$drswiseReport->vehicle_type}}</td>
+                <td>{{$drswiseReport->vehicle_no}}</td>
             </tr>
             @endforeach
         </tbody>

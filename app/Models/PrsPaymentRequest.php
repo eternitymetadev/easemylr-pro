@@ -37,7 +37,7 @@ class PrsPaymentRequest extends Model
         return $this->hasOne('App\Models\PickupRunSheet','pickup_id','prs_no');
     }
 
-    public function Branch(){
+    public function Branch(){ 
         return $this->belongsTo('App\Models\Location','branch_id');
     }
     public function User(){

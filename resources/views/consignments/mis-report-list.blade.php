@@ -156,7 +156,12 @@
             var geturl = jQuery(this).attr('data-action');
             var startdate = jQuery('#startdate').val();
             var enddate = jQuery('#enddate').val();
-            var branch_id = jQuery('#branch_filter').val();
+            var getbranch_id = jQuery('#branch_filter').val();
+            if(typeof(getbranch_id) === "undefined"){
+                var branch_id = '';
+            }else{
+                var branch_id = getbranch_id;
+            }
 
             var search = jQuery('#search').val();
 

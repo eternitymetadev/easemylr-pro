@@ -10,6 +10,7 @@ class MixReport extends Model
     use HasFactory;
 
     protected $fillable = [
+        'type',
         'transaction_date',
         'transaction_id',
         'drs_no',
@@ -20,6 +21,7 @@ class MixReport extends Model
         'net_wt',
         'consignee_distt',
         'vehicle_type',
+        'vehicle_no',
         'branch_id'
     ];
 }
