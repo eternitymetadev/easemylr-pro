@@ -43,4 +43,8 @@ class HrsPaymentRequest extends Model
     {
         return $this->hasOne('App\Models\Vendor','id','vendor_id');
     }
+
+    public function HrsDetails(){
+        return $this->hasMany('App\Models\Hrs','hrs_no','hrs_no');
+    }
 }

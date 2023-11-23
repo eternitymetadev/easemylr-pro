@@ -14,6 +14,8 @@ use App\Models\State;
 use App\Models\TransactionSheet;
 use App\Models\Vehicle;
 use App\Models\PaymentRequest;
+use App\Models\HrsPaymentRequest;
+use App\Models\PrsPaymentRequest;
 use DB;
 use Image;
 use Storage;
@@ -537,6 +539,152 @@ class GlobalFunctions
         foreach($trans_sheet as $consignee){
             $congDist = @$consignee->ConsignmentDetail->ConsigneeDetail->district;
             $vehicleType = @$consignee->ConsignmentDetail->vehicletype->name;
+        
+            if ($congDist !== null && $congDist !== '') {
+                $cong_distt[] = $congDist;
+            }
+        
+            if ($vehicleType !== null && $vehicleType !== '') {
+                $vehicle_type[] = $vehicleType;
+            }      
+        }
+
+        $district_consignee = implode(',',$cong_distt);
+        $vehicle_type  = array_unique($vehicle_type);
+        $vehicle_type_un  = implode(',',$vehicle_type);
+        
+       
+        return (object)[
+            'district_consignee' => $district_consignee,
+            'vehicle_type' => $vehicle_type_un,
+            
+        ];
+    }
+
+    public static function LrCountMixHrs($transaction_id)
+    {
+        $get_hrs_nos = HrsPaymentRequest::with('HrsDetails')->where('transaction_id', $transaction_id)->get();
+        $hrs_no = array();
+        foreach($get_hrs_nos as $get_hrs_no){
+            $hrs_no[] = $get_hrs_no->hrs_no;
+        }
+        $trans_sheet = Hrs::whereIn('hrs_no', $hrs_no)->where('status', '!=', '0')->count();
+        return $trans_sheet;
+    }
+
+    public static function totalQuantityMixReportHrs($transaction_id)
+    {
+        $get_hrs_nos = HrsPaymentRequest::with('HrsDetails')->where('transaction_id', $transaction_id)->get();
+        $hrs_no = array();
+        foreach($get_hrs_nos as $get_hrs_no){
+            $hrs_no[] = $get_hrs_no->hrs_no;
+        }
+
+        $get_lrs = Hrs::select('consignment_id')->whereIn('hrs_no', $hrs_no)->get();
+
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_quantity');
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_gross_weight');
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status', '!=', 0)->whereIn('id', $get_lrs)->sum('total_weight');
+
+        return (object)[
+            'total_quantity' => $total_quantity,
+            'total_gross' => $total_gross,
+            'total_weight' => $total_weight,
+        ];
+    }
+
+    public static function mixReportConsigneeHrs($transaction_id)
+    {
+        $get_hrs_nos = HrsPaymentRequest::with('HrsDetails')->where('transaction_id', $transaction_id)->get();
+        $hrs_no = array();
+        foreach($get_hrs_nos as $get_hrs_no){
+            $hrs_no[] = $get_hrs_no->hrs_no;
+        }
+        $trans_sheet = Hrs::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype')->whereIn('hrs_no', $hrs_no)->where('status', '!=', '0')->get();
+        
+        $cong_distt = array();
+        $vehicle_type = array();
+        foreach($trans_sheet as $consignee){
+            $congDist = @$consignee->ConsignmentDetail->ConsigneeDetail->district;
+            $vehicleType = @$consignee->ConsignmentDetail->vehicletype->name;
+        
+            if ($congDist !== null && $congDist !== '') {
+                $cong_distt[] = $congDist;
+            }
+        
+            if ($vehicleType !== null && $vehicleType !== '') {
+                $vehicle_type[] = $vehicleType;
+            }      
+        }
+
+        $district_consignee = implode(',',$cong_distt);
+        $vehicle_type  = array_unique($vehicle_type);
+        $vehicle_type_un  = implode(',',$vehicle_type);
+        
+       
+        return (object)[
+            'district_consignee' => $district_consignee,
+            'vehicle_type' => $vehicle_type_un,
+            
+        ];
+    }
+
+    public static function LrCountMixPrs($transaction_id)
+    {
+        $get_hrs_nos = PrsPaymentRequest::with('PickupRunSheet.Consignments')->where('transaction_id', $transaction_id)->get();
+        $lr_count = 0;
+        foreach($get_hrs_nos as $get_hrs_no){
+            $lr_count += count($get_hrs_no->PickupRunSheet->Consignments);
+        }
+       
+        return $lr_count;
+    }
+
+    public static function totalQuantityMixReportPrs($transaction_id)
+    {
+        $get_hrs_nos = PrsPaymentRequest::with('PickupRunSheet.Consignments')->where('transaction_id', $transaction_id)->get();
+        $lrs_no = array();
+        foreach($get_hrs_nos as $get_hrs_no){
+            foreach($get_hrs_no->PickupRunSheet->Consignments as $get_lr){
+                $lrs_no[] = $get_lr->id;
+            }
+        }
+
+
+        // $get_lrs = Hrs::select('consignment_id')->whereIn('hrs_no', $hrs_no)->get();
+
+        $total_quantity = ConsignmentNote::select('total_quantity')->where('status', '!=', 0)->whereIn('id', $lrs_no)->sum('total_quantity');
+
+        $total_gross = ConsignmentNote::select('total_gross_weight')->where('status', '!=', 0)->whereIn('id', $lrs_no)->sum('total_gross_weight');
+
+        $total_weight = ConsignmentNote::select('total_weight')->where('status', '!=', 0)->whereIn('id', $lrs_no)->sum('total_weight');
+
+        return (object)[
+            'total_quantity' => $total_quantity,
+            'total_gross' => $total_gross,
+            'total_weight' => $total_weight,
+        ];
+    }
+
+    public static function mixReportConsigneePrs($transaction_id)
+    {
+        $get_hrs_nos = PrsPaymentRequest::with('PickupRunSheet.Consignments')->where('transaction_id', $transaction_id)->get();
+        $lrs_no = array();
+        foreach($get_hrs_nos as $get_hrs_no){
+            foreach($get_hrs_no->PickupRunSheet->Consignments as $get_lr){
+                $lrs_no[] = $get_lr->id;
+            }
+        }
+
+        $trans_sheet = ConsignmentNote::with('ConsigneeDetail','vehicletype')->whereIn('id', $lrs_no)->where('status', '!=', '0')->get();
+        
+        $cong_distt = array();
+        $vehicle_type = array();
+        foreach($trans_sheet as $consignee){
+            $congDist = @$consignee->ConsigneeDetail->district;
+            $vehicleType = @$consignee->vehicletype->name;
         
             if ($congDist !== null && $congDist !== '') {
                 $cong_distt[] = $congDist;

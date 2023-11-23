@@ -3,10 +3,11 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                 <th>Transaction Date</th>
-                 <th>Transaction Id</th>
-                <th>Drs No</th>
-                <th>No of Drs</th>
+                <th>Type</th>
+                <th>Transaction Date</th>
+                <th>Transaction Id</th>
+                <th>Drs / Prs / Hrs</th>
+                <th>No of Drs/Prs/Hrs</th>
                 <th>No of Lrs</th>
                 <th>Box Count</th>
                 <th>Gross Wt</th>
@@ -21,6 +22,7 @@
             @foreach($drswiseReports as $drswiseReport)
 
             <tr>
+            <td>{{@$drswiseReport->type}}</td>
                 <td>{{Helper::ShowDayMonthYear($drswiseReport->transaction_date)}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
                 <td>{{$drswiseReport->drs_no}}</td> 

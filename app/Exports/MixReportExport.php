@@ -19,10 +19,10 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
     protected $enddate;
     // protected $search;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$type_name) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        // $this->search = $search;
+         $this->type_name = $type_name;
     }
     /**  
      * @return \Illuminate\Support\Collection
@@ -35,6 +35,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $type_name = $this->type_name;
 
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -46,6 +47,10 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $query->whereIn('branch_id', $cc);
             } else {
                 $query = $query;
+            }
+
+            if ($type_name) {
+                $query = $query->where('type',$type_name);
             }
 
         
@@ -61,9 +66,10 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
 
 
                 $arr[] = [
+                    'type' => @$drswiseReport->type,
                     'date' => Helper::ShowDayMonthYear($drswiseReport->transaction_date),
                     'transaction_id' => @$drswiseReport->transaction_id,
-                    'drs_no' => 'DRS-'.$drswiseReport->drs_no,
+                    'drs_no' => @$drswiseReport->drs_no,
                     'drs_count' => @$drswiseReport->no_of_drs,
                     'lr_count' => @$drswiseReport->no_of_lrs,
                     'box_count' => @$drswiseReport->box_count,
@@ -81,10 +87,11 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
     public function headings(): array
     {
         return [
+            'Type',
             'Transaction Date',
             'Transaction Id',
-            'Drs No',
-            'No Of Drs',
+            'Drs/PRS/HRS',
+            'No Of Drs/Prs/Hrs',
             'No Of LRs',
             'Box Count',
             'Gross Wt',

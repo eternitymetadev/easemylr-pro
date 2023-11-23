@@ -16,6 +16,9 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\PaymentRequest;
 use App\Models\MixReport;
+use App\Models\HrsPaymentRequest;
+use App\Models\PrsPaymentRequest;
+use App\Models\Hrs;
 use Auth;
 use Config;
 use DB;
@@ -586,20 +589,7 @@ class ReportController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cnrquery) use ($search, $searchT) {
-                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cneequery) use ($search, $searchT) {
-                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        });
+                    $query->where('transaction_id', 'like', '%' . $search . '%');
 
                 });
             }
@@ -613,6 +603,10 @@ class ReportController extends Controller
                 $peritem = $peritem;
             } else {
                 $peritem = Config::get('variable.PER_PAGE');
+            }
+
+            if ($request->type_name) {
+                $query = $query->where('type',$request->type_name);
             }
 
             $startdate = $request->startdate;
@@ -650,8 +644,7 @@ class ReportController extends Controller
 
     public function exportmixReport(Request $request)
     {
-
-        return Excel::download(new MixReportExport($request->startdate, $request->enddate), 'MixReport.xlsx');
+        return Excel::download(new MixReportExport($request->startdate, $request->enddate,$request->type_name), 'MixReport.xlsx');
     }
 
     public function storeMixReport(Request $request)
@@ -661,7 +654,7 @@ class ReportController extends Controller
         ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
         ->groupBy('transaction_id');
 
-        $last_id = MixReport::latest('transaction_id')->first();
+        $last_id = MixReport::latest('transaction_id')->where('type', 'DRS')->first();
         
         if(empty($last_id)){
         $drswiseReports = $query->take(10)->get();
@@ -680,10 +673,107 @@ class ReportController extends Controller
             $result = Helper::totalQuantityMixReport($drswiseReport->transaction_id);
             $consignee = Helper::mixReportConsignee($drswiseReport->transaction_id);
 
+            $saveReport['type'] = 'DRS';
             $saveReport['transaction_date'] = $drswiseReport->created_at;
             $saveReport['transaction_id'] = $drswiseReport->transaction_id;
             $saveReport['drs_no'] = 'DRS-'.$drswiseReport->drs_no_list;
             $saveReport['no_of_drs'] = $drswiseReport->drs_no_count;
+            $saveReport['no_of_lrs'] = $lr_count;
+            $saveReport['box_count'] = $result->total_quantity;
+            $saveReport['gross_wt'] = $result->total_gross;
+            $saveReport['net_wt'] = $result->total_weight;
+            $saveReport['consignee_distt'] = $consignee->district_consignee;
+            $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['branch_id'] = $drswiseReport->branch_id;
+
+            $savevendor = MixReport::create($saveReport);
+
+            }
+
+        }
+        return 1 ;
+
+    }
+
+    public function storeMixReportHrs(Request $request)
+    {
+
+        $query = HrsPaymentRequest::
+        select('*', \DB::raw('COUNT(DISTINCT hrs_no) as hrs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT hrs_no SEPARATOR ",HRS-") as hrs_no_list'))
+        ->groupBy('transaction_id');
+
+        $last_id = MixReport::latest('transaction_id')->where('type', 'HRS')->first();
+        
+        if(empty($last_id)){
+        $drswiseReports = $query->take(10)->get();
+        }else{
+           
+         $drswiseReports = $query->where('transaction_id', '>', $last_id->transaction_id)->take(100)->get();
+        }
+
+        foreach($drswiseReports as $drswiseReport){
+
+            $check_duplicate = MixReport::where('transaction_id', $drswiseReport->transaction_id)->first();
+
+            if(empty($check_duplicate)){
+                
+            $lr_count = Helper::LrCountMixHrs($drswiseReport->transaction_id);
+            $result = Helper::totalQuantityMixReportHrs($drswiseReport->transaction_id);
+            $consignee = Helper::mixReportConsigneeHrs($drswiseReport->transaction_id);
+
+            $saveReport['type'] = 'HRS';
+            $saveReport['transaction_date'] = $drswiseReport->created_at;
+            $saveReport['transaction_id'] = $drswiseReport->transaction_id;
+            $saveReport['drs_no'] = 'HRS-'.$drswiseReport->hrs_no_list;
+            $saveReport['no_of_drs'] = $drswiseReport->hrs_no_count;
+            $saveReport['no_of_lrs'] = $lr_count;
+            $saveReport['box_count'] = $result->total_quantity;
+            $saveReport['gross_wt'] = $result->total_gross;
+            $saveReport['net_wt'] = $result->total_weight;
+            $saveReport['consignee_distt'] = $consignee->district_consignee;
+            $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['branch_id'] = $drswiseReport->branch_id;
+
+            $savevendor = MixReport::create($saveReport);
+
+            }
+
+        }
+        return 1 ;
+
+    }
+
+    public function storeMixReportPrs(Request $request)
+    {
+
+        $query = PrsPaymentRequest::
+        select('*', \DB::raw('COUNT(DISTINCT prs_no) as prs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT prs_no SEPARATOR ",PRS-") as prs_no_list'))
+        ->groupBy('transaction_id');
+
+        $last_id = MixReport::latest('transaction_id')->where('type', 'PRS')->first();
+        
+        if(empty($last_id)){
+        $drswiseReports = $query->take(10)->get();
+        }else{
+           
+         $drswiseReports = $query->where('transaction_id', '>', $last_id->transaction_id)->take(100)->get();
+        }
+
+        foreach($drswiseReports as $drswiseReport){
+
+            $check_duplicate = MixReport::where('transaction_id', $drswiseReport->transaction_id)->first();
+
+            if(empty($check_duplicate)){
+                
+            $lr_count = Helper::LrCountMixPrs($drswiseReport->transaction_id);
+            $result = Helper::totalQuantityMixReportPrs($drswiseReport->transaction_id);
+            $consignee = Helper::mixReportConsigneePrs($drswiseReport->transaction_id);
+
+            $saveReport['type'] = 'PRS';
+            $saveReport['transaction_date'] = $drswiseReport->created_at;
+            $saveReport['transaction_id'] = $drswiseReport->transaction_id;
+            $saveReport['drs_no'] = 'PRS-'.$drswiseReport->prs_no_list;
+            $saveReport['no_of_drs'] = $drswiseReport->prs_no_count;
             $saveReport['no_of_lrs'] = $lr_count;
             $saveReport['box_count'] = $result->total_quantity;
             $saveReport['gross_wt'] = $result->total_gross;

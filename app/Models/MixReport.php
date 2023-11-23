@@ -10,6 +10,7 @@ class MixReport extends Model
     use HasFactory;
 
     protected $fillable = [
+        'type',
         'transaction_date',
         'transaction_id',
         'drs_no',
