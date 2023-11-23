@@ -293,12 +293,12 @@
 
                     showLibrary();
 
-                    $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
-                    $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
-                    $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
+                    // $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
+                    // $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
+                    // $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
                     $("#Transporter").val(re.fetch_lrs.transporter_name);
                     $("#draft_purchase").val(re.fetch_lrs.purchase_price);
-                // alert(re.fetchVehicle);
+                    
                     // Create a new option element
                     if (re.fetchVehicle) {
                         var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
@@ -387,23 +387,23 @@
                     });
                    
 
-                    // $('#vehicle_no').select2();
-                    // $('#driver_id').select2();
-                    // $('#vehicle_type').select2();
-                    jQuery(function () {
-                        $('.my-select2').each(function () {
-                            $(this).select2({
-                                theme: "bootstrap-5",
-                                dropdownParent: $(this).parent(), // fix select2 search input focus bug
-                            })
-                        })
-                        // fix select2 bootstrap modal scroll bug
-                        $(document).on('select2:close', '.my-select2', function (e) {
-                            var evt = "scroll.select2"
-                            $(e.target).parents().off(evt)
-                            $(window).off(evt)
-                        })
-                    })
+                    $('#vehicle_no').select2();
+                    $('#driver_id').select2();
+                    $('#vehicle_type').select2();
+                    // jQuery(function () {
+                    //     $('.my-select2').each(function () {
+                    //         $(this).select2({
+                    //             theme: "bootstrap-5",
+                    //             dropdownParent: $(this).parent(), // fix select2 search input focus bug
+                    //         })
+                    //     })
+                    //     // fix select2 bootstrap modal scroll bug
+                    //     $(document).on('select2:close', '.my-select2', function (e) {
+                    //         var evt = "scroll.select2"
+                    //         $(e.target).parents().off(evt)
+                    //         $(window).off(evt)
+                    //     })
+                    // })
                     
 
                     $("#mainLoader").hide();
