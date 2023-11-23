@@ -77,6 +77,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
                     'total_weight' => @$drswiseReport->net_wt,
                     'consignee_distt' => @$drswiseReport->consignee_distt,
                     'vehicle_type' => @$drswiseReport->vehicle_type,
+                    'vehicle_no' => @$drswiseReport->vehicle_no,
                     
                 ];
             }
@@ -98,6 +99,7 @@ class MixReportExport implements FromCollection, WithHeadings, ShouldQueue
             'Net Wt',
             'Consignee Distt',
             'Vehicle Type',
+            'Vehicle No',
 
         ];
     }

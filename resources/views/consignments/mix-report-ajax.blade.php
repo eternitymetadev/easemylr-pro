@@ -14,6 +14,7 @@
                 <th>Net Weight</th>
                 <th>Consignee Distt</th>
                 <th>Vehicle Type</th>
+                <th>Vehicle No</th>
 
             </tr>
         </thead>
@@ -33,6 +34,7 @@
                 <td>{{$drswiseReport->net_wt}}</td>
                 <td>{{$drswiseReport->consignee_distt}}</td>
                 <td>{{$drswiseReport->vehicle_type}}</td>
+                <td>{{$drswiseReport->vehicle_no}}</td>
             </tr>
             @endforeach
         </tbody>

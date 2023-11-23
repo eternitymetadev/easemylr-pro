@@ -650,8 +650,8 @@ class ReportController extends Controller
     public function storeMixReport(Request $request)
     {
 
-        $query = PaymentRequest::where('payment_status', '!=', 0)
-        ->select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
+        $query = PaymentRequest::
+        select('*', \DB::raw('COUNT(DISTINCT drs_no) as drs_no_count'), \DB::raw('GROUP_CONCAT(DISTINCT drs_no SEPARATOR ",DRS-") as drs_no_list'))
         ->groupBy('transaction_id');
 
         $last_id = MixReport::latest('transaction_id')->where('type', 'DRS')->first();
@@ -684,6 +684,7 @@ class ReportController extends Controller
             $saveReport['net_wt'] = $result->total_weight;
             $saveReport['consignee_distt'] = $consignee->district_consignee;
             $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['vehicle_no'] = $consignee->vehicle_no;
             $saveReport['branch_id'] = $drswiseReport->branch_id;
 
             $savevendor = MixReport::create($saveReport);
@@ -732,6 +733,7 @@ class ReportController extends Controller
             $saveReport['net_wt'] = $result->total_weight;
             $saveReport['consignee_distt'] = $consignee->district_consignee;
             $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['vehicle_no'] = $consignee->vehicle_no;
             $saveReport['branch_id'] = $drswiseReport->branch_id;
 
             $savevendor = MixReport::create($saveReport);
@@ -780,6 +782,7 @@ class ReportController extends Controller
             $saveReport['net_wt'] = $result->total_weight;
             $saveReport['consignee_distt'] = $consignee->district_consignee;
             $saveReport['vehicle_type'] = $consignee->vehicle_type;
+            $saveReport['vehicle_no'] = $consignee->vehicle_no;
             $saveReport['branch_id'] = $drswiseReport->branch_id;
 
             $savevendor = MixReport::create($saveReport);

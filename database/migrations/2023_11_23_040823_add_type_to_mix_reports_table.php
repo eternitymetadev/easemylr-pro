@@ -15,6 +15,7 @@ class AddTypeToMixReportsTable extends Migration
     {
         Schema::table('mix_reports', function (Blueprint $table) {
             $table->string('type')->after('id')->nullable();
+            $table->string('vehicle_no')->after('vehicle_type')->nullable();
         });
     }
 

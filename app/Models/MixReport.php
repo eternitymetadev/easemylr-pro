@@ -21,6 +21,7 @@ class MixReport extends Model
         'net_wt',
         'consignee_distt',
         'vehicle_type',
+        'vehicle_no',
         'branch_id'
     ];
 }

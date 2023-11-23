@@ -532,13 +532,15 @@ class GlobalFunctions
         foreach($get_drs_nos as $get_drs_no){
             $drs_no[] = $get_drs_no->drs_no;
         }
-        $trans_sheet = TransactionSheet::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype')->whereIn('drs_no', $drs_no)->where('status', '!=', '0')->get();
+        $trans_sheet = TransactionSheet::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype','ConsignmentDetail.VehicleDetail')->whereIn('drs_no', $drs_no)->where('status', '!=', '0')->get();
         
         $cong_distt = array();
         $vehicle_type = array();
+        $vehicle_no = array();
         foreach($trans_sheet as $consignee){
             $congDist = @$consignee->ConsignmentDetail->ConsigneeDetail->district;
             $vehicleType = @$consignee->ConsignmentDetail->vehicletype->name;
+            $vehicle = @$consignee->ConsignmentDetail->VehicleDetail->regn_no;
         
             if ($congDist !== null && $congDist !== '') {
                 $cong_distt[] = $congDist;
@@ -546,17 +548,23 @@ class GlobalFunctions
         
             if ($vehicleType !== null && $vehicleType !== '') {
                 $vehicle_type[] = $vehicleType;
-            }      
+            } 
+            if ($vehicle !== null && $vehicle !== '') {
+                $vehicle_no[] = $vehicle;
+            }     
         }
 
         $district_consignee = implode(',',$cong_distt);
         $vehicle_type  = array_unique($vehicle_type);
         $vehicle_type_un  = implode(',',$vehicle_type);
-        
+
+        $vehicle_no_lr  = array_unique($vehicle_no);
+        $vehicle_no_un  = implode(',',$vehicle_no_lr);
        
         return (object)[
             'district_consignee' => $district_consignee,
             'vehicle_type' => $vehicle_type_un,
+            'vehicle_no' => $vehicle_no_un,
             
         ];
     }
@@ -602,13 +610,15 @@ class GlobalFunctions
         foreach($get_hrs_nos as $get_hrs_no){
             $hrs_no[] = $get_hrs_no->hrs_no;
         }
-        $trans_sheet = Hrs::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype')->whereIn('hrs_no', $hrs_no)->where('status', '!=', '0')->get();
+        $trans_sheet = Hrs::with('ConsignmentDetail.ConsigneeDetail','ConsignmentDetail.vehicletype','vehicletype','VehicleDetail')->whereIn('hrs_no', $hrs_no)->where('status', '!=', '0')->get();
         
         $cong_distt = array();
         $vehicle_type = array();
+        $vehicle_arr = array();
         foreach($trans_sheet as $consignee){
             $congDist = @$consignee->ConsignmentDetail->ConsigneeDetail->district;
-            $vehicleType = @$consignee->ConsignmentDetail->vehicletype->name;
+            $vehicleType = @$consignee->vehicletype->name;
+            $vehicle = @$consignee->VehicleDetail->regn_no;
         
             if ($congDist !== null && $congDist !== '') {
                 $cong_distt[] = $congDist;
@@ -616,17 +626,24 @@ class GlobalFunctions
         
             if ($vehicleType !== null && $vehicleType !== '') {
                 $vehicle_type[] = $vehicleType;
-            }      
+            }   
+            if ($vehicle !== null && $vehicle !== '') {
+                $vehicle_arr[] = $vehicle;
+            }         
         }
 
         $district_consignee = implode(',',$cong_distt);
         $vehicle_type  = array_unique($vehicle_type);
         $vehicle_type_un  = implode(',',$vehicle_type);
+
+        $vehicle_no  = array_unique($vehicle_arr);
+        $vehicle_no_un  = implode(',',$vehicle_no);
         
        
         return (object)[
             'district_consignee' => $district_consignee,
             'vehicle_type' => $vehicle_type_un,
+            'vehicle_no' => $vehicle_no_un,
             
         ];
     }
@@ -670,39 +687,45 @@ class GlobalFunctions
 
     public static function mixReportConsigneePrs($transaction_id)
     {
-        $get_hrs_nos = PrsPaymentRequest::with('PickupRunSheet.Consignments')->where('transaction_id', $transaction_id)->get();
+        $get_hrs_nos = PrsPaymentRequest::with('PickupRunSheet.Consignments','PickupRunSheet.VehicleDetail','PickupRunSheet.VehicleType')->where('transaction_id', $transaction_id)->get();
+        
         $lrs_no = array();
-        foreach($get_hrs_nos as $get_hrs_no){
+        $vehicle_no = array();
+        $vehicleType = array();
+        foreach($get_hrs_nos as $get_hrs_no){ 
+            $vehicle_no[] = @$get_hrs_no->PickupRunSheet->VehicleDetail->regn_no;
+            $vehicleType[] = @$get_hrs_no->PickupRunSheet->VehicleType->name;
+
             foreach($get_hrs_no->PickupRunSheet->Consignments as $get_lr){
                 $lrs_no[] = $get_lr->id;
             }
+
         }
+        
 
         $trans_sheet = ConsignmentNote::with('ConsigneeDetail','vehicletype')->whereIn('id', $lrs_no)->where('status', '!=', '0')->get();
         
         $cong_distt = array();
-        $vehicle_type = array();
         foreach($trans_sheet as $consignee){
             $congDist = @$consignee->ConsigneeDetail->district;
-            $vehicleType = @$consignee->vehicletype->name;
         
             if ($congDist !== null && $congDist !== '') {
                 $cong_distt[] = $congDist;
-            }
-        
-            if ($vehicleType !== null && $vehicleType !== '') {
-                $vehicle_type[] = $vehicleType;
-            }      
+            } 
         }
 
         $district_consignee = implode(',',$cong_distt);
-        $vehicle_type  = array_unique($vehicle_type);
+        $vehicle_type  = array_unique($vehicleType);
         $vehicle_type_un  = implode(',',$vehicle_type);
+
+        $vehicle  = array_unique($vehicle_no);
+        $vehicle_no_un  = implode(',',$vehicle);
         
        
         return (object)[
             'district_consignee' => $district_consignee,
             'vehicle_type' => $vehicle_type_un,
+            'vehicle_no' => $vehicle_no_un,
             
         ];
     }
