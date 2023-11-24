@@ -556,7 +556,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
     Route::resource('orders', OrderController::class);
     Route::post('orders/update-order', [OrderController::class, 'updateOrder']);
-    Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
+    // Route::get('order-book-ftl', [OrderController::class, 'orderBookFtl']);
     Route::get('order-book-ptl', [OrderController::class, 'orderBookptl']);
     Route::post('store-Ftl-order', [OrderController::class, 'storeFtlOrder']);
     Route::post('store-Ptl-order', [OrderController::class, 'storePtlOrder']);

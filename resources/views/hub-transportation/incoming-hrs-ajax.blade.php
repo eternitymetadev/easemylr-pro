@@ -22,11 +22,17 @@
                 <td>{{$date->format('Y-m-d')}}</td>
                 <td>{{$hrssheet->Branch->name ?? '-'}}</td>
                 <td>{{$hrssheet->ToBranch->name ?? '-'}}</td>
+                <?php $authuser = Auth::user();
+                if($authuser->role_id == 3){
+                    $disable = 'disable_n' ;
+                }else{
+                    $disable = '';
+                } ?>
                 <td> <button class="flex1 btn btn-warning view-lr" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">View
                     </button> ||
                     @if($hrssheet->receving_status == 1)
-                     <button class="flex1 btn btn-success receive_hrs" value="{{$hrssheet->hrs_no}}"
+                     <button class="flex1 btn btn-success receive_hrs {{$disable}}" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Incoming Hrs
                     </button>
                     @else

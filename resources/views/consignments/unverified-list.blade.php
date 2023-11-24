@@ -68,10 +68,13 @@ div.relative {
                     @csrf
                     <table id="unverified-table" class="table table-hover" style="width:100%">
                         <div class="btn-group relative">
+                            <?php $authuser = Auth::user();
+                                if($authuser->role_id != 3){ ?>
                             <button type="button" class="btn btn-warning disableDrs" id="create_edd"
                                 style="font-size: 11px;">
                                 Create DRS
                             </button>
+                            <?php } ?>
                             <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
 
                             Create DSR
@@ -99,8 +102,7 @@ div.relative {
                         <tbody>
                             <?php 
                             $i = 1;
-                                foreach ($consignments as $key => $consignment) {     
-                                    $authuser = Auth::user();
+                                foreach ($consignments as $key => $consignment) {
                                 ?>
                             <tr>
                                 <?php if($consignment->lr_type == 0){?>
