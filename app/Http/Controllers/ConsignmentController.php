@@ -2375,17 +2375,21 @@ class ConsignmentController extends Controller
         // get vehicles
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereNotNull('vehicle_no')
-        ->where('delivery_status', 'Assigned')
+        // ->where('delivery_status', 'Assigned')
+        ->where('delivery_status', '!=', 'successfull')
         ->where('status', 1)
         ->pluck('vehicle_no')
+        ->unique()
         ->toArray();
 
+        // echo "<pre>"; print_r($drsVehicleIds); die;
+
         // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique($drsVehicleIds);
+        // $mergedVehicleIds = array_unique($drsVehicleIds);
         
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('regn_no', $mergedVehicleIds)
+        ->whereNotIn('regn_no', $drsVehicleIds)
         ->select('id', 'regn_no')
         ->get();
         /////////////
@@ -2393,17 +2397,19 @@ class ConsignmentController extends Controller
         // get drivers
         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereNotNull('vehicle_no')
-        ->where('delivery_status', 'Assigned')
+        // ->where('delivery_status', 'Assigned')
+        ->where('delivery_status', '!=', 'successfull')
         ->where('status', 1)
         ->pluck('vehicle_no')
+        ->unique()
         ->toArray();
 
         // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique($drsDriverIds);
+        // $mergedDriverIds = array_unique($drsDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $mergedDriverIds)
+        ->whereNotIn('id', $drsDriverIds)
         ->select('id', 'name', 'phone')
         ->get();
 

@@ -284,7 +284,6 @@
                     $("#total").html(rowCount);
                     $(".draft-sheet").attr("data-drsid", drsId);
 
-
                     $("#transaction_id").val(consignmentID);
                     var rowCount = $("#save-DraftSheet tbody tr").length;
                     $("#total_boxes").append("No Of Boxes: " + totalBox);

@@ -476,6 +476,7 @@ span.select2.select2-container.mb-4 {
 @section('js')
 <script>
 $(document).ready(function() {
+    $("#driver_id").prop('disabled', true);
 
     jQuery(function() {
         $('.my-select2').each(function() {
@@ -493,6 +494,16 @@ $(document).ready(function() {
         })
     })
 
+});
+
+$("#vehicle_no").change(function(){
+    var vehicle_no = $(this).val();
+    if(vehicle_no){
+        $("#driver_id").prop('disabled', false); // Disables the element with ID 'driver_id'
+    }else{
+        $("#driver_id").val(null).trigger("change");
+        $("#driver_id").prop('disabled', true);
+    }
 });
 
 function toggleVehicleInfBlock() {
