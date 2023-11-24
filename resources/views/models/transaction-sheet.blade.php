@@ -129,7 +129,7 @@
 
 <!-- ===============================Delivery Run Sheet======================================================-->
 
-<div class="modal fade bd-example-modal-xl" id="opm" tabindex="-1" role="dialog"
+<div class="modal fade bd-example-modal-xl" id="opm" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <form id="updt_vehicle" method="post" class="modal-content" style="min-height: calc(100vh - 3.5rem)">

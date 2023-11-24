@@ -326,7 +326,8 @@
             $("#addlr").attr('data-drsId', drsId);
 
             $('#opm').modal('show');
-        
+            $('#opm').find('input, textarea, select').val('');
+            
             fetchLrDetails(drsId)
 
 

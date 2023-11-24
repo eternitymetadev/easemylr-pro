@@ -2375,12 +2375,12 @@ class ConsignmentController extends Controller
         // get vehicles
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereNotNull('vehicle_no')
-        // ->where('delivery_status', 'Assigned')
         ->where('delivery_status', '!=', 'successfull')
         ->where('status', 1)
         ->pluck('vehicle_no')
         ->unique()
         ->toArray();
+        // ->where('delivery_status', 'Assigned')
 
         // echo "<pre>"; print_r($drsVehicleIds); die;
 
@@ -2388,19 +2388,18 @@ class ConsignmentController extends Controller
         // $mergedVehicleIds = array_unique($drsVehicleIds);
         
         // Fetch vehicles that are not in the merged array
-        $vehicles = Vehicle::where('status', '1')
+        $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
         ->whereNotIn('regn_no', $drsVehicleIds)
-        ->select('id', 'regn_no')
         ->get();
         /////////////
 
         // get drivers
         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
-        ->whereNotNull('vehicle_no')
+        ->whereNotNull('driver_name')
         // ->where('delivery_status', 'Assigned')
         ->where('delivery_status', '!=', 'successfull')
         ->where('status', 1)
-        ->pluck('vehicle_no')
+        ->pluck('driver_name')
         ->unique()
         ->toArray();
 
@@ -3024,8 +3023,6 @@ class ConsignmentController extends Controller
             })
             ->orderby('order_no', 'asc')->get();
 
-        
-
         $lr_ids = TransactionSheet::where('drs_no', $id)->where('status',1)
         ->pluck('consignment_no')
         ->toArray();
@@ -3034,7 +3031,6 @@ class ConsignmentController extends Controller
         $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
         $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
         $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
-
 
         $response['fetch'] = $result;
         $response['fetch_lrs'] = $get_lrs;
