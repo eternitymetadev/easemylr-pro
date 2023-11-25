@@ -16,7 +16,7 @@
         </thead>
         <tbody>
             @foreach($hrssheets as $hrssheet)
-            <?php
+            <?php $authuser = Auth::user();
               $date = new DateTime($hrssheet->created_at, new DateTimeZone('GMT-7'));
               $date->setTimezone(new DateTimeZone('IST'));
                 
@@ -28,11 +28,16 @@
                 <td>{{@$hrssheet->VehicleDetail->regn_no ?? '-'}}</td>
                 <td>{{@$hrssheet->DriverDetail->name ?? '-'}}</td>
                 <td>{{@$hrssheet->DriverDetail->phone ?? '-'}}</td>
+                <?php if($authuser->role_id == 3){
+                    $disable = 'disable_n' ;
+                }else{
+                    $disable = '';
+                } ?>
                 <td>
                     @if(empty($hrssheet->vehicle_id) || empty($hrssheet->driver_id))
-                    <button class="flex1 btn btn-warning view-sheet" value="{{$hrssheet->hrs_no}}"
+                    <button class="flex1 btn btn-warning view-sheet {{$disable}}" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Draft
-                    </button>  <button class="flex1 btn btn-success save_hrs" value="{{$hrssheet->hrs_no}}"
+                    </button>  <button class="flex1 btn btn-success save_hrs {{$disable}}" value="{{$hrssheet->hrs_no}}"
                         style="margin-right:4px;">Save
                     </button>
                     @endif

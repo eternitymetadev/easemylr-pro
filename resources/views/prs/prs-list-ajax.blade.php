@@ -65,10 +65,15 @@
                 <td>{{ isset($value->DriverDetail->name) ? ucfirst($value->DriverDetail->name) : "-" }}</td>
                 <td style="font-weight: 600;">{{ Helper::PrsStatus($value->status) ? Helper::PrsStatus($value->status) : "-"}}</td>
                 <td>
-                    <?php  
+                    <?php $authuser = Auth::user();
+                    if($authuser->role_id == 3){
+                        $disable = 'disable_n' ;
+                    }else{
+                        $disable = '';
+                    } 
                     if($value->status == 1){
                     ?>
-                    <a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id).'/edit')}}" class="btn btn-white btn-cstm"><span><i class="fa fa-edit"></i> Edit</span></a> 
+                    <a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id).'/edit')}}" class="btn btn-white btn-cstm {{$disable}}"><span><i class="fa fa-edit"></i> Edit</span></a> 
                     <?php } ?>
                 </td>
             </tr>

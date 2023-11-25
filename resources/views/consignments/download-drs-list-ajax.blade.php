@@ -33,6 +33,11 @@
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>
+                <?php if($authuser->role_id == 3){
+                    $disable = 'disable_n' ;
+                }else{
+                    $disable = '';
+                } ?>
                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
                 <!-- action button -->
                 <?php 
@@ -43,9 +48,9 @@
                 <?php } else {?>
                 <td>
                     <?php if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
-                    <button type="button" class="btn btn-warning view-sheet" value="{{$trns->drs_no}}"
+                    <button type="button" class="btn btn-warning view-sheet {{$disable}}" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Draft</button>
-                    <button type="button" class="btn btn-danger draft-sheet" value="{{$trns->drs_no}}"
+                    <button type="button" class="btn btn-danger draft-sheet {{$disable}}" value="{{$trns->drs_no}}"
                         style="margin-right:4px;">Save</button>
                     <?php }?>
                     <?php if (!empty($trns->vehicle_no)) {

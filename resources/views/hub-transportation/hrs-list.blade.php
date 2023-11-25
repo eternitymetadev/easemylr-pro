@@ -78,10 +78,14 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class=" mb-4 mt-4">
                         <div class="d-flex justify-content-between align-items-center px-3 pb-3" style="gap: 1rem;">
-                            <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs"
+                        <?php $authuser = Auth::user();
+                         if($authuser->role_id != 3){
+                             ?>    
+                        <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs"
                                     style="align-self: stretch;">
                                 Create HRS
                             </button>
+                            <?php } ?>
                             <div class="d-flex justify-content-center align-items-center" style="flex: 1; max-width: 240px; position: relative">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
