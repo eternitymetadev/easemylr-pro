@@ -273,7 +273,7 @@ span.select2.select2-container.mb-4 {
     </div>
 
 
-    <form class="general_form mtcheckload" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="createconsignment"
+    <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="createconsignment"
         style="margin: auto;">
         {{--Branch Location--}}
         <!-- <div class="form-row">

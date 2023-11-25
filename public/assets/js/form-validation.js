@@ -871,9 +871,10 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-    
+
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
+        ignore: [],
         rules: {
             consigner_id: {
                 required: true
@@ -884,13 +885,17 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: true
             },
+            total_weight:{
+                min: 1500,
+                number: true,
+            },
            
             'quantity[]': {
                 required: true
                 //   lettersonly:true
                 },
            'weight[]': {
-                  required: true
+                  required: true,
                 },
            'gross_weight[]': {
                   required: true
@@ -906,6 +911,9 @@ jQuery(document).ready(function(){
             },
             ship_to_id: {
                 required: "Select ship to address",
+            },
+            total_weight:{
+                min: "Create an PTL order for total net weight less than 1500kg.",
             },
             driver_id : {
                 required: "Select driver",

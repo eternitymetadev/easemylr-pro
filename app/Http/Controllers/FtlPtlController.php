@@ -93,6 +93,7 @@ class FtlPtlController extends Controller
 
     public function storeFtlLr(Request $request)
     {
+        dd($request->total_weight);
         try {
             DB::beginTransaction();
 
