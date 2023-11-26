@@ -2473,15 +2473,6 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    public function viewDrslist($drs_id)
-    {
-        
-        $this->prefix = request()->route()->getPrefix();
-        $id = decrypt($drs_id);
-
-        return view('consignments.view-drs',['segment'=>$this->segment,'prefix'=>$this->prefix]);
-
-    }
     // on unassigned click in drs list 
     public function getTransactionDetails(Request $request)
     {

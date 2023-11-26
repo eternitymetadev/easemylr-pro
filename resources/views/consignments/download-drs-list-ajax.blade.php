@@ -23,8 +23,7 @@
                
             @endphp 
             <tr>
-                <td><a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($trns->id))}}" class="">DRS-{{$trns->drs_no}}
-                </a></td>
+                <td>DRS-{{$trns->drs_no}}</td>
                 <td>{{Helper::ShowDayMonthYear($trns->created_at) ?? ''}}</td>
                 <td>{{$trns->vehicle_no}}</td>
                 <td>{{$trns->driver_name}}</td>

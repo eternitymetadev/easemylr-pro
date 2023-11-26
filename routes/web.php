@@ -358,7 +358,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
-    Route::get('transaction-sheet/{id}', [ConsignmentController::class, 'viewDrslist']);
     // Route::any('get-driver-drs', [ConsignmentController::class, 'getDriverdrs']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
