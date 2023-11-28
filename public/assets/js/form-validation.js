@@ -872,7 +872,7 @@ jQuery(document).ready(function(){
         }
     });
     
-    /*===== create consignment =====*/
+    /*===== create ftl consignment =====*/
     $('#createconsignment').validate({ 
         ignore: [],
         rules: {
@@ -915,7 +915,66 @@ jQuery(document).ready(function(){
             total_weight:{
                 min: "Create an PTL order for total net weight less than 1500kg.",
             },
-            
+
+            'quantity[]': {
+                required: "Enter quantity",
+            },
+            'weight[]': {
+                required: "Enter weight",
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight",
+            },
+            'freight[]': {
+                required: "Enter freight",
+            },
+            'payment_type[]': {
+                required: "Select payment type",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
+
+    /*===== create order book ptl =====*/
+    $('#create_ptlconsignment').validate({ 
+        rules: {
+            consigner_id: {
+                required: true
+            },
+            consignee_id: {
+                required: true
+            },
+            ship_to_id: {
+                required: true
+            },
+           
+            'quantity[]': {
+                required: true
+                //   lettersonly:true
+                },
+           'weight[]': {
+                  required: true
+                },
+           'gross_weight[]': {
+                  required: true
+                },
+           
+        },
+        messages: {
+            consigner_id: {
+                required: "Select consignor address",
+            },
+            consignee_id: {
+                required: "Select consignee address",
+            },
+            ship_to_id: {
+                required: "Select ship to address",
+            },
+
             'quantity[]': {
                 required: "Enter quantity",
             },
