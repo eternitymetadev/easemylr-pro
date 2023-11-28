@@ -1313,17 +1313,17 @@ jQuery(document).ready(function () {
         var lastSegment = segments[segments.length - 1];
         var prslastSegment = segments[segments.length - 3];
         // console.log(lastSegment);
-        var formClass = $(".net").closest('form').attr('class');
-        console.log(formClass);
+        // var formClass = $(".net").closest('form').attr('class');
+        // console.log(formClass);
 
-        if (formClass.indexOf('mtcheckload') !== -1) {
-            if(+totalNetWeight > 2000){
-                $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
-                swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
-            } else{
-                $('.ptlBookButton, .updateOrderButton').removeAttr('disabled');
-            }
-        }
+        // if (formClass.indexOf('mtcheckload') !== -1) {
+        //     if(+totalNetWeight > 2000){
+        //         $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
+        //         swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
+        //     } else{
+        //         $('.ptlBookButton, .updateOrderButton').removeAttr('disabled');
+        //     }
+        // }
     }
 
     /*===== get location on edit click =====*/

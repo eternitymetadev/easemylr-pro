@@ -874,6 +874,7 @@ jQuery(document).ready(function(){
     
     /*===== create consignment =====*/
     $('#createconsignment').validate({ 
+        ignore: [],
         rules: {
             consigner_id: {
                 required: true
@@ -883,6 +884,10 @@ jQuery(document).ready(function(){
             },
             ship_to_id: {
                 required: true
+            },
+            total_weight:{
+                min: 1500,
+                number: true,
             },
            
             'quantity[]': {
@@ -907,18 +912,10 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: "Select ship to address",
             },
-            driver_id : {
-                required: "Select driver",
+            total_weight:{
+                min: "Create an PTL order for total net weight less than 1500kg.",
             },
-            transporter_name : {
-                required: "Enter transporter name",
-            },
-            vehicle_type : {
-                required: "Select vehicle type",
-            },
-            vehicle_id : {
-                required: "Select vehicle no.",
-            },
+            
             'quantity[]': {
                 required: "Enter quantity",
             },
