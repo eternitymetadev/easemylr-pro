@@ -915,18 +915,7 @@ jQuery(document).ready(function(){
             total_weight:{
                 min: "Create an PTL order for total net weight less than 1500kg.",
             },
-            driver_id : {
-                required: "Select driver",
-            },
-            transporter_name : {
-                required: "Enter transporter name",
-            },
-            vehicle_type : {
-                required: "Select vehicle type",
-            },
-            vehicle_id : {
-                required: "Select vehicle no.",
-            },
+            
             'quantity[]': {
                 required: "Enter quantity",
             },
@@ -941,6 +930,58 @@ jQuery(document).ready(function(){
             },
             'payment_type[]': {
                 required: "Select payment type",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
+
+    /*===== create order ptl =====*/
+    $('#create_ptlconsignment').validate({ 
+        rules: {
+            consigner_id: {
+                required: true
+            },
+            consignee_id: {
+                required: true
+            },
+            ship_to_id: {
+                required: true
+            },
+           
+            'quantity[]': {
+                required: true
+                //   lettersonly:true
+                },
+           'weight[]': {
+                  required: true,
+                },
+           'gross_weight[]': {
+                  required: true
+                },
+           
+        },
+        messages: {
+            consigner_id: {
+                required: "Select consignor address",
+            },
+            consignee_id: {
+                required: "Select consignee address",
+            },
+            ship_to_id: {
+                required: "Select ship to address",
+            },
+            
+            'quantity[]': {
+                required: "Enter quantity",
+            },
+            'weight[]': {
+                required: "Enter weight",
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight",
             },
         },
         submitHandler : function(form)
