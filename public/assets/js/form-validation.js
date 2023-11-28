@@ -33,6 +33,10 @@ jQuery(document).ready(function(){
         return this.optional(element) || /^[A-Za-z0-9]+$/i.test(value);
     }, "Only Alphabets and Numbers allowed.");
 
+    $.validator.addMethod('validNumber', function(value, element) {
+        return value > 0; // Ensures the value is greater than zero
+    }, "Total weight must be greater than zero.");
+
     /*========== create user in users ========*/
     // $(document).on('submit','.general_form',function(e){
     //     e.preventDefault();
@@ -887,6 +891,7 @@ jQuery(document).ready(function(){
             },
             total_weight:{
                 min: 1500,
+                validNumber: true,
                 number: true,
             },
            

@@ -67,8 +67,13 @@ div.relative {
                     @csrf
                     <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                         <div class="btn-group relative" style="width: auto">
+                            <?php 
+                            $authuser = Auth::user();
+                            if($authuser->role_id != 3){
+                            ?>
                             <a href="{{'order-book-ptl'}}" class="btn btn-primary myButtonExtra"
                                 style="font-size: 13px; padding: 6px 0px;">Create Order</a>
+                                <?php } ?>
                             <button type="button" class="btn btn-primary myButtonExtra ml-2" data-toggle="modal"
                                 data-target="#exampleModal">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -146,7 +151,6 @@ div.relative {
 
                                 <!-- ---Action Button ----->
                                 <!-- <?php if(!empty($consignment->fall_in)){ 
-                                $authuser = Auth::user();
                                if($authuser->branch_id == $consignment->fall_in){ ?>
                                 <td>
                                     <a class="orderstatus btn btn-danger" data-id="{{$consignment->id}}"
@@ -175,7 +179,6 @@ div.relative {
                                 <?php } ?> -->
                                 <!-- -------- Status Button ------------>
                                 <?php if(!empty($consignment->fall_in)){ 
-                                $authuser = Auth::user();
                                    if($authuser->branch_id == $consignment->fall_in){ 
                                  if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
                                 <td>
@@ -227,8 +230,7 @@ div.relative {
                 <div class="form-row">
                     <h6 class="col-12">Branch</h6>
 
-                    <?php $authuser = Auth::user();
-            if($authuser->role_id == 2 || $authuser->role_id == 4)
+                    <?php if($authuser->role_id == 2 || $authuser->role_id == 4)
             {
             ?>
                     <div class="form-group col-md-4">
