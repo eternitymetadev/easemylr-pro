@@ -933,7 +933,7 @@
                                         value="">
                                     <button type="button" disabled class="btn btn-warning disableDrs mt-3"
                                         id="add_unverified_lr" data-drsid="${drsId}" onclick="addUnverifiedLr(${drsId})" style="font-size: 11px; margin: 0px 0px 10px 15px;">
-                                        Create DSR
+                                        Create DRS
                                     </button>
                                     <div class="col-sm-12">
                                         <table id="unverifiedlrlist" class="table table-hover"
