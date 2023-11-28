@@ -560,8 +560,9 @@
                             <option value="Material Damaged">Material Damaged</option>
                             <option value="Material Loss">Material Loss</option>
                             <option value="Material Short">Material Short</option>
+                            <option value="Material Interchange">Material Interchange</option>
                             <option value="Wrong Invoice Address">Wrong Invoice Address</option>
-                            <option value="other">Other</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div id="otherInput" style="display: none; width: 90%">
