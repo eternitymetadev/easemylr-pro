@@ -188,6 +188,7 @@
                 if ($('.chkBoxClass:checked').length == $('.chkBoxClass').length) {
                     $('#ckbCheckAll').prop('checked', true);
                     jQuery('#launch_model').prop('disabled', false);
+                    jQuery('#create_hrs').prop('disabled', false);
                 } else {
                     var checklength = $('.chkBoxClass:checked').length;
                     if (checklength < 1) {
