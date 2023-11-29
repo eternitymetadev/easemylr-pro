@@ -1,6 +1,15 @@
 @extends('layouts.main')
 @section('content')
     <!-- END PAGE LEVEL CUSTOM STYLES -->
+    <style>
+        .select2Branch .select2-container--default .select2-selection--multiple{
+            padding: 4px 12px !important;
+            margin-bottom: 0 !important;
+        }
+        .select2Branch span.select2.select2-container.mb-4.select2-container--default{
+            margin-bottom: 0 !important;
+        }
+        </style>
 
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing">
@@ -23,12 +32,12 @@
                             <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
                                 <?php $authuser = Auth::user(); 
                                 if($authuser->role_id == 3 || $authuser->role_id == 5){ ?>
-                                <div style="width: 210px">
+                                <div style="flex: 1" class="select2Branch">
                                     <label>Select Branch</label>
-                                    <select class="form-control my-select2" id="branch_filter"
+                                    <select class="form-control tagging" multiple="multiple" id="branch_filter"
                                         name="branch_id" data-action="<?php echo url()->current(); ?>"
                                         placeholder="Search By Status">
-                                        <option value="" selected>--select status--</option>
+                                        {{-- <option value="" selected>--select status--</option> --}}
                                         <?php foreach($branchs as $branch){ ?>
                                         <option value="{{$branch->id}}">{{$branch->name}}</option>
                                         <?php } ?>
@@ -59,7 +68,7 @@
                                     
                             <a href="<?php echo URL::to($prefix . '/reports/export1'); ?>" data-url="<?php echo URL::to($prefix . '/consignment-misreport'); ?>"
                                 class="consignmentReportEx btn btn-white btn-cstm"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px; align-self: flex-end"
                                 data-action="<?php echo URL::to($prefix . '/reports/export1'); ?>" download><span><i class="fa fa-download"></i>
                                     Export</span></a>
                         </div>

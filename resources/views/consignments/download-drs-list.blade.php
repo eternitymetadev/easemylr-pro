@@ -125,9 +125,7 @@
                     <nav class="breadcrumb-one" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download
-                                    DRS
-                                    List</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download DRS List</a></li>
                         </ol>
                     </nav>
                 </div>
@@ -138,9 +136,6 @@
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
-                                <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                                                                                                                    <h4 class="win-h4">List</h4>
-                                                                                                                                </div> -->
                                 <div class="col d-flex pr-0">
                                     <div class="search-inp w-100">
                                         <form class="navbar-form" role="search">
@@ -160,9 +155,9 @@
                                                                                                                                             style="font-size: 15px; padding: 9px; width: 130px"
                                                                                                                                             href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
                                                                                                                                                 New</span></a> -->
-                                        <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
-                                            style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span>
-                                                <i class="fa fa-refresh"></i> Reset Filters</span></a>
+                                        {{-- <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                                            style="font-size: 15px; padding: 9px;" data-action="<?php //echo url()->current(); ?>"><span>
+                                                <i class="fa fa-refresh"></i> Reset Filters</span></a> --}}
                                     </div>
                                 </div>
                             </div>

@@ -57,8 +57,7 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified
-                                Lr</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified Lr</a></li>
                     </ol>
                 </nav>
             </div>
@@ -75,10 +74,6 @@ div.relative {
                                 Create DRS
                             </button>
                             <?php } ?>
-                            <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
-
-                            Create DSR
-                            </button> -->
                         </div>
                         <thead>
                             <tr>

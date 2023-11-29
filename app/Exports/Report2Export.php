@@ -118,7 +118,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
         if ($branch_id !== null) {
             if ($branch_id) {
-                $query = $query->where('branch_id', $branch_id);
+                $branch_id_array = explode(",", $branch_id);
+                $query = $query->whereIn('branch_id', $branch_id_array);
             }
         }
 

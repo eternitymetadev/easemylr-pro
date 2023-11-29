@@ -30,6 +30,13 @@ div.relative {
 
     font-size: 10px;
 }
+.select2Branch .select2-container--default .select2-selection--multiple{
+    padding: 4px 12px !important;
+    margin-bottom: 0 !important;
+}
+.select2Branch span.select2.select2-container.mb-4.select2-container--default{
+    margin-bottom: 0 !important;
+}
 </style>
 <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
 <link rel="stylesheet" type="text/css" href="{{asset('plugins/table/datatable/datatables.css')}}">
@@ -79,12 +86,12 @@ div.relative {
 
                         <?php $authuser = Auth::user(); 
                         if($authuser->role_id == 3 || $authuser->role_id == 5){ ?>
-                        <div style="flex: 0 0 180px">
+                        <div style="flex: 1" class="select2Branch">
                             <label>Select Branch</label>
-                            <select class="form-control my-select2" id="branch_filter"
+                            <select class="form-control tagging" multiple="multiple" id="branch_filter"
                                 name="branch_id" data-action="<?php echo url()->current(); ?>"
                                 placeholder="Search By Status">
-                                <option value="" selected>--select status--</option>
+                                {{-- <option value="" selected>--select status--</option> --}}
                                 <?php foreach($branchs as $branch){ ?>
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
                                 <?php } ?>
@@ -103,8 +110,7 @@ div.relative {
                         <div class="d-flex justify-content-end align-items-end" style="flex: 1">
                             <a href="<?php echo URL::to($prefix.'/reports/export2'); ?>"
                                 data-url="<?php echo URL::to($prefix.'/consignment-report2'); ?>"
-                                class="consignmentReportEx btn btn-white btn-cstm"
-                                style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px"
+                                class="consignmentReportEx btn btn-white btn-cstm" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 130px; align-self: flex-end"
                                 data-action="<?php echo URL::to($prefix.'/reports/export2'); ?>" download><span><i class="fa fa-download"></i> Export</span></a>
                         </div>
                     </div>

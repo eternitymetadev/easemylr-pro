@@ -29,13 +29,15 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
     protected $enddate;
     protected $baseclient_id;
     protected $regclient_id;
+    protected $branch_id;
     // protected $awsUrl;
 
-    function __construct($startdate,$enddate,$baseclient_id,$regclient_id) {
+    function __construct($startdate,$enddate,$baseclient_id,$regclient_id,$branch_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
+        $this->branch_id = $branch_id;
         // $this->awsUrl = $awsUrl;
     }
 
@@ -51,6 +53,7 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
         $enddate = $this->enddate;
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
+        $branch_id = $this->branch_id;
         // $awsUrl = $this->awsUrl;
         // dd($awsUrl);
         $authuser = Auth::user();
@@ -94,6 +97,12 @@ class Report4Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
                 $q->where('id', $regclient_id);
             });
+        }
+        if ($branch_id !== null) {
+            if ($branch_id) {
+                $branch_id_array = explode(",", $branch_id);
+                $query = $query->whereIn('branch_id', $branch_id_array);
+            }
         }
 
         $consignments = $query->orderBy('id','ASC')->get();
