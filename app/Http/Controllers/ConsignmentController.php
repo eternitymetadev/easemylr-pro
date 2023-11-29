@@ -4501,7 +4501,7 @@ class ConsignmentController extends Controller
               }';
 
         //echo "<pre>";print_r($apidata);echo "</pre>";die;
-        
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -5223,22 +5223,24 @@ class ConsignmentController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query
-                ->where('status', '!=', 5)
-                ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
-                );
+            $query = $query->where('status', '!=', 5)
+            ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
 
-            if ($authuser->role_id == 1) {
-                $query = $query;
-            } elseif ($authuser->role_id == 4) {
+            if ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } else {
-                $query = $query->where(function ($query) use ($cc) {
-                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-
+            } elseif($authuser->role_id != 1) {
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
+                    $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
                 });
             }
+
+            // if ($authuser->role_id == 4) {
+            //     $query->whereIn('regclient_id', $regclient);
+            // } elseif ($authuser->role_id != 1) {
+            //     $query->where(function ($query) use ($cc) {
+            //         $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
+            //     });
+            // }
 
             if (!empty($request->search)) {
                 $search = $request->search;
@@ -5261,11 +5263,9 @@ class ConsignmentController extends Controller
             }
 
             $reg_client = RegionalClient::select('id', 'name');
-            if ($authuser->role_id == 1) {
-                $reg_client = $reg_client;
-            } elseif ($authuser->role_id == 4) {
+            if ($authuser->role_id == 4) {
                 $reg_client = $reg_client->whereIn('id', $regclient);
-            } else {
+            } elseif ($authuser->role_id != 1) {
                 $reg_client = $reg_client->whereIn('location_id', $cc);
 
                 // $regclients = $regclients->where(function ($query) use ($cc){
@@ -5300,17 +5300,12 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query
-            ->where('status', '!=', 5)
-            ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
-            );
+        $query = $query->where('status', '!=', 5)
+            ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
 
-        if ($authuser->role_id == 1) {
-            $query = $query;
-        } elseif ($authuser->role_id == 4) {
+        if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } else {
+        } elseif($authuser->role_id != 1) {
             // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
@@ -5318,11 +5313,9 @@ class ConsignmentController extends Controller
         }
 
         $reg_client = RegionalClient::select('id', 'name');
-        if ($authuser->role_id == 1) {
-            $reg_client = $reg_client;
-        } elseif ($authuser->role_id == 4) {
+        if ($authuser->role_id == 4) {
             $reg_client = $reg_client->whereIn('id', $regclient);
-        } else {
+        } elseif ($authuser->role_id != 1) {
             $reg_client = $reg_client->whereIn('location_id', $cc);
 
             // $regclients = $regclients->where(function ($query) use ($cc){
