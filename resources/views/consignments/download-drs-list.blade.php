@@ -291,10 +291,11 @@
                     $("#totallr").append(rowCount);
 
                     showLibrary();
-
+                    // console.log(re.fetch_lrs.driver_id);
                     // $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
                     // $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
                     // $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
+                    
                     $("#Transporter").val(re.fetch_lrs.transporter_name);
                     $("#draft_purchase").val(re.fetch_lrs.purchase_price);
                     
@@ -302,18 +303,17 @@
                     if (re.fetchVehicle) {
                         var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
                         $('#vehicle_no').append(newVehicleOption);
-
-                        if (re.fetchDriver) {
+                    }
+                    if (re.fetchDriver) {
                         var newDriverOption =
                         `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
                         $('#driver_id').append(newDriverOption);
-                        }
-                        
-                        if (re.fetchVehicleType) {
-                            var newVehicleTypeOption =
-                            `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
-                            $('#vehicle_type').append(newVehicleTypeOption);
-                        }
+                    }
+                    
+                    if (re.fetchVehicleType) {
+                        var newVehicleTypeOption =
+                        `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
+                        $('#vehicle_type').append(newVehicleTypeOption);
                     }
                     
                    
@@ -513,8 +513,6 @@
 
         //save add driver data on draft modal //
         function drsSubmit(is_started) {
-            // $("#mainLoader").show();
-            // $(".loader").show();
             this.event.preventDefault();
 
             var consignmentID = [];
@@ -523,13 +521,11 @@
 
             // Loop through the elements
             for (var i = 0; i < elements.length; i++) {
-                // console.log(`qwe - ${i}`, elements[i].value)
                 if(is_started == 1){
                     // Check if the element has a value
                     if (!elements[i].value) {
                         $("#mainLoader").hide();
                         $(".loader").hide();
-                    // console.log(`qwe - ${i}`, elements[i].value);
 
                         swal('error', 'Please enter EDD', 'error');
                         return;
@@ -550,8 +546,6 @@
             //     }
             //     consignmentID.push(this.value);
             // });
-
-
 
             var ct = consignmentID.length;
             var rowCount = $("#save-DraftSheet tbody tr").length;

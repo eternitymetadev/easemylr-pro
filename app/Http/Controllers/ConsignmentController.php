@@ -2023,7 +2023,7 @@ class ConsignmentController extends Controller
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
-    //draft btn driver update in drs list
+    //save draft and start btn update in drs list
     public function updateUnverifiedLr(Request $request)
     {
         // dd($request->vehicle_id);
@@ -2048,11 +2048,8 @@ class ConsignmentController extends Controller
         if($request->purchase_price){
             $updateData['purchase_price'] = $request->purchase_price;
         }
-        // if($request->delivery_status){
-        //     $updateData['delivery_status'] = $request->delivery_status;
-        // }
         $updateData['delivery_status'] = 'Assigned';
-// dd($consignmentId);
+
         $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
 
         $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
@@ -2281,8 +2278,6 @@ class ConsignmentController extends Controller
             ->toArray();
             // ->where('delivery_status', 'Assigned')
 
-            // echo "<pre>"; print_r($drsVehicleIds); die;
-
             // Merge and deduplicate the vehicle IDs
             // $mergedVehicleIds = array_unique($drsVehicleIds);
             
@@ -2295,12 +2290,12 @@ class ConsignmentController extends Controller
             // get drivers
             $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
             ->whereNotNull('driver_name')
-            // ->where('delivery_status', 'Assigned')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
             ->pluck('driver_name')
             ->unique()
             ->toArray();
+            // ->where('delivery_status', 'Assigned')
 
             // Merge and deduplicate the driver IDs
             // $mergedDriverIds = array_unique($drsDriverIds);
@@ -2457,11 +2452,10 @@ class ConsignmentController extends Controller
         return response()->json($response);
     }
 
-    // on unassigned click in drs list 
+    // on unassigned btn click in drs list 
     public function getTransactionDetails(Request $request)
     {
         $drsId = $_GET['drsId'];
-
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
                 $query->whereIn('status', [1, 5]);
@@ -2475,6 +2469,7 @@ class ConsignmentController extends Controller
 
             // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
             $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
+            // dd($get_lrs);
             $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
             $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
             $getVehicleType = VehicleType::where('id',$get_lrs->vehicle_type)->first();
@@ -4431,8 +4426,6 @@ class ConsignmentController extends Controller
 
             //echo "<pre>";print_r($td);echo "</pre>";die;
 
-            //die;
-
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -4492,7 +4485,6 @@ class ConsignmentController extends Controller
                 }';
         }
         $de_json = implode(",", $deliveries);
-        //echo "<pre>"; print_r($de_json);die;
 
         $apidata = '{
                 "api_key": "' . $this->apikey . '",
@@ -4509,9 +4501,7 @@ class ConsignmentController extends Controller
               }';
 
         //echo "<pre>";print_r($apidata);echo "</pre>";die;
-
-        //die;
-
+        
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
