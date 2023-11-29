@@ -300,10 +300,12 @@
                         $('#vehicle_no').append(newVehicleOption);
                     }
                     if (re.fetchDriver) {
-                        var newDriverOption =
-                        `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}</option>`;
+                        var driver_phone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : ''; // Using a ternary operator for conditional assignment
+
+                        var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}${driver_phone}</option>`;
                         $('#driver_id').append(newDriverOption);
                     }
+
                     
                     if (re.fetchVehicleType) {
                         var newVehicleTypeOption =
