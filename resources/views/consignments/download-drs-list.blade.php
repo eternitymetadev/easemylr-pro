@@ -223,6 +223,7 @@
                     'print'
                 ]
             });
+            
         });
 
 
@@ -306,13 +307,11 @@
                         $('#driver_id').append(newDriverOption);
                     }
 
-                    
                     if (re.fetchVehicleType) {
                         var newVehicleTypeOption =
                         `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
                         $('#vehicle_type').append(newVehicleTypeOption);
                     }
-                    
                    
                 }
             });
@@ -428,20 +427,17 @@
                     },
                 success: function(data) {
                     var i = 1;
-                    // console.log(data.fetch[0].consignment_id );
                     $('#cn_no').val(data.fetch[0].consignment_id)
                     $.each(data.fetch, function(index, value) {
 
                         if (value.e_way_bill == null || value.e_way_bill == '') {
-                            var billno = "<input type='text' name='data[" + i +
-                                "][e_way_bill]' >";
+                            var billno = "";
                         } else {
                             var billno = value.e_way_bill;
                         }
 
                         if (value.e_way_bill_date == null || value.e_way_bill_date == '') {
-                            var billdate = "<input type='date' name='data[" + i +
-                                "][e_way_bill_date]' >";
+                            var billdate = "";
                         } else {
                             var billdate = value.e_way_bill_date;
                         }
@@ -450,8 +446,9 @@
                             "<tr><input type='hidden' name='data[" +
                             i + "][id]' value=" + value.id + " ><td>" + value
                             .consignment_id +
-                            "</td><td>" + value.invoice_no + "</td><td>" + billno +
-                            "</td><td>" + billdate + "</td></tr>");
+                            "</td><td>" + value.invoice_no + "</td><td><input type='text' name='data[" + i +
+                                "][e_way_bill]' value="+billno+"></td><td><input type='date' name='data[" + i +
+                                "][e_way_bill_date]' value="+billdate+"></td></tr>");
                         i++;
                     });
 
@@ -469,7 +466,6 @@
                 $('#suffle tr').each(function() {
                     page_id_array.push($(this).attr('id'));
                 });
-                //alert(page_id_array);
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

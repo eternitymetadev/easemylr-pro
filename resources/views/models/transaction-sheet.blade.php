@@ -579,7 +579,7 @@
     </div>
 </div>
 
-<!-- #modal 2 -->
+<!-- #modal update Ewaybill no -->
 <div class="modal fade bd-example-modal-xl" id="modal-2" tabindex="-1" role="dialog"
     style="backdrop-filter: blur(2px); background: #00000030;" aria-labelledby="myExtraLargeModalLabel"
     data-keyboard="false" data-backdrop="static" aria-hidden="true">

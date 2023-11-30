@@ -34,6 +34,7 @@
                 }else{
                     $disable = '';
                 } ?>
+                {{-- delivery status --}}
                 <td>
                     <?php if ($trns->status == 0) {?>
                     <label class="statusBtn btn" style="--statusColor: #df015e;">Cancelled</label>
@@ -66,7 +67,7 @@
                         }
                     }?>
                 </td>
-                
+                {{-- End delivery status --}}
                 <!-- payment Status ---- -->
                 <?php 
                     $status = Helper::drsPaymentStatus($trns->payment_status );

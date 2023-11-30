@@ -2894,6 +2894,7 @@ class ConsignmentController extends Controller
             return response()->json(['error' => 'Something went wrong']);
         }
     }
+    
     //////////////////////////////////remove lr////////////////////
     public function removeLR(Request $request)
     {

@@ -186,7 +186,6 @@ class GlobalFunctions
 
     public static function getCountDrs($drs_number)
     {
-        // $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)->whereIn('status', '!=', [2,4])->count();
         $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)
         ->whereNotIn('status', [2, 4])->count();
         

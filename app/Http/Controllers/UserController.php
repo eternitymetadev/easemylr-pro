@@ -246,6 +246,11 @@ class UserController extends Controller
         $branch = $request->branch_id;
         $usersave['branch_id']  = implode(',',$branch); 
 
+        if(!empty($request->regionalclient_id)){
+            $regclients = $request->regionalclient_id;
+            $usersave['regionalclient_id'] = implode(',', $regclients);
+        }
+
         if(!empty($request->password)){
             $usersave['password'] = Hash::make($request->password);
             $usersave['user_password'] = $request->password;
