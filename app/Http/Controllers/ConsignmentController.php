@@ -5122,7 +5122,7 @@ class ConsignmentController extends Controller
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1 || $authuser->role_id == 8) {
                 $query = $query;
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
@@ -5180,12 +5180,11 @@ class ConsignmentController extends Controller
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
 
-        if ($authuser->role_id == 1) {
+        if ($authuser->role_id == 1 || $authuser->role_id == 8) {
             $query = $query;
         } elseif ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
-            // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
@@ -5954,10 +5953,10 @@ class ConsignmentController extends Controller
             $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->pluck('reattempt_reason')->first();
 
             if ($lastreattempt  == null || $lastreattempt  == '') {
-                $respons = array('reattempt_reason' => $request->reattempt_reason, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+                $respons = array('reattempt_reason' => $request->reattempt_reason, 'otherText'=>$request->otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
                 $respons_data = json_encode([$respons]);
             } else {
-                $respons2 = array('reattempt_reason' => $request->reattempt_reason, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+                $respons2 = array('reattempt_reason' => $request->reattempt_reason, 'otherText'=>$request->otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
                 
                 if (!empty($lastreattempt)) {
                     $st = json_decode($lastreattempt, true);

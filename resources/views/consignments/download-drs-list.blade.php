@@ -155,9 +155,9 @@
                                                                                                                                             style="font-size: 15px; padding: 9px; width: 130px"
                                                                                                                                             href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
                                                                                                                                                 New</span></a> -->
-                                        {{-- <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
+                                        <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                             style="font-size: 15px; padding: 9px;" data-action="<?php //echo url()->current(); ?>"><span>
-                                                <i class="fa fa-refresh"></i> Reset Filters</span></a> --}}
+                                                <i class="fa fa-refresh"></i> Reset Filters</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -198,6 +198,10 @@
         })
         
         $(document).ready(function() {
+            $(document).on('click', '.close', function(){
+                $(this).parent().siblings('.modal-body').children('form').trigger("reset");
+            });
+
             $(document).on('click', '.reAttemptBtn', function() {
                 var get_lrid = $(this).attr("data-lrid");
                 $("#reattempt_lrid").val(get_lrid);
@@ -206,7 +210,7 @@
 
             $("#reason").change(function() {
                 $("#otherText").val('');
-                if ($(this).val() === "other") {
+                if ($(this).val() == "Other") {
                     $("#otherInput").show();
                     $("#otherText").attr('required', true);
                 } else {
@@ -400,7 +404,6 @@
                     //         $(window).off(evt)
                     //     })
                     // })
-                    
 
                     $("#mainLoader").hide();
                     $(".loader").hide();

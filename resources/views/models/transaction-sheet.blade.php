@@ -289,8 +289,38 @@
 </div>
 <!--===========================Delevery Status ========================================== -->
 
+{{-- start confirm modal --}}
+<div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static"  aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background: #fdecbe;border: 2px solid #e2a03f;margin-top: 5rem;">
+            <!-- Modal Header -->
+            <!-- Modal body -->
+            <div class="modal-body d-flex align-items-end justify-content-center" style="min-height: 150px;">
+                <div class="Delt-content text-center">
+                    <h4 style="margin-bottom: 22px; font-size: 22px; font-weight: 600; ">Are you sure to start this task?</h4>
+                    <p style="color: #080808; max-width: 350px;" >
+                        Please note: Once you start it, you will not be able to make any changes in this DRS.
+                    </p>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="col-12 d-flex align-items-center justify-content-end" style="gap: 1rem">
+                    <button type="button" class="btn btn-outline-primary submitButton" data-dismiss="modal">
+                        <span class="indicator-label">Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-primary submitButton confirmStartClick">
+                        <span class="indicator-label">Yes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- end start confirm modal --}}
+
 <!--Draft Modal -->
-<div class="modal fade bd-example-modal-xl" id="save-draft" tabindex="-1" role="dialog"
+{{-- <div class="modal fade bd-example-modal-xl" id="save-draft" tabindex="-1" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" data-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content" style="min-height: calc(100vh - 3.5rem)">
@@ -404,10 +434,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 <!-- Start Modal -->
-<div class="modal fade bd-example-modal-xl" id="start-draft" tabindex="-1" role="dialog"
+{{-- <div class="modal fade bd-example-modal-xl" id="start-draft" tabindex="-1" role="dialog"
     aria-labelledby="myExtraLargeModalLabel" data-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content" style="min-height: calc(100vh - 3.5rem)">
@@ -527,7 +557,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 <!-- model for re-attempt -->
 <div class="modal fade" id="reAttemptModel" tabindex="-1" role="dialog" aria-labelledby="reAttemptModelLabel"
@@ -566,8 +596,7 @@
                         </select>
                     </div>
                     <div id="otherInput" style="display: none; width: 90%">
-                        <input class="form-control form-control-sm" style="border-radius: 12px;" type="text"
-                            id="otherText" placeholder="Enter other option">
+                        <input type="text" name="otherText" class="form-control form-control-sm" style="border-radius: 12px;" id="otherText" placeholder="Enter other option">
                     </div>
                     <button type="submit" class="btn btn-primary"
                         style="font-size: 14px;max-width: 180px;margin-top: 1rem;">Confirm
@@ -614,33 +643,3 @@
         </form><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-{{-- start confirm modal --}}
-<div class="modal fade" id="start-commonconfirm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static"  aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background: #fdecbe;border: 2px solid #e2a03f;margin-top: 5rem;">
-            <!-- Modal Header -->
-            <!-- Modal body -->
-            <div class="modal-body d-flex align-items-end justify-content-center" style="min-height: 150px;">
-                <div class="Delt-content text-center">
-                    <h4 style="margin-bottom: 22px; font-size: 22px; font-weight: 600; ">Are you sure to start this task?</h4>
-                    <p style="color: #080808; max-width: 350px;" >
-                        Please note: Once you start it, you will not be able to make any changes in this DRS.
-                    </p>
-                </div>
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <div class="col-12 d-flex align-items-center justify-content-end" style="gap: 1rem">
-                    <button type="button" class="btn btn-outline-primary submitButton" data-dismiss="modal">
-                        <span class="indicator-label">Cancel</span>
-                    </button>
-                    <button type="button" class="btn btn-primary submitButton confirmStartClick">
-                        <span class="indicator-label">Yes</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{{-- end start confirm modal --}}

@@ -180,37 +180,33 @@ class PickupRunSheetController extends Controller
         $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         // }
         // get vehicles
-        $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-        ->where('status', '!=', '3')
-        ->pluck('vehicle_id')
-        ->toArray();
+        // $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
+        // ->where('status', '!=', '3')
+        // ->pluck('vehicle_id')
+        // ->unique()
+        // ->toArray();
 
-        // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique($prsVehicleIds);
-
-        // Fetch vehicles that are not in the merged array //vehicle not in prs
-        $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('id', $mergedVehicleIds)
-        ->select('id', 'regn_no')
-        ->get();
+        // // Fetch vehicles that are not in the merged array //vehicle not in prs
+        // $vehicles = Vehicle::where('status', '1')
+        // ->whereNotIn('id', $prsVehicleIds)
+        // ->select('id', 'regn_no')
+        // ->get();
 
         // get drivers
-        $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-        ->where('status', '!=', '3')
-        ->pluck('driver_id')
-        ->toArray();
+        // $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
+        // ->where('status', '!=', '3')
+        // ->pluck('driver_id')
+        // ->unique()
+        // ->toArray();
 
-        // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique(array_merge($prsDriverIds));
+        // // Fetch drivers who are not in the merged array
+        // $drivers = Driver::where('status', '1')
+        // ->whereNotIn('id', $prsDriverIds)
+        // ->select('id', 'name', 'phone')
+        // ->get();
 
-        // Fetch drivers who are not in the merged array
-        $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $mergedDriverIds)
-        ->select('id', 'name', 'phone')
-        ->get();
-
-        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $locations = Location::select('id', 'name')->get();
@@ -820,47 +816,9 @@ class PickupRunSheetController extends Controller
         $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
 
         $getprs = PickupRunSheet::where('id', $id)->with('PrsRegClients', 'PrsRegClients.RegConsigner')->first();
-        $selectedVehicle = array($getprs->VehicleDetail->id);
-        $selectedDriver  = array($getprs->DriverDetail->id);
-        
-        // get vehicles
-        $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-        ->where('status', '!=', '3')
-        ->pluck('vehicle_id')
-        ->toArray();
-        
-        $matchedVehicleData = array_unique(array_intersect($prsVehicleIds, $selectedVehicle));
-        // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique(array_merge( $prsVehicleIds,$selectedVehicle));
-        $filteredVehicleIds = array_diff($mergedVehicleIds, $matchedVehicleData);
-
-        // Fetch vehicles that are not in the merged array
-        $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('id', $filteredVehicleIds)
-        ->select('id', 'regn_no')
-        ->get();
-
-        // get drivers
-        $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-        ->where('status', '!=', '3')
-        ->pluck('driver_id')
-        ->toArray();
-
-        $matchedDriverData = array_unique(array_intersect($prsDriverIds, $selectedDriver));
-
-        // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique(array_merge($prsDriverIds, $selectedDriver));
-
-        $filteredDriverIds = array_diff($mergedDriverIds, $matchedDriverData);
-        
-
-        // Fetch drivers who are not in the merged array
-        $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $filteredDriverIds)
-        ->select('id', 'name', 'phone')
-        ->get();
-        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+       
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $locations = Location::select('id', 'name')->get();

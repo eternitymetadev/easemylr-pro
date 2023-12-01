@@ -288,11 +288,10 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
-            <?php } ?>
+            <?php }} ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
-            <?php } ?>
         </ul>
     </li>
     <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>

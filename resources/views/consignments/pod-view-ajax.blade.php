@@ -184,7 +184,9 @@
                         @endif
                         </div>
                         {{-- delete image of pods //its working delte pod commented now--}}
-                        {{-- <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id == 8){ ?>
+                        <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
                             data-id="{{$consignment->id}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -196,7 +198,8 @@
                                 <line x1="10" y1="11" x2="10" y2="17"></line>
                                 <line x1="14" y1="11" x2="14" y2="17"></line>
                             </svg>
-                        </a> --}}
+                        </a>
+                        <?php } ?>
                     </div>
                     @else
                     <div style="min-height: 50px" class="d-flex align-items-center">

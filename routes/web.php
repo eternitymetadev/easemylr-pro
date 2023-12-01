@@ -799,6 +799,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::post('add-unverified-lr', [ConsignmentController::class, 'addunverifiedLr']);
     Route::any('create-lr-form', [ConsignmentController::class, 'createNewLrForm']);
     Route::post('consignments/new-lr-create', [ConsignmentController::class, 'newStoreLr']);
+    Route::post('transaction-sheet/create-reattempt', [ConsignmentController::class, 'storeReattempt']);
+
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
@@ -1063,6 +1065,7 @@ Route::group(['prefix'=>'lr-cancel', 'middleware'=>['auth','PermissionCheck']], 
     Route::any('get-delivery-dateLR', [ConsignmentController::class, 'getDeleveryDateLr']);
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
+    Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
 
 });
 
