@@ -442,7 +442,7 @@
                             "<tr><input type='hidden' name='data[" +
                             i + "][id]' value=" + value.id + " ><td>" + value
                             .consignment_id +
-                            "</td><td>" + value.invoice_no + "</td><td><input type='text' name='data[" + i +
+                            "</td><td>" + value.invoice_no + "</td><td><input type='number' name='data[" + i +
                                 "][e_way_bill]' value="+billno+"></td><td><input type='date' name='data[" + i +
                                 "][e_way_bill_date]' value="+billdate+"></td></tr>");
                         i++;

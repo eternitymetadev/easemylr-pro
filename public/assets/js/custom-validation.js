@@ -2247,7 +2247,7 @@ $("#all_inv_save").submit(function (e) {
                         var billno =
                             "<input type='text' name='data[" +
                             i +
-                            "][e_way_bill]' >";
+                            "][e_way_bill]'>";
                     } else {
                         var billno = value.e_way_bill;
                     }
