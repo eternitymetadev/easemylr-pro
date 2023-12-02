@@ -5927,7 +5927,6 @@ class ConsignmentController extends Controller
     //create reattempt reason from drs list
     public function storeReattempt(Request $request)
     {
-        dd($request->all());
         try {
             DB::beginTransaction();
 
@@ -5954,12 +5953,12 @@ class ConsignmentController extends Controller
 
             $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->pluck('reattempt_reason')->first();
 
-            if($request->otherText == null || $request->otherText = ''){
+            if($request->otherText == null || $request->otherText == ''){
                 $otherText = '';
             }else{
                 $otherText = $request->otherText;
             }
-
+            
             if ($lastreattempt  == null || $lastreattempt  == '') {
                 $respons = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText'=>$otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
                 $respons_data = json_encode([$respons]);
@@ -6004,7 +6003,6 @@ class ConsignmentController extends Controller
             $response['redirect_url'] = $url;
         }
         return response()->json($response);
-
     }
     
 }

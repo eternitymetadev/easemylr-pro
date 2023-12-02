@@ -890,7 +890,7 @@ jQuery(document).ready(function(){
                 required: true
             },
             total_weight:{
-                min: 1500,
+                // min: 1500,
                 validNumber: true,
                 number: true,
             },

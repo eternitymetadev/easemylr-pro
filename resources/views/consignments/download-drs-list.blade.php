@@ -203,6 +203,8 @@
             });
 
             $(document).on('click', '.reAttemptBtn', function() {
+                $('#reattempt-reason')[0].reset();
+
                 var get_lrid = $(this).attr("data-lrid");
                 var get_drsno = $(this).attr("data-drsno");
                 $("#reattempt_lrid").val(get_lrid);
@@ -278,7 +280,6 @@
                                         <td>${value.consignment_detail.total_weight}</td>
                                         <td><button type='button' data-id="${value.consignment_no}" ${re.fetch.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
                                     </tr>`);
-
                     });
                     var rowCount = $("#sheet tbody tr").length;
                     $("#total_box").html("No Of Boxes: " + totalBox);
@@ -314,7 +315,6 @@
                         `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
                         $('#vehicle_type').append(newVehicleTypeOption);
                     }
-                   
                 }
             });
         }
@@ -327,7 +327,6 @@
             $('#opm').find('input, textarea, select').val('');
             
             fetchLrDetails(drsId)
-
 
             $("#mainLoader").show();
             $(".loader").show();
@@ -379,11 +378,7 @@
                             .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
                             value
                             .total_weight + "</td></tr>");
-
-                            
-                            
-                    });
-                   
+                    });                   
 
                     $('#vehicle_no').select2();
                     $('#driver_id').select2();
