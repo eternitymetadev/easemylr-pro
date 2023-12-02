@@ -1506,10 +1506,10 @@ jQuery(document).ready(function () {
     });
     ///////////////////////get data successful model++++++++++++++++++++++++++++
 
-
+    // on partial btn click in drs list //
     jQuery(document).on("click", ".drs_cancel", function (event) {
         event.stopPropagation();
-
+        
         let drs_no = jQuery(this).attr("drs-no");
         var data = { drs_no: drs_no };
         var base_url = window.location.origin;
@@ -1564,7 +1564,7 @@ jQuery(document).ready(function () {
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
-                    console.log('asdf', deliverydate, typeof(deliverydate))
+                    console.log(deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
                         `<tr>
                             <td>
@@ -1583,7 +1583,7 @@ jQuery(document).ready(function () {
                             <td>${deliverydate}</td>
                             <td>${
                                 value.dd == null
-                                ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
+                                ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
                                 : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`
                                 }
                         </td>
@@ -1600,7 +1600,7 @@ jQuery(document).ready(function () {
     ///// Drs Cncel status update ////////
     jQuery(document).on("click", ".drs_cancel", function (event) {
         event.stopPropagation();
-
+        
         let drs_no = jQuery(this).attr("drs-no");
         var dataaction = jQuery(this).attr("data-action");
         var updatestatus = "updatestatus";

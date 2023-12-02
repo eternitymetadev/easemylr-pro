@@ -5925,7 +5925,9 @@ class ConsignmentController extends Controller
     }
 
     //create reattempt reason from drs list
-    public function storeReattempt(Request $request){
+    public function storeReattempt(Request $request)
+    {
+        dd($request->all());
         try {
             DB::beginTransaction();
 
@@ -5952,11 +5954,17 @@ class ConsignmentController extends Controller
 
             $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->pluck('reattempt_reason')->first();
 
+            if($request->otherText == null || $request->otherText = ''){
+                $otherText = '';
+            }else{
+                $otherText = $request->otherText;
+            }
+
             if ($lastreattempt  == null || $lastreattempt  == '') {
-                $respons = array('reattempt_reason' => $request->reattempt_reason, 'otherText'=>$request->otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+                $respons = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText'=>$otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
                 $respons_data = json_encode([$respons]);
             } else {
-                $respons2 = array('reattempt_reason' => $request->reattempt_reason, 'otherText'=>$request->otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
+                $respons2 = array('drs_no' => $request->drs_no, 'reattempt_reason' => $request->reattempt_reason, 'otherText'=>$otherText, 'user_id'=>$authuser->id, 'create_at' => $currentdate);
                 
                 if (!empty($lastreattempt)) {
                     $st = json_decode($lastreattempt, true);

@@ -204,7 +204,9 @@
 
             $(document).on('click', '.reAttemptBtn', function() {
                 var get_lrid = $(this).attr("data-lrid");
+                var get_drsno = $(this).attr("data-drsno");
                 $("#reattempt_lrid").val(get_lrid);
+                $("#reattempt_drsno").val(get_drsno);
             });
 
 
@@ -291,11 +293,7 @@
                     $("#totallr").append(rowCount);
 
                     showLibrary();
-                    // console.log(re.fetch_lrs.driver_id);
-                    // $("#vehicle_no").val(re.fetch_lrs.vehicle_id).trigger('change');
-                    // $("#driver_id").val(re.fetch_lrs.driver_id).trigger('change');
-                    // $("#vehicle_type").val(re.fetch_lrs.vehicle_type).trigger('change');
-                    
+                                        
                     $("#Transporter").val(re.fetch_lrs.transporter_name);
                     $("#draft_purchase").val(re.fetch_lrs.purchase_price);
                     

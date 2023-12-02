@@ -580,6 +580,7 @@
                     method="POST" action="{{ url($prefix . '/transaction-sheet/create-reattempt') }}">
                     @csrf
                     <input type="hidden" name="lr_id" id="reattempt_lrid" value="" />
+                    <input type="hidden" name="drs_no" id="reattempt_drsno" value="" />
                     <div class="form-group" style="width: 90%">
                         <label for="reason">Reason Select</label>
                         <select class="form-control form-control-sm" id="reason" name="reattempt_reason"
