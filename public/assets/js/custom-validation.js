@@ -2217,7 +2217,7 @@ $("#allsave").submit(function (e) {
 //////////////////////////////////
 $("#all_inv_save").submit(function (e) {
     e.preventDefault();
-
+    $(this).closest('form').find(':submit').prop('disabled', true);
     var formData = new FormData(this);
     console.log(formData);
     $.ajax({
