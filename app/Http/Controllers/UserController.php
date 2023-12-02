@@ -110,10 +110,20 @@ class UserController extends Controller
         $usersave['user_password'] = $request->password;
         // $usersave['branch_id']     = $request->branch_id;
         $usersave['phone']         = $request->phone;
-        if(!empty($request->branch_id)){
-            $branch = $request->branch_id;
-            $usersave['branch_id']  = implode(',',$branch);
+        // if(!empty($request->branch_id)){
+        //     $branch = $request->branch_id;
+        //     $usersave['branch_id']  = implode(',',$branch);
+        // }
+        if ($request->has('branch_id')) {
+            if (is_array($request->branch_id)) {
+                // Multiple selection
+                $usersave['branch_id'] = implode(',', $request->branch_id);
+            } else {
+                // Single selection
+                $usersave['branch_id'] = $request->branch_id;
+            }
         }
+        
         if(!empty($request->baseclient_id)){
             $usersave['baseclient_id'] = $request->baseclient_id;
         }
@@ -242,9 +252,24 @@ class UserController extends Controller
         $usersave['role_id']    = $request->role_id;
         $usersave['phone']      = $request->phone;
         $usersave['rm_assign']  = $request->rm_id;
-        // $usersave['branch_id']  = $request->branch_id;
-        $branch = $request->branch_id;
-        $usersave['branch_id']  = implode(',',$branch); 
+        // dd($request->branch_id);
+        // $branch = $request->branch_id;
+        // $usersave['branch_id']  = implode(',',$branch); 
+
+        if ($request->has('branch_id')) {
+            if (is_array($request->branch_id)) {
+                // Multiple selection
+                $usersave['branch_id'] = implode(',', $request->branch_id);
+            } else {
+                // Single selection
+                $usersave['branch_id'] = $request->branch_id;
+            }
+        }
+
+        if(!empty($request->regionalclient_id)){
+            $regclients = $request->regionalclient_id;
+            $usersave['regionalclient_id'] = implode(',', $regclients);
+        }
 
         if(!empty($request->password)){
             $usersave['password'] = Hash::make($request->password);
