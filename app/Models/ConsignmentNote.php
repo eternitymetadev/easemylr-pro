@@ -63,6 +63,7 @@ class ConsignmentNote extends Model
         'delivery_notes',
         'delivery_date',
         'signed_drs',
+        'multiple_signeddrs',
         'pod_userid',
         'e_way_bill',
         'e_way_bill_date',

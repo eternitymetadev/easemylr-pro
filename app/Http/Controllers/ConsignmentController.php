@@ -5783,50 +5783,62 @@ class ConsignmentController extends Controller
         return Excel::download(new PodExport($request->startdate, $request->enddate, $request->regclient_id), 'Pod.xlsx');
     }
 
+    // upload pod from pod view list page
     public function updatePod(Request $request)
     {
         try {
-
             $lr_no = $request->lr_no;
-
             $authuser = Auth::user();
             $login_branch = $authuser->branch_id;
             $location = Location::where('id', $login_branch)->first();
 
-            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            // if ($get_delivery_branch->lr_type == 0) {
-            //     $delivery_branch = $get_delivery_branch->branch_id;
-            // } else {
-            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-            //         $delivery_branch = $get_delivery_branch->branch_id;
-            //     }else{
-            //         $delivery_branch = $get_delivery_branch->to_branch_id;
+            // $pod_img = $request->file('pod');
+            // //     $file->move(public_path('drs/Image'), $filename);
+            // if ($pod_img) {
+            //     $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
+            
+            //     if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
+            //         $imagePath = explode('/', $originalFilename);
+            //         $filename = end($imagePath);
+            //     } else {
+            //         $filename = null;
             //     }
+            // } else {
+            //     $filename = null;
             // }
-
-            // if ($login_branch != $delivery_branch) {
-
-            //     $response['success'] = false;
-            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-            //     return Response::json($response);
-            // }
-
-            $pod_img = $request->file('pod');
-            //     $file->move(public_path('drs/Image'), $filename);
-            if ($pod_img) {
-                $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
             
-                if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
-                    $imagePath = explode('/', $originalFilename);
-                    $filename = end($imagePath);
-                } else {
-                    $filename = null;
+            // ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+
+
+            // Assuming $request has the input for multiple images with the key 'pod'
+            $pod_images = $request->file('pod');
+
+            if ($pod_images && count($pod_images) > 0) {
+                // Initialize variables
+                $signed_drs = null;
+                $multiple_signeddrs = [];
+
+                // Process the first image to save in signed_drs field
+                $firstImage = array_shift($pod_images); // Remove the first image from the array
+                $signed_drs = $this->saveImage($firstImage); // Save the first image and get the filename
+
+                // Process the rest of the images to save in multiple_signeddrs field
+                foreach ($pod_images as $image) {
+                    $filename = $this->saveImage($image);
+                    if ($filename) {
+                        $multiple_signeddrs[] = $filename;
+                    }
                 }
-            } else {
-                $filename = null;
-            }
-            
-            ConsignmentNote::where('id', $lr_no)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_status' => 'Successful', 'delivery_date' => $request->delivery_date]);
+
+                // Update the database fields with the image filenames
+                ConsignmentNote::where('id', $lr_no)->update([
+                    'signed_drs' => $signed_drs,
+                    'multiple_signeddrs' => json_encode($multiple_signeddrs), // Save as JSON array
+                    'pod_userid' => $authuser->login_id,
+                    'delivery_status' => 'Successful',
+                    'delivery_date' => $request->delivery_date
+                ]);
+            }            
 
             // =================== task assign ====== //
             $mytime = Carbon::now('Asia/Kolkata');
@@ -5854,6 +5866,20 @@ class ConsignmentController extends Controller
             $response['messages'] = $bug;
             return Response::json($response);
         }
+    }
+
+    // Function to save the image and return the filename
+    private function saveImage($image)
+    {
+        $filename = null;
+        if ($image) {
+            $originalFilename = uniqid() . '_' . $image->getClientOriginalName();
+
+            if (Storage::disk('s3')->putFileAs('pod_images', $image, $originalFilename)) {
+                $filename = $originalFilename;
+            }
+        }
+        return $filename;
     }
 
     public function changePodMode(Request $request)

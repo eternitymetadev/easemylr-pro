@@ -186,8 +186,8 @@ label.statusLabel {
                     <input type="hidden" name="dispatch_date" id="dispatch_date" value="" />
                     <div class="form-group col-12">
                         <label class="control-label">Image</label>
-                        <input type="file" class="form-control" id="image-url" accept="image/*" placeholder="Image URL"
-                            name="pod" style="border: none;" />
+                        <input type="file" class="form-control" id="image-url" name="pod[]" multiple accept="image/*" style="border: none;" placeholder="Image URL"
+                             />
                     </div>
                     <div class="form-group col-12">
                         <label class="control-label">Delivery Date</label>
