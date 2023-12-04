@@ -407,6 +407,7 @@
         /////////////Start btn drs list///////////////////
     
         $(document).on('click', '.ewayupdate', function() {
+            $("#all_inv_save").closest('form').find(':submit').prop('disabled', false);
 
             var consignment_id = $(this).attr('data-id');
             $('#modal-2').modal('show');
@@ -447,7 +448,6 @@
                                 "][e_way_bill_date]' value="+billdate+"></td></tr>");
                         i++;
                     });
-
                 }
             });
 
