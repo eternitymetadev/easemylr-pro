@@ -164,24 +164,93 @@
                     // old path ('/drs/Image/' . $consignment->signed_drs);
 
                     $awsUrl = env('AWS_S3_URL');
-                    $img = $awsUrl.'/pod_images/' . $consignment->signed_drs;
+                    // $img = $awsUrl.'/pod_images/' . $consignment->signed_drs;
 
                     $pdfcheck = explode('.',$consignment->signed_drs);
+
+
+                    $signed_drs = [
+                        $consignment->signed_drs,
+                        // Add other image paths to the $signed_drs array if needed
+                    ];
+
+                    $multiple_signeddrs = [
+                        $consignment->multiple_signeddrs
+                        // Add other image paths to the $multiple_signeddrs array if needed
+                    ];
+
+                    $all_images = [];
+
+                    // Merge both arrays into a single array
+                    $all_images = array_merge($signed_drs, $multiple_signeddrs);
+
+                    // $pdf_files = [];
+                    // $image_files = [];
+
+                    // foreach ($all_images as $filename) {
+                    //     $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                    //     if (strtolower($extension) === 'pdf') {
+                    //         $pdf_files[] = $filename;
+                    //     } else {
+                    //         $image_files[] = $filename;
+                    //     }
+                    // }
+
+                    // $image_urls = [];
+                    // $pdf_urls = [];
+
+                    // Assuming $awsUrl is defined elsewhere
+                    // $awsUrl = 'YOUR_AWS_URL_HERE';
+
+                    // Construct URLs for images
+                    // foreach ($image_files as $image) {
+                    //     $image_urls[] = $awsUrl . '/pod_images/' . $image;
+                    // }
+
+                    // Construct URLs for PDFs
+                    // foreach ($pdf_files as $pdf) {
+                    //     $pdf_urls[] = $awsUrl . '/pdf_files/' . $pdf;
+                    // }
+
+                    // Now you have $image_urls containing URLs for image files and $pdf_urls containing URLs for PDF files.
+
+                    
+
                 ?>
 
                 <td style="max-width: 260px; vertical-align: middle">
                     @if (!empty($consignment->signed_drs))
                     <div class="d-flex align-items-center">
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
-                        @if(@$pdfcheck[1] == 'pdf')
-                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab" data-toggle="modal"
-                                data-target="#exampleModalPdf"
-                                style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
-                        @else
+                            <?php   
+                            $mergedArray = [];
+                            foreach ($all_images as $item) {
+                                if (is_array($item)) {
+                                    $mergedArray = array_merge($mergedArray, $item);
+                                } else {
+                                    $decodedArray = json_decode($item, true);
+                                    if (is_array($decodedArray)) {
+                                        $mergedArray = array_merge($mergedArray, $decodedArray);
+                                    } else {
+                                        $mergedArray[] = $item;
+                                    }
+                                }
+                            }
+                            // echo "<pre>"; print_r($mergedArray); die;
+
+                            foreach ($mergedArray as $filename) {
+                                $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                                // echo "<pre>"; print_r($extension); die;
+                                $img = $awsUrl.'/pod_images/' . $filename;
+                                if (strtolower($extension) === 'pdf') {  
+                                    ?>
+                        {{-- @if(@$pdfcheck[1] == 'pdf') --}}
+                            <img src="{{asset('assets/img/unnamed.png')}}" pdf-nm="{{$img}}" class="viewpdfInNewTab" data-toggle="modal" data-target="#exampleModalPdf" style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />
+                        <?php }else{ ?>
                         <img src="{{$img}}"  class="viewImageInNewTab" data-toggle="modal"
                                 data-target="#exampleModal"
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />  
-                        @endif
+                        <?php } } ?>
                         </div>
                         {{-- delete image of pods //its working delte pod commented now--}}
                         <?php $authuser = Auth::user(); 
