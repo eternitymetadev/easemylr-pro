@@ -202,7 +202,6 @@ class UserController extends Controller
         $getuserpermissions = UserPermission::where('user_id',$id)->get();
         $branches = Helper::getLocations();
         $getclients = Helper::getRegionalClients();
-        
         $u = array();
         if(count($getuserpermissions) > 0)
         {
@@ -252,20 +251,36 @@ class UserController extends Controller
         $usersave['role_id']    = $request->role_id;
         $usersave['phone']      = $request->phone;
         $usersave['rm_assign']  = $request->rm_id;
-        // dd($request->branch_id);
+        
         // $branch = $request->branch_id;
         // $usersave['branch_id']  = implode(',',$branch); 
 
-        if ($request->has('branch_id')) {
-            if (is_array($request->branch_id)) {
-                // Multiple selection
-                $usersave['branch_id'] = implode(',', $request->branch_id);
-            } else {
-                // Single selection
-                $usersave['branch_id'] = $request->branch_id;
+        // if ($request->has('branch_id')) {
+        //     if (is_array($request->branch_id)) {
+        //         // Multiple selection
+        //         $usersave['branch_id'] = implode(',', $request->branch_id);
+        //     } else {
+        //         // Single selection
+        //         $usersave['branch_id'] = $request->branch_id;
+        //     }
+        // }
+
+        // Updated attribute name according to the changes
+        if($request->role_id == "2" || $request->role_id == "4"){
+            if ($request->branch_id_single) {
+                $usersave['branch_id'] = $request->branch_id_single;
+            } 
+        }
+        if($request->role_id == "3" || $request->role_id == "5" || $request->role_id == "7"){
+            if ($request->has('branch_id')) {
+                if (is_array($request->branch_id)) {
+                    $usersave['branch_id'] = implode(',', $request->branch_id);
+                } else {
+                    $usersave['branch_id'] = $request->branch_id;
+                }
             }
         }
-
+        
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
             $usersave['regionalclient_id'] = implode(',', $regclients);
