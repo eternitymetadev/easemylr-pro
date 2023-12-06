@@ -1387,7 +1387,6 @@ class VendorController extends Controller
 
     public function paymentReportView(Request $request)
     {
-        //
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1412,15 +1411,13 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+            $query = PaymentHistory::with(['PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype']);
 
             if ($authuser->role_id == 2) {
                 $query->whereHas('PaymentRequest', function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc);
                 });
-            } else {
-                $query = $query;
-            }
+            } 
             // $payment_lists = $query->groupBy('transaction_id')->get();
 
             if (!empty($request->search)) {
@@ -1428,19 +1425,20 @@ class VendorController extends Controller
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cnrquery) use ($search, $searchT) {
-                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cneequery) use ($search, $searchT) {
-                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        });
+                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                        // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        //     $regclientquery->where('name', 'like', '%' . $search . '%');
+                        // })
+                        // ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cnrquery) use ($search, $searchT) {
+                        //         $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // })
+                        // ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cneequery) use ($search, $searchT) {
+                        //         $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // });
 
                 });
             }
@@ -1471,18 +1469,22 @@ class VendorController extends Controller
         }
 
         $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        // $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
+        $query = PaymentHistory::with([
+            'PaymentRequest.Branch', 
+            'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 
+            'PaymentRequest.VendorDetails', 
+            'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 
+            'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype'
+        ]);
 
         if ($authuser->role_id == 2) {
             $query->whereHas('PaymentRequest', function ($query) use ($cc) {
                 $query->whereIn('branch_id', $cc);
             });
-        } else {
-            $query = $query;
         }
 
         $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
