@@ -76,17 +76,13 @@
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
-                                        $cc = explode(',',$getuser->branch_id);
+                                        // $cc = explode(',',$getuser->branch_id);
                                         foreach ($branches as $key => $branch) {
                                             // $selected = in_array($key, $cc) ? 'selected' : '';
                                     ?>
 
                                     <option value="{{ $key }}" {{ $getuser->branch_id == $key ? 'selected' : ''}}>{{ucwords($branch)}}</option>
 
-
-                                    {{-- <option value="{{ $key }}" {{ (old('branch_id') == $key || in_array($key, $cc)) ? 'selected' : '' }}>
-                                        {{ ucwords($branch) }}
-                                    </option> --}}
                                         {{-- <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option> --}}
                                         <?php 
                                         }
