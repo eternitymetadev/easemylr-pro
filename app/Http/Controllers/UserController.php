@@ -225,7 +225,6 @@ class UserController extends Controller
         
     public function updateUser(Request $request)
     {
-        // dd($request->all());
       try { 
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
