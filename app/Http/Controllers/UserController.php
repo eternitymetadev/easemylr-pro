@@ -243,8 +243,24 @@ class UserController extends Controller
         $usersave['phone']      = $request->phone;
         $usersave['rm_assign']  = $request->rm_id;
         // $usersave['branch_id']  = $request->branch_id;
-        $branch = $request->branch_id;
-        $usersave['branch_id']  = implode(',',$branch); 
+        // $branch = $request->branch_id;
+        // $usersave['branch_id']  = implode(',',$branch); 
+
+        // Updated attribute name according to the changes
+        if($request->role_id == "2" || $request->role_id == "4"){
+            if ($request->branch_id_single) {
+                $usersave['branch_id'] = $request->branch_id_single;
+            } 
+        }
+        if($request->role_id == "3" || $request->role_id == "5" || $request->role_id == "7"){
+            if ($request->has('branch_id')) {
+                if (is_array($request->branch_id)) {
+                    $usersave['branch_id'] = implode(',', $request->branch_id);
+                } else {
+                    $usersave['branch_id'] = $request->branch_id;
+                }
+            }
+        }
 
         if(!empty($request->regionalclient_id)){
             $regclients = $request->regionalclient_id;
