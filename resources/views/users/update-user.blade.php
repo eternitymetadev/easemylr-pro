@@ -72,15 +72,22 @@
                             </div>
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control" id="branch_id" name="branch_id">
+                                <select class="form-control" id="branch_id" name="branch_id_single">
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
                                         $cc = explode(',',$getuser->branch_id);
                                         foreach ($branches as $key => $branch) {
-                                            $selected = in_array($key,$cc) ? 'selected' : '';
+                                            // $selected = in_array($key, $cc) ? 'selected' : '';
                                     ?>
-                                        <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option>
+
+                                    <option value="{{ $key }}" {{ $getuser->branch_id == $key ? 'selected' : ''}}>{{ucwords($branch)}}</option>
+
+
+                                    {{-- <option value="{{ $key }}" {{ (old('branch_id') == $key || in_array($key, $cc)) ? 'selected' : '' }}>
+                                        {{ ucwords($branch) }}
+                                    </option> --}}
+                                        {{-- <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option> --}}
                                         <?php 
                                         }
                                     }
@@ -167,6 +174,7 @@
 @endsection
 @section('js')
 <script>
+
 // $('#role_id').change(function() {
 $(document).ready(function() {
     var role_id = $('#role_id').val();
