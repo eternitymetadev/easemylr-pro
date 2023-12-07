@@ -71,7 +71,7 @@
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="page-header layout-spacing">
-                    <h2 class="pageHeading">Create Hrs</h2>
+                    <h2 class="pageHeading">Create Hrs </h2>
                 </div>
 
 
@@ -97,6 +97,8 @@
                                        id="myInput" type="text" placeholder="search..."/>
                             </div>
                         </div>
+                        
+                        {{-- <p class="totalcount">Total Count: <span class="reportcount">{{$consignments->count()}}</span></p> --}}
                         @csrf
                         <table id="unverified-table" class="table table-hover" style="width:100%">
                             <thead>
@@ -239,13 +241,27 @@
         });
 
 
-        $('#unverified-table').DataTable(
-            {
-                dom: 'lrt',
-                "lengthChange": false,
-                orderable: false,
-            },
-        );
+    //     $('#unverified-table').DataTable(
+    //         {
+    //             dom: 'lrt',
+    //             "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+    //             "lengthChange": true,
+    //             "paging": true, // Enable pagination
+    //             "pageLength": 50,
+    //             "order": [], // Define initial sorting (if needed)
+    // "ordering": true, // Enable sorting
+    //             orderable: false,
+    //         });
+        $('#unverified-table').DataTable({
+            dom: 'lrt<"float-right"p>',
+            "lengthMenu": [ [25, 50, -1], [25, 50, "All"] ],
+            "lengthChange": true,
+            "paging": true, // Enable pagination
+            "pageLength": 50, // Set the default number of records per page
+            "order": [], // Define initial sorting (if needed)
+            "ordering": true, // Enable sorting
+        });
+        // 
 
 
         $('#myInput').on('keyup', function () {

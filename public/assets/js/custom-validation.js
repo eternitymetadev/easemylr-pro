@@ -1540,7 +1540,11 @@ jQuery(document).ready(function () {
                     var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
                     if (value.signed_drs == null) {
-                        var field = `<input type='file' name="data[${i}][img]" data-id="${value.consignment_no}" placeholder="Choose image" class="drs_image ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.signed_drs}" ${value.lr_mode == 2 && 'disabled'} />`;
+                        if(value.status == 4){
+                            var field = '';
+                        }else{
+                            var field = `<input type='file' name="data[${i}][img]" data-id="${value.consignment_no}" placeholder="Choose image" class="drs_image ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.signed_drs}" ${value.lr_mode == 2 && 'disabled'} />`;
+                        }
                     } else {
                         var field =
                             "<a href='" +
@@ -1549,9 +1553,12 @@ jQuery(document).ready(function () {
                     }
                     // delivery date//
                     if (value.dd == null) {
-                        var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown='return false'>`;
-                           
-                    } else {
+                        if(value.status == 4){
+                            var deliverydate = '';
+                        }  else{
+                            var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown='return false'>`;
+                        }
+                    }else {
                         var deliverydate = value.dd;
                     }
 
@@ -1582,13 +1589,15 @@ jQuery(document).ready(function () {
                             <td>${edd_date}</td>
                             <td>${deliverydate}</td>
                             <td>${
-                                value.dd == null
-                                ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
+                                value.dd == null ?  
+                                    value.status == 4 
+                                    ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" style="--btnColor: #fef3d5">Re-Attempted</a>`
+                                    : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
                                 : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`
                                 }
                         </td>
                             <td>${field}</td>
-                            <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${value.dd == null && value.status != 4 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
                         </tr>`
                     );
                     i++;

@@ -75,7 +75,6 @@ class HubtoHubController extends Controller
 
     public function createHrs(Request $request)
     {
-
         $consignmentId = $_POST['consignmentID'];
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
