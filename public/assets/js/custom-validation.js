@@ -1597,7 +1597,7 @@ jQuery(document).ready(function () {
                                 }
                         </td>
                             <td>${field}</td>
-                            <td>${value.dd == null && value.status != 4 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${value.dd == null && value.is_started != 1 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
                         </tr>`
                     );
                     i++;

@@ -1643,7 +1643,6 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
-        //
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
