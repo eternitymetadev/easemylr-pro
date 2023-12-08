@@ -568,7 +568,7 @@ class PickupRunSheetController extends Controller
                     $today_date = Carbon::now();
                     $consignment_date = $today_date->format('Y-m-d');
 
-                    $consignmentsave['regclient_id'] = $getRegclient->regionalclient_id;
+                    $consignmentsave['regclient_id'] = @$getRegclient->regionalclient_id;
                     $consignmentsave['consigner_id'] = $request->consigner_id;
                     $consignmentsave['consignment_date'] = $consignment_date;
                     $consignmentsave['user_id'] = $authuser->id;
