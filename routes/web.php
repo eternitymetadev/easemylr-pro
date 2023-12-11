@@ -619,6 +619,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::get('/sample-consigner',[ImportCsvController::class, 'consignerSampleDownload']);
     Route::get('/sample-vehicle',[ImportCsvController::class, 'vehicleSampleDownload']);
     Route::get('/sample-driver',[ImportCsvController::class, 'driverSampleDownload']);
+    Route::get('/sample-deliverydate',[ImportCsvController::class, 'deliverydateSampleDownload']);
+    Route::get('/sample-manualdelivery',[ImportCsvController::class, 'manualdeliverySampleDownload']);
 
     Route::resource('clients', ClientController::class);
 
