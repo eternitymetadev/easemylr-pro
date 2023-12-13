@@ -3093,9 +3093,10 @@ class ConsignmentController extends Controller
 
     public function getdeliverydatamodel(Request $request)
     {
-        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs', 'consignment_notes.lr_mode as lr_mode')
+        $transcationview = DB::table('transaction_sheets')->select('transaction_sheets.*', 'consignment_notes.status as lrstatus', 'consignment_notes.edd as edd', 'consignment_notes.delivery_date as dd', 'consignment_notes.signed_drs as signed_drs', 'consignment_notes.lr_mode as lr_mode', 'consignment_notes.reattempt_reason')
             ->join('consignment_notes', 'consignment_notes.id', '=', 'transaction_sheets.consignment_no')->where('drs_no', $request->drs_no)->whereIn('transaction_sheets.status', ['0', '1', '3','4'])->get();
-        $result = json_decode(json_encode($transcationview), true);
+        // $result = json_decode(json_encode($transcationview), true);
+        $result = $transcationview;
         // echo'<pre>'; print_r($result); exit;
         $awsUrl = env('AWS_S3_URL');
 

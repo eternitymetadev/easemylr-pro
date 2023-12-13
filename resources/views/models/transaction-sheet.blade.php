@@ -49,6 +49,7 @@
                                     <th>Status</th>
                                     <th>Upload Image</th>
                                     <th>Action</th>
+                                    <th>Reattempt Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -1534,6 +1534,29 @@ jQuery(document).ready(function () {
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
                     console.log(value);
+
+                    var re_attemptArray;
+                    try {
+                        re_attemptArray = JSON.parse(value.reattempt_reason);
+                        console.log('123', re_attemptArray);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        return;
+                    }
+                    
+                    // var re_attemptArray = JSON.parse(value.reattempt_reason);
+                    
+                    let re_attemptText =  '';
+                    $.each(re_attemptArray, function(index, element) {
+                        if(element.drs_no == value.drs_no){
+                            if(element.otherText != '') {
+                                re_attemptText =  element.otherText;
+                            }else {
+                                re_attemptText =  element.reattempt_reason;
+                            }
+                        }
+                    });
+
                     var drs_sign = value.signed_drs;
                     // var storage_img = base_url + "/drs/Image/" + drs_sign;
                     var awsUrl = data.aws_url;
@@ -1568,10 +1591,21 @@ jQuery(document).ready(function () {
                         var edd_date = value.edd;
                     }
 
+                    let buttonContent;
+                    if (value.dd == null) {
+                        if (value.status == 4) {
+                            buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn disabled" style="--btnColor: #fef3d5">Re-Attempted</a>`;
+                        } else {
+                            buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #edd082" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`;
+                        }
+                    } else {
+                        buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`;
+                    }
+
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
 
-                    console.log(deliverydate, typeof(deliverydate))
+                    // console.log(deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
                         `<tr>
                             <td>
@@ -1587,17 +1621,11 @@ jQuery(document).ready(function () {
                                 ${value.city}
                             </td>
                             <td>${edd_date}</td>
-                            <td>${deliverydate}</td>
-                            <td>${
-                                value.dd == null ?  
-                                    value.status == 4 
-                                    ? `<a class="btn btn-primary btn-sm-primary reAttemptBtn" style="--btnColor: #fef3d5">Re-Attempted</a>`
-                                    : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #fef3d5" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`
-                                : `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`
-                                }
-                        </td>
+                            <td>${deliverydate}</td>                            
+                            <td>${ buttonContent }</td>                                                   
                             <td>${field}</td>
                             <td>${value.dd == null && value.is_started != 1 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${re_attemptText ?? '-'}</td>
                         </tr>`
                     );
                     i++;
