@@ -1582,7 +1582,7 @@ jQuery(document).ready(function () {
                         if(value.dd != null){
                             var deliverydate = value.dd;
                         }else{
-                            var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown='return false'>`;
+                            var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown="return false">`;
                         }
                     }
 

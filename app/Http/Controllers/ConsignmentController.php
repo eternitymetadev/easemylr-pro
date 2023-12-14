@@ -2223,7 +2223,7 @@ class ConsignmentController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->whereIn('status', ['1', '0', '3'])
+            $query = $query->whereIn('status', ['1', '0', '3', '4'])
                 ->groupBy('drs_no');
 
             if ($authuser->role_id == 1) {
@@ -2326,7 +2326,7 @@ class ConsignmentController extends Controller
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $query = $query
-            ->whereIn('status', ['1', '0', '3'])
+            ->whereIn('status', ['1', '0', '3', '4'])
             ->groupBy('drs_no');
 
         if ($authuser->role_id == 1) {
