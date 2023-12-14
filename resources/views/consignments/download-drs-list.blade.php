@@ -270,7 +270,7 @@
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
                                         <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
-                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail.edd ?? ''}" /></td>
+                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail.edd ?? ''}" onkeydown="return false"/></td>
                                         <td>${value.consignment_no}</td>
                                         <td>${value.consignment_date}</td>
                                         <td>${value.consignee_id}</td>
