@@ -103,12 +103,12 @@
                             <input type="text" class="form-control col-md-3 mb-0" placeholder="Vehicle Number Search"
                                 id="search" data-action="<?php echo url()->current(); ?>">
                             <div class="col-md-2">
-                                <label>from</label>
-                                <input type="date" id="startdate" class="form-control" name="startdate">
+                                <label>From</label>
+                                <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                             </div>
                             <div class="col-md-2">
                                 <label>To</label>
-                                <input type="date" id="enddate" class="form-control" name="enddate">
+                                <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                             </div>
                             <div class="form-group col-md-3 d-flex justify-content-end mb-0">
                                 <button type="button" id="filter_drspayment" class="btn btn-primary"

@@ -122,7 +122,7 @@
                                         '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                                         i + '][invoice_date]" value=' + value
                                         .invoice_date +
-                                        '></td>';
+                                        ' onkeydown="return false"></td>';
                                     rows +=
                                         '<td><input type="number" class="form-control form-small qnt" name="data[' +
                                         i + '][quantity]" value=' + value.quantity +
@@ -151,7 +151,7 @@
                                     i + '][lr_id]" value=""></td>';
                                 rows +=
                                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
-                                    i + '][invoice_date]" value=""></td>';
+                                    i + '][invoice_date]" value="" onkeydown="return false"></td>';
                                 rows +=
                                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                                     i + '][quantity]" value=""></td>';
@@ -177,7 +177,7 @@
                             '][lr_id]" value=""></td>';
                         rows +=
                             '<td><input type="date" class="form-control form-small invc_date" name="data[' +
-                            i + '][invoice_date]" value=""></td>';
+                            i + '][invoice_date]" value="" onkeydown="return false"></td>';
                         rows +=
                             '<td><input type="number" class="form-control form-small qnt" name="data[' +
                             i + '][quantity]" value=""></td>';

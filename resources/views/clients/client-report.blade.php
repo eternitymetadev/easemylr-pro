@@ -72,11 +72,11 @@
                             </div>
                             <div class="col-sm-2">
                                 <label>from</label>
-                                <input type="date" class="form-control" id="startdate" name="startdate">
+                                <input type="date" class="form-control" id="startdate" name="startdate" onkeydown="return false">
                             </div>
                             <div class="col-sm-2">
                                 <label>To</label>
-                                <input type="date" class="form-control" id="enddate" name="enddate">
+                                <input type="date" class="form-control" id="enddate" name="enddate" onkeydown="return false">
                             </div>
                             <div class="col-sm-2">
                             <button type="button" class="btn btn-primary" id="search_clientreport" style="margin-top: 31px; font-size: 15px; padding: 9px; width: 111px">Search</button>

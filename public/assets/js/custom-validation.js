@@ -645,7 +645,7 @@ jQuery(document).ready(function () {
                                             <td>
                                                 <div class="form-group form-group-sm">
                                                     <label>Invoice Date</label>
-                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
+                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]" onkeydown="return false">
                                                 </div>
                                             </td>
                                             <td>
@@ -664,7 +664,7 @@ jQuery(document).ready(function () {
                                             <td>
                                                 <div class="form-group form-group-sm">
                                                     <label>E-Way Bill Date</label>
-                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
+                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false">
                                                 </div>
                                             </td>
                                         </tr>
@@ -801,10 +801,10 @@ jQuery(document).ready(function () {
                                             <tr>
                                                 <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
                                                 <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
-                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]" onkeydown="return false"></td>
                                                 <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
                                                 <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
-                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false"></td>
                                                 <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
                                                 <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
                                                 <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
@@ -1107,7 +1107,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
-                    '][invoice_date]"></td>';
+                    '][invoice_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small invc_amt" name="data[' +
                     item_no +
@@ -1119,7 +1119,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small ewb_date" name="data[' +
                     item_no +
-                    '][e_way_bill_date]"></td>';
+                    '][e_way_bill_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
@@ -1167,7 +1167,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
-                    '][invoice_date]"></td>';
+                    '][invoice_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +

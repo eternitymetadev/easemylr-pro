@@ -47,11 +47,11 @@
                                 <?php } ?>
                                 <div style="width: 180px">
                                     <label>from</label>
-                                    <input type="date" id="startdate" class="form-control" name="startdate">
+                                    <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                                 </div>
                                 <div style="width: 180px">
                                     <label>To</label>
-                                    <input type="date" id="enddate" class="form-control" name="enddate">
+                                    <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                                 </div>
                                 
                                 <button type="button" id="filter_reportall" class="btn btn-primary"

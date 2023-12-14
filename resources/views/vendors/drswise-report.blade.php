@@ -55,11 +55,11 @@ div.relative {
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
                         <div class="col-sm-3">
                             <label>From</label>
-                            <input type="date" id="startdate" class="form-control" name="startdate">
+                            <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                         </div>
                         <div class="col-sm-3">
                             <label>To</label>
-                            <input type="date" id="enddate" class="form-control" name="enddate">
+                            <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                         </div>
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary" 

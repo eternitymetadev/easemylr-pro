@@ -106,12 +106,12 @@ label.statusLabel {
 
                         <div class="row justify-content-center" style="width: 100%">
                             <div class="col-sm-3">
-                                <label>from</label>
-                                <input type="date" id="startdate" class="form-control" name="startdate">
+                                <label>From</label>
+                                <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                             </div>
                             <div class="col-sm-3">
                                 <label>To</label>
-                                <input type="date" id="enddate" class="form-control" name="enddate">
+                                <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                             </div>
                             <div class="col-4 d-flex align-items-end">
                                 <button type="button" id="filter_reportall" class="btn btn-primary"

@@ -59,11 +59,11 @@ div.relative {
                         <div class="row mt-4" style="margin-left: 193px;">
                             <div class="col-sm-4">
                                 <label>From</label>
-                                <input type="date" class="form-control" name="first_date">
+                                <input type="date" class="form-control" name="first_date" onkeydown="return false">
                             </div>
                             <div class="col-sm-4">
                                 <label>To</label>
-                                <input type="date" class="form-control" name="last_date">
+                                <input type="date" class="form-control" name="last_date" onkeydown="return false">
                             </div>
                             <div class="col-4">
                                 <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;

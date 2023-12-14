@@ -61,11 +61,11 @@ div.relative {
                     <div class="d-flex mt-4 align-items-end px-3 mb-4" style="flex-wrap: wrap; gap: 1rem">
                         <div style="flex: 0 0 160px">
                             <label>From</label>
-                            <input type="date" id="startdate" class="form-control" name="startdate">
+                            <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                         </div>
                         <div style="flex: 0 0 160px">
                             <label>To</label>
-                            <input type="date" id="enddate" class="form-control" name="enddate">
+                            <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                         </div>
                         
                         <div style="flex: 0 0 200px">

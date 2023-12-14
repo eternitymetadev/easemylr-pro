@@ -73,11 +73,11 @@
 
                             <div style="width: 156px">
                                 <label>From</label>
-                                <input type="date" id="startdate" class="form-control" name="startdate">
+                                <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                             </div>
                             <div style="width: 156px">
                                 <label>To</label>
-                                <input type="date" id="enddate" class="form-control" name="enddate">
+                                <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                             </div>
                             <div style="width: 210px">
                                 <label>Payment Status</label>
