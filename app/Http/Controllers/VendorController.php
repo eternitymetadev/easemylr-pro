@@ -916,6 +916,7 @@ class VendorController extends Controller
         TransactionSheet::whereIn('drs_no', $drsno)->update(['request_status' => '1']);
 
         $checkduplicateRequest = PaymentHistory::where('transaction_id', $transaction_id_new)->where('payment_status', 2)->first();
+        echo "<pre>"; print_r($checkduplicateRequest); die;
         if (empty($checkduplicateRequest)) {
             // ============== Sent to finfect
             $pfu = 'ETF';
@@ -1651,9 +1652,7 @@ class VendorController extends Controller
         } else {
             $peritem = Config::get('variable.PER_PAGE');
         }
-
-        // $query = PaymentRequest::query();
-
+        
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');

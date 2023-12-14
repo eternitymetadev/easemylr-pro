@@ -1562,27 +1562,28 @@ jQuery(document).ready(function () {
                     var awsUrl = data.aws_url;
                     var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
-                    if (value.signed_drs == null) {
-                        if(value.status == 4){
-                            var field = '';
+                    if(value.status == 4){
+                        var field = '';
+                    }else{
+                        if(value.signed_drs != null){
+                            var field =
+                                "<a href='" +
+                                storage_img +
+                                "' target='_blank' class='btn btn-warning'>view</a>";
                         }else{
                             var field = `<input type='file' name="data[${i}][img]" data-id="${value.consignment_no}" placeholder="Choose image" class="drs_image ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.signed_drs}" ${value.lr_mode == 2 && 'disabled'} />`;
                         }
-                    } else {
-                        var field =
-                            "<a href='" +
-                            storage_img +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
                     }
+
                     // delivery date//
-                    if (value.dd == null) {
-                        if(value.status == 4){
-                            var deliverydate = '';
-                        }  else{
+                    if(value.status == 4){
+                        var deliverydate = '';
+                    }  else{
+                        if(value.dd != null){
+                            var deliverydate = value.dd;
+                        }else{
                             var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown='return false'>`;
                         }
-                    }else {
-                        var deliverydate = value.dd;
                     }
 
                     if (value.edd == null || value.edd == "") {
@@ -1592,15 +1593,15 @@ jQuery(document).ready(function () {
                     }
 
                     let buttonContent;
-                    if (value.dd == null) {
                         if (value.status == 4) {
                             buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn disabled" style="--btnColor: #fef3d5">Re-Attempted</a>`;
                         } else {
-                            buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #edd082" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`;
-                        }
-                    } else {
-                        buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`;
-                    }
+                            if(value.dd != null){
+                                buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`;
+                            }else{
+                                buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #edd082" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`;
+                            }
+                        }  
 
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
