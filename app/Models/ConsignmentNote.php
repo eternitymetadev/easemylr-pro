@@ -125,8 +125,12 @@ class ConsignmentNote extends Model
 
     public function DrsDetail()
     {
-        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->latest()->select('drs_no');
     }
+    // public function DrsDetail()
+    // {
+    //     return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    // }
     public function AppMedia()
     {
         return $this->hasMany('App\Models\AppMedia','consignment_no','id');
