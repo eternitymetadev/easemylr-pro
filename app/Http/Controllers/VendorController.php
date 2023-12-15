@@ -1378,7 +1378,6 @@ class VendorController extends Controller
                         foreach ($get_prs as $prs) {
                             pickupRunSheet::where('pickup_id', $prs->prs_no)->where('payment_status', 2)->update(['payment_status' => 3]);
                         }
-
                     }
                 }
             }
@@ -1388,6 +1387,7 @@ class VendorController extends Controller
 
     public function paymentReportView(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1531,27 +1531,27 @@ class VendorController extends Controller
                 $query = $query;
             }
 
-            // if (!empty($request->search)) {
-            //     $search = $request->search;
-            //     $searchT = str_replace("'", "", $search);
-            //     $query->where(function ($query) use ($search, $searchT) {
-            //         $query->where('id', 'like', '%' . $search . '%')
-            //             ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-            //                 $regclientquery->where('name', 'like', '%' . $search . '%');
-            //             })
-            //             ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-            //                 $query->where(function ($cnrquery) use ($search, $searchT) {
-            //                     $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-            //                 });
-            //             })
-            //             ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-            //                 $query->where(function ($cneequery) use ($search, $searchT) {
-            //                     $cneequery->where('nick_name', 'like', '%' . $search . '%');
-            //                 });
-            //             });
-
-            //     });
-            // }
+            if (!empty($request->search)) {
+                $search = $request->search;
+                $searchT = str_replace("'", "", $search);
+                $query->where(function ($query) use ($search, $searchT) {
+                    $query->where('id', 'like', '%' . $search . '%')
+                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                        // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        //     $regclientquery->where('name', 'like', '%' . $search . '%');
+                        // })
+                        // ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cnrquery) use ($search, $searchT) {
+                        //         $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // })
+                        // ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cneequery) use ($search, $searchT) {
+                        //         $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // });
+                });
+            }
 
             if ($request->peritem) {
                 Session::put('peritem', $request->peritem);
@@ -1679,19 +1679,23 @@ class VendorController extends Controller
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('id', 'like', '%' . $search . '%')
-                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                            $regclientquery->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cnrquery) use ($search, $searchT) {
-                                $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        })
-                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                            $query->where(function ($cneequery) use ($search, $searchT) {
-                                $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                            });
-                        });
+                    ->orWhere('drs_no', 'like', '%' . $search . '%')
+                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                    // ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                    // ->orWhere('total_amount', 'like', '%' . $search . '%')
+                        // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                        //     $regclientquery->where('name', 'like', '%' . $search . '%');
+                        // })
+                        // ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cnrquery) use ($search, $searchT) {
+                        //         $cnrquery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // })
+                        // ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
+                        //     $query->where(function ($cneequery) use ($search, $searchT) {
+                        //         $cneequery->where('nick_name', 'like', '%' . $search . '%');
+                        //     });
+                        // });
 
                 });
             }

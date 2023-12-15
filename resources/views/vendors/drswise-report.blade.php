@@ -53,6 +53,11 @@ div.relative {
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000
                         records. Please select Filters.</h5>
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
+                        <div style="width: 300px">
+                            <label>Search</label>
+                            <input type="text" class="form-control" placeholder="Search" id="search"
+                                data-action="<?php echo url()->current(); ?>">
+                        </div>
                         <div class="col-sm-3">
                             <label>From</label>
                             <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
