@@ -91,7 +91,6 @@ div.relative {
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
                                 <th>Invoice Number</th>
-
                             </tr>
                         </thead>
                         <tbody>
