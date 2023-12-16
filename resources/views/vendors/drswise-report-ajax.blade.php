@@ -58,7 +58,6 @@
                         }else{
                             $paid_amt=0;
                         }
-
                     ?>
             <tr>
                 <td>{{$i}}</td>

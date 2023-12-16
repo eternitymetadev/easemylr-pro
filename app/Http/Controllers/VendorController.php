@@ -399,7 +399,7 @@ class VendorController extends Controller
 
     public function drsPaymentExport(Request $request)
     {
-        return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle, $request->select_vehicle), 'drs_payment.csv');
+        return Excel::download(new DrsPaymentExport($request->startdate, $request->enddate, $request->search_vehicle), 'drs_payment.csv');
     }
 
     public function getdrsdetails(Request $request)
@@ -1425,8 +1425,8 @@ class VendorController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                    $query->where('transaction_id', 'like', '%' . $search . '%');
+                    // ->orWhere('transaction_id', 'like', '%' . $search . '%');
                         // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
                         //     $regclientquery->where('name', 'like', '%' . $search . '%');
                         // })
@@ -1459,10 +1459,10 @@ class VendorController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $payment_lists = $query->whereBetween('created_at', [$startdate, $enddate])->groupBy('transaction_id')->paginate($peritem);
-            } else {
-                $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
-            }
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
+            } 
+
+            $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
 
             $html = view('vendors.payment-report-view-ajax', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists, 'peritem' => $peritem])->render();
 
@@ -1527,16 +1527,14 @@ class VendorController extends Controller
                 $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc);
                 });
-            } else {
-                $query = $query;
             }
 
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
+                    $query->where('transaction_id', 'like', '%' . $search . '%');
+                    // ->orWhere('transaction_id', 'like', '%' . $search . '%');
                         // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
                         //     $regclientquery->where('name', 'like', '%' . $search . '%');
                         // })
@@ -1568,10 +1566,10 @@ class VendorController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $payment_lists = $query->whereBetween('created_at', [$startdate, $enddate])->groupBy('transaction_id')->paginate($peritem);
-            } else {
-                $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
-            }
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
+            } 
+            
+            $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
 
             $html = view('vendors.prs-paymentreport-ajax', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists, 'peritem' => $peritem])->render();
 
@@ -1589,9 +1587,7 @@ class VendorController extends Controller
             $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
                 $query->whereIn('branch_id', $cc);
             });
-        } else {
-            $query = $query;
-        }
+        } 
 
         $payment_lists = $query->groupBy('transaction_id')->paginate($peritem);
         // $payment_lists = $query->groupBy('transaction_id')->get();
@@ -1623,12 +1619,12 @@ class VendorController extends Controller
 
     public function exportPaymentReport(Request $request)
     {
-        return Excel::download(new PaymentReportExport($request->startdate, $request->enddate), 'PaymentReport.xlsx');
+        return Excel::download(new PaymentReportExport($request->startdate, $request->enddate, $request->search), 'PaymentReport.xlsx');
     }
 
     public function exportPrsPaymentReport(Request $request)
     {
-        return Excel::download(new PrsPaymentReportExport($request->startdate, $request->enddate), 'PrsPaymentReport.xlsx');
+        return Excel::download(new PrsPaymentReportExport($request->startdate, $request->enddate, $request->search), 'PrsPaymentReport.xlsx');
     }
 
     public function handshakeReport(Request $request)
@@ -1670,18 +1666,15 @@ class VendorController extends Controller
 
             if ($authuser->role_id == 2) {
                 $query->whereIn('branch_id', $cc);
-            } else {
-                $query = $query;
-            }
+            } 
 
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('id', 'like', '%' . $search . '%')
-                    ->orWhere('drs_no', 'like', '%' . $search . '%')
-                    ->orWhere('transaction_id', 'like', '%' . $search . '%');
-                    // ->orWhere('vehicle_no', 'like', '%' . $search . '%')
+                    $query->where('drs_no', 'like', '%' . $search . '%')
+                    ->orWhere('transaction_id', 'like', '%' . $search . '%')
+                    ->orWhere('vehicle_no', 'like', '%' . $search . '%');
                     // ->orWhere('total_amount', 'like', '%' . $search . '%')
                         // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
                         //     $regclientquery->where('name', 'like', '%' . $search . '%');
@@ -1696,7 +1689,6 @@ class VendorController extends Controller
                         //         $cneequery->where('nick_name', 'like', '%' . $search . '%');
                         //     });
                         // });
-
                 });
             }
 
@@ -1715,10 +1707,10 @@ class VendorController extends Controller
             $enddate = $request->enddate;
 
             if (isset($startdate) && isset($enddate)) {
-                $drswiseReports = $query->whereBetween('created_at', [$startdate, $enddate])->orderby('created_at', 'DESC')->paginate($peritem);
-            } else {
-                $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
+                $query = $query->whereBetween('created_at', [$startdate, $enddate]);
             }
+            
+            $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
 
             $html = view('vendors.drswise-report-ajax', ['prefix' => $this->prefix, 'drswiseReports' => $drswiseReports, 'peritem' => $peritem])->render();
 
@@ -1734,8 +1726,6 @@ class VendorController extends Controller
 
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
-        } else {
-            $query = $query;
         }
 
         $drswiseReports = $query->orderBy('id', 'DESC')->paginate($peritem);
@@ -1747,7 +1737,7 @@ class VendorController extends Controller
     public function exportdrsWiseReport(Request $request)
     {
 
-        return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate), 'DrsWise-PaymentReport.xlsx');
+        return Excel::download(new exportDrsWiseReport($request->startdate, $request->enddate,$request->search), 'DrsWise-PaymentReport.xlsx');
     }
 
     public function check_paid_status_fully()
