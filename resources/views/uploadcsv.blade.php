@@ -94,7 +94,7 @@
                 </div>
                 <br/>
                 <?php }if($authuser->role_id == 1 || $authuser->role_id == 3){?>
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse LR Type Changes</h4>
                     </div>
@@ -105,7 +105,7 @@
                     <a class="btn btn-primary" href="{{url($prefix.'/sample-manualdelivery')}}">Sample Download</a> 
                     </div>
                 </div>
-                <br/>
+                <br/> --}}
                 <div class="row">
                     <div class="col-lg-4 col-md-3 col-sm-12">
                         <h4 class="win-h4">Browse Delivery Date Sheet</h4>
