@@ -71,7 +71,7 @@
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
-                <td>DRS-{{ @$consignment->DrsDetail->drs_no ?? "-" }}</td>
+                <td>DRS-{{ @$consignment->DrsDetailDelivered->drs_no ?? "-" }}</td>
                 <td>{{$drs_date}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){

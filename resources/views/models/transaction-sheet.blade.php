@@ -37,6 +37,7 @@
                     <div class="Delt-content text-center">
                     </div>
                     <div class="table-responsive" id="opi">
+                        <input type='hidden' name="drs_no" id="drsNo" class="drsNo" value="" />
                         <table id="get-delvery-date" class="table table-hover"
                             style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                             <thead>

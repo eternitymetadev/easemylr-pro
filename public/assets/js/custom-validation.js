@@ -1605,7 +1605,6 @@ jQuery(document).ready(function () {
 
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
-
                     // console.log(deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
                         `<tr>
@@ -1631,6 +1630,7 @@ jQuery(document).ready(function () {
                     );
                     i++;
                 });
+                $('#drsNo').val(data.fetch[0].drs_no);
             },
         });
      

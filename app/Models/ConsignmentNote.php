@@ -123,6 +123,11 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
 
+    public function DrsDetailDelivered()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', 'Successful')->select('drs_no');
+    }
+
     public function DrsDetail()
     {
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->latest()->select('drs_no');

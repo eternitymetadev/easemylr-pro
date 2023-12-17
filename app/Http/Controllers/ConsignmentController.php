@@ -4743,7 +4743,7 @@ class ConsignmentController extends Controller
 
                         if ($check_lr_mode->lr_mode == 0) {
                             ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->login_id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
-                            TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                            TransactionSheet::where('consignment_no', $lrno)->where('drs_no', $request->drs_no)->update(['delivery_status' => 'Successful']);
                         }
 
                         // =================== task assign ====== //
