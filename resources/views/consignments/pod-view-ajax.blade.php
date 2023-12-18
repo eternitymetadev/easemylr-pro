@@ -145,7 +145,7 @@
 
                 <td style="text-align: center; width: 120px;">
                     {{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
-                <td>{{@$consignment->pod_userid}}</td>
+                <td>{{@$consignment->User->login_id}}</td>
 
                 <?php if ($consignment->lr_mode == 1) {
                      $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();

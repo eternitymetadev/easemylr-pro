@@ -123,14 +123,14 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
 
-    public function DrsDetailDelivered()
+    public function DrsDetailReattempted()
     {
-        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', 'Successful')->select('drs_no');
+        return $this->hasMany('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', '!=', 'Successful')->select('drs_no');
     }
 
     public function DrsDetail()
     {
-        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->latest()->select('drs_no');
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', 'Successful')->select('drs_no');
     }
     // public function DrsDetail()
     // {
@@ -158,6 +158,11 @@ class ConsignmentNote extends Model
     }
     public function fallIn(){
         return $this->belongsTo('App\Models\Location','fall_in');
+    }
+
+    public function User()
+    {
+        return $this->hasOne('App\Models\User','id','pod_userid');
     }
 
 }

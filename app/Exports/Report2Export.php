@@ -256,12 +256,31 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $no_reattempt = '';
                 }
 
+                // reatempted drs nos
+                if(!empty($consignment->DrsDetailReattempted)){
+                    $drs_nos = array();
+                    foreach($consignment->DrsDetailReattempted as $reattemptDrs){ 
+                        $drs_nos[] = $reattemptDrs->drs_no;
+                    }
+                    $reattempt_drs['drs_nos'] = implode('/', $drs_nos);
+                }
+
+                // delivery branch 
+                if($consignment->lr_type == 0){
+                    $delivery_branch = $consignment->Branch->name;
+                }else{
+                    $delivery_branch = $consignment->ToBranch->name;
+                }
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'drs_no'              => $drs,
+                    'reattempt_drsno'              => $reattempt_drs['drs_nos'],
                     'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
+                    'booking_branch'      => @$consignment->Branch->name,
+                    'delivery_branch'     => @$delivery_branch,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
@@ -316,9 +335,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         return [
             'LR No',
             'LR Date',
-            'DRS No',
+            'Delivered DRS No',
+            'DRS Nos',
             'DRS Date',
             'Order No',
+            'Booking Branch',
+            'Delivery Branch',
             'Base Client',
             'Regional Client',
             'Consignor',

@@ -2219,7 +2219,8 @@ $(document).on("click", ".onelrupdate", function () {
         },
     });
 });
-//////////////////////////
+
+// In drs list upload pod //
 $("#allsave").submit(function (e) {
     e.preventDefault();
 

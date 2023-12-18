@@ -5,9 +5,12 @@
             <tr>
                 <th>LR No</th>
                 <th>LR Date</th>
-                <th>Drs No</th>
+                <th>Delivered Drs No</th>
+                <th>Drs Nos</th>
                 <th>Drs Date</th>
                 <th>Order No</th>
+                <th>Booking Branch</th>
+                <th>Delivery Branch</th>
                 <th>Base Client</th>
                 <th>Regional Client</th>
                 <th>Consignor</th>
@@ -67,11 +70,21 @@
             }else{
             $drs_date = '-';
             }
+
+            // reatempted drs nos
+            if(!empty($consignment->DrsDetailReattempted)){
+                $drs_nos = array();
+                foreach($consignment->DrsDetailReattempted as $reattemptDrs){ 
+                    $drs_nos[] = $reattemptDrs->drs_no;
+                }
+                $reattempt_drs['drs_nos'] = implode(',', $drs_nos);
+            }
         ?>
             <tr>
                 <td>{{ $consignment->id ?? "-" }}</td>
                 <td>{{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}</td>
-                <td>DRS-{{ @$consignment->DrsDetailDelivered->drs_no ?? "-" }}</td>
+                <td>DRS-{{ @$consignment->DrsDetail->drs_no ?? "-" }}</td>
+                <td>DRS-{{ @$reattempt_drs['drs_nos'] ?? "-" }}</td>
                 <td>{{$drs_date}}</td>
                 <?php if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
@@ -99,6 +112,15 @@
                 <?php } }else{ ?>
                 <td>{{ $consignment->order_id ?? "-" }}</td>
                 <?php  } ?>
+                <td>{{ $consignment->Branch->name ?? "-" }}</td>
+                <?php 
+                if($consignment->lr_type == 0){
+                    $delivery_branch = $consignment->Branch->name;
+                }else{
+                    $delivery_branch = $consignment->ToBranch->name;
+                }
+                ?>
+                <td>{{ $delivery_branch ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>
