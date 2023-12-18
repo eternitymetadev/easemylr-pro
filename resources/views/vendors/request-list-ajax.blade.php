@@ -12,6 +12,7 @@
                 <th>Adavanced</th>
                 <th>Balance</th>
                 <th>Branch </th>
+                <th>State </th>
                 <th>Create Payment</th>
                 <th>Status</th>
             </tr>
@@ -28,11 +29,12 @@
                     <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
                         {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                     </td>
-                    <td>{{ $requestlist->VendorDetails->name ?? "-"}}</td>
-                    <td>{{ $requestlist->total_amount ?? "-"}}</td>
-                    <td>{{ $requestlist->advanced ?? "-"}}</td>
-                    <td>{{ $requestlist->balance ?? "-" }}</td>
-                    <td>{{ $requestlist->Branch->nick_name ?? "-" }}</td>
+                    <td>{{ @$requestlist->VendorDetails->name ?? "-"}}</td>
+                    <td>{{ @$requestlist->total_amount ?? "-"}}</td>
+                    <td>{{ @$requestlist->advanced ?? "-"}}</td>
+                    <td>{{ @$requestlist->balance ?? "-" }}</td>
+                    <td>{{ @$requestlist->Branch->name ?? "-" }}</td>
+                    <td>{{ @$requestlist->Branch->nick_name ?? "-" }}</td>
                     
                     <?php if($requestlist->payment_status == 1){?>
                     <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
