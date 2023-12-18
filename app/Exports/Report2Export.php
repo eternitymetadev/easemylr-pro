@@ -267,9 +267,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
                 // delivery branch 
                 if($consignment->lr_type == 0){
-                    $delivery_branch = $consignment->Branch->name;
+                    $delivery_branch = @$consignment->Branch->name;
                 }else{
-                    $delivery_branch = $consignment->ToBranch->name;
+                    $delivery_branch = @$consignment->ToBranch->name;
                 }
 
                 $arr[] = [

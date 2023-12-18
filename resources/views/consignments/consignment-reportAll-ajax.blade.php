@@ -115,9 +115,9 @@
                 <td>{{ $consignment->Branch->name ?? "-" }}</td>
                 <?php 
                 if($consignment->lr_type == 0){
-                    $delivery_branch = $consignment->Branch->name;
+                    $delivery_branch = @$consignment->Branch->name;
                 }else{
-                    $delivery_branch = $consignment->ToBranch->name;
+                    $delivery_branch = @$consignment->ToBranch->name;
                 }
                 ?>
                 <td>{{ @$delivery_branch ?? "-" }}</td>
