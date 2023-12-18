@@ -120,7 +120,7 @@
                     $delivery_branch = $consignment->ToBranch->name;
                 }
                 ?>
-                <td>{{ $delivery_branch ?? "-" }}</td>
+                <td>{{ @$delivery_branch ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->BaseClient->client_name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                 <td>{{ $consignment->ConsignerDetail->nick_name ?? "-" }}</td>

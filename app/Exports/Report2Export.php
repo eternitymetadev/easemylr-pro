@@ -275,8 +275,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
-                    'drs_no'              => $drs,
-                    'reattempt_drsno'              => $reattempt_drs['drs_nos'],
+                    'drs_no'              => @$drs,
+                    'reattempt_drsno'     => @$reattempt_drs['drs_nos'],
                     'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
                     'booking_branch'      => @$consignment->Branch->name,
