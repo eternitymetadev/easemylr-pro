@@ -110,10 +110,20 @@ class UserController extends Controller
         $usersave['user_password'] = $request->password;
         // $usersave['branch_id']     = $request->branch_id;
         $usersave['phone']         = $request->phone;
-        if(!empty($request->branch_id)){
-            $branch = $request->branch_id;
-            $usersave['branch_id']  = implode(',',$branch);
+        // if(!empty($request->branch_id)){
+        //     $branch = $request->branch_id;
+        //     $usersave['branch_id']  = implode(',',$branch);
+        // }
+        if ($request->has('branch_id')) {
+            if (is_array($request->branch_id)) {
+                // Multiple selection
+                $usersave['branch_id'] = implode(',', $request->branch_id);
+            } else {
+                // Single selection
+                $usersave['branch_id'] = $request->branch_id;
+            }
         }
+        
         if(!empty($request->baseclient_id)){
             $usersave['baseclient_id'] = $request->baseclient_id;
         }
@@ -192,7 +202,6 @@ class UserController extends Controller
         $getuserpermissions = UserPermission::where('user_id',$id)->get();
         $branches = Helper::getLocations();
         $getclients = Helper::getRegionalClients();
-        
         $u = array();
         if(count($getuserpermissions) > 0)
         {
@@ -242,10 +251,20 @@ class UserController extends Controller
         $usersave['role_id']    = $request->role_id;
         $usersave['phone']      = $request->phone;
         $usersave['rm_assign']  = $request->rm_id;
-        // $usersave['branch_id']  = $request->branch_id;
+
         // $branch = $request->branch_id;
         // $usersave['branch_id']  = implode(',',$branch); 
 
+        // if ($request->has('branch_id')) {
+        //     if (is_array($request->branch_id)) {
+        //         // Multiple selection
+        //         $usersave['branch_id'] = implode(',', $request->branch_id);
+        //     } else {
+        //         // Single selection
+        //         $usersave['branch_id'] = $request->branch_id;
+        //     }
+        // }
+        
         // Updated attribute name according to the changes
         if($request->role_id == "2" || $request->role_id == "4"){
             if ($request->branch_id_single) {

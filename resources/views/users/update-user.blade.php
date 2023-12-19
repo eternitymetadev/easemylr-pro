@@ -78,7 +78,7 @@
                                     if(count($branches)>0) {
                                         // $cc = explode(',',$getuser->branch_id);
                                         foreach ($branches as $key => $branch) {
-                                            // $selected = in_array($key,$cc) ? 'selected' : '';
+                                            // $selected = in_array($key, $cc) ? 'selected' : '';
                                     ?>
                                     <option value="{{ $key }}" {{ $getuser->branch_id == $key ? 'selected' : ''}}>{{ucwords($branch)}}</option>
 
@@ -169,6 +169,7 @@
 @endsection
 @section('js')
 <script>
+
 // $('#role_id').change(function() {
 $(document).ready(function() {
     var role_id = $('#role_id').val();

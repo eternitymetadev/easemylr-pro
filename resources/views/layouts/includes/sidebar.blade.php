@@ -268,6 +268,7 @@
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
             <?php if($authuser->role_id != 7 && $authuser->role_id != 8){
                 if($authuser->role_id != 3){ ?> 
+
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
@@ -614,6 +615,11 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report4'}}"> Mis Report 4 </a>
             </li>
+            <?php if($authuser->role_id == 3){ ?>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'mix-report'}}">Mix Report </a>
+            </li>
+            <?php } ?>
         </ul>
     </li>
     <?php } ?>

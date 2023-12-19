@@ -122,7 +122,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $query = $query->whereIn('branch_id', $branch_id_array);
             }
         }
-
+      
         if(isset($startdate) && isset($enddate)){
             $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
@@ -323,7 +323,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
                     'reattempt_reason'   => @$no_reattempt,
- 
                 ];
             }
         }
@@ -376,8 +375,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Date',
             'Delivery Status',
             'Tat',
-            // 'Delivery Mode',
-            // 'POD',
+            //'Delivery Mode',
+            //'POD',
             'Payment Type',
             'Freight on Delivery',
             'COD',

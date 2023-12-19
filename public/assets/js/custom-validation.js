@@ -1312,16 +1312,16 @@ jQuery(document).ready(function () {
         var segments = url.split('/');
         var lastSegment = segments[segments.length - 1];
         var prslastSegment = segments[segments.length - 3];
-        // console.log(lastSegment);
+
+        // 2000 mt check here
         // var formClass = $(".net").closest('form').attr('class');
-        // console.log(formClass);
 
         // if (formClass.indexOf('mtcheckload') !== -1) {
-        //     if(+totalNetWeight > 2000){
-        //         $('.ptlBookButton, .updateOrderButton').attr('disabled', true);
-        //         swal('error', 'Create an FTL order for net weight more than 2000kg.', 'error')
+        //     if(+totalNetWeight < 1500){
+        //         $('.createFtlbtn').attr('disabled', true);
+        //         swal('error', 'Create an PTL order for net weight less than 1500kg.', 'error')
         //     } else{
-        //         $('.ptlBookButton, .updateOrderButton').removeAttr('disabled');
+        //         $('.createFtlbtn').removeAttr('disabled');
         //     }
         // }
     }

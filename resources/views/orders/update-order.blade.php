@@ -282,7 +282,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
         <h2 class="pageHeading">Update Order</h2>
     </div>
 
-    <form class="general_form mtcheckload" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder"
+    <form class="general_form" method="POST" action="{{url($prefix.'/orders/update-order')}}" id="updateorder"
         style="margin: auto; ">
         <input type="hidden" name="consignment_id" value="{{$getconsignments->id}}">
         <input type="hidden" name="booked_drs" value="{{$getconsignments->booked_drs}}">

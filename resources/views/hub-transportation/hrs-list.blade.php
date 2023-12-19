@@ -207,51 +207,38 @@
         /////////////////////////////////////////////////////////////////
         $('#create_hrs').click(function () {
 
-                var consignmentID = [];
-                $(':checkbox[name="checked_consign[]"]:checked').each(function () {
-                    consignmentID.push(this.value);
-                });
+            var consignmentID = [];
+            $(':checkbox[name="checked_consign[]"]:checked').each(function () {
+                consignmentID.push(this.value);
+            });
 
-                $.ajax({
-                    url: "create-hrs",
-                    method: "POST",
-                    data: { consignmentID: consignmentID },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: 'json',
-                    beforeSend: function () {
-                        $('.disableDrs').prop('disabled', true);
+            $.ajax({
+                url: "create-hrs",
+                method: "POST",
+                data: { consignmentID: consignmentID },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    $('.disableDrs').prop('disabled', true);
 
-                    },
-                    complete: function (response) {
-                        $('.disableDrs').prop('disabled', true);
-                    },
-                    success: function (data) {
-                        if (data.success == true) {
-                            swal('success','Hrs Created Successfully','success');
-                            window.location.href = "hrs-sheet";
-                        }
-                        else {
-                            swal('error','something wrong','error');
-                        }
-
+                },
+                complete: function (response) {
+                    $('.disableDrs').prop('disabled', true);
+                },
+                success: function (data) {
+                    if (data.success == true) {
+                        swal('success','Hrs Created Successfully','success');
+                        window.location.href = "hrs-sheet";
                     }
-                })
+                    else {
+                        swal('error','something wrong','error');
+                    }
+                }
+            })
         });
 
-
-    //     $('#unverified-table').DataTable(
-    //         {
-    //             dom: 'lrt',
-    //             "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-    //             "lengthChange": true,
-    //             "paging": true, // Enable pagination
-    //             "pageLength": 50,
-    //             "order": [], // Define initial sorting (if needed)
-    // "ordering": true, // Enable sorting
-    //             orderable: false,
-    //         });
         $('#unverified-table').DataTable({
             dom: 'lrt<"float-right"p>',
             "lengthMenu": [ [25, 50, -1], [25, 50, "All"] ],
@@ -261,7 +248,6 @@
             "order": [], // Define initial sorting (if needed)
             "ordering": true, // Enable sorting
         });
-        // 
 
 
         $('#myInput').on('keyup', function () {

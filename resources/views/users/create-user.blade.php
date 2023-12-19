@@ -93,7 +93,7 @@
                             </div>
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control" id="branch_id" name="branch_id[]">
+                                <select class="form-control" id="branch_id" name="branch_id">
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {

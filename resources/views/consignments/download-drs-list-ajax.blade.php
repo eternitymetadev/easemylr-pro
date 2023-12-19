@@ -29,11 +29,13 @@
                 <td>{{$trns->driver_name}}</td>
                 <td>{{$trns->driver_no}}</td>
                 <td>{{ Helper::getCountDrs($trns->drs_no) ?? "" }}</td>
+                
                 <?php if($authuser->role_id == 3){
                     $disable = 'disable_n' ;
                 }else{
                     $disable = '';
                 } ?>
+                
                 {{-- delivery status --}}
                 <td>
                     <?php if ($trns->status == 0) {?>

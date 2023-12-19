@@ -45,17 +45,16 @@
                             </div>
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
-                                    <?php $authuser = Auth::user();
-                                    if($authuser->role_id != 3){ ?>
+                               <?php $authuser = Auth::user();
+                               if($authuser->role_id !=3){ ?>
                                     <a class="btn-primary btn-cstm btn ml-2" style="font-size: 15px; padding: 9px; width: 130px" href="{{'prs/create'}}"><span><i class="fa fa-plus"></i> Add
                                             New</span></a>
                                             <?php } ?>
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo url()->current(); ?>"><span><i class="fa fa-refresh"></i> Reset Filters</span></a>
-                                    <?php if($authuser->role_id != 3){ ?>
+                                    <?php if($authuser->role_id !=3){ ?>
                                     <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" class="btn btn-primary btn-cstm downloadEx ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" download><span>
                                     <i class="fa fa-download"></i> Export</span></a>
                                     <?php } ?>
-
                                     <!-- <a style="font-size: 12px; padding: 8px 0px;" href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" class="downloadEx btn btn-primary pull-right" data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" download>
                                         <span><i class="fa fa-download"></i> Export</span></a> -->
 

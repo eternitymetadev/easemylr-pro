@@ -19,6 +19,7 @@
                 <th>No. of cases</th>
                 <th>Net Weight</th>
                 <th>Gross Wt</th>
+                <th>Status</th>
 
             </tr>
         </thead>
@@ -75,6 +76,9 @@
                 <td>{{$no_ofcases}}</td>
                 <td>{{$totlwt}}</td>
                 <td>{{$grosswt}}</td>
+                <td>
+                {{ Helper::getdeleveryStatus($drswiseReport->drs_no) }}
+                </td>
             </tr>
             @endforeach
         </tbody>

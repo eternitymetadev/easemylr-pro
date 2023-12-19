@@ -272,8 +272,7 @@ span.select2.select2-container.mb-4 {
         <h2 class="pageHeading">Order Book PTL </h2>
     </div>
 
-
-    <form class="general_form mtcheckload" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="create_ptlconsignment"
+    <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="create_ptlconsignment"
         style="margin: auto;">
         {{--Branch Location--}}
         <!-- <div class="form-row">

@@ -51,10 +51,10 @@ div.relative {
                         @csrf
                         <table id="usertable" class="table table-hover get-datatable" style="width:100%">
                             <div class="btn-group relative">
-                                <?php $authuser = Auth::user();
-                                if($authuser->role_id != 3){ ?> 
+                            <?php $authuser = Auth::user();
+                            if($authuser->role_id != 3){ ?>
                                 <a href="{{'order-book-ftl'}}" class="btn btn-primary pull-right" style="font-size: 13px; padding: 6px 0px;">Create Order</a>
-                                <?php } ?> 
+                            <?php } ?>
                             </div>
                             <thead>
                                 <tr>

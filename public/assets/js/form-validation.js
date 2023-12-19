@@ -900,7 +900,7 @@ jQuery(document).ready(function(){
                 //   lettersonly:true
                 },
            'weight[]': {
-                  required: true
+                  required: true,
                 },
            'gross_weight[]': {
                   required: true
@@ -920,7 +920,6 @@ jQuery(document).ready(function(){
             total_weight:{
                 min: "Create an PTL order for total net weight less than 1500kg.",
             },
-
             'quantity[]': {
                 required: "Enter quantity",
             },
@@ -943,8 +942,7 @@ jQuery(document).ready(function(){
         }
     });
 
-
-    /*===== create order book ptl =====*/
+    /*===== create order ptl =====*/
     $('#create_ptlconsignment').validate({ 
         rules: {
             consigner_id: {
@@ -962,7 +960,7 @@ jQuery(document).ready(function(){
                 //   lettersonly:true
                 },
            'weight[]': {
-                  required: true
+                  required: true,
                 },
            'gross_weight[]': {
                   required: true
@@ -979,7 +977,7 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: "Select ship to address",
             },
-
+            
             'quantity[]': {
                 required: "Enter quantity",
             },
@@ -988,12 +986,6 @@ jQuery(document).ready(function(){
             },
             'gross_weight[]': {
                 required: "Enter gross weight",
-            },
-            'freight[]': {
-                required: "Enter freight",
-            },
-            'payment_type[]': {
-                required: "Select payment type",
             },
         },
         submitHandler : function(form)

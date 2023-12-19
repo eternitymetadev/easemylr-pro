@@ -69,10 +69,8 @@ div.relative {
                         <div class="btn-group relative">
                             <?php $authuser = Auth::user();
                                 if($authuser->role_id != 3){ ?>
-                            <button type="button" class="btn btn-warning disableDrs" id="create_edd"
-                                style="font-size: 11px;">
-                                Create DRS
-                            </button>
+                                    <button type="button" class="btn btn-warning disableDrs" id="create_edd" style="font-size: 11px;">Create DRS
+                                    </button>
                             <?php } ?>
                         </div>
                         <thead>
