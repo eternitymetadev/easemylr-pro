@@ -16,7 +16,8 @@
         </thead>
         <tbody>
             @foreach($hrssheets as $hrssheet)
-            <?php $authuser = Auth::user();
+            <?php
+            $authuser = Auth::user();
               $date = new DateTime($hrssheet->created_at, new DateTimeZone('GMT-7'));
               $date->setTimezone(new DateTimeZone('IST'));
                 

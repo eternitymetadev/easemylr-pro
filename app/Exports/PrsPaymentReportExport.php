@@ -15,12 +15,12 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
 {
     protected $startdate;
     protected $enddate;
-    // protected $search;
+    protected $search;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$search) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        // $this->search = $search;
+        $this->search = $search;
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -33,6 +33,7 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $search = $this->search;
 
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -44,15 +45,16 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
             $query->whereHas('PrsPaymentRequest', function ($query) use ($cc) {
                 $query->whereIn('branch_id', $cc);
             });
-        } else {
-            $query = $query;
         }
         
         if(isset($startdate) && isset($enddate)){
-            $payment_lists = $query->whereBetween('created_at',[$startdate,$enddate])->groupBy('transaction_id')->get();
-        }else {
-            $payment_lists = $query->groupBy('transaction_id')->get();
+            $query = $query->whereBetween('created_at',[$startdate,$enddate]);
         }
+        if($search){
+            $query = $query->where('transaction_id', $search);
+        }
+        
+        $payment_lists = $query->groupBy('transaction_id')->get();
 
         //
         $i = 0;

@@ -28,12 +28,6 @@ class GlobalFunctions
         if ($status == 1) {
             $status = 'Assigned';
         }
-        // else if($status == 2){
-        //     $status = 'Acknowledged';
-        // }
-        // else if($status == 3){
-        //     $status = 'Started';
-        // }
         else if ($status == 2) {
             $status = 'Pickup done';
         } else if ($status == 3) {
@@ -194,7 +188,9 @@ class GlobalFunctions
 
     public static function getCountDrs($drs_number)
     {
-        $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)->where('status', '!=', 2)->count();
+        $data = DB::table('transaction_sheets')->where('drs_no', $drs_number)
+        ->whereNotIn('status', [2])->count();  //2,4
+        
         return $data;
     }
     //////////
@@ -223,22 +219,45 @@ class GlobalFunctions
 
     public static function getdeleveryStatus($drs_number)
     {
-        $get_lrs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
+        // Get the consignment numbers related to the provided drs_number
+        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
 
-        $getlr_deldate = ConsignmentNote::select('delivery_date')->where('status', '!=', 0)->whereIn('id', $get_lrs)->get();
-        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '!=', null)->count();
-        $total_empty = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->where('delivery_date', '=', null)->count();
+        // Count the number of delivered and empty consignments
+        $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
 
-        $total_lr = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->count();
+        // Calculate the total number of consignments
+        $total_lr = count($get_lrs);
 
+        // Determine the delivery status
         if ($total_deldate == $total_lr) {
             $status = "Successful";
-        } elseif ($total_lr == $total_empty) {
+        } elseif ($total_deldate == 0) {
+            $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
+            if($check_started){
             $status = "Started";
+            }else{
+                $status = "Unassigned";
+            }
         } else {
-            $status = "Partial Delivered";
+            $status = "Partial";
         }
 
+        return $status;
+    }
+
+    public static function drsPaymentStatus($paymentStatus)
+    {
+        if ($paymentStatus == 0) {
+            $status = "Unpaid";
+        } else if ($paymentStatus == 1) {
+            $status = "Paid";
+        } elseif ($paymentStatus == 2) {
+            $status = "Processing";
+        } elseif ($paymentStatus == 3) {
+            $status = "Partial";
+        } else {
+            $status = "unknown";
+        }
         return $status;
     }
 

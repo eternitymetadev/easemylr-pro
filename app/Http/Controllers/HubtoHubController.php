@@ -14,6 +14,7 @@ use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
 use App\Exports\HrsSheetExport;
+use App\Models\PickupRunSheet;
 use Auth;
 use Config;
 use DB;
@@ -74,7 +75,6 @@ class HubtoHubController extends Controller
 
     public function createHrs(Request $request)
     {
-
         $consignmentId = $_POST['consignmentID'];
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
@@ -133,10 +133,7 @@ class HubtoHubController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
         $query = Hrs::query();
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-
+        
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
@@ -194,6 +191,39 @@ class HubtoHubController extends Controller
                 $peritem = Config::get('variable.PER_PAGE');
             }
 
+            // Get vehicles
+            $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
+            ->where('status', '!=', 0)
+            ->where('receving_status', '!=', '2')
+            ->pluck('vehicle_id')
+            ->unique()
+            ->toArray();
+
+            // Merge and deduplicate the vehicle IDs
+            // $mergedVehicleIds = array_unique($hrsVehicleIds);
+
+            // Fetch vehicles that are not in the merged array
+            $vehicles = Vehicle::where('status', '1')
+            ->whereNotIn('id', $hrsVehicleIds)
+            ->select('id', 'regn_no')
+            ->get();
+
+            // get drivers
+            $hrsDriverIds = Hrs::whereNotNull('driver_id')
+            ->where('receving_status', '!=', '2')
+            ->pluck('driver_id')
+            ->unique()
+            ->toArray();
+
+            // Merge and deduplicate the driver IDs
+            // $mergedDriverIds = array_unique($hrsDriverIds);
+
+            // Fetch drivers who are not in the merged array
+            $drivers = Driver::where('status', '1')
+            ->whereNotIn('id', $hrsDriverIds)
+            ->select('id', 'name', 'phone')
+            ->get();
+            
             $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
             $hrssheets = $hrssheets->appends($request->query());
 
@@ -233,6 +263,45 @@ class HubtoHubController extends Controller
         }
         $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
         $hrssheets = $hrssheets->appends($request->query());
+
+        // get vehicles
+        $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
+        ->where('receving_status', '!=', '2')
+        ->where('status', '!=', 0)
+        ->pluck('vehicle_id')
+        ->unique()
+        ->toArray();
+
+        // Merge and deduplicate the vehicle IDs
+        // $mergedVehicleIds = array_unique($hrsVehicleIds);
+
+        // Fetch vehicles that are not in the merged array
+        $vehicles = Vehicle::where('status', '1')
+        ->whereNotIn('id', $hrsVehicleIds)
+        ->select('id', 'regn_no')
+        ->get();
+
+        // get drivers
+        $hrsDriverIds = Hrs::whereNotNull('driver_id')
+        ->where('receving_status', '!=', '2')
+        ->pluck('driver_id')
+        ->unique()
+        ->toArray();
+
+        // Merge and deduplicate the driver IDs
+        // $mergedDriverIds = array_unique($hrsDriverIds);
+
+        // Fetch drivers who are not in the merged array
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('id', $hrsDriverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+
 
         return view('hub-transportation.hrs-sheet', ['peritem' => $peritem, 'segment' => $this->segment, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes]);
     }

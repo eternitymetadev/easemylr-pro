@@ -128,7 +128,7 @@ class TransactionStatusExport implements FromCollection, WithHeadings, ShouldQue
                     'advanced'        => @$requestlist->advanced,
                     'balance'         => @$requestlist->balance,
                     'branch_name'     => @$requestlist->Branch->name,
-                    'state_name'      => @$requestlist->Branch->nick_name,
+                    'branch_state'    => @$requestlist->Branch->nick_name,
                     'create_payment'  => @$create_payment,
                     'payment_status'  => @$payment_status,                    
                 ];

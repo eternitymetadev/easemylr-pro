@@ -266,14 +266,17 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="ftl" data-parent="#accordionExample">
-            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ 
-                if($authuser->role_id != 3){?> 
+            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){
+                if($authuser->role_id != 3){ ?> 
+
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'order-book-ftl'}}"> Block LR No </a>
             </li>
+            <?php } if($authuser->role_id != 3){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'reserve-lr'}}"> Complete Blocked LR </a>
             </li>
+            
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-ftl'}}"> Create FTL LR</a>
             </li>
@@ -281,16 +284,15 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignments'}}"> Consignment List </a>
             </li>
-            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){
+            <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ 
                 if($authuser->role_id != 3){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
             </li>
-            <?php } ?>
+            <?php }} ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
-            <?php } ?>
         </ul>
     </li>
     <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
@@ -609,6 +611,9 @@
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report3'}}"> Mis Report 3 </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'consignment-report4'}}"> Mis Report 4 </a>
             </li>
             <?php if($authuser->role_id == 3){ ?>
             <li>

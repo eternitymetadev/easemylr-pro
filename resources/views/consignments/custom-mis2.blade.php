@@ -56,12 +56,12 @@ div.relative {
                     @csrf
                         <div class="row mt-4" style="margin-left: 193px; margin-bottom: 28px;">
                             <div class="col-sm-4">
-                                <label>from</label>
-                                <input type="date" class="form-control" name="first_date" required>
+                                <label>From</label>
+                                <input type="date" class="form-control" name="first_date" onkeydown="return false" required>
                             </div>
                             <div class="col-sm-4">
                                 <label>To</label>
-                                <input type="date" class="form-control" name="last_date" required>
+                                <input type="date" class="form-control" name="last_date" onkeydown="return false" required>
                             </div>
                             <div class="col-4">
                             <button type="submit" class="btn btn-primary" style="margin-top: 31px; font-size: 15px;

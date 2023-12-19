@@ -542,7 +542,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>Invoice Date</label>
                                                         <input type="date" class="form-control invc_date"
                                                             name="data[{{$i}}][invoice_date]"
-                                                            value="{{$item->invoice_date}}">
+                                                            value="{{$item->invoice_date}}" onkeydown="return false">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -566,7 +566,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                                         <label>E-Way Bill Date</label>
                                                         <input type="date" class="form-control ewb_date"
                                                             name="data[{{$i}}][e_way_bill_date]"
-                                                            value="{{$item->e_way_bill_date}}" >
+                                                            value="{{$item->e_way_bill_date}}" onkeydown="return false">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -751,7 +751,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             </td>
                                             <td><input type="date" class="form-control form-small invc_date"
                                                     name="data[{{$i}}][invoice_date]"
-                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}"
+                                                    value="{{old('invoice_date',isset($item->invoice_date)?$item->invoice_date:'')}}" onkeydown="return false"
                                                     >
                                             </td>
                                             <td><input type="number" class="form-control form-small invc_amt"
@@ -766,7 +766,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                                             </td>
                                             <td><input type="date" class="form-control form-small ewb_date"
                                                     name="data[{{$i}}][e_way_bill_date]"
-                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}"
+                                                    value="{{old('e_way_bill_date',isset($item->e_way_bill_date)?$item->e_way_bill_date:'')}}" onkeydown="return false"
                                                     >
                                             </td>
                                             <td><input type="number" class="form-control form-small qnt"
@@ -834,7 +834,7 @@ if(!empty($getconsignments->prs_id) || ($getconsignments->prs_id != NULL)){
                     <label>
                         EDD<span class="text-danger">*</span>
                     </label>
-                    <Input type="date" class="form-control form-small" name="edd" />
+                    <input type="date" class="form-control form-small" name="edd" onkeydown="return false"/>
                 </div>
 
                 <div class="form-group col-12">
@@ -916,7 +916,7 @@ function insertMaintableRow() {
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
                                                 <input type="date" class="form-control invc_date" name="data[` +
-            item_no + `][invoice_date]">
+            item_no + `][invoice_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                         <td>
@@ -937,7 +937,7 @@ function insertMaintableRow() {
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
                                                 <input type="date" class="form-control ewb_date" name="data[` +
-            item_no + `][e_way_bill_date]">
+            item_no + `][e_way_bill_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                     </tr>

@@ -435,7 +435,7 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
+                                                <input type="date" class="form-control invc_date" name="data[1][invoice_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                         <td>
@@ -454,7 +454,7 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
+                                                <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                     </tr>
@@ -554,7 +554,7 @@
                     <label>
                         EDD<span class="text-danger">*</span>
                     </label>
-                    <Input type="date" class="form-control form-small" name="edd"/>
+                    <Input type="date" class="form-control form-small" name="edd" onkeydown="return false"/>
                 </div>
 
                 <div class="form-group col-12">
@@ -630,7 +630,7 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
-                                                <input type="date" class="form-control invc_date" name="data[` + item_no + `][invoice_date]">
+                                                <input type="date" class="form-control invc_date" name="data[` + item_no + `][invoice_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                         <td>
@@ -648,7 +648,7 @@
                                         <td>
                                             <div class="form-group form-group-sm">
                                                 <label>E-Way Bill Date</label>
-                                                <input type="date" class="form-control ewb_date" name="data[` + item_no + `][e_way_bill_date]">
+                                                <input type="date" class="form-control ewb_date" name="data[` + item_no + `][e_way_bill_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                     </tr>

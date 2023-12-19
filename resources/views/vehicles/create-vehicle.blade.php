@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="exampleFormControlSelect1">Regn. Date</label>
-                                    <input type="date" class="form-control" name="regndate" placeholder="">
+                                    <input type="date" class="form-control" name="regndate" placeholder="" onkeydown="return false">
                                 </div>
                             </div>
                             <div class="form-row mb-0">

@@ -875,8 +875,8 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-
-    /*===== create consignment =====*/
+    
+    /*===== create ftl consignment =====*/
     $('#createconsignment').validate({ 
         ignore: [],
         rules: {
@@ -920,7 +920,6 @@ jQuery(document).ready(function(){
             total_weight:{
                 min: "Create an PTL order for total net weight less than 1500kg.",
             },
-            
             'quantity[]': {
                 required: "Enter quantity",
             },
@@ -1268,6 +1267,27 @@ jQuery(document).ready(function(){
         submitHandler : function(form)
         {
             formSubmitRedirect(form);
+        }
+    });
+
+    // reattampt reason
+    $('#reattempt-reason').validate({ 
+        rules: {
+            reattempt_reason: {
+                required: true
+            },
+                
+        },
+        messages: {
+            reattempt_reason: {
+                required: "Enter origin",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+            $(`#reAttemptModel`).modal('hide');
+            $(`#commonconfirm`).modal('hide');
         }
     });
 
@@ -2070,6 +2090,8 @@ function formSubmitRedirect(form)
             }else if(response.page == 'create-vehiclereceive'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'client-create' || response.page == 'client-update'){
+                setTimeout(() => {window.location.href = response.redirect_url},2000);
+            }else if(response.page == 'create-reattempt'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }
             

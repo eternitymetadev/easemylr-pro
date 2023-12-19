@@ -98,11 +98,11 @@ label.statusLabel {
                         <div class="row align-items-end" style="flex: 1">
                             <div class="col-sm-2">
                                 <label>from</label>
-                                <input type="date" id="startdate" class="form-control" name="startdate">
+                                <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                             </div>
                             <div class="col-sm-2">
                                 <label>To</label>
-                                <input type="date" id="enddate" class="form-control" name="enddate">
+                                <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                             </div>
                             <div class="col-sm-2">
                                 <label>Regional Client</label>

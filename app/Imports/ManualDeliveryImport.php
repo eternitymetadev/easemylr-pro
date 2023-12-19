@@ -16,7 +16,8 @@ class ManualDeliveryImport implements ToModel,WithHeadingRow
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
-    */
+    */ 
+    // For shadow app change mode app to manual now its not need because shadow app not used
     public function model(array $row)
     {        
         $lr_no = ConsignmentNote::where('id', $row['lr_no'])->first();

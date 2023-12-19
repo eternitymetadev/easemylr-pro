@@ -145,7 +145,7 @@
 
                 <td style="text-align: center; width: 120px;">
                     {{ Helper::ShowDayMonthYearslash($consignment->delivery_date )}}</td>
-                <td>{{@$consignment->pod_userid}}</td>
+                <td>{{@$consignment->User->login_id}}</td>
 
                 <?php if ($consignment->lr_mode == 1) {
                      $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();
@@ -183,6 +183,9 @@
                                 style="width: 100%; height: 100%; max-width: 98px; max-height: 50px; border-radius: 4px; cursor: pointer; box-shadow: 0 0 2px #838383fa;" />  
                         @endif
                         </div>
+                        {{-- delete image of pods //its working delte pod commented now--}}
+                        <?php $authuser = Auth::user(); 
+                        if($authuser->role_id == 8){ ?>
                         <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
                             data-id="{{$consignment->id}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -196,6 +199,7 @@
                                 <line x1="14" y1="11" x2="14" y2="17"></line>
                             </svg>
                         </a>
+                        <?php } ?>
                     </div>
                     @else
                     <div style="min-height: 50px" class="d-flex align-items-center">

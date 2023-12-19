@@ -47,16 +47,18 @@
 
                         $unique_veltype = array_unique($vel_type);
                         $vehicle_type = implode('/', $unique_veltype);
-                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
-                        $histrycount = count($trans_id);
-                        
-                        if($histrycount > 1){
-                           $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
-                        }else{
-                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
-                        }
-                        
+                        $trans_id = DB::table('payment_histories')->where('transaction_id', $drswiseReport->transaction_id)->get();
 
+                        $histrycount = count($trans_id);
+                        if($histrycount){
+                            if($histrycount > 1){
+                            $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance + $drswiseReport->PaymentHistory[1]->tds_deduct_balance;
+                            }else{
+                                $paid_amt = $drswiseReport->PaymentHistory[0]->tds_deduct_balance;
+                            }
+                        }else{
+                            $paid_amt=0;
+                        }
                     ?>
             <tr>
                 <td>{{$i}}</td>

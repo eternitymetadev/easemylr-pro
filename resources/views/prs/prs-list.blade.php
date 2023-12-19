@@ -54,7 +54,7 @@
                                     <?php if($authuser->role_id !=3){ ?>
                                     <a href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" class="btn btn-primary btn-cstm downloadEx ml-2" style="font-size: 15px; padding: 9px;" data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" download><span>
                                     <i class="fa fa-download"></i> Export</span></a>
-                                        <?php } ?>
+                                    <?php } ?>
                                     <!-- <a style="font-size: 12px; padding: 8px 0px;" href="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" class="downloadEx btn btn-primary pull-right" data-action="<?php echo URL::to($prefix . '/' . $segment . '/export/excel'); ?>" download>
                                         <span><i class="fa fa-download"></i> Export</span></a> -->
 

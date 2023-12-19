@@ -403,12 +403,13 @@
                     // var drs_no = re.fetch[0]['drs_no'];
                     // $('#current_drs').val(drs_no);
 
-                    // var totalBox = 0;
-                    // var totalweight = 0;
+                    var totalBox = 0;
+                    var totalweight = 0;
                     $.each(re.fetch, function(index, value) {
                         var alldata = value;
-                        // totalBox += parseInt(value.total_quantity);
-                        // totalweight += parseInt(value.total_weight);
+                        totalBox += parseInt(value.consignment_detail.total_quantity);
+                        totalweight += parseInt(value.consignment_detail
+                            .total_weight);
 
                         $('.hrs_details_table tbody').append("<tr id=" + value.id +
                             " class='move'><td>" + value
@@ -426,8 +427,11 @@
                         );
                     });
                     // var rowCount = $("#sheet tbody tr").length;
-                    // $("#total_box").html("Total Boxes: " + totalBox);
-                    // $("#totalweight").html("Net Weight: " + totalweight);
+                    // document.getElementById("total_box_count").innerHTML = `${totalBox}`;
+                    // $("#total_box_count").html("Hello World");
+                    $("#total_box_count").html(totalBox);
+                    $("#total_netweight").html(totalweight);
+                    console.log('qwert', totalBox, totalweight)
                     // $("#total").html("Total LR's: " + rowCount);
                 }
             });
@@ -498,7 +502,7 @@
                 },
                 success: function(data) {
                     if (data.success == true) {
-                        swal('success', 'Hrs Added Successfully', 'success');
+                        swal('success', 'LR Added Successfully', 'success');
                         window.location.href = "hrs-sheet";
                     } else {
                         swal('error', 'something wrong', 'error');
@@ -523,7 +527,7 @@
                 success: function(data) {
                     var re = jQuery.parseJSON(data)
                     if (re.success == true) {
-                        swal('success', 'HRS Removed Successfully', 'success');
+                        swal('success', 'LR Removed Successfully', 'success');
                         location.reload();
                     } else {
                         swal('error', 'something wrong', 'error');

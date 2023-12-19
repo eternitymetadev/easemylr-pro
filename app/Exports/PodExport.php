@@ -65,7 +65,8 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
-            'VehicleType:id,name'
+            'VehicleType:id,name',
+            'User:id,login_id'
         );
 
         if($authuser->role_id ==1){
@@ -223,7 +224,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'delivery_mode'       => $deliverymode,
-                    'user_id'             => @$consignment->pod_userid,
+                    'user_id'             => @$consignment->User->login_id,
                     'pod'                 => $pod,
 
                 ];

@@ -645,7 +645,7 @@ jQuery(document).ready(function () {
                                             <td>
                                                 <div class="form-group form-group-sm">
                                                     <label>Invoice Date</label>
-                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]"">
+                                                    <input type="date" class="form-control invc_date" name="data[1][invoice_date]" onkeydown="return false">
                                                 </div>
                                             </td>
                                             <td>
@@ -664,7 +664,7 @@ jQuery(document).ready(function () {
                                             <td>
                                                 <div class="form-group form-group-sm">
                                                     <label>E-Way Bill Date</label>
-                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]">
+                                                    <input type="date" class="form-control ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false">
                                                 </div>
                                             </td>
                                         </tr>
@@ -801,10 +801,10 @@ jQuery(document).ready(function () {
                                             <tr>
                                                 <td><input type="text" class="form-control form-small orderid" name="data[1][order_id]"></td>
                                                 <td><input type="text" class="form-control form-small invc_no" id="1" name="data[1][invoice_no]"></td>
-                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]"></td>
+                                                <td><input type="date" class="form-control form-small invc_date" name="data[1][invoice_date]" onkeydown="return false"></td>
                                                 <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
                                                 <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
-                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]"></td>
+                                                <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false"></td>
                                                 <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
                                                 <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
                                                 <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
@@ -1107,7 +1107,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
-                    '][invoice_date]"></td>';
+                    '][invoice_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small invc_amt" name="data[' +
                     item_no +
@@ -1119,7 +1119,7 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small ewb_date" name="data[' +
                     item_no +
-                    '][e_way_bill_date]"></td>';
+                    '][e_way_bill_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
@@ -1167,11 +1167,11 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="date" class="form-control form-small invc_date" name="data[' +
                     item_no +
-                    '][invoice_date]"></td>';
+                    '][invoice_date]" onkeydown="return false"></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
-                    '][quantity]"></td>';
+                    '][quantity]" type="number"></td>';
                 // tds +=
                 //     '<td><input type="number" class="form-control form-small net" name="data[' +
                 //     item_no +
@@ -1185,7 +1185,7 @@ jQuery(document).ready(function () {
                     item_no +
                     '][invc_img]" accept="image/*"/></td>';
                 tds +=
-                    '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
+                    '<td><button type="button" class="btn btn-default btn-rounded insert-moreprs"> + </button><button type="button" class="btn btn-default btn-rounded remove-row1"> - </button></td>';
                 tds += "</tr>";
             }
 
@@ -1196,7 +1196,6 @@ jQuery(document).ready(function () {
             }
         });
     });
-
     //Remove the current row
     $(document).on("click", ".remove-row", function () {
         var current_val = $(this).parent().siblings(":first").text();
@@ -1313,6 +1312,7 @@ jQuery(document).ready(function () {
         var segments = url.split('/');
         var lastSegment = segments[segments.length - 1];
         var prslastSegment = segments[segments.length - 3];
+
         // 2000 mt check here
         // var formClass = $(".net").closest('form').attr('class');
 
@@ -1506,9 +1506,10 @@ jQuery(document).ready(function () {
     });
     ///////////////////////get data successful model++++++++++++++++++++++++++++
 
+    // on partial btn click in drs list //
     jQuery(document).on("click", ".drs_cancel", function (event) {
         event.stopPropagation();
-
+        
         let drs_no = jQuery(this).attr("drs-no");
         var data = { drs_no: drs_no };
         var base_url = window.location.origin;
@@ -1532,38 +1533,57 @@ jQuery(document).ready(function () {
                 var consignmentID = [];
                 var i = 1;
                 $.each(data.fetch, function (index, value) {
+                    console.log(value);
+
+                    var re_attemptArray;
+                    try {
+                        re_attemptArray = JSON.parse(value.reattempt_reason);
+                        console.log('123', re_attemptArray);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        return;
+                    }
+                    
+                    // var re_attemptArray = JSON.parse(value.reattempt_reason);
+                    
+                    let re_attemptText =  '';
+                    $.each(re_attemptArray, function(index, element) {
+                        if(element.drs_no == value.drs_no){
+                            if(element.otherText != '') {
+                                re_attemptText =  element.otherText;
+                            }else {
+                                re_attemptText =  element.reattempt_reason;
+                            }
+                        }
+                    });
+
                     var drs_sign = value.signed_drs;
                     // var storage_img = base_url + "/drs/Image/" + drs_sign;
                     var awsUrl = data.aws_url;
                     var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
-                    if (value.signed_drs == null) {
-                        var field =
-                            "<input type='file' name='data[" +
-                            i +
-                            "][img]' data-id='" +
-                            value.consignment_no +
-                            "' placeholder='Choose image' class='drs_image value='" +
-                            value.signed_drs +
-                            "'>";
-                    } else {
-                        var field =
-                            "<a href='" +
-                            storage_img +
-                            "' target='_blank' class='btn btn-warning'>view</a>";
+                    if(value.status == 4){
+                        var field = '';
+                    }else{
+                        if(value.signed_drs != null){
+                            var field =
+                                "<a href='" +
+                                storage_img +
+                                "' target='_blank' class='btn btn-warning'>view</a>";
+                        }else{
+                            var field = `<input type='file' name="data[${i}][img]" data-id="${value.consignment_no}" placeholder="Choose image" class="drs_image ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.signed_drs}" ${value.lr_mode == 2 && 'disabled'} />`;
+                        }
                     }
+
                     // delivery date//
-                    if (value.dd == null) {
-                        var deliverydate =
-                            "<input type='date' name='data[" +
-                            i +
-                            "][delivery_date]' data-id=" +
-                            value.consignment_no +
-                            " class='delivery_d' value='" +
-                            value.dd +
-                            "' onkeydown='return false'>";
-                    } else {
-                        var deliverydate = value.dd;
+                    if(value.status == 4){
+                        var deliverydate = '';
+                    }  else{
+                        if(value.dd != null){
+                            var deliverydate = value.dd;
+                        }else{
+                            var deliverydate = `<input type='date' name='data[${i}][delivery_date]' data-id="${value.consignment_no}" class="delivery_d ${value.lr_mode == 2 && 'swan-tooltip'}" ${value.lr_mode == 2 && 'data-tooltip="By App"'} value="${value.dd}" ${value.lr_mode == 2 && 'disabled'} onkeydown="return false">`;
+                        }
                     }
 
                     if (value.edd == null || value.edd == "") {
@@ -1572,10 +1592,20 @@ jQuery(document).ready(function () {
                         var edd_date = value.edd;
                     }
 
+                    let buttonContent;
+                        if (value.status == 4) {
+                            buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn disabled" style="--btnColor: #fef3d5">Re-Attempted</a>`;
+                        } else {
+                            if(value.dd != null){
+                                buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="" style="--btnColor: #d8ffd8">Delivered</a>`;
+                            }else{
+                                buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" data-lrid="${value.consignment_no}" data-drsno="${drs_no}" style="--btnColor: #edd082" data-toggle="modal" data-target="#reAttemptModel">Re-Attempt</a>`;
+                            }
+                        }  
+
                     var alldata = value;
                     consignmentID.push(alldata.consignment_no);
-
-                    console.log('asdf', deliverydate, typeof(deliverydate))
+                    // console.log(deliverydate, typeof(deliverydate))
                     $("#get-delvery-date tbody").append(
                         `<tr>
                             <td>
@@ -1591,20 +1621,24 @@ jQuery(document).ready(function () {
                                 ${value.city}
                             </td>
                             <td>${edd_date}</td>
-                            <td>${deliverydate}</td>
+                            <td>${deliverydate}</td>                            
+                            <td>${ buttonContent }</td>                                                   
                             <td>${field}</td>
-                            <td>${!deliverydate ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${value.dd == null && value.is_started != 1 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${re_attemptText ?? '-'}</td>
                         </tr>`
                     );
                     i++;
                 });
+                $('#drsNo').val(data.fetch[0].drs_no);
             },
         });
+     
     });
     ///// Drs Cncel status update ////////
     jQuery(document).on("click", ".drs_cancel", function (event) {
         event.stopPropagation();
-
+        
         let drs_no = jQuery(this).attr("drs-no");
         var dataaction = jQuery(this).attr("data-action");
         var updatestatus = "updatestatus";
@@ -2185,7 +2219,8 @@ $(document).on("click", ".onelrupdate", function () {
         },
     });
 });
-//////////////////////////
+
+// In drs list upload pod //
 $("#allsave").submit(function (e) {
     e.preventDefault();
 
@@ -2221,9 +2256,9 @@ $("#allsave").submit(function (e) {
 //////////////////////////////////
 $("#all_inv_save").submit(function (e) {
     e.preventDefault();
-
+    $(this).closest('form').find(':submit').prop('disabled', true);
     var formData = new FormData(this);
-
+    console.log(formData);
     $.ajax({
         url: "all-invoice-save",
         headers: {
@@ -2251,7 +2286,7 @@ $("#all_inv_save").submit(function (e) {
                         var billno =
                             "<input type='text' name='data[" +
                             i +
-                            "][e_way_bill]' >";
+                            "][e_way_bill]'>";
                     } else {
                         var billno = value.e_way_bill;
                     }
@@ -2284,6 +2319,7 @@ $("#all_inv_save").submit(function (e) {
 
                     i++;
                 });
+                $("#modal-2").modal("hide");
                 // location.reload();
             } else {
                 swal("error", "Something went wrong", "error");
@@ -2744,82 +2780,6 @@ $(".searchclientreport").click(function (e) {
                 $(".insert-more").attr("disabled", false);
             } else {
                 $(".insert-more").attr("disabled", true);
-            }
-        },
-    });
-});
-
-//////////////////////////////////
-$("#all_inv_save").submit(function (e) {
-    e.preventDefault();
-
-    var formData = new FormData(this);
-
-    $.ajax({
-        url: "all-invoice-save",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-        },
-        type: "POST",
-        data: new FormData(this),
-        processData: false,
-        contentType: false,
-        beforeSend: function () {
-            $("#view_invoices").dataTable().fnClearTable();
-            $("#view_invoices").dataTable().fnDestroy();
-            $(".indicator-progress").show();
-            $(".indicator-label").hide();
-        },
-        success: (data) => {
-            $(".indicator-progress").hide();
-            $(".indicator-label").show();
-            if (data.success == true) {
-                swal("success", "Data Updated successfully", "success");
-
-                var i = 1;
-                $.each(data.fetch, function (index, value) {
-                    if (value.e_way_bill == null || value.e_way_bill == "") {
-                        var billno =
-                            "<input type='text' name='data[" +
-                            i +
-                            "][e_way_bill]' >";
-                    } else {
-                        var billno = value.e_way_bill;
-                    }
-
-                    if (
-                        value.e_way_bill_date == null ||
-                        value.e_way_bill_date == ""
-                    ) {
-                        var billdate =
-                            "<input type='date' name='data[" +
-                            i +
-                            "][e_way_bill_date]' >";
-                    } else {
-                        var billdate = value.e_way_bill_date;
-                    }
-
-                    $("#view_invoices tbody").append(
-                        "<tr><input type='hidden' name='data[" +
-                        i +
-                        "][id]' value=" +
-                        value.id +
-                        " ><td>" +
-                        value.consignment_id +
-                        "</td><td>" +
-                        value.invoice_no +
-                        "</td><td>" +
-                        billno +
-                        "</td><td>" +
-                        billdate +
-                        "</td></tr>"
-                    );
-
-                    i++;
-                });
-                // location.reload();
-            } else {
-                swal("error", "Something went wrong", "error");
             }
         },
     });

@@ -16,12 +16,13 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
 {
     protected $startdate;
     protected $enddate;
-    // protected $search;
+    protected $search;
 
-    function __construct($startdate,$enddate) {
+    function __construct($startdate,$enddate,$search) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
-        // $this->search = $search;
+        $this->enddate = $enddate;
+        $this->search = $search;
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -34,6 +35,7 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
 
         $startdate = $this->startdate;
         $enddate = $this->enddate;
+        $search = $this->search;
 
               $authuser = Auth::user();
                  $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -43,16 +45,16 @@ class PaymentReportExport implements FromCollection, WithHeadings, ShouldQueue
                 $query->whereHas('PaymentRequest', function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc);
                 });
-            }else{
-                $query = $query;
-             }
-             if(isset($startdate) && isset($enddate)){
-                $payment_lists = $query->whereBetween('created_at',[$startdate,$enddate])->groupBy('transaction_id')->get();
-            }else {
-                $payment_lists = $query->groupBy('transaction_id')->get();
+            }
+            
+            if(isset($startdate) && isset($enddate)){
+                $query = $query->whereBetween('created_at',[$startdate,$enddate]);
+            }
+            if($search){
+                $query = $query->where('transaction_id', $search);
             }
 
-        
+            $payment_lists = $query->groupBy('transaction_id')->get();
         // $payment_lists = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype')->groupBy('transaction_id')->get();
 
         if ($payment_lists->count() > 0) {

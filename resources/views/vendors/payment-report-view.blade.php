@@ -52,14 +52,20 @@ div.relative {
                 <div class="mb-4 mt-4">
                     <h5 class="limitmessage text-danger" style="display: none;">You cannot download more than 30,000
                         records. Please select Filters.</h5>
+                        <input type="hidden" class="form-control" placeholder="Transaction Id" id="search"
+                                data-action="<?php echo url()->current(); ?>">
                     <div class="row mt-4" style="margin-left: 193px; margin-bottom:15px;">
+                        <div style="width: 300px">
+                            <label>Transaction Id</label>
+                            <input type="text" class="form-control" placeholder="Transaction Id" id="transaction_id">
+                        </div>
                         <div class="col-sm-3">
                             <label>From</label>
-                            <input type="date" id="startdate" class="form-control" name="startdate">
+                            <input type="date" id="startdate" class="form-control" name="startdate" onkeydown="return false">
                         </div>
                         <div class="col-sm-3">
                             <label>To</label>
-                            <input type="date" id="enddate" class="form-control" name="enddate">
+                            <input type="date" id="enddate" class="form-control" name="enddate" onkeydown="return false">
                         </div>
                         <div class="col-6">
                             <button type="button" id="filter_reportall" class="btn btn-primary" 
@@ -91,7 +97,7 @@ div.relative {
 jQuery(document).on('click', '#filter_reportall', function() {
     var startdate = $("#startdate").val();
     var enddate = $("#enddate").val();
-    var search = jQuery('#search').val();
+    var search = jQuery('#transaction_id').val();
     
     jQuery.ajax({
         type: 'get',
@@ -123,7 +129,7 @@ jQuery(document).on('change', '.report_perpage', function() {
     }
     var url = jQuery(this).attr('data-action');
     var peritem = jQuery(this).val();
-    var search  = jQuery('#search').val();
+    var search  = jQuery('#transaction_id').val();
         jQuery.ajax({
             type      : 'get', 
             url       : url,
@@ -158,15 +164,29 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
     }
 
     var geturl = jQuery(this).attr('data-action');
-    var startdate = jQuery('#startdate').val();
-    var enddate = jQuery('#enddate').val();
+    var start_date = jQuery('#startdate').val();
+    var end_date = jQuery('#enddate').val();
+    
+    var transaction_id = jQuery('#transaction_id').val();
 
-    var search = jQuery('#search').val();
+    if(typeof(start_date) === "undefined"){
+        var startdate = '';
+    }else{
+        var startdate = start_date;
+    }
+    if(typeof(end_date) === "undefined"){
+        var enddate = '';
+    }else{
+        var enddate = end_date;
+    }
+    if(typeof(transaction_id) === "undefined"){
+        var search = '';
+    }else{
+        var search = transaction_id;
+    }
+
     var url = jQuery('#search').attr('data-url');
-    if (startdate)
-        geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate;
-    else if (search)
-        geturl = geturl + '?search=' + search;
+    geturl = geturl + '?startdate=' + startdate + '&enddate=' + enddate + '&search=' + search;
 
     jQuery.ajax({
         url: url,
@@ -174,7 +194,8 @@ jQuery(document).on('click', '.consignmentReportEx', function(event) {
         cache: false,
         data: {
             startdate: startdate,
-            enddate: enddate
+            enddate: enddate,
+            search: search
         },
         headers: {
             'X-CSRF-TOKEN': jQuery('meta[name="_token"]').attr('content')

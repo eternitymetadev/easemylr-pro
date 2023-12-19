@@ -272,7 +272,6 @@ span.select2.select2-container.mb-4 {
         <h2 class="pageHeading">Order Book PTL </h2>
     </div>
 
-
     <form class="general_form" method="POST" action="{{url($prefix.'/store-Ptl-order')}}" id="create_ptlconsignment"
         style="margin: auto;">
         {{--Branch Location--}}
@@ -458,7 +457,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                     EDD<span class="text-danger">*</span>
                 </label>
-                <Input type="date" class="form-control form-small" name="edd" />
+                <Input type="date" class="form-control form-small" name="edd" onkeydown="return false"/>
             </div>
 
             <div class="form-group col-12">
@@ -564,7 +563,7 @@ function insertMaintableRow() {
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
                                                 <input type="date" class="form-control invc_date" name="data[` +
-            item_no + `][invoice_date]">
+            item_no + `][invoice_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                         <td>
@@ -586,7 +585,7 @@ function insertMaintableRow() {
                                                 <label>E-Way Bill Date</label>
                                                 <input type="date" class="form-control ewb_date" name="data[` +
             item_no +
-            `][e_way_bill_date]">
+            `][e_way_bill_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                     </tr>

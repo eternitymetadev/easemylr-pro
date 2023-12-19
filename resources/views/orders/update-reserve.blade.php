@@ -390,13 +390,13 @@ span.round-tab:hover {
                                             <td><input type="text" class="form-control form-small invc_no"
                                                     name="data[1][invoice_no]"></td>
                                             <td><input type="date" class="form-control form-small invc_date"
-                                                    name="data[1][invoice_date]"></td>
+                                                    name="data[1][invoice_date]" onkeydown="return false"></td>
                                             <td><input type="number" class="form-control form-small invc_amt"
                                                     name="data[1][invoice_amount]"></td>
                                             <td><input type="number" class="form-control form-small ew_bill"
                                                     name="data[1][e_way_bill]"></td>
                                             <td><input type="date" class="form-control form-small ewb_date"
-                                                    name="data[1][e_way_bill_date]"></td>
+                                                    name="data[1][e_way_bill_date]" onkeydown="return false"></td>
                                             <td><input type="number" class="form-control form-small qnt"
                                                     name="data[1][quantity]"></td>
                                             <td><input type="number" class="form-control form-small net"
@@ -453,7 +453,7 @@ span.round-tab:hover {
                         <div class=" col-sm-3 ">
                             <p>EDD</p>
                             <Input type="date" class="form-control form-small" style="width: 160px; height: 43px;"
-                                name="edd">
+                                name="edd" onkeydown="return false">
                         </div>
                     </div>
                 </div>

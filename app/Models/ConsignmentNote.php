@@ -45,6 +45,8 @@ class ConsignmentNote extends Model
         'driver_id',
         'bar_code',
         'reason_to_cancel',
+        'cancel_userid',
+        'reattempt_reason',
         'edd',
         'order_id',
         'status',
@@ -121,10 +123,19 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
     }
 
+    public function DrsDetailReattempted()
+    {
+        return $this->hasMany('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', '!=', 'Successful')->select('drs_no');
+    }
+
     public function DrsDetail()
     {
-        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->where('delivery_status', 'Successful')->select('drs_no');
     }
+    // public function DrsDetail()
+    // {
+    //     return $this->hasOne('App\Models\TransactionSheet','consignment_no','id');
+    // }
     public function AppMedia()
     {
         return $this->hasMany('App\Models\AppMedia','consignment_no','id');
@@ -147,6 +158,11 @@ class ConsignmentNote extends Model
     }
     public function fallIn(){
         return $this->belongsTo('App\Models\Location','fall_in');
+    }
+
+    public function User()
+    {
+        return $this->hasOne('App\Models\User','id','pod_userid');
     }
 
 }

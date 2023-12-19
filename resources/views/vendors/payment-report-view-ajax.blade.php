@@ -102,7 +102,7 @@
                         }
                         $newDrs = implode(',',$exp_arra);
 
-                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
+                        $trans_id = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
                         $histrycount = count($trans_id);
                         if($histrycount > 1){
                            $paid_amt = $trans_id[0]->tds_deduct_balance + $trans_id[1]->tds_deduct_balance ;
@@ -167,7 +167,7 @@
                         <td>{{$payment_list->payment_date ?? '-'}}</td>
                         <td>{{$payment_list->bank_refrence_no ?? '-'}}</td>
                         <?php
-                        $trans_id = $lrdata = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
+                        $trans_id = DB::table('payment_histories')->where('transaction_id', $payment_list->transaction_id)->get();
                         $histrycount = count($trans_id);
                         if($histrycount > 1){
                             $tds_cut1 = $trans_id[1]->current_paid_amt - $trans_id[1]->tds_deduct_balance ;

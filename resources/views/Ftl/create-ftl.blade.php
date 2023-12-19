@@ -400,7 +400,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                     Vehicle Number<span class="text-danger">*</span>
                 </label>
-                <select class="form-control form-small my-select2" id="vehicle_no" name="vehicle_id" tabindex="-1">
+                <select class="form-control form-small my-select2 select_vehiclecheck" id="vehicle_no" name="vehicle_id" tabindex="-1">
                     <option value="">Select vehicle no</option>
                     @foreach($vehicles as $vehicle)
                     <option value="{{$vehicle->id}}">{{$vehicle->regn_no}}
@@ -425,7 +425,7 @@ span.select2.select2-container.mb-4 {
                 <label>
                     EDD<span class="text-danger">*</span>
                 </label>
-                <input type="date" class="form-control form-small" name="edd" />
+                <input type="date" class="form-control form-small" name="edd" onkeydown="return false"/>
             </div>
 
             <div class="form-group col-12">
@@ -476,6 +476,7 @@ span.select2.select2-container.mb-4 {
 @section('js')
 <script>
 $(document).ready(function() {
+    $("#driver_id").prop('disabled', true);
 
     jQuery(function() {
         $('.my-select2').each(function() {
@@ -493,6 +494,16 @@ $(document).ready(function() {
         })
     })
 
+});
+
+$("#vehicle_no").change(function(){
+    var vehicle_no = $(this).val();
+    if(vehicle_no){
+        $("#driver_id").prop('disabled', false); // Disables the element with ID 'driver_id'
+    }else{
+        $("#driver_id").val(null).trigger("change");
+        $("#driver_id").prop('disabled', true);
+    }
 });
 
 function toggleVehicleInfBlock() {
@@ -531,7 +542,7 @@ function insertMaintableRow() {
                                             <div class="form-group form-group-sm">
                                                 <label>Invoice Date</label>
                                                 <input type="date" class="form-control invc_date" name="data[` +
-            item_no + `][invoice_date]">
+            item_no + `][invoice_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                         <td>
@@ -553,7 +564,7 @@ function insertMaintableRow() {
                                                 <label>E-Way Bill Date</label>
                                                 <input type="date" class="form-control ewb_date" name="data[` +
             item_no +
-            `][e_way_bill_date]">
+            `][e_way_bill_date]" onkeydown="return false">
                                             </div>
                                         </td>
                                     </tr>

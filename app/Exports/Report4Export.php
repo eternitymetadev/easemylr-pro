@@ -23,14 +23,14 @@ use Auth;
 use DateTime;
 use DB;
 
-class Report2Export implements FromCollection, WithHeadings, ShouldQueue
+class Report4Export implements FromCollection, WithHeadings, ShouldQueue
 {
-
     protected $startdate;
     protected $enddate;
     protected $baseclient_id;
     protected $regclient_id;
     protected $branch_id;
+    // protected $awsUrl;
 
     function __construct($startdate,$enddate,$baseclient_id,$regclient_id,$branch_id) {
         $this->startdate = $startdate;
@@ -38,6 +38,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
         $this->branch_id = $branch_id;
+        // $this->awsUrl = $awsUrl;
     }
 
     public function collection()
@@ -48,45 +49,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
         $query = ConsignmentNote::query();
 
-        // Select only the necessary columns
-        $query = $query->select([
-            'id',
-            'lr_type',
-            'regclient_id',
-            'consigner_id',
-            'consignee_id',
-            'ship_to_id',
-            'consignment_date',
-            'payment_type',
-            'vehicle_id',
-            'total_quantity',
-            'total_weight',
-            'total_gross_weight',
-            'total_freight',
-            'transporter_name',
-            'vehicle_type',
-            'purchase_price',
-            'freight_on_delivery',
-            'cod',
-            'user_id',
-            'branch_id',
-            'driver_id',
-            'edd',
-            'status',
-            'lr_mode',
-            'delivery_status',
-            'delivery_date',
-            'signed_drs',
-            'job_id',
-            'reattempt_reason',
-        ]);
-
         $startdate = $this->startdate;
         $enddate = $this->enddate;
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
-
+        // $awsUrl = $this->awsUrl;
+        // dd($awsUrl);
         $authuser = Auth::user();
         $role_id = Role::where('id','=',$authuser->role_id)->first();
         $regclient = explode(',',$authuser->regionalclient_id);
@@ -116,13 +85,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereIn('branch_id', $cc);
         }
 
-        if ($branch_id !== null) {
-            if ($branch_id) {
-                $branch_id_array = explode(",", $branch_id);
-                $query = $query->whereIn('branch_id', $branch_id_array);
-            }
-        }
-      
         if(isset($startdate) && isset($enddate)){
             $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
         }
@@ -135,6 +97,12 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
                 $q->where('id', $regclient_id);
             });
+        }
+        if ($branch_id !== null) {
+            if ($branch_id) {
+                $branch_id_array = explode(",", $branch_id);
+                $query = $query->whereIn('branch_id', $branch_id_array);
+            }
         }
 
         $consignments = $query->orderBy('id','ASC')->get();
@@ -169,21 +137,17 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
                 if(empty($consignment->order_id)){ 
                     if(!empty($consignment->ConsignmentItems)){
-                        $order = array();
+                        // $order = array();
                         $invoices = array();
                         $inv_date = array();
-                        $inv_amt = array();
                         foreach($consignment->ConsignmentItems as $orders){ 
-                            
-                            $order[] = $orders->order_id;
+                            // $order[] = $orders->order_id;
                             $invoices[] = $orders->invoice_no;
                             $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                            $inv_amt[] = $orders->invoice_amount;
                         }
-                        $order_item['orders'] = implode('/', $order);
+                        // $order_item['orders'] = implode('/', $order);
                         $order_item['invoices'] = implode('/', $invoices);
                         $invoice['date'] = implode(',', $inv_date);
-                        $invoice['amt'] = implode(',', $inv_amt);
 
                         if(!empty($orders->order_id)){
                             $order_id = $orders->order_id;
@@ -196,26 +160,48 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 }else{
                     $order_id = $consignment->order_id;
                 }
+                ///////////////
 
                 if(empty($consignment->invoice_no)){
                     $invno =  $order_item['invoices'] ?? '-';
                     $invdate = $invoice['date']  ?? '-';
-                    $invamt = $invoice['amt']  ?? '-';
                  }else{
                   $invno =  $consignment->invoice_no ?? '-';
                   $invdate = $consignment->invoice_date  ?? '-';
-                  $invamt = $consignment->invoice_amount  ?? '-';
                  }
   
-                 if($consignment->status == 1){
+                if($consignment->status == 1){
                     $status = 'Active';
-                 }elseif($consignment->status == 2 || $consignment->status == 6){
+                }elseif($consignment->status == 2 || $consignment->status == 6){
                    $status = 'Unverified';
-                 }elseif($consignment->status == 0){
+                }elseif($consignment->status == 0){
                   $status = 'Cancel';
-                 }else{
+                }else{
                   $status = 'Unknown';
-                 }
+                }
+
+                if($consignment->lr_mode == 1){
+                    $deliverymode = 'Shadow';
+                }elseif($consignment->lr_mode == 2){
+                    $deliverymode = 'ShipRider';
+                }else{
+                   $deliverymode = 'Manual';
+                }
+
+                if(!empty($consignment->DrsDetail->drs_no)){
+                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
+                }else{
+                    $drs = '-';
+                }
+
+                if(!empty($consignment->DrsDetail->created_at)){
+                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
+                    // $date->setTimezone(new \DateTimeZone('IST'));
+                    $drsdate = $consignment->DrsDetail->created_at;
+                    $drs_date = $drsdate->format('d-m-Y');
+                }else{
+                   $drs_date = '-';
+                }
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
@@ -225,104 +211,116 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                    $deliverymode = 'Manual';
                   }
 
-                  if(!empty($consignment->DrsDetail->drs_no)){
-                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
-                  }else{
-                    $drs = '-';
-                  }
-
-                  if(!empty($consignment->DrsDetail->created_at)){
-                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
-                    // $date->setTimezone(new \DateTimeZone('IST'));
-                    $drsdate = $consignment->DrsDetail->created_at;
-                    $drs_date = $drsdate->format('d-m-Y');
-                   }else{
-                   $drs_date = '-';
-                   }
-
-                // lr type //
-                if($consignment->lr_type == 0){ 
-                    $lr_type = "FTL";
-                     }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
-                        $lr_type = "PTL";
-                         }else{ 
-                            $lr_type = "-";
+                //pod img status
+                $awsUrl = env('AWS_S3_URL');
+                if ($consignment->lr_mode == 1) {
+                    $job = DB::table('jobs')->where('job_id', $consignment->job_id)->orderBy('id', 'desc')->first();
+                    
+                    if (!empty($job->response_data)) {
+                        $trail_decorator = json_decode($job->response_data);
+                        $img_group = [];
+                        
+                        foreach ($trail_decorator->task_history as $task_img) {
+                            if ($task_img->type == 'image_added') {
+                                $img_group[] = $task_img->description;
                             }
-
-                // No of reattempt
-                if($consignment->reattempt_reason != null){
-                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
-                }else{
-                    $no_reattempt = '';
-                }
-
-                // reatempted drs nos
-                if(!empty($consignment->DrsDetailReattempted)){
-                    $drs_nos = array();
-                    foreach($consignment->DrsDetailReattempted as $reattemptDrs){ 
-                        $drs_nos[] = $reattemptDrs->drs_no;
+                        }
                     }
-                    $reattempt_drs['drs_nos'] = implode('/', $drs_nos);
+                } elseif ($consignment->lr_mode == 0) {
+                    // New path for lr_mode 0
+                    $img = $awsUrl . '/pod_images/' . $consignment->signed_drs;
+                    $pdfcheck = explode('.', $consignment->signed_drs);
+                    
+                    if (!empty($consignment->signed_drs)) {
+                        $pod_img = $img;
+                    } else {
+                        $pod_img = "Not Available";
+                    }
+                } else { // Assuming this is a catch-all case
+                    $getjobimg = DB::table('app_media')->where('consignment_no', $consignment->id)->get();
+                    $count_arra = count($getjobimg);
+                    
+                    if ($count_arra > 1) {
+                        $pods = [];
+                        foreach ($getjobimg as $img) {
+                            $pods[] = $img->pod_img;
+                        }
+                        $pod_img = implode(',', $pods);
+                    } else {
+                        $pod_img = "Not Available";
+                    }
                 }
-
-                // delivery branch 
-                if($consignment->lr_type == 0){
-                    $delivery_branch = @$consignment->Branch->name;
-                }else{
-                    $delivery_branch = @$consignment->ToBranch->name;
+                
+                // If lr_mode is 1 and $img_group is not empty, override $pod_img
+                if ($consignment->lr_mode == 1 && !empty($img_group)) {
+                    $pods = [];
+                    foreach ($img_group as $img) {
+                        $pods[] = $img;
+                    }
+                    $pod_img = implode(',', $pods);
                 }
-
+                
+                // If none of the conditions match, $pod_img will be "Not Available."
+                if (!isset($pod_img)) {
+                    $pod_img = "Not Available";
+                }
+              
+                // lr type //
+                if ($consignment->lr_type == 0){ 
+                    $lr_type = "FTL";
+                } elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                    $lr_type = "PTL";
+                } else{ 
+                    $lr_type = "-";
+                }
+                            
                 $arr[] = [
+                    'branch'              => @$consignment->Branch->name,
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
-                    'drs_no'              => @$drs,
-                    'reattempt_drsno'     => @$reattempt_drs['drs_nos'],
+                    'drs_no'              => $drs,
                     'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
-                    'booking_branch'      => @$consignment->Branch->name,
-                    'delivery_branch'     => @$delivery_branch,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
-                    'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
-                    'consigner_city'      => @$consignment->ConsignerDetail->city,
-                    'consigner_postal'    => @$consignment->ConsignerDetail->postal_code,
-                    'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
-                    'contact_person'      => @$consignment->ConsigneeDetail->contact_name,
-                    'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
-                    'consignee_city'      => @$consignment->ConsigneeDetail->city,
-                    'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
+                    // 'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
+                    // 'consigner_city'      => @$consignment->ConsignerDetail->city,
+                    // 'consignee_nick_name' => @$consignment->ConsigneeDetail->nick_name,
+                    // 'contact_person'      => @$consignment->ConsigneeDetail->contact_name,
+                    // 'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
+                    // 'consignee_city'      => @$consignment->ConsigneeDetail->city,
+                    // 'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
+                    // 'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
                     'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
-                    'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
-                    'Ship_to_city'        => @$consignment->ShiptoDetail->city,
-                    'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
-                    'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
-                    'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
+                    // 'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
+                    // 'Ship_to_city'        => @$consignment->ShiptoDetail->city,
+                    // 'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
+                    // 'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
+                    // 'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
                     'invoice_no'          => $invno,
                     'invoice_date'        => $invdate,
-                    'invoice_amt'         => $invamt,
-                    'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
-                    'vehicle_type'        => @$consignment->vehicletype->name,
-                    'transporter_name'    => @$consignment->transporter_name,
-                    // 'purchase_price'      => @$consignment->purchase_price,
+                    // 'invoice_amt'         => $invamt,
+                    // 'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
+                    // 'vehicle_type'        => @$consignment->vehicletype->name,
+                    // 'transporter_name'    => @$consignment->transporter_name,
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,
-                    'driver_name'         => @$consignment->DriverDetail->name,
-                    'driver_phone'        => @$consignment->DriverDetail->phone,
-                    'driver_fleet'        => @$consignment->DriverDetail->fleet_id,
+                    // 'driver_name'         => @$consignment->DriverDetail->name,
+                    // 'driver_phone'        => @$consignment->DriverDetail->phone,
+                    // 'driver_fleet'        => @$consignment->DriverDetail->fleet_id,
                     'lr_status'           => $status,
                     'dispatch_date'       => @$consignment->consignment_date,
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'tat'                 => $tatday,
-                    //'delivery_mode'       => $deliverymode,
-                    //'pod'                 => $pod,
+                    'delivery_mode'       => @$deliverymode,
+                    'pod'                 => @$pod_img,
                     'payment_type'        => @$consignment->payment_type,
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
-                    'reattempt_reason'   => @$no_reattempt,
+
                 ];
             }
         }
@@ -332,56 +330,51 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     public function headings(): array
     {
         return [
+            'Branch',
             'LR No',
             'LR Date',
-            'Delivered DRS No',
-            'DRS Nos',
+            'DRS No',
             'DRS Date',
             'Order No',
-            'Booking Branch',
-            'Delivery Branch',
             'Base Client',
             'Regional Client',
-            'Consignor',
-            'Consignor City',
-            'Consignor PinCode',
-            'Consignee Name',
-            'Contact Person Name',
-            'Consignee Phone',
-            'Consignee city',
-            'Consignee PinCode',
-            'Consignee District', 
+            // 'Consignor',
+            // 'Consignor City',
+            // 'Consignee Name',
+            // 'Contact Person Name',
+            // 'Consignee Phone',
+            // 'Consignee city',
+            // 'Consignee Pin Code',
+            // 'Consignee District', 
             'Consignee State',
-            'ShipTo Name',
-            'ShipTo City', 
-            'ShipTo pin',            
-            'ShipTo District',            
-            'ShipTo State',           
+            // 'ShipTo Name',
+            // 'ShipTo City', 
+            // 'ShipTo pin',            
+            // 'ShipTo District',            
+            // 'ShipTo State',           
             'Invoice No',
             'Invoice Date',
-            'Invoice Amount',
-            'Vehicle No',
-            'Vehicle Type',
-            'Transporter Name',
-            // 'Purchase Price',
+            // 'Invoice Amount',
+            // 'Vehicle No',
+            // 'Vehicle Type',
+            // 'Transporter Name',
             'Boxes',
             'Net Weight',
             'Gross Weight',
-            'Driver Name',
-            'Driver Phone',
-            'Driver Fleet',
+            // 'Driver Name',
+            // 'Driver Phone',
+            // 'Driver Fleet',
             'Lr Status',
             'Dispatch Date',
             'Delivery Date',
             'Delivery Status',
             'Tat',
-            //'Delivery Mode',
-            //'POD',
+            'Delivery Mode',
+            'POD',
             'Payment Type',
             'Freight on Delivery',
             'COD',
             'LR Type',
-            'No of Reattempt',
         ];
     }
 }

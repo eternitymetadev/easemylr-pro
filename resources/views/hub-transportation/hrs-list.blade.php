@@ -71,17 +71,17 @@
         <div class="row layout-top-spacing">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="page-header layout-spacing">
-                    <h2 class="pageHeading">Create Hrs</h2>
+                    <h2 class="pageHeading">Create Hrs </h2>
                 </div>
 
 
                 <div class="widget-content widget-content-area br-6">
                     <div class=" mb-4 mt-4">
                         <div class="d-flex justify-content-between align-items-center px-3 pb-3" style="gap: 1rem;">
-                        <?php $authuser = Auth::user();
-                         if($authuser->role_id != 3){
-                             ?>    
-                        <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs"
+                            <?php $authuser = Auth::user();
+                            if($authuser->role_id != 3){ 
+                            ?>
+                            <button disabled="true" type="button" class="btn btn-warning disableDrs" id="create_hrs"
                                     style="align-self: stretch;">
                                 Create HRS
                             </button>
@@ -97,6 +97,8 @@
                                        id="myInput" type="text" placeholder="search..."/>
                             </div>
                         </div>
+                        
+                        {{-- <p class="totalcount">Total Count: <span class="reportcount">{{$consignments->count()}}</span></p> --}}
                         @csrf
                         <table id="unverified-table" class="table table-hover" style="width:100%">
                             <thead>
@@ -233,7 +235,6 @@
                     else {
                         swal('error','something wrong','error');
                     }
-
                 }
             })
         });
@@ -246,10 +247,6 @@
             "pageLength": 50, // Set the default number of records per page
             "order": [], // Define initial sorting (if needed)
             "ordering": true, // Enable sorting
-
-            // dom: 'lrt',
-            // "lengthChange": false,
-            // orderable: false,
         });
 
 

@@ -18,6 +18,7 @@ use App\Models\PrsTaskItem;
 use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Hrs;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\Vendor;
@@ -178,9 +179,35 @@ class PickupRunSheetController extends Controller
         $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         // }
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        // get vehicles
+        // $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
+        // ->where('status', '!=', '3')
+        // ->pluck('vehicle_id')
+        // ->unique()
+        // ->toArray();
+
+        // // Fetch vehicles that are not in the merged array //vehicle not in prs
+        // $vehicles = Vehicle::where('status', '1')
+        // ->whereNotIn('id', $prsVehicleIds)
+        // ->select('id', 'regn_no')
+        // ->get();
+
+        // get drivers
+        // $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
+        // ->where('status', '!=', '3')
+        // ->pluck('driver_id')
+        // ->unique()
+        // ->toArray();
+
+        // // Fetch drivers who are not in the merged array
+        // $drivers = Driver::where('status', '1')
+        // ->whereNotIn('id', $prsDriverIds)
+        // ->select('id', 'name', 'phone')
+        // ->get();
+
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $locations = Location::select('id', 'name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id', 'name')->get();
@@ -771,17 +798,6 @@ class PickupRunSheetController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -798,41 +814,20 @@ class PickupRunSheetController extends Controller
 
         $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
-        // }
-        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        $getprs = PickupRunSheet::where('id', $id)->with('PrsRegClients', 'PrsRegClients.RegConsigner')->first();
+       
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $locations = Location::select('id', 'name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id', 'name')->get();
         $getprs = PickupRunSheet::where('id', $id)->with('PrsRegClients', 'PrsRegClients.RegConsigner')->first();
-        // echo "<pre>"; print_r($consigners); die;
-
+        
         return view('prs.update-prs', ['prefix' => $this->prefix, 'getprs' => $getprs, 'regclients' => $regclients, 'locations' => $locations, 'hub_locations' => $hub_locations, 'consigners' => $consigners, 'vehicletypes' => $vehicletypes, 'vehicles' => $vehicles, 'drivers' => $drivers]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
     // get consigner on select regclient
     public function getConsigner(Request $request)
     {

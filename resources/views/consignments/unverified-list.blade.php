@@ -57,8 +57,7 @@ div.relative {
                 <nav class="breadcrumb-one" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified
-                                Lr</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Unverified Lr</a></li>
                     </ol>
                 </nav>
             </div>
@@ -68,17 +67,11 @@ div.relative {
                     @csrf
                     <table id="unverified-table" class="table table-hover" style="width:100%">
                         <div class="btn-group relative">
-                        <?php $authuser = Auth::user();
+                            <?php $authuser = Auth::user();
                                 if($authuser->role_id != 3){ ?>
-                            <button type="button" class="btn btn-warning disableDrs" id="create_edd"
-                                style="font-size: 11px;">
-                                Create DRS
-                            </button>
+                                    <button type="button" class="btn btn-warning disableDrs" id="create_edd" style="font-size: 11px;">Create DRS
+                                    </button>
                             <?php } ?>
-                            <!-- <button type="button" class="btn btn-warning" id="launch_model" data-toggle="modal" data-target="#exampleModal" disabled="disabled" style="font-size: 11px;">
-
-                            Create DSR
-                            </button> -->
                         </div>
                         <thead>
                             <tr>
@@ -96,14 +89,12 @@ div.relative {
                                 <th>Boxes</th>
                                 <th>Net Weight</th>
                                 <th>Invoice Number</th>
-
                             </tr>
                         </thead>
                         <tbody>
                             <?php 
                             $i = 1;
-                                foreach ($consignments as $key => $consignment) {     
-                                    $authuser = Auth::user();
+                                foreach ($consignments as $key => $consignment) {
                                 ?>
                             <tr>
                                 <?php if($consignment->lr_type == 0){?>

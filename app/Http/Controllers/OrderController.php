@@ -16,7 +16,9 @@ use App\Models\RegionalClient;
 use App\Models\Role;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
+use App\Models\PickupRunSheet;
 use App\Models\Zone;
+use App\Models\Hrs;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -2776,8 +2778,40 @@ class OrderController extends Controller
         if (empty($consignmentno)) {
             $consignmentno = "";
         }
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+
+        // get vehicles
+        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->where('status', '!=', 0)
+        ->pluck('vehicle_id')
+        ->toArray();
+
+        // Merge and deduplicate the vehicle IDs
+        $mergedVehicleIds = array_unique($consignmentVehicleIds);
+
+        // Fetch vehicles that are not in the merged array
+        $vehicles = Vehicle::where('status', '1')
+        ->whereNotIn('id', $mergedVehicleIds)
+        ->select('id', 'regn_no')
+        ->get();
+
+        // get drivers
+        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        ->where('delivery_status', '!=', 'successful')
+        ->pluck('driver_id')
+        ->toArray();
+
+        // Merge and deduplicate the driver IDs
+        $mergedDriverIds = array_unique($consignmentDriverIds);
+
+        // Fetch drivers who are not in the merged array
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('id', $mergedDriverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+ 
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         ////////////// Bill to regional clients //////////////
