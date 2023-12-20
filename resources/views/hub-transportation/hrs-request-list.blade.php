@@ -79,7 +79,7 @@ input[readonly].styledInput {
         <div class="p-3 d-flex flex-wrap justify-content-between align-items-center" style="gap: 1rem;">
 
             <div>
-                <input class="form-control" placeholder="Vehicle Number Search" id="search"
+                <input class="form-control" placeholder="Transaction Number Search" id="search"
                     data-action="<?php echo url()->current(); ?>"
                     style="height: 36px; max-width: 250px; width: 300px;" />
             </div>
