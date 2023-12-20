@@ -112,7 +112,7 @@ tbody tr:last-child .rowAddButton {
 
                                                 </td>
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control consigner_prs tagging"
+                                                    <select class="form-control consigner_prs taggingFalse"
                                                         id="select_consigner" multiple="multiple"
                                                         name="data[1][consigner_id][]">
                                                         <option disabled>Select</option>
@@ -201,9 +201,7 @@ jQuery(function() {
 $('#prsDate').val(new Date().toJSON().slice(0, 10));
 
 //multiple select //
-var ss = $(".basic").select2({
-    tags: true,
-});
+$('.taggingFalse').select2();
 
 
 function addrow() {
@@ -215,7 +213,7 @@ function addrow() {
     rows += '<tr class="rrow">';
     rows += '<td valign="middle" class="p-2">';
     rows +=
-        '<select class="form-control tagging select_prsregclient" id="" onchange="onChangePrsRegClient(this)" name="data[' +
+        '<select class="form-control taggingFalse select_prsregclient" id="" onchange="onChangePrsRegClient(this)" name="data[' +
         i + '][regclient_id]">';
     rows += '<option selected="selected" disabled>Select client..</option>';
     <?php
@@ -228,7 +226,7 @@ function addrow() {
     rows += '<input type="hidden" name="data[' + i + '][branch_id]" value="{{$client->location_id}}" />';
     rows += '</select></td>';
     rows += '<td valign="middle" class="p-2">';
-    rows += '<select class="form-control consigner_prs tagging" multiple="multiple" name="data[' + i +
+    rows += '<select class="form-control consigner_prs taggingFalse" multiple="multiple" name="data[' + i +
         '][consigner_id][]">';
     rows += '<option disabled>Select</option></select></td>';
     rows += '<td valign="middle" class="p-2" width="24px">';
@@ -240,7 +238,7 @@ function addrow() {
 
 
     $('#participantTable tbody').append(rows);
-    $('.tagging').select2();
+    $('.taggingFalse').select2();
 }
 
 $(document).on('click', '.rowClearButton', function() {

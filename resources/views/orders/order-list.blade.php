@@ -113,22 +113,22 @@ div.relative {
                                 ?>
                             <tr>
                                 <!-- <td class="dt-control">+</td> -->
-                                <td>{{ $consignment->id ?? "-" }}</td>
-                                <td>{{ $consignment->PrsDetail->pickup_id ?? "NA" }}</td>
-                                <td>{{ $consignment->consignment_date ?? "-" }}</td>
-                                <td>{{ $consignment->Branch->name ?? "-" }}</td>
-                                <td>{{ $consignment->fallIn->name ?? "-" }}</td>
-                                <td>{{ $consignment->ToBranch->name ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignerDetail->nick_name}}</td>
-                                <td>{{ $consignment->ConsignerDetail->postal_code}}</td>
-                                <td>{{ @$consignment->ConsigneeDetail->nick_name}}</td>
-                                <td>{{ @$consignment->ConsigneeDetail->postal_code}}</td>
-                                <td>{{ $consignment->ConsigneeDetail->city ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
-                                <td>{{ $consignment->ConsignmentItem->order_id ?? "-" }}</td>
-                                <td>{{ $consignment->total_quantity ?? "-" }}</td>
-                                <td>{{ $consignment->total_weight ?? "-" }}</td>
+                                <td>{{ @$consignment->id ?? "-" }}</td>
+                                <td>{{ @$consignment->PrsDetail->pickup_id ?? "NA" }}</td>
+                                <td>{{ @$consignment->consignment_date ?? "-" }}</td>
+                                <td>{{ @$consignment->Branch->name ?? "-" }}</td>
+                                <td>{{ @$consignment->fallIn->name ?? "-" }}</td>
+                                <td>{{ @$consignment->ToBranch->name ?? "-" }}</td>
+                                <td>{{ @$consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
+                                <td>{{ @$consignment->ConsignerDetail->nick_name ?? "-"}}</td>
+                                <td>{{ @$consignment->ConsignerDetail->postal_code  ?? "-"}}</td>
+                                <td>{{ @@$consignment->ConsigneeDetail->nick_name  ?? "-"}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->postal_code  ?? "-"}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->city ?? "-" }}</td>
+                                <td>{{ @$consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
+                                <td>{{ @$consignment->ConsignmentItem->order_id ?? "-" }}</td>
+                                <td>{{ @$consignment->total_quantity ?? "-" }}</td>
+                                <td>{{ @$consignment->total_weight ?? "-" }}</td>
                                 <?php 
                                 $prs_pickup_status = DB::table('prs_drivertasks')->select('id','status')->where(['prsconsigner_id'=>$consignment->ConsignerDetail->id, 'prs_id'=>$consignment->prs_id])->first();
 
