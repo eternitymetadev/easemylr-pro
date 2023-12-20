@@ -68,15 +68,11 @@ class PickupRunSheetController extends Controller
 
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
-            // $baseclient = explode(',', $authuser->baseclient_id);
-            // $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail');
 
-            if ($authuser->role_id == 1) {
-                $query;
-            } else {
+            if ($authuser->role_id != 1) {
                 $query = $query->whereIn('branch_id', $cc);
             }
 
@@ -179,40 +175,14 @@ class PickupRunSheetController extends Controller
         $regclients = RegionalClient::where('status', 1)->orderby('name', 'ASC')->get();
         $consigners = Consigner::where('status', 1)->orderby('nick_name', 'ASC')->pluck('nick_name', 'id');
         // }
-        // get vehicles
-        // $prsVehicleIds = PickupRunSheet::whereNotNull('vehicle_id')
-        // ->where('status', '!=', '3')
-        // ->pluck('vehicle_id')
-        // ->unique()
-        // ->toArray();
-
-        // // Fetch vehicles that are not in the merged array //vehicle not in prs
-        // $vehicles = Vehicle::where('status', '1')
-        // ->whereNotIn('id', $prsVehicleIds)
-        // ->select('id', 'regn_no')
-        // ->get();
-
-        // get drivers
-        // $prsDriverIds = PickupRunSheet::whereNotNull('driver_id')
-        // ->where('status', '!=', '3')
-        // ->pluck('driver_id')
-        // ->unique()
-        // ->toArray();
-
-        // // Fetch drivers who are not in the merged array
-        // $drivers = Driver::where('status', '1')
-        // ->whereNotIn('id', $prsDriverIds)
-        // ->select('id', 'name', 'phone')
-        // ->get();
-
+        
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
         $locations = Location::select('id', 'name')->get();
         $hub_locations = Location::where('is_hub', '1')->select('id', 'name')->get();
-        // dd($hub_locations);
-
+        
         return view('prs.create-prs', ['prefix' => $this->prefix, 'regclients' => $regclients, 'locations' => $locations, 'hub_locations' => $hub_locations, 'consigners' => $consigners, 'vehicletypes' => $vehicletypes, 'vehicles' => $vehicles, 'drivers' => $drivers]);
     }
 
@@ -471,8 +441,6 @@ class PickupRunSheetController extends Controller
 
             $authuser = Auth::user();
             $role_id = Role::where('id', '=', $authuser->role_id)->first();
-            // $baseclient = explode(',', $authuser->baseclient_id);
-            // $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
 
             $query = $query->with('PrsDriverTasks', 'PrsDriverTasks.PrsTaskItems');
@@ -541,7 +509,6 @@ class PickupRunSheetController extends Controller
 
     public function createTaskItem(Request $request)
     {
-        // echo "<pre>"; print_r($request->all());die;
         try {
             DB::beginTransaction();
 
@@ -609,11 +576,11 @@ class PickupRunSheetController extends Controller
                     }
                     $consignmentsave['status'] = 5;
 
-                    if (!empty($request->vehicle_id)) {
-                        $consignmentsave['delivery_status'] = "Started";
-                    } else {
-                        $consignmentsave['delivery_status'] = "Unassigned";
-                    }
+                    // if (!empty($request->vehicle_id)) {
+                    //     $consignmentsave['delivery_status'] = "Started";
+                    // } else {
+                    $consignmentsave['delivery_status'] = "Unassigned";
+                    // }
                     $consignmentsave['total_quantity'] = $savetaskitems->quantity;
                     $consignmentsave['total_weight'] = $savetaskitems->net_weight;
                     $consignmentsave['total_gross_weight'] = $savetaskitems->gross_weight;
@@ -720,7 +687,7 @@ class PickupRunSheetController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $get_drivertasks = PrsDrivertask::where('prs_id', $request->prs_id)->with('ConsignerDetail:id,nick_name', 'PrsTaskItems')->get();
-        // dd($get_drivertasks);
+        
         $consinger_ids = explode(',', $request->consinger_ids);
         $consigners = Consigner::select('nick_name')->whereIn('id', $consinger_ids)->get();
         $cnr_data = json_decode(json_encode($consigners));

@@ -172,7 +172,6 @@
 //multiple select //
 $('.taggingFalse').select2();
 
-// $('#role_id').change(function() {
 $(document).ready(function() {
     var role_id = $('#role_id').val();
     var checkbox = $('.chkBoxClass').val();
