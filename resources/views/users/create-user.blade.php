@@ -108,7 +108,7 @@
                             </div>
                             <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control tagging" multiple="multiple" name="branch_id[]">
+                                <select class="form-control taggingFalse" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
                                     <?php 
                                     if(count($branches)>0) {
@@ -123,7 +123,7 @@
                             </div>
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
-                                <select class="form-control tagging" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
+                                <select class="form-control taggingFalse" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
                                     <option value="">Select</option>
                                     <?php 
                                     if(count($branches)>0) {
@@ -180,9 +180,10 @@
 @section('js')
 <script>
 //multiple select //
-var ss = $(".basic").select2({
-    tags: true,
-});
+$('.taggingFalse').select2();
+// var ss = $(".basic").select2({
+//     tags: true,
+// });
 //
 
 $('#role_id').change(function() {
