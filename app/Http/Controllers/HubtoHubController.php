@@ -921,7 +921,7 @@ class HubtoHubController extends Controller
             $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
             $hrssheets = $hrssheets->appends($request->query());
 
-            $html = view('transportation.download-drs-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
+            $html = view('hub-transportation.hrs-payment-list-ajax', ['peritem' => $peritem, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
             return response()->json(['html' => $html]);
         }
@@ -1405,9 +1405,7 @@ class HubtoHubController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('hrs_no', 'like', '%' . $search . '%')
-                    ->orWhere('transaction_id', 'like', '%' . $search . '%')
-                    ->orWhere('vehicle_no', 'like', '%' . $search . '%');
+                    $query->where('hrs_no', 'like', '%' . $search . '%');
                 });
             }
 

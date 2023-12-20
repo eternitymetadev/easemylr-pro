@@ -8,7 +8,7 @@
                 <th>Vendor Name</th>
                 <th>Purchase Amount</th>
                 <th>Transaction ID</th>
-                <th>Payment Type.</th>
+                <th>Payment Type</th>
                 <th>Advanced</th>
                 <th>Balance</th>
                 <th>Create Payment</th>
