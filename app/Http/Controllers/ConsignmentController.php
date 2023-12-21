@@ -2270,6 +2270,7 @@ class ConsignmentController extends Controller
 
             // get vehicles
             $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
@@ -2286,9 +2287,10 @@ class ConsignmentController extends Controller
             ->whereNotIn('regn_no', $drsVehicleIds)
             ->get();
             /////////////
-
+            
             // get drivers
             $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('driver_name')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
@@ -2353,6 +2355,7 @@ class ConsignmentController extends Controller
 
         // get vehicles
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('vehicle_no')
         ->where('delivery_status', '!=', 'Successful')
         ->where('status', 1)
@@ -2374,13 +2377,14 @@ class ConsignmentController extends Controller
 
         // get drivers
         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('driver_name')
-        // ->where('delivery_status', 'Assigned')
         ->where('delivery_status', '!=', 'Successful')
         ->where('status', 1)
         ->pluck('driver_name')
         ->unique()
         ->toArray();
+        // ->where('delivery_status', 'Assigned')
 
         // Merge and deduplicate the driver IDs
         // $mergedDriverIds = array_unique($drsDriverIds);
