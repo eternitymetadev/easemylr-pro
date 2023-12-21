@@ -5807,7 +5807,6 @@ class ConsignmentController extends Controller
     public function updatePod(Request $request)
     {
         try {
-
             $lr_no = $request->lr_no;
 
             $authuser = Auth::user();
@@ -5831,7 +5830,7 @@ class ConsignmentController extends Controller
             //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
             //     return Response::json($response);
             // }
-
+            
             $pod_img = $request->file('pod');
             //     $file->move(public_path('drs/Image'), $filename);
             if ($pod_img) {
@@ -5846,7 +5845,7 @@ class ConsignmentController extends Controller
             } else {
                 $filename = null;
             }
-            if (!empty($deliverydate)) {
+            if (!empty($request->delivery_date)) {
                 $updateRecords = ConsignmentNote::where('id', $lr_no)
                     ->update([
                         'signed_drs' => $filename,
