@@ -2289,12 +2289,12 @@ class ConsignmentController extends Controller
             /////////////
             
             // get drivers
-            $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
             ->whereDate('created_at', '>', '2023-12-20')
-            ->whereNotNull('driver_name')
+            ->whereNotNull('driver_no')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
-            ->pluck('driver_name')
+            ->pluck('driver_no')
             ->unique()
             ->toArray();
             // ->where('delivery_status', 'Assigned')
@@ -2376,12 +2376,12 @@ class ConsignmentController extends Controller
         /////////////
 
         // get drivers
-        $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
         ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotNull('driver_name')
+        ->whereNotNull('driver_no')
         ->where('delivery_status', '!=', 'Successful')
         ->where('status', 1)
-        ->pluck('driver_name')
+        ->pluck('driver_no')
         ->unique()
         ->toArray();
         // ->where('delivery_status', 'Assigned')
