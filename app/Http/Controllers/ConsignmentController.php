@@ -5925,6 +5925,14 @@ class ConsignmentController extends Controller
         $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null, 'pod_userid' => null]);
 
         if ($mode) {
+            $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                ->latest('drs_no')
+                ->first();
+
+            if ($latestRecord) {
+                $latestRecord->update(['delivery_status' => 'Started', 'delivery_date' => null]);
+            }
+
             $response['success'] = true;
             $response['messages'] = 'POD Remove';
         } else {
