@@ -137,6 +137,10 @@
                         href="{{url($prefix.'/consignments/'.$consignment->id.'/print-view/2')}}" target="_blank"
                         class="badge alert bg-cust shadow-sm">Print LR</a> <?php } ?>
                     <?php } ?>
+                    @if($consignment->prs_id)
+                    <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
+                    class="badge alert bg-cust shadow-sm">Print PRS-LR</a>
+                    @endif
                 </td>
                 <?php } ?>
                 <td>

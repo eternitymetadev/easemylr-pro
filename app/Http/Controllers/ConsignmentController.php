@@ -2291,16 +2291,12 @@ class ConsignmentController extends Controller
             // get drivers
             $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
             ->whereDate('created_at', '>', '2023-12-20')
-            ->whereNotNull('driver_name')
+            ->whereNotNull('driver_no')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
             ->pluck('driver_name')
             ->unique()
             ->toArray();
-            // ->where('delivery_status', 'Assigned')
-
-            // Merge and deduplicate the driver IDs
-            // $mergedDriverIds = array_unique($drsDriverIds);
 
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')
@@ -2311,6 +2307,7 @@ class ConsignmentController extends Controller
             // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
             // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
             $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
             $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
 

@@ -15,7 +15,7 @@
                 <th>City</th>
                 <th>Quantity</th>
                 <th>Net Weight</th>
-                <!-- <th>Status</th> -->
+                <th>Print PRS</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -32,6 +32,12 @@
                 <td>{{ $consignment->ConsignerDetail->city}}</td>
                 <td>{{ $consignment->total_quantity ?? "-" }}</td>
                 <td>{{ $consignment->total_weight ?? "-" }}</td>
+                <td>
+                    @if($consignment->lr_type == 2)
+                    <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
+                    class="badge alert bg-cust shadow-sm">Print LR</a>
+                    @endif
+                </td>
             </tr>
             @endforeach
             @else
