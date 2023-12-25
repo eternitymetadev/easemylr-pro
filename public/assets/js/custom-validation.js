@@ -1527,7 +1527,9 @@ jQuery(document).ready(function () {
                 $("#get-delvery-date").dataTable().fnClearTable();
                 $("#get-delvery-date").dataTable().fnDestroy();
             },
-            complete: function () { },
+            complete: function () { 
+                $('#opm').modal('hide');
+            },
 
             success: function (data) {
                 var consignmentID = [];
