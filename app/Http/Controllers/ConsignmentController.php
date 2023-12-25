@@ -3084,9 +3084,16 @@ class ConsignmentController extends Controller
     {
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
-        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_date' => $delivery_date]);
+        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
+        
         if ($consigner) {
-            //echo'ok';
+            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+                ->latest('drs_no')
+                ->first();
+
+            if ($latestRecord) {
+                $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+            }
             return response()->json(['success' => 'Delivery Date Updated Successfully']);
         } else {
             return response()->json(['error' => 'Something went wrong']);
