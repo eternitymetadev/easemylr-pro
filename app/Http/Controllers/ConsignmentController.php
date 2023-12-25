@@ -73,7 +73,16 @@ class ConsignmentController extends Controller
                 return response()->json(['success' => true, 'redirect_url' => $url]);
             }
             if (isset($request->updatestatus)) {
-                ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
+                $lr_cancel = ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
+
+                // if($lr_cancel){
+                //     TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->count();
+                //     if ($count === 1) {
+                //         TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
+                //     }else{
+                //         TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->update(['delivery_status' => 'Cancel']);
+                //     }
+                // }
 
                 $url = $this->prefix . '/consignments';
                 $response['success'] = true;
@@ -2297,10 +2306,6 @@ class ConsignmentController extends Controller
             ->pluck('driver_no')
             ->unique()
             ->toArray();
-            // ->where('delivery_status', 'Assigned')
-
-            // Merge and deduplicate the driver IDs
-            // $mergedDriverIds = array_unique($drsDriverIds);
 
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')

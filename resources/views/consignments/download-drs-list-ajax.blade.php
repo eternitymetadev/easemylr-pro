@@ -39,7 +39,9 @@
                 {{-- delivery status --}}
                 <td>
                     <?php if ($trns->status == 0) {?>
-                    <label class="statusBtn btn" style="--statusColor: #df015e;">Cancelled</label>
+                    {{-- <label class="statusBtn btn" style="--statusColor: #df015e;">Cancelled</label> --}}
+                    <a class="statusBtn btn drs_cancel" style="--statusColor: #df015e;" drs-no="{{$trns->drs_no}}" data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>"><span>Cancelled</span></a>
+
                     <?php } else {
                         if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
                             <button class="delBtn statusBtn btn view-sheet {{$disable}}" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;">Unassigned</button>
