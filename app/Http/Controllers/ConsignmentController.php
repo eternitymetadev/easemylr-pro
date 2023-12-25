@@ -2289,12 +2289,12 @@ class ConsignmentController extends Controller
             /////////////
             
             // get drivers
-            $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
             ->whereDate('created_at', '>', '2023-12-20')
-            ->whereNotNull('driver_name')
+            ->whereNotNull('driver_no')
             ->where('delivery_status', '!=', 'Successful')
             ->where('status', 1)
-            ->pluck('driver_name')
+            ->pluck('driver_no')
             ->unique()
             ->toArray();
             // ->where('delivery_status', 'Assigned')
@@ -2376,12 +2376,12 @@ class ConsignmentController extends Controller
         /////////////
 
         // get drivers
-        $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
         ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotNull('driver_name')
+        ->whereNotNull('driver_no')
         ->where('delivery_status', '!=', 'Successful')
         ->where('status', 1)
-        ->pluck('driver_name')
+        ->pluck('driver_no')
         ->unique()
         ->toArray();
         // ->where('delivery_status', 'Assigned')
@@ -3084,9 +3084,16 @@ class ConsignmentController extends Controller
     {
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
-        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_date' => $delivery_date]);
+        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
+        
         if ($consigner) {
-            //echo'ok';
+            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+                ->latest('drs_no')
+                ->first();
+
+            if ($latestRecord) {
+                $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+            }
             return response()->json(['success' => 'Delivery Date Updated Successfully']);
         } else {
             return response()->json(['error' => 'Something went wrong']);
@@ -4756,8 +4763,16 @@ class ConsignmentController extends Controller
 
                             if ($check_lr_mode->lr_mode == 0) {
                                 ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+
+                                $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                                    ->latest('drs_no')
+                                    ->first();
+
+                                if ($latestRecord) {
+                                    $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                                }
                                 
-                                TransactionSheet::where('consignment_no', $lrno)->where('drs_no', $request->drs_no)->update(['delivery_status' => 'Successful','delivery_date' => $deliverydate]);
+                                // TransactionSheet::where('consignment_no', $lrno)->where('drs_no', $request->drs_no)->update(['delivery_status' => 'Successful','delivery_date' => $deliverydate]);
                             }
 
                             // =================== task assign ====== //
@@ -5917,6 +5932,14 @@ class ConsignmentController extends Controller
         $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null, 'pod_userid' => null]);
 
         if ($mode) {
+            $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                ->latest('drs_no')
+                ->first();
+
+            if ($latestRecord) {
+                $latestRecord->update(['delivery_status' => 'Started', 'delivery_date' => null]);
+            }
+
             $response['success'] = true;
             $response['messages'] = 'POD Remove';
         } else {
