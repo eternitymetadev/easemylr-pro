@@ -2279,9 +2279,6 @@ class ConsignmentController extends Controller
             ->toArray();
             // ->where('delivery_status', 'Assigned')
 
-            // Merge and deduplicate the vehicle IDs
-            // $mergedVehicleIds = array_unique($drsVehicleIds);
-            
             // Fetch vehicles that are not in the merged array
             $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
             ->whereNotIn('regn_no', $drsVehicleIds)
@@ -2304,7 +2301,7 @@ class ConsignmentController extends Controller
 
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')
-            ->whereNotIn('name', $drsDriverIds)
+            ->whereNotIn('phone', $drsDriverIds)
             ->select('id', 'name', 'phone')
             ->get();
 
@@ -2391,7 +2388,7 @@ class ConsignmentController extends Controller
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
-        ->whereNotIn('name', $drsDriverIds)
+        ->whereNotIn('phone', $drsDriverIds)
         ->select('id', 'name', 'phone')
         ->get();
 
