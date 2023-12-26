@@ -2277,11 +2277,7 @@ class ConsignmentController extends Controller
             ->pluck('vehicle_no')
             ->unique()
             ->toArray();
-            // ->where('delivery_status', 'Assigned')
 
-            // Merge and deduplicate the vehicle IDs
-            // $mergedVehicleIds = array_unique($drsVehicleIds);
-            
             // Fetch vehicles that are not in the merged array
             $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
             ->whereNotIn('regn_no', $drsVehicleIds)
@@ -2297,14 +2293,10 @@ class ConsignmentController extends Controller
             ->pluck('driver_no')
             ->unique()
             ->toArray();
-            // ->where('delivery_status', 'Assigned')
-
-            // Merge and deduplicate the driver IDs
-            // $mergedDriverIds = array_unique($drsDriverIds);
-
+            
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')
-            ->whereNotIn('name', $drsDriverIds)
+            ->whereNotIn('phone', $drsDriverIds)
             ->select('id', 'name', 'phone')
             ->get();
 
@@ -2362,12 +2354,6 @@ class ConsignmentController extends Controller
         ->pluck('vehicle_no')
         ->unique()
         ->toArray();
-        // ->where('delivery_status', 'Assigned')
-
-        // echo "<pre>"; print_r($drsVehicleIds); die;
-
-        // Merge and deduplicate the vehicle IDs
-        // $mergedVehicleIds = array_unique($drsVehicleIds);
         
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
@@ -2384,14 +2370,10 @@ class ConsignmentController extends Controller
         ->pluck('driver_no')
         ->unique()
         ->toArray();
-        // ->where('delivery_status', 'Assigned')
-
-        // Merge and deduplicate the driver IDs
-        // $mergedDriverIds = array_unique($drsDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
-        ->whereNotIn('name', $drsDriverIds)
+        ->whereNotIn('phone', $drsDriverIds)
         ->select('id', 'name', 'phone')
         ->get();
 
@@ -3066,7 +3048,6 @@ class ConsignmentController extends Controller
 
     public function updateDeliveryStatus(Request $request)
     {
-        //echo'<pre>'; print_r($_POST); die;
         $consignmentId = $_POST['consignment_no'];
         $cc = explode(',', $consignmentId);
 
@@ -3077,7 +3058,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
 
     public function updateDeliveryDateOneBy(Request $request)
@@ -5825,8 +5805,13 @@ class ConsignmentController extends Controller
             $lr_no = $request->lr_no;
 
             $authuser = Auth::user();
-            $login_branch = $authuser->branch_id;
-            $location = Location::where('id', $login_branch)->first();
+            if($authuser->role_id == 1){
+                $location_name = 'By Admin';
+            }else{
+                $login_branch = $authuser->branch_id;
+                $location = Location::where('id', $login_branch)->first();
+                $location_name = $location->name;
+            }
 
             // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
             // if ($get_delivery_branch->lr_type == 0) {
@@ -5883,7 +5868,7 @@ class ConsignmentController extends Controller
                 $mytime = Carbon::now('Asia/Kolkata');
                 $currentdate = $mytime->toDateTimeString();
 
-                $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate,'location' => $location->name, 'type' => '2');
+                $respons2 = array('consignment_id' => $lr_no, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate,'location' => $location_name, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lr_no)->latest('id')->first();
                 if (!empty($lastjob->response_data)) {
@@ -6043,6 +6028,7 @@ class ConsignmentController extends Controller
             $consignmentsave['status'] = 2;
 
             $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->update($consignmentsave);
+
             TransactionSheet::where('consignment_no',$request->lr_id)->update(['status' => 4]);
 
             if($saveconsignment){

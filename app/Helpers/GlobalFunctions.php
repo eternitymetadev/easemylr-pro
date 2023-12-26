@@ -197,8 +197,8 @@ class GlobalFunctions
     public static function countdrslr($drs_number)
     {
         $data = TransactionSheet::
-            with('ConsignmentDetai')
-            ->whereHas('ConsignmentDetail', function ($q) {
+            // with('ConsignmentDetail')
+            whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
             ->where('drs_no', $drs_number)
