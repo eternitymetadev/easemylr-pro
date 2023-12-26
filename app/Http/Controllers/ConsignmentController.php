@@ -6041,18 +6041,7 @@ class ConsignmentController extends Controller
 
             $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->update($consignmentsave);
 
-            $withStatusFourCount = TransactionSheet::where('drs_no', $request->drs_no)
-                ->where('status', 4)
-                ->count();
-
-            $withoutStatusFourCount = TransactionSheet::where('drs_no', $request->drs_no)
-                ->where('status', '!=', 4)
-                ->count();
-            if($withStatusFourCount == $withoutStatusFourCount){
-                TransactionSheet::where('consignment_no',$request->lr_id)->update(['delivery_status' => 'Successful','status' => 4]);
-            }else{
-                TransactionSheet::where('consignment_no',$request->lr_id)->update(['status' => 4]);
-            }
+            TransactionSheet::where('consignment_no',$request->lr_id)->update(['status' => 4]);
 
             if($saveconsignment){
                 $url = $this->prefix . '/transaction-sheet';
