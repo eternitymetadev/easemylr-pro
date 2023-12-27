@@ -220,15 +220,7 @@ class GlobalFunctions
     public static function getdeleveryStatus($drs_number)
     {
         // Get the consignment numbers related to the provided drs_number
-        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
-
-        // $get_lrs = TransactionSheet::where('drs_no', $drs_number)
-        //             ->where('status', '!=', 4)
-        //             ->whereHas('ConsignmentDetail', function ($query) {
-        //                 $query->where('status', 0);
-        //             })
-        //             ->pluck('consignment_no')
-        //             ->toArray();    
+        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray(); 
 
         // Count the number of delivered and empty consignments
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
