@@ -2048,7 +2048,7 @@ class ConsignmentController extends Controller
         if($request->purchase_price){
             $updateData['purchase_price'] = $request->purchase_price;
         }
-        $updateData['delivery_status'] = 'Assigned';
+        // $updateData['delivery_status'] = 'Assigned';
 
         $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
 
@@ -2063,14 +2063,16 @@ class ConsignmentController extends Controller
             if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
                 $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
             }
-            $trnUpdate['delivery_status'] = 'Assigned';
+            // $trnUpdate['delivery_status'] = 'Assigned';
 
             $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
         }
 
         if($request->is_started == 1){
+            $updateStartLR = ConsignmentNote::whereIn('id', $consignmentId)->update(['delivery_status' => 'Assigned']);
+
             // Bulk update for TransactionSheet records
-            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1, 'delivery_status' => 'Assigned']);
             
             // Get driver details
             $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
