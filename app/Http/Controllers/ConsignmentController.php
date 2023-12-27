@@ -4654,7 +4654,7 @@ class ConsignmentController extends Controller
             $deliverydate = $request->delivery_date;
 
             if (!empty($deliverydate)) {
-                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By consignment-list']);
 
                 $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
                     ->latest('drs_no')
@@ -4742,7 +4742,7 @@ class ConsignmentController extends Controller
                             }
 
                             if ($check_lr_mode->lr_mode == 0) {
-                                ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful']);
+                                ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
 
                                 $latestRecord = TransactionSheet::where('consignment_no', $lrno)
                                     ->latest('drs_no')
@@ -4751,8 +4751,6 @@ class ConsignmentController extends Controller
                                 if ($latestRecord) {
                                     $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
                                 }
-                                
-                                // TransactionSheet::where('consignment_no', $lrno)->where('drs_no', $request->drs_no)->update(['delivery_status' => 'Successful','delivery_date' => $deliverydate]);
                             }
 
                             // =================== task assign ====== //
@@ -5852,6 +5850,7 @@ class ConsignmentController extends Controller
                         'pod_userid' => $authuser->id,
                         'delivery_status' => 'Successful',
                         'delivery_date' => $request->delivery_date,
+                        'consignment_no'=>'By pod-list'
                     ]);
 
                 if ($updateRecords) {
