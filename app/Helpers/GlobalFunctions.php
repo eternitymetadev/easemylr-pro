@@ -222,14 +222,25 @@ class GlobalFunctions
         // Get the consignment numbers related to the provided drs_number
         $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
 
+        // $get_lrs = TransactionSheet::where('drs_no', $drs_number)
+        //             ->where('status', '!=', 4)
+        //             ->whereHas('ConsignmentDetail', function ($query) {
+        //                 $query->where('status', 0);
+        //             })
+        //             ->pluck('consignment_no')
+        //             ->toArray();    
+
         // Count the number of delivered and empty consignments
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
+        $totalCancelLR = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '=', 0)->count();
+
+        $sumCounts = $total_deldate + $totalCancelLR;
 
         // Calculate the total number of consignments
         $total_lr = count($get_lrs);
 
         // Determine the delivery status
-        if ($total_deldate == $total_lr) {
+        if ($sumCounts == $total_lr) {
             $status = "Successful";
         } elseif ($total_deldate == 0) {
             $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
