@@ -34,6 +34,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                 'signed_drs' => $row['pod_image'],
                 'lr_mode' => 0,
                 'pod_userid' => $authuser->id,
+                'consignment_no'=>'By import',
             ]);
         }
     }
