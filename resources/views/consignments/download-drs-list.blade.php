@@ -597,6 +597,18 @@
                             location.reload();
                         } else if (data.success == false) {
                             swal('error', data.error_message, 'error');
+
+                            Swal.fire({
+                                title: '',
+                                text: data.error_message,
+                                icon: 'error',
+                                showCancelButton: false,
+                                confirmButtonText: 'Ok'
+                                }).then(() => {
+                                    $('.modal-backdrop').hide();
+                                    $('body').removeClass('modal-open');
+                                });
+
                         } else {
                             swal('error', 'something wrong', 'error');
                         }
