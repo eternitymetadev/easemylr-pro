@@ -1893,7 +1893,7 @@ class PickupRunSheetController extends Controller
         $branch_add = BranchAddress::get();
         $locations = Location::with('GstAddress')->whereIn('id', $cc)->first();
 
-        $getdata = ConsignmentNote::where('id', $lr_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone','ConsignerDetail.GetRegClient', 'VehicleDetail', 'DriverDetail','PrsDetail')->first();
+        $getdata = ConsignmentNote::where('id', $lr_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone','ConsignerDetail.GetRegClient', 'VehicleDetail', 'DriverDetail','PrsDetail','PrsDetail.VehicleDetail','PrsDetail.DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
         
         if (isset($data['consigner_detail']['legal_name'])) {
@@ -1987,7 +1987,6 @@ class PickupRunSheetController extends Controller
 
         // Remove the trailing '/' if it exists
         $invoiceNumbers = rtrim($invoiceNumbers, '/');
-
         
             $lrInvces = '<div class="container">
             <div>
@@ -2202,38 +2201,8 @@ class PickupRunSheetController extends Controller
                                                 </td>
                                             </tr>
                                             </table>';
-            if ($data['payment_type'] == 'To be Billed' || $data['payment_type'] == null) {
-                if (!empty($data['cod'])) {
-                    $html .= ' <div class="loc">
-                                <table>
-                                    <tr>
-                                        <td valign="middle" style="position:relative; width: 200px">
-                                        <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
-                                            <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                            <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . @$data['cod'] . '
-                                            </h2>
-                                        </td>
-                                        <td class="width_set">
-                                            <table border="1px solid" class="table3">
-                                                <tr>
-                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                </tr>
-
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>';
-                } else {
+                                            
+                
                     $html .= '  <div class="loc">
                                 <table>
                                     <tr>
@@ -2247,15 +2216,15 @@ class PickupRunSheetController extends Controller
                                             <table border="1px solid" class="table3">
                                                 <tr>
                                                     <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                    <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
+                                                    <td>' . @$data['prs_detail']['vehicle_detail']['regn_no'] . '</td>
                                                 </tr>
                                                 <tr>
                                                     <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                                    <td>' . ucwords(@$data['prs_detail']['driver_detail']['name']) . '</td>
                                                 </tr>
                                                 <tr>
                                                     <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                    <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                                    <td>' . ucwords(@$data['prs_detail']['driver_detail']['phone']) . '</td>
                                                 </tr>
 
                                             </table>
@@ -2263,107 +2232,6 @@ class PickupRunSheetController extends Controller
                                     </tr>
                                 </table>
                             </div>';
-                }
-            }
-
-            if ($data['payment_type'] == 'To Pay') {
-                if (!empty($data['freight_on_delivery']) || !empty($data['cod'])) {
-                    $total_cod_sum = @$data['freight_on_delivery']+@$data['cod'];
-
-                    $html .= ' <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td valign="middle" style="position:relative; width: 200px">
-                                            <img src="' . $codStamp . '" style="position:absolute;left: -2rem; top: -2rem; height: 100px; width: 140px; z-index: -1; opacity: 0.8" />
-                                                <h2 style="margin-top:1.8rem; margin-left: 0.5rem; font-size: 1.7rem; text-align: center">
-                                                <span style="font-size: 24px; line-height: 18px">Cash to Collect</span><br/>' . $total_cod_sum . '
-                                                </h2>
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
-
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>';
-                } else {
-                    $html .= '   <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td class="width_set">
-                                                <div style="margin-left: 20px">';
-                    
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                    
-                    $html .= '</div></td>
-                                <td class="width_set">
-                                    <table border="1px solid" class="table3">
-                                        <tr>
-                                            <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                            <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                            <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                        </tr>
-                                        <tr>
-                                            <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                            <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                        </tr>
-
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>';
-                }
-
-            }
-
-            if ($data['payment_type'] == 'Paid') {
-
-                $html .= ' <div class="loc">
-                                    <table>
-                                        <tr>
-                                            <td valign="middle" style="position:relative; width: 200px">
-                                            <img src="' . $paidStamp . '" style="position:absolute;left: 50%; transform: translateX(-40%); top: -2.5rem; height: 150px; width: 150px;" />
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
-
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>';
-
-            }
 
             $html .= '<div class="container">
                                 <div class="row">
@@ -2371,7 +2239,7 @@ class PickupRunSheetController extends Controller
                                         <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
                                     </div>
                                 </div>
-                            <table border="1" style=" border-collapse:collapse; width: 690px; ">
+                            <table border="1" style=" border-collapse:collapse; width: 100%; ">
                                 <tr>
                                     <td width="30%" style="vertical-align:top; >
                                     ' . $lrInvces . '
@@ -2391,56 +2259,40 @@ class PickupRunSheetController extends Controller
                         </div>
                         <div>
                             <div class="inputfiled">';
-                                
+
             $html .= ' <div>
-                                    <table style="margin-top:0px;">
-                                    <tr>
-                                    <td width="50%" style="font-size: 13px;"><p style="margin-top:60px;"><b>Received the goods mentioned above in good conditions.</b><br><br>Receivers Name & Number:<br><br>Receiving Date & Time	:<br><br>Receiver Signature:<br><br></p></td>
-                                    <td  width="50%"><p style="margin-left: 99px; margin-bottom:150px;"><b>Consignor Sign & Stamp</b></p></td>
+                            <table style="width: 100%; margin-top:0px;">
+                                <tr>
+                                    <td width="50%" style="font-size: 13px;">
+                                        <p style="">
+                                            <strong>Driver Eternity</strong><br><br>
+                                            Receivers Name & Number:<br><br>
+                                            Receiving Date & Time	:
+                                        </p>
+                                    </td>
+                                    <td width="50%; vertical-align: top; text-align: right">
+                                        <p style="">
+                                            <strong>Consignor Sign & Stamp</strong>
+                                        </p>    
+                                    </td>
                                 </tr>
-                                    </table>
-
-                                </div>
-                          </div>
-
-                  <!-- <div class="footer">
-                                  <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
-                                <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
-                                <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
-                                <p style="font-size: 8px; margin-top: -5px">3. The delivery of the goods will have to be taken immediately on arrival at the destination failing which the  consignee will be liable to detention charges @Rs.200/hour or Rs.300/day whichever is lower.</p>
-                                <p style="font-size: 8px; margin-top: -5px">4. Eternity Solutons takes absolutely no responsibility for delay or loss in transits due to accident strike or any other cause beyond its control and due to breakdown of vehicle and for the consequence thereof. </p>
-                                <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
-                                <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
-                                <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div> -->
+                            </table>
+                        </div>
                     </div>
-                    <!-- Optional JavaScript; choose one of the two! -->
-
-                    <!-- Option 1: Bootstdap Bundle with Popper -->
-                    <script
-                        src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.bundle.min.js"
-                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-                        crossorigin="anonymous"
-                    ></script>
-
-                    <!-- Option 2: Separate Popper and Bootstdap JS -->
-                    <!--
-                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-                <script src="https://cdn.jsdelivr.net/npm/bootstdap@5.0.2/dist/js/bootstdap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKtdIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-                -->
+                    </div>
                 </body>
             </html>
             ';
-
+            
             $pdf = \App::make('dompdf.wrapper');
             $pdf->loadHTML($html);
             $pdf->setPaper('legal', 'portrait');
-            $pdf->save(public_path() . '/consignment-pdf/congn-' . $i . '.pdf')->stream('congn-' . $i . '.pdf');
-            $pdf_name[] = 'congn-' . $i . '.pdf';
+            $pdf->save(public_path() . '/prs-pdf/prs-' . $i . '.pdf')->stream('prs-' . $i . '.pdf');
+            $pdf_name[] = 'prs-' . $i . '.pdf';
         }
         $pdfMerger = PDFMerger::init();
         foreach ($pdf_name as $pdf) {
-            $pdfMerger->addPDF(public_path() . '/consignment-pdf/' . $pdf);
+            $pdfMerger->addPDF(public_path() . '/prs-pdf/' . $pdf);
         }
         $pdfMerger->merge();
         $pdfMerger->save("all.pdf", "browser");
