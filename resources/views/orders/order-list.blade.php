@@ -206,7 +206,7 @@ div.relative {
                                 <?php } ?>
                                <td><?php if($consignment->prs_id){ ?>
                                 <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
-                                class="badge alert bg-cust shadow-sm">Print PRS</a>
+                                class="badge alert bg-cust shadow-sm">Print PRS-LR</a>
                                 <?php } ?></td>
                             </tr>
                             <?php
