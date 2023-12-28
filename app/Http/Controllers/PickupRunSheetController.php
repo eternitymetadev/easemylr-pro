@@ -628,7 +628,7 @@ class PickupRunSheetController extends Controller
                             // ==== end created===//
                         }                        
                     } else {
-                        ConsignmentNote::where(['id' => $save_data['lr_id']])->update(['prsitem_status' => 1]);
+                        ConsignmentNote::where(['id' => $save_data['lr_id']])->update(['prsitem_status' => 1, 'prs_id' =>$request->prs_id]);
                         $saveconsignment = '';
                     }
 
@@ -1893,9 +1893,9 @@ class PickupRunSheetController extends Controller
         $branch_add = BranchAddress::get();
         $locations = Location::with('GstAddress')->whereIn('id', $cc)->first();
 
-        $getdata = ConsignmentNote::where('id', $lr_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone', 'ConsigneeDetail.GetZone', 'ShiptoDetail.GetZone', 'VehicleDetail', 'DriverDetail','PrsDetail')->first();
+        $getdata = ConsignmentNote::where('id', $lr_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone','ConsignerDetail.GetRegClient', 'VehicleDetail', 'DriverDetail','PrsDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-
+        
         if (isset($data['consigner_detail']['legal_name'])) {
             $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
         } else {
@@ -1949,113 +1949,6 @@ class PickupRunSheetController extends Controller
 
         $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
 
-        if (isset($data['consignee_detail']['legal_name'])) {
-            $nick_name = '<b>' . $data['consignee_detail']['legal_name'] . '</b><br>';
-        } else {
-            $nick_name = '';
-        }
-        if (isset($data['consignee_detail']['address_line1'])) {
-            $address_line1 = '' . $data['consignee_detail']['address_line1'] . '<br>';
-        } else {
-            $address_line1 = '';
-        }
-        if (isset($data['consignee_detail']['address_line2'])) {
-            $address_line2 = '' . $data['consignee_detail']['address_line2'] . '<br>';
-        } else {
-            $address_line2 = '';
-        }
-        if (isset($data['consignee_detail']['address_line3'])) {
-            $address_line3 = '' . $data['consignee_detail']['address_line3'] . '<br>';
-        } else {
-            $address_line3 = '';
-        }
-        if (isset($data['consignee_detail']['address_line4'])) {
-            $address_line4 = '' . $data['consignee_detail']['address_line4'] . '<br><br>';
-        } else {
-            $address_line4 = '<br>';
-        }
-        if (isset($data['consignee_detail']['city'])) {
-            $city = $data['consignee_detail']['city'] . ',';
-        } else {
-            $city = '';
-        }
-        if (isset($data['consignee_detail']['get_zone']['state'])) {
-            $district = $data['consignee_detail']['get_zone']['state'] . ',';
-        } else {
-            $district = '';
-        }
-        if (isset($data['consignee_detail']['postal_code'])) {
-            $postal_code = $data['consignee_detail']['postal_code'] . '<br>';
-        } else {
-            $postal_code = '';
-        }
-
-        if (isset($data['consignee_detail']['gst_number'])) {
-            $gst_number = 'GST No: ' . $data['consignee_detail']['gst_number'] . '<br>';
-        } else {
-            $gst_number = '';
-        }
-        if (isset($data['consignee_detail']['phone'])) {
-            $phone = 'Phone No: ' . $data['consignee_detail']['phone'] . '<br>';
-        } else {
-            $phone = '';
-        }
-
-        $consnee_add = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
-        if (isset($data['shipto_detail']['legal_name'])) {
-            $nick_name = '<b>' . $data['shipto_detail']['legal_name'] . '</b><br>';
-        } else {
-            $nick_name = '';
-        }
-        if (isset($data['shipto_detail']['address_line1'])) {
-            $address_line1 = '' . $data['shipto_detail']['address_line1'] . '<br>';
-        } else {
-            $address_line1 = '';
-        }
-        if (isset($data['shipto_detail']['address_line2'])) {
-            $address_line2 = '' . $data['shipto_detail']['address_line2'] . '<br>';
-        } else {
-            $address_line2 = '';
-        }
-        if (isset($data['shipto_detail']['address_line3'])) {
-            $address_line3 = '' . $data['shipto_detail']['address_line3'] . '<br>';
-        } else {
-            $address_line3 = '';
-        }
-        if (isset($data['shipto_detail']['address_line4'])) {
-            $address_line4 = '' . $data['shipto_detail']['address_line4'] . '<br><br>';
-        } else {
-            $address_line4 = '<br>';
-        }
-        if (isset($data['shipto_detail']['city'])) {
-            $city = $data['shipto_detail']['city'] . ',';
-        } else {
-            $city = '';
-        }
-        if (isset($data['shipto_detail']['get_zone']['state'])) {
-            $district = $data['shipto_detail']['get_zone']['state'] . ',';
-        } else {
-            $district = '';
-        }
-        if (isset($data['shipto_detail']['postal_code'])) {
-            $postal_code = $data['shipto_detail']['postal_code'] . '<br>';
-        } else {
-            $postal_code = '';
-        }
-        if (isset($data['shipto_detail']['gst_number'])) {
-            $gst_number = 'GST No: ' . $data['shipto_detail']['gst_number'] . '<br>';
-        } else {
-            $gst_number = '';
-        }
-        if (isset($data['shipto_detail']['phone'])) {
-            $phone = 'Phone No: ' . $data['shipto_detail']['phone'] . '<br>';
-        } else {
-            $phone = '';
-        }
-
-        $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-
         $generate_qrcode = QrCode::size(150)->generate('' . $lr_id . '');
         $output_file = '/qr-code/img-' . time() . '.svg';
         Storage::disk('public')->put($output_file, $generate_qrcode);
@@ -2082,62 +1975,36 @@ class PickupRunSheetController extends Controller
         }
 
         // relocate cnr cnee address check for sale to return case
-        if ($data['is_salereturn'] == '1') {
-            $invc_heading = '<div class="container">
-            <div class="container">
+
+        $consignmentItems = $data['consignment_items']; // Assuming $data is your array
+
+        $invoiceNumbers = '';
+        foreach ($consignmentItems as $item) {
+            if (isset($item['invoice_no'])) {
+                $invoiceNumbers .= $item['invoice_no'] . '/';
+            }
+        }
+
+        // Remove the trailing '/' if it exists
+        $invoiceNumbers = rtrim($invoiceNumbers, '/');
+
+        
+            $lrInvces = '<div class="container">
             <div>
             <h5  style="margin-left:6px; margin-top: 0px">Invoice No</h5><br>
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . @$data['consignment_items'][0]->invoice_no . '
+            ' . @$invoiceNumbers . '
             </p>
             </div>';
-            $billtoclient_heading = '<div class="container">
+            $billingClient = '<div class="container">
             <div>
             <h5  style="margin-left:6px; margin-top: 0px">Bill to Client</h5><br>
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . @$data['reg_client']->name . '
-            </p>
-            </div>';
-            $cnradd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $consnee_add . '
-            </p>
-            </div>';
-            $cneadd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $conr_add . '
-            </p>
-            </div>';
-            $shipto_address = '';
-        } else {
-            $invc_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">Invoice No</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . @$data['consignment_items'][0]->invoice_no . '
-            </p>
-            </div>';
-            $billtoclient_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">Bill to Client</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . @$data['reg_client']->name . '
+            ' . @$data['consigner_detail']['get_reg_client']['name'] . '
             </p>
             </div>';
             $cnradd_heading = '<div class="container">
@@ -2149,27 +2016,28 @@ class PickupRunSheetController extends Controller
             ' . $conr_add . '
             </p>
             </div>';
-            $cneadd_heading = '<div class="container">
+            $expectedPickup = '<div class="container">
             <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+            <h5  style="margin-left:6px; margin-top: 0px">Expected Pickup Details</h5><br>
             </div>
                 <div style="margin-top: -11px;">
                 <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $consnee_add . '
+                 No. of Boxes - '.$data['total_quantity'].'<br> Net Waight(Kg) - '. $data['total_weight'] .'
             </p>
             </div>';
-            $shipto_address = '<td width="30%" style="vertical-align:top;>
+            $actualPickup = '<td width="30%" style="vertical-align:top;>
             <div class="container">
             <div>
-            <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+            <h5  style="margin-left:6px; margin-top: 0px">Actual Pickup Details</h5><br>
             </div>
                 <div style="margin-top: -11px;">
                 <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-              ' . $shiptoadd . '
+                No of Boxes - <br>
+                Net Waight(Kg) -
+                 
             </p>
                 </div>
             </td>';
-        }
 
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
         $codStamp = public_path('assets/img/cod.png');
@@ -2327,14 +2195,7 @@ class PickupRunSheetController extends Controller
                                                 <th class="mini-th mm" >' . @$data['prs_detail']['pickup_id'] . '</th>
                                                 <th class="mini-th mm" >' . $data['id'] . '</th>
                                                 <th class="mini-th">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-                                                // if ($data['is_salereturn'] == '1') {
-                                                //     $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
-                                                //                                 <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-                                                // } else {
-                                                //     $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                                //                                 <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
-                                                // }
-
+                                               
                                     $html .= '</tr>
                                                 </table>
                                             </div>
@@ -2373,19 +2234,13 @@ class PickupRunSheetController extends Controller
                                 </table>
                             </div>';
                 } else {
-                    $html .= '   <div class="loc">
+                    $html .= '  <div class="loc">
                                 <table>
                                     <tr>
                                         <td class="width_set">
                                             <div style="margin-left: 20px">';
-                                            if ($data['is_salereturn'] == '1') {
-                                                $html .= '<i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
-                                                                        <div style="font-size: 12px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                                        <i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
-                                            } else {
-                                                $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                                    <i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 12px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                                            }
+                                            
+                                            $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
                     $html .= ' </div>
                                         </td>
                                         <td class="width_set">
@@ -2450,35 +2305,31 @@ class PickupRunSheetController extends Controller
                                         <tr>
                                             <td class="width_set">
                                                 <div style="margin-left: 20px">';
-                    if ($data['is_salereturn'] == 1) {
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
-                    } else {
+                    
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
-                    }
-                    $html .= '</div>
-                                            </td>
-                                            <td class="width_set">
-                                                <table border="1px solid" class="table3">
-                                                    <tr>
-                                                        <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
-                                                        <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
-                                                        <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
-                                                    </tr>
-
-                                                </table>
-                                            </td>
+                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                    
+                    $html .= '</div></td>
+                                <td class="width_set">
+                                    <table border="1px solid" class="table3">
+                                        <tr>
+                                            <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                            <td>' . @$data['vehicle_detail']['regn_no'] . '</td>
                                         </tr>
+                                        <tr>
+                                            <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                            <td>' . ucwords(@$data['driver_detail']['name']) . '</td>
+                                        </tr>
+                                        <tr>
+                                            <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                            <td>' . ucwords(@$data['driver_detail']['phone']) . '</td>
+                                        </tr>
+
                                     </table>
-                                </div>';
+                                </td>
+                            </tr>
+                        </table>
+                    </div>';
                 }
 
             }
@@ -2523,12 +2374,18 @@ class PickupRunSheetController extends Controller
                             <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                 <tr>
                                     <td width="30%" style="vertical-align:top; >
+                                    ' . $lrInvces . '
+                                    </td>
+                                    <td width="30%" style="vertical-align:top; >
+                                    ' . $billingClient . '
+                                    </td>
+                                    <td width="30%" style="vertical-align:top; >
                                     ' . $cnradd_heading . '
                                     </td>
                                     <td width="30%" style="vertical-align:top;>
-                                    ' . $cneadd_heading . '
+                                    ' . $expectedPickup . '
                                     </td>
-                                    ' . $shipto_address . '
+                                    ' . $actualPickup . '
                                 </tr>
                             </table>
                         </div>

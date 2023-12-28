@@ -182,9 +182,10 @@ div.relative {
                                    if($authuser->branch_id == $consignment->fall_in){ 
                                  if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
                                 <td>
+                                    <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
+                                        class="badge alert bg-cust shadow-sm">Print LR</a>
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete
-                                            Lr</span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete Lr</span></a>
                                 </td>
                                 <?php }else{
                                     ?>
@@ -198,7 +199,11 @@ div.relative {
                                     if($consignment->prsitem_status == 0){ ?>
                                 <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
                                 <?php }else{ ?>
-                                <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
+                                <td>
+                                    <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
+                                    class="badge alert bg-cust shadow-sm">Print LR</a>
+
+                                    <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
                                 <?php } } 
                                 }else{?>
                                 <td>-</td>
