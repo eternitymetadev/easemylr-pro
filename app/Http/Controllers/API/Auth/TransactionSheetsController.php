@@ -720,8 +720,17 @@ class TransactionSheetsController extends Controller
             }else{
                 $cnee_district = '';
             }
-
+            
             $res = $update_status->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
+            if($res){
+                $latestRecord = TransactionSheet::where('consignment_no', $id)
+                    ->latest('drs_no')
+                    ->first();
+
+                if ($latestRecord) {
+                    $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => date('Y-m-d')]);
+                }
+            }
             
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString(); 
