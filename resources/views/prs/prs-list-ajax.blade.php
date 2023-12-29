@@ -11,6 +11,7 @@
                 <th>Driver Name </th>
                 <th>Status </th>
                 <th>Action</th>
+                <th>Print PRS</th>
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">
@@ -75,6 +76,12 @@
                     ?>
                     <a href="{{url($prefix.'/'.$segment.'/'.Crypt::encrypt($value->id).'/edit')}}" class="btn btn-white btn-cstm {{$disable}}"><span><i class="fa fa-edit"></i> Edit</span></a> 
                     <?php } ?>
+                    <td>
+                        <?php if($value->id){ ?>
+                        <a href="{{url($prefix.'/prs/prs-print/'.$value->id)}}" target="_blank"
+                        class="badge alert bg-cust shadow-sm">Print PRS</a>
+                        <?php } ?>
+                    </td>
                 </td>
             </tr>
             @endforeach

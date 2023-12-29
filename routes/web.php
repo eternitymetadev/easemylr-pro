@@ -476,6 +476,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('second-payment-prs', [PickupRunSheetController::class, 'createSecondPaymentRequestPrs']); 
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
     Route::get('pickup-loads/prs-printlr/{lr_id}', [PickupRunSheetController::class, 'prsPrintLR']);
+    Route::any('prs/prs-print/{id}', [PickupRunSheetController::class, 'prsPrint']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
