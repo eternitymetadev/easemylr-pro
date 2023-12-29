@@ -2315,35 +2315,41 @@ class PickupRunSheetController extends Controller
 
         $query = PickupRunSheet::query();
         $query = $query->with('Consignments','PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')
-        ->whereHas('Consignments', function ($q) {
-            $q->where('status', '!=', 0);
-        })
         ->where('id', $prsId);
-        // ->whereIn('status', ['1', '3','4']);
+        // ->whereHas('Consignments', function ($q) {
+        //     $q->where('status', '!=', 0);
+        // })
     
         if ($authuser->role_id != 1) {
             $query = $query->whereIn('branch_id', $cc);
         }
-        $getPrs = $query->orderby('id', 'asc')->first();        
-
+        $getPrs = $query->orderby('id', 'asc')->first();  
+        
         $pay = public_path('assets/img/LOGO_Frowarders.jpg');
-
         $date = new DateTime($getPrs->created_at, new \DateTimeZone('GMT-7'));
         
         $date->setTimezone(new \DateTimeZone('IST'));
         $prsDate = $date->format('d-m-Y');
-        $lrCount = count($getPrs->Consignments);
 
-        $consignmentsArray = $getPrs->Consignments->toArray();
-        // Extracting the 'total_quantity' column values
-        $totalQuantities = array_column($consignmentsArray, 'total_quantity');
-        // Calculating the sum of 'total_quantity' values
-        $sumTotalQuantity = array_sum($totalQuantities);
 
-        // Extracting the 'total_quantity' column values
-        $totalWeights = array_column($consignmentsArray, 'total_weight');
-        // Calculating the sum of 'total_quantity' values
-        $sumTotalWeight = array_sum($totalWeights);
+        $lrCount = count(@$getPrs->Consignments);
+        
+
+        if ($getPrs && $getPrs->Consignments && $getPrs->Consignments->isNotEmpty()) {
+            $consignmentsArray = $getPrs->Consignments->toArray();
+        
+            // Extracting the 'total_quantity' column values
+            $totalQuantities = array_column($consignmentsArray, 'total_quantity');
+            $sumTotalQuantity = array_sum($totalQuantities);
+        
+            // Extracting the 'total_weight' column values
+            $totalWeights = array_column($consignmentsArray, 'total_weight');
+            $sumTotalWeight = array_sum($totalWeights);
+        
+        } else {
+            $sumTotalQuantity = 0;
+            $sumTotalWeight = 0;
+        }
 
         $html = '<html>
         <head>
@@ -2404,13 +2410,13 @@ class PickupRunSheetController extends Controller
                         <table class="drs_t" style="width:100%">
                             <tr class="drs_r">
                                 <th class="drs_h">Pickup No.</th>
-                                <th class="drs_h">' . $getPrs->pickup_id . '</th>
+                                <th class="drs_h">' . @$getPrs->pickup_id . '</th>
                                 <th class="drs_h">Vehicle No.</th>
                                 <th class="drs_h">' . @$getPrs->VehicleDetail->regn_no . '</th>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">PRS Date</td>
-                                <td class="drs_d">' . $prsDate . '</td>
+                                <td class="drs_d">' . @$prsDate . '</td>
                                 <td class="drs_d">Driver Name</td>
                                 <td class="drs_d">' . @$getPrs->DriverDetail->name . '</td>
                             </tr>
@@ -2459,62 +2465,63 @@ class PickupRunSheetController extends Controller
                     
                     <main style="margin-top:150px;">';
         $i = 0;
-       
-        foreach ($getPrs->Consignments as $dataitem) {
-            //    echo'<pre>'; print_r($dataitem->ConsignerDetail->GetRegClient->name); die;
+        if ($getPrs && isset($getPrs->Consignments) && !empty($getPrs->Consignments)) {
+                foreach ($getPrs->Consignments as $dataitem) {
 
-            $i++;
-            if ($i % 5 == 0) {
-                $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
-            }
+                $i++;
+                if ($i % 5 == 0) {
+                    $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
+                }
 
-            $html .= '
-                <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
+                $html .= '
+                    <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
 
-                    <div class="column" style="width:125px;">
-                       <p style="margin-top:0px;">' . $dataitem->ConsignerDetail->GetRegClient->name . '</p>
-                        <p style="margin-top:-8px;">' . $dataitem->id . '</p>
-                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
-                    </div>
-                    <div class="column" style="width:200px;">
-                        <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->nick_name . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->phone . '</p>
+                        <div class="column" style="width:125px;">
+                        <p style="margin-top:0px;">' . $dataitem->ConsignerDetail->GetRegClient->name . '</p>
+                            <p style="margin-top:-8px;">' . $dataitem->id . '</p>
+                            <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
+                        </div>
+                        <div class="column" style="width:200px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->nick_name . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->phone . '</p>
 
-                    </div>
-                    <div class="column" style="width:125px;">
-                        <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->city . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->district . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->postal_code . '</p>
+                        </div>
+                        <div class="column" style="width:125px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->city . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->district . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->postal_code . '</p>
 
-                      </div>
-                      <div class="column" >
-                        <p style="margin-top:0px;">Boxes: ' . $dataitem->total_quantity . '</p>
+                        </div>
+                        <div class="column" >
+                            <p style="margin-top:0px;">Boxes: ' . $dataitem->total_quantity . '</p>
+                            <p></p>
+                            <p style="margin-top:-13px;">Wt(Kg): ' . $dataitem->total_weight . '</p>
+                        </div>
+                        <div class="column" style="width:170px;">
+                        <p style="margin-top:0px;">Boxes: </p>
                         <p></p>
-                        <p style="margin-top:-13px;">Wt(Kg): ' . $dataitem->total_weight . '</p>
-                      </div>
-                      <div class="column" style="width:170px;">
-                      <p style="margin-top:0px;">Boxes: </p>
-                      <p></p>
-                      <p style="margin-top:-13px;">Wt(Kg): </p>
-                      </div>
-                  </div>';
-            $html .= '<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
-            //echo'<pre>'; print_r($chunk); die;
-            $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
-            $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
-            $itm_no = 0;
-            foreach ($dataitem->ConsignmentItems as $cc) {
-                // echo'<pre>'; print_r($cc->order_id); die;
-                $itm_no++;
+                        <p style="margin-top:-13px;">Wt(Kg): </p>
+                        </div>
+                    </div>';
+                $html .= '<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
+                //echo'<pre>'; print_r($chunk); die;
+                $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
+                $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
+                $itm_no = 0;
+                if (isset($dataitem->ConsignmentItems) && !empty($dataitem->ConsignmentItems)) {
+                    foreach ($dataitem->ConsignmentItems as $cc) {
+                        $itm_no++;
 
-                $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
+                        $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
+                    }
+                }
+                $html .= '</div> ';
+
+                $html .= '</div>
+
+                    <br>';
+
             }
-            $html .= '</div> ';
-
-            $html .= '</div>
-
-                <br>';
-
         }
 
         $html .= '</main>
