@@ -36,8 +36,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Session;
 use Storage;
 use URL;
+use Helper;
 use Validator;
 use QrCode;
+use DateTime;
 
 class PickupRunSheetController extends Controller
 {
@@ -2298,6 +2300,245 @@ class PickupRunSheetController extends Controller
         $pdfMerger->save("all.pdf", "browser");
         $file = new Filesystem;
         $file->cleanDirectory('pdf');
+    }
+
+    public function prsPrint($prsId)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = PickupRunSheet::query();
+        $query = $query->with('Consignments','PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')
+        ->where('id', $prsId);
+        // ->whereHas('Consignments', function ($q) {
+        //     $q->where('status', '!=', 0);
+        // })
+    
+        if ($authuser->role_id != 1) {
+            $query = $query->whereIn('branch_id', $cc);
+        }
+        $getPrs = $query->orderby('id', 'asc')->first();  
+        
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $date = new DateTime($getPrs->created_at, new \DateTimeZone('GMT-7'));
+        
+        $date->setTimezone(new \DateTimeZone('IST'));
+        $prsDate = $date->format('d-m-Y');
+
+
+        $lrCount = count(@$getPrs->Consignments);
+        
+
+        if ($getPrs && $getPrs->Consignments && $getPrs->Consignments->isNotEmpty()) {
+            $consignmentsArray = $getPrs->Consignments->toArray();
+        
+            // Extracting the 'total_quantity' column values
+            $totalQuantities = array_column($consignmentsArray, 'total_quantity');
+            $sumTotalQuantity = array_sum($totalQuantities);
+        
+            // Extracting the 'total_weight' column values
+            $totalWeights = array_column($consignmentsArray, 'total_weight');
+            $sumTotalWeight = array_sum($totalWeights);
+        
+        } else {
+            $sumTotalQuantity = 0;
+            $sumTotalWeight = 0;
+        }
+
+        $html = '<html>
+        <head>
+        <title>Document</title>
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+          <style>
+          table,
+          th,
+          td {
+              border: 0px solid black;
+              border-collapse: collapse;
+              text-align: left;
+          }
+          .drs_t,
+          .drs_r,
+          .drs_d,
+          .drs_h {
+              border: 1px solid black;
+              border-collapse: collapse;
+              text-align: left;
+          }
+            @page { margin: 100px 25px; }
+            header { position: fixed; top: -60px; left: 0px; right: 0px; height: 200px; }
+            footer { position: fixed; bottom: -105px; left: 0px; right: 0px;  height: 100px; }
+           /* p { page-break-after: always; }
+            p:last-child { page-break-after: never; } */
+            * {
+                box-sizing: border-box;
+              }
+
+
+              .column {
+                float: left;
+                width: 14.33%;
+                padding: 5px;
+                height: auto;
+              }
+
+
+              .row:after {
+                content: "";
+                display: table;
+                clear: both;
+              }
+              .dd{
+                margin-left: 0px;
+              }
+
+          </style>
+        </head>
+        <body style="font-size:13px; font-family:Arial Helvetica,sans-serif;">
+                    <header><div class="row" style="display:flex;">
+                    <div class="column"  style="width: 493px;">
+                        <h1 class="dd">Pickup Run Sheet</h1>
+                        <div  class="dd">
+                        <table class="drs_t" style="width:100%">
+                            <tr class="drs_r">
+                                <th class="drs_h">Pickup No.</th>
+                                <th class="drs_h">' . @$getPrs->pickup_id . '</th>
+                                <th class="drs_h">Vehicle No.</th>
+                                <th class="drs_h">' . @$getPrs->VehicleDetail->regn_no . '</th>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">PRS Date</td>
+                                <td class="drs_d">' . @$prsDate . '</td>
+                                <td class="drs_d">Driver Name</td>
+                                <td class="drs_d">' . @$getPrs->DriverDetail->name . '</td>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">No. of LRs</td>
+                                <td class="drs_d"> '.@$lrCount.' </td>
+                                <td class="drs_d">Driver No.</td>
+                                <td class="drs_d">' . @$getPrs->DriverDetail->phone . '</td>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">Total Boxes</td>
+                                <td class="drs_d">'. @$sumTotalQuantity .'</td>
+                                <td class="drs_d">Total Weights</td>
+                                <td class="drs_d">'. @$sumTotalWeight .' </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    </div>
+                     <div class="column" style="margin-left: 56px;">
+                        <img src="' . $pay . '" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
+                    </div>
+                </div>
+                <br>
+                <div id="content"><div class="row" style="border: 1px solid black;">
+                    <div class="column" style="width:125px;">
+                        <h4 style="margin: 0px;"> Bill to Client</h4>
+                        <h4 style="margin: 0px;">LR Details:</h4>
+                    </div>
+                    <div class="column" style="width:200px;">
+                        <h4 style="margin: 0px;">Consignor Name & Mobile Number</h4>
+                    </div>
+                    <div class="column" style="width:125px;">
+                        <h4 style="margin: 0px;">Consignor City, </h4>
+                        <h4 style="margin: 0px;"> Dstt & PIN</h4>
+                    </div>
+                    <div class="column">
+                        <h4 style="margin: 0px;">Expected Pickup Details</h4>
+                    </div>
+                    <div class="column" style="width:170px;">
+                        <h4 style="margin: 0px; ">Actual Pickup Details</h4>
+                    </div>
+                </div>
+                </div>
+                </header>
+                    
+                    <main style="margin-top:150px;">';
+        $i = 0;
+        if ($getPrs && isset($getPrs->Consignments) && !empty($getPrs->Consignments)) {
+                foreach ($getPrs->Consignments as $dataitem) {
+
+                $i++;
+                if ($i % 5 == 0) {
+                    $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
+                }
+
+                $html .= '
+                    <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
+
+                        <div class="column" style="width:125px;">
+                        <p style="margin-top:0px;">' . $dataitem->ConsignerDetail->GetRegClient->name . '</p>
+                            <p style="margin-top:-8px;">' . $dataitem->id . '</p>
+                            <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
+                        </div>
+                        <div class="column" style="width:200px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->nick_name . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->phone . '</p>
+
+                        </div>
+                        <div class="column" style="width:125px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->city . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->district . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->postal_code . '</p>
+
+                        </div>
+                        <div class="column" >
+                            <p style="margin-top:0px;">Boxes: ' . $dataitem->total_quantity . '</p>
+                            <p></p>
+                            <p style="margin-top:-13px;">Wt(Kg): ' . $dataitem->total_weight . '</p>
+                        </div>
+                        <div class="column" style="width:170px;">
+                        <p style="margin-top:0px;">Boxes: </p>
+                        <p></p>
+                        <p style="margin-top:-13px;">Wt(Kg): </p>
+                        </div>
+                    </div>';
+                $html .= '<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
+                //echo'<pre>'; print_r($chunk); die;
+                $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
+                $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
+                $itm_no = 0;
+                if (isset($dataitem->ConsignmentItems) && !empty($dataitem->ConsignmentItems)) {
+                    foreach ($dataitem->ConsignmentItems as $cc) {
+                        $itm_no++;
+
+                        $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
+                    }
+                }
+                $html .= '</div> ';
+
+                $html .= '</div>
+
+                    <br>';
+
+            }
+        }
+
+        $html .= '</main>
+        <table style="width: 100%; margin-top: 10px">
+            <tr>
+                <td>Driver Eternity & Date</td>
+                <td style="text-align: right">Consignor Sign & Stamp</td>
+            </tr>
+        </table>
+        </body>
+        </html>';
+
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('print.pdf');
+
     }
 
 }
