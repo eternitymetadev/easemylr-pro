@@ -980,7 +980,7 @@ class ConsignmentController extends Controller
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $consnee_add . '
+            ' . $shiptoadd . '
             </p>
             </div>';
             $cneadd_heading = '<div class="container">
@@ -1181,15 +1181,15 @@ class ConsignmentController extends Controller
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-            if ($data['is_salereturn'] == '1') {
-                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
-                                            <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-            } else {
-                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
-            }
+                                            if ($data['is_salereturn'] == '1') {
+                                                $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
+                                                        <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
+                                            } else {
+                                                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                                        <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
+                                            }
 
-            $html .= '</tr>
+                                $html .= '</tr>
                                     </table>
                         </div>
                                 </td>
@@ -1233,12 +1233,12 @@ class ConsignmentController extends Controller
                                         <td class="width_set">
                                             <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == '1') {
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
                                                 <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= ' </div>
                                         </td>
@@ -1305,11 +1305,11 @@ class ConsignmentController extends Controller
                                             <td class="width_set">
                                                 <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == 1) {
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= '</div>
                                             </td>
