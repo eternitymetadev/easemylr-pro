@@ -6053,5 +6053,53 @@ class ConsignmentController extends Controller
         }
         return response()->json($response);
     }
+
+    // update delivery status by api in pod upload cases
+    public function updatePodDeliverystatus1(Request $request)
+    {
+        try {
+            // First SQL query: Update ConsignmentNote table
+           $updateLr =  ConsignmentNote::whereNotNull('delivery_date')
+                ->where('status', 1)
+                ->where('id', 1234117)
+                ->update(['delivery_status' => 'Successful']);
+                
+            // Second SQL query: Update TransactionSheet table with a join
+            $updateDrs = DB::table('TransactionSheet as ts')
+                ->join('ConsignmentNote as cn', 'ts.consignment_no', '=', 'cn.id')
+                ->where('cn.delivery_status', 'Successful')
+                ->update(['ts.delivery_status' => 'Successful', 'ts.delivery_date' => 'cn.delivery_date']);
+                // ->where('ts.consignment_no', 1234117)
+    
+            // Return a success response after executing the queries
+            return response()->json(['message' => 'Delivery status updated successfully'], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions or errors that might occur during the update
+            return response()->json(['error' => 'Failed to update delivery status'], 500);
+        }
+    }
+
+    public function updatePodDeliverystatus(Request $request)
+    {
+        try {
+            // Update ConsignmentNote table
+            ConsignmentNote::whereNotNull('delivery_date')
+                ->where('status', 1)
+                ->update(['delivery_status' => 'Successful']);
+                
+            // Update TransactionSheet table with a join
+            TransactionSheet::whereHas('consignmentNote', function ($query) {
+                    $query->where('delivery_status', 'Successful')
+                    ->where('status', 1);
+                })->update(['delivery_status' => 'Successful', 'ts.delivery_date' => 'cn.delivery_date']);
+
+            // Return a success response after executing the queries
+            return response()->json(['message' => 'Delivery status updated successfully'], 200);
+        } catch (\Exception $e) {
+            // Handle any exceptions or errors that might occur during the update
+            return response()->json(['error' => 'No Record found'], 500);
+        }
+    }
+
     
 }

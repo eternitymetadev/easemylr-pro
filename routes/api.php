@@ -66,6 +66,7 @@ Route::group([
 });
 
 Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
+Route::get('update-pod-deliverystatus', [ConsignmentController::class,'updatePodDeliverystatus']);
 
 
 
