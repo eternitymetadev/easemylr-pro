@@ -55,6 +55,8 @@ Route::post('contact-us', [TrackApiController::class, 'contactUs']);
 Route::post('shipnow', [TrackApiController::class, 'shipnow']);
 Route::post('delivery-rating', [TrackApiController::class, 'deliveryRating']);
 Route::post('reject-payment/{id}', [VendorController::class, 'rejectPaymentApi']);
+Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
+Route::get('update-pod-deliverystatus', [ConsignmentController::class,'updatePodDeliverystatus']);
 
 
 Route::group([
@@ -65,8 +67,6 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);   
 });
 
-Route::get('get-lrtimeline/{id}', [ConsignmentController::class,'getTimelineapi']);
-Route::get('update-pod-deliverystatus', [ConsignmentController::class,'updatePodDeliverystatus']);
 
 
 
