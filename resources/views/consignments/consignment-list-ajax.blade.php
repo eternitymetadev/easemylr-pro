@@ -181,20 +181,20 @@
                     <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}">Cancel</span>
                     <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
-                    <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
-                        data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
+                    <a class="alert activestatus btn btn-success swan-tooltip disable_n" data-id="{{$consignment->id}}"
+                        data-text="consignment" data-status="0" data-tooltip="{{$consignment->reattempt_reason != null ? count(json_decode($consignment->reattempt_reason, true)) : ''}}"><span><i class="fa fa-check-circle-o"></i>
                             Active</span></a>
                     <?php }else{ ?>
-                    <a class="alert activestatus btn btn-success {{$disable}}" data-id="{{$consignment->id}}"
-                        data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
+                    <a class="alert activestatus btn btn-success swan-tooltip {{$disable}}" data-id="{{$consignment->id}}"
+                        data-text="consignment" data-status="0" data-tooltip="{{$consignment->reattempt_reason != null ? count(json_decode($consignment->reattempt_reason, true)) : ''}}"><span><i class="fa fa-check-circle-o"></i>
                             Active</span></a> 
                     <?php }
                         }elseif($consignment->status == 2 && $consignment->reattempt_reason != null){ ?>
                         <span class="badge alert bg-success swan-tooltip"
-                            data-id="{{$consignment->id}}" data-status="0"  data-tooltip="{{count(json_decode($consignment->reattempt_reason,true))}}">Reattempt</span>
+                            data-id="{{$consignment->id}}" data-status=""  data-tooltip="{{$consignment->reattempt_reason != null ? count(json_decode($consignment->reattempt_reason, true)) : ''}}">Reattempt</span>
                         <?php } elseif($consignment->status == 2){ ?>
-                    <span class="badge alert bg-success activestatus {{$disable}}"
-                        data-id="{{$consignment->id}}" data-status="0">Unverified</span>
+                    <span class="badge alert bg-success activestatus swan-tooltip {{$disable}}"
+                        data-id="{{$consignment->id}}" data-status="0" data-tooltip="{{$consignment->reattempt_reason != null ? count(json_decode($consignment->reattempt_reason, true)) : ''}}">Unverified</span>
                     <?php } elseif($consignment->status == 3){ ?>
                     <span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>
                     <?php } ?>

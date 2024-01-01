@@ -225,21 +225,33 @@ class GlobalFunctions
         // Count the number of delivered and empty consignments
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
 
+        $countStatusZero = ConsignmentNote::whereIn('id', $get_lrs)->where('status', 0)->count();
+
+        $countReattempt = TransactionSheet::where('drs_no', $drs_number)->whereIn('consignment_no', $get_lrs)->where('status', 4)->count();
+
         // Calculate the total number of consignments
-        $total_lr = count($get_lrs);
+        $totallrCount = count($get_lrs);
+
+        $totalCount = $total_deldate + $countStatusZero + $countReattempt;
 
         // Determine the delivery status
-        if ($total_deldate == $total_lr) {
+        if ($total_deldate == $totallrCount) {
             $status = "Successful";
         } elseif ($total_deldate == 0) {
             $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
             if($check_started){
-            $status = "Started";
+                $status = "Started";
+            }else if($totalCount == $totallrCount){
+                $status = "Successful";
             }else{
                 $status = "Unassigned";
             }
         } else {
-            $status = "Partial";
+            if($totalCount == $totallrCount){
+                $status = "Successful";
+            }else{
+                $status = "Partial";
+            }
         }
 
         return $status;

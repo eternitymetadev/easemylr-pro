@@ -75,12 +75,22 @@ class ConsignmentController extends Controller
             if (isset($request->updatestatus)) {
                 $lr_cancel = ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
 
+                if ($lr_cancel) {
+                    TransactionSheet::where('consignment_no', $request->id)
+                        ->where('status', '!=', 4)
+                        ->when(function ($query) {
+                            return $query->latest('drs_no')->count() > 0;
+                        }, function ($query) use ($request) {
+                            $query->latest('drs_no')->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
+                        });
+                }
+
                 // if($lr_cancel){
-                //     TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->count();
-                //     if ($count === 1) {
-                //         TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
-                //     }else{
-                //         TransactionSheet::where('consignment_no', $request->id)->latest('drs_no')->update(['delivery_status' => 'Cancel']);
+                //     // dd($lr_cancel);
+                //     $drsCount = TransactionSheet::where('consignment_no', $request->id)->where('status', '!=', 4)->latest('drs_no')->count();
+
+                //     if ($drsCount > 0) {
+                //         TransactionSheet::where('consignment_no', $request->id)->where('status', '!=', 4)->latest('drs_no')->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
                 //     }
                 // }
 
@@ -2282,7 +2292,8 @@ class ConsignmentController extends Controller
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
             ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            ->where('delivery_status', '!=', 'Cancel')
+            ->whereIn('status', [0, 1])
             ->pluck('vehicle_no')
             ->unique()
             ->toArray();
@@ -2302,7 +2313,8 @@ class ConsignmentController extends Controller
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('driver_no')
             ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            ->where('delivery_status', '!=', 'Cancel')
+            ->whereIn('status', [0, 1])
             ->pluck('driver_no')
             ->unique()
             ->toArray();
@@ -2363,7 +2375,8 @@ class ConsignmentController extends Controller
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('vehicle_no')
         ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        ->where('delivery_status', '!=', 'Cancel')
+        ->whereIn('status', [0, 1])
         ->pluck('vehicle_no')
         ->unique()
         ->toArray();
@@ -2385,7 +2398,8 @@ class ConsignmentController extends Controller
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('driver_no')
         ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        ->where('delivery_status', '!=', 'Cancel')
+        ->whereIn('status', [0, 1])
         ->pluck('driver_no')
         ->unique()
         ->toArray();
