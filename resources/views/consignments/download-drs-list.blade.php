@@ -962,6 +962,11 @@
         $(document).on('click', '#discarddraftForm', function() {
             $('#addLrDiv').html('');
             $('#addLrDiv').html('');
+
+            // $('#vehicle_no').html('');
+            // $('#driver_id').html('');
+            // $('#vehicle_type').html('');
+
             $('#opm').modal('hide');
 
         });

@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\PickupRunSheet;
+use App\Models\TransactionSheet;
 use App\Models\Zone;
 use Auth;
 use Carbon\Carbon;
@@ -68,38 +69,36 @@ class FtlPtlController extends Controller
         } else {
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
-        // get vehicles
-        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
-        ->where('delivery_status', '!=', 'successful')
-        ->where('status', '!=', 0)
-        ->pluck('vehicle_id')
-        ->unique()
-        ->toArray();
 
-        // Merge and deduplicate the vehicle IDs
-        // $mergedVehicleIds = array_unique($consignmentVehicleIds);
-
+        $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            ->whereDate('created_at', '>', '2023-12-20')
+            ->whereNotNull('vehicle_no')
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->distinct()
+            ->pluck('vehicle_no')
+            ->toArray();
+            // ->where('delivery_status', 'Assigned')
+            
         // Fetch vehicles that are not in the merged array
-        $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('id', $consignmentVehicleIds)
-        ->select('id', 'regn_no')
+        $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
+        ->whereNotIn('regn_no', $drsVehicleIds)
         ->get();
-
-        // get drivers
-        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
-        ->where('delivery_status', '!=', 'successful')
-        ->pluck('driver_id')
-        ->unique()
-        ->toArray();
-
-        // Merge and deduplicate the driver IDs
-        // $mergedDriverIds = array_unique($consignmentDriverIds);
-
-        // Fetch drivers who are not in the merged array
-        $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $consignmentDriverIds)
-        ->select('id', 'name', 'phone')
-        ->get();
+            
+         // get drivers
+         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+         ->whereDate('created_at', '>', '2023-12-20')
+         ->whereNotNull('driver_no')
+         ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+         ->distinct()
+         ->pluck('driver_no')
+         ->toArray();
+         // ->whereIn('status', [0, 1])
+         
+         // Fetch drivers who are not in the merged array
+         $drivers = Driver::where('status', '1')
+         ->whereNotIn('name', $drsDriverIds)
+         ->select('id', 'name', 'phone')
+         ->get();
 
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
