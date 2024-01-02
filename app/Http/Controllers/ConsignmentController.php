@@ -5121,6 +5121,7 @@ class ConsignmentController extends Controller
 
         return response()->json($response);
     }
+
     public function podView(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -5149,6 +5150,7 @@ class ConsignmentController extends Controller
 
             $query = $query
                 ->where('status', '!=', 5)
+                // ->whereNotIn('status', [0, 5])
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
@@ -5158,9 +5160,9 @@ class ConsignmentController extends Controller
             } elseif ($authuser->role_id == 4) {
                 $query = $query->whereIn('regclient_id', $regclient);
             } else {
-                $query = $query->where(function ($query) use ($cc) {
-                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-
+                $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
+                    $query->whereIn('fall_in', $cc)
+                    ->where('status', '!=', 5);
                 });
             }
 
@@ -5207,6 +5209,7 @@ class ConsignmentController extends Controller
 
         $query = $query
             ->where('status', '!=', 5)
+            // ->whereNotIn('status', [0, 5])
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
@@ -5217,7 +5220,8 @@ class ConsignmentController extends Controller
             $query = $query->whereIn('regclient_id', $regclient);
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
-                $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
+                $query->whereIn('fall_in', $cc)
+                ->where('status', '!=', 5);
             });
         }
 
