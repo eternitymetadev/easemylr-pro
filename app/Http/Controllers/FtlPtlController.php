@@ -74,6 +74,7 @@ class FtlPtlController extends Controller
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
             ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->where('status', '!=', 4)
             ->distinct()
             ->pluck('vehicle_no')
             ->toArray();
@@ -89,6 +90,7 @@ class FtlPtlController extends Controller
          ->whereDate('created_at', '>', '2023-12-20')
          ->whereNotNull('driver_no')
          ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+         ->where('status', '!=', 4)
          ->distinct()
          ->pluck('driver_no')
          ->toArray();
