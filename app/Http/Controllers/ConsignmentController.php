@@ -2650,28 +2650,34 @@ class ConsignmentController extends Controller
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')
-            ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail', 'ConsignmentItem')
+        $transcationview = TransactionSheet::with([
+                'ConsignmentDetail.ConsignerDetail.GetRegClient', 
+                'consigneeDetail', 
+                'ConsignmentItem'
+            ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
             ->where('drs_no', $id)
-            ->whereIn('status', ['1', '3','4'])
-            ->orderby('order_no', 'asc')->get();
-        $simplyfy = json_decode(json_encode($transcationview), true);
+            ->whereIn('status', ['1', '3', '4'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+        
+        // Fetch details efficiently
+        $no_of_deliveries = $transcationview->count();
+        $details = $transcationview[0];
+        // $details = $transcationview->isNotEmpty() ? $transcationview->first() : null;
 
-        $no_of_deliveries = count($simplyfy);
-        $details = $simplyfy[0];
-        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
-
+        // Calculate date efficiently
         $date = new DateTime($details['created_at'], new \DateTimeZone('GMT-7'));
         $date->setTimezone(new \DateTimeZone('IST'));
         $drsDate = $date->format('d-m-Y');
 
-        // $drsDate = date('d-m-Y', strtotime($newdate));
+        // Calculate sums efficiently
+        $arraysum_Boxes = $transcationview->sum('total_quantity');
+        $arraysum_Weight = $transcationview->sum('total_weight');
 
-        $arraysum_Boxes = array_sum(array_column($simplyfy, 'total_quantity'));
-        $arraysum_Weight = array_sum(array_column($simplyfy, 'total_weight'));
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $html = '<html>
         <head>
@@ -2732,21 +2738,21 @@ class ConsignmentController extends Controller
                         <table class="drs_t" style="width:100%">
                             <tr class="drs_r">
                                 <th class="drs_h">DRS No.</th>
-                                <th class="drs_h">DRS-' . $details['drs_no'] . '</th>
+                                <th class="drs_h">DRS-' . $details->drs_no . '</th>
                                 <th class="drs_h">Vehicle No.</th>
-                                <th class="drs_h">' . $details['vehicle_no'] . '</th>
+                                <th class="drs_h">' . $details->vehicle_no . '</th>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">DRS Date</td>
                                 <td class="drs_d">' . $drsDate . '</td>
                                 <td class="drs_d">Driver Name</td>
-                                <td class="drs_d">' . @$details['driver_name'] . '</td>
+                                <td class="drs_d">' . @$details->driver_name . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">No. of Deliveries</td>
                                 <td class="drs_d">' . $no_of_deliveries . '</td>
                                 <td class="drs_d">Driver No.</td>
-                                <td class="drs_d">' . @$details['driver_no'] . '</td>
+                                <td class="drs_d">' . @$details->driver_no . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">Total Boxes</td>
@@ -2797,40 +2803,40 @@ class ConsignmentController extends Controller
         $total_Boxes = 0;
         $total_weight = 0;
 
-        foreach ($simplyfy as $dataitem) {
-            //    echo'<pre>'; print_r($dataitem); die;
-
+        foreach ($transcationview as $dataitem) {
+            // dd($dataitem->ConsignmentDetail->ShiptoDetail);
             $i++;
             if ($i % 5 == 0) {
                 $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
             }
 
-            $total_Boxes += $dataitem['total_quantity'];
-            $total_weight += $dataitem['total_weight'];
-            //echo'<pre>'; print_r($dataitem['consignment_no']); die;
+            $total_Boxes += $dataitem->total_quantity;
+            $total_weight += $dataitem->total_weight;
+            // dd($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient); 
+            //echo'<pre>'; print_r($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient->name); die;
             $html .= '
                 <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
 
                     <div class="column" style="width:125px;">
-                       <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consigner_detail']['get_reg_client']['name'] . '</p>
-                        <p style="margin-top:-8px;">' . $dataitem['consignment_no'] . '</p>
-                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']) . '</p>
+                       <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient->name . '</p>
+                        <p style="margin-top:-8px;">' . @$dataitem->consignment_no . '</p>
+                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
                     </div>
                     <div class="column" style="width:200px;">
-                        <p style="margin-top:0px;">' . $dataitem['consignee_id'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['phone'] . '</p>
+                        <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->nick_name . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->phone . '</p>
 
                     </div>
                     <div class="column" style="width:125px;">
-                        <p style="margin-top:0px;">' . $dataitem['city'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['district'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['pincode'] . '</p>
+                        <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->city . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->district . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->pincode . '</p>
 
                       </div>
                       <div class="column" >
-                        <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
-                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_weight'] . '</p>
-                        <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
+                        <p style="margin-top:0px;">Boxes:' . @$dataitem->total_quantity . '</p>
+                        <p style="margin-top:-13px;">Wt:' . @$dataitem->ConsignmentDetail->total_weight . '</p>
+                        <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear(@$dataitem->ConsignmentDetail->edd) . '</p>
                       </div>
                       <div class="column" style="width:170px;">
                         <p></p>
@@ -2841,11 +2847,14 @@ class ConsignmentController extends Controller
             $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
             $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
             $itm_no = 0;
-            foreach ($dataitem['consignment_item'] as $cc) {
-                $itm_no++;
+            // if(count($dataitem->consignment_item']) > 0){
+            if(count($dataitem->ConsignmentItem) > 0) {
+                foreach ($dataitem->ConsignmentItem as $cc) {
+                    $itm_no++;
+                    
+                    $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
 
-                $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['order_id'] . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['invoice_no'] . '</td></tr></table>';
-
+                }
             }
             $html .= '</div> ';
 
