@@ -2027,6 +2027,66 @@ class ConsignmentController extends Controller
     public function updateUnverifiedLr(Request $request)
     {
         // dd($request->vehicle_id);
+        $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+        $getDriver = Driver::where('id', $request->driver_id)->first();
+        if($getVehicle){            
+            $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            ->whereDate('created_at', '>', '2023-12-20')
+            ->where('vehicle_no', $getVehicle->regn_no)
+            ->whereNotNull('vehicle_no')
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->where('status', '!=', 4)
+            ->distinct()
+            ->pluck('vehicle_no')
+            ->get();
+
+            // if($drsVehicleIds){
+            //     return response()->json(['error' => "Delivery Receipt with vehicle number: " .$drsVehicleIds]);
+            // }
+
+            if (!empty($drsVehicleIds)) {
+                $errorMessage = "Vehicle number already assigned: " . implode(', ', $drsVehicleIds);
+                return response()->json(['error' => $errorMessage]);
+            }
+        }
+        if($getDriver){            
+            $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+            ->whereDate('created_at', '>', '2023-12-20')
+            ->where('driver_no', $getDriver->phone)
+            ->whereNotNull('driver_no')
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->where('status', '!=', 4)
+            ->distinct()
+            ->pluck('driver_no')
+            ->get();
+
+            // $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+            // ->whereDate('created_at', '>', '2023-12-20')
+            // ->where('driver_phone', $getDriver->phone)
+            // ->whereNotNull('driver_no')
+            // ->where('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            // ->pluck('driver_no')
+            // ->unique()
+            // ->toArray();
+
+            if (!empty($drsDriverIds)) {
+                $errorMessage = "Vehicle number already assigned: " . implode(', ', $drsDriverIds);
+                return response()->json(['error' => $errorMessage]);
+            }
+        }
+
+        
+            // $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+            // ->whereDate('created_at', '>', '2023-12-20')
+            // ->where('vehicle_no', $getVehicle->regn_no)
+            // ->whereNotNull('vehicle_no')
+            // ->whereIn('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            // ->pluck('vehicle_no')
+            // ->unique()
+            // ->toArray();
+
         $authuser = Auth::user();
         $location = Location::where('id', $authuser->branch_id)->first();
 
