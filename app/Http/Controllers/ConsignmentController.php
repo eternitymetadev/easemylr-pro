@@ -2652,8 +2652,9 @@ class ConsignmentController extends Controller
         $id = $request->id;
         $transcationview = TransactionSheet::with([
                 'ConsignmentDetail.ConsignerDetail.GetRegClient', 
-                'consigneeDetail', 
+                'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
                 'ConsignmentItem'
+                // 'consigneeDetail',
             ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
@@ -2775,7 +2776,7 @@ class ConsignmentController extends Controller
                     <h4 style="margin: 0px;">LR Details:</h4>
                 </div>
                 <div class="column" style="width:200px;">
-                    <h4 style="margin: 0px;">Consignee Name & Mobile Number</h4>
+                    <h4 style="margin: 0px;">Shipto Name & Mobile Number</h4>
                 </div>
                 <div class="column" style="width:125px;">
                     <h4 style="margin: 0px;">Delivery City, </h4>
@@ -2830,7 +2831,7 @@ class ConsignmentController extends Controller
                     <div class="column" style="width:125px;">
                         <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->city . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->district . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->pincode . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->postal_code . '</p>
 
                       </div>
                       <div class="column" >
