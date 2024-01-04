@@ -415,7 +415,7 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-      public function updateOrder(Request $request)
+    public function updateOrder(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -596,8 +596,12 @@ class OrderController extends Controller
                                 $savedata['weight'] = $save_data['weight'];
                                 $savedata['gross_weight'] = $save_data['gross_weight'];
                                 $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                
+                                if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                    $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                }else{
+                                    $saveconsignmentitems = ConsignmentItem::create($savedata);
+                                }
                             }
                         }
                     }

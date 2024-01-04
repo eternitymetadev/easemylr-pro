@@ -6,16 +6,19 @@
 
                 <th>Sr No</th>
                 <th>Drs No</th>
-                <th>Date</th>
+                <th>Drs Date</th>
+                <th>Transaction Date</th>
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
                 <th>Purchase Amount</th>
+                <th>Vendor Name</th>
                 <th>Transaction Id</th>
                 <th>Transaction Id Amount</th>
                 <th>Paid Amount</th>
                 <th>Clients</th>
                 <th>Locations</th>
                 <th>LRs No</th>
+                <th>Delivery Locations</th>
                 <th>No. of cases</th>
                 <th>Net Weight</th>
                 <th>Gross Wt</th>
@@ -28,22 +31,28 @@
             @foreach($drswiseReports as $drswiseReport)
 
             <?php $i++; 
-                     $date = date('d-m-Y',strtotime($drswiseReport->created_at));
+                     $drsDate = date('d-m-Y',strtotime($drswiseReport->TransactionDetail->created_at));
+                     $transactionDate = date('d-m-Y',strtotime($drswiseReport->created_at));
                      $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
                      $totlwt = Helper::totalWeight($drswiseReport->drs_no);
                      $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
                     $lrgr = array();
                     $regnclt = array();
                     $vel_type = array();
+                    $shiptoLocation = array();
                         foreach($drswiseReport->TransactionDetails as $lrgroup){
-                               $lrgr[] =  $lrgroup->ConsignmentNote->id;
+                               $lrgr[] =  @$lrgroup->ConsignmentNote->id;
                                $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
                                $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
                                $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
+                               $shiptoLocation[] = @$lrgroup->ConsignmentNote->ShiptoDetail->city;
                         }
                         $lr = implode('/', $lrgr);
                         $unique_regn = array_unique($regnclt);
-                        $regn = implode('/', $unique_regn);
+                        $regnClient = implode('/', $unique_regn);
+
+                        // $uniqueShipto = array_unique($shiptoLocation);
+                        $shiptoCity = implode('/', $shiptoLocation);
 
                         $unique_veltype = array_unique($vel_type);
                         $vehicle_type = implode('/', $unique_veltype);
@@ -63,16 +72,19 @@
             <tr>
                 <td>{{$i}}</td>
                 <td>DRS-{{$drswiseReport->drs_no}}</td>
-                <td>{{$date}}</td>
+                <td>{{@$drsDate}}</td>
+                <td>{{@$transactionDate}}</td>
                 <td>{{$drswiseReport->vehicle_no}}</td>
                 <td>{{$vehicle_type}}</td>
                 <td>{{$purchase}}</td>
+                <td>{{@$drswiseReport->VendorDetails->name}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
                 <td>{{$drswiseReport->total_amount}}</td>
                 <td>{{$paid_amt}}</td>
-                <td>{{$regn}}</td>
+                <td>{{$regnClient}}</td>
                 <td>{{@$drswiseReport->Branch->name}}</td>
                 <td>{{$lr}}</td>
+                <td>{{@$shiptoCity}}</td>
                 <td>{{$no_ofcases}}</td>
                 <td>{{$totlwt}}</td>
                 <td>{{$grosswt}}</td>

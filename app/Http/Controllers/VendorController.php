@@ -1662,7 +1662,7 @@ class VendorController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
+            $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city')->where('payment_status', '!=', 0);
 
             if ($authuser->role_id == 2) {
                 $query->whereIn('branch_id', $cc);
@@ -1722,7 +1722,7 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PaymentRequest::with('PaymentHistory', 'Branch', 'TransactionDetails.ConsignmentNote.RegClient', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype')->where('payment_status', '!=', 0);
+        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city')->where('payment_status', '!=', 0);
 
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
