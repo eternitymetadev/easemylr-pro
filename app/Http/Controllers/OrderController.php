@@ -535,7 +535,11 @@ class OrderController extends Controller
                                 $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                                 $savedata['status'] = 1;
                                 // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                    $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                }else{
+                                    $saveconsignmentitems = ConsignmentItem::create($savedata);
+                                }
 
                                 if ($saveconsignmentitems) {
                                     // dd($save_data['item_data']);
@@ -624,11 +628,12 @@ class OrderController extends Controller
                                 $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
 
                                 $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
-                                // $save_data['consignment_id'] = $saveconsignment->id;
-                                // $save_data['status'] = 1;
-                                // $saveconsignmentitems = ConsignmentItem::create($save_data);
+                                
+                                if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                    $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                }else{
+                                    $saveconsignmentitems = ConsignmentItem::create($savedata);
+                                }
 
                                 if ($saveconsignmentitems) {
                                     // dd($save_data['item_data']);
@@ -693,8 +698,12 @@ class OrderController extends Controller
                                 $savedata['weight'] = $save_data['weight'];
                                 $savedata['gross_weight'] = $save_data['gross_weight'];
                                 $savedata['status'] = 1;
-                                // unset($save_data['item_id']);
-                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                
+                                if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                    $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                                }else{
+                                    $saveconsignmentitems = ConsignmentItem::create($savedata);
+                                }
                             }
                         }
                     }
@@ -718,7 +727,11 @@ class OrderController extends Controller
                             $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                             $savedata['status'] = 1;
                             // unset($save_data['item_id']);
-                            $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                            if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                            }else{
+                                $saveconsignmentitems = ConsignmentItem::create($savedata);
+                            }
                             // dd($saveconsignmentitems);
                             if ($saveconsignmentitems) {
                                 // dd($save_data['item_data']);
@@ -774,7 +787,12 @@ class OrderController extends Controller
                             $savedata['e_way_bill'] = $save_data['e_way_bill'];
                             $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
                             $savedata['status'] = 1;
-                            $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                            
+                            if(isset($save_data['item_id']) && $save_data['item_id']) {
+                                $saveconsignmentitems = ConsignmentItem::where('id', $save_data['item_id'])->update($savedata);
+                            }else{
+                                $saveconsignmentitems = ConsignmentItem::create($savedata);
+                            }
                         }
                     }
                 }
