@@ -42,6 +42,11 @@ class PaymentRequest extends Model
         return $this->hasMany('App\Models\TransactionSheet','drs_no','drs_no');
     }
 
+    public function TransactionDetail()
+    {
+        return $this->hasOne('App\Models\TransactionSheet', 'drs_no', 'drs_no')->select('drs_no', 'created_at');
+    }
+
     public function PaymentHistory(){
         return $this->hasMany('App\Models\PaymentHistory','transaction_id','transaction_id');
     }

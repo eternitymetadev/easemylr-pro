@@ -39,7 +39,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype');
+        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city');
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -67,23 +67,32 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             $i = 0;
             foreach ($drswiseReports as $key => $drswiseReport) { 
                 $i++;
-                $date = date('d-m-Y',strtotime($drswiseReport->created_at));
+                $drsDate = date('d-m-Y',strtotime($drswiseReport->TransactionDetail->created_at));
+                $transactionDate = date('d-m-Y',strtotime($drswiseReport->created_at));
                 $no_ofcases = Helper::totalQuantity($drswiseReport->drs_no);
                 $totlwt = Helper::totalWeight($drswiseReport->drs_no);
                 $grosswt = Helper::totalGrossWeight($drswiseReport->drs_no);
                 $lrgr = array();
                 $regnclt = array();
                 $vel_type = array();
+                $shiptoLocation = array();
+                
                 foreach($drswiseReport->TransactionDetails as $lrgroup){
                         $lrgr[] =  $lrgroup->ConsignmentNote->id;
                         $regnclt[] = @$lrgroup->ConsignmentNote->RegClient->name;
                         $vel_type[] = @$lrgroup->ConsignmentNote->vehicletype->name;
                         $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
+                        $shiptoLocation[] = @$lrgroup->ConsignmentNote->ShiptoDetail->city;
+                        
+                    // echo'<pre>'; print_r($lrgroup->ConsignmentNote->ShiptoDetail->city); die;
                 }
                 $lr = implode('/', $lrgr);
                 $unique_regn = array_unique($regnclt);
                 $regn = implode('/', $unique_regn);
 
+                // $uniqueShipto = array_unique($shiptoLocation);
+                $shiptoCity = implode('/', $shiptoLocation);
+                
                 $unique_veltype = array_unique($vel_type);
                 $vehicle_type = implode('/', $unique_veltype);
                 $paymentHistories = DB::table('payment_histories')->where('transaction_id',  $drswiseReport->transaction_id)->get();
@@ -99,28 +108,22 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     $paidAmt = 0;
                 }
 
-                // if ($historyCount > 0) {
-                //     $paidAmt = 0;                            
-                //     foreach ($drswiseReport->PaymentHistory as $paymentHistory) {
-                //         if (is_numeric($paymentHistory->tds_deduct_balance)) {
-                //             $paidAmt += floatval($paymentHistory->tds_deduct_balance);
-                //         }
-                //     }
-                // } 
-
                 $arr[] = [
                     'sr_no' => $i,
                     'drs_no' => 'DRS-'.$drswiseReport->drs_no,
-                    'date' => @$date,
+                    'drs_date' => @$drsDate,
+                    'transaction_date' => @$transactionDate,
                     'vehicle_no' => @$drswiseReport->vehicle_no,
                     'vehicle_type' => @$vehicle_type,
                     'purchase_amt' => @$purchase,
+                    'vendor_name' => @$drswiseReport->VendorDetails->name,
                     'transaction_id' => $drswiseReport->transaction_id,
                     'transaction_idamt' => @$drswiseReport->total_amount,
                     'paid_amt' => @$paidAmt,
                     'client' => @$regn,
                     'location' => @$drswiseReport->Branch->name,
                     'lr_no' => @$lr,
+                    'delivery_locations' => @$shiptoCity,
                     'no_of_case' => @$no_ofcases,
                     'net_wt' => @$totlwt,
                     'gross_wt' => @$grosswt,
@@ -137,16 +140,19 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         return [
             'Sr No',
             'Drs No',
-            'Date',
+            'Drs Date',
+            'Transaction Date',
             'Vehicle No',
             'Vehicle Type',
             'Purchase Amount',
+            'Vendor Name',
             'Transaction ID',
             'Transaction ID Amount',
             'Paid Amount',
             'Client',
             'Location',
-            'Lr NO',
+            'Lr No',
+            'Delivery Locations',
             'No Of Cases',
             'Net Weight',
             'Gross Weight',
