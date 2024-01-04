@@ -76,9 +76,6 @@ class FtlPtlController extends Controller
         ->unique()
         ->toArray();
 
-        // Merge and deduplicate the vehicle IDs
-        // $mergedVehicleIds = array_unique($consignmentVehicleIds);
-
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::where('status', '1')
         ->whereNotIn('id', $consignmentVehicleIds)
@@ -91,9 +88,6 @@ class FtlPtlController extends Controller
         ->pluck('driver_id')
         ->unique()
         ->toArray();
-
-        // Merge and deduplicate the driver IDs
-        // $mergedDriverIds = array_unique($consignmentDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
