@@ -2026,136 +2026,141 @@ class ConsignmentController extends Controller
     //save draft and start btn update in drs list
     public function updateUnverifiedLr(Request $request)
     {
-        if($request->is_started == 1){
+        try {
+            if($request->is_started == 1){
 
-            $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-            $getDriver = Driver::where('id', $request->driver_id)->first();
-            if($getVehicle){            
-                $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
-                ->whereDate('created_at', '>', '2023-12-20')
-                ->where('vehicle_no', $getVehicle->regn_no)
-                ->whereNotNull('vehicle_no')
-                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-                // ->where('status', '!=', 4)
-                ->whereNotIn('status', [4, 0])
-                ->pluck('drs_no')
-                ->unique()
-                ->toArray();
+                $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+                $getDriver = Driver::where('id', $request->driver_id)->first();
+                if($getVehicle){            
+                    $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+                    ->whereDate('created_at', '>', '2023-12-20')
+                    ->where('vehicle_no', $getVehicle->regn_no)
+                    ->whereNotNull('vehicle_no')
+                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                    // ->where('status', '!=', 4)
+                    ->whereNotIn('status', [4, 0])
+                    ->pluck('drs_no')
+                    ->unique()
+                    ->toArray();
 
-                if (!empty($drsVehicleIds)) {
-                    $errorMessage = "Vehicle number already assigned to DRS: " . implode(', ', $drsVehicleIds);
-                    return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    if (!empty($drsVehicleIds)) {
+                        $errorMessage = "Vehicle number already assigned to DRS: " . implode(', ', $drsVehicleIds);
+                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    }
+                }
+                if($getDriver){            
+                    $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+                    ->whereDate('created_at', '>', '2023-12-20')
+                    ->where('driver_no', $getDriver->phone)
+                    ->whereNotNull('driver_no')
+                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                    // ->where('status', '!=', 4)
+                    ->whereNotIn('status', [4, 0])
+                    ->pluck('drs_no')
+                    ->unique()
+                    ->toArray();
+
+                    if (!empty($drsDriverIds)) {
+                        $errorMessage = "Driver already assigned to DRS: " . implode(', ', $drsDriverIds);
+                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    }
                 }
             }
-            if($getDriver){            
-                $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
-                ->whereDate('created_at', '>', '2023-12-20')
-                ->where('driver_no', $getDriver->phone)
-                ->whereNotNull('driver_no')
-                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-                // ->where('status', '!=', 4)
-                ->whereNotIn('status', [4, 0])
-                ->pluck('drs_no')
-                ->unique()
-                ->toArray();
+            $authuser = Auth::user();
+            $location = Location::where('id', $authuser->branch_id)->first();
 
-                if (!empty($drsDriverIds)) {
-                    $errorMessage = "Driver already assigned to DRS: " . implode(', ', $drsDriverIds);
-                    return response()->json(['success' => false,'error_message' => $errorMessage]);
+            $c_ids = $request->transaction_id;
+            $consignmentId = explode(',', $c_ids);
+
+            if($request->vehicle_id){
+                $updateData['vehicle_id'] = $request->vehicle_id;
+            }
+            if($request->driver_id){
+                $updateData['driver_id'] = $request->driver_id;
+            }
+            if($request->transporter_name){
+                $updateData['transporter_name'] = $request->transporter_name;
+            }
+            if($request->vehicle_type){
+                $updateData['vehicle_type'] = $request->vehicle_type;
+            }
+            if($request->purchase_price){
+                $updateData['purchase_price'] = $request->purchase_price;
+            }
+            $updateData['delivery_status'] = 'Assigned';
+
+            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
+
+            $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
+            if ($get_consignment) {
+                if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
+                    $trnUpdate['vehicle_no'] = $get_consignment->VehicleDetail->regn_no;
                 }
+                if($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)){
+                    $trnUpdate['driver_name'] = $get_consignment->DriverDetail->name;
+                }
+                if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
+                    $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
+                }
+                $trnUpdate['delivery_status'] = 'Assigned';
+
+                $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
             }
-        }
-        $authuser = Auth::user();
-        $location = Location::where('id', $authuser->branch_id)->first();
 
-        $c_ids = $request->transaction_id;
-        $consignmentId = explode(',', $c_ids);
+            if($request->is_started == 1){            
+                // Bulk update for TransactionSheet records
+                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+                
+                // Get driver details
+                $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
 
-        if($request->vehicle_id){
-            $updateData['vehicle_id'] = $request->vehicle_id;
-        }
-        if($request->driver_id){
-            $updateData['driver_id'] = $request->driver_id;
-        }
-        if($request->transporter_name){
-            $updateData['transporter_name'] = $request->transporter_name;
-        }
-        if($request->vehicle_type){
-            $updateData['vehicle_type'] = $request->vehicle_type;
-        }
-        if($request->purchase_price){
-            $updateData['purchase_price'] = $request->purchase_price;
-        }
-        $updateData['delivery_status'] = 'Assigned';
+                $mytime = Carbon::now('Asia/Kolkata');
+                $currentdate = $mytime->toDateTimeString();
+                
+                // Bulk update for ConsignmentNote records
+                $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
+                ConsignmentNote::whereIn('id', $consignmentId)
+                ->update(['lr_mode' => $lr_mode]);
 
-        $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
-
-        $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
-        if ($get_consignment) {
-            if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
-                $trnUpdate['vehicle_no'] = $get_consignment->VehicleDetail->regn_no;
-            }
-            if($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)){
-                $trnUpdate['driver_name'] = $get_consignment->DriverDetail->name;
-            }
-            if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
-                $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
-            }
-            $trnUpdate['delivery_status'] = 'Assigned';
-
-            $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
-        }
-
-        if($request->is_started == 1){            
-            // Bulk update for TransactionSheet records
-            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
-            
-            // Get driver details
-            $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
-
-            $mytime = Carbon::now('Asia/Kolkata');
-            $currentdate = $mytime->toDateTimeString();
-            
-            // Bulk update for ConsignmentNote records
-            $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
-            ConsignmentNote::whereIn('id', $consignmentId)
-            ->update(['lr_mode' => $lr_mode]);
-
-            // Prepare an array of job data
-            foreach ($consignmentId as $c_id) {
-                // =================== task assign
-                $respons2 = [
-                    'consignment_id' => $c_id,
-                    'status' => 'Assigned',
-                    'desc' => 'Out for Delivery',
-                    'create_at' => $currentdate,
-                    'location' => $location->name,
-                    'type' => '2',
-                ];
-
-                $lastjob = Job::where('consignment_id', $c_id)->latest('id')->first();
-
-                if (!empty($lastjob->response_data)) {
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
-
-                    $jobData[] = [
+                // Prepare an array of job data
+                foreach ($consignmentId as $c_id) {
+                    // =================== task assign
+                    $respons2 = [
                         'consignment_id' => $c_id,
-                        'response_data' => $sts,
                         'status' => 'Assigned',
+                        'desc' => 'Out for Delivery',
+                        'create_at' => $currentdate,
+                        'location' => $location->name,
                         'type' => '2',
                     ];
-                    Job::insert($jobData);
+
+                    $lastjob = Job::where('consignment_id', $c_id)->latest('id')->first();
+
+                    if (!empty($lastjob->response_data)) {
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st);
+
+                        $jobData[] = [
+                            'consignment_id' => $c_id,
+                            'response_data' => $sts,
+                            'status' => 'Assigned',
+                            'type' => '2',
+                        ];
+                        Job::insert($jobData);
+                    }
+                    // ==== end started
                 }
-                // ==== end started
             }
+
+            $response['success'] = true;
+            $response['success_message'] = "Data Imported successfully";
+            return response()->json($response);
+        } catch (\Exception $e) {
+            $response['success'] = false;
+            $response['error_message'] = "An error occurred: " . $e->getMessage();
+            return response()->json($response, 500); // Respond with a status code indicating server error
         }
-
-
-        $response['success'] = true;
-        $response['success_message'] = "Data Imported successfully";
-        return response()->json($response);
     }
 
     // status update on start btn in drs list
