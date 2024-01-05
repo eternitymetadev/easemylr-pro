@@ -2039,6 +2039,7 @@ class ConsignmentController extends Controller
                     ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
                     // ->where('status', '!=', 4)
                     ->whereNotIn('status', [4, 0])
+                    ->where('is_started', '=', 1)
                     ->pluck('drs_no')
                     ->unique()
                     ->toArray();
@@ -2054,8 +2055,8 @@ class ConsignmentController extends Controller
                     ->where('driver_no', $getDriver->phone)
                     ->whereNotNull('driver_no')
                     ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-                    // ->where('status', '!=', 4)
                     ->whereNotIn('status', [4, 0])
+                    ->where('is_started', '=', 1)
                     ->pluck('drs_no')
                     ->unique()
                     ->toArray();
