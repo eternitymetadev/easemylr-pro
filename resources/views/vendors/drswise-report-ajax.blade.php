@@ -3,7 +3,6 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-
                 <th>Sr No</th>
                 <th>Drs No</th>
                 <th>Drs Date</th>
@@ -17,13 +16,13 @@
                 <th>Paid Amount</th>
                 <th>Clients</th>
                 <th>Locations</th>
+                <th>State</th>
                 <th>LRs No</th>
                 <th>Delivery Locations</th>
                 <th>No. of cases</th>
                 <th>Net Weight</th>
                 <th>Gross Wt</th>
                 <th>Status</th>
-
             </tr>
         </thead>
         <tbody>
@@ -83,6 +82,7 @@
                 <td>{{$paid_amt}}</td>
                 <td>{{$regnClient}}</td>
                 <td>{{@$drswiseReport->Branch->name}}</td>
+                <td>{{@$drswiseReport->Branch->nick_name}}</td>
                 <td>{{$lr}}</td>
                 <td>{{@$shiptoCity}}</td>
                 <td>{{$no_ofcases}}</td>

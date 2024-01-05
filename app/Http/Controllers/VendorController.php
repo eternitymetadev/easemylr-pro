@@ -1675,20 +1675,6 @@ class VendorController extends Controller
                     $query->where('drs_no', 'like', '%' . $search . '%')
                     ->orWhere('transaction_id', 'like', '%' . $search . '%')
                     ->orWhere('vehicle_no', 'like', '%' . $search . '%');
-                    // ->orWhere('total_amount', 'like', '%' . $search . '%')
-                        // ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
-                        //     $regclientquery->where('name', 'like', '%' . $search . '%');
-                        // })
-                        // ->orWhereHas('ConsignerDetail', function ($query) use ($search, $searchT) {
-                        //     $query->where(function ($cnrquery) use ($search, $searchT) {
-                        //         $cnrquery->where('nick_name', 'like', '%' . $search . '%');
-                        //     });
-                        // })
-                        // ->orWhereHas('ConsigneeDetail', function ($query) use ($search, $searchT) {
-                        //     $query->where(function ($cneequery) use ($search, $searchT) {
-                        //         $cneequery->where('nick_name', 'like', '%' . $search . '%');
-                        //     });
-                        // });
                 });
             }
 
@@ -1722,7 +1708,7 @@ class VendorController extends Controller
         $cc = explode(',', $authuser->branch_id);
         // $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city')->where('payment_status', '!=', 0);
+        $query = PaymentRequest::with('Branch:id,name,nick_name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city')->where('payment_status', '!=', 0);
 
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
