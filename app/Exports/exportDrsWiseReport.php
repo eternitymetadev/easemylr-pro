@@ -39,7 +39,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('Branch:id,name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city');
+        $query = PaymentRequest::with('Branch:id,name,nick_name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city');
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -122,6 +122,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'paid_amt' => @$paidAmt,
                     'client' => @$regn,
                     'location' => @$drswiseReport->Branch->name,
+                    'state'    => @$drswiseReport->Branch->nick_name,
                     'lr_no' => @$lr,
                     'delivery_locations' => @$shiptoCity,
                     'no_of_case' => @$no_ofcases,
@@ -151,6 +152,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             'Paid Amount',
             'Client',
             'Location',
+            'State',
             'Lr No',
             'Delivery Locations',
             'No Of Cases',
