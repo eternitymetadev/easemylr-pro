@@ -2026,7 +2026,6 @@ class ConsignmentController extends Controller
     //save draft and start btn update in drs list
     public function updateUnverifiedLr(Request $request)
     {
-        // dd($request->vehicle_id);
         $authuser = Auth::user();
         $location = Location::where('id', $authuser->branch_id)->first();
 
@@ -2069,6 +2068,44 @@ class ConsignmentController extends Controller
         }
 
         if($request->is_started == 1){
+
+            $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+            $getDriver = Driver::where('id', $request->driver_id)->first();
+            if($getVehicle){            
+                $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+                ->whereDate('created_at', '>', '2023-12-20')
+                ->where('vehicle_no', $getVehicle->regn_no)
+                ->whereNotNull('vehicle_no')
+                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                // ->where('status', '!=', 4)
+                ->whereNotIn('status', [4, 0])
+                ->pluck('drs_no')
+                ->unique()
+                ->toArray();
+
+                if (!empty($drsVehicleIds)) {
+                    $errorMessage = "Vehicle number already assigned to DRS: " . implode(', ', $drsVehicleIds);
+                    return response()->json(['success' => false,'error_message' => $errorMessage]);
+                }
+            }
+            if($getDriver){            
+                $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+                ->whereDate('created_at', '>', '2023-12-20')
+                ->where('driver_no', $getDriver->phone)
+                ->whereNotNull('driver_no')
+                ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                // ->where('status', '!=', 4)
+                ->whereNotIn('status', [4, 0])
+                ->pluck('drs_no')
+                ->unique()
+                ->toArray();
+
+                if (!empty($drsDriverIds)) {
+                    $errorMessage = "Driver already assigned to DRS: " . implode(', ', $drsDriverIds);
+                    return response()->json(['success' => false,'error_message' => $errorMessage]);
+                }
+            }
+            
             // Bulk update for TransactionSheet records
             $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
             
@@ -2272,8 +2309,10 @@ class ConsignmentController extends Controller
             $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
-            ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            // ->where('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
             ->pluck('vehicle_no')
             ->unique()
             ->toArray();
@@ -2288,8 +2327,10 @@ class ConsignmentController extends Controller
             $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('driver_no')
-            ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            // ->where('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
             ->pluck('driver_no')
             ->unique()
             ->toArray();
@@ -2350,8 +2391,10 @@ class ConsignmentController extends Controller
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('vehicle_no')
-        ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
         ->pluck('vehicle_no')
         ->unique()
         ->toArray();
@@ -2366,8 +2409,10 @@ class ConsignmentController extends Controller
         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('driver_no')
-        ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
         ->pluck('driver_no')
         ->unique()
         ->toArray();

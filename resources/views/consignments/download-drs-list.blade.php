@@ -595,6 +595,9 @@
                         if (data.success == true) {
                             swal('success', 'Data Updated Successfully', 'success');
                             location.reload();
+                          
+                            $("#opm").hide();
+                            $("#start-commonconfirm").hide();
                         } else if (data.success == false) {
                             swal('error', data.error_message, 'error');
                         } else {
@@ -602,8 +605,6 @@
                         }
                         $("#mainLoader").show();
                         $(".loader").show();
-                        $("#opm").hide();
-                        $("#start-commonconfirm").hide();
                     }
                 });
             }
