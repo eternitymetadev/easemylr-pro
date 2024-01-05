@@ -127,7 +127,7 @@ div.relative {
                                 <td>{{ @$consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ @$consignment->ConsignerDetail->nick_name ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsignerDetail->postal_code  ?? "-"}}</td>
-                                <td>{{ @@$consignment->ConsigneeDetail->nick_name  ?? "-"}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->nick_name  ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->postal_code  ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ @$consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
