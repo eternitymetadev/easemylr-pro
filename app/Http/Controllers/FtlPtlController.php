@@ -145,12 +145,25 @@ class FtlPtlController extends Controller
             $locations = Location::whereIn('id', $cc)->first();
             $branch_add = BranchAddress::get();
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
-            } else {
-                $status = '1';
+            if(!empty($request->vehicle_id) && $request->lr_type == 0){
+                $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+                if($getVehicle){
+                    $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no')
+                        ->where('vehicle_no', $getVehicle->regn_no)
+                        ->whereDate('created_at', '>', '2023-12-20')
+                        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                        ->whereNotIn('status', [4, 0])
+                        ->where('is_started', 1)
+                        ->pluck('drs_no')
+                        ->unique()
+                        ->toArray();
+                    if($drsVehicleIds){
+                        $errorMessage = "Vehicle already assigned to DRS: " . implode(', ', $drsVehicleIds);
+                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    }
+                }
             }
-
+    
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -161,9 +174,6 @@ class FtlPtlController extends Controller
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
             $consignmentsave['dispatch'] = $request->dispatch;
-            // $consignmentsave['total_quantity'] = $request->total_quantity;
-            // $consignmentsave['total_weight'] = $request->total_weight;
-            // $consignmentsave['total_gross_weight'] = $request->total_gross_weight;
             $consignmentsave['freight'] = $request->freight;
             $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
             $consignmentsave['cod'] = $request->cod;
@@ -179,8 +189,10 @@ class FtlPtlController extends Controller
             $consignmentsave['status'] = $status;
             $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
+                $status = '1';
                 $consignmentsave['delivery_status'] = "Assigned";
             } else {
+                $status = '2';
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
@@ -434,85 +446,85 @@ class FtlPtlController extends Controller
 
                 if ($request->typeid == 1) {
                     $adresses = '<table width="100%">
-                    <tr>
-                        <td style="width:50%">' . $conr_add . '</td>
-                        <td style="width:50%">' . $consnee_add . '</td>
-                    </tr>
-                </table>';
-                } else if ($request->typeid == 2) {
-                    $adresses = '<table width="100%">
                         <tr>
-                            <td style="width:33%">' . $conr_add . '</td>
-                            <td style="width:33%">' . $consnee_add . '</td>
-                            <td style="width:33%">' . $shiptoadd . '</td>
+                            <td style="width:50%">' . $conr_add . '</td>
+                            <td style="width:50%">' . $consnee_add . '</td>
                         </tr>
                     </table>';
+                } else if ($request->typeid == 2) {
+                $adresses = '<table width="100%">
+                    <tr>
+                        <td style="width:33%">' . $conr_add . '</td>
+                        <td style="width:33%">' . $consnee_add . '</td>
+                        <td style="width:33%">' . $shiptoadd . '</td>
+                    </tr>
+                </table>';
                 }
 
                 // get branch address
                 if ($locations->id == 2 || $locations->id == 6 || $locations->id == 26) {
                     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
-        <b>' . $branch_add[1]->address . ',</b><br />
-        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+                    <b>' . $branch_add[1]->address . ',</b><br />
+                    <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+                    <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
                 } else {
                     $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
-        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
-        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
-        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+                    <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+                    <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+                    <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
                 }
 
                 // relocate cnr cnee address check for sale to return case
                 if ($data['is_salereturn'] == '1') {
                     $cnradd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $consnee_add . '
-            </p>
-            </div>';
+                    <div>
+                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+                    </div>
+                    <div style="margin-top: -11px;">
+                    <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                    ' . $consnee_add . '
+                    </p>
+                    </div>';
                     $cneadd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $conr_add . '
-            </p>
-            </div>';
+                    <div>
+                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+                    </div>
+                        <div style="margin-top: -11px;">
+                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                        ' . $conr_add . '
+                    </p>
+                    </div>';
                     $shipto_address = '';
                 } else {
                     $cnradd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-            </div>
-            <div style="margin-top: -11px;">
-            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $conr_add . '
-            </p>
-            </div>';
+                    <div>
+                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+                    </div>
+                    <div style="margin-top: -11px;">
+                    <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                    ' . $conr_add . '
+                    </p>
+                    </div>';
                     $cneadd_heading = '<div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                ' . $consnee_add . '
-            </p>
-            </div>';
+                    <div>
+                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+                    </div>
+                    <div style="margin-top: -11px;">
+                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                    ' . $consnee_add . '
+                    </p>
+                    </div>';
                     $shipto_address = '<td width="30%" style="vertical-align:top;>
-            <div class="container">
-            <div>
-            <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
-            </div>
-                <div style="margin-top: -11px;">
-                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-              ' . $shiptoadd . '
-            </p>
-                </div>
-            </td>';
+                    <div class="container">
+                    <div>
+                    <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+                    </div>
+                    <div style="margin-top: -11px;">
+                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                    ' . $shiptoadd . '
+                    </p>
+                    </div>
+                    </td>';
                 }
 
                 $logo = public_path('assets/img/logo_2.png');
@@ -540,7 +552,6 @@ class FtlPtlController extends Controller
                                 padding: 12px 12px 12px 0;
                                 display: inline-block;
                             }
-
 
                             /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
                             @media screen and (max-width: 600px) {
@@ -640,12 +651,10 @@ class FtlPtlController extends Controller
                     width: 100%;
                     margin-inline: 2rem;
                 }
-
-
-                        </style>
-                    <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
-                    </head>
-                    <body style="font-family:Arial Helvetica,sans-serif;">
+                </style>
+                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
+                </head>
+                <body style="font-family:Arial Helvetica,sans-serif;">
                     <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" />
                         <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px; padding: 0 2rem ">
                             <table style="height: 70px; margin-inline: 1rem;">
@@ -892,22 +901,54 @@ class FtlPtlController extends Controller
             // if ($saveconsignment) {
             /******* PUSH LR to Shadow if vehicle available & Driver has team & fleet ID   ********/
             if(!empty($request->driver_id)){
-            $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
+                $get_driver_details = Driver::select('access_status','branch_id')->where('id', $request->driver_id)->first();
 
-            // check app assign ========================================
-            if ($get_driver_details->access_status == 1) {
-            // if (!empty($get_driver_details->branch_id)) {
-                // $driver_branch = explode(',', $get_driver_details->branch_id);
-                // if (in_array($authuser->branch_id, $driver_branch)) {
+                // check app assign ========================================
+                if ($get_driver_details->access_status == 1) {
                     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
 
+                        // task created
+                        $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
+                        $respons_data = json_encode($respons);
+                        $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+                        // ==== end create
+                        // =================== task assign
+                        $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                        if(!empty($lastjob->response_data)){
+                            $st = json_decode($lastjob->response_data);
+                            array_push($st, $respons2);
+                            $sts = json_encode($st);
+
+                            $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                        }
+                        // ==== end started
+
+
+                        // =================== task assign
+                        $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                        if(!empty($lastjob->response_data)){
+                            $st = json_decode($lastjob->response_data);
+                            array_push($st, $respons3);
+                            $sts = json_encode($st);
+
+                            $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                        }
+                        // ==== end started
+                        $app_notify = $this->sendNotification($request->driver_id);
+                    
+                }else {
                     // task created
-                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
+                    $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed', 'location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
                     $respons_data = json_encode($respons);
                     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
                     // ==== end create
+
                     // =================== task assign
-                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Menifested','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                    $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
                     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                     if(!empty($lastjob->response_data)){
@@ -915,10 +956,9 @@ class FtlPtlController extends Controller
                         array_push($st, $respons2);
                         $sts = json_encode($st);
 
-                        $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Menifested', 'type' => '2']);
+                        $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
                     }
                     // ==== end started
-
 
                     // =================== task assign
                     $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
@@ -932,54 +972,15 @@ class FtlPtlController extends Controller
                         $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
                     }
                     // ==== end started
-                    $app_notify = $this->sendNotification($request->driver_id);
-                // } else {
-                //     // task created
-                //     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=> 'Order Placed','location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
-                //     $respons_data = json_encode($respons);
-                //     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                //     // ==== end create
-                //     // =================== task assign
-                //     $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
-
-                //     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                //     $st = json_decode($lastjob->response_data);
-                //     array_push($st, $respons2);
-                //     $sts = json_encode($st);
-
-                //     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
-                //     // ==== end started
-                // }
-                // if(!empty($request->driver_id)){
-                //     $update = DB::table('consignment_notes')->where('id', $saveconsignment->id)->update(['lr_mode' => 2]);
-                // }
-            // } else {
-            //     // task created
-            //     $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created', 'desc'=> 'Order Placed','location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
-            //     $respons_data = json_encode($respons);
-            //     $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-            //     // ==== end create
-
-            //     // =================== task assign
-            //     $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
-
-            //     $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-            //     $st = json_decode($lastjob->response_data);
-            //     array_push($st, $respons2);
-            //     $sts = json_encode($st);
-
-            //     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
-            //     // ==== end started
-            // }
-        }else {
+                }
+            }else{
                 // task created
-                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed', 'location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
+                $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
                 $respons_data = json_encode($respons);
                 $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-                // ==== end create
-
-                // =================== task assign
-                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                // ==== end create === //
+                // =========== task assign ===== //
+                $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
                 $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
                 if(!empty($lastjob->response_data)){
@@ -987,42 +988,10 @@ class FtlPtlController extends Controller
                     array_push($st, $respons2);
                     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
-                }
-                // ==== end started
-
-                // =================== task assign
-                $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
-
-                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                if(!empty($lastjob->response_data)){
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons3);
-                    $sts = json_encode($st);
-
                     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
                 }
                 // ==== end started
             }
-        }else{
-             // task created
-             $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2']);
-             $respons_data = json_encode($respons);
-             $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
-             // ==== end create === //
-              // =========== task assign ===== //
-              $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
-
-              $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-              if(!empty($lastjob->response_data)){
-                $st = json_decode($lastjob->response_data);
-                array_push($st, $respons2);
-                $sts = json_encode($st);
-
-                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-              }
-              // ==== end started
-        }
             // }else{
             //     $vn = $consignmentsave['vehicle_id'];
             //     $lid = $saveconsignment->id;
