@@ -176,7 +176,18 @@ class HubtoHubController extends Controller
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-                    $query->where('hrs_no', 'like', '%' . $search . '%');
+                    $query->where('hrs_no', 'like', '%' . $search . '%')
+                    ->orWhereHas('VehicleDetail', function ($query) use ($search, $searchT) {
+                        $query->where(function ($vehiclequery) use ($search, $searchT) {
+                            $vehiclequery->where('regn_no', 'like', '%' . $search . '%');
+                        });
+                    })
+                    ->orWhereHas('DriverDetail', function ($query) use ($search, $searchT) {
+                        $query->where(function ($driverquery) use ($search, $searchT) {
+                            $driverquery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('phone', 'like', '%' . $search . '%');
+                        });
+                    });
                 });
             }
 
@@ -226,6 +237,7 @@ class HubtoHubController extends Controller
             
             $hrssheets = $query->orderBy('id', 'DESC')->paginate($peritem);
             $hrssheets = $hrssheets->appends($request->query());
+            $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
 
             $html = view('hub-transportation.hrs-sheet-ajax', ['peritem' => $peritem, 'segment' => $this->segment, 'prefix' => $this->prefix, 'hrssheets' => $hrssheets, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])->render();
 
