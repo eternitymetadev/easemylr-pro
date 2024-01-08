@@ -124,7 +124,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'client' => @$regn,
                     'location' => @$drswiseReport->Branch->name,
                     'state'    => @$drswiseReport->Branch->nick_name,
-                    'lr_no' => @$lrCounts,
+                    'lr_count' => @$lrCounts,
                     'lr_no' => @$lr,
                     'delivery_locations' => @$shiptoCity,
                     'no_of_case' => @$no_ofcases,
