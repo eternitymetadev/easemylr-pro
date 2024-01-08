@@ -209,7 +209,7 @@ class HubtoHubController extends Controller
             ->pluck('vehicle_id')
             ->unique()
             ->toArray();
-            
+
             // Fetch vehicles that are not in the merged array
             $vehicles = Vehicle::where('status', '1')
             ->whereNotIn('id', $hrsVehicleIds)
