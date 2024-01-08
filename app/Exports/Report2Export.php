@@ -96,23 +96,20 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail.GetZone',
-            'ConsigneeDetail.GetZone',
-            'ShiptoDetail.GetZone',
+            // 'ConsignerDetail.GetZone',
+            'ConsigneeDetail.GetZone:district,state',
+            'ShiptoDetail.GetZone:district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        ); 
+        );
 
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
+        if ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } elseif ($authuser->role_id != 1) {
             $query = $query->whereIn('branch_id', $cc);
         }
 
@@ -138,7 +135,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         $consignments = $query->orderBy('id','ASC')->get();
-        
+
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
