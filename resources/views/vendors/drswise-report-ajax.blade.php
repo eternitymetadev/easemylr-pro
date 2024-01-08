@@ -17,6 +17,7 @@
                 <th>Clients</th>
                 <th>Locations</th>
                 <th>State</th>
+                <th>LR Counts</th>
                 <th>LRs No</th>
                 <th>Delivery Locations</th>
                 <th>No. of cases</th>
@@ -46,6 +47,7 @@
                                $purchase = @$lrgroup->ConsignmentDetail->purchase_price;
                                $shiptoLocation[] = @$lrgroup->ConsignmentNote->ShiptoDetail->city;
                         }
+                        $lrCounts = count($lrgr);
                         $lr = implode('/', $lrgr);
                         $unique_regn = array_unique($regnclt);
                         $regnClient = implode('/', $unique_regn);
@@ -83,6 +85,7 @@
                 <td>{{$regnClient}}</td>
                 <td>{{@$drswiseReport->Branch->name}}</td>
                 <td>{{@$drswiseReport->Branch->nick_name}}</td>
+                <td>{{$lrCounts}}</td>
                 <td>{{$lr}}</td>
                 <td>{{@$shiptoCity}}</td>
                 <td>{{$no_ofcases}}</td>
