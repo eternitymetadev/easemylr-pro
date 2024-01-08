@@ -86,6 +86,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                         
                     // echo'<pre>'; print_r($lrgroup->ConsignmentNote->ShiptoDetail->city); die;
                 }
+                $lrCounts = count($lrgr);
                 $lr = implode('/', $lrgr);
                 $unique_regn = array_unique($regnclt);
                 $regn = implode('/', $unique_regn);
@@ -123,6 +124,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'client' => @$regn,
                     'location' => @$drswiseReport->Branch->name,
                     'state'    => @$drswiseReport->Branch->nick_name,
+                    'lr_no' => @$lrCounts,
                     'lr_no' => @$lr,
                     'delivery_locations' => @$shiptoCity,
                     'no_of_case' => @$no_ofcases,
@@ -153,6 +155,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             'Client',
             'Location',
             'State',
+            'Lr Counts',
             'Lr No',
             'Delivery Locations',
             'No Of Cases',
