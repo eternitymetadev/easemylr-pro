@@ -2966,8 +2966,16 @@ class ConsignmentController extends Controller
     // create drs function
     public function CreateEdd(Request $request)
     {
-
         $consignmentId = $_POST['consignmentID'];
+        $checkDrs = TransactionSheet::whereIn('consignment_no', $consignmentId)->whereNotIn('status', [0, 4])->first();
+        if ($checkDrs) {
+            return response()->json([
+                'success' => false,
+                'checkdrs' => 'drs-exist' , 
+                'error_message' => "Drs already created DRS-".$checkDrs->drs_no
+            ]);
+        }
+
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
