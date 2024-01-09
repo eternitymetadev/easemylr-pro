@@ -296,7 +296,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
 
                 ];
+                unset($consignment);
             }
+            unset($consignments);
         }
         return collect($arr);
     }
