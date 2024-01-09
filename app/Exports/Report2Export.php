@@ -85,12 +85,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
-
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         
         $query = $query->where('status', '!=', 5)
         ->with(
@@ -106,34 +100,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DrsDetail:consignment_no,drs_no,created_at'
         ); 
 
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
-            $query = $query->whereIn('branch_id', $cc);
-        }
-
-        if ($branch_id !== null) {
-            if ($branch_id) {
-                $query = $query->where('branch_id', $branch_id);
-            }
-        }
-
-        if(isset($startdate) && isset($enddate)){
-            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
-        }
-        if($baseclient_id){
-            $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
-                $q->where('id', $baseclient_id);
-            });
-        }
-        if($regclient_id){
-            $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
-                $q->where('id', $regclient_id);
-            });
-        }
+       
 
         $consignments = $query->orderBy('id','ASC')->get();
         
@@ -296,9 +263,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
 
 
                 ];
-                unset($consignment);
             }
-            unset($consignments);
         }
         return collect($arr);
     }

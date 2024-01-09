@@ -626,10 +626,11 @@ class ReportController extends Controller
 
     public function exportExcelReport2(Request $request)
     {
-
+        $sdate = '2023-11-01';
+        $edate = '2024-01-05';
         Report2ExportJob::dispatch(
-            $request->startdate,
-            $request->enddate,
+            $sdate,
+            $edate,
             $request->baseclient_id,
             $request->regclient_id,
             $request->branch_id
