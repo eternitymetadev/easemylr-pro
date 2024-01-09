@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
                 config('export.reg_client_id'),
                 config('export.branch_id')
             );
-        })->daily();
+        })->dailyAt('17:00');
     }
 
     /**
