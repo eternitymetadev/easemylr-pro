@@ -65,7 +65,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'total_freight',
             'transporter_name',
             'vehicle_type',
-            'purchase_price',
             'freight_on_delivery',
             'cod',
             'user_id',
@@ -96,23 +95,19 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail.GetZone',
-            'ConsigneeDetail.GetZone',
-            'ShiptoDetail.GetZone',
+            'ConsigneeDetail.GetZone:district,state',
+            'ShiptoDetail.GetZone:district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        ); 
+        );
 
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
+        if ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } elseif ($authuser->role_id != 1) {
             $query = $query->whereIn('branch_id', $cc);
         }
 
@@ -137,133 +132,73 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             });
         }
 
-        $consignments = $query->orderBy('id','ASC')->get();
-        
+
+        $totalRecords = $query->count();
+        $chunkSize = 100;
+        $chunks = ceil($totalRecords / $chunkSize);
+        $exportData = collect();
+
+        for ($i = 0; $i < $chunks; $i++) {
+            $offset = $i * $chunkSize;
+            $consignments = $query->skip($offset)->take($chunkSize)->get();
+
+            
+        // $consignments = $query->orderBy('id','ASC')->get();
+
+        $arr = [];
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
-                $start_date = strtotime($consignment->consignment_date);
-                $end_date = strtotime($consignment->delivery_date);
-                $tat = ($end_date - $start_date)/60/60/24;
-                if(empty($consignment->delivery_date)){
-                    $tatday = '-';
-                }else{
-                    if($tat == 0){
-                        $tatday = '0';
-                    }else{
-                        $tatday = $tat;
-                    }
+                $tatday = '-';
+                if (!empty($consignment->delivery_date)) {
+                    $start_date = strtotime($consignment->consignment_date);
+                    $end_date = strtotime($consignment->delivery_date);
+                    $tat = ($end_date - $start_date) / 60 / 60 / 24;
+
+                    $tatday = ($tat == 0) ? '0' : $tat;
                 }
+
+                $consignment_id = $consignment->id ?? '-';
+                $consignment_date = $consignment->consignment_date ?? '-';
                 
-                if(!empty($consignment->id )){
-                    $consignment_id = ucfirst($consignment->id);
-                }else{
-                    $consignment_id = '-';
-                }
+                // Prepare data for export
+                $consignmentItemsData = $this->processConsignmentItems($consignment);
 
-                if(!empty($consignment->consignment_date )){
-                    $consignment_date = $consignment->consignment_date;
-                }else{
-                    $consignment_date = '-';
-                }
-
-                if(empty($consignment->order_id)){ 
-                    if(!empty($consignment->ConsignmentItems)){
-                        $order = array();
-                        $invoices = array();
-                        $inv_date = array();
-                        $inv_amt = array();
-                        foreach($consignment->ConsignmentItems as $orders){ 
-                            
-                            $order[] = $orders->order_id;
-                            $invoices[] = $orders->invoice_no;
-                            $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
-                            $inv_amt[] = $orders->invoice_amount;
-                        }
-                        $order_item['orders'] = implode('/', $order);
-                        $order_item['invoices'] = implode('/', $invoices);
-                        $invoice['date'] = implode(',', $inv_date);
-                        $invoice['amt'] = implode(',', $inv_amt);
-
-                        if(!empty($orders->order_id)){
-                            $order_id = $orders->order_id;
-                        }else{
-                            $order_id = '-';
-                        }
-                    }else{
-                        $order_id = '-';
-                    }
-                }else{
-                    $order_id = $consignment->order_id;
-                }
-
-                if(empty($consignment->invoice_no)){
-                    $invno =  $order_item['invoices'] ?? '-';
-                    $invdate = $invoice['date']  ?? '-';
-                    $invamt = $invoice['amt']  ?? '-';
-                 }else{
-                  $invno =  $consignment->invoice_no ?? '-';
-                  $invdate = $consignment->invoice_date  ?? '-';
-                  $invamt = $consignment->invoice_amount  ?? '-';
-                 }
-  
-                 if($consignment->status == 1){
-                    $status = 'Active';
-                 }elseif($consignment->status == 2 || $consignment->status == 6){
-                   $status = 'Unverified';
-                 }elseif($consignment->status == 0){
-                  $status = 'Cancel';
-                 }else{
-                  $status = 'Unknown';
-                 }
+                $statusMapping = [
+                    1 => 'Active',
+                    2 => 'Unverified',
+                    6 => 'Unverified',
+                    0 => 'Cancel',
+                ];
+                
+                $status = $statusMapping[$consignment->status] ?? 'Unknown';
 
                 if($consignment->lr_mode == 1){
                     $deliverymode = 'Shadow';
-                  }elseif($consignment->lr_mode == 2){
+                }elseif($consignment->lr_mode == 2){
                     $deliverymode = 'ShipRider';
-                  }else{
+                }else{
                    $deliverymode = 'Manual';
-                  }
+                }
 
-                  if(!empty($consignment->DrsDetail->drs_no)){
-                    $drs = 'DRS-'.@$consignment->DrsDetail->drs_no;
-                  }else{
-                    $drs = '-';
-                  }
+                $drs = !empty($consignment->DrsDetail->drs_no) ? 'DRS-' . $consignment->DrsDetail->drs_no : '-';
 
-                  if(!empty($consignment->DrsDetail->created_at)){
-                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
-                    // $date->setTimezone(new \DateTimeZone('IST'));
-                    $drsdate = $consignment->DrsDetail->created_at;
-                    $drs_date = $drsdate->format('d-m-Y');
-                   }else{
-                   $drs_date = '-';
-                   }
+                $drs_date = !empty($consignment->DrsDetail->created_at) ?  $consignment->DrsDetail->created_at->format('d-m-Y') : '-';
 
                 // lr type //
                 if($consignment->lr_type == 0){ 
                     $lr_type = "FTL";
-                     }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
-                        $lr_type = "PTL";
-                         }else{ 
-                            $lr_type = "-";
-                            }
+                }elseif($consignment->lr_type == 1 || $consignment->lr_type ==2){ 
+                    $lr_type = "PTL";
+                }else{ 
+                    $lr_type = "-";
+                }
 
                 // No of reattempt
-                if($consignment->reattempt_reason != null){
-                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
-                }else{
-                    $no_reattempt = '';
-                }
+                $no_reattempt = $consignment->reattempt_reason ? count(json_decode($consignment->reattempt_reason, true)) : '';
 
                 // reatempted drs nos
-                if(!empty($consignment->DrsDetailReattempted)){
-                    $drs_nos = array();
-                    foreach($consignment->DrsDetailReattempted as $reattemptDrs){ 
-                        $drs_nos[] = $reattemptDrs->drs_no;
-                    }
-                    $reattempt_drs['drs_nos'] = implode('/', $drs_nos);
-                }
+                $reattempt_drs['drs_nos'] = $consignment->DrsDetailReattempted->isNotEmpty() ? $consignment->DrsDetailReattempted->pluck('drs_no')->implode('/') : '';
 
                 // delivery branch 
                 if($consignment->lr_type == 0){
@@ -272,13 +207,18 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     $delivery_branch = @$consignment->ToBranch->name;
                 }
 
+                $delivery_branch = ($consignment->lr_type == 0 && $consignment->Branch)
+                                    ? $consignment->Branch->name
+                                    : optional($consignment->ToBranch)->name ?? '';
+
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
                     'drs_no'              => @$drs,
                     'reattempt_drsno'     => @$reattempt_drs['drs_nos'],
                     'drs_date'            => $drs_date,
-                    'order_id'            => $order_id,
+                    'order_id'            => @$consignmentItemsData['order_id'],
                     'booking_branch'      => @$consignment->Branch->name,
                     'delivery_branch'     => @$delivery_branch,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
@@ -298,16 +238,15 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
                     'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
                     'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
-                    'invoice_no'          => $invno,
-                    'invoice_date'        => $invdate,
-                    'invoice_amt'         => $invamt,
+                    'invoice_no'          => @$consignmentItemsData['invoice_no'],
+                    'invoice_date'        => @$consignmentItemsData['invoice_date'],
+                    'invoice_amount'      => @$consignmentItemsData['invoice_amount'],
                     'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
                     'vehicle_type'        => @$consignment->vehicletype->name,
                     'transporter_name'    => @$consignment->transporter_name,
-                    // 'purchase_price'      => @$consignment->purchase_price,
-                    'total_quantity'      => $consignment->total_quantity,
-                    'total_weight'        => $consignment->total_weight,
-                    'total_gross_weight'  => $consignment->total_gross_weight,
+                    'total_quantity'      => @$consignment->total_quantity,
+                    'total_weight'        => @$consignment->total_weight,
+                    'total_gross_weight'  => @$consignment->total_gross_weight,
                     'driver_name'         => @$consignment->DriverDetail->name,
                     'driver_phone'        => @$consignment->DriverDetail->phone,
                     'driver_fleet'        => @$consignment->DriverDetail->fleet_id,
@@ -326,7 +265,9 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 ];
             }
         }
-        return collect($arr);
+        $exportData->push($arr);
+        // return collect($arr);
+    }
     }
 
     public function headings(): array
@@ -363,7 +304,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Vehicle No',
             'Vehicle Type',
             'Transporter Name',
-            // 'Purchase Price',
             'Boxes',
             'Net Weight',
             'Gross Weight',
@@ -382,6 +322,43 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'COD',
             'LR Type',
             'No of Reattempt',
+        ];
+    }
+    // Function to process ConsignmentItems data and map it
+    private function processConsignmentItems($consignment) {
+        if (!empty($consignment->order_id)) {
+            return [
+                'order_id' => $consignment->order_id,
+                'invoice_no' => $consignment->invoice_no ?? '-',
+                'invoice_date' => $consignment->invoice_date ? Helper::ShowDayMonthYearslash($consignment->invoice_date) : '-',
+                'invoice_amount' => $consignment->invoice_amount ?? '-',
+            ];
+        } elseif (!empty($consignment->ConsignmentItems)) {
+            $order = [];
+            $invoices = [];
+            $inv_date = [];
+            $inv_amt = [];
+
+            foreach ($consignment->ConsignmentItems as $orders) {
+                $order[] = $orders->order_id;
+                $invoices[] = $orders->invoice_no;
+                $inv_date[] = Helper::ShowDayMonthYearslash($orders->invoice_date);
+                $inv_amt[] = $orders->invoice_amount;
+            }
+
+            return [
+                'order_id' => implode('/', $order),
+                'invoice_no' => implode('/', $invoices),
+                'invoice_date' => implode(',', $inv_date),
+                'invoice_amount' => implode(',', $inv_amt),
+            ];
+        }
+
+        return [
+            'order_id' => '-',
+            'invoice_no' => '-',
+            'invoice_date' => '-',
+            'invoice_amount' => '-',
         ];
     }
 }
