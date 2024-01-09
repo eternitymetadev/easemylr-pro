@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
                 config('export.reg_client_id'),
                 config('export.branch_id')
             );
-        })->dailyAt('17:25');
+        })->dailyAt('17:27');
         Log::info('Scheduler task ended.');
     }
 
