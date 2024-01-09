@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
+        Log::info('Scheduler task started.');
         $schedule->call(function () {
             $sdate = config('export.start_date');
             $edate = config('export.end_date');
@@ -30,7 +31,8 @@ class Kernel extends ConsoleKernel
                 config('export.reg_client_id'),
                 config('export.branch_id')
             );
-        })->dailyAt('17:00');
+        })->dailyAt('17:25');
+        Log::info('Scheduler task ended.');
     }
 
     /**
