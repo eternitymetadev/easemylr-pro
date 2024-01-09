@@ -980,7 +980,7 @@ class ConsignmentController extends Controller
             </div>
             <div style="margin-top: -11px;">
             <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-            ' . $consnee_add . '
+            ' . $shiptoadd . '
             </p>
             </div>';
             $cneadd_heading = '<div class="container">
@@ -1181,15 +1181,15 @@ class ConsignmentController extends Controller
                                         <tr>
                                             <th class="mini-th mm" >' . $data['id'] . '</th>
                                             <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
-            if ($data['is_salereturn'] == '1') {
-                $html .= '<th class="mini-th mm">' . @$data['consignee_detail']['city'] . '</th>
-                                            <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
-            } else {
-                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
-                                            <th class="mini-th">' . @$data['consignee_detail']['city'] . '</th>';
-            }
+                                            if ($data['is_salereturn'] == '1') {
+                                                $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
+                                                        <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
+                                            } else {
+                                                $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                                        <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
+                                            }
 
-            $html .= '</tr>
+                                $html .= '</tr>
                                     </table>
                         </div>
                                 </td>
@@ -1233,12 +1233,12 @@ class ConsignmentController extends Controller
                                         <td class="width_set">
                                             <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == '1') {
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
                                                 <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                 <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= ' </div>
                                         </td>
@@ -1305,11 +1305,11 @@ class ConsignmentController extends Controller
                                             <td class="width_set">
                                                 <div style="margin-left: 20px">';
                     if ($data['is_salereturn'] == 1) {
-                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                     <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
                     } else {
                         $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                                <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                     }
                     $html .= '</div>
                                             </td>
@@ -2026,98 +2026,142 @@ class ConsignmentController extends Controller
     //save draft and start btn update in drs list
     public function updateUnverifiedLr(Request $request)
     {
-        // dd($request->vehicle_id);
-        $authuser = Auth::user();
-        $location = Location::where('id', $authuser->branch_id)->first();
+        try {
+            if($request->is_started == 1){
 
-        $c_ids = $request->transaction_id;
-        $consignmentId = explode(',', $c_ids);
+                $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
+                $getDriver = Driver::where('id', $request->driver_id)->first();
+                if($getVehicle){            
+                    $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+                    ->whereDate('created_at', '>', '2023-12-20')
+                    ->where('vehicle_no', $getVehicle->regn_no)
+                    ->whereNotNull('vehicle_no')
+                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                    // ->where('status', '!=', 4)
+                    ->whereNotIn('status', [4, 0])
+                    ->where('is_started', '=', 1)
+                    ->pluck('drs_no')
+                    ->unique()
+                    ->toArray();
 
-        if($request->vehicle_id){
-            $updateData['vehicle_id'] = $request->vehicle_id;
-        }
-        if($request->driver_id){
-            $updateData['driver_id'] = $request->driver_id;
-        }
-        if($request->transporter_name){
-            $updateData['transporter_name'] = $request->transporter_name;
-        }
-        if($request->vehicle_type){
-            $updateData['vehicle_type'] = $request->vehicle_type;
-        }
-        if($request->purchase_price){
-            $updateData['purchase_price'] = $request->purchase_price;
-        }
-        $updateData['delivery_status'] = 'Assigned';
+                    if (!empty($drsVehicleIds)) {
+                        $errorMessage = "Vehicle number already assigned to DRS: " . implode(', ', $drsVehicleIds);
+                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    }
+                }
+                if($getDriver){            
+                    $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+                    ->whereDate('created_at', '>', '2023-12-20')
+                    ->where('driver_no', $getDriver->phone)
+                    ->whereNotNull('driver_no')
+                    ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+                    ->whereNotIn('status', [4, 0])
+                    ->where('is_started', '=', 1)
+                    ->pluck('drs_no')
+                    ->unique()
+                    ->toArray();
 
-        $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
-
-        $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
-        if ($get_consignment) {
-            if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
-                $trnUpdate['vehicle_no'] = $get_consignment->VehicleDetail->regn_no;
+                    if (!empty($drsDriverIds)) {
+                        $errorMessage = "Driver already assigned to DRS: " . implode(', ', $drsDriverIds);
+                        return response()->json(['success' => false,'error_message' => $errorMessage]);
+                    }
+                }
             }
-            if($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)){
-                $trnUpdate['driver_name'] = $get_consignment->DriverDetail->name;
+            $authuser = Auth::user();
+            $location = Location::where('id', $authuser->branch_id)->first();
+
+            $c_ids = $request->transaction_id;
+            $consignmentId = explode(',', $c_ids);
+
+            if($request->vehicle_id){
+                $updateData['vehicle_id'] = $request->vehicle_id;
             }
-            if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
-                $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
+            if($request->driver_id){
+                $updateData['driver_id'] = $request->driver_id;
             }
-            $trnUpdate['delivery_status'] = 'Assigned';
+            if($request->transporter_name){
+                $updateData['transporter_name'] = $request->transporter_name;
+            }
+            if($request->vehicle_type){
+                $updateData['vehicle_type'] = $request->vehicle_type;
+            }
+            if($request->purchase_price){
+                $updateData['purchase_price'] = $request->purchase_price;
+            }
+            $updateData['delivery_status'] = 'Assigned';
 
-            $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
-        }
+            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
 
-        if($request->is_started == 1){
-            // Bulk update for TransactionSheet records
-            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
-            
-            // Get driver details
-            $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
+            $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
+            if ($get_consignment) {
+                if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
+                    $trnUpdate['vehicle_no'] = $get_consignment->VehicleDetail->regn_no;
+                }
+                if($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->name)){
+                    $trnUpdate['driver_name'] = $get_consignment->DriverDetail->name;
+                }
+                if ($get_consignment->DriverDetail && isset($get_consignment->DriverDetail->phone)) {
+                    $trnUpdate['driver_no'] = $get_consignment->DriverDetail->phone;
+                }
+                $trnUpdate['delivery_status'] = 'Assigned';
 
-            $mytime = Carbon::now('Asia/Kolkata');
-            $currentdate = $mytime->toDateTimeString();
-            
-            // Bulk update for ConsignmentNote records
-            $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
-            ConsignmentNote::whereIn('id', $consignmentId)
-            ->update(['lr_mode' => $lr_mode]);
+                $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
+            }
 
-            // Prepare an array of job data
-            foreach ($consignmentId as $c_id) {
-                // =================== task assign
-                $respons2 = [
-                    'consignment_id' => $c_id,
-                    'status' => 'Assigned',
-                    'desc' => 'Out for Delivery',
-                    'create_at' => $currentdate,
-                    'location' => $location->name,
-                    'type' => '2',
-                ];
+            if($request->is_started == 1){            
+                // Bulk update for TransactionSheet records
+                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+                
+                // Get driver details
+                $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
 
-                $lastjob = Job::where('consignment_id', $c_id)->latest('id')->first();
+                $mytime = Carbon::now('Asia/Kolkata');
+                $currentdate = $mytime->toDateTimeString();
+                
+                // Bulk update for ConsignmentNote records
+                $lr_mode = ($get_driver_details->access_status == 1) ? 2 : 0;
+                ConsignmentNote::whereIn('id', $consignmentId)
+                ->update(['lr_mode' => $lr_mode]);
 
-                if (!empty($lastjob->response_data)) {
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons2);
-                    $sts = json_encode($st);
-
-                    $jobData[] = [
+                // Prepare an array of job data
+                foreach ($consignmentId as $c_id) {
+                    // =================== task assign
+                    $respons2 = [
                         'consignment_id' => $c_id,
-                        'response_data' => $sts,
                         'status' => 'Assigned',
+                        'desc' => 'Out for Delivery',
+                        'create_at' => $currentdate,
+                        'location' => $location->name,
                         'type' => '2',
                     ];
-                    Job::insert($jobData);
+
+                    $lastjob = Job::where('consignment_id', $c_id)->latest('id')->first();
+
+                    if (!empty($lastjob->response_data)) {
+                        $st = json_decode($lastjob->response_data);
+                        array_push($st, $respons2);
+                        $sts = json_encode($st);
+
+                        $jobData[] = [
+                            'consignment_id' => $c_id,
+                            'response_data' => $sts,
+                            'status' => 'Assigned',
+                            'type' => '2',
+                        ];
+                        Job::insert($jobData);
+                    }
+                    // ==== end started
                 }
-                // ==== end started
             }
+
+            $response['success'] = true;
+            $response['success_message'] = "Data Imported successfully";
+            return response()->json($response);
+        } catch (\Exception $e) {
+            $response['success'] = false;
+            $response['error_message'] = "An error occurred: " . $e->getMessage();
+            return response()->json($response, 500); // Respond with a status code indicating server error
         }
-
-
-        $response['success'] = true;
-        $response['success_message'] = "Data Imported successfully";
-        return response()->json($response);
     }
 
     // status update on start btn in drs list
@@ -2272,8 +2316,10 @@ class ConsignmentController extends Controller
             $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
-            ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            // ->where('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
             ->pluck('vehicle_no')
             ->unique()
             ->toArray();
@@ -2288,12 +2334,14 @@ class ConsignmentController extends Controller
             $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('driver_no')
-            ->where('delivery_status', '!=', 'Successful')
-            ->where('status', 1)
+            // ->where('delivery_status', '!=', 'Successful')
+            // ->where('status', 1)
+            ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+            ->whereNotIn('status', [4, 0])
             ->pluck('driver_no')
             ->unique()
             ->toArray();
-            
+
             // Fetch drivers who are not in the merged array
             $drivers = Driver::where('status', '1')
             ->whereNotIn('phone', $drsDriverIds)
@@ -2303,6 +2351,7 @@ class ConsignmentController extends Controller
             // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
             // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
             $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
             $transaction = $query->orderBy('id', 'DESC')->paginate($peritem);
             $transaction = $transaction->appends($request->query());
 
@@ -2349,8 +2398,10 @@ class ConsignmentController extends Controller
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('vehicle_no')
-        ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
         ->pluck('vehicle_no')
         ->unique()
         ->toArray();
@@ -2365,8 +2416,10 @@ class ConsignmentController extends Controller
         $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('driver_no')
-        ->where('delivery_status', '!=', 'Successful')
-        ->where('status', 1)
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
         ->pluck('driver_no')
         ->unique()
         ->toArray();
@@ -2650,28 +2703,35 @@ class ConsignmentController extends Controller
     public function printTransactionsheet(Request $request)
     {
         $id = $request->id;
-        $transcationview = TransactionSheet::select('*')
-            ->with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'consigneeDetail', 'ConsignmentItem')
+        $transcationview = TransactionSheet::with([
+                'ConsignmentDetail.ConsignerDetail.GetRegClient', 
+                'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
+                'ConsignmentItem'
+                // 'consigneeDetail',
+            ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
             ->where('drs_no', $id)
-            ->whereIn('status', ['1', '3','4'])
-            ->orderby('order_no', 'asc')->get();
-        $simplyfy = json_decode(json_encode($transcationview), true);
+            ->whereIn('status', ['1', '3', '4'])
+            ->orderBy('order_no', 'asc')
+            ->get();
+        
+        // Fetch details efficiently
+        $no_of_deliveries = $transcationview->count();
+        $details = $transcationview[0];
+        // $details = $transcationview->isNotEmpty() ? $transcationview->first() : null;
 
-        $no_of_deliveries = count($simplyfy);
-        $details = $simplyfy[0];
-        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
-
+        // Calculate date efficiently
         $date = new DateTime($details['created_at'], new \DateTimeZone('GMT-7'));
         $date->setTimezone(new \DateTimeZone('IST'));
         $drsDate = $date->format('d-m-Y');
 
-        // $drsDate = date('d-m-Y', strtotime($newdate));
+        // Calculate sums efficiently
+        $arraysum_Boxes = $transcationview->sum('total_quantity');
+        $arraysum_Weight = $transcationview->sum('total_weight');
 
-        $arraysum_Boxes = array_sum(array_column($simplyfy, 'total_quantity'));
-        $arraysum_Weight = array_sum(array_column($simplyfy, 'total_weight'));
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
 
         $html = '<html>
         <head>
@@ -2732,21 +2792,21 @@ class ConsignmentController extends Controller
                         <table class="drs_t" style="width:100%">
                             <tr class="drs_r">
                                 <th class="drs_h">DRS No.</th>
-                                <th class="drs_h">DRS-' . $details['drs_no'] . '</th>
+                                <th class="drs_h">DRS-' . $details->drs_no . '</th>
                                 <th class="drs_h">Vehicle No.</th>
-                                <th class="drs_h">' . $details['vehicle_no'] . '</th>
+                                <th class="drs_h">' . $details->vehicle_no . '</th>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">DRS Date</td>
                                 <td class="drs_d">' . $drsDate . '</td>
                                 <td class="drs_d">Driver Name</td>
-                                <td class="drs_d">' . @$details['driver_name'] . '</td>
+                                <td class="drs_d">' . @$details->driver_name . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">No. of Deliveries</td>
                                 <td class="drs_d">' . $no_of_deliveries . '</td>
                                 <td class="drs_d">Driver No.</td>
-                                <td class="drs_d">' . @$details['driver_no'] . '</td>
+                                <td class="drs_d">' . @$details->driver_no . '</td>
                             </tr>
                             <tr class="drs_r">
                                 <td class="drs_d">Total Boxes</td>
@@ -2769,7 +2829,7 @@ class ConsignmentController extends Controller
                     <h4 style="margin: 0px;">LR Details:</h4>
                 </div>
                 <div class="column" style="width:200px;">
-                    <h4 style="margin: 0px;">Consignee Name & Mobile Number</h4>
+                    <h4 style="margin: 0px;">Shipto Name & Mobile Number</h4>
                 </div>
                 <div class="column" style="width:125px;">
                     <h4 style="margin: 0px;">Delivery City, </h4>
@@ -2797,40 +2857,40 @@ class ConsignmentController extends Controller
         $total_Boxes = 0;
         $total_weight = 0;
 
-        foreach ($simplyfy as $dataitem) {
-            //    echo'<pre>'; print_r($dataitem); die;
-
+        foreach ($transcationview as $dataitem) {
+            // dd($dataitem->ConsignmentDetail->ShiptoDetail);
             $i++;
             if ($i % 5 == 0) {
                 $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
             }
 
-            $total_Boxes += $dataitem['total_quantity'];
-            $total_weight += $dataitem['total_weight'];
-            //echo'<pre>'; print_r($dataitem['consignment_no']); die;
+            $total_Boxes += $dataitem->total_quantity;
+            $total_weight += $dataitem->total_weight;
+            // dd($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient); 
+            //echo'<pre>'; print_r($dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient->name); die;
             $html .= '
                 <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
 
                     <div class="column" style="width:125px;">
-                       <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consigner_detail']['get_reg_client']['name'] . '</p>
-                        <p style="margin-top:-8px;">' . $dataitem['consignment_no'] . '</p>
-                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_date']) . '</p>
+                       <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ConsignerDetail->GetRegClient->name . '</p>
+                        <p style="margin-top:-8px;">' . @$dataitem->consignment_no . '</p>
+                        <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
                     </div>
                     <div class="column" style="width:200px;">
-                        <p style="margin-top:0px;">' . $dataitem['consignee_id'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['phone'] . '</p>
+                        <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->nick_name . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->phone . '</p>
 
                     </div>
                     <div class="column" style="width:125px;">
-                        <p style="margin-top:0px;">' . $dataitem['city'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignee_detail']['district'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['pincode'] . '</p>
+                        <p style="margin-top:0px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->city . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->district . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem->ConsignmentDetail->ShiptoDetail->postal_code . '</p>
 
                       </div>
                       <div class="column" >
-                        <p style="margin-top:0px;">Boxes:' . $dataitem['total_quantity'] . '</p>
-                        <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_weight'] . '</p>
-                        <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
+                        <p style="margin-top:0px;">Boxes:' . @$dataitem->total_quantity . '</p>
+                        <p style="margin-top:-13px;">Wt:' . @$dataitem->ConsignmentDetail->total_weight . '</p>
+                        <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear(@$dataitem->ConsignmentDetail->edd) . '</p>
                       </div>
                       <div class="column" style="width:170px;">
                         <p></p>
@@ -2841,11 +2901,14 @@ class ConsignmentController extends Controller
             $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
             $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
             $itm_no = 0;
-            foreach ($dataitem['consignment_item'] as $cc) {
-                $itm_no++;
+            // if(count($dataitem->consignment_item']) > 0){
+            if(count($dataitem->ConsignmentItem) > 0) {
+                foreach ($dataitem->ConsignmentItem as $cc) {
+                    $itm_no++;
+                    
+                    $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
 
-                $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['order_id'] . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc['invoice_no'] . '</td></tr></table>';
-
+                }
             }
             $html .= '</div> ';
 
@@ -2903,8 +2966,16 @@ class ConsignmentController extends Controller
     // create drs function
     public function CreateEdd(Request $request)
     {
-
         $consignmentId = $_POST['consignmentID'];
+        $checkDrs = TransactionSheet::whereIn('consignment_no', $consignmentId)->whereNotIn('status', [0, 4])->first();
+        if ($checkDrs) {
+            return response()->json([
+                'success' => false,
+                'checkdrs' => 'drs-exist' , 
+                'error_message' => "Drs already created DRS-".$checkDrs->drs_no
+            ]);
+        }
+
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
@@ -3307,46 +3378,26 @@ class ConsignmentController extends Controller
                     } else {
                         $phone = '';
                     }
-                    if (@$data['is_salereturn'] != 1) {
+                    // if (@$data['is_salereturn'] != 1) {
                         $shiptoadd = $nick_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
-                    } else {
-                        $shiptoadd = '';
-                    }
+                    // } else {
+                    //     $shiptoadd = '';
+                    // }
 
                     $generate_qrcode = QrCode::size(150)->generate('Eternity Forwarders Pvt. Ltd.');
                     $output_file = '/qr-code/img-' . time() . '.svg';
                     Storage::disk('public')->put($output_file, $generate_qrcode);
                     $fullpath = storage_path('app/public/' . $output_file);
-                    //echo'<pre>'; print_r($fullpath);
-                    //  dd($generate_qrcode);
+                    
                     $no_invoive = count($data['consignment_items']);
                     if ($request->typeid == 1) {
-                        if ($data['is_salereturn'] == "1") {
-                            $adresses = '<table width="100%">
-                                <tr>
-                                    <td style="width:50%">' . $consnee_add . '</td>
-                                    <td style="width:50%">' . $conr_add . '</td>
-                                </tr>
-                            </table>';
-                        } else {
                             $adresses = '<table width="100%">
                                 <tr>
                                     <td style="width:50%">' . $conr_add . '</td>
                                     <td style="width:50%">' . $consnee_add . '</td>
                                 </tr>
                             </table>';
-                        }
-
                     } else if ($request->typeid == 2) {
-                        if ($data['is_salereturn'] == 1) {
-                            $adresses = '<table width="100%">
-                                    <tr>
-                                        <td style="width:33%">' . $consnee_add . '</td>
-                                        <td style="width:33%">' . $conr_add . '</td>
-
-                                    </tr>
-                                </table>';
-                        } else {
                             $adresses = '<table width="100%">
                                     <tr>
                                         <td style="width:33%">' . $conr_add . '</td>
@@ -3354,7 +3405,6 @@ class ConsignmentController extends Controller
                                         <td style="width:33%">' . $shiptoadd . '</td>
                                     </tr>
                                 </table>';
-                        }
                     }
                     if ($locations->id == 2 || $locations->id == 6 || $locations->id == 26) {
                         $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
@@ -3372,6 +3422,60 @@ class ConsignmentController extends Controller
                                         <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . 'b</b><br />
                                         <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
                     }
+
+                    // relocate cnr cnee address check for sale to return case
+                    if ($data['is_salereturn'] == '1') {
+                        $cnradd_heading = '<div class="container">
+                        <div>
+                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+                        </div>
+                        <div style="margin-top: -11px;">
+                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                        ' . $shiptoadd . '
+                        </p>
+                        </div>';
+                        $cneadd_heading = '<div class="container">
+                        <div>
+                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+                        </div>
+                            <div style="margin-top: -11px;">
+                            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                            ' . $conr_add . '
+                        </p>
+                        </div>';
+                        $shipto_address = '';
+                    } else {
+                        $cnradd_heading = '<div class="container">
+                        <div>
+                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+                        </div>
+                        <div style="margin-top: -11px;">
+                        <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                        ' . $conr_add . '
+                        </p>
+                        </div>';
+                        $cneadd_heading = '<div class="container">
+                        <div>
+                        <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
+                        </div>
+                            <div style="margin-top: -11px;">
+                            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                            ' . $consnee_add . '
+                        </p>
+                        </div>';
+                        $shipto_address = '<td width="30%" style="vertical-align:top;>
+                        <div class="container">
+                        <div>
+                        <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
+                        </div>
+                            <div style="margin-top: -11px;">
+                            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                        ' . $shiptoadd . '
+                        </p>
+                            </div>
+                        </td>';
+                    }
+
                     $pay = public_path('assets/img/LOGO_Frowarders.jpg');
                     $codStamp = public_path('assets/img/cod.png');
                     $paidStamp = public_path('assets/img/paid.png');
@@ -3534,11 +3638,16 @@ class ConsignmentController extends Controller
                                                     </tr>
                                                     <tr>
                                                         <th class="mini-th mm" >' . $data['id'] . '</th>
-                                                        <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>
-                                                        <th class="mini-th mm"> ' . $data['consigner_detail']['city'] . '</th>
-                                                        <th class="mini-th">' . $data['consignee_detail']['city'] . '</th>
+                                                        <th class="mini-th mm">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
+                                                        if ($data['is_salereturn'] == '1') {
+                                                            $html .= '<th class="mini-th mm">' . @$data['shipto_detail']['city'] . '</th>
+                                                                    <th class="mini-th"> ' . @$data['consigner_detail']['city'] . '</th>';
+                                                        } else {
+                                                            $html .= '<th class="mini-th mm"> ' . @$data['consigner_detail']['city'] . '</th>
+                                                                    <th class="mini-th">' . @$data['shipto_detail']['city'] . '</th>';
+                                                        }      
 
-                                                    </tr>
+                                        $html .= '</tr>
                                                 </table>
                                     </div>
                                             </td>
@@ -3579,9 +3688,15 @@ class ConsignmentController extends Controller
                                             <table>
                                                 <tr>
                                                     <td class="width_set">
-                                                        <div style="margin-left: 20px">
-                                                    <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                                        <div style="margin-left: 20px">';
+                                                        if ($data['is_salereturn'] == '1') {
+                                                            $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div class="vl" ></div>
+                                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
+                                                    } else {
+                                                        $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
+                                                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                                    }
+                                                    $html .= ' <div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
                                                         </div>
                                                     </td>
                                                     <td class="width_set">
@@ -3647,11 +3762,11 @@ class ConsignmentController extends Controller
                                                         <td class="width_set">
                                                             <div style="margin-left: 20px">';
                                 if ($data['is_salereturn'] == 1) {
-                                    $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
-                                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
+                                    $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>';
                                 } else {
                                     $html .= '<i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i><div class="vl" ></div>
-                                                            <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['consignee_detail']['postal_code'] . ',' . @$data['consignee_detail']['city'] . ',' . @$data['consignee_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
+                                        <i class="fa-solid fa-location-dot" style="font-size: 10px; ">&nbsp;&nbsp;<b>' . @$data['shipto_detail']['postal_code'] . ',' . @$data['shipto_detail']['city'] . ',' . @$data['shipto_detail']['get_zone']['state'] . '</b></i><div style="font-size: 10px; margin-left: 3px;">&nbsp; &nbsp;</div>';
                                 }
                                 $html .= '</div>
                                                         </td>
@@ -3716,50 +3831,15 @@ class ConsignmentController extends Controller
                                                     <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
                                                 </div>
                                             </div>
-                                        <table border="1" style=" border-collapse:collapse; width: 690px; ">
+                                            <table border="1" style=" border-collapse:collapse; width: 690px; ">
                                             <tr>
                                                 <td width="30%" style="vertical-align:top; >
-                                                    <div class="container">
-                                                    <div>
-                                                    <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
-                                                    </div>
-                                                    <div style="margin-top: -11px;">';
-                        if ($data['is_salereturn'] == "1") {
-                            $conr_address = $consnee_add;
-                        } else {
-                            $conr_address = $conr_add;
-                        }
-                        // '.$conr_add.'
-                        $html .= '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">' . $conr_address . '</p>
-                                                    </div>
+                                                ' . $cnradd_heading . '
                                                 </td>
                                                 <td width="30%" style="vertical-align:top;>
-                                                <div class="container">
-                                                <div>
-                                                <h5  style="margin-left:6px; margin-top: 0px">CONSIGNEE NAME & ADDRESS</h5><br>
-                                                </div>
-                                                    <div style="margin-top: -11px;">';
-                        if ($data['is_salereturn'] == "1") {
-                            $consnee_address = $conr_add;
-                        } else {
-                            $consnee_address = $consnee_add;
-                        }
-                        $html .= '<p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                                    ' . $consnee_address . '
-                                                </p>
-                                                    </div>
+                                                ' . $cneadd_heading . '
                                                 </td>
-                                                <td width="30%" style="vertical-align:top;>
-                                                <div class="container">
-                                                <div>
-                                                <h5  style="margin-left:6px; margin-top: 0px">SHIP TO NAME & ADDRESS</h5><br>
-                                                </div>
-                                                    <div style="margin-top: -11px;">
-                                                    <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
-                                                ' . $shiptoadd . '
-                                                </p>
-                                                    </div>
-                                                </td>
+                                                ' . $shipto_address . '
                                             </tr>
                                         </table>
                                 </div>

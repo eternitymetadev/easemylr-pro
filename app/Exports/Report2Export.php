@@ -65,7 +65,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'total_freight',
             'transporter_name',
             'vehicle_type',
-            'purchase_price',
             'freight_on_delivery',
             'cod',
             'user_id',
@@ -96,23 +95,19 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $query = $query->where('status', '!=', 5)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail.GetZone',
-            'ConsigneeDetail.GetZone',
-            'ShiptoDetail.GetZone',
+            'ConsigneeDetail.GetZone:district,state',
+            'ShiptoDetail.GetZone:district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
             'DrsDetail:consignment_no,drs_no,created_at'
-        ); 
+        );
 
-        if($authuser->role_id ==1)
-        {
-            $query = $query;            
-        }elseif($authuser->role_id == 4){
-            $query = $query->whereIn('regclient_id', $regclient);   
-        }else{
+        if ($authuser->role_id == 4) {
+            $query = $query->whereIn('regclient_id', $regclient);
+        } elseif ($authuser->role_id != 1) {
             $query = $query->whereIn('branch_id', $cc);
         }
 
@@ -138,7 +133,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         }
 
         $consignments = $query->orderBy('id','ASC')->get();
-        
+
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
@@ -232,8 +227,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                   }
 
                   if(!empty($consignment->DrsDetail->created_at)){
-                    // $date = new \DateTime(@$consignment->DrsDetail->created_at, new \DateTimeZone('GMT-7'));
-                    // $date->setTimezone(new \DateTimeZone('IST'));
                     $drsdate = $consignment->DrsDetail->created_at;
                     $drs_date = $drsdate->format('d-m-Y');
                    }else{
@@ -304,7 +297,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'vehicle_no'          => @$consignment->VehicleDetail->regn_no,
                     'vehicle_type'        => @$consignment->vehicletype->name,
                     'transporter_name'    => @$consignment->transporter_name,
-                    // 'purchase_price'      => @$consignment->purchase_price,
                     'total_quantity'      => $consignment->total_quantity,
                     'total_weight'        => $consignment->total_weight,
                     'total_gross_weight'  => $consignment->total_gross_weight,

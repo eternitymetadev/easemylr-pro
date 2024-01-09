@@ -15,7 +15,6 @@
                 <th>City</th>
                 <th>Quantity</th>
                 <th>Net Weight</th>
-                <!-- <th>Status</th> -->
             </tr>
         </thead>
         <tbody id="accordion" class="accordion">

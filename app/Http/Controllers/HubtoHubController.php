@@ -278,9 +278,6 @@ class HubtoHubController extends Controller
         ->unique()
         ->toArray();
 
-        // Merge and deduplicate the vehicle IDs
-        // $mergedVehicleIds = array_unique($hrsVehicleIds);
-
         // Fetch vehicles that are not in the merged array
         $vehicles = Vehicle::where('status', '1')
         ->whereNotIn('id', $hrsVehicleIds)
@@ -293,9 +290,6 @@ class HubtoHubController extends Controller
         ->pluck('driver_id')
         ->unique()
         ->toArray();
-
-        // Merge and deduplicate the driver IDs
-        // $mergedDriverIds = array_unique($hrsDriverIds);
 
         // Fetch drivers who are not in the merged array
         $drivers = Driver::where('status', '1')
