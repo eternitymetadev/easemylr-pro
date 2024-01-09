@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
                 config('export.reg_client_id'),
                 config('export.branch_id')
             );
-        })->dailyAt('17:30');
+        })->dailyAt('17:33');
         \Log::info('Report2ExportJob started processing...');
     }
 
