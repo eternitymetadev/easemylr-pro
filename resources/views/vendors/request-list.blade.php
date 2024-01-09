@@ -66,7 +66,7 @@
                     <div class="row px-3 mx-0 mt-4 justify-content-between" style="gap: 12px; flex-wrap: wrap">
                         <div class="d-flex align-items-end" style="gap: 12px; flex-wrap: wrap">
                             <div style="width: 300px">
-                                <label>Transaction Id</label>
+                                <label>Search</label>
                                 <input type="text" class="form-control" placeholder="Transaction Id" id="search"
                                     data-action="<?php echo url()->current(); ?>">
                             </div>
