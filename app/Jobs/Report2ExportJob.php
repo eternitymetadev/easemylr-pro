@@ -32,6 +32,7 @@ class Report2ExportJob implements ShouldQueue
     public function handle()
     {
         \Log::info('Report2ExportJob started processing...');
+
     
         $export = new Report2Export($this->startdate, $this->enddate, $this->baseclient_id, $this->regclient_id, $this->branch_id);
     
@@ -39,8 +40,7 @@ class Report2ExportJob implements ShouldQueue
         Excel::store($export, $path);
     
         \Log::info('Report2ExportJob processed: ' . $path);
-    
-        $this->delete();
+
     }
     
 }

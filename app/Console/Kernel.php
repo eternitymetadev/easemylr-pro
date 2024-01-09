@@ -19,19 +19,18 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('regional:report')
-        //          ->everyMinute();
         $schedule->call(function () {
-        $sdate = '2023-11-01';
-        $edate = '2024-01-05';
-        Report2ExportJob::dispatch(
-            $sdate,
-            $edate,
-            $request->baseclient_id,
-            $request->regclient_id,
-            $request->branch_id
-        );
-       })->daily(); 
+            $sdate = config('export.start_date');
+            $edate = config('export.end_date');
+    
+            Report2ExportJob::dispatch(
+                $sdate,
+                $edate,
+                config('export.base_client_id'),
+                config('export.reg_client_id'),
+                config('export.branch_id')
+            );
+        })->daily();
     }
 
     /**
