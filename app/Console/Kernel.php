@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
         $sdate = config('export.start_date');
         $edate = config('export.end_date');
     
-        $schedule->job(new Report2ExportJob($sdate, $edate, config('export.base_client_id'), config('export.reg_client_id'), config('export.branch_id')))
-                 ->dailyAt('10:48');
+        $schedule->job(new \Report2ExportJob($sdate, $edate, config('export.base_client_id'), config('export.reg_client_id'), config('export.branch_id')))
+                 ->dailyAt('11:00');
     
         \Log::info('Report2ExportJob scheduled for ' . $sdate);
     }
