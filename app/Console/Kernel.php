@@ -19,22 +19,12 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        \Log::info('Scheduling Report2ExportJob...');
-    
+        \Log::info('Scheduler is running...');
+
         $schedule->call(function () {
-            $sdate = config('export.start_date');
-            $edate = config('export.end_date');
-    
-            \Log::info('Dispatching Report2ExportJob...');
-            
-            Report2ExportJob::dispatch(
-                $sdate,
-                $edate,
-                config('export.base_client_id'),
-                config('export.reg_client_id'),
-                config('export.branch_id')
-            );
-        })->dailyAt('11:48');
+            \Log::info('Inside the scheduled task...');
+            // Rest of your code...
+        })->dailyAt('11:55');
     }
     
 
