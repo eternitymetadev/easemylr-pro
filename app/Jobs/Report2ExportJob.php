@@ -31,9 +31,8 @@ class Report2ExportJob implements ShouldQueue
 
     public function handle()
     {
-        \Log::info('Job dispacthing...');
-
-        //echo $this->startdate;
+        \Log::info('Job statrtdate...'.$this->startdate);
+        \Log::info('Job endate...'.$this->enddate);
     
         $export = new Report2Export($this->startdate, $this->enddate, $this->baseclient_id, $this->regclient_id, $this->branch_id);
     
