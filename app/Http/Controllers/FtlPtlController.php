@@ -184,10 +184,6 @@ class FtlPtlController extends Controller
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
             $consignmentsave['branch_id'] = $authuser->branch_id;
-
-            $consignmentsave['edd'] = $request->edd;
-            $consignmentsave['status'] = $status;
-            $consignmentsave['lr_type'] = $request->lr_type;
             if (!empty($request->vehicle_id)) {
                 $status = '1';
                 $consignmentsave['delivery_status'] = "Assigned";
@@ -195,6 +191,10 @@ class FtlPtlController extends Controller
                 $status = '2';
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
+            $consignmentsave['edd'] = $request->edd;
+            $consignmentsave['status'] = $status;
+            $consignmentsave['lr_type'] = $request->lr_type;
+           
 
             $regional_email = [];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();
