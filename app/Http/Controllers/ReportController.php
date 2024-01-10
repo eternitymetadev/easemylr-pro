@@ -626,11 +626,7 @@ class ReportController extends Controller
 
     public function exportExcelReport2(Request $request)
     {
-        // $startDate = config('export.start_date');
-        // $endDate = config('export.end_date');
-        // $baseClientId = config('export.base_client_id');
-        // $regClientId = config('export.reg_client_id');
-        // $branchId = config('export.branch_id');
+        // Dispatch the job to the queue
         Report2ExportJob::dispatch(
             $request->startdate,
             $request->enddate,
@@ -638,7 +634,7 @@ class ReportController extends Controller
             $request->regclient_id,
             $request->branch_id
         );
-
+    
     }
 
     public function exportExcelReport3(Request $request)
