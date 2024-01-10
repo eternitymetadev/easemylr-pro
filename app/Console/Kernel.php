@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Jobs\Report2ExportJob;
+use App\Console\Commands\Report2ExportCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -20,21 +20,8 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        \Log::info('Report2ExportJob started processing...');
-    
-        $sdate = config('export.start_date');
-        $edate = config('export.end_date');
-        $basec = config('export.base_client_id');
-        $regc = config('export.reg_client_id');
-        $branch = config('export.branch_id');
-    
-        $schedule->job(new Report2ExportJob($sdate, $edate, $basec, $regc, $branch))
-        ->dailyAt('12:23')
-        ->sendOutputTo(storage_path('logs/report2export.log'))
-        ->emailOutputTo('vikas.singh@eternitysolutions.net');
-      
+        $schedule->command(Report2ExportCommand::class)->dailyAt('12:55');
     }
-    
 
     /**
      * Register the commands for the application.
