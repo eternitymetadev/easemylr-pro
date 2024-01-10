@@ -24,12 +24,14 @@ class Kernel extends ConsoleKernel
     
         $sdate = config('export.start_date');
         $edate = config('export.end_date');
+        $basec = config('export.base_client_id');
+        $regc = config('export.reg_client_id');
+        $branch = config('export.branch_id');
     
-        $schedule->job(new Report2ExportJob($sdate, $edate, config('export.base_client_id'), config('export.reg_client_id'), config('export.branch_id')))
+        $schedule->job(new Report2ExportJob($sdate, $edate, $basec, $regc, $branch))
         ->dailyAt('12:23')
-        ->notify(function ($output) {
-           \Log::info('Report2ExportJob completed.');
-        });
+        ->sendOutputTo(storage_path('logs/report2export.log'))
+        ->emailOutputTo('vikas.singh@eternitysolutions.net');
       
     }
     
