@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \Log::info('Inside the scheduled task...');
             // Rest of your code...
-        })->dailyAt('11:55');
+        })->dailyAt('11:59');
     }
     
 
