@@ -46,6 +46,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         set_time_limit ( 6000 );
         $arr = array();
 
+        $startDate = now()->subDays(90);
+
         $query = ConsignmentNote::query();
 
         // Select only the necessary columns
@@ -85,8 +87,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $baseclient_id = $this->baseclient_id;
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
+        $startDate = now()->subDays(90);
         
         $query = $query->where('status', '!=', 5)
+        ->where('consignment_date', '>=', $startDate)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsignerDetail.GetZone',
