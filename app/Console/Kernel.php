@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\Report2ExportJob;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
         $edate = config('export.end_date');
     
         $schedule->job(new Report2ExportJob($sdate, $edate, config('export.base_client_id'), config('export.reg_client_id'), config('export.branch_id')))
-                 ->dailyAt('12:04');
+                 ->dailyAt('12:13');
     
         \Log::info('Report2ExportJob scheduled for ' . $sdate);
     }
