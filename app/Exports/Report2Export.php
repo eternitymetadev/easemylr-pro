@@ -86,12 +86,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
     
-        $authuser = Auth::user();
-        $role_id = Role::where('id', '=', $authuser->role_id)->first();
-        $regclient = explode(',', $authuser->regionalclient_id);
-        $cc = explode(',', $authuser->branch_id);
-        $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
-    
         $query = $query->where('status', '!=', 5);
     
         if (isset($startdate) && isset($enddate)) {
@@ -117,11 +111,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     
         //echo "<pre>";print_r($consignments);die;
 
-        if ($authuser->role_id == 4) {
-            $consignments = $consignments->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id != 1) {
-            $consignments = $consignments->whereIn('branch_id', $cc);
-        }
     
         if ($branch_id !== null) {
             if ($branch_id) {
