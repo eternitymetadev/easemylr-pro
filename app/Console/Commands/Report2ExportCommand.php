@@ -12,7 +12,7 @@ class Report2ExportCommand extends Command
 
     public function handle()
     {
-        $sdate = now()->subDays(45)->toDateString();
+        $sdate = now()->subDays(15)->toDateString();
         $edate = now()->toDateString();
         $baseclient_id = NULL;
         $regclient_id = NULL;
