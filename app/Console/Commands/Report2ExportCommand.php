@@ -12,17 +12,20 @@ class Report2ExportCommand extends Command
 
     public function handle()
     {
-        $sdate = config('export.start_date');
-        $edate = config('export.end_date');
+        $sdate = now()->subDays(45)->toDateString();
+        $edate = now()->toDateString();
+        $baseclient_id = NULL;
+        $regclient_id = NULL;
+        $branch_id = NULL;
 
-        \Log::info('Dispatching Report2ExportJob...');
+        \Log::info('Dispatching Report2ExportJob...' .$sdate .' to '. $edate);
 
         Report2ExportJob::dispatch(
             $sdate,
             $edate,
-            config('export.base_client_id'),
-            config('export.reg_client_id'),
-            config('export.branch_id')
+            $baseclient_id,
+            $regclient_id,
+            $branch_id
         );
 
         \Log::info('Report2ExportJob dispatched successfully.');
