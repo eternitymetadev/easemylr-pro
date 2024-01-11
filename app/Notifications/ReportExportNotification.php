@@ -44,8 +44,7 @@ class ReportExportNotification extends Notification
         return (new MailMessage)
                     ->line('Please download the MIS report.')
                     ->attach($path, [
-                        'as' => 'mis2.xlsx',
-                        'mime' => 'xlsx',
+                        'as' => 'mis2.xlsx'
                     ]);
     }
     
