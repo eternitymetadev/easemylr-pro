@@ -11,6 +11,7 @@ use App\Exports\Report2Export;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Notifications\ReportExportNotification;
 use Illuminate\Support\Facades\Notification;
+use Carbon\Carbon;
 
 class Report2ExportJob implements ShouldQueue
 {
@@ -33,15 +34,20 @@ class Report2ExportJob implements ShouldQueue
     {
         \Log::info('Report2ExportJob started processing...');
 
-        // Generate paths for the three reports
-        $paths = [
-            storage_path('app/public/mis/mis1.xlsx'),
-            storage_path('app/public/mis/mis2.xlsx'),
-            storage_path('app/public/mis/mis3.xlsx'),
-        ];
+        $paths = [];
 
         // Generate exports for each report
         foreach ($this->exportParams as $index => $exportParams) {
+            $fromDate = $exportParams[0];
+            $toDate = $exportParams[1];
+
+            $filename = 'mis_' . Carbon::parse($fromDate)->format('M_Y') . '.xlsx';
+
+            // Generate the storage path for the report
+            $path = storage_path('app/public/mis/' . $filename);
+
+            // Add the path to the array
+            $paths[] = $path;
             $export = new Report2Export($exportParams[0],$exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
             Excel::store($export, $paths[$index]);
         }
