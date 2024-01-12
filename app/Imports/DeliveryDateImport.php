@@ -26,7 +26,8 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $authuser = Auth::user();
         
         $consignmentNote = ConsignmentNote::find($row['lr_no']);
-        if ($consignmentNote && empty($consignmentNote->delivery_date) && !empty($delivery_date)) {
+        // if ($consignmentNote && empty($consignmentNote->delivery_date) && !empty($delivery_date)) {
+            if ($consignmentNote && !empty($delivery_date)) {
             // dd($consignmentNote);
             $consignmentNote->update([
                 'delivery_date' => $delivery_date,
