@@ -51,13 +51,6 @@ class Report2ExportJob implements ShouldQueue
 
         // Send email notification to each email address with all report attachments
         foreach ($emailAddresses as $emailAddress) {
-            $reports = [];
-
-            // Populate the reports array with all attachments
-            for ($i = 1; $i <= count($paths); $i++) {
-                $reports[] = ['path' => $paths[$i - 1], 'name' => 'mis' . $i . '.xlsx'];
-            }
-
             Notification::route('mail', $emailAddress)
                 ->notify(new ReportExportNotification($reports));
         }
