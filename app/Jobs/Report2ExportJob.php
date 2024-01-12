@@ -44,7 +44,7 @@ class Report2ExportJob implements ShouldQueue
             $filename = 'mis_' . Carbon::parse($fromDate)->format('M_Y') . '.xlsx';
 
             // Generate the storage path for the report
-            $path = storage_path('app/public/mis/' . $filename);
+            $path = storage_path('app/public/mis') . '/' . $filename;
 
             // Add the path to the array
             $paths[] = $path;
