@@ -42,7 +42,7 @@ class ReportExportNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $misReportPath = storage_path('app/public/mis');
+        $misReportPath = storage_path('home/forge/mis.shiprider.in/storage/app/public/mis');
         $files = File::files($misReportPath);
     
         date_default_timezone_set('Asia/Kolkata');
