@@ -49,11 +49,17 @@ class Report2ExportJob implements ShouldQueue
         // Get an array of email addresses from the environment variable
         $emailAddresses = explode(',', env('MIS_EMAILS'));
 
-        // Send email notification to each email address with the corresponding report attachment
-        foreach ($emailAddresses as $index => $emailAddress) {
-            $report = ['path' => $paths[$index], 'name' => 'mis' . ($index + 1) . '.xlsx'];
+        // Send email notification to each email address with all report attachments
+        foreach ($emailAddresses as $emailAddress) {
+            $reports = [];
+
+            // Populate the reports array with all attachments
+            for ($i = 1; $i <= count($paths); $i++) {
+                $reports[] = ['path' => $paths[$i - 1], 'name' => 'mis' . $i . '.xlsx'];
+            }
+
             Notification::route('mail', $emailAddress)
-                ->notify(new ReportExportNotification([$report]));
+                ->notify(new ReportExportNotification($reports));
         }
 
         \Log::info('Report2ExportJob processed: ' . implode(', ', $paths));
