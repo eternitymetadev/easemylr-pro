@@ -40,10 +40,15 @@ class Report2ExportJob implements ShouldQueue
         $path = storage_path('app/public/mis/mis2.xlsx');
         Excel::store($export, $path);
 
-        // Send email notification
-        $report = ['path' => $path, 'name' => 'mis2.xlsx'];
-        Notification::route('mail', 'vikas.singh@eternitysolutions.net')
-            ->notify(new ReportExportNotification($report));
+        // Get an array of email addresses from the environment variable
+        $emailAddresses = explode(',', env('MIS_EMAILS'));
+
+        // Send email notification to each email address
+        foreach ($emailAddresses as $emailAddress) {
+            $report = ['path' => $path, 'name' => 'mis2.xlsx'];
+            Notification::route('mail', $emailAddress)
+                ->notify(new ReportExportNotification($report));
+        }
     
         \Log::info('Report2ExportJob processed: ' . $path);
     
