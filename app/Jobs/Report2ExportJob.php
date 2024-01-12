@@ -52,7 +52,7 @@ class Report2ExportJob implements ShouldQueue
         // Send email notification to each email address with all report attachments
         foreach ($emailAddresses as $emailAddress) {
             Notification::route('mail', $emailAddress)
-                ->notify(new ReportExportNotification($reports));
+                ->notify(new ReportExportNotification($emailAddresses));
         }
 
         \Log::info('Report2ExportJob processed: ' . implode(', ', $paths));
