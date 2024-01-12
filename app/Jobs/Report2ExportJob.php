@@ -35,22 +35,26 @@ class Report2ExportJob implements ShouldQueue
         \Log::info('Report2ExportJob started processing...');
 
         $paths = [];
-
+    
         // Generate exports for each report
         foreach ($this->exportParams as $index => $exportParams) {
             $fromDate = $exportParams[0];
             $toDate = $exportParams[1];
-
+    
             $filename = 'mis_' . Carbon::parse($fromDate)->format('M_Y') . '.xlsx';
-
+    
+            // Replace forward slashes with backslashes in the filename
+            $filename = str_replace('/', '\\', $filename);
+    
             // Generate the storage path for the report
-            $path = storage_path('app/public/mis') . '/' . $filename;
-
+            $path = storage_path('app/public/mis/' . $filename);
+    
             // Add the path to the array
             $paths[] = $path;
-            $export = new Report2Export($exportParams[0],$exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
+            $export = new Report2Export($exportParams[0], $exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
             Excel::store($export, $paths[$index]);
         }
+    
 
         // Get an array of email addresses from the environment variable
         $emailAddresses = explode(',', env('MIS_EMAILS'));
