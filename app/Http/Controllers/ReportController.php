@@ -624,7 +624,7 @@ class ReportController extends Controller
     //     return Excel::download(new Report2Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report2.csv');
     // }
 
-    public function exportExcelReport2(Request $request)
+    public function exportExcelReport2Mis(Request $request)
     {
         // Dispatch the job to the queue
         Report2ExportJob::dispatch(

@@ -16,16 +16,14 @@ class Report2ExportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $startdate;
-    protected $enddate;
+    protected $exportParams;
     protected $baseclient_id;
     protected $regclient_id;
     protected $branch_id;
 
-    public function __construct($startdate, $enddate, $baseclient_id, $regclient_id, $branch_id)
+    public function __construct($exportParams,$baseclient_id, $regclient_id, $branch_id)
     {
-        $this->startdate = $startdate;
-        $this->enddate = $enddate;
+        $this->exportParams = $exportParams;
         $this->baseclient_id = $baseclient_id;
         $this->regclient_id = $regclient_id;
         $this->branch_id = $branch_id;
@@ -34,25 +32,31 @@ class Report2ExportJob implements ShouldQueue
     public function handle()
     {
         \Log::info('Report2ExportJob started processing...');
-    
-        $export = new Report2Export($this->startdate, $this->enddate, $this->baseclient_id, $this->regclient_id, $this->branch_id);
-    
-        $path = storage_path('app/public/mis/mis2.xlsx');
-        Excel::store($export, $path);
+
+        // Generate paths for the three reports
+        $paths = [
+            storage_path('app/public/mis/mis1.xlsx'),
+            storage_path('app/public/mis/mis2.xlsx'),
+            storage_path('app/public/mis/mis3.xlsx'),
+        ];
+
+        // Generate exports for each report
+        foreach ($this->exportParams as $index => $exportParams) {
+            $export = new Report2Export($exportParams[0],$exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
+            Excel::store($export, $paths[$index]);
+        }
 
         // Get an array of email addresses from the environment variable
         $emailAddresses = explode(',', env('MIS_EMAILS'));
 
-        // Send email notification to each email address
-        foreach ($emailAddresses as $emailAddress) {
-            $report = ['path' => $path, 'name' => 'mis2.xlsx'];
+        // Send email notification to each email address with the corresponding report attachment
+        foreach ($emailAddresses as $index => $emailAddress) {
+            $report = ['path' => $paths[$index], 'name' => 'mis' . ($index + 1) . '.xlsx'];
             Notification::route('mail', $emailAddress)
-                ->notify(new ReportExportNotification($report));
+                ->notify(new ReportExportNotification([$report]));
         }
-    
-        \Log::info('Report2ExportJob processed: ' . $path);
-    
-        //$this->delete();
+
+        \Log::info('Report2ExportJob processed: ' . implode(', ', $paths));
     }
     
     
