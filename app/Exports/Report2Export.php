@@ -86,11 +86,11 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
 
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        // $authuser = Auth::user();
+        // $role_id = Role::where('id','=',$authuser->role_id)->first();
+        // $regclient = explode(',',$authuser->regionalclient_id);
+        // $cc = explode(',',$authuser->branch_id);
+        // $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         
         $query = $query->where('status', '!=', 5)
         ->with(
@@ -111,26 +111,26 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             $query = $query->whereIn('branch_id', $cc);
         }
 
-        if ($branch_id !== null) {
-            if ($branch_id) {
-                $branch_id_array = explode(",", $branch_id);
-                $query = $query->whereIn('branch_id', $branch_id_array);
-            }
-        }
+        // if ($branch_id !== null) {
+        //     if ($branch_id) {
+        //         $branch_id_array = explode(",", $branch_id);
+        //         $query = $query->whereIn('branch_id', $branch_id_array);
+        //     }
+        // }
       
-        if(isset($startdate) && isset($enddate)){
-            $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
-        }
-        if($baseclient_id){
-            $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
-                $q->where('id', $baseclient_id);
-            });
-        }
-        if($regclient_id){
-            $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
-                $q->where('id', $regclient_id);
-            });
-        }
+        // if(isset($startdate) && isset($enddate)){
+        //     $query = $query->whereBetween('consignment_date',[$startdate,$enddate]);                
+        // }
+        // if($baseclient_id){
+        //     $query = $query->whereHas('ConsignerDetail.GetRegClient.BaseClient', function($q) use ($baseclient_id){
+        //         $q->where('id', $baseclient_id);
+        //     });
+        // }
+        // if($regclient_id){
+        //     $query = $query->whereHas('ConsignerDetail.GetRegClient', function($q) use ($regclient_id){
+        //         $q->where('id', $regclient_id);
+        //     });
+        // }
 
 
         $totalRecords = $query->count();
@@ -255,8 +255,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'delivery_date'       => @$consignment->delivery_date,
                     'delivery_status'     => @$consignment->delivery_status,
                     'tat'                 => $tatday,
-                    //'delivery_mode'       => $deliverymode,
-                    //'pod'                 => $pod,
                     'payment_type'        => @$consignment->payment_type,
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
@@ -315,8 +313,6 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Delivery Date',
             'Delivery Status',
             'Tat',
-            //'Delivery Mode',
-            //'POD',
             'Payment Type',
             'Freight on Delivery',
             'COD',

@@ -1110,6 +1110,7 @@ Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
 Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_status_fully']);
 Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
 Route::any('regional-report', [ReportController::class, 'regionalReport']);
+Route::any('report-sent-rm', [ReportController::class, 'reportsentRM']);
 Route::any('store-mix-report', [ReportController::class, 'storeMixReport']);
 Route::any('store-mix-report-hrs', [ReportController::class, 'storeMixReportHrs']);
 Route::any('store-mix-report-prs', [ReportController::class, 'storeMixReportPrs']);

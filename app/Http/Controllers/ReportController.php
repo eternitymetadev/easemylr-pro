@@ -25,6 +25,7 @@ use Config;
 use DB;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File;
 use Mail;
 use Response;
 use Session;
@@ -685,13 +686,13 @@ class ReportController extends Controller
                             $user['cc'] = $sec_emails;
                         }
                         
-                        Mail::send('regional-report-email', $data, function ($messges) use ($user, $get_file, $sec_emails) {
-                            $messges->to($user['to']);
+                        Mail::send('regional-report-email', $data, function ($messages) use ($user, $get_file, $sec_emails) {
+                            $messages->to($user['to']);
                             if(!empty($sec_emails)){
-                                $messges->cc($sec_emails);
+                                $messages->cc($sec_emails);
                             }
-                            $messges->subject('ShipRider Auto MIS 910003');
-                            $messges->attach($get_file);
+                            $messages->subject('ShipRider Auto MIS 910003');
+                            $messages->attach($get_file);
 
                         });
                     }
@@ -699,6 +700,52 @@ class ReportController extends Controller
             }
         }
         return 'Email Sent';
+    }
+
+    // mis2 email sent to reginal manager
+    public function reportsentRM()
+    {
+        date_default_timezone_set('Asia/Kolkata');
+        $current_time = date("h:i A");
+        $currentDate = Carbon::now();
+        // Format the date as "12-Oct-2023"
+        $formattedDate = $currentDate->format('d-M-Y');
+
+        $misReportPath = storage_path('app/public/mis-report');
+        $files = File::files($misReportPath); // Get all files in the folder
+
+        if($files)
+        {
+            $data = ['current_time' => $current_time, 'formattedDate' => $formattedDate];
+
+            $secondary_emails = ['sahil.thakur@eternitysolutions.net'];
+            // $user['to'] = $regional->email;
+            // $sec_emails = explode(',', $regional->secondary_email);
+            $user['to'] = "vineet.thakur@eternitysolutions.net";
+            $sec_emails = $secondary_emails;
+
+            if ($sec_emails) {
+                $user['cc'] = $sec_emails;
+            }
+
+            Mail::send('mis-report2-email', $data, function ($messages) use ($user, $files) {
+                $messages->to($user['to']);
+
+                if (isset($user['cc'])) {
+                    $messages->cc($user['cc']);
+                }
+
+                $messages->subject('ShipRider Auto MIS Report2');
+
+                foreach ($files as $file) {
+                    $messages->attach($file);
+                }
+                // $messges->attach($get_file);
+            });
+            return 'Email Sent';
+        }else{
+            return 'Attachment not Found';
+        }
     }
 
     public function mixReport(Request $request)
