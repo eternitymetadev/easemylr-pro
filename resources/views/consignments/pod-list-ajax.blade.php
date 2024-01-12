@@ -176,7 +176,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                             Not Available
                         </div>
 
-                        <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Assigned' || $consignment->delivery_status == 'Started')) editButtonimg @endif editIcon swan-tooltip-left" data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Assigned' || $consignment->delivery_status == 'Started')) Add Images @else Need to update status @endif"
+                        <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started')) editButtonimg @endif editIcon swan-tooltip-left" data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started')) Add Images @else Need to update status @endif"
                             data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

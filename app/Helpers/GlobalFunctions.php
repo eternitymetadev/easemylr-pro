@@ -286,7 +286,6 @@ class GlobalFunctions
         $drs = TransactionSheet::select('consignment_no')->where('drs_no', $drs_number)->get();
         $drscount = TransactionSheet::where('drs_no', $drs_number)->count();
 
-        $lr = ConsignmentNote::select('delivery_date')->whereIn('id', $drs)->get();
         $lrcount = ConsignmentNote::whereIn('id', $drs)->where('delivery_date', '!=', null)->count();
 
         if ($lrcount > 0) {
