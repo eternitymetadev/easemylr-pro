@@ -72,6 +72,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'cod',
             'user_id',
             'branch_id',
+            'to_branch_id',
             'driver_id',
             'edd',
             'status',
@@ -79,7 +80,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'delivery_status',
             'delivery_date',
             'signed_drs',
-            'job_id'
+            'job_id',
+            'reattempt_reason',
         ]);
 
         $startdate = $this->startdate;
@@ -93,15 +95,16 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         ->where('consignment_date', '>=', $startDate)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsignerDetail.GetZone',
-            'ConsigneeDetail.GetZone',
-            'ShiptoDetail.GetZone',
+            'ConsigneeDetail.GetZone:postal_code,district,state',
+            'ShiptoDetail.GetZone:postal_code,district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
-            'DrsDetail:consignment_no,drs_no,created_at'
+            'DrsDetail:consignment_no,drs_no,created_at',
+            'Branch:id,name',
+            'ToBranch:id,name',
         ); 
 
        
@@ -218,12 +221,38 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                             $lr_type = "-";
                             }
 
+                // No of reattempt
+                if($consignment->reattempt_reason != null){
+                    $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
+                }else{
+                    $no_reattempt = '';
+                }
+
+                // reatempted drs nos
+                if(!empty($consignment->DrsDetailReattempted)){
+                    $drs_nos = array();
+                    foreach($consignment->DrsDetailReattempted as $reattemptDrs){ 
+                        $drs_nos[] = $reattemptDrs->drs_no;
+                    }
+                    $reattempt_drs['drs_nos'] = implode('/', $drs_nos);
+                }
+
+                // delivery branch 
+                if($consignment->lr_type == 0){
+                    $delivery_branch = @$consignment->Branch->name;
+                }else{
+                    $delivery_branch = @$consignment->ToBranch->name;
+                }
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
-                    'drs_no'              => $drs,
+                    'drs_no'              => @$drs,
+                    'reattempt_drsno'     => @$reattempt_drs['drs_nos'],
                     'drs_date'            => $drs_date,
                     'order_id'            => $order_id,
+                    'booking_branch'      => @$consignment->Branch->name,
+                    'delivery_branch'     => @$delivery_branch,
                     'base_client'         => @$consignment->ConsignerDetail->GetRegClient->BaseClient->client_name,
                     'regional_client'     => @$consignment->ConsignerDetail->GetRegClient->name,
                     'consigner_nick_name' => @$consignment->ConsignerDetail->nick_name,
@@ -264,7 +293,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'freight_on_delivery' => @$consignment->freight_on_delivery,
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
-
+                    'reattempt_reason'   => @$no_reattempt,
 
                 ];
             }
@@ -277,7 +306,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         return [
             'LR No',
             'LR Date',
-            'DRS No',
+            'Delivered DRS No',
+            'DRS Nos',
             'DRS Date',
             'Order No',
             'Base Client',
@@ -288,7 +318,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Contact Person Name',
             'Consignee Phone',
             'Consignee city',
-            'Consignee Pin Code',
+            'Consignee PinCode',
             'Consignee District', 
             'Consignee State',
             'ShipTo Name',
@@ -320,6 +350,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'Freight on Delivery',
             'COD',
             'LR Type',
+            'No of Reattempt',
         ];
     }
 }
