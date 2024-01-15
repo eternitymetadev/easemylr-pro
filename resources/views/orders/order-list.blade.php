@@ -110,6 +110,7 @@ div.relative {
                                 <th>Pickup Status</th>
                                 <!-- <th>Action</th> -->
                                 <th>Status</th>
+                                <th>Print PRS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,7 +128,7 @@ div.relative {
                                 <td>{{ @$consignment->ConsignerDetail->GetRegClient->name ?? "-" }}</td>
                                 <td>{{ @$consignment->ConsignerDetail->nick_name ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsignerDetail->postal_code  ?? "-"}}</td>
-                                <td>{{ @@$consignment->ConsigneeDetail->nick_name  ?? "-"}}</td>
+                                <td>{{ @$consignment->ConsigneeDetail->nick_name  ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->postal_code  ?? "-"}}</td>
                                 <td>{{ @$consignment->ConsigneeDetail->city ?? "-" }}</td>
                                 <td>{{ @$consignment->ConsignmentItem->invoice_no ?? "-" }}</td>
@@ -183,8 +184,7 @@ div.relative {
                                  if($consignment->prsitem_status == 1 || $consignment->prsitem_status == 2){ ?>
                                 <td>
                                     <a class="btn btn-primary"
-                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete
-                                            Lr</span></a>
+                                        href="{{url($prefix.'/orders/'.Crypt::encrypt($consignment->id).'/edit')}}"><span>Complete Lr</span></a>
                                 </td>
                                 <?php }else{
                                     ?>
@@ -198,12 +198,16 @@ div.relative {
                                     if($consignment->prsitem_status == 0){ ?>
                                 <td> <a class="btn btn-primary" href="#"><span>Pending Pickup</span></a></td>
                                 <?php }else{ ?>
-                                <td> <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
+                                <td>
+                                    <a class="btn btn-primary" href="#"><span>Picked up</span></a></td>
                                 <?php } } 
                                 }else{?>
                                 <td>-</td>
                                 <?php } ?>
-                               
+                               <td><?php if($consignment->prs_id){ ?>
+                                <a href="{{url($prefix.'/pickup-loads/prs-printlr/'.$consignment->id)}}" target="_blank"
+                                class="badge alert bg-cust shadow-sm">Print PRS-LR</a>
+                                <?php } ?></td>
                             </tr>
                             <?php
                         }

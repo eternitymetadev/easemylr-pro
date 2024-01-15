@@ -130,7 +130,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $q->where('id', $regclient_id);
             });
         }
-    
+
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             

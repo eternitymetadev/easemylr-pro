@@ -16,6 +16,7 @@ use App\Models\PrsReceiveVehicle;
 use App\Models\PrsRegClient;
 use App\Models\PrsTaskItem;
 use App\Models\RegionalClient;
+use App\Models\BranchAddress;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Hrs;
@@ -30,11 +31,15 @@ use Carbon\Carbon;
 use Config;
 use DB;
 use Illuminate\Http\Request;
+use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use Session;
 use Storage;
 use URL;
+use Helper;
 use Validator;
+use QrCode;
+use DateTime;
 
 class PickupRunSheetController extends Controller
 {
@@ -625,7 +630,7 @@ class PickupRunSheetController extends Controller
                             // ==== end created===//
                         }                        
                     } else {
-                        ConsignmentNote::where(['id' => $save_data['lr_id']])->update(['prsitem_status' => 1]);
+                        ConsignmentNote::where(['id' => $save_data['lr_id']])->update(['prsitem_status' => 1, 'prs_id' =>$request->prs_id]);
                         $saveconsignment = '';
                     }
 
@@ -1699,7 +1704,6 @@ class PickupRunSheetController extends Controller
     public function showPrs(Request $request)
     {
         $getprs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->trans_id)->get();
-        // dd($request->transaction_id);
 
         $response['getprs'] = $getprs;
         $response['success'] = true;
@@ -1880,6 +1884,661 @@ class PickupRunSheetController extends Controller
             }
         }
         return response()->json($new_response);
+    }
+
+    // print LR for prs lr view
+    public function prsPrintLR($lr_id)
+    {
+        $query = ConsignmentNote::query();
+        $authuser = Auth::user();
+        $cc = explode(',', $authuser->branch_id);
+        $branch_add = BranchAddress::get();
+        $locations = Location::with('GstAddress')->whereIn('id', $cc)->first();
+
+        $getdata = ConsignmentNote::where('id', $lr_id)->with('ConsignmentItems', 'ConsignerDetail.GetZone','ConsignerDetail.GetRegClient', 'VehicleDetail', 'DriverDetail','PrsDetail','PrsDetail.VehicleDetail','PrsDetail.DriverDetail')->first();
+        $data = json_decode(json_encode($getdata), true);
+        
+        if (isset($data['consigner_detail']['legal_name'])) {
+            $legal_name = '<b>' . $data['consigner_detail']['legal_name'] . '</b><br>';
+        } else {
+            $legal_name = '';
+        }
+        if (isset($data['consigner_detail']['address_line1'])) {
+            $address_line1 = '' . $data['consigner_detail']['address_line1'] . '<br>';
+        } else {
+            $address_line1 = '';
+        }
+        if (isset($data['consigner_detail']['address_line2'])) {
+            $address_line2 = '' . $data['consigner_detail']['address_line2'] . '<br>';
+        } else {
+            $address_line2 = '';
+        }
+        if (isset($data['consigner_detail']['address_line3'])) {
+            $address_line3 = '' . $data['consigner_detail']['address_line3'] . '<br>';
+        } else {
+            $address_line3 = '';
+        }
+        if (isset($data['consigner_detail']['address_line4'])) {
+            $address_line4 = '' . $data['consigner_detail']['address_line4'] . '<br><br>';
+        } else {
+            $address_line4 = '<br>';
+        }
+        if (isset($data['consigner_detail']['city'])) {
+            $city = $data['consigner_detail']['city'] . ',';
+        } else {
+            $city = '';
+        }
+        if (isset($data['consigner_detail']['get_zone']['state'])) {
+            $district = $data['consigner_detail']['get_zone']['state'] . ',';
+        } else {
+            $district = '';
+        }
+        if (isset($data['consigner_detail']['postal_code'])) {
+            $postal_code = $data['consigner_detail']['postal_code'] . '<br>';
+        } else {
+            $postal_code = '';
+        }
+        if (isset($data['consigner_detail']['gst_number'])) {
+            $gst_number = 'GST No: ' . $data['consigner_detail']['gst_number'] . '<br>';
+        } else {
+            $gst_number = '';
+        }
+        if (isset($data['consigner_detail']['phone'])) {
+            $phone = 'Phone No: ' . $data['consigner_detail']['phone'] . '<br>';
+        } else {
+            $phone = '';
+        }
+
+        $conr_add = $legal_name . ' ' . $address_line1 . ' ' . $address_line2 . ' ' . $address_line3 . ' ' . $address_line4 . '' . $city . ' ' . $district . ' ' . $postal_code . '' . $gst_number . ' ' . $phone;
+
+        $generate_qrcode = QrCode::size(150)->generate('' . $lr_id . '');
+        $output_file = '/qr-code/img-' . time() . '.svg';
+        Storage::disk('public')->put($output_file, $generate_qrcode);
+        $fullpath = storage_path('app/public/' . $output_file);
+        //  dd($generate_qrcode);
+        $no_invoive = count($data['consignment_items']);
+
+        // get branch address
+        if ($data['branch_id'] == 2 || $data['branch_id'] == 6 || $data['branch_id'] == 26) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[1]->name . ' </b></span><br />
+        <b>' . $branch_add[1]->address . ',</b><br />
+        <b>	' . $branch_add[1]->district . ' - ' . $branch_add[1]->postal_code . ',' . $branch_add[1]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[1]->gst_number . '</b><br />';
+        } else if ($data['branch_id'] == 32) {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[2]->name . ' </b></span><br />
+        <b>' . $branch_add[2]->address . ',</b><br />
+        <b>	' . $branch_add[2]->district . ' - ' . $branch_add[2]->postal_code . ',' . $branch_add[2]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[2]->gst_number . '</b><br />';
+        } else {
+            $branch_address = '<span style="font-size: 14px;"><b>' . $branch_add[0]->name . ' </b></span><br />
+        <b>	Plot no: ' . $branch_add[0]->address . ',</b><br />
+        <b>	' . $branch_add[0]->district . ' - ' . $branch_add[0]->postal_code . ',' . $branch_add[0]->state . '</b><br />
+        <b>GST No. : ' . $branch_add[0]->gst_number . '</b><br />';
+        }
+
+        // relocate cnr cnee address check for sale to return case
+
+        $consignmentItems = $data['consignment_items']; // Assuming $data is your array
+
+        $invoiceNumbers = '';
+        foreach ($consignmentItems as $item) {
+            if (isset($item['invoice_no'])) {
+                $invoiceNumbers .= $item['invoice_no'] . '/';
+            }
+        }
+
+        // Remove the trailing '/' if it exists
+        $invoiceNumbers = rtrim($invoiceNumbers, '/');
+        
+            $lrInvces = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">Invoice No</h5><br>
+            </div>
+            <div style="margin-top: -11px;">
+            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+            ' . @$invoiceNumbers . '
+            </p>
+            </div>';
+            $billingClient = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">Bill to Client</h5><br>
+            </div>
+            <div style="margin-top: -11px;">
+            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+            ' . @$data['consigner_detail']['get_reg_client']['name'] . '
+            </p>
+            </div>';
+            $cnradd_heading = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">CONSIGNOR NAME & ADDRESS</h5><br>
+            </div>
+            <div style="margin-top: -11px;">
+            <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+            ' . $conr_add . '
+            </p>
+            </div>';
+            $expectedPickup = '<div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">Expected Pickup Details</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                 No. of Boxes - '.$data['total_quantity'].'<br> Net Waight(Kg) - '. $data['total_weight'] .'
+            </p>
+            </div>';
+            $actualPickup = '<td width="30%" style="vertical-align:top;>
+            <div class="container">
+            <div>
+            <h5  style="margin-left:6px; margin-top: 0px">Actual Pickup Details</h5><br>
+            </div>
+                <div style="margin-top: -11px;">
+                <p  style="margin-left:6px;margin-top: -13px; font-size: 12px;">
+                No of Boxes - <br>
+                Net Waight(Kg) -
+                 
+            </p>
+                </div>
+            </td>';
+
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $codStamp = public_path('assets/img/cod.png');
+        $paidStamp = public_path('assets/img/paid.png');
+        $waterMark = public_path('assets/img/demo.png');
+
+        for ($i = 1; $i < 3; $i++) {
+            if ($i == 1) {$type = 'ORIGINAL';} elseif ($i == 2) {$type = 'DUPLICATE';}
+            if (!empty($data['consigner_detail']['get_zone']['state'])) {
+                $cnr_state = $data['consigner_detail']['get_zone']['state'];
+            } else {
+                $cnr_state = '';
+            }
+
+            $html = '<!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    <!-- Required meta tags -->
+                    <meta charset="utf-8" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+                    <!-- Bootstdap CSS -->
+
+                    <style>
+                        * {
+                            box-sizing: border-box;
+                        }
+                        label {
+                            padding: 12px 12px 12px 0;
+                            display: inline-block;
+                        }
+
+                        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+                        @media screen and (max-width: 600px) {
+                        }
+                        img {
+                            width: 120px;
+                            height: 60px;
+                        }
+                        .a {
+                            width: 290px;
+                            font-size: 11px;
+                        }
+                        td.b {
+                            width: 238px;
+                            margin: auto;
+                        }
+                        .width_set{
+                            width:200px;
+                        }
+                        img.imgu {
+                            margin-left: 58px;
+                            height:100px;
+                        }
+                        .loc {
+                                margin-bottom: -8px;
+                                margin-top: 27px;
+                            }
+                            .table3 {
+                border-collapse: collapse;
+                width: 378px;
+                height: 84px;
+                margin-left: 71px;
+            }
+                  .footer {
+               position: fixed;
+               left: 0;
+               bottom: 0;
+
+
+            }
+            .vl {
+                border-left: solid;
+                height: 18px;
+                margin-left: 3px;
+            }
+            .ff{
+              margin-top: 26px;
+            }
+            .relative {
+              position: relative;
+              left: 30px;
+            }
+            .mini-table1{
+
+                border: 1px solid;
+                border-radius: 13px;
+                width: 429px;
+                height: 72px;
+
+            }
+            .mini-th{
+              width:90px;
+              font-size: 12px;
+            }
+            .ee{
+                margin:auto;
+                margin-top:12px;
+            }
+            .nn{
+              border-bottom:1px solid;
+            }
+            .mm{
+            border-right:1px solid;
+            padding:4px;
+            }
+            html { -webkit-print-color-adjust: exact; }
+            .td_style{
+                text-align: left;
+                padding: 8px;
+                color: #627429;
+            }
+                    </style>
+                <!-- style="border-collapse: collapse; width: 369px; height: 72px; background:#d2c5c5;"class="table2" -->
+                </head>
+                <body style="font-family:Arial Helvetica,sans-serif;">
+                <!-- <img src="' . $waterMark . '" alt="" style="position:fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0.2; width: 500px; height: 500px; z-index: -1;" /> -->
+                    <div class="container-flex" style="margin-bottom: 5px; margin-top: -30px;">
+                        <table style="height: 70px;">
+                            <tr>
+                            <td class="a" style="font-size: 10px;">
+                            ' . $branch_address . '
+                            </td>
+
+                                <td class="a">
+                                <b>	Email & Phone</b><br />
+                                <b>	' . @$locations->email . '</b><br />
+                                ' . @$locations->phone . '<br />
+
+                                </td>
+                            </tr>
+
+                        </table>
+                        <hr />
+                        <table>
+                            <tr>
+                                <td class="b">
+                                    <div class="ff" >
+                                        <img src="' . $fullpath . '" alt="" class="imgu" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="margin-top: -15px; text-align: center">
+                                        <h2 style="margin-bottom: -16px">CONSIGNMENT NOTE</h2>
+                                        <P>' . $type . '</P>
+                                    </div>
+                                    <div class="mini-table1" style="background:#C0C0C0;">
+                                        <table style=" border-collapse: collapse; width: 96%" class="ee">
+                                            <tr>
+                                                <th class="mini-th mm nn">PRS Number</th>
+                                                <th class="mini-th mm nn">LR Number</th>
+                                                <th class="mini-th nn">LR Date</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="mini-th mm" >' . @$data['prs_detail']['pickup_id'] . '</th>
+                                                <th class="mini-th mm" >' . $data['id'] . '</th>
+                                                <th class="mini-th">' . date('d-m-Y', strtotime($data['consignment_date'])) . '</th>';
+                                               
+                                    $html .= '</tr>
+                                                </table>
+                                            </div>
+                                                </td>
+                                            </tr>
+                                            </table>';
+                                            
+                
+                    $html .= '  <div class="loc">
+                                <table>
+                                    <tr>
+                                        <td class="width_set">
+                                            <div style="margin-left: 20px">';
+                                            
+                                            $html .= ' <i class="fa-solid fa-location-dot" style="font-size: 12px; ">&nbsp;&nbsp;<b>' . @$data['consigner_detail']['postal_code'] . ',' . @$data['consigner_detail']['city'] . ',' . @$cnr_state . '</b></i>';
+                    $html .= ' </div>
+                                        </td>
+                                        <td class="width_set">
+                                            <table border="1px solid" class="table3">
+                                                <tr>
+                                                    <td width="40%" ><b style="margin-left: 7px;">Vehicle No</b></td>
+                                                    <td>' . @$data['prs_detail']['vehicle_detail']['regn_no'] . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;"> Driver Name</b></td>
+                                                    <td>' . ucwords(@$data['prs_detail']['driver_detail']['name']) . '</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%"><b style="margin-left: 7px;">Driver Number</b></td>
+                                                    <td>' . ucwords(@$data['prs_detail']['driver_detail']['phone']) . '</td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>';
+
+            $html .= '<div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12 ">
+                                        <h4 style="margin-left:19px;"><b>Pickup and Drop Information</b></h4>
+                                    </div>
+                                </div>
+                            <table border="1" style=" border-collapse:collapse; width: 100%; ">
+                                <tr>
+                                    <td width="30%" style="vertical-align:top; >
+                                    ' . $lrInvces . '
+                                    </td>
+                                    <td width="30%" style="vertical-align:top; >
+                                    ' . $billingClient . '
+                                    </td>
+                                    <td width="30%" style="vertical-align:top; >
+                                    ' . $cnradd_heading . '
+                                    </td>
+                                    <td width="30%" style="vertical-align:top;>
+                                    ' . $expectedPickup . '
+                                    </td>
+                                    ' . $actualPickup . '
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <div class="inputfiled">';
+
+            $html .= ' <div>
+                            <table style="width: 100%; margin-top:0px;">
+                                <tr>
+                                    <td width="50%" style="font-size: 13px;">
+                                        <p style="">
+                                            <strong>Driver Eternity</strong><br><br>
+                                            Receivers Name & Number:<br><br>
+                                            Receiving Date & Time	:
+                                        </p>
+                                    </td>
+                                    <td width="50%; vertical-align: top; text-align: right">
+                                        <p style="">
+                                            <strong>Consignor Sign & Stamp</strong>
+                                        </p>    
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                </body>
+            </html>
+            ';
+            
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->loadHTML($html);
+            $pdf->setPaper('legal', 'portrait');
+            $pdf->save(public_path() . '/prs-pdf/prs-' . $i . '.pdf')->stream('prs-' . $i . '.pdf');
+            $pdf_name[] = 'prs-' . $i . '.pdf';
+        }
+        $pdfMerger = PDFMerger::init();
+        foreach ($pdf_name as $pdf) {
+            $pdfMerger->addPDF(public_path() . '/prs-pdf/' . $pdf);
+        }
+        $pdfMerger->merge();
+        $pdfMerger->save("all.pdf", "browser");
+        $file = new Filesystem;
+        $file->cleanDirectory('pdf');
+    }
+
+    public function prsPrint($prsId)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id', '=', $authuser->role_id)->first();
+        $baseclient = explode(',', $authuser->baseclient_id);
+        $regclient = explode(',', $authuser->regionalclient_id);
+        $cc = explode(',', $authuser->branch_id);
+
+        $query = PickupRunSheet::query();
+        $query = $query->with('Consignments','PrsRegClients.RegClient', 'PrsRegClients.RegConsigner.Consigner', 'VehicleDetail', 'DriverDetail')
+        ->where('id', $prsId);
+        // ->whereHas('Consignments', function ($q) {
+        //     $q->where('status', '!=', 0);
+        // })
+    
+        if ($authuser->role_id != 1) {
+            $query = $query->whereIn('branch_id', $cc);
+        }
+        $getPrs = $query->orderby('id', 'asc')->first();  
+        
+        $pay = public_path('assets/img/LOGO_Frowarders.jpg');
+        $date = new DateTime($getPrs->created_at, new \DateTimeZone('GMT-7'));
+        
+        $date->setTimezone(new \DateTimeZone('IST'));
+        $prsDate = $date->format('d-m-Y');
+
+
+        $lrCount = count(@$getPrs->Consignments);
+        
+
+        if ($getPrs && $getPrs->Consignments && $getPrs->Consignments->isNotEmpty()) {
+            $consignmentsArray = $getPrs->Consignments->toArray();
+        
+            // Extracting the 'total_quantity' column values
+            $totalQuantities = array_column($consignmentsArray, 'total_quantity');
+            $sumTotalQuantity = array_sum($totalQuantities);
+        
+            // Extracting the 'total_weight' column values
+            $totalWeights = array_column($consignmentsArray, 'total_weight');
+            $sumTotalWeight = array_sum($totalWeights);
+        
+        } else {
+            $sumTotalQuantity = 0;
+            $sumTotalWeight = 0;
+        }
+
+        $html = '<html>
+        <head>
+        <title>Document</title>
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+          <style>
+          table,
+          th,
+          td {
+              border: 0px solid black;
+              border-collapse: collapse;
+              text-align: left;
+          }
+          .drs_t,
+          .drs_r,
+          .drs_d,
+          .drs_h {
+              border: 1px solid black;
+              border-collapse: collapse;
+              text-align: left;
+          }
+            @page { margin: 100px 25px; }
+            header { position: fixed; top: -60px; left: 0px; right: 0px; height: 200px; }
+            footer { position: fixed; bottom: -105px; left: 0px; right: 0px;  height: 100px; }
+           /* p { page-break-after: always; }
+            p:last-child { page-break-after: never; } */
+            * {
+                box-sizing: border-box;
+              }
+
+
+              .column {
+                float: left;
+                width: 14.33%;
+                padding: 5px;
+                height: auto;
+              }
+
+
+              .row:after {
+                content: "";
+                display: table;
+                clear: both;
+              }
+              .dd{
+                margin-left: 0px;
+              }
+
+          </style>
+        </head>
+        <body style="font-size:13px; font-family:Arial Helvetica,sans-serif;">
+                    <header><div class="row" style="display:flex;">
+                    <div class="column"  style="width: 493px;">
+                        <h1 class="dd">Pickup Run Sheet</h1>
+                        <div  class="dd">
+                        <table class="drs_t" style="width:100%">
+                            <tr class="drs_r">
+                                <th class="drs_h">Pickup No.</th>
+                                <th class="drs_h">' . @$getPrs->pickup_id . '</th>
+                                <th class="drs_h">Vehicle No.</th>
+                                <th class="drs_h">' . @$getPrs->VehicleDetail->regn_no . '</th>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">PRS Date</td>
+                                <td class="drs_d">' . @$prsDate . '</td>
+                                <td class="drs_d">Driver Name</td>
+                                <td class="drs_d">' . @$getPrs->DriverDetail->name . '</td>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">No. of LRs</td>
+                                <td class="drs_d"> '.@$lrCount.' </td>
+                                <td class="drs_d">Driver No.</td>
+                                <td class="drs_d">' . @$getPrs->DriverDetail->phone . '</td>
+                            </tr>
+                            <tr class="drs_r">
+                                <td class="drs_d">Total Boxes</td>
+                                <td class="drs_d">'. @$sumTotalQuantity .'</td>
+                                <td class="drs_d">Total Weights</td>
+                                <td class="drs_d">'. @$sumTotalWeight .' </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    </div>
+                     <div class="column" style="margin-left: 56px;">
+                        <img src="' . $pay . '" class="imga" style = "width: 170px; height: 80px; margin-top:30px;">
+                    </div>
+                </div>
+                <br>
+                <div id="content"><div class="row" style="border: 1px solid black;">
+                    <div class="column" style="width:125px;">
+                        <h4 style="margin: 0px;"> Bill to Client</h4>
+                        <h4 style="margin: 0px;">LR Details:</h4>
+                    </div>
+                    <div class="column" style="width:200px;">
+                        <h4 style="margin: 0px;">Consignor Name & Mobile Number</h4>
+                    </div>
+                    <div class="column" style="width:125px;">
+                        <h4 style="margin: 0px;">Consignor City, </h4>
+                        <h4 style="margin: 0px;"> Dstt & PIN</h4>
+                    </div>
+                    <div class="column">
+                        <h4 style="margin: 0px;">Expected Pickup Details</h4>
+                    </div>
+                    <div class="column" style="width:170px;">
+                        <h4 style="margin: 0px; ">Actual Pickup Details</h4>
+                    </div>
+                </div>
+                </div>
+                </header>
+                    
+                    <main style="margin-top:150px;">';
+        $i = 0;
+        if ($getPrs && isset($getPrs->Consignments) && !empty($getPrs->Consignments)) {
+                foreach ($getPrs->Consignments as $dataitem) {
+
+                $i++;
+                if ($i % 5 == 0) {
+                    $html .= '<div style="page-break-before: always; margin-top:160px;"></div>';
+                }
+
+                $html .= '
+                    <div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; margin-bottom: -10px;">
+
+                        <div class="column" style="width:125px;">
+                        <p style="margin-top:0px;">' . $dataitem->ConsignerDetail->GetRegClient->name . '</p>
+                            <p style="margin-top:-8px;">' . $dataitem->id . '</p>
+                            <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem->consignment_date) . '</p>
+                        </div>
+                        <div class="column" style="width:200px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->nick_name . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->phone . '</p>
+
+                        </div>
+                        <div class="column" style="width:125px;">
+                            <p style="margin-top:0px;">' . @$dataitem->ConsignerDetail->city . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->district . '</p>
+                            <p style="margin-top:-13px;">' . @$dataitem->ConsignerDetail->postal_code . '</p>
+
+                        </div>
+                        <div class="column" >
+                            <p style="margin-top:0px;">Boxes: ' . $dataitem->total_quantity . '</p>
+                            <p></p>
+                            <p style="margin-top:-13px;">Wt(Kg): ' . $dataitem->total_weight . '</p>
+                        </div>
+                        <div class="column" style="width:170px;">
+                        <p style="margin-top:0px;">Boxes: </p>
+                        <p></p>
+                        <p style="margin-top:-13px;">Wt(Kg): </p>
+                        </div>
+                    </div>';
+                $html .= '<div class="row" style="border-left: 1px solid black; border-right: 1px solid black; border-bottom: 1px solid black; margin-top: 0px;">';
+                //echo'<pre>'; print_r($chunk); die;
+                $html .= ' <div class="column" style="width:230px; margin-top: -10px;">';
+                $html .= '<table class="neworder" style="margin-top: -10px;"><tr style="border:0px;"><td style="width: 190px; padding:6px;"><span style="font-weight: bold;">Order ID</span></td><td style="width: 190px;"><span style="font-weight: bold;">Invoice No</span></td></tr></table>';
+                $itm_no = 0;
+                if (isset($dataitem->ConsignmentItems) && !empty($dataitem->ConsignmentItems)) {
+                    foreach ($dataitem->ConsignmentItems as $cc) {
+                        $itm_no++;
+
+                        $html .= '  <table style="border:0; margin-top: -7px;"><tr><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->order_id . '</td><td style="width: 190px; padding:3px;">' . $itm_no . '.  ' . $cc->invoice_no . '</td></tr></table>';
+                    }
+                }
+                $html .= '</div> ';
+
+                $html .= '</div>
+
+                    <br>';
+
+            }
+        }
+
+        $html .= '</main>
+        <table style="width: 100%; margin-top: 10px">
+            <tr>
+                <td>Driver Eternity & Date</td>
+                <td style="text-align: right">Consignor Sign & Stamp</td>
+            </tr>
+        </table>
+        </body>
+        </html>';
+
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+        $pdf->setPaper('a4', 'portrait');
+        return $pdf->stream('print.pdf');
+
     }
 
 }
