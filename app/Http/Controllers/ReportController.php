@@ -31,6 +31,7 @@ use Session;
 use URL;
 use Carbon\Carbon;
 use Helper;
+use App\Jobs\Report2ExportJob;
 
 class ReportController extends Controller
 {
@@ -73,7 +74,8 @@ class ReportController extends Controller
             $query = $query
                 ->where('status', '!=', 5)
                 ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                    'DrsDetailReattempted:consignment_no,drs_no',
                 );
 
             if ($authuser->role_id == 1) {
@@ -169,7 +171,8 @@ class ReportController extends Controller
         $query = $query
             ->where('status', '!=', 5)
             ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'DrsDetailReattempted:consignment_no,drs_no',
             );
 
         if ($authuser->role_id == 1) {
@@ -618,9 +621,22 @@ class ReportController extends Controller
         return Excel::download(new Report1Export($request->startdate, $request->enddate,$request->branch_id), 'mis_report1.csv');
     }
 
-    public function exportExcelReport2(Request $request)
+    // public function exportExcelReport2(Request $request)
+    // {
+    //     return Excel::download(new Report2Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report2.csv');
+    // }
+
+    public function exportExcelReport2Mis(Request $request)
     {
-        return Excel::download(new Report2Export($request->startdate, $request->enddate, $request->baseclient_id, $request->regclient_id,$request->branch_id), 'mis_report2.csv');
+        // Dispatch the job to the queue
+        Report2ExportJob::dispatch(
+            $request->startdate,
+            $request->enddate,
+            $request->baseclient_id,
+            $request->regclient_id,
+            $request->branch_id
+        );
+    
     }
 
     public function exportExcelReport3(Request $request)

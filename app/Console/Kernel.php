@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\Report2ExportCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,12 +16,14 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\RegionalReport::class,
+        \App\Console\Commands\Report2ExportCommand::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('regional:report')
                  ->everyMinute();
+        $schedule->command(Report2ExportCommand::class)->dailyAt(env('SCHEDULE_TIME'));
     }
 
     /**

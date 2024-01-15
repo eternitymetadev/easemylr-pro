@@ -1119,5 +1119,7 @@ Route::any('regional-report', [ReportController::class, 'regionalReport']);
 Route::any('store-mix-report', [ReportController::class, 'storeMixReport']);
 Route::any('store-mix-report-hrs', [ReportController::class, 'storeMixReportHrs']);
 Route::any('store-mix-report-prs', [ReportController::class, 'storeMixReportPrs']);
+Route::get('mis2report', [ReportController::class, 'exportExcelReport2']);
+
 
 
