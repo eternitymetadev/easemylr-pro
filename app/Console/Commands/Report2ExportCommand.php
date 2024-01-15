@@ -12,6 +12,7 @@ class Report2ExportCommand extends Command
 
     public function handle()
     {
+        \Log::info('Report2ExportCommand is started.');
         $sdate = now()->firstOfMonth()->toDateString();
         $edate = now()->toDateString();
     

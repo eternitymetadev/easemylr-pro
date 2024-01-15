@@ -21,7 +21,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        \Log::info('Report2ExportCommand is started.');
+    
         $schedule->command(Report2ExportCommand::class)->dailyAt(env('SCHEDULE_TIME'));
     }
 
