@@ -94,7 +94,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         
         $query = $query->where('status', '!=', 5)
-        ->with(
+        ->with([
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsigneeDetail.GetZone:postal_code,district,state',
             'ShiptoDetail.GetZone:postal_code,district,state',
@@ -106,7 +106,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DrsDetail:consignment_no,drs_no,created_at',
             'Branch:id,name',
             'ToBranch:id,name',
-        );
+            'DrsDetailReattempted:consignment_no,drs_no',
+        ]);
 
         if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);

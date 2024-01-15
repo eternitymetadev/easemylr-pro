@@ -73,7 +73,8 @@ class ReportController extends Controller
             $query = $query
                 ->where('status', '!=', 5)
                 ->with(
-                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                    'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                    'DrsDetailReattempted:consignment_no,drs_no',
                 );
 
             if ($authuser->role_id == 1) {
@@ -169,7 +170,8 @@ class ReportController extends Controller
         $query = $query
             ->where('status', '!=', 5)
             ->with(
-                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
+                'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
+                'DrsDetailReattempted:consignment_no,drs_no',
             );
 
         if ($authuser->role_id == 1) {
