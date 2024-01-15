@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\RegionalReport::class,
+        \App\Console\Commands\Report2ExportCommand::class,
     ];
 
     protected function schedule(Schedule $schedule)
