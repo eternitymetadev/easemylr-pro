@@ -107,6 +107,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DrsDetail:consignment_no,drs_no,created_at',
             'Branch:id,name',
             'ToBranch:id,name',
+            'DrsDetailReattempted:consignment_no,drs_no',
         ]);
     
         //echo "<pre>";print_r($consignments);die;
