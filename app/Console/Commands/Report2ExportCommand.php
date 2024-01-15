@@ -12,19 +12,37 @@ class Report2ExportCommand extends Command
 
     public function handle()
     {
-        $sdate = config('export.start_date');
-        $edate = config('export.end_date');
-
-        \Log::info('Dispatching Report2ExportJob...');
-
+        \Log::info('Report2ExportCommand is started.');
+        $sdate = now()->firstOfMonth()->toDateString();
+        $edate = now()->toDateString();
+    
+        $lastMonth = now()->subMonth();
+        $last_month_start_date = $lastMonth->firstOfMonth()->toDateString();
+        $last_month_end_date = $lastMonth->lastOfMonth()->toDateString();
+    
+        $thirdLastMonth = now()->subMonths(2);
+        $third_last_month_start_date = $thirdLastMonth->firstOfMonth()->toDateString();
+        $third_last_month_end_date = $thirdLastMonth->lastOfMonth()->toDateString();
+    
+        $baseclient_id = NULL;
+        $regclient_id = NULL;
+        $branch_id = NULL;
+    
+        $exportParams = [
+            [$sdate, $edate],
+            [$last_month_start_date, $last_month_end_date],
+            [$third_last_month_start_date, $third_last_month_end_date],
+        ];
+    
+        \Log::info('Dispatching Report2ExportJob...' . $sdate . ' to ' . $edate);
+    
         Report2ExportJob::dispatch(
-            $sdate,
-            $edate,
-            config('export.base_client_id'),
-            config('export.reg_client_id'),
-            config('export.branch_id')
+            $exportParams,
+            $baseclient_id,
+            $regclient_id,
+            $branch_id
         );
-
+    
         \Log::info('Report2ExportJob dispatched successfully.');
     }
 }

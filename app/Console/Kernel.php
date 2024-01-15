@@ -16,11 +16,13 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\RegionalReport::class,
+        \App\Console\Commands\Report2ExportCommand::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(Report2ExportCommand::class)->dailyAt('12:55');
+    
+        $schedule->command(Report2ExportCommand::class)->dailyAt(env('SCHEDULE_TIME'));
     }
 
     /**
