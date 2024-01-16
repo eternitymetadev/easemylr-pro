@@ -69,41 +69,41 @@ class FtlPtlController extends Controller
             $consigners = Consigner::select('id', 'nick_name')->get();
         }
         // get vehicles
-        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
-        ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        ->whereNotNull('vehicle_id')
-        ->where('lr_type', 0)
-        ->where('status', '!=', 0)
-        ->pluck('vehicle_id')
-        ->unique()
-        ->toArray();
+        // $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
+        // ->whereDate('created_at', '>', '2023-12-20')
+        // ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        // ->whereNotNull('vehicle_id')
+        // ->where('lr_type', 0)
+        // ->where('status', '!=', 0)
+        // ->pluck('vehicle_id')
+        // ->unique()
+        // ->toArray();
 
         // Fetch vehicles that are not in the merged array
-        $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('id', $consignmentVehicleIds)
-        ->select('id', 'regn_no')
-        ->get();
+        // $vehicles = Vehicle::where('status', '1')
+        // ->whereNotIn('id', $consignmentVehicleIds)
+        // ->select('id', 'regn_no')
+        // ->get();
 
         // get drivers
-        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
-        ->whereDate('created_at', '>', '2023-12-20')
-        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        ->whereNotNull('driver_id')
-        ->where('lr_type', 0)
-        ->where('status', '!=', 0)
-        ->pluck('driver_id')
-        ->unique()
-        ->toArray();
+        // $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        // ->whereDate('created_at', '>', '2023-12-20')
+        // ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        // ->whereNotNull('driver_id')
+        // ->where('lr_type', 0)
+        // ->where('status', '!=', 0)
+        // ->pluck('driver_id')
+        // ->unique()
+        // ->toArray();
 
         // Fetch drivers who are not in the merged array
-        $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $consignmentDriverIds)
-        ->select('id', 'name', 'phone')
-        ->get();
+        // $drivers = Driver::where('status', '1')
+        // ->whereNotIn('id', $consignmentDriverIds)
+        // ->select('id', 'name', 'phone')
+        // ->get();
 
-        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
 
