@@ -957,10 +957,9 @@ jQuery(document).ready(function(){
            
             'quantity[]': {
                 required: true
-                //   lettersonly:true
                 },
            'weight[]': {
-                  required: true,
+                  required: true
                 },
            'gross_weight[]': {
                   required: true
@@ -1139,33 +1138,6 @@ jQuery(document).ready(function(){
             ship_to_id: {
                 required: "Select ship to address"
             },
-            // driver_id : {
-            //     required: "Select driver"
-            // },
-            // transporter_name : {
-            //     required: "Enter transporter name"
-            // },
-            // vehicle_type : {
-            //     required: "Select vehicle type"
-            // },
-            // vehicle_id : {
-            //     required: "Select vehicle no."
-            // },
-            // 'quantity[]': {
-            //     required: "Enter quantity"
-            // },
-            // 'weight[]': {
-            //     required: "Enter weight"
-            // },
-            // 'gross_weight[]': {
-            //     required: "Enter gross weight"
-            // },
-            // 'freight[]': {
-            //     required: "Enter freight"
-            // },
-            // 'payment_type[]': {
-            //     required: "Select payment type"
-            // }
         },
         submitHandler : function(form)
         {

@@ -69,6 +69,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'cod',
             'user_id',
             'branch_id',
+            'to_branch_id',
             'driver_id',
             'edd',
             'status',
@@ -93,17 +94,20 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
         $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
         
         $query = $query->where('status', '!=', 5)
-        ->with(
+        ->with([
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsigneeDetail.GetZone:district,state',
-            'ShiptoDetail.GetZone:district,state',
+            'ConsigneeDetail.GetZone:postal_code,district,state',
+            'ShiptoDetail.GetZone:postal_code,district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone', 
             'ConsignerDetail.GetRegClient:id,name,baseclient_id', 
             'ConsignerDetail.GetRegClient.BaseClient:id,client_name',
             'VehicleType:id,name',
-            'DrsDetail:consignment_no,drs_no,created_at'
-        );
+            'DrsDetail:consignment_no,drs_no,created_at',
+            'Branch:id,name',
+            'ToBranch:id,name',
+            'DrsDetailReattempted:consignment_no,drs_no',
+        ]);
 
         if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
@@ -284,13 +288,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'consignee_phone'     => @$consignment->ConsigneeDetail->phone,
                     'consignee_city'      => @$consignment->ConsigneeDetail->city,
                     'consignee_postal'    => @$consignment->ConsigneeDetail->postal_code,
-                    'consignee_district'  => @$consignment->ConsigneeDetail->district,
-                    'consignee_state'     => @$consignment->ConsigneeDetail->state_id,
+                    'consignee_district'  => @$consignment->ConsigneeDetail->GetZone->district,
+                    'consignee_state'     => @$consignment->ConsigneeDetail->GetZone->state,
                     'Ship_to_name'        => @$consignment->ShiptoDetail->nick_name,
                     'Ship_to_city'        => @$consignment->ShiptoDetail->city,
                     'Ship_to_pin'         => @$consignment->ShiptoDetail->postal_code,
-                    'Ship_to_district'    => @$consignment->ShiptoDetail->district,
-                    'Ship_to_state'       => @$consignment->ShiptoDetail->state_id,
+                    'Ship_to_district'    => @$consignment->ShiptoDetail->GetZone->district,
+                    'Ship_to_state'       => @$consignment->ShiptoDetail->GetZone->state,
                     'invoice_no'          => $invno,
                     'invoice_date'        => $invdate,
                     'invoice_amt'         => $invamt,

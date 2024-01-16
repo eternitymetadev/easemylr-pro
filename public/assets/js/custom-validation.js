@@ -805,9 +805,9 @@ jQuery(document).ready(function () {
                                                 <td><input type="number" class="form-control form-small invc_amt" name="data[1][invoice_amount]"></td>
                                                 <td><input type="number" class="form-control form-small ew_bill" name="data[1][e_way_bill]"></td>
                                                 <td><input type="date" class="form-control form-small ewb_date" name="data[1][e_way_bill_date]" onkeydown="return false"></td>
-                                                <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]"></td>
-                                                <td><input type="number" class="form-control form-small net" name="data[1][weight]"></td>
-                                                <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]"></td>
+                                                <td><input type="number" class="form-control form-small qnt" name="data[1][quantity]" required></td>
+                                                <td><input type="number" class="form-control form-small net" name="data[1][weight]" required></td>
+                                                <td><input type="number" class="form-control form-small gross" name="data[1][gross_weight]" required></td>
                                                 <td>`;
                     blockToAppend += (isInsertabelMore) ? `<button type="button" class="btn btn-default btn-rounded insert-more"> + </button>` : ``;
                     blockToAppend += `</td>
@@ -1123,15 +1123,15 @@ jQuery(document).ready(function () {
                 tds +=
                     '<td><input type="number" class="form-control form-small qnt" name="data[' +
                     item_no +
-                    '][quantity]"></td>';
+                    '][quantity]" required></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small net" name="data[' +
                     item_no +
-                    '][weight]"></td>';
+                    '][weight]" required></td>';
                 tds +=
                     '<td><input type="number" class="form-control form-small gross" name="data[' +
                     item_no +
-                    '][gross_weight]"></td>';
+                    '][gross_weight]" required></td>';
                 tds +=
                     '<td><button type="button" class="btn btn-default btn-rounded insert-more"> + </button><button type="button" class="btn btn-default btn-rounded remove-row"> - </button></td>';
                 tds += "</tr>";
