@@ -70,6 +70,7 @@ class FtlPtlController extends Controller
         }
         // get vehicles
         $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
+        ->whereDate('created_at', '>', '2023-12-20')
         ->where('delivery_status', '!=', 'Successful')
         ->where('status', '!=', 0)
         ->pluck('vehicle_id')
@@ -84,6 +85,7 @@ class FtlPtlController extends Controller
 
         // get drivers
         $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        ->whereDate('created_at', '>', '2023-12-20')
         ->where('delivery_status', '!=', 'Successful')
         ->pluck('driver_id')
         ->unique()
