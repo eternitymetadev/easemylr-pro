@@ -83,7 +83,6 @@
                                 <?php } ?>
                                 
                                 <td>{{Helper::ShowDayMonthYear($vendor->created_at)}}</td>
-
                                 <td><button type="button" class="btn btn-sm btn-primary view"
                                         value="{{$vendor->id}}">View</button> <a
                                         href="{{ url($prefix.'/edit-vendor/'.$vendor->id) }}"

@@ -64,6 +64,7 @@ class VendorExport implements FromCollection, WithHeadings, ShouldQueue
                     'gst_register' => @$value->gst_register,
                     'branch_id' => @$value->Branch->name,
                     'created_date' => @Helper::ShowDayMonthYear($value->created_at),
+
                 ];
             }
         }

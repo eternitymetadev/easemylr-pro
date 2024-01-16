@@ -204,6 +204,7 @@ class HubtoHubController extends Controller
 
             // Get vehicles
             $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
+            ->whereDate('created_at', '>', '2024-01-14')
             ->where('status', '!=', 0)
             ->where('receving_status', '!=', '2')
             ->pluck('vehicle_id')
@@ -218,6 +219,7 @@ class HubtoHubController extends Controller
 
             // get drivers
             $hrsDriverIds = Hrs::whereNotNull('driver_id')
+            ->whereDate('created_at', '>', '2024-01-14')
             ->where('receving_status', '!=', '2')
             ->pluck('driver_id')
             ->unique()
@@ -272,6 +274,7 @@ class HubtoHubController extends Controller
 
         // get vehicles
         $hrsVehicleIds = Hrs::whereNotNull('vehicle_id')
+        ->whereDate('created_at', '>', '2024-01-14')
         ->where('receving_status', '!=', '2')
         ->where('status', '!=', 0)
         ->pluck('vehicle_id')
@@ -286,6 +289,7 @@ class HubtoHubController extends Controller
 
         // get drivers
         $hrsDriverIds = Hrs::whereNotNull('driver_id')
+        ->whereDate('created_at', '>', '2024-01-14')
         ->where('receving_status', '!=', '2')
         ->pluck('driver_id')
         ->unique()
