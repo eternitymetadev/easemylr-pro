@@ -11,6 +11,7 @@
                 <th>Vehicle Type</th>
                 <th>Purchase Amount</th>
                 <th>Vendor Name</th>
+                <th>Vendor Pan No</th>
                 <th>Transaction Id</th>
                 <th>Transaction Id Amount</th>
                 <th>Paid Amount</th>
@@ -79,6 +80,7 @@
                 <td>{{$vehicle_type}}</td>
                 <td>{{$purchase}}</td>
                 <td>{{@$drswiseReport->VendorDetails->name}}</td>
+                <td>{{@$drswiseReport->VendorDetails->pan}}</td>
                 <td>{{$drswiseReport->transaction_id}}</td>
                 <td>{{$drswiseReport->total_amount}}</td>
                 <td>{{$paid_amt}}</td>
