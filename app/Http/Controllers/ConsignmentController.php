@@ -1462,7 +1462,7 @@ class ConsignmentController extends Controller
                                 </div>
                           </div>
 
-                  <div class="footer">
+                  <!--<div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
@@ -1471,7 +1471,7 @@ class ConsignmentController extends Controller
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div>
+                  </div>-->
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -1965,25 +1965,18 @@ class ConsignmentController extends Controller
             $baseclient = '';
         }
 
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->getDompdf()->set_option('chroot', base_path());
-    
-        // Set the paper size to 4 inches height and 2.9 inches width
-        $pdf->setPaper([0, 0, 252, 330], 'pt');
-    
-        // Load the HTML view
-        $html = view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient, 'boxes' => $item_count])->render();
-    
-        // Load HTML into Dompdf
-        $pdf->loadHtml($html);
-    
-        // Render PDF (first save to a file if needed)
-        $pdf->render();
-    
-        // Stream the PDF to the browser
-        return $pdf->stream('print.pdf');
+        //$logo = url('assets/img/logo_se.jpg');
+        $barcode = url('assets/img/barcode.png');
 
-    }
+        // if ($authuser->branch_id == 28) {
+        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
+        // } else {
+        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
+        // }
+        //echo $barcode; die;
+
+    }   
+     
     public function unverifiedList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
