@@ -7,8 +7,8 @@
                 * {
                     font-size: 12px;
                     font-family: "sans-serif";
-                    margin:1px;
-                    font-weight:400;
+                    margin:1px 1px 1px 2px;
+                    font-weight:bold;
                 }
                 
                 table, th, td {
