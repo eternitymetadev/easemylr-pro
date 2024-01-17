@@ -1954,7 +1954,7 @@ class ConsignmentController extends Controller
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        //echo'<pre>'; print_r($data);die;
+        $item_count = $data['consignment_items'][0]['quantity'];
         $regional = $data['consigner_detail']['regionalclient_id'];
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
@@ -1965,18 +1965,25 @@ class ConsignmentController extends Controller
             $baseclient = '';
         }
 
-        //$logo = url('assets/img/logo_se.jpg');
-        $barcode = url('assets/img/barcode.png');
-
-        // if ($authuser->branch_id == 28) {
-        //     return view('consignments.consignment-sticker-ldh', ['data' => $data, 'baseclient' => $baseclient]);
-        // } else {
-        return view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient]);
-        // }
-        //echo $barcode; die;
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->getDompdf()->set_option('chroot', base_path());
+    
+        // Set the paper size to 4 inches height and 2.9 inches width
+        $pdf->setPaper([0, 0, 252, 330], 'pt');
+    
+        // Load the HTML view
+        $html = view('consignments.consignment-sticker', ['data' => $data, 'baseclient' => $baseclient, 'boxes' => $item_count])->render();
+    
+        // Load HTML into Dompdf
+        $pdf->loadHtml($html);
+    
+        // Render PDF (first save to a file if needed)
+        $pdf->render();
+    
+        // Stream the PDF to the browser
+        return $pdf->stream('print.pdf');
 
     }
-
     public function unverifiedList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
