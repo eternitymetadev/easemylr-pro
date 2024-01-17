@@ -1564,7 +1564,10 @@ jQuery(document).ready(function () {
                     var awsUrl = data.aws_url;
                     var storage_img = awsUrl + "/pod_images/" + drs_sign;
 
-                    if(value.status == 4){
+                    if(value.lrstatus == 0){
+                        var field = '';
+                    }
+                    else if(value.status == 4){
                         var field = '';
                     }else{
                         if(value.signed_drs != null){
@@ -1578,7 +1581,10 @@ jQuery(document).ready(function () {
                     }
 
                     // delivery date//
-                    if(value.status == 4){
+                    if(value.lrstatus == 0){
+                        var deliverydate = '';
+                    }
+                    else if(value.status == 4){
                         var deliverydate = '';
                     }  else{
                         if(value.dd != null){
@@ -1595,7 +1601,10 @@ jQuery(document).ready(function () {
                     }
 
                     let buttonContent;
-                        if (value.status == 4) {
+                    if(value.lrstatus == 0){
+                        buttonContent = `<a class="btn btn-primary btn-sm-primary" style="--btnColor: #fef3d5">Cancelled</a>`;
+                    }
+                    else if (value.status == 4) {
                             buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn disabled" style="--btnColor: #fef3d5">Re-Attempted</a>`;
                         } else {
                             if(value.dd != null){
