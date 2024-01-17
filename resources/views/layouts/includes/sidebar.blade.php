@@ -22,7 +22,7 @@
     // dd($permissions);
     ?>
     <div class="shadow-bottom"></div>
-    <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
+    <?php if($authuser->role_id != 7 && $authuser->role_id != 8 && $authuser->role_id != 9){ ?>
     <li class="menu">
         <a href="{{$prefixurl.'dashboard'}}" data-active="<?php if($segment == 'dashboard'){?>true<?php }?>"
             class="dropdown-toggle">
@@ -62,6 +62,7 @@
     }
     ?>
     <?php
+    if($authuser->role_id != 9){
     if(!empty($permissions)){
     if(in_array('2', $permissions))
     {
@@ -209,7 +210,7 @@
         </a>
     </li>
     <?php }
-    } ?>
+    }} ?>
     <!-- li class="menu">
         <a href="#consignment" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
@@ -244,6 +245,7 @@
 
         </ul>
     </li -->
+   <?php if($authuser->role_id != 9){ ?> 
     <p class="menuHead menuHeadHidden mb-0">Pickup & Delivery</p>
 
     <li class="menu">
@@ -426,7 +428,7 @@
             </li>
         </ul>
     </li>
-    <?php }?>
+    <?php }}?>
 
     <?php if($authuser->role_id == 1 || $authuser->role_id ==2 || $authuser->role_id ==3 || $authuser->role_id ==4){ ?>
     <li class="menu">
@@ -581,7 +583,7 @@
         </ul>
     </li>
     <?php } ?>
-    <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
+    <?php if($authuser->role_id != 7 && $authuser->role_id != 8 && $authuser->role_id != 9){ ?>
     <p class="menuHead menuHeadHidden mb-0">Reports</p>
 
     <li class="menu">
@@ -750,8 +752,9 @@
             </li>
         </ul>
     </li> -->
-    <?php } if($authuser->role_id == 1 || $authuser->role_id == 3 || $authuser->role_id == 5){ ?>
+    <?php } if($authuser->role_id == 1 || $authuser->role_id == 3 || $authuser->role_id == 5 || $authuser->role_id == 9){ ?>
     <li class="menu">
+        <?php if($authuser->role_id != 9){ ?>
         <a href="#forms" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'bulk-import') || str_contains($currentURL, 'branch-address')) active @endif">
@@ -768,7 +771,8 @@
                 class="feather feather-chevron-right">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-        </a>
+        </a> 
+        <?php } ?>
         <ul class="collapse submenu " id="forms" data-parent="#accordionExample">
             <li>
                 <div class="submenuListStyle"></div><a href="{{url($prefix.'/bulk-import')}}"> Import Data </a>
@@ -792,7 +796,51 @@
             <?php }?>
 
         </ul>
+        <?php if($authuser->role_id == 9){ ?>
+        <a href="{{url($prefix.'/users')}}" data-active="<?php if($segment == 'users'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'users')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Users</span>
+            </div>
+        </a>
+        <a href="{{$prefixurl.'clients'}}" data-active="<?php if($segment == 'clients'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'clients')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Base Client</span>
+            </div>
+        </a>
+        <a href="{{$prefixurl.'reginal-clients'}}" data-active="<?php if($segment == 'reginal-clients'){?>true<?php }?>"
+            class="dropdown-toggle">
+            <div class="@if(str_contains($currentURL, 'reginal-clients')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-users">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Regional Client</span>
+            </div>
+        </a>
+
     </li>
-    <?php } ?>
+    <?php }} ?>
 
 </ul>

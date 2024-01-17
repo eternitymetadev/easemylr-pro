@@ -75,6 +75,9 @@ Route::get('/', function () {
         else if($userrole == 8) {
             return redirect('/lr-cancel/consignments');
         }
+        else if($userrole == 9) {
+            return redirect('/client-manager/users');
+        }
     }
    else
     {
@@ -1079,6 +1082,22 @@ Route::group(['prefix'=>'lr-cancel', 'middleware'=>['auth','PermissionCheck']], 
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
 
+});
+
+Route::group(['prefix'=>'client-manager', 'middleware'=>['auth','PermissionCheck']], function()
+{
+    Route::resource('users', UserController::class);
+    Route::post('/users/update-user', [UserController::class, 'updateUser']);
+    
+    Route::resource('clients', ClientController::class);   
+    Route::any('generate-regional', [ClientController::class, 'generateRegionalName']); 
+    Route::get('reginal-clients', [ClientController::class, 'regionalClients']);
+    Route::get('create-regional-client', [ClientController::class, 'createRegionalClient']);
+    Route::any('create-regional', [ClientController::class, 'storeRegionalClient']);
+    Route::get('/regclient-detail/{id}/edit', [ClientController::class, 'editRegClientDetail']);
+    Route::post('/regclient-detail/update-detail', [ClientController::class, 'updateRegclientdetail']);
+    Route::any('edit-baseclient/{id}', [ClientController::class, 'editBaseClient']);
+    Route::any('update-base-client', [ClientController::class, 'updateBaseClient']);
 });
 
 Route::middleware(['auth'])->group(function () {

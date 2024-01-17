@@ -32,6 +32,7 @@ class User extends Authenticatable
         'assign_branch',
         'is_payment',
         'rm_assign',
+        'created_by',
         'status',
     ];
 
