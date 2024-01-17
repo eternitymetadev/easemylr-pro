@@ -348,26 +348,24 @@ $(function() {
             dataType: 'json',
             beforeSend: function() {
                 $('.disableDrs').prop('disabled', true);
-
             },
             complete: function(response) {
-                $('.disableDrs').prop('disabled', true);
+                $('.disableDrs').prop('disabled', false);
             },
             success: function(data) {
                 if (data.success == true) {
-
                     swal('success', 'Drs Created Successfully', 'success');
                     window.location.href = "transaction-sheet";
+                }else if(data.success == false && data.checkdrs == 'drs-exist'){
+                    swal('error', data.error_message, 'error');
                 } else {
                     swal('error', 'something wrong', 'error');
                 }
-
             }
         })
-
-
     });
 });
+
 ///////////////////////////
 $('.updat_edd').blur(function() {
     //alert('h');

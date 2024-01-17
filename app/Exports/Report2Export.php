@@ -69,6 +69,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'cod',
             'user_id',
             'branch_id',
+            'to_branch_id',
             'driver_id',
             'edd',
             'status',
@@ -96,8 +97,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
     
         $consignments->load([
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
-            'ConsigneeDetail.GetZone:district,state',
-            'ShiptoDetail.GetZone:district,state',
+            'ConsigneeDetail.GetZone:postal_code,district,state',
+            'ShiptoDetail.GetZone:postal_code,district,state',
             'VehicleDetail:id,regn_no',
             'DriverDetail:id,name,fleet_id,phone',
             'ConsignerDetail.GetRegClient:id,name,baseclient_id',
@@ -106,11 +107,10 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DrsDetail:consignment_no,drs_no,created_at',
             'Branch:id,name',
             'ToBranch:id,name',
-            'DrsDetailReattempted:drs_no',
+            'DrsDetailReattempted:consignment_no,drs_no',
         ]);
     
         //echo "<pre>";print_r($consignments);die;
-
     
         if ($branch_id !== null) {
             if ($branch_id) {
@@ -130,7 +130,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                 $q->where('id', $regclient_id);
             });
         }
-    
+
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){
             
@@ -238,14 +238,14 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                          }else{ 
                             $lr_type = "-";
                             }
-    
+
                 // No of reattempt
                 if($consignment->reattempt_reason != null){
                     $no_reattempt = count(json_decode($consignment->reattempt_reason,true));
                 }else{
                     $no_reattempt = '';
                 }
-    
+
                 // reatempted drs nos
                 if(!empty($consignment->DrsDetailReattempted)){
                     $drs_nos = array();
@@ -254,14 +254,13 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     }
                     $reattempt_drs['drs_nos'] = implode('/', $drs_nos);
                 }
-    
                 // delivery branch 
                 if($consignment->lr_type == 0){
                     $delivery_branch = @$consignment->Branch->name;
                 }else{
                     $delivery_branch = @$consignment->ToBranch->name;
                 }
-    
+
                 $arr[] = [
                     'consignment_id'      => $consignment_id,
                     'consignment_date'    => Helper::ShowDayMonthYearslash($consignment_date),
@@ -312,6 +311,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
                     'cod'                 => @$consignment->cod,
                     'lr_type'             => @$lr_type,
                     'reattempt_reason'   => @$no_reattempt,
+
                 ];
             }
         }

@@ -475,6 +475,8 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('get-second-pymt-details-prs', [PickupRunSheetController::class, 'getSecondPaymentDetailsPrs']);
     Route::any('second-payment-prs', [PickupRunSheetController::class, 'createSecondPaymentRequestPrs']); 
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
+    Route::get('pickup-loads/prs-printlr/{lr_id}', [PickupRunSheetController::class, 'prsPrintLR']);
+    Route::any('prs/prs-print/{id}', [PickupRunSheetController::class, 'prsPrint']);
 
     Route::any('import-ordre-booking', [OrderController::class, 'importOrderBooking']);
     
@@ -686,6 +688,8 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    Route::get('pickup-loads/prs-printlr/{lr_id}', [PickupRunSheetController::class, 'prsPrintLR']);
+    Route::any('prs/prs-print/{id}', [PickupRunSheetController::class, 'prsPrint']);
 
     Route::any('hub-transportation', [HubtoHubController::class,'hubtransportation']);
     Route::any('hrs-list', [HubtoHubController::class,'hrsList']);
@@ -898,6 +902,8 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('prs-rm-approver', [PickupRunSheetController::class, 'rmApproverRequest']);
     Route::any('show-prs', [PickupRunSheetController::class, 'showPrs']);
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
+    Route::get('pickup-loads/prs-printlr/{lr_id}', [PickupRunSheetController::class, 'prsPrintLR']);
+    Route::any('prs/prs-print/{id}', [PickupRunSheetController::class, 'prsPrint']);
     
 
 });

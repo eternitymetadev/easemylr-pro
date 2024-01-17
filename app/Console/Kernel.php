@@ -21,7 +21,8 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-    
+        $schedule->command('regional:report')
+                 ->everyMinute();
         $schedule->command(Report2ExportCommand::class)->dailyAt(env('SCHEDULE_TIME'));
     }
 
