@@ -16,6 +16,7 @@ use URL;
 use Helper;
 use Hash;
 use Crypt;
+use Auth;
 use Validator;
 use Illuminate\Support\Arr;
 
@@ -37,8 +38,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $query = User::query();
+        if($authuser->role_id == 9){
+            $query = $query->with('UserRole')->where('created_by',$authuser->id);
+        }
+        $query = $query->with('UserRole');
         $data = $query->with('UserRole')->orderby('id','DESC')->get();
         return view('users.user-list',['data'=>$data,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -71,7 +77,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        $authuser = Auth::user();
+
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
             'name' => 'required',
@@ -134,6 +141,7 @@ class UserController extends Controller
             $regclients = $request->regionalclient_id;
             $usersave['regionalclient_id'] = implode(',', $regclients);
         }
+        $usersave['created_by'] = $authuser->id;
         $usersave['status'] = "1";
         
         $saveuser = User::create($usersave);

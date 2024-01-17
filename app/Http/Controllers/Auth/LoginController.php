@@ -99,6 +99,9 @@ class LoginController extends Controller
             else if($getauthuser->role_id == 8) {
                 $url = URL::to('/lr-cancel/consignments');
             }
+            else if($getauthuser->role_id == 9) {
+                $url = URL::to('/client-manager/users');
+            }
             // Log::channel('customlog')->info('Activity: User Logged In, Name: '.Auth::user()->name);
             $response['success'] = true;
             $response['page'] = "login";

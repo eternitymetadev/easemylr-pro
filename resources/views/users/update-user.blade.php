@@ -261,6 +261,16 @@ $(document).ready(function() {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
         $('.chkBoxClass[value="7"]').prop('checked', true)
+    }else if(role_id == 9) {            //role_id = 9 for client manager
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false);
+        $('.chkBoxClass[value="1"]').prop('checked', true);
+
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
