@@ -97,7 +97,7 @@
                                         All</label>
                                 </div>
                                 <select class="form-control taggingFalse selectAll" multiple="multiple" name="branch_id[]">
-                                    <option value="" disabled>Select</option>
+                                    {{-- <option value="" disabled>Select</option> --}}
                                     <?php 
                                     if(count($branches)>0) {
                                         $cc = explode(',',$getuser->branch_id);
