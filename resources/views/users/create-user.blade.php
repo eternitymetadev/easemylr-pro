@@ -231,6 +231,7 @@
         // });
 
         $('#role_id').change(function() {
+            $('#select_regclient').empty();
             var role_id = $(this).val();
             var checkbox = $('.chkBoxClass').val();
 
