@@ -56,10 +56,16 @@ class UserController extends Controller
      */
     public function create()
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $this->pagetitle =  "Create";
         $getpermissions = Permission::all();
-        $getroles = Role::all();
+        
+        if($authuser->role_id ==9){
+            $getroles = Role::where('id',7)->get();
+        }else{
+            $getroles = Role::all();
+        }
         $branches = Helper::getLocations();
         $baseclients = BaseClient::all();
         $regionalclients = Helper::getRegionalClients();
@@ -200,10 +206,16 @@ class UserController extends Controller
      */
     public function edit($user)
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $this->pagetitle =  "Update";
         $id = decrypt($user); 
-        $getroles = Role::all();
+        // $getroles = Role::all();
+        if($authuser->role_id ==9){
+            $getroles = Role::where('id',7)->get();
+        }else{
+            $getroles = Role::all();
+        }
         $getpermissions = Permission::all();
         
         $allpermissioncount = Permission::all()->count();
