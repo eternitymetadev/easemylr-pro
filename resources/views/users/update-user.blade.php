@@ -92,7 +92,11 @@
                             
                             <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control taggingFalse" multiple="multiple" name="branch_id[]">
+                                <div>
+                                    <input type="checkbox" id="selectAllBranches"> <label for="selectAllBranches">Select
+                                        All</label>
+                                </div>
+                                <select class="form-control taggingFalse selectAll" multiple="multiple" name="branch_id[]">
                                     <option value="" disabled>Select</option>
                                     <?php 
                                     if(count($branches)>0) {
@@ -173,6 +177,30 @@
 $('.taggingFalse').select2();
 
 $(document).ready(function() {
+
+    // Function to update the "Select All" checkbox based on option selection
+    function updateSelectAllCheckbox() {
+        var allSelected = $(".selectAll option:selected").length === $(".selectAll option").length;
+        $('#selectAllBranches').prop('checked', allSelected);
+    }
+
+    // Event handler for changes in the dropdown
+    $('.selectAll').change(function() {
+        updateSelectAllCheckbox();
+    });
+
+    // Event handler for changes in the "Select All" checkbox
+    $('#selectAllBranches').change(function() {
+        var isChecked = $(this).prop('checked');
+        $(".selectAll option").prop("selected", isChecked);
+        $(".selectAll").trigger("change");
+    });
+
+    // Initial check when the page loads
+    updateSelectAllCheckbox();
+
+    ////////////
+
     var role_id = $('#role_id').val();
     var checkbox = $('.chkBoxClass').val();
     if(role_id == 1) {            //role_id = 1 for Admin
