@@ -139,16 +139,16 @@
                                     <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                     <select class="form-control taggingFalse" multiple="multiple"
                                         name="regionalclient_id[]" id="select_regclient">
-                                        <option value="">Select</option>
+                                        {{-- <option value="">Select</option>
                                         <?php 
-                                    if(count($branches)>0) {
-                                        foreach ($branches as $key => $branch) {
-                                    ?>
-                                        <option value="{{ $key }}">{{ ucwords($branch) }}</option>
-                                        <?php 
-                                        }
-                                    }
-                                    ?>
+                                            // if(count($branches)>0) {
+                                            //     foreach ($branches as $key => $branch) {
+                                            ?>
+                                                <option value="{{ $key }}">{{ ucwords($branch) }}</option>
+                                                <?php 
+                                            //     }
+                                            // }
+                                        ?> --}}
                                     </select>
                                 </div>
                                 <div class="form-group mb-4">

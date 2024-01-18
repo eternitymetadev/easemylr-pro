@@ -73,7 +73,7 @@
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control" id="branch_id" name="branch_id_single">
-                                    <option value="">Select</option>
+                                    {{-- <option value="">Select</option> --}}
                                     <?php 
                                     if(count($branches)>0) {
                                         // $cc = explode(',',$getuser->branch_id);
@@ -114,7 +114,7 @@
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control taggingFalse" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
-                                    <option value="">Select</option>
+                                    {{-- <option value="">Select</option> --}}
                                     <?php 
                                     if(count($getclients)>0) {
                                         $cc = explode(',',$getuser->regionalclient_id);
@@ -311,6 +311,7 @@ $(document).ready(function() {
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
     }
+
 });
 
 $('#branch_id').change(function() {

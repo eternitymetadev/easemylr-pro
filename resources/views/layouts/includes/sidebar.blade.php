@@ -813,7 +813,7 @@
         </a>
         <a href="{{$prefixurl.'clients'}}" data-active="<?php if($segment == 'clients'){?>true<?php }?>"
             class="dropdown-toggle">
-            <div class="@if(str_contains($currentURL, 'clients')) active @endif">
+            <div class="@if(str_contains($currentURL, $getprefix.'/clients')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-users">
@@ -827,7 +827,7 @@
         </a>
         <a href="{{$prefixurl.'reginal-clients'}}" data-active="<?php if($segment == 'reginal-clients'){?>true<?php }?>"
             class="dropdown-toggle">
-            <div class="@if(str_contains($currentURL, 'reginal-clients')) active @endif">
+            <div class="@if(str_contains($currentURL, $getprefix.'/reginal-clients')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-users">
