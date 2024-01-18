@@ -123,7 +123,7 @@
                                     </div>
                                     <select class="form-control taggingFalse selectAll" multiple="multiple"
                                         name="branch_id[]">
-                                        <option value="" disabled>Select</option>
+                                        {{-- <option value="" disabled>Select</option> --}}
                                         <?php 
                                     if(count($branches)>0) {
                                         foreach ($branches as $key => $branch) {
@@ -197,17 +197,38 @@
         //multiple select //
         $('.taggingFalse').select2();
 
+        // Function to update the "Select All" checkbox based on option selection
+        function updateSelectAllCheckbox() {
+            var allSelected = $(".selectAll option:selected").length === $(".selectAll option").length;
+            $('#selectAllBranches').prop('checked', allSelected);
+        }
+
+        // Event handler for changes in the dropdown
+        $('.selectAll').change(function() {
+            updateSelectAllCheckbox();
+        });
+
+        // Event handler for changes in the "Select All" checkbox
         $('#selectAllBranches').change(function() {
             var isChecked = $(this).prop('checked');
-            if (isChecked) {
-                $(".selectAll > option").prop("selected", true);
-                $(".selectAll").trigger("change");
-            } else {
-                $(".selectAll > option").prop("selected", false);
-                $(".selectAll").trigger("change");
-            }
-
+            $(".selectAll option").prop("selected", isChecked);
+            $(".selectAll").trigger("change");
         });
+
+        // Initial check when the page loads
+        updateSelectAllCheckbox();
+
+        // $('#selectAllBranches').change(function() {
+        //     var isChecked = $(this).prop('checked');
+        //     if (isChecked) {
+        //         $(".selectAll > option").prop("selected", true);
+        //         $(".selectAll").trigger("change");
+        //     } else {
+        //         $(".selectAll > option").prop("selected", false);
+        //         $(".selectAll").trigger("change");
+        //     }
+
+        // });
 
         $('#role_id').change(function() {
             var role_id = $(this).val();
