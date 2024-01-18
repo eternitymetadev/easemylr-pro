@@ -288,12 +288,12 @@ class UserController extends Controller
         // }
         
         // Updated attribute name according to the changes
-        if($request->role_id == "2" || $request->role_id == "4"){
+        if($request->role_id == "2" || $request->role_id == "4" || $request->role_id == "7"){
             if ($request->branch_id_single) {
                 $usersave['branch_id'] = $request->branch_id_single;
             } 
         }
-        if($request->role_id == "3" || $request->role_id == "5" || $request->role_id == "7"){
+        if($request->role_id == "3" || $request->role_id == "5"){
             if ($request->has('branch_id')) {
                 if (is_array($request->branch_id)) {
                     $usersave['branch_id'] = implode(',', $request->branch_id);
