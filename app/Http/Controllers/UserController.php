@@ -221,7 +221,9 @@ class UserController extends Controller
         $allpermissioncount = Permission::all()->count();
         $getuserpermissions = UserPermission::where('user_id',$id)->get();
         $branches = Helper::getLocations();
-        $getclients = Helper::getRegionalClients();
+        $getuser = User::where('id',$id)->first();
+        // $getclients = Helper::getRegionalClients();
+        $getclients = RegionalClient::where('status', 1)->where('location_id',$getuser->branch_id)->orderby('name', 'ASC')->pluck('name', 'id');
         $u = array();
         if(count($getuserpermissions) > 0)
         {
