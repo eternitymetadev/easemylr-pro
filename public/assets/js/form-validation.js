@@ -157,6 +157,9 @@ jQuery(document).ready(function(){
                 Numbers: true,
                 minlength:10,
             },
+            role_id: {
+                required: true,
+            },
             "branch_id[]" : {
                 required: true,
             },
@@ -183,6 +186,9 @@ jQuery(document).ready(function(){
                 Numbers: "Enter only numbers",
                 minlength: "Enter at least 10 digits",
                 // maxlength: "Maximum length sholud not more than 10 digits"
+            },
+            role_id: {
+                required: "Select role",
             },
             "branch_id[]" : {
                 required: "Please select location",
