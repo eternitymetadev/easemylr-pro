@@ -2030,6 +2030,7 @@ class ConsignmentController extends Controller
     //save draft and start btn update in drs list
     public function updateUnverifiedLr(Request $request)
     {
+        DB::beginTransaction();
         try {
             if($request->is_started == 1){
 
@@ -2094,7 +2095,9 @@ class ConsignmentController extends Controller
             }
             $updateData['delivery_status'] = 'Assigned';
 
-            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
+            if($request->is_started != 1){
+                $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
+            }
 
             $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
             if ($get_consignment) {
@@ -2109,13 +2112,14 @@ class ConsignmentController extends Controller
                 }
                 $trnUpdate['delivery_status'] = 'Assigned';
 
-                $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
+                if($request->is_started != 1){
+                    $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
+                }
             }
 
             if($request->is_started == 1){
-                // echo "<pre>"; print_r($consignmentId); die;
                 // Bulk update for TransactionSheet records
-                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+                $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1,'delivery_status' => 'Started']);
                 $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status',1)->update(['delivery_status' => 'Started']);
                 
                 // Get driver details
@@ -2158,12 +2162,16 @@ class ConsignmentController extends Controller
                     }
                     // ==== end started
                 }
-            }
+            }            
+            DB::commit();
 
             $response['success'] = true;
             $response['success_message'] = "Data Imported successfully";
+            
             return response()->json($response);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             $response['success'] = false;
             $response['error_message'] = "An error occurred: " . $e->getMessage();
             return response()->json($response, 500); // Respond with a status code indicating server error
@@ -2953,7 +2961,6 @@ class ConsignmentController extends Controller
     //////////////////////////////////remove lr////////////////////
     public function removeLR(Request $request)
     {
-        //
         $consignmentId = $_GET['consignment_id'];
         $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['status' => '2']);
         $drs_count = TransactionSheet::where('consignment_no', $consignmentId)->orderby('id', 'DESC')->first();

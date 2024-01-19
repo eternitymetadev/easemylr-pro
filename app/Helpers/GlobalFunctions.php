@@ -232,9 +232,9 @@ class GlobalFunctions
         if ($total_deldate == $total_lr) {
             $status = "Successful";
         } elseif ($total_deldate == 0) {
-            $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
+            $check_started = TransactionSheet::where('drs_no', $drs_number)->whereNotIn('status', [0, 4])->where('is_started', 1)->pluck('is_started')->first();
             if($check_started){
-            $status = "Started";
+                $status = "Started";
             }else{
                 $status = "Unassigned";
             }
