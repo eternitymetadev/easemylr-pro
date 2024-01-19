@@ -218,18 +218,6 @@
         // Initial check when the page loads
         updateSelectAllCheckbox();
 
-        // $('#selectAllBranches').change(function() {
-        //     var isChecked = $(this).prop('checked');
-        //     if (isChecked) {
-        //         $(".selectAll > option").prop("selected", true);
-        //         $(".selectAll").trigger("change");
-        //     } else {
-        //         $(".selectAll > option").prop("selected", false);
-        //         $(".selectAll").trigger("change");
-        //     }
-
-        // });
-
         $('#role_id').change(function() {
             $('#select_regclient').empty();
             var role_id = $(this).val();
