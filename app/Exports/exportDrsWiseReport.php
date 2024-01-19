@@ -39,7 +39,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $cc = explode(',', $authuser->branch_id);
-        $query = PaymentRequest::with('Branch:id,name,nick_name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city');
+        $query = PaymentRequest::with('Branch:id,name,nick_name','TransactionDetails:id,drs_no,consignment_no', 'TransactionDetails.ConsignmentNote:id,regclient_id,vehicle_type,purchase_price,ship_to_id','TransactionDetails.ConsignmentNote.RegClient:id,name', 'VendorDetails:id,name,pan', 'TransactionDetails.ConsignmentNote.vehicletype','TransactionDetail','TransactionDetails.ConsignmentNote.ShiptoDetail:id,city');
         if ($authuser->role_id == 2) {
             $query->whereIn('branch_id', $cc);
         } else {
@@ -118,6 +118,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
                     'vehicle_type' => @$vehicle_type,
                     'purchase_amt' => @$purchase,
                     'vendor_name' => @$drswiseReport->VendorDetails->name,
+                    'vendor_pan' => @$drswiseReport->VendorDetails->pan,
                     'transaction_id' => $drswiseReport->transaction_id,
                     'transaction_idamt' => @$drswiseReport->total_amount,
                     'paid_amt' => @$paidAmt,
@@ -149,6 +150,7 @@ class exportDrsWiseReport implements FromCollection, WithHeadings, ShouldQueue
             'Vehicle Type',
             'Purchase Amount',
             'Vendor Name',
+            'Vendor Pan No',
             'Transaction ID',
             'Transaction ID Amount',
             'Paid Amount',

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Auth;
+use Helper;
 use App\Models\Role;
 
 class VendorExport implements FromCollection, WithHeadings, ShouldQueue
@@ -62,6 +63,7 @@ class VendorExport implements FromCollection, WithHeadings, ShouldQueue
                     'gst_no' => @$value->gst_no,
                     'gst_register' => @$value->gst_register,
                     'branch_id' => @$value->Branch->name,
+                    'created_date' => @Helper::ShowDayMonthYear($value->created_at),
 
                 ];
             }
@@ -90,6 +92,7 @@ class VendorExport implements FromCollection, WithHeadings, ShouldQueue
             'Gst No',
             'Gst Register',
             'Branch Location',
+            'Created Date'
 
         ];
     }

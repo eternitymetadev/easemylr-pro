@@ -43,6 +43,7 @@
                                 <th>TDS Rate</th>
                                 <th>Pan View</th>
                                 <th>Declaration View</th>
+                                <th>Created Date</th>
                                 <th>Action</th>
 
                             </tr>
@@ -80,6 +81,8 @@
                                 <?php }else{ ?>
                                 <td>-</td>
                                 <?php } ?>
+                                
+                                <td>{{Helper::ShowDayMonthYear($vendor->created_at)}}</td>
                                 <td><button type="button" class="btn btn-sm btn-primary view"
                                         value="{{$vendor->id}}">View</button> <a
                                         href="{{ url($prefix.'/edit-vendor/'.$vendor->id) }}"

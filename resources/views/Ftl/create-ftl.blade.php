@@ -645,7 +645,7 @@ function reassign_ids() {
     var i = 0;
     var t = document.getElementsByClassName("mainTr");
     var totalMainTr = document.getElementsByClassName("mainTr").length;
-    alert(totalMainTr);
+    // alert(totalMainTr);
     $(".mainTr tr").each(function() {
         var srno = $(t.rows[i].cells[0]).text();
         if (totalMainTr == 1) {
