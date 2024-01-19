@@ -67,7 +67,6 @@ div.relative {
                                     <th>Email</th>
                                     <th>Roles</th>
                                     <th>Assigned Locations</th>
-                                    <th style="display: none;">Password</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -94,8 +93,6 @@ div.relative {
                                     <td>{{ $user->email ?? "-" }}</td>
                                     <td>{{ ucwords($user->UserRole->name ?? "-") }}</td>
                                     <td>{{ @$user['locations'] ?? "-" }}</td>
-
-                                    <td style="display: none;">{{ $user->user_password ?? "-" }}</td>
                                     <td>
                                         <a class="btn btn-primary" href="{{url($prefix.'/users/'.Crypt::encrypt($user->id).'/edit')}}" ><span><i class="fa fa-edit"></i></span></a>
                                         <a class="btn btn-primary" href="{{url($prefix.'/users/'.Crypt::encrypt($user->id))}}" ><span><i class="fa fa-eye"></i></span></a>

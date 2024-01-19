@@ -42,9 +42,8 @@ class UserController extends Controller
         $this->prefix = request()->route()->getPrefix();
         $query = User::query();
         if($authuser->role_id == 9){
-            $query = $query->with('UserRole')->where('created_by',$authuser->id);
+            $query = $query->where('created_by',$authuser->id);
         }
-        $query = $query->with('UserRole');
         $data = $query->with('UserRole')->orderby('id','DESC')->get();
         return view('users.user-list',['data'=>$data,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
