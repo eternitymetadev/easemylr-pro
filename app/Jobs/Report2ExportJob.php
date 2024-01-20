@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Exports\Report2Export;
+use App\Exports\Report2JobExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Notifications\ReportExportNotification;
 use Illuminate\Support\Facades\Notification;
@@ -51,7 +51,7 @@ class Report2ExportJob implements ShouldQueue
     
             // Add the path to the array
             $paths[] = $path;
-            $export = new Report2Export($exportParams[0], $exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
+            $export = new Report2JobExport($exportParams[0], $exportParams[1], $this->baseclient_id, $this->regclient_id, $this->branch_id);
             Excel::store($export, $paths[$index]);
         }
     
