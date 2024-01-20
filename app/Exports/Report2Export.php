@@ -79,21 +79,8 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'signed_drs',
             'job_id',
             'reattempt_reason',
-        ]);
-
-        $startdate = $this->startdate;
-        $enddate = $this->enddate;
-        $baseclient_id = $this->baseclient_id;
-        $regclient_id = $this->regclient_id;
-        $branch_id = $this->branch_id;
-
-        $authuser = Auth::user();
-        $role_id = Role::where('id','=',$authuser->role_id)->first();
-        $regclient = explode(',',$authuser->regionalclient_id);
-        $cc = explode(',',$authuser->branch_id);
-        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
-        
-        $query = $query->where('status', '!=', 5)
+        ])
+        ->where('status', '!=', 5)
         ->with([
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsigneeDetail.GetZone:postal_code,district,state',
@@ -109,6 +96,18 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'DrsDetailReattempted:consignment_no,drs_no',
         ]);
 
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+        $baseclient_id = $this->baseclient_id;
+        $regclient_id = $this->regclient_id;
+        $branch_id = $this->branch_id;
+
+        $authuser = Auth::user();
+        $role_id = Role::where('id','=',$authuser->role_id)->first();
+        $regclient = explode(',',$authuser->regionalclient_id);
+        $cc = explode(',',$authuser->branch_id);
+        $user = User::where('branch_id',$authuser->branch_id)->where('role_id',2)->first();
+        
         if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif ($authuser->role_id != 1) {
