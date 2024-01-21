@@ -1466,7 +1466,7 @@ class ConsignmentController extends Controller
                                 </div>
                           </div>
 
-                  <!-- <div class="footer">
+                  <!--<div class="footer">
                                   <p style="text-align:center; font-size: 10px;">Terms & Conditions</p>
                                 <p style="font-size: 8px; margin-top: -5px">1. Eternity Solutons does not take any responsibility for damage,leakage,shortage,breakages,soliage by sun ran ,fire and any other damage caused.</p>
                                 <p style="font-size: 8px; margin-top: -5px">2. The goods will be delivered to Consignee only against,payment of freight or on confirmation of payment by the consignor. </p>
@@ -1475,7 +1475,7 @@ class ConsignmentController extends Controller
                                 <p style="font-size: 8px; margin-top: -5px">5. Any complaint pertaining the consignment note will be entertained only within 15 days of receipt of the meterial.</p>
                                 <p style="font-size: 8px; margin-top: -5px">6. In case of mismatch in e-waybill & Invoice of the consignor, Eternity Solutons will impose a penalty of Rs.15000/Consignment  Note in addition to the detention charges stated above. </p>
                                 <p style="font-size: 8px; margin-top: -5px">7. Any dispute pertaining to the consigment Note will be settled at chandigarh jurisdiction only.</p>
-                  </div> -->
+                  </div>-->
                     </div>
                     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -1958,7 +1958,7 @@ class ConsignmentController extends Controller
         $cn_id = $request->id;
         $getdata = ConsignmentNote::where('id', $cn_id)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail')->first();
         $data = json_decode(json_encode($getdata), true);
-        //echo'<pre>'; print_r($data);die;
+        $item_count = $data['consignment_items'][0]['quantity'];
         $regional = $data['consigner_detail']['regionalclient_id'];
 
         $getdataregional = RegionalClient::where('id', $regional)->with('BaseClient')->first();
@@ -1979,8 +1979,8 @@ class ConsignmentController extends Controller
         // }
         //echo $barcode; die;
 
-    }
-
+    }   
+     
     public function unverifiedList(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
