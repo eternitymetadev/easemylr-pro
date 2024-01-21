@@ -42,7 +42,7 @@
         <?php $authuser = Auth::user(); ?>
         <div id="content" class="main-content" style="min-height: calc(100% - 64px)">
             <header class="header-container header navbar navbar-expand-sm">
-                <h1>@yield('page-heading','EasemyLr')</h1>
+                <h1>@yield('page-heading','Shiprider')</h1>
                 <div class="newUserMenu">
                     <img src="{{asset('newasset/assets/img/90x90.jpg')}}" class="img-fluid" alt="admin-profile" />
                     <ul>
