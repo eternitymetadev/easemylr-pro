@@ -73,16 +73,16 @@
                             <div class="form-group mb-4 singleLocation">
                                 <label for="exampleFormControlSelect1">Select Location</label>
                                 <select class="form-control" id="branch_id" name="branch_id_single">
-                                    <option value="">Select</option>
+                                    {{-- <option value="">Select</option> --}}
                                     <?php 
                                     if(count($branches)>0) {
-                                        // $cc = explode(',',$getuser->branch_id);
+                                        $cc = explode(',',$getuser->branch_id);
                                         foreach ($branches as $key => $branch) {
-                                            // $selected = in_array($key, $cc) ? 'selected' : '';
+                                            $selected = in_array($key, $cc) ? 'selected' : '';
                                     ?>
                                     <option value="{{ $key }}" {{ $getuser->branch_id == $key ? 'selected' : ''}}>{{ucwords($branch)}}</option>
 
-                                        {{-- <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option> --}}
+                                        <option value="{{ $key }}" {{ $selected}}>{{ucwords($branch)}}</option>
                                         <?php 
                                         }
                                     }
@@ -92,8 +92,12 @@
                             
                             <div class="form-group mb-4 multiLocation" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Location</label>
-                                <select class="form-control taggingFalse" multiple="multiple" name="branch_id[]">
-                                    <option value="" disabled>Select</option>
+                                <div>
+                                    <input type="checkbox" id="selectAllBranches"> <label for="selectAllBranches">Select
+                                        All</label>
+                                </div>
+                                <select class="form-control taggingFalse selectAll" multiple="multiple" name="branch_id[]">
+                                    {{-- <option value="" disabled>Select</option> --}}
                                     <?php 
                                     if(count($branches)>0) {
                                         $cc = explode(',',$getuser->branch_id);
@@ -110,7 +114,7 @@
                             <div class="form-group mb-4 selectClient" style="display: none;">
                                 <label for="exampleFormControlSelect1">Select Regional Clients</label>
                                 <select class="form-control taggingFalse" multiple="multiple" name="regionalclient_id[]" id="select_regclient">
-                                    <option value="">Select</option>
+                                    {{-- <option value="">Select</option> --}}
                                     <?php 
                                     if(count($getclients)>0) {
                                         $cc = explode(',',$getuser->regionalclient_id);
@@ -173,6 +177,30 @@
 $('.taggingFalse').select2();
 
 $(document).ready(function() {
+
+    // Function to update the "Select All" checkbox based on option selection
+    function updateSelectAllCheckbox() {
+        var allSelected = $(".selectAll option:selected").length === $(".selectAll option").length;
+        $('#selectAllBranches').prop('checked', allSelected);
+    }
+
+    // Event handler for changes in the dropdown
+    $('.selectAll').change(function() {
+        updateSelectAllCheckbox();
+    });
+
+    // Event handler for changes in the "Select All" checkbox
+    $('#selectAllBranches').change(function() {
+        var isChecked = $(this).prop('checked');
+        $(".selectAll option").prop("selected", isChecked);
+        $(".selectAll").trigger("change");
+    });
+
+    // Initial check when the page loads
+    updateSelectAllCheckbox();
+
+    ////////////
+
     var role_id = $('#role_id').val();
     var checkbox = $('.chkBoxClass').val();
     if(role_id == 1) {            //role_id = 1 for Admin
@@ -261,6 +289,16 @@ $(document).ready(function() {
         $('#ckbCheckAll').attr('checked', false);
         $('.chkBoxClass').prop('checked', false)
         $('.chkBoxClass[value="7"]').prop('checked', true)
+    }else if(role_id == 9) {            //role_id = 9 for client manager
+        $('#ckbCheckAll').attr('checked', false);
+        $('.chkBoxClass').prop('checked', false);
+        $('.chkBoxClass[value="1"]').prop('checked', true);
+
+        $('.multiLocation').show();
+        $('.singleLocation').hide();
+        $('.selectClient').hide();
+        $('.baseclient').hide();
+        $('.rm_assign').hide();
     }else{
         $('.multiLocation').hide();
         $('.singleLocation').show();
@@ -273,6 +311,7 @@ $(document).ready(function() {
         $('.chkBoxClass[value="1"]').prop('checked', false)
         $('.chkBoxClass[value="2"]').prop('checked', false)
     }
+
 });
 
 $('#branch_id').change(function() {

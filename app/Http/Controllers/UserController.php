@@ -16,6 +16,7 @@ use URL;
 use Helper;
 use Hash;
 use Crypt;
+use Auth;
 use Validator;
 use Illuminate\Support\Arr;
 
@@ -37,8 +38,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $query = User::query();
+        if($authuser->role_id == 9){
+            $query = $query->where('created_by',$authuser->id);
+        }
         $data = $query->with('UserRole')->orderby('id','DESC')->get();
         return view('users.user-list',['data'=>$data,'prefix'=>$this->prefix,'title'=>$this->title])->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -50,10 +55,16 @@ class UserController extends Controller
      */
     public function create()
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $this->pagetitle =  "Create";
         $getpermissions = Permission::all();
-        $getroles = Role::all();
+        
+        if($authuser->role_id ==9){
+            $getroles = Role::where('id',7)->get();
+        }else{
+            $getroles = Role::all();
+        }
         $branches = Helper::getLocations();
         $baseclients = BaseClient::all();
         $regionalclients = Helper::getRegionalClients();
@@ -71,7 +82,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        $authuser = Auth::user();
+
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
             'name' => 'required',
@@ -134,6 +146,7 @@ class UserController extends Controller
             $regclients = $request->regionalclient_id;
             $usersave['regionalclient_id'] = implode(',', $regclients);
         }
+        $usersave['created_by'] = $authuser->id;
         $usersave['status'] = "1";
         
         $saveuser = User::create($usersave);
@@ -192,16 +205,24 @@ class UserController extends Controller
      */
     public function edit($user)
     {
+        $authuser = Auth::user();
         $this->prefix = request()->route()->getPrefix();
         $this->pagetitle =  "Update";
         $id = decrypt($user); 
-        $getroles = Role::all();
+        // $getroles = Role::all();
+        if($authuser->role_id ==9){
+            $getroles = Role::where('id',7)->get();
+        }else{
+            $getroles = Role::all();
+        }
         $getpermissions = Permission::all();
         
         $allpermissioncount = Permission::all()->count();
         $getuserpermissions = UserPermission::where('user_id',$id)->get();
         $branches = Helper::getLocations();
-        $getclients = Helper::getRegionalClients();
+        $getuser = User::where('id',$id)->first();
+        // $getclients = Helper::getRegionalClients();
+        $getclients = RegionalClient::where('status', 1)->where('location_id',$getuser->branch_id)->orderby('name', 'ASC')->pluck('name', 'id');
         $u = array();
         if(count($getuserpermissions) > 0)
         {
@@ -266,12 +287,12 @@ class UserController extends Controller
         // }
         
         // Updated attribute name according to the changes
-        if($request->role_id == "2" || $request->role_id == "4"){
+        if($request->role_id == "2" || $request->role_id == "4" || $request->role_id == "7"){
             if ($request->branch_id_single) {
                 $usersave['branch_id'] = $request->branch_id_single;
             } 
         }
-        if($request->role_id == "3" || $request->role_id == "5" || $request->role_id == "7"){
+        if($request->role_id == "3" || $request->role_id == "5"){
             if ($request->has('branch_id')) {
                 if (is_array($request->branch_id)) {
                     $usersave['branch_id'] = implode(',', $request->branch_id);

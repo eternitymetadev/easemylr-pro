@@ -83,9 +83,9 @@ div.relative {
                                 ?>
                             <tr>
                                 <td>{{ $value->id ?? "-" }}</td>
-                                <td>
-                                    <a
-                                        href="{{url($prefix.'/'.$segment.'/add-regclient-detail/'.Crypt::encrypt($value->id))}}">{{ ucwords($value->name ?? "-")}}</a>
+                                <td>{{ ucwords($value->name ?? "-")}}
+                                    {{-- <a
+                                        href="{{url($prefix.'/'.$segment.'/add-regclient-detail/'.Crypt::encrypt($value->id))}}">{{ ucwords($value->name ?? "-")}}</a> --}}
                                 </td>
                                 <td>{{$value->Location->name ?? "-"}}</td>
                                 <td>{{$value->gst_no ?? "-"}}</td>
