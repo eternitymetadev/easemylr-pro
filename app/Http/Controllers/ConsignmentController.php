@@ -75,9 +75,9 @@ class ConsignmentController extends Controller
             if (isset($request->updatestatus)) {
                 $lr_cancel = ConsignmentNote::where('id', $request->id)->update(['status' => $request->status, 'reason_to_cancel' => $request->reason_to_cancel, 'cancel_userid' => $authuser->id, 'delivery_status' => 'Cancel']);
 
-                // if($lr_cancel && $request->status == 0){
-                //     TransactionSheet::where('consignment_no', $request->id)->where('status',1)->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
-                // }
+                if($lr_cancel && $request->status == 0){
+                    TransactionSheet::where('consignment_no', $request->id)->where('status',1)->update(['status' => $request->status, 'delivery_status' => 'Cancel']);
+                }
 
                 $url = $this->prefix . '/consignments';
                 $response['success'] = true;
