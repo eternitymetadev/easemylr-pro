@@ -13,6 +13,12 @@ use Auth;
 
 class DeliveryDateImport implements ToModel,WithHeadingRow
 {
+    protected $failedLRs = [];
+
+    public function getFailedLRs()
+    {
+        return $this->failedLRs;
+    }
 	/**
     * @param array $row
     *
@@ -26,7 +32,8 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $authuser = Auth::user();        
         $consignmentNote = ConsignmentNote::find($row['lr_no']);
 
-        if ($consignmentNote && !empty($getDelivery_date) && ($consignmentNote->delivery_status == 'Started')) {
+        if ($consignmentNote && !empty($getDelivery_date) && ($consignmentNote->delivery_status == 'Started')
+        && ($consignmentNote->consignment_date <= $getDelivery_date)) {
             if($consignmentNote->delivery_date){
                 $delivery_date = $consignmentNote->delivery_date;
             }else{
@@ -41,6 +48,9 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                 'pod_userid' => $authuser->id,
                 'consignment_no'=>'By import',
             ]);
+        } else {
+            // LR ID without a valid POD, store it in the failedLRs array
+            $this->failedLRs[] = $row['lr_no'];
         }
     }
 
