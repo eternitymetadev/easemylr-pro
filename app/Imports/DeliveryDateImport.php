@@ -32,7 +32,7 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $authuser = Auth::user();        
         $consignmentNote = ConsignmentNote::find($row['lr_no']);
 
-        if ($consignmentNote && !empty($getDelivery_date) && ($consignmentNote->delivery_status == 'Started')
+        if ($consignmentNote && !empty($getDelivery_date) && ($consignmentNote->delivery_status == 'Started' || $consignmentNote->delivery_status == 'Successful')
         && ($consignmentNote->consignment_date <= $getDelivery_date)) {
             if($consignmentNote->delivery_date){
                 $delivery_date = $consignmentNote->delivery_date;
