@@ -2095,10 +2095,8 @@ class ConsignmentController extends Controller
             }
             $updateData['delivery_status'] = 'Assigned';
 
-            if($request->is_started != 1){
-                $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
-            }
-
+            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
+           
             $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
             if ($get_consignment) {
                 if($get_consignment->VehicleDetail && isset($get_consignment->VehicleDetail->regn_no)){
@@ -2112,9 +2110,7 @@ class ConsignmentController extends Controller
                 }
                 $trnUpdate['delivery_status'] = 'Assigned';
 
-                if($request->is_started != 1){
-                    $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
-                }
+                $saveTransaction = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status', 1)->update($trnUpdate);
             }
 
             if($request->is_started == 1){
