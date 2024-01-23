@@ -19,6 +19,7 @@ use App\Models\PaymentRequest;
 use App\Models\MixReport;
 use App\Models\HrsPaymentRequest;
 use App\Models\PrsPaymentRequest;
+use App\Models\TransactionSheet;
 use App\Models\Hrs;
 use Auth;
 use Config;
@@ -960,6 +961,22 @@ class ReportController extends Controller
         return 1 ;
 
     }
+
+    public function updateDeliverystatus(){
+        // First update statement
+        $updatedConsignmentNotes = ConsignmentNote::whereNotNull('delivery_date')
+        ->where('status', 1)
+        ->update(['delivery_status' => 'Successful']);
+
+        // Second update statement with join
+        $updatedTransactionSheets = TransactionSheet::join('consignment_notes as cn', 'transaction_sheets.consignment_no', '=', 'cn.id')
+        ->where('transaction_sheets.status', 1)
+        ->where('cn.delivery_status', 'Successful')
+        ->update(['transaction_sheets.delivery_status' => 'Successful']);
+
+        return 'Data updated successfully';
+    } 
+
 
 
 }
