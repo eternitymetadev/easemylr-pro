@@ -61,7 +61,7 @@ class UserController extends Controller
         $getpermissions = Permission::all();
         
         if($authuser->role_id ==9){
-            $getroles = Role::where('id',7)->get();
+            $getroles = Role::where('id',4)->get();
         }else{
             $getroles = Role::all();
         }
@@ -211,7 +211,7 @@ class UserController extends Controller
         $id = decrypt($user); 
         // $getroles = Role::all();
         if($authuser->role_id ==9){
-            $getroles = Role::where('id',7)->get();
+            $getroles = Role::where('id',4)->get();
         }else{
             $getroles = Role::all();
         }
