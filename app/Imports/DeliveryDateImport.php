@@ -39,11 +39,16 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
             }else{
                 $delivery_date = $getDelivery_date;
             }
+            if($consignmentNote->signed_drs){
+                $signed_drs = $consignmentNote->signed_drs;
+            }else{
+                $signed_drs = $row['pod_image'];
+            }
             // dd($consignmentNote);
             $consignmentNote->update([
                 'delivery_date' => $delivery_date,
                 'delivery_status' => 'Successful',
-                'signed_drs' => $row['pod_image'],
+                'signed_drs' => $signed_drs,
                 'lr_mode' => 0,
                 'pod_userid' => $authuser->id,
                 'consignment_no'=>'By import',
