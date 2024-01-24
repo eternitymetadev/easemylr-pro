@@ -247,8 +247,8 @@ class GlobalFunctions
     public static function getdeleveryStatus($drs_number)
     {
         // Get the consignment numbers related to the provided drs_number
-        // $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
-        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->pluck('consignment_no')->toArray();
+        $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
+        // $get_lrs = TransactionSheet::where('drs_no', $drs_number)->pluck('consignment_no')->toArray();
 
         // Count the number of delivered and empty consignments
         $total_deldate = ConsignmentNote::whereIn('id', $get_lrs)->where('status', '!=', 0)->whereNotNull('delivery_date')->count();
@@ -264,7 +264,9 @@ class GlobalFunctions
         $totalCount = $total_deldate + $countStatusZero + $countReattempt;
 
         // Determine the delivery status
-        if ($total_deldate == $totallrCount) {
+        if($totallrCount == $countStatusZero){
+            $status = "Cancel";
+        } else if ($total_deldate == $totallrCount) {
             $status = "Successful";
         } elseif ($total_deldate == 0) {
             $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
