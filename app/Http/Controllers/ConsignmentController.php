@@ -2024,7 +2024,7 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
-        
+
         return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -2244,7 +2244,7 @@ class ConsignmentController extends Controller
 
     public function transactionSheet(Request $request)
     {
-        set_time_limit(60);
+        // set_time_limit(60);
         $this->segment == 'transaction-sheet';
         ini_set('max_execution_time', -1);
         
