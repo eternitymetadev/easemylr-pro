@@ -32,6 +32,7 @@ use DateTime;
 use DB;
 use Helper;
 use Illuminate\Http\Request;
+use Illuminate\Filesystem\Filesystem;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use QrCode;
@@ -2023,6 +2024,7 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+        
         return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -2169,7 +2171,7 @@ class ConsignmentController extends Controller
             DB::rollBack();
 
             $response['success'] = false;
-            $response['error_message'] = "An error occurred: " . $e->getMessage();
+            $response['success_message'] = "An error occurred: " . $e->getMessage();
             return response()->json($response, 500); // Respond with a status code indicating server error
         }
     }
@@ -2232,13 +2234,17 @@ class ConsignmentController extends Controller
             $response['success_message'] = "Data Imported successfully";
             return response()->json($response);
         } catch (Exception $e) {
-            
+
+            $response['success'] = false;
+            $response['success_message'] = "An error occurred: " . $e->getMessage();
+            return response()->json($response, 500);
         }
 
     }
 
     public function transactionSheet(Request $request)
     {
+        set_time_limit(60);
         $this->segment == 'transaction-sheet';
         ini_set('max_execution_time', -1);
         
