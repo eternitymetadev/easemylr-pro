@@ -59,11 +59,10 @@ class Report2ExportJob implements ShouldQueue
         // Get an array of email addresses from the environment variable
         $emailAddresses = explode(',', env('MIS_EMAILS'));
         // Extract the first email address as the primary recipient (To)
-        $toEmail = array_shift($emailAddresses);
+        $toEmail = env('MIS_EMAILS_TO');
 
         // Send email notification to the primary recipient (To) and add BCC recipients
-        Notification::to($toEmail)
-            ->bcc($emailAddresses)
+        Notification::route('mail', $toEmail)
             ->notify(new ReportExportNotification($emailAddresses));
 
         \Log::info('Report2ExportJob processed: ' . implode(', ', $paths));
