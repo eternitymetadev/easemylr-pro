@@ -2239,6 +2239,7 @@ class ConsignmentController extends Controller
 
     public function transactionSheet(Request $request)
     {
+        // set_time_limit(60);
         $this->segment == 'transaction-sheet';
         ini_set('max_execution_time', -1);
         
