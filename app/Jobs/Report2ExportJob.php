@@ -62,8 +62,8 @@ class Report2ExportJob implements ShouldQueue
         $toEmail = array_shift($emailAddresses);
 
         // Send email notification to the primary recipient (To) and add BCC recipients
-        Notification::route('mail', $toEmail)
-            ->route('cc', $emailAddresses)
+        Notification::to($toEmail)
+            ->bcc($emailAddresses)
             ->notify(new ReportExportNotification($emailAddresses));
 
         \Log::info('Report2ExportJob processed: ' . implode(', ', $paths));
