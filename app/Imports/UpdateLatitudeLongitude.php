@@ -27,6 +27,6 @@ class UpdateLatitudeLongitude implements ToModel,WithHeadingRow
                 'longitude' =>  $row['longitude']
             ]);
         }
-        }
+    }
     
 }
