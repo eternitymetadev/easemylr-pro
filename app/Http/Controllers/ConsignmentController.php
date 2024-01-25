@@ -2510,9 +2510,10 @@ class ConsignmentController extends Controller
             ->with(['ConsignmentDetail' => function ($query) {
                 $query->whereIn('status', [1, 5]);
             }])
+            ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
             ->get();
-
+            
             $lr_ids = TransactionSheet::where('drs_no', $drsId)->where('status',1)
             ->pluck('consignment_no')
             ->toArray();

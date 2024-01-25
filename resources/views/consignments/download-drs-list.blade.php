@@ -236,6 +236,8 @@
 
 
         function fetchLrDetails(drsId) {
+            console.log('ajax started')
+
             $.ajax({
                 type: "GET",
                 url: "view-transactionSheet/" + drsId,
@@ -244,6 +246,7 @@
                 },
                 beforeSend: //reinitialize Datatables
                     function() {
+                        console.log('started')
                         $('#sheet').dataTable().fnClearTable();
                         $('#sheet').dataTable().fnDestroy();
                         $("#sss").empty();
@@ -252,7 +255,7 @@
                         $("#drsdate").empty();
                     },
                 success: function(data) {
-                    console.log(data.fetch[0].consignment_detail.driver_id);
+                    console.log(data.fetch[0]?.consignment_detail.driver_id);
                     // var re = jQuery.parseJSON(data)
                     var re = data;
                     var drs_no = re.fetch[0]['drs_no'];
@@ -276,8 +279,8 @@
                                         <td>${value.consignee_id}</td>
                                         <td>${value.city}</td>
                                         <td>${value.pincode}</td>
-                                        <td>${value.consignment_detail.total_quantity}</td>
-                                        <td>${value.consignment_detail.total_weight}</td>
+                                        <td>${value.consignment_detail.total_quantity ?? ''}</td>
+                                        <td>${value.consignment_detail.total_weight ?? ''}</td>
                                         <td><button type='button' data-id="${value.consignment_no}" ${re.fetch.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
                                     </tr>`);
                     });
