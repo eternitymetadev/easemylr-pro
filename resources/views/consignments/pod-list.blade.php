@@ -310,7 +310,12 @@ $("#update_image_pod").submit(function(e) {
         data: new FormData(this),
         processData: false,
         contentType: false,
-        beforeSend: function() {},
+        beforeSend: function() {
+            $("#mainLoader").show();
+        },
+        complete: function() {
+            $("#mainLoader").hide();
+        },
         success: (data) => {
             if (data.success == true) {
                 swal('success', data.messages, 'success');
@@ -452,11 +457,19 @@ jQuery(document).on('click', '.viewpdfInNewTab', function() {
 });
 
 jQuery(document).on('click', '.editButtonimg', function() {
-    var li_no = $(this).attr('data-id');
-    var date = $(this).attr('lr-date');
+    var lr_no = $(this).attr('data-id');
+    var lr_date = $(this).attr('lr-date');
+    var delivery_date = $(this).attr('data-deliverydate');
     $('#updateImageModal').modal('show');
-    $('#lr_no').val(li_no);
-    $('#dispatch_date').val(date);
+    $('#lr_no').val(lr_no);
+    $('#dispatch_date').val(lr_date);
+    if (delivery_date != '') {
+        $('#dlvery_date').val(delivery_date);
+        $('#dlvery_date').attr('readonly', true);
+    } else{
+        $('#dlvery_date').removeAttr('readonly');
+    }
+
 });
 
 // lr mode change
@@ -492,10 +505,10 @@ jQuery(document).on(
                 },
                 processData: true,
                 beforeSend: function() {
-                    // jQuery("input[type=submit]").attr("disabled", "disabled");
+                    $("#mainLoader").show();
                 },
                 complete: function() {
-                    //jQuery("#loader-section").css('display','none');
+                    $("#mainLoader").hide();
                 },
                 success: function(response) {
                     if (response.success == true) {
@@ -540,10 +553,10 @@ jQuery(document).on(
                 },
                 processData: true,
                 beforeSend: function() {
-                    // jQuery("input[type=submit]").attr("disabled", "disabled");
+                    $("#mainLoader").show();
                 },
                 complete: function() {
-                    //jQuery("#loader-section").css('display','none');
+                    $("#mainLoader").hide();
                 },
                 success: function(response) {
                     if (response.success == true) {
