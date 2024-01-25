@@ -176,7 +176,7 @@ label.statusLabel {
 
 
 <!-- update image Modal -->
-<div class="modal fade" id="updateImageModal" tabindex="-1" role="dialog" aria-labelledby="updateImageModalLabel"
+<div class="modal fade" id="updateImageModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="updateImageModalLabel"
     aria-hidden="true">
     <form class="modal-dialog modal-dialog-centered" role="document" id="update_image_pod">
         <div class="modal-content">
@@ -200,7 +200,7 @@ label.statusLabel {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="closeButton btn btn-outline-primary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </div>
@@ -455,6 +455,12 @@ jQuery(document).on('click', '.viewpdfInNewTab', function() {
     let toggledImage = $(this).attr('pdf-nm');
     $('#toggledPdfView').attr('src', toggledImage);
 });
+
+// form reset on modal close button
+$(".closeButton").on("click", function () {
+    $('#dlvery_date').val('');
+});
+
 
 jQuery(document).on('click', '.editButtonimg', function() {
     var lr_no = $(this).attr('data-id');
