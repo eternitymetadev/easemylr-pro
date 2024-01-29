@@ -32,6 +32,7 @@ use DateTime;
 use DB;
 use Helper;
 use Illuminate\Http\Request;
+use Illuminate\Filesystem\Filesystem;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
 use QrCode;
@@ -2232,7 +2233,9 @@ class ConsignmentController extends Controller
             $response['success_message'] = "Data Imported successfully";
             return response()->json($response);
         } catch (Exception $e) {
-            
+            $response['success'] = false;
+            $response['error_message'] = "An error occurred: " . $e->getMessage();
+            return response()->json($response, 500);
         }
 
     }
