@@ -255,6 +255,7 @@
 
 .bg-info {
     background-color: #2CA8FF !important;
+    /* background-color: #df015e !important; */
 }
 
 .dt--top-section {

@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleType;
 use App\Models\PickupRunSheet;
+use App\Models\TransactionSheet;
 use App\Models\Zone;
 use Auth;
 use Carbon\Carbon;
@@ -102,8 +103,45 @@ class FtlPtlController extends Controller
         // ->select('id', 'name', 'phone')
         // ->get();
 
-        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
-        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        /////////////////////////////
+
+        // get vehicles
+        $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        ->whereDate('created_at', '>', '2023-12-20')
+        ->whereNotNull('vehicle_no')
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
+        ->pluck('vehicle_no')
+        ->unique()
+        ->toArray();
+
+        // Fetch vehicles that are not in the merged array
+        $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
+        ->whereNotIn('regn_no', $drsVehicleIds)
+        ->get();
+
+        // get drivers
+        $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
+        ->whereDate('created_at', '>', '2023-12-20')
+        ->whereNotNull('driver_no')
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
+        ->pluck('driver_no')
+        ->unique()
+        ->toArray();
+
+        // Fetch drivers who are not in the merged array
+        $drivers = Driver::where('status', '1')
+        ->whereNotIn('phone', $drsDriverIds)
+        ->select('id', 'name', 'phone')
+        ->get();
+
+        // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
         $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
         $itemlists = ItemMaster::where('status', '1')->get();
 
