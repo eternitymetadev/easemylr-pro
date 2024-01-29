@@ -60,9 +60,12 @@ class ImportCsvController extends Controller
             $url  = URL::to($this->prefix.'/zones');
             $message = 'Zones Uploaded Successfully';
         }
-        if($request->hasFile('deliverydatesfile')){
-            $data = Excel::import(new DeliveryDateImport,request()->file('deliverydatesfile'));
-            $url  = URL::to($this->prefix.'/consignments');
+        if ($request->hasFile('deliverydatesfile')) {
+            // $data = Excel::import(new DeliveryDateImport,request()->file('deliverydatesfile'));
+            $import = new DeliveryDateImport;
+            $data = Excel::import($import, request()->file('deliverydatesfile'));
+            $url = URL::to($this->prefix.'/consignments');
+            $failedLRs = $import->getFailedLRs();
             $message = 'Delivery dates Uploaded Successfully';
         }
         if($request->hasFile('manualdeliveryfile')){
