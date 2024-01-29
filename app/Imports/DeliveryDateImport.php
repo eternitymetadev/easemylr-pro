@@ -29,7 +29,8 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
         $date_string = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['delivery_date']);
         $getDelivery_date = $date_string->format('Y-m-d');
 
-        $authuser = Auth::user();        
+        $authuser = Auth::user();
+        
         $consignmentNote = ConsignmentNote::find($row['lr_no']);
 
         if ($consignmentNote && !empty($getDelivery_date) && ($consignmentNote->delivery_status == 'Started' || $consignmentNote->delivery_status == 'Successful')

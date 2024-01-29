@@ -49,7 +49,7 @@ class ReportExportNotification extends Notification
     
         $today = now();
         $todaydDate = $today->format('d-M-Y');
-        $ccEmails = explode(',', env('MIS_EMAILS_CC'));   
+        $ccEmails = explode(',', env('MIS_EMAILS_CC'));        
     
         $mailMessage = (new MailMessage)
             ->subject('Daily MIS2 Report  ' . $todaydDate)
