@@ -365,6 +365,47 @@
         </ul>
     </li>
 
+    {{-- LR contract --}}
+    <li class="menu">
+        <a href="#lrcontract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <div
+                class="@if(str_contains($currentURL, 'contract-lrs') || str_contains($currentURL, 'create-contractlr')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-trello">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <rect x="7" y="7" width="3" height="9"></rect>
+                    <rect x="14" y="7" width="3" height="5"></rect>
+                </svg>
+                <span>LR Contract</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-chevron-right submenuArrow">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        <ul class="collapse submenu list-unstyled" id="lrcontract" data-parent="#accordionExample">
+            <?php if($authuser->role_id != 3){ ?>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'create-contractlr'}}"> Create LR Contract</a>
+            </li>
+            <?php } ?>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-lrs'}}"> LR Contracts </a>
+            </li>
+            <?php if($authuser->role_id != 3){ ?>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
+            </li>
+            <?php } ?>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
+            </li>
+
+        </ul>
+    </li>
+    {{-- end lr contract --}}
     <li class="menu">
         <a href="#drs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div

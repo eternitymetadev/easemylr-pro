@@ -13,6 +13,7 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\BrokerController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ConsignmentController;
+use App\Http\Controllers\ContractLrController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ImportCsvController;
@@ -361,6 +362,10 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
+
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
     
     // Route::any('get-driver-drs', [ConsignmentController::class, 'getDriverdrs']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
