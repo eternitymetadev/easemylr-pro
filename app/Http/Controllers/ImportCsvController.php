@@ -66,7 +66,7 @@ class ImportCsvController extends Controller
             $import = new DeliveryDateImport;
             $data = Excel::import($import, request()->file('deliverydatesfile'));
             $url = URL::to($this->prefix.'/consignments');
-            $failedLRs = $import->getFailedLRs();
+            $failedLRs = $import->getFailedLRs(); 
             $message = 'Delivery dates Uploaded Successfully';
         }
 
