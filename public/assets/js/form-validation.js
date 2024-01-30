@@ -1978,7 +1978,7 @@ function formSubmitRedirect(form)
         },
         processData : false,
         dataType    : "json",
-        beforeSend  : function () {
+        beforeSend  : function () {            
             $("#mainLoader").show();
             $(".loader").show();
             
@@ -2000,7 +2000,6 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            // alert('kk');
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){
@@ -2055,11 +2054,8 @@ function formSubmitRedirect(form)
                 // setTimeout(() => {window.location.href = response.redirect_url},2000);
                 setTimeout(() => {
                     window.location.href = response.redirect_url;
-                    
-                    // Check if failedLRs exists and display it
                     if (response.failedLRs) {
                         console.log("Failed LR Numbers:", response.failedLRs);
-                        // You can display the failedLRs in your UI as needed
                     }
                 }, 2000);
             }else if(response.page == 'create-consignment'){
@@ -2085,20 +2081,25 @@ function formSubmitRedirect(form)
             if(response.formErrors)
             {
                 var i = 0;
-              $('.error').remove();
-              
-              $.each(response.errors, function(index,value)
-              {
-                  if (i == 0) {
-                   $("input[name='"+index+"']").focus();
-                  }
-                  $("input[name='"+index+"']").parents('.form-group').addClass('has-error');
-                  $("input[name='"+index+"']").after('<label id="'+index+'-error" class="error" for="'+index+'">'+value+'</label>');
+                $('.error').remove();              
+                $.each(response.errors, function(index,value)
+                {
+                    if (i == 0) {
+                        $("input[name='"+index+"']").focus();
+                    }
+                    // alert("kkii");
+                    // Clear existing error messages
+                    $("input[name='" + index + "']").parents('.form-group').removeClass('has-error');
+                    $("input[name='" + index + "']").siblings('.error').remove();
 
-                  $("select[name='"+index+"']").parents('.form-group').addClass('has-error');
-                  $("select[name='"+index+"']").after('<label id="'+index+'-error" class="has-error" for="'+index+'">'+value+'</label>');
-                  i++;
-              });
+                    // Append new error messages
+                    $("input[name='"+index+"']").parents('.form-group').addClass('has-error');
+                    $("input[name='"+index+"']").after('<label id="'+index+'-error" class="error" for="'+index+'">'+value+'</label>');
+
+                    $("select[name='"+index+"']").parents('.form-group').addClass('has-error');
+                    $("select[name='"+index+"']").after('<label id="'+index+'-error" class="has-error" for="'+index+'">'+value+'</label>');
+                    i++;
+                });
 	        }
 
             if(response.cnr_nickname_duplicate_error){

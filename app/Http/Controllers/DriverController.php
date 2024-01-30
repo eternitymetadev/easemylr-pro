@@ -175,9 +175,11 @@ class DriverController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $rules = array(
-            'name' => 'required',
-            'phone' => 'required|unique:drivers',
-            'license_number' => 'required',
+            // 'name' => 'required',
+            // 'phone' => 'required|unique:drivers',
+            'name' => 'required|unique:drivers,name,NULL,id,phone,' . request()->input('phone'),
+            'phone' => 'required|unique:drivers,phone,NULL,id,name,' . request()->input('name'),
+            'license_number' => 'required|unique:drivers',
             'license_image' => 'mimes:jpg,jpeg,png|max:4096',
         );
         $validator = Validator::make($request->all(),$rules);
@@ -231,7 +233,7 @@ class DriverController extends Controller
         //     $name = Helper::uploadImage($file,$path);
         //     $driversave['license_image']  = $name;
         // }
-
+// dd($driversave);
         $savedriver = Driver::create($driversave); 
         if($savedriver)
         {
@@ -312,9 +314,14 @@ class DriverController extends Controller
             $driver = Driver::find($request->driver_id);
             $this->prefix = request()->route()->getPrefix();
              $rules = array(
-                'name' => 'required',
+                // 'name' => 'required',
+                // 'license_number' => 'required|unique:drivers,license_number,'.$request->driver_id,
+                // 'license_image'  => 'mimes:jpg,jpeg,png|max:4096',
+
+                'name' => 'required|unique:drivers,name,'.$request->driver_id.',id,phone,' . request()->input('phone'),
+                'phone' => 'required|unique:drivers,phone,'.$request->driver_id.',id,name,' . request()->input('name'),
                 'license_number' => 'required|unique:drivers,license_number,'.$request->driver_id,
-                'license_image'  => 'mimes:jpg,jpeg,png|max:4096',
+                'license_image' => 'mimes:jpg,jpeg,png|max:4096',
             );
 
             $validator = Validator::make($request->all(),$rules);

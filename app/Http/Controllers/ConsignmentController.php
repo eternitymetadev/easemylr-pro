@@ -6085,7 +6085,7 @@ class ConsignmentController extends Controller
         $mode = ConsignmentNote::where('id', $lr_no)->update(['delivery_date' => null, 'delivery_status' => 'Started', 'signed_drs' => null, 'pod_userid' => null]);
 
         if ($mode) {
-            $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+            $latestRecord = TransactionSheet::where('consignment_no', $lr_no)
                 ->latest('drs_no')
                 ->first();
 

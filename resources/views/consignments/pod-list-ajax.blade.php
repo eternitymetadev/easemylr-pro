@@ -30,7 +30,7 @@ $tat = ($end_date - $start_date) / 60 / 60 / 24;
                             {{ $consignment->id ?? "-" }}
                         </span>
                         @if ($consignment->status == 0)
-                        <label class="lrStatus" style="background: #bb2727">Cancel</label>
+                        <label class="lrStatus" style="background: #f40404">Cancel</label>
                         @elseif ($consignment->status == 1)
                         <label class="lrStatus" style="background: #087408">Active</label>
                         @elseif ($consignment->status == 2 || $consignment->status == 6)
@@ -112,7 +112,7 @@ $invoice['amt'] = implode(',', $inv_amt);
                         @elseif ($dlStatus == 'Successful')
                         <label class="statusLabel mt-1" style="background: #087408">Successful</label>
                         @elseif ($dlStatus == 'Cancel')
-                        <label class="statusLabel mt-1" style="background: #bb2727">Cancel</label>
+                        <label class="statusLabel mt-1" style="background: #f40404">Cancel</label>
                         @else
                         <label class="statusLabel mt-1" style="background: #805dca">Unknown</label>
                         @endif
