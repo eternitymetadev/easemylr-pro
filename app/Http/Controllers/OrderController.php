@@ -2819,7 +2819,7 @@ class OrderController extends Controller
 
         // get drivers
         $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
-        ->where('delivery_status', '!=', 'successful')
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
         ->pluck('driver_id')
         ->toArray();
 
