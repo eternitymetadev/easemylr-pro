@@ -404,7 +404,7 @@ class ConsignmentController extends Controller
             }
             DB::commit();
         } catch (Exception $e) {
-            $response['error'] = false;
+            $response['error'] = true;
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
@@ -598,7 +598,7 @@ class ConsignmentController extends Controller
             }
             DB::commit();
         } catch (Exception $e) {
-            $response['error'] = false;
+            $response['error'] = true;
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
@@ -2171,7 +2171,7 @@ class ConsignmentController extends Controller
             DB::rollBack();
 
             $response['success'] = false;
-            $response['success_message'] = "An error occurred: " . $e->getMessage();
+            $response['error_message'] = "An error occurred: " . $e->getMessage();
             return response()->json($response, 500); // Respond with a status code indicating server error
         }
     }
@@ -5879,7 +5879,7 @@ class ConsignmentController extends Controller
 
             DB::commit();
         } catch (Exception $e) {
-            $response['error'] = false;
+            $response['error'] = true;
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
@@ -5979,12 +5979,14 @@ class ConsignmentController extends Controller
                 return Response::json($response);
             }else{
                 $response['success'] = false;
+                $response['error'] = true;
                 $response['messages'] = 'POD not uploaded';
                 return Response::json($response);
             }
         } catch (\Exception $e) {
             $bug = $e->getMessage();
             $response['success'] = false;
+            $response['error'] = true;
             $response['messages'] = $bug;
             return Response::json($response);
         }
@@ -6140,7 +6142,7 @@ class ConsignmentController extends Controller
             }
             DB::commit();
         } catch (Exception $e) {
-            $response['error'] = false;
+            $response['error'] = true;
             $response['error_message'] = $e;
             $response['success'] = false;
             $response['redirect_url'] = $url;
