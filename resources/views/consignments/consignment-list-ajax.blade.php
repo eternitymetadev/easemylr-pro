@@ -191,7 +191,7 @@
                             Active</span></a> 
                     <?php }
                         }elseif($consignment->status == 2 && $consignment->reattempt_reason != null){ ?>
-                        <span class="badge alert bg-success swan-tooltip"
+                        <span class="badge alert activestatus bg-success swan-tooltip"
                             data-id="{{$consignment->id}}" data-status="0"  data-tooltip="{{count(json_decode($consignment->reattempt_reason,true))}}">Reattempt</span>
                         <?php } elseif($consignment->status == 2){ ?>
                     <span class="badge alert bg-success activestatus {{$disable}}"
