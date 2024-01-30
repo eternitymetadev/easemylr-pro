@@ -2052,7 +2052,16 @@ function formSubmitRedirect(form)
             }else if(response.page == 'save-locations'|| response.page == 'update-locations'){
                 setTimeout(function(){location.reload();}, 50);
             }else if(response.page == 'bulk-imports'){
-                setTimeout(() => {window.location.href = response.redirect_url},2000);
+                // setTimeout(() => {window.location.href = response.redirect_url},2000);
+                setTimeout(() => {
+                    window.location.href = response.redirect_url;
+                    
+                    // Check if failedLRs exists and display it
+                    if (response.failedLRs) {
+                        console.log("Failed LR Numbers:", response.failedLRs);
+                        // You can display the failedLRs in your UI as needed
+                    }
+                }, 2000);
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-order' || response.page == 'update-order'){

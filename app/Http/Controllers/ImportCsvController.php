@@ -189,6 +189,13 @@ class ImportCsvController extends Controller
         //     }
             
         // }
+        $response = [];
+        
+        if($failedLRs){
+            $response['failedLRs'] = $failedLRs;
+        }else{
+            $response['failedLRs'] = '';
+        }
         
         if($data){            
             $response['success']    = true;

@@ -158,8 +158,8 @@
                     elseif ($consignment->delivery_status == "Acknowledge") { ?>
                     <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}">Acknowledged</span>
                     <?php }elseif ($consignment->delivery_status == "Cancel") { ?>
-                    <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}" style="background-color: #DF015F !important;
-                        border-color: #DF015F !important;">Cancel</span>
+                    <span class="badge alert bg-info shadow-sm" lr-no="{{$consignment->id}}" style="background-color: #f40404 !important;
+                        border-color: #f40404 !important;">Cancel</span>
                     <?php } else{ ?>
                     <span class="badge alert bg-success shadow-sm" lr-no="{{$consignment->id}}">need to update</span>
                     <?php } ?>
@@ -179,7 +179,8 @@
                 } ?>
                 <td>
                     <?php if ($consignment->status == 0) { ?>
-                    <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}">Cancel</span>
+                    <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}" style="background-color: #f40404 !important;
+                        border-color: #f40404 !important;">Cancel</span>
                     <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
                     <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
