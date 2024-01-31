@@ -2087,7 +2087,6 @@ function formSubmitRedirect(form)
                     if (i == 0) {
                         $("input[name='"+index+"']").focus();
                     }
-                    // alert("kkii");
                     // Clear existing error messages
                     $("input[name='" + index + "']").parents('.form-group').removeClass('has-error');
                     $("input[name='" + index + "']").siblings('.error').remove();

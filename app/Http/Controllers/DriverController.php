@@ -233,7 +233,7 @@ class DriverController extends Controller
         //     $name = Helper::uploadImage($file,$path);
         //     $driversave['license_image']  = $name;
         // }
-// dd($driversave);
+        
         $savedriver = Driver::create($driversave); 
         if($savedriver)
         {
