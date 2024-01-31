@@ -29,6 +29,7 @@ class ImportCsvController extends Controller
 
     public function uploadCsv(Request $request)
     {
+        $failedLRs = '';
         $this->prefix = request()->route()->getPrefix();
         if($request->hasFile('consigneesfile')){
             $data = Excel::import(new ConsigneeImport,request()->file('consigneesfile'));

@@ -2052,12 +2052,23 @@ function formSubmitRedirect(form)
                 setTimeout(function(){location.reload();}, 50);
             }else if(response.page == 'bulk-imports'){
                 // setTimeout(() => {window.location.href = response.redirect_url},2000);
-                setTimeout(() => {
-                    window.location.href = response.redirect_url;
-                    if (response.failedLRs) {
-                        console.log("Failed LR Numbers:", response.failedLRs);
-                    }
-                }, 2000);
+                if(response.failedLRs){
+                    swal('error', `Failed LR Numbers: ${response.failedLRs}`, 'error').then(() => {
+                        window.location.href = response.redirect_url;
+                    });
+                }else{
+                    swal('success', response.success_message, 'success').then(() => {
+                        window.location.href = response.redirect_url;
+                    });
+                }
+                
+                // setTimeout(() => {
+                    
+                //     if (response.failedLRs) {
+                //         console.log("Failed LR Numbers:", response.failedLRs);
+                //     }
+                //     window.location.href = response.redirect_url;
+                // }, 2000);
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-order' || response.page == 'update-order'){
