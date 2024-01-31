@@ -91,7 +91,7 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
             }
             
             $bankdetails = json_decode($reqval->VendorDetails->bank_details);
-            
+            $invc_no = array();
             foreach($reqval->PickupRunSheet->Consignments as $lr_group){
                 // echo'<pre>'; print_r(json_decode($value->PrsPaymentRequest)); die;
                 $lr_no[] = @$lr_group->id;
@@ -99,7 +99,7 @@ class PrsPaymentReportExport implements FromCollection, WithHeadings, ShouldQueu
                 $regclient_name[] = @$lr_group->RegClient->name;
                 $cnee_city[] = @$lr_group->ShiptoDetail->city;
                 $regn_no[] = @$lr_group->VehicleDetail->regn_no;
-                $invc_no = array();
+                
                 foreach($lr_group->ConsignmentItems as $lr_no_item){
                     $invc_no[] = @$lr_no_item->invoice_no;
                 }
