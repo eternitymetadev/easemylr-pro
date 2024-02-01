@@ -1978,7 +1978,7 @@ function formSubmitRedirect(form)
         },
         processData : false,
         dataType    : "json",
-        beforeSend  : function () {
+        beforeSend  : function () {            
             $("#mainLoader").show();
             $(".loader").show();
             
@@ -2000,7 +2000,6 @@ function formSubmitRedirect(form)
         },
         success: function (response)
         {
-            // alert('kk');
           	$.toast().reset('all');
       		var delayTime = 3000;
 	        if(response.success){
@@ -2052,7 +2051,24 @@ function formSubmitRedirect(form)
             }else if(response.page == 'save-locations'|| response.page == 'update-locations'){
                 setTimeout(function(){location.reload();}, 50);
             }else if(response.page == 'bulk-imports'){
-                setTimeout(() => {window.location.href = response.redirect_url},2000);
+                // setTimeout(() => {window.location.href = response.redirect_url},2000);
+                if(response.failedLRs){
+                    swal('error', `Failed LR Numbers: ${response.failedLRs}`, 'error').then(() => {
+                        window.location.href = response.redirect_url;
+                    });
+                }else{
+                    swal('success', response.success_message, 'success').then(() => {
+                        window.location.href = response.redirect_url;
+                    });
+                }
+                
+                // setTimeout(() => {
+                    
+                //     if (response.failedLRs) {
+                //         console.log("Failed LR Numbers:", response.failedLRs);
+                //     }
+                //     window.location.href = response.redirect_url;
+                // }, 2000);
             }else if(response.page == 'create-consignment'){
                 setTimeout(() => {window.location.href = response.redirect_url},2000);
             }else if(response.page == 'create-order' || response.page == 'update-order'){
@@ -2076,20 +2092,24 @@ function formSubmitRedirect(form)
             if(response.formErrors)
             {
                 var i = 0;
-              $('.error').remove();
-              
-              $.each(response.errors, function(index,value)
-              {
-                  if (i == 0) {
-                   $("input[name='"+index+"']").focus();
-                  }
-                  $("input[name='"+index+"']").parents('.form-group').addClass('has-error');
-                  $("input[name='"+index+"']").after('<label id="'+index+'-error" class="error" for="'+index+'">'+value+'</label>');
+                $('.error').remove();              
+                $.each(response.errors, function(index,value)
+                {
+                    if (i == 0) {
+                        $("input[name='"+index+"']").focus();
+                    }
+                    // Clear existing error messages
+                    $("input[name='" + index + "']").parents('.form-group').removeClass('has-error');
+                    $("input[name='" + index + "']").siblings('.error').remove();
 
-                  $("select[name='"+index+"']").parents('.form-group').addClass('has-error');
-                  $("select[name='"+index+"']").after('<label id="'+index+'-error" class="has-error" for="'+index+'">'+value+'</label>');
-                  i++;
-              });
+                    // Append new error messages
+                    $("input[name='"+index+"']").parents('.form-group').addClass('has-error');
+                    $("input[name='"+index+"']").after('<label id="'+index+'-error" class="error" for="'+index+'">'+value+'</label>');
+
+                    $("select[name='"+index+"']").parents('.form-group').addClass('has-error');
+                    $("select[name='"+index+"']").after('<label id="'+index+'-error" class="has-error" for="'+index+'">'+value+'</label>');
+                    i++;
+                });
 	        }
 
             if(response.cnr_nickname_duplicate_error){

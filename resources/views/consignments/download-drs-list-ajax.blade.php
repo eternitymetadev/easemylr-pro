@@ -48,7 +48,7 @@
                             if($status == 'Started' && $trns->status == 0) $statusColor = '#187fb6';
                             else if($status == 'Partial') $statusColor = '#b69d18';
                             else if($status == 'Successful') $statusColor = '#18b69b';
-                            else if($status == 'Cancel') $statusColor = '#df015e';
+                            else if($status == 'Cancel') $statusColor = '#f40404';
                             else $statusColor = '#18b69b';
 
                             if($status == 'Unassigned'){

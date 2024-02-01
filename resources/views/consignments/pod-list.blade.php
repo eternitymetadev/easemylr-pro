@@ -566,10 +566,11 @@ jQuery(document).on(
                 },
                 success: function(response) {
                     if (response.success == true) {
-                        swal('success', response.messages, 'success')
-                        location.reload();
+                        swal('success', response.messages, 'success').then(() => {
+                            location.reload();
+                        });
                     } else {
-                        swal('error', response.messages, 'error')
+                        swal('error', response.messages, 'error');
                     }
                 },
             });

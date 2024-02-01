@@ -29,6 +29,7 @@ class ImportCsvController extends Controller
 
     public function uploadCsv(Request $request)
     {
+        $failedLRs = '';
         $this->prefix = request()->route()->getPrefix();
         if($request->hasFile('consigneesfile')){
             $data = Excel::import(new ConsigneeImport,request()->file('consigneesfile'));
@@ -189,6 +190,13 @@ class ImportCsvController extends Controller
         //     }
             
         // }
+        $response = [];
+        
+        if($failedLRs){
+            $response['failedLRs'] = $failedLRs;
+        }else{
+            $response['failedLRs'] = '';
+        }
         
         if($data){            
             $response['success']    = true;
