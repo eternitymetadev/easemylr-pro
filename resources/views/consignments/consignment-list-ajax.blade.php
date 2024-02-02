@@ -176,10 +176,18 @@
                         }
                 }else{
                     $disable = 'disable_n';
-                } ?>
+                } 
+
+                // reattempt count
+                if($consignment->reattempt_reason){
+                    $reattempt_count = ", Re:" .count(json_decode($consignment->reattempt_reason,true));
+                }else{
+                    $reattempt_count = '';
+                }
+                ?>
                 <td>
                     <?php if ($consignment->status == 0) { ?>
-                    <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}" style="background-color: #f40404 !important; border-color: #f40404 !important;">Cancel</span>
+                    <span class="alert badge alert bg-secondary shadow-sm swan-tooltip" data-tooltip="{{$consignment->reason_to_cancel}}{{$reattempt_count}}" style="background-color: #f40404 !important; border-color: #f40404 !important;">Cancel</span>
                     <?php } elseif($consignment->status == 1 || $consignment->status == 6){
                             if($consignment->delivery_status == 'Successful'){ ?>
                     <a class="alert activestatus btn btn-success disable_n" data-id="{{$consignment->id}}"
