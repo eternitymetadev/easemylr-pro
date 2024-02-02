@@ -274,7 +274,6 @@ span.select2.select2-container.mb-4 {
 
     <form class="general_form" method="POST" action="{{url($prefix.'/store-contract-lr')}}" id="create-contractlr"
         style="margin: auto;">
-        <input type="hidden" name="lr_type" value="3" />
         {{--bill to info--}}
         <div class="form-row">
             <h6 class="col-12">Bill To Information</h6>
