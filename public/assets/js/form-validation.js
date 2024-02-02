@@ -998,7 +998,57 @@ jQuery(document).ready(function(){
             formSubmitRedirect(form);
         }
     });
-    //consignment multiple rows field validation
+
+    /*===== create contract lr =====*/
+    $('#create-contractlr').validate({ 
+        rules: {
+            consigner_id: {
+                required: true
+            },
+            consignee_id: {
+                required: true
+            },
+            ship_to_id: {
+                required: true
+            },
+           
+            'quantity[]': {
+                required: true
+                },
+           'weight[]': {
+                  required: true
+                },
+           'gross_weight[]': {
+                  required: true
+                },
+           
+        },
+        messages: {
+            consigner_id: {
+                required: "Select consignor address",
+            },
+            consignee_id: {
+                required: "Select consignee address",
+            },
+            ship_to_id: {
+                required: "Select ship to address",
+            },
+            
+            'quantity[]': {
+                required: "Enter quantity",
+            },
+            'weight[]': {
+                required: "Enter weight",
+            },
+            'gross_weight[]': {
+                required: "Enter gross weight",
+            },
+        },
+        submitHandler : function(form)
+        {
+            formSubmitRedirect(form);
+        }
+    });
 
     /*===== create order =====*/
     $('#createorder').validate({ 
