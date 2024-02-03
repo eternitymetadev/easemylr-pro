@@ -1602,7 +1602,7 @@ jQuery(document).ready(function () {
 
                     let buttonContent;
                     if(value.lrstatus == 0){
-                        buttonContent = `<a class="btn btn-primary btn-sm-primary" style="--btnColor: #fef3d5">Cancelled</a>`;
+                        buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn" style="--btnColor: #f40404">Cancelled</a>`;
                     }
                     else if (value.status == 4) {
                             buttonContent = `<a class="btn btn-primary btn-sm-primary reAttemptBtn disabled" style="--btnColor: #fef3d5">Re-Attempted</a>`;
@@ -1635,7 +1635,7 @@ jQuery(document).ready(function () {
                             <td>${deliverydate}</td>                            
                             <td>${ buttonContent }</td>                                                   
                             <td>${field}</td>
-                            <td>${value.dd == null && value.is_started != 1 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
+                            <td>${value.lrstatus != 0 && value.dd == null && value.is_started != 1 ? `<button class='btn btn-primary remover_lr' data-id='${value.consignment_no}'>Remove</button>` : ' '}</td>
                             <td>${re_attemptText ?? '-'}</td>
                         </tr>`
                     );
