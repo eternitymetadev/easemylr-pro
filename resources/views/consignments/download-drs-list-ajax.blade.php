@@ -39,9 +39,6 @@
                 {{-- delivery status --}}
                 <td>
                     <?php
-                        if (empty($trns->vehicle_no) || empty($trns->driver_name) || empty($trns->driver_no)) {?>
-                            <button class="delBtn statusBtn btn view-sheet {{$disable}}" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;">Unassigned</button>
-                        <?php } else {
                             $new = Helper::oldnewLr($trns->drs_no) ?? "";
 
                             $status = Helper::getdeleveryStatus($trns->drs_no);
@@ -57,7 +54,7 @@
                             <?php }else{ ?>
                                 <a class="delBtn statusBtn drs_cancel btn {{$disable}}" style="--statusColor: {{$statusColor}};" drs-no="{{$trns->drs_no}}" data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>"><span>{{$status}}</span></a>
                             <?php }
-                            if($trns->is_started == 1){
+                            if($trns->is_started == 1 && $status != 'Cancel'){
                                 if (!empty($new)) { ?>
                                     <a class="btn btn-primary" href="{{url($prefix.'/print-transactionold/'.$trns->drs_no)}}"
                                 role="button">Print</a>
@@ -65,7 +62,7 @@
                                 <a class="btn btn-primary" href="{{url($prefix.'/print-transaction/'.$trns->drs_no)}}" role="button">Print</a>
                             <?php }
                             }
-                        }
+                        // }
                     ?>
                 </td>
                 {{-- End delivery status --}}

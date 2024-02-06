@@ -303,9 +303,9 @@ class GlobalFunctions
         // Determine the delivery status
         if ($total_deldate == $totallrCount) {
             $status = "Successful";
-        }elseif($countStatusZero == $totallrCount){
+        }else if($countStatusZero == $totallrCount){
             $status = "Cancel";
-        } elseif ($total_deldate == 0) {
+        } else if ($total_deldate == 0) {
             $check_started = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->where('is_started', 1)->pluck('is_started')->first();
             if($check_started){
                 $status = "Started";
