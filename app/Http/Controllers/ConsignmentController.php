@@ -2187,7 +2187,8 @@ class ConsignmentController extends Controller
             $consignmentId = explode(',', $c_ids);
 
             // Bulk update for TransactionSheet records
-            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1]);
+            $updateStart = TransactionSheet::whereIn('consignment_no', $consignmentId)->where('status',1)->update(['is_started' => 1,'delivery_status' => 'Started']);
+            $updateLR = ConsignmentNote::whereIn('id', $consignmentId)->where('status',1)->update(['delivery_status' => 'Started']);
             
             // Get driver details
             $get_driver_details = Driver::select('access_status', 'branch_id')->where('id', $request->driver_id)->first();
