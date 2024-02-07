@@ -2801,36 +2801,90 @@ class OrderController extends Controller
             $consignmentno = "";
         }
 
-        // get vehicles
-        $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
-        ->where('delivery_status', '!=', 'successful')
-        ->where('status', '!=', 0)
-        ->pluck('vehicle_id')
-        ->toArray();
+        // // get vehicles
+        // $consignmentVehicleIds = ConsignmentNote::whereNotNull('vehicle_id')
+        // ->where('delivery_status', '!=', 'successful')
+        // ->where('status', '!=', 0)
+        // ->pluck('vehicle_id')
+        // ->toArray();
 
-        // Merge and deduplicate the vehicle IDs
-        $mergedVehicleIds = array_unique($consignmentVehicleIds);
+        // // Merge and deduplicate the vehicle IDs
+        // $mergedVehicleIds = array_unique($consignmentVehicleIds);
+
+        // // Fetch vehicles that are not in the merged array
+        // $vehicles = Vehicle::where('status', '1')
+        // ->whereNotIn('id', $mergedVehicleIds)
+        // ->select('id', 'regn_no')
+        // ->get();
+
+        // // get drivers
+        // $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        // ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        // ->pluck('driver_id')
+        // ->toArray();
+
+        // // Merge and deduplicate the driver IDs
+        // $mergedDriverIds = array_unique($consignmentDriverIds);
+
+        // // Fetch drivers who are not in the merged array
+        // $drivers = Driver::where('status', '1')
+        // ->whereNotIn('id', $mergedDriverIds)
+        // ->select('id', 'name', 'phone')
+        // ->get();
+
+        // get vehicles
+        $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
+        ->whereDate('created_at', '>', '2023-12-20')
+        ->whereNotNull('vehicle_no')
+        ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
+        ->whereNotIn('status', [4, 0])
+        ->pluck('vehicle_no')
+        ->unique()
+        ->toArray();
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
 
         // Fetch vehicles that are not in the merged array
-        $vehicles = Vehicle::where('status', '1')
-        ->whereNotIn('id', $mergedVehicleIds)
-        ->select('id', 'regn_no')
+        $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
+        ->whereNotIn('regn_no', $drsVehicleIds)
         ->get();
 
         // get drivers
-        $consignmentDriverIds = ConsignmentNote::whereNotNull('driver_id')
+        // $drsDriverIds = TransactionSheet::select('id','drs_no', 'driver_name', 'driver_no')
+        $drsDriverIds = TransactionSheet::select('driver_name', 'driver_no')
+        ->whereDate('created_at', '>', '2023-12-20')
+        ->whereNotNull('driver_no')
         ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        ->pluck('driver_id')
+        ->whereNotIn('status', [4, 0])
+        ->groupBy('driver_no', 'driver_name')
+        ->get(['driver_no', 'driver_name'])
+        ->unique(function ($item) {
+            return $item['driver_no'].$item['driver_name'];
+        })
+        ->toArray();
+        // ->where('delivery_status', '!=', 'Successful')
+        // ->where('status', 1)
+
+        $getDrivers = Driver::where('status', '1')
+        ->where(function ($query) use ($drsDriverIds) {
+            foreach ($drsDriverIds as $driver) {
+                $query->orWhere(function ($subquery) use ($driver) {
+                    $subquery->where('phone', $driver['driver_no'])
+                        ->where('name', $driver['driver_name']);
+                });
+            }
+        })
+        ->select('id', 'name', 'phone')
+        ->get()
         ->toArray();
 
-        // Merge and deduplicate the driver IDs
-        $mergedDriverIds = array_unique($consignmentDriverIds);
+        $excludedDriverIds = array_column($getDrivers, 'id');
 
-        // Fetch drivers who are not in the merged array
+        // Exclude records based on both 'name' and 'phone'
         $drivers = Driver::where('status', '1')
-        ->whereNotIn('id', $mergedDriverIds)
-        ->select('id', 'name', 'phone')
-        ->get();
+            ->whereNotIn('id', $excludedDriverIds)
+            ->select('id', 'name', 'phone')
+            ->get();
  
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
