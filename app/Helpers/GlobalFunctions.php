@@ -313,7 +313,7 @@ class GlobalFunctions
         if ($allDrsCancelled) {
             return "Cancel";
         }
-        
+      
         // Get the consignment numbers related to the provided drs_number
         $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
 
