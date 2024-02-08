@@ -1998,8 +1998,7 @@ class ConsignmentController extends Controller
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
         // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '6'])
-            ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', '0');
+            ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
             $data;
@@ -2585,15 +2584,7 @@ class ConsignmentController extends Controller
         $drsId = $_GET['drsId'];
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
-                // $query->whereIn('status', [1, 2, 5]);
-                $query->where(function ($q) {
-                    // Define the status array based on lr_type value
-                    $q->whereIn('status', [1, 5])
-                        ->orWhere(function ($q2) {
-                            $q2->where('lr_type', 0)
-                                ->whereIn('status', [1, 2, 5]);
-                        });
-                });
+                $query->whereIn('status', [1, 2, 5]);
             }])
             ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
