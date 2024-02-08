@@ -937,7 +937,7 @@ class FtlPtlController extends Controller
 
             // ================================end Send Email ============================= //
             //===================== Create DRS in LR ================================= //
-            if (!empty($request->vehicle_id)) {
+            // if (!empty($request->vehicle_id)) {
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                     ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                     ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -957,7 +957,7 @@ class FtlPtlController extends Controller
                 $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
                 $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
-            }
+            // }
 
             $mytime = Carbon::now('Asia/Kolkata'); 
             $currentdate = $mytime->toDateTimeString();
