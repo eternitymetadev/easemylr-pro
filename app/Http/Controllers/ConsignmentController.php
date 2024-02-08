@@ -2018,8 +2018,7 @@ class ConsignmentController extends Controller
             // $data = $data->whereIn('consignment_notes.branch_id', $cc);
             // }
         }
-        $data = $data->orderBy('id', 'DESC');
-        $consignments = $data->get();
+        $consignments = $data->orderBy('id', 'DESC')->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
