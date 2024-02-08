@@ -304,6 +304,16 @@ class GlobalFunctions
 
     public static function getdeleveryStatus($drs_number)
     {
+         // Check if all transaction sheets related to the provided drs_number have status=0
+        $allDrsCancelled = TransactionSheet::where('drs_no', $drs_number)
+        ->where('status', 0)
+        ->count() === TransactionSheet::where('drs_no', $drs_number)
+        ->count();
+
+        if ($allDrsCancelled) {
+            return "Cancel";
+        }
+
         // Get the consignment numbers related to the provided drs_number
         $get_lrs = TransactionSheet::where('drs_no', $drs_number)->where('status', '!=', 4)->pluck('consignment_no')->toArray();
 
