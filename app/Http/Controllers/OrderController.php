@@ -3015,7 +3015,7 @@ class OrderController extends Controller
                         ->where('consignment_notes.id', $consignment_id)
                         ->first(['consignees.city']);
                     $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                    //echo'<pre>'; print_r($simplyfy); die;
+                    //echo'<pre>'; print_r($simplyfy); die; 
 
                     $no_of_digit = 5;
                     $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();
