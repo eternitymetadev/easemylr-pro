@@ -1511,6 +1511,7 @@ jQuery(document).ready(function () {
         event.stopPropagation();
         
         let drs_no = jQuery(this).attr("drs-no");
+        let getTextstatus = jQuery(this).attr("data-textstatus");
         var data = { drs_no: drs_no };
         var base_url = window.location.origin;
         jQuery.ajax({
@@ -1642,6 +1643,11 @@ jQuery(document).ready(function () {
                     i++;
                 });
                 $('#drsNo').val(data.fetch[0].drs_no);
+                if(getTextstatus == "Cancel"){
+                    $("#update-disable").attr("disabled", true);
+                } else{
+                    $("#update-disable").removeAttr("disabled");
+                }
             },
         });
      
