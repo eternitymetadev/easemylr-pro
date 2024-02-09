@@ -1081,6 +1081,7 @@ Route::group(['prefix'=>'lr-cancel', 'middleware'=>['auth','PermissionCheck']], 
     Route::get('pod-view', [ConsignmentController::class, 'podView']);
     Route::get('pod-list', [ConsignmentController::class, 'podList']);
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
+    Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
 
 });
 
