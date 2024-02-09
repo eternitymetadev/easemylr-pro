@@ -283,7 +283,7 @@
                                         <td>${value.consignment_detail?.total_weight ?? ''}</td>
                                         <td>
                                             ${value.consignment_detail?.status == 0
-                                                ? `<button type='button' class='btn btn-warning'>Cancel</button>`
+                                                ? `<button type='button' class='btn btn-warning' style="background: #f40404">Cancel</button>`
                                                 : `<button type='button' data-id="${value.consignment_no}" ${re?.fetch?.length == 1 ? 'disabled' : ''} class='btn btn-primary remover_lr'>Remove</button>`
                                             }
                                         </td>
