@@ -272,8 +272,8 @@
                         
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
-                                        <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
-                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail?.edd ?? ''}" onkeydown="return false"/></td>
+                                        <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''}>Edit</a></td>
+                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail?.edd ?? ''}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''} onkeydown="return false"/></td>
                                         <td>${value.consignment_no}</td>
                                         <td>${value.consignment_date}</td>
                                         <td>${value.consignee_id}</td>
@@ -281,7 +281,7 @@
                                         <td>${value.pincode}</td>
                                         <td>${value.consignment_detail?.total_quantity ?? ''}</td>
                                         <td>${value.consignment_detail?.total_weight ?? ''}</td>
-                                        <td><button type='button' data-id="${value.consignment_no}" ${re?.fetch?.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
+                                        <td><button type='button' data-id="${value.consignment_no}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''} ${re?.fetch?.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
                                     </tr>`);
                     });
                     var rowCount = $("#sheet tbody tr").length;
@@ -311,11 +311,6 @@
                         var driverPhone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : '';
                         var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${driverName}${driverPhone}</option>`;
                         $('#driver_id').append(newDriverOption);
-
-                        // var driverPhone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : ''; // Using a ternary operator for conditional assignment
-
-                        // var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}${driverPhone}</option>`;
-                        // $('#driver_id').append(newDriverOption);
                     }
 
                     if (re?.fetchVehicleType) {
