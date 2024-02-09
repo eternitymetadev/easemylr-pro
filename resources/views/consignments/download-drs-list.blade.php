@@ -255,8 +255,6 @@
                         $("#drsdate").empty();
                     },
                 success: function(data) {
-
-                    console.log(data, 'hjb');
                     // console.log(data.fetch[0]?.consignment_detail?.driver_id);
                     // var re = jQuery.parseJSON(data)
                     var re = data;
@@ -271,7 +269,7 @@
                         consignmentID.push(value.consignment_no);
                         totalBox += parseInt(value.total_quantity);
                         totalweight += parseInt(value.total_weight);
-alert(value.consignment_detail?.total_quantity, 'jkjj');
+                        
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
                                         <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
