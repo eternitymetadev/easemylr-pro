@@ -2586,7 +2586,7 @@ class ConsignmentController extends Controller
             ->with(['ConsignmentDetail' => function ($query) {
                 $query->whereIn('status', [0, 1, 2, 5]);
             }])
-            ->where('status', '!=', 0)
+            // ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
             ->get();
             
