@@ -5980,12 +5980,33 @@ class ConsignmentController extends Controller
             $lr_no = $request->lr_no;
 
             $authuser = Auth::user();
-            if($authuser->role_id == 1){
-                $location_name = 'By Admin';
-            }else{
-                $login_branch = $authuser->branch_id;
-                $location = Location::where('id', $login_branch)->first();
-                $location_name = $location->name;
+            
+            // if($authuser->role_id == 1){
+            //     $location_name = 'By Admin';
+            // } else if($authuser->role_id == 3 || $authuser->role_id == 8){
+            //     $login_branch = $authuser->branch_id;
+            //     $location = Location::where('id', $login_branch)->first();
+            //     $location_name = '';
+            // } else {
+            //     $login_branch = $authuser->branch_id;
+            //     $location = Location::where('id', $login_branch)->first();
+            //     $location_name = $location->name;
+            // }
+
+            ////////////////
+
+            $loginBranch = $authuser->branch_id;
+            $location_name = '';
+
+            if ($loginBranch === null || strpos($loginBranch, ',') !== false) {
+                // Branch ID is null or contains multiple IDs
+                $location_name = '';
+            } else {
+                // Single branch ID
+                $location = Location::where('id', $loginBranch)->first();
+                if ($location) {
+                    $location_name = $location->name; // Assuming 'name' is the field to retrieve from the Location model
+                }
             }
 
             // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
