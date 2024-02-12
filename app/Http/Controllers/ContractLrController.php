@@ -43,7 +43,7 @@ class ContractLrController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         $peritem = Config::get('variable.PER_PAGE');
@@ -88,8 +88,7 @@ class ContractLrController extends Controller
                 $query;
             } else {
                 $query = $query->where(function ($query) use ($cc) {
-                    $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-
+                    $query->whereIn('branch_id', $cc);
                 });
             }
 
@@ -127,7 +126,7 @@ class ContractLrController extends Controller
 
             $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
             $consignments = $consignments->appends($request->query());
-            // echo'<pre'; print_r($consignments); die;
+            
             $html = view('contract-lr.consignment-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $peritem])->render();
 
             return response()->json(['html' => $html]);
@@ -158,6 +157,112 @@ class ContractLrController extends Controller
 
         return view('contract-lr.consignment-list', ['consignments' => $consignments, 'peritem' => $peritem, 'prefix' => $this->prefix, 'segment' => $this->segment]);
     }
+    
+    public function index(Request $request)
+    {
+        $this->prefix = $request->route()->getPrefix();
+        $peritem = Config::get('variable.PER_PAGE');
+        $query = ConsignmentNote::query()->where('lr_type', 3)
+            ->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
+
+        if ($request->ajax()) {
+            if ($request->filled('resetfilter')) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            if ($request->filled('updatestatus')) {
+                $authuser = Auth::user();
+                $lr_cancel = ConsignmentNote::where('id', $request->id)->update([
+                    'status' => $request->status,
+                    'reason_to_cancel' => $request->reason_to_cancel,
+                    'cancel_userid' => $authuser->id,
+                    'delivery_status' => 'Cancel'
+                ]);
+
+                $url = $this->prefix . '/contract-lrs';
+                $response = [
+                    'success' => true,
+                    'success_message' => "Consignment updated successfully",
+                    'error' => false,
+                    'page' => 'consignment-updateupdate',
+                    'redirect_url' => $url
+                ];
+
+                return response()->json($response);
+            }
+
+            $authuser = Auth::user();
+            $query = $this->applyRoleFilters($query, $authuser);
+
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function ($query) use ($search) {
+                    $query->where('id', 'like', "%$search%")
+                        ->orWhereHas('ConsignerDetail.GetRegClient', function ($regclientquery) use ($search) {
+                            $regclientquery->where('name', 'like', "%$search%");
+                        })
+                        ->orWhereHas('ConsignerDetail', function ($query) use ($search) {
+                            $query->where('nick_name', 'like', "%$search%");
+                        })
+                        ->orWhereHas('ConsigneeDetail', function ($query) use ($search) {
+                            $query->where('nick_name', 'like', "%$search%");
+                        });
+                });
+            }
+
+            if ($request->filled('peritem')) {
+                Session::put('peritem', $request->peritem);
+            }
+
+            $peritem = Session::get('peritem', Config::get('variable.PER_PAGE'));
+            $consignments = $query->orderByDesc('id')->paginate($peritem);
+            $consignments->appends($request->query());
+            
+            $html = view('contract-lr.consignment-list-ajax', [
+                'prefix' => $this->prefix,
+                'consignments' => $consignments,
+                'peritem' => $peritem
+            ])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $authuser = Auth::user();
+        $query = $this->applyRoleFilters($query, $authuser);
+        $consignments = $query->orderByDesc('id')->paginate($peritem);
+        $consignments->appends($request->query());
+
+        return view('contract-lr.consignment-list', [
+            'consignments' => $consignments,
+            'peritem' => $peritem,
+            'prefix' => $this->prefix,
+            'segment' => $this->segment
+        ]);
+    }
+
+    private function applyRoleFilters($query, $authuser)
+    {
+        switch ($authuser->role_id) {
+            case 1:
+                // No additional filters needed
+                break;
+            case 4:
+            case 7:
+                $query->whereIn('regclient_id', explode(',', $authuser->regionalclient_id));
+                break;
+            case 8:
+                // No additional filters needed
+                break;
+            default:
+                $query->whereIn('branch_id', explode(',', $authuser->branch_id));
+                break;
+        }
+
+        return $query;
+    }
+
 
     /**
      * Show the form for creating a new resource.
