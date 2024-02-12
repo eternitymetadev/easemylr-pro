@@ -2054,11 +2054,11 @@ class OrderController extends Controller
             
             $locations = Location::whereIn('id', $cc)->first();
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
-            } else {
-                $status = '1';
-            }
+            // if (empty($request->vehicle_id)) {
+            //     $status = '2';
+            // } else {
+            //     $status = '1';
+            // }
 
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
@@ -2093,18 +2093,6 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
-            // $consignee = Consignee::where('id', $request->consignee_id)->first();
-            // $consignee_pincode = $consignee->postal_code;
-
-            // $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
-            // $get_zonebranch = $getpin_transfer->hub_transfer;
-            // $get_branch = Location::where('name', $get_zonebranch)->first();
-            // $consignmentsave['to_branch_id'] = $get_branch->id;
-
-            // $get_location = Location::where('id', $authuser->branch_id)->first();
-            // $chk_h2h_branch = $get_location->with_h2h;
-            // $location_name = $get_location->name;
 
             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                 $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -2162,7 +2150,8 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-            } ///////////////////////////////////////// drs api push/////////////////////////////////////////////
+            } 
+            ///////////////////////////////////////// drs api push/////////////////////////////////////////////
 
             $consignment_id = $saveconsignment->id;
             $mytime = Carbon::now('Asia/Kolkata');
