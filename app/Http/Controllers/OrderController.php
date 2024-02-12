@@ -2054,11 +2054,11 @@ class OrderController extends Controller
             
             $locations = Location::whereIn('id', $cc)->first();
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
-            } else {
-                $status = '1';
-            }
+            // if (empty($request->vehicle_id)) {
+            //     $status = '2';
+            // } else {
+            //     $status = '1';
+            // }
 
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
@@ -2093,18 +2093,6 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
-            // $consignee = Consignee::where('id', $request->consignee_id)->first();
-            // $consignee_pincode = $consignee->postal_code;
-
-            // $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
-            // $get_zonebranch = $getpin_transfer->hub_transfer;
-            // $get_branch = Location::where('name', $get_zonebranch)->first();
-            // $consignmentsave['to_branch_id'] = $get_branch->id;
-
-            // $get_location = Location::where('id', $authuser->branch_id)->first();
-            // $chk_h2h_branch = $get_location->with_h2h;
-            // $location_name = $get_location->name;
 
             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                 $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -2162,7 +2150,8 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-            } ///////////////////////////////////////// drs api push/////////////////////////////////////////////
+            } 
+            ///////////////////////////////////////// drs api push/////////////////////////////////////////////
 
             $consignment_id = $saveconsignment->id;
             $mytime = Carbon::now('Asia/Kolkata');
@@ -3006,7 +2995,7 @@ class OrderController extends Controller
             $consignment_id = $request->consignment_id;
             //===================== Create DRS in LR ================================= //
             if ($request->booked_drs == 0) {
-                if (!empty($request->vehicle_id)) {
+                // if (!empty($request->vehicle_id)) {
                     $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
                         ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
                         ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
@@ -3027,7 +3016,7 @@ class OrderController extends Controller
                     $drs_no = str_pad($number, $no_of_digit, "0", STR_PAD_LEFT);
 
                     $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $simplyfy['id'], 'consignee_id' => $simplyfy['consignee_name'], 'consignment_date' => $simplyfy['consignment_date'], 'branch_id' => $authuser->branch_id, 'city' => $simplyfy['city'], 'pincode' => $simplyfy['pincode'], 'total_quantity' => $simplyfy['total_quantity'], 'total_weight' => $simplyfy['total_weight'], 'vehicle_no' => $simplyfy['regn_no'], 'driver_name' => $simplyfy['driver_name'], 'driver_no' => $simplyfy['driver_phone'], 'order_no' => '1', 'delivery_status' => 'Assigned', 'status' => '1']);
-                }
+                // }
             } else if ($request->booked_drs == 1) {
 
                 $consignmentdrs = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_name', 'consignees.nick_name as consignee_name', 'consignees.city as city', 'consignees.postal_code as pincode', 'vehicles.regn_no as regn_no', 'drivers.name as driver_name', 'drivers.phone as driver_phone')
