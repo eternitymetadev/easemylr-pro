@@ -2096,7 +2096,7 @@ class ConsignmentController extends Controller
             }
             $updateData['delivery_status'] = 'Assigned';
 
-            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->update($updateData);
+            $SaveData = ConsignmentNote::whereIn('id', $consignmentId)->where('status', '!=', 0)->update($updateData);
            
             $get_consignment = ConsignmentNote::with('ConsigneeDetail','VehicleDetail','DriverDetail')->whereIn('id', $consignmentId)->first();
             if ($get_consignment) {
@@ -4884,80 +4884,83 @@ class ConsignmentController extends Controller
 
             if (!empty($request->data)) {
                 $get_data = $request->data;
+
                 foreach ($get_data as $key => $save_data) {
-                    // echo'<pre>'; print_r($save_data); die;
                     $lrno = $save_data['lrno'];
-                    $deliverydate = @$save_data['delivery_date'];
-                    $pod_img = @$save_data['img'];
+                    
+                    $getlrDetail = ConsignmentNote::where('id', $lrno)->first();
 
-                    if ($save_data['job_id'] == 'null') {
+                    if(!empty($getlrDetail) && $getlrDetail->status != 0){                    
+                        $deliverydate = @$save_data['delivery_date'];
+                        $pod_img = @$save_data['img'];
 
-                        if($pod_img){
-                            // prev folder name- drs/Image
-                            $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
-                        
-                            if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
-                                $imagePath = explode('/', $originalFilename);
-                                $filename = end($imagePath);
-                            } else {
+                        if ($save_data['job_id'] == 'null') {
+
+                            if($pod_img){
+                                // prev folder name- drs/Image
+                                $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
+                            
+                                if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
+                                    $imagePath = explode('/', $originalFilename);
+                                    $filename = end($imagePath);
+                                } else {
+                                    $filename = null;
+                                }
+                            }else{
                                 $filename = null;
                             }
-                        }else{
-                            $filename = null;
-                        }
 
-                        $check_lr_mode = ConsignmentNote::where('id', $lrno)->first();
-                        if (!empty($deliverydate)) {
-                            $dateTimestamp1 = strtotime($save_data['lr_date']);
-                            $dateTimestamp2 = strtotime($deliverydate);
-                            // Compare the timestamp date
-                            if ($dateTimestamp1 > $dateTimestamp2) {
-                                $response['success'] = false;
-                                $response['error'] = 'date_less';
-                                $response['messages'] = 'Delivery date cannot be less than LR Date';
-                                return Response::json($response);
-                            }
-
-                            if ($check_lr_mode->lr_mode == 0) {
-                                ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
-
-                                $latestRecord = TransactionSheet::where('consignment_no', $lrno)
-                                    ->latest('drs_no')
-                                    ->first();
-
-                                if ($latestRecord) {
-                                    $latestRecord->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                            if (!empty($deliverydate)) {
+                                $dateTimestamp1 = strtotime($save_data['lr_date']);
+                                $dateTimestamp2 = strtotime($deliverydate);
+                                // Compare the timestamp date
+                                if ($dateTimestamp1 > $dateTimestamp2) {
+                                    $response['success'] = false;
+                                    $response['error'] = 'date_less';
+                                    $response['messages'] = 'Delivery date cannot be less than LR Date';
+                                    return Response::json($response);
                                 }
-                            }
 
-                            // =================== task assign ====== //
-                            $mytime = Carbon::now('Asia/Kolkata');
-                            $currentdate = $mytime->toDateTimeString();
+                                if ($getlrDetail->lr_mode == 0) {
+                                    ConsignmentNote::where('id', $lrno)->where('status', '!=', 0)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
 
-                            $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate, 'location' => $location->name, 'type' => '2');
+                                    $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                                        ->latest('drs_no')
+                                        ->first();
 
-                            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->latest('id')->first();
-                            if (!empty($lastjob->response_data)) {
-                                $st = json_decode($lastjob->response_data);
-                                array_push($st, $respons2);
-                                $sts = json_encode($st);
+                                    if ($latestRecord) {
+                                        $latestRecord->where('status', '!=', 0)->update(['delivery_status' => 'Successful', 'delivery_date' => $deliverydate,]);
+                                    }
+                                }
 
-                                $start = Job::create(['consignment_id' => $lrno, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
-                            }
-                            // ==== end started
+                                // =================== task assign ====== //
+                                $mytime = Carbon::now('Asia/Kolkata');
+                                $currentdate = $mytime->toDateTimeString();
 
-                        } else {
-                            if (!empty($filename)) {
-                                if ($check_lr_mode->lr_mode == 0) {
-                                    ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id]);
-                                    // TransactionSheet::where('consignment_no', $lrno)->update(['delivery_status' => 'Successful']);
+                                $respons2 = array('consignment_id' => $lrno, 'status' => 'Successful', 'desc' => 'Delivered', 'create_at' => $currentdate, 'location' => $location->name, 'type' => '2');
+
+                                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $lrno)->latest('id')->first();
+                                if (!empty($lastjob->response_data)) {
+                                    $st = json_decode($lastjob->response_data);
+                                    array_push($st, $respons2);
+                                    $sts = json_encode($st);
+
+                                    $start = Job::create(['consignment_id' => $lrno, 'response_data' => $sts, 'status' => 'Successful', 'type' => '2']);
+                                }
+                                // ==== end started
+
+                            } else {
+                                if (!empty($filename)) {
+                                    if ($getlrDetail->lr_mode == 0) {
+                                        ConsignmentNote::where('id', $lrno)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id]);
+                                    }
                                 }
                             }
                         }
                     }
                 }
                 $response['success'] = true;
-                $response['messages'] = 'Image uploaded successfully';
+                $response['messages'] = 'Delivery date and Images uploaded successfully';
                 return Response::json($response);
             }
         } catch (\Exception $e) {
@@ -6198,7 +6201,7 @@ class ConsignmentController extends Controller
             $mytime = Carbon::now('Asia/Kolkata');
             $currentdate = $mytime->toDateTimeString();
 
-            $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->pluck('reattempt_reason')->first();
+            $lastreattempt = ConsignmentNote::where('id', $request->lr_id)->where('status', '!=', 0)->pluck('reattempt_reason')->first();
 
             if($request->otherText == null || $request->otherText == ''){
                 $otherText = '';
@@ -6226,11 +6229,11 @@ class ConsignmentController extends Controller
             $consignmentsave['vehicle_type'] = null;
             $consignmentsave['status'] = 2;
 
-            $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->update($consignmentsave);
-
-            TransactionSheet::where('consignment_no',$request->lr_id)->update(['status' => 4]);
-
+            $saveconsignment = ConsignmentNote::where('id',$request->lr_id)->where('status', '!=', 0)->update($consignmentsave);
+            
             if($saveconsignment){
+                TransactionSheet::where('consignment_no',$request->lr_id)->where('status', '!=', 0)->update(['status' => 4]);
+
                 $url = $this->prefix . '/transaction-sheet';
                 $response['success'] = true;
                 $response['success_message'] = "Reattempt Added successfully";
