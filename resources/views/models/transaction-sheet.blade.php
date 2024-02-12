@@ -62,7 +62,7 @@
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <div class="btn-section w-100 P-0">
-                        <button type="submit" class="btn-danger btn btn-modal delete-btn-modal allsave">
+                        <button type="submit" id="update-disable" class="btn-danger btn btn-modal delete-btn-modal allsave">
                             <span class="indicator-label">Update</span>
                             <span class="indicator-progress" style="display: none;">Please wait...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>

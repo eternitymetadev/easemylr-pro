@@ -225,7 +225,7 @@ class ClientController extends Controller
     {
         $this->prefix = request()->route()->getPrefix();
         $query = RegionalClient::query();
-        $regclients = $query->with('Location')->orderby('id', 'DESC')->get();
+        $regclients = $query->with(['BaseClient','Location'])->orderby('id', 'DESC')->get();
         return view('clients.regional-client-list', ['regclients' => $regclients, 'prefix' => $this->prefix, 'segment' => $this->segment])->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
