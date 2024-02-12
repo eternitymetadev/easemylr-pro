@@ -1998,8 +1998,7 @@ class ConsignmentController extends Controller
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
         // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '6'])
-            ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', '0');
+            ->where('consignment_notes.booked_drs', '!=', '1');
 
         if ($authuser->role_id == 1) {
             $data;
@@ -2585,34 +2584,26 @@ class ConsignmentController extends Controller
         $drsId = $_GET['drsId'];
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
-                // $query->whereIn('status', [1, 2, 5]);
-                $query->where(function ($q) {
-                    // Define the status array based on lr_type value
-                    $q->whereIn('status', [1, 5])
-                        ->orWhere(function ($q2) {
-                            $q2->where('lr_type', 0)
-                                ->whereIn('status', [1, 2, 5]);
-                        });
-                });
+                $query->whereIn('status', [0, 1, 2, 5]);
             }])
-            ->where('status', '!=', 0)
+            // ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
             ->get();
             
-            $lr_ids = TransactionSheet::where('drs_no', $drsId)->where('status',1)
+            $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
             ->pluck('consignment_no')
             ->toArray();
 
             // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-            $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
-            // dd($get_lrs);
-            $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
-            $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
-            $getVehicleType = VehicleType::where('id',$get_lrs->vehicle_type)->first();
+            $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
+            // dd($getLrs);
+            $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
+            $getDriver = Driver::where('id',$getLrs->driver_id)->first();
+            $getVehicleType = VehicleType::where('id',$getLrs->vehicle_type)->first();
 
 
         $response['fetch'] = $result;
-        $response['fetch_lrs'] = $get_lrs;
+        $response['fetch_lrs'] = $getLrs;
         $response['fetchVehicle'] = $getVehicle;
         $response['fetchDriver'] = $getDriver;
         $response['fetchVehicleType'] = $getVehicleType;
@@ -3140,28 +3131,32 @@ class ConsignmentController extends Controller
     //on driver button click
     public function view_saveDraft(Request $request)
     {
-        $id = $request->drsId;
-        $result = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
+        $drsId = $request->drsId;
+        $result = TransactionSheet::with(['ConsignmentDetail', 'ConsignmentItem'])->where('drs_no', $drsId)
             ->whereHas('ConsignmentDetail', function ($query) {
-                $query->whereIn('status', ['1', '5']);
+                $query->whereIn('status', ['1','5']);
             })
             ->orderby('order_no', 'asc')->get();
 
-        $lr_ids = TransactionSheet::where('drs_no', $id)->where('status',1)
+        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
         ->pluck('consignment_no')
         ->toArray();
 
         // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-        $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
-        $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
-        $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
+        $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
+        // $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
+        // $getDriver = Driver::where('id',$getLrs->driver_id)->first();
+        $getVehicle = Vehicle::find($getLrs->vehicle_id);
+        $getDriver = Driver::find($getLrs->driver_id);
 
-        $response['fetch'] = $result;
-        $response['fetch_lrs'] = $get_lrs;
-        $response['fetchVehicle'] = $getVehicle;
-        $response['fetchDriver'] = $getDriver;
-        $response['success'] = true;
-        $response['success_message'] = "Data Imported successfully";
+        $response = [
+            'fetch' => $result,
+            'fetch_lrs' => $getLrs,
+            'fetchVehicle' => $getVehicle,
+            'fetchDriver' => $getDriver,
+            'success' => true,
+            'success_message' => "Data Imported successfully"
+        ];
 
         return response()->json($response);
     }
@@ -3169,33 +3164,39 @@ class ConsignmentController extends Controller
     //use on start drs button in drs list
     public function start_saveDraft(Request $request)
     {
-        $id = $_GET['draft_id'];
-        $transcationview = TransactionSheet::select('*')->with('ConsignmentDetail', 'ConsignmentItem')->where('drs_no', $id)
+        $drsId = $_GET['draft_id'];
+        $transactionView = TransactionSheet::with(['ConsignmentDetail', 'ConsignmentItem'])
+            ->where('drs_no', $drsId)
             ->whereHas('ConsignmentDetail', function ($query) {
                 $query->whereIn('status', ['1', '5']);
             })
-            ->orderby('order_no', 'asc')->get();
+            ->orderBy('order_no', 'asc')->get();
 
-        $result = json_decode(json_encode($transcationview), true);
+        // $result = json_decode(json_encode($transactionView), true);
+        $result = $transactionView->toArray();
 
         // Retrieve an array of 'consignment_no' values based on the criteria
-        $lr_ids = TransactionSheet::where('drs_no', $id)->where('status',1)
-        // ->whereNotNull('vehicle_no')
-        // ->whereNotNull('driver_no')
-        ->pluck('consignment_no')
-        ->toArray();
+        $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
+            ->pluck('consignment_no')
+            ->toArray();
 
         // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
-        $get_lrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lr_ids)->first();
-        $getVehicle = Vehicle::where('id',$get_lrs->vehicle_id)->first();
-        $getDriver = Driver::where('id',$get_lrs->driver_id)->first();
+        $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
 
-        $response['fetch'] = $result;
-        $response['fetch_lrs'] = $get_lrs;
-        $response['fetchVehicle'] = $getVehicle;
-        $response['fetchDriver'] = $getDriver;
-        $response['success'] = true;
-        $response['success_message'] = "Data Imported successfully";
+        $getVehicle = Vehicle::find($getLrs->vehicle_id);
+        $getDriver = Driver::find($getLrs->driver_id);
+
+        // $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
+        // $getDriver = Driver::where('id',$getLrs->driver_id)->first();
+
+        $response = [
+            'fetch' => $result,
+            'fetch_lrs' => $getLrs,
+            'fetchVehicle' => $getVehicle,
+            'fetchDriver' => $getDriver,
+            'success' => true,
+            'success_message' => "Data Imported successfully"
+        ];
         
         echo json_encode($response);
     }
@@ -5979,12 +5980,33 @@ class ConsignmentController extends Controller
             $lr_no = $request->lr_no;
 
             $authuser = Auth::user();
-            if($authuser->role_id == 1){
-                $location_name = 'By Admin';
-            }else{
-                $login_branch = $authuser->branch_id;
-                $location = Location::where('id', $login_branch)->first();
-                $location_name = $location->name;
+            
+            // if($authuser->role_id == 1){
+            //     $location_name = 'By Admin';
+            // } else if($authuser->role_id == 3 || $authuser->role_id == 8){
+            //     $login_branch = $authuser->branch_id;
+            //     $location = Location::where('id', $login_branch)->first();
+            //     $location_name = '';
+            // } else {
+            //     $login_branch = $authuser->branch_id;
+            //     $location = Location::where('id', $login_branch)->first();
+            //     $location_name = $location->name;
+            // }
+
+            ////////////////
+
+            $loginBranch = $authuser->branch_id;
+            $location_name = '';
+
+            if ($loginBranch === null || strpos($loginBranch, ',') !== false) {
+                // Branch ID is null or contains multiple IDs
+                $location_name = '';
+            } else {
+                // Single branch ID
+                $location = Location::where('id', $loginBranch)->first();
+                if ($location) {
+                    $location_name = $location->name; // Assuming 'name' is the field to retrieve from the Location model
+                }
             }
 
             // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();

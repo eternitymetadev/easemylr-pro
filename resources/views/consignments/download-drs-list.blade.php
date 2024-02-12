@@ -237,7 +237,7 @@
 
         function fetchLrDetails(drsId) {
             console.log('ajax started')
-
+            
             $.ajax({
                 type: "GET",
                 url: "view-transactionSheet/" + drsId,
@@ -255,33 +255,38 @@
                         $("#drsdate").empty();
                     },
                 success: function(data) {
-                    console.log(data.fetch[0]?.consignment_detail.driver_id);
+                    // console.log(data.fetch[0]?.consignment_detail?.driver_id);
                     // var re = jQuery.parseJSON(data)
                     var re = data;
-                    var drs_no = re.fetch[0]['drs_no'];
+                    var drs_no = re?.fetch[0]?.drs_no;
                     $('#current_drs').val(drs_no);
-
+                    
                     var consignmentID = [];
                     var totalBox = 0;
                     var totalweight = 0;
-                    $.each(re.fetch, function(index, value) {
+                    $.each(re?.fetch, function(index, value) {
                         var alldata = value;
                         consignmentID.push(value.consignment_no);
                         totalBox += parseInt(value.total_quantity);
                         totalweight += parseInt(value.total_weight);
-
+                        
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
-                                        <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ewayupdate' data-id="${value.consignment_no}">Edit</a></td>
-                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail.edd ?? ''}" onkeydown="return false"/></td>
+                                        <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ${value.consignment_detail?.status == 0 ? '' : 'ewayupdate'}' data-id="${value.consignment_no}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''}>Edit</a></td>
+                                        <td><input type='date' name='edd[]' data-id="${value.consignment_no}" class='new_edd eddInput' value="${value.consignment_detail?.edd ?? ''}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''} onkeydown="return false"/></td>
                                         <td>${value.consignment_no}</td>
                                         <td>${value.consignment_date}</td>
                                         <td>${value.consignee_id}</td>
                                         <td>${value.city}</td>
                                         <td>${value.pincode}</td>
-                                        <td>${value.consignment_detail.total_quantity ?? ''}</td>
-                                        <td>${value.consignment_detail.total_weight ?? ''}</td>
-                                        <td><button type='button' data-id="${value.consignment_no}" ${re.fetch.length == 1 ? ' disabled ' : ' '} class='btn btn-primary remover_lr'>remove</button></td>
+                                        <td>${value.consignment_detail?.total_quantity ?? ''}</td>
+                                        <td>${value.consignment_detail?.total_weight ?? ''}</td>
+                                        <td>
+                                            ${value.consignment_detail?.status == 0
+                                                ? `<button type='button' class='btn btn-warning' style="background: #f40404">Cancel</button>`
+                                                : `<button type='button' data-id="${value.consignment_no}" ${re?.fetch?.length == 1 ? 'disabled' : ''} class='btn btn-primary remover_lr'>Remove</button>`
+                                            }
+                                        </td>
                                     </tr>`);
                     });
                     var rowCount = $("#sheet tbody tr").length;
@@ -298,27 +303,28 @@
 
                     showLibrary();
                                         
-                    $("#Transporter").val(re.fetch_lrs.transporter_name);
-                    $("#draft_purchase").val(re.fetch_lrs.purchase_price);
+                    $("#Transporter").val(re?.fetch_lrs?.transporter_name);
+                    $("#draft_purchase").val(re?.fetch_lrs?.purchase_price);
                     
                     // Create a new option element
-                    if (re.fetchVehicle) {
+                    if (re?.fetchVehicle) {
                         var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
                         $('#vehicle_no').append(newVehicleOption);
                     }
-                    if (re.fetchDriver) {
-                        var driver_phone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : ''; // Using a ternary operator for conditional assignment
-
-                        var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${re.fetchDriver.name}${driver_phone}</option>`;
+                    if (re?.fetchDriver) {
+                        var driverName = re.fetchDriver.name ? re.fetchDriver.name : '';
+                        var driverPhone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : '';
+                        var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${driverName}${driverPhone}</option>`;
                         $('#driver_id').append(newDriverOption);
                     }
 
-                    if (re.fetchVehicleType) {
+                    if (re?.fetchVehicleType) {
                         var newVehicleTypeOption =
                         `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
                         $('#vehicle_type').append(newVehicleTypeOption);
                     }
                 }
+                
             });
         }
         $(document).on('click', '.view-sheet', function() {
