@@ -2584,7 +2584,7 @@ class ConsignmentController extends Controller
         $drsId = $_GET['drsId'];
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
-                $query->whereIn('status', [0, 1, 2, 5]);
+                $query->whereIn('status', [0, 1]);  //[0, 1, 2, 5]
             }])
             // ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
@@ -3118,10 +3118,10 @@ class ConsignmentController extends Controller
 
     public function updateSuffle(Request $request)
     {
-        $page_id = $request->page_id_array;
+        $pageIds = $request->page_id_array;
 
-        for ($count = 0; $count < count($page_id); $count++) {
-            $drs = DB::table('transaction_sheets')->where('id', $page_id[$count])->update(['order_no' => $count + 1]);
+        foreach ($pageIds as $index => $pageId) {
+            TransactionSheet::where('id', $pageId)->update(['order_no' => $index + 1]);
         }
 
         $response['success'] = true;
