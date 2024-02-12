@@ -2331,8 +2331,6 @@ class ConsignmentController extends Controller
             $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
             ->whereDate('created_at', '>', '2023-12-20')
             ->whereNotNull('vehicle_no')
-            // ->where('delivery_status', '!=', 'Successful')
-            // ->where('status', 1)
             ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
             ->whereNotIn('status', [4, 0])
             ->pluck('vehicle_no')
@@ -2343,26 +2341,7 @@ class ConsignmentController extends Controller
             $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
             ->whereNotIn('regn_no', $drsVehicleIds)
             ->get();
-            /////////////
             
-            // get drivers
-            // $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
-            // ->whereDate('created_at', '>', '2023-12-20')
-            // ->whereNotNull('driver_no')
-            // // ->where('delivery_status', '!=', 'Successful')
-            // // ->where('status', 1)
-            // ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            // ->whereNotIn('status', [4, 0])
-            // ->pluck('driver_no')
-            // ->unique()
-            // ->toArray();
-
-            // // Fetch drivers who are not in the merged array
-            // $drivers = Driver::where('status', '1')
-            // ->whereNotIn('phone', $drsDriverIds)
-            // ->select('id', 'name', 'phone')
-            // ->get();
-
             // get drivers
             $drsDriverIds = TransactionSheet::select('driver_name', 'driver_no')
             ->whereDate('created_at', '>', '2023-12-20')
@@ -2375,8 +2354,6 @@ class ConsignmentController extends Controller
                 return $item['driver_no'].$item['driver_name'];
             })
             ->toArray();
-            // ->where('delivery_status', '!=', 'Successful')
-            // ->where('status', 1)
 
             $getDrivers = Driver::where('status', '1')
             ->where(function ($query) use ($drsDriverIds) {
@@ -2449,8 +2426,6 @@ class ConsignmentController extends Controller
         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name')
         ->whereDate('created_at', '>', '2023-12-20')
         ->whereNotNull('vehicle_no')
-        // ->where('delivery_status', '!=', 'Successful')
-        // ->where('status', 1)
         ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
         ->whereNotIn('status', [4, 0])
         ->pluck('vehicle_no')
@@ -2461,26 +2436,7 @@ class ConsignmentController extends Controller
         $vehicles = Vehicle::select('id', 'regn_no')->where('status', '1')
         ->whereNotIn('regn_no', $drsVehicleIds)
         ->get();
-        /////////////
-
-        // get drivers
-        // $drsDriverIds = TransactionSheet::select('id','drs_no', 'vehicle_no', 'driver_name', 'driver_no')
-        // ->whereDate('created_at', '>', '2023-12-20')
-        // ->whereNotNull('driver_no')
-        // // ->where('delivery_status', '!=', 'Successful')
-        // // ->where('status', 1)
-        // ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-        // ->whereNotIn('status', [4, 0])
-        // ->pluck('driver_no')
-        // ->unique()
-        // ->toArray();
-
-        // // Fetch drivers who are not in the merged array
-        // $drivers = Driver::where('status', '1')
-        // ->whereNotIn('phone', $drsDriverIds)
-        // ->select('id', 'name', 'phone')
-        // ->get();
-
+        
         // get drivers
         $drsDriverIds = TransactionSheet::select('driver_name', 'driver_no')
         ->whereDate('created_at', '>', '2023-12-20')
@@ -2493,8 +2449,6 @@ class ConsignmentController extends Controller
             return $item['driver_no'].$item['driver_name'];
         })
         ->toArray();
-        // ->where('delivery_status', '!=', 'Successful')
-        // ->where('status', 1)
 
         $getDrivers = Driver::where('status', '1')
         ->where(function ($query) use ($drsDriverIds) {
@@ -2586,7 +2540,6 @@ class ConsignmentController extends Controller
             ->with(['ConsignmentDetail' => function ($query) {
                 $query->whereIn('status', [0, 1]);  //[0, 1, 2, 5]
             }])
-            // ->where('status', '!=', 0)
             ->orderBy('order_no', 'asc')
             ->get();
             
@@ -2596,7 +2549,7 @@ class ConsignmentController extends Controller
 
             // Use the retrieved 'consignment_no' values to fetch corresponding ConsignmentNote records
             $getLrs = ConsignmentNote::select('id','vehicle_id','driver_id','vehicle_type','transporter_name','purchase_price')->whereIn('id', $lrIds)->first();
-            // dd($getLrs);
+            
             $getVehicle = Vehicle::where('id',$getLrs->vehicle_id)->first();
             $getDriver = Driver::where('id',$getLrs->driver_id)->first();
             $getVehicleType = VehicleType::where('id',$getLrs->vehicle_type)->first();
@@ -2795,7 +2748,6 @@ class ConsignmentController extends Controller
                 'ConsignmentDetail.ConsignerDetail.GetRegClient', 
                 'ConsignmentDetail.ShiptoDetail:id,nick_name,phone,city,district,postal_code',
                 'ConsignmentItem'
-                // 'consigneeDetail',
             ])
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
