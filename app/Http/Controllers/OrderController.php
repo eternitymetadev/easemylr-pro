@@ -2865,7 +2865,7 @@ class OrderController extends Controller
         ->toArray();
         // ->where('delivery_status', '!=', 'Successful')
         // ->where('status', 1)
-        if($drsVehicleIds && count($drsVehicleIds)>0){
+        if($drsDriverIds && count($drsDriverIds)>0){
             $getDrivers = Driver::where('status', '1')
             ->where(function ($query) use ($drsDriverIds) {
                 foreach ($drsDriverIds as $driver) {

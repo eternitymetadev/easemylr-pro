@@ -2455,7 +2455,7 @@ class ConsignmentController extends Controller
         })
         ->toArray();
         
-        if($drsVehicleIds && count($drsVehicleIds)>0){
+        if($drsDriverIds && count($drsDriverIds)>0){
         $getDrivers = Driver::where('status', '1')
         ->where(function ($query) use ($drsDriverIds) {
             foreach ($drsDriverIds as $driver) {
