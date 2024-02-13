@@ -519,6 +519,12 @@
             // Loop through the elements
             for (var i = 0; i < elements.length; i++) {
                 if(is_started == 1){
+
+                    // Check if the element is disabled
+                    if (elements[i].disabled) {
+                        // Skip validation if the input is disabled
+                        continue;
+                    }
                     // Check if the element has a value
                     if (!elements[i].value) {
                         $("#mainLoader").hide();
