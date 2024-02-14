@@ -56,6 +56,8 @@
                         <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Invoice No:
                             </span>{{ $consignment->invoice_no ?? "-" }}</div>
                         <?php } ?>
+                        <div class="css-16pld73 ellipse2"><span style="color:#4361ee;">Drs No:
+                            </span>{{@$consignment->DrsNo->drs_no ?? '-'}}</div>
 
                     </div>
                 </td>
