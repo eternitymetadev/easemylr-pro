@@ -165,4 +165,9 @@ class ConsignmentNote extends Model
         return $this->hasOne('App\Models\User','id','pod_userid');
     }
 
+    public function DrsNo()
+    {
+        return $this->hasOne('App\Models\TransactionSheet','consignment_no','id')->where('status', 1);
+    }
+
 }

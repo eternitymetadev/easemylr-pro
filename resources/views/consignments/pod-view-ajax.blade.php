@@ -20,6 +20,7 @@
             </tr> 
         </thead>
         <tbody>
+            <?php $authuser = Auth::user();  ?>
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <?php
@@ -184,21 +185,29 @@
                         @endif
                         </div>
                         {{-- delete image of pods //its working delte pod commented now--}}
-                        <?php $authuser = Auth::user(); 
-                        if($authuser->role_id == 8){ ?>
-                        <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
-                            data-id="{{$consignment->id}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-trash-2">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                </path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>
-                        </a>
+                        <?php if($authuser->role_id == 8){ ?>
+                            <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
+                                data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
+                                data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}" data-roleId={{$authuser->role_id}} >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-edit-2">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                    </svg>
+                                </a>
+                            <a class="delete deleteIcon deletePod swan-tooltip-left" data-tooltip="Delete Images"
+                                data-id="{{$consignment->id}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-trash-2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path
+                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                    </path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                            </a>
                         <?php } ?>
                     </div>
                     @else
@@ -208,7 +217,7 @@
                         </div> 
                         <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
                         data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
-                        data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}">
+                        data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}" data-roleId={{$authuser->role_id}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="feather feather-edit-2">
