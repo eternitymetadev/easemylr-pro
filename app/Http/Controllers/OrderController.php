@@ -491,10 +491,10 @@ class OrderController extends Controller
             }
 
             if ($request->lr_type == 1 || $request->lr_type == 2) {
-                $consignee = Consignee::where('id', $request->consignee_id)->first();
-                $consignee_pincode = $consignee->postal_code;
+                $consignee = Consignee::where('id', $request->ship_to_id)->first();
+                $shipto_pincode = $consignee->postal_code;
 
-                $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+                $getpin_transfer = Zone::where('postal_code', $shipto_pincode)->first();
 
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
@@ -717,7 +717,6 @@ class OrderController extends Controller
                     $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
                     if (!empty($request->data)) {
                         $get_data = $request->data;
-                        // dd($get_data);
                         foreach ($get_data as $key => $save_data) {
                             $savedata['consignment_id'] = $request->consignment_id;
                             $savedata['order_id'] = $save_data['order_id'];
@@ -735,7 +734,6 @@ class OrderController extends Controller
                             }
                             // dd($saveconsignmentitems);
                             if ($saveconsignmentitems) {
-                                // dd($save_data['item_data']);
                                 if (!empty($save_data['item_data'])) {
                                     $qty_array = array();
                                     $netwt_array = array();
@@ -2323,10 +2321,10 @@ class OrderController extends Controller
                 $status = '6'; //lr without pickup and without edit
                 $hrs_status = '3';
 
-                $consignee = Consignee::where('id', $request->consignee_id)->first();
-                $consignee_pincode = $consignee->postal_code;
+                $consignee = Consignee::where('id', $request->ship_to_id)->first();
+                $shipto_pincode = $consignee->postal_code;
 
-                $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+                $getpin_transfer = Zone::where('postal_code', $shipto_pincode)->first();
 
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
@@ -2408,9 +2406,9 @@ class OrderController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            // $consignee = Consignee::where('id', $request->consignee_id)->first();
-            // $consignee_pincode = $consignee->postal_code;
-            // if(empty($consignee_pincode))
+            // $consignee = Consignee::where('id', $request->ship_to_id)->first();
+            // $shipto_pincode = $consignee->postal_code;
+            // if(empty($shipto_pincode))
             // {
             //     $response['success'] = false;
             //     $response['error_message'] = "Postal Code Not Found";

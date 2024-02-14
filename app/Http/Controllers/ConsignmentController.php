@@ -5961,69 +5961,45 @@ class ConsignmentController extends Controller
     {
         try {
             $lr_no = $request->lr_no;
-
             $authuser = Auth::user();
-            
-            // if($authuser->role_id == 1){
-            //     $location_name = 'By Admin';
-            // } else if($authuser->role_id == 3 || $authuser->role_id == 8){
-            //     $login_branch = $authuser->branch_id;
-            //     $location = Location::where('id', $login_branch)->first();
-            //     $location_name = '';
-            // } else {
-            //     $login_branch = $authuser->branch_id;
-            //     $location = Location::where('id', $login_branch)->first();
-            //     $location_name = $location->name;
-            // }
-
-            ////////////////
-
             $loginBranch = $authuser->branch_id;
             $location_name = '';
 
-            if ($loginBranch === null || strpos($loginBranch, ',') !== false) {
-                // Branch ID is null or contains multiple IDs
-                $location_name = '';
-            } else {
-                // Single branch ID
-                $location = Location::where('id', $loginBranch)->first();
+            if ($loginBranch && strpos($loginBranch, ',') === false) {
+                $location = Location::find($loginBranch);
                 if ($location) {
-                    $location_name = $location->name; // Assuming 'name' is the field to retrieve from the Location model
+                    $location_name = $location->name;
                 }
             }
-
-            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            // if ($get_delivery_branch->lr_type == 0) {
-            //     $delivery_branch = $get_delivery_branch->branch_id;
-            // } else {
-            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-            //         $delivery_branch = $get_delivery_branch->branch_id;
-            //     }else{
-            //         $delivery_branch = $get_delivery_branch->to_branch_id;
-            //     }
-            // }
-
-            // if ($login_branch != $delivery_branch) {
-
-            //     $response['success'] = false;
-            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-            //     return Response::json($response);
-            // }
             
             $pod_img = $request->file('pod');
-            //     $file->move(public_path('drs/Image'), $filename);
+            $filename = null;
+            
             if ($pod_img) {
                 $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
             
                 if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $filename = end($imagePath);
-                } else {
-                    $filename = null;
                 }
             } else {
-                $filename = null;
+                $getLr = ConsignmentNote::find($lr_no);
+                if ($getLr) {
+                    $filename = $getLr->signed_drs;
+                }
             }
+
+            if (empty($request->delivery_date)) {
+                $updatePods = ConsignmentNote::where('id', $lr_no)
+                    ->update(['signed_drs' => $filename ]);
+
+                if ($updatePods) {
+                    $response['success'] = true;
+                    $response['messages'] = 'POD uploaded successfully';
+                    return Response::json($response);
+                }
+            }
+
             if (!empty($request->delivery_date)) {
                 $updateRecords = ConsignmentNote::where('id', $lr_no)
                     ->update([
@@ -6061,7 +6037,7 @@ class ConsignmentController extends Controller
                 // ==== end started
 
                 $response['success'] = true;
-                $response['messages'] = 'POD uploaded successfully';
+                $response['messages'] = 'POD and delivery date updated successfully';
                 return Response::json($response);
             }else{
                 $response['success'] = false;
@@ -6070,10 +6046,9 @@ class ConsignmentController extends Controller
                 return Response::json($response);
             }
         } catch (\Exception $e) {
-            $bug = $e->getMessage();
             $response['success'] = false;
             $response['error'] = true;
-            $response['messages'] = $bug;
+            $response['messages'] = $e->getMessage();
             return Response::json($response);
         }
     }
