@@ -66,11 +66,11 @@
                     <!-- relocate cnr cnee check for sale to return case -->
                     <?php 
                     if($consignment->is_salereturn == 1){
-                        $cnr_nickname = @$consignment->ConsigneeDetail->nick_name ?? '';
+                        $cnr_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
                         $cne_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
                     }else{
                         $cnr_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
-                        $cne_nickname = @$consignment->ConsigneeDetail->nick_name ?? '';
+                        $cne_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
                     } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
@@ -95,9 +95,9 @@
                                         {{ $consignment->ConsignerDetail->city ?? "" }},
                                         {{ $consignment->ConsignerDetail->district ?? "" }} </span>
                                     <?php }else{ ?>
-                                    <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
-                                        {{ $consignment->ConsigneeDetail->city ?? "" }},
-                                        {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                    <span>{{ $consignment->ShiptoDetail->postal_code ?? "" }},
+                                        {{ $consignment->ShiptoDetail->city ?? "" }},
+                                        {{ $consignment->ShiptoDetail->district ?? "" }} </span>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -292,11 +292,11 @@
 
                                                         <tr>
                                                             <?php if($consignment->is_salereturn ==1){
-                                                                    $cnr_nickname_txn = @$consignment->ConsigneeDetail->nick_name ?? '';
+                                                                    $cnr_nickname_txn = @$consignment->ShiptoDetail->nick_name ?? '';
                                                                     $cne_nickname_txn = @$consignment->ConsignerDetail->nick_name ?? '';
                                                                 }else{
                                                                 $cnr_nickname_txn = @$consignment->ConsignerDetail->nick_name ?? '';
-                                                                $cne_nickname_txn = @$consignment->ConsigneeDetail->nick_name ?? '';
+                                                                $cne_nickname_txn = @$consignment->ShiptoDetail->nick_name ?? '';
                                                                 }
                                                                 ?>
                                                             <td colspan="2">
