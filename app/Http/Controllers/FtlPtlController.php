@@ -232,7 +232,7 @@ class FtlPtlController extends Controller
             //             return response()->json(['success' => false,'error_message' => $errorMessage]);
             //         }
             //     }
-            // }
+            // } 
     
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
