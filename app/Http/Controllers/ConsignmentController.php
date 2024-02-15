@@ -1999,7 +1999,7 @@ class ConsignmentController extends Controller
         // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', '0');
+            ->whereNotIn('consignment_notes.lr_type', [0, 3]);
 
         if ($authuser->role_id == 1) {
             $data;
@@ -4953,7 +4953,6 @@ class ConsignmentController extends Controller
 
     public function addmoreLr(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -4966,7 +4965,8 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', ['2', '5', '6']);
+            ->whereIn('consignment_notes.status', ['2', '6'])
+            ->whereNotIn('consignment_notes.lr_type', [0, 3]);
         // ->where('consignment_notes.status', '!=', 5);
 
         if ($authuser->role_id == 1) {
