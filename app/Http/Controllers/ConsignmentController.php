@@ -3239,10 +3239,10 @@ class ConsignmentController extends Controller
     {
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
-        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
+        $consigmentUpdate = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
         
-        if ($consigner) {
-            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+        if ($consigmentUpdate) {
+            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
                 ->latest('drs_no')
                 ->first();
 
@@ -4840,7 +4840,7 @@ class ConsignmentController extends Controller
             if (!empty($deliverydate)) {
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By consignment-list']);
 
-                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
                     ->latest('drs_no')
                     ->first();
 
@@ -4932,6 +4932,7 @@ class ConsignmentController extends Controller
                                     ConsignmentNote::where('id', $lrno)->where('status', '!=', 0)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
 
                                     $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                                        ->where('status', 1)
                                         ->latest('drs_no')
                                         ->first();
 
@@ -6015,6 +6016,7 @@ class ConsignmentController extends Controller
 
                 if ($updateRecords) {
                     $latestRecord = TransactionSheet::where('consignment_no', $lr_no)
+                        ->where('status', 1)
                         ->latest('drs_no')
                         ->first();
 
@@ -6078,6 +6080,7 @@ class ConsignmentController extends Controller
 
         if ($mode) {
             $latestRecord = TransactionSheet::where('consignment_no', $lr_no)
+                ->where('status', 1)
                 ->latest('drs_no')
                 ->first();
 

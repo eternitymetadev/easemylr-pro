@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use App\Models\ConsignmentNote;
+use App\Models\TransactionSheet;
 use Helper;
 use Auth;
 
@@ -54,6 +55,16 @@ class DeliveryDateImport implements ToModel,WithHeadingRow
                 'pod_userid' => $authuser->id,
                 'consignment_no'=>'By import',
             ]);
+
+            $latestRecord = TransactionSheet::where('consignment_no', $row['lr_no'])
+                ->where('status', 1)
+                ->latest('drs_no')
+                ->first();
+
+            if ($latestRecord) {
+                $latestRecord->update(['delivery_status' => 'Successful','delivery_date' => $delivery_date]);
+            }
+            
         } else {
             // LR ID without a valid POD, store it in the failedLRs array
             $this->failedLRs[] = $row['lr_no'];
