@@ -334,17 +334,11 @@
         }
         $(document).on('click', '.view-sheet', function() {
             var drsId = $(this).attr('value');
-            var lrType = $(this).data('lrtype');
+            // var lrType = $(this).data('lrtype');
 
             $("#addlr").attr('data-drsId', drsId);
             $('#opm').modal('show');
             $('#opm').find('input, textarea, select').val('');
-
-            if (lrType == 0) {
-                $("#addlr").hide();
-            } else {
-                $("#addlr").show();
-            }
 
             fetchLrDetails(drsId)
 
