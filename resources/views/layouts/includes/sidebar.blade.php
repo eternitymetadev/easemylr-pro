@@ -369,7 +369,7 @@
     <li class="menu">
         <a href="#lrcontract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'contract-lrs') || str_contains($currentURL, 'create-contractlr')) active @endif">
+                class="@if(str_contains($currentURL, 'contract-lrs') || str_contains($currentURL, 'create-contractlr') || str_contains($currentURL, 'contract-bulklr-list') || str_contains($currentURL, 'contract-pod-list')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-trello">
@@ -396,11 +396,11 @@
             </li>
             <?php if($authuser->role_id != 3){ ?>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'bulklr-view'}}"> Bulk Lr Download </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-bulklr-list'}}"> Bulk Lr Download </a>
             </li>
             <?php } ?>
             <li>
-                <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-pod-list'}}"> Pod View </a>
             </li>
 
         </ul>

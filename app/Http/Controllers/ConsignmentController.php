@@ -98,14 +98,10 @@ class ConsignmentController extends Controller
 
             $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1 || $authuser->role_id == 8) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 8){
-                $query;
             } else {
                 $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
@@ -166,19 +162,16 @@ class ConsignmentController extends Controller
 
         $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-        if ($authuser->role_id == 1) {
+        if ($authuser->role_id == 1 || $authuser->role_id == 8) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        }elseif($authuser->role_id == 8){
-            $query;
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
         }
+
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
@@ -3274,7 +3267,6 @@ class ConsignmentController extends Controller
     //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();

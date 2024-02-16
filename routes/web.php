@@ -367,6 +367,9 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::resource('contract-lrs', ContractLrController::class);
     Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
     Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
     
     // Route::any('get-driver-drs', [ConsignmentController::class, 'getDriverdrs']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
