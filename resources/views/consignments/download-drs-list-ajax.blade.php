@@ -39,6 +39,8 @@
                 {{-- delivery status --}}
                 <td>
                     <?php
+                        $consignmentNote = \App\Models\ConsignmentNote::find($trns->consignment_no);
+                        
                             $new = Helper::oldnewLr($trns->drs_no) ?? "";
 
                             $status = Helper::getdeleveryStatus($trns->drs_no);
@@ -50,7 +52,7 @@
 
                             if($status == 'Unassigned'){
                             ?>
-                            <button class="delBtn statusBtn btn view-sheet {{$disable}}" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;">Unassigned</button>
+                            <button class="delBtn statusBtn btn view-sheet {{$disable}}" value="{{$trns->drs_no}}" style="--statusColor: #9118b6;" data-lrtype={{$consignmentNote->lr_type}}>Unassigned</button>
                             <?php }else{ ?>
                                 <a class="delBtn statusBtn drs_cancel btn {{$disable}}" style="--statusColor: {{$statusColor}};" drs-no="{{$trns->drs_no}}" data-text="consignment" data-status="0" data-action="<?php echo URL::current(); ?>" data-textstatus="{{$status}}"><span>{{$status}}</span></a>
                             <?php }

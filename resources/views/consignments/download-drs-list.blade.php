@@ -107,12 +107,13 @@
             box-shadow: 0 0 12px -3px #83838380 inset;
         }
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered{
-            border-radius:12px !important;
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            border-radius: 12px !important;
             height: auto !important;
             padding: 0.5rem 1.25rem !important;
             margin-bottom: 0 !important;
         }
+
         .select2-container--open .select2-dropdown--below {
             margin-left: 1.5rem;
             margin-top: 1.5rem;
@@ -125,14 +126,15 @@
                     <nav class="breadcrumb-one" aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0);">Consignments</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download DRS List</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Download
+                                    DRS List</a></li>
                         </ol>
                     </nav>
                 </div>
                 <div class="widget-content widget-content-area br-6">
                     <div class="mb-4 mt-4">
                         <!-- <a class="btn btn-success ml-2 mt-3" href="{{ url($prefix . '/export-drs-table') }}">Export
-                                                                                                                        data</a> -->
+                                                                                                                            data</a> -->
 
                         <div class="container-fluid">
                             <div class="row winery_row_n spaceing_2n mb-3">
@@ -143,8 +145,8 @@
                                                 <input type="text" class="form-control" placeholder="Search"
                                                     id="search" data-action="<?php echo url()->current(); ?>">
                                                 <!-- <div class="input-group-btn">
-                                                                                                                                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                                                                                                                                </div> -->
+                                                                                                                                                        <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                                                                                                                                    </div> -->
                                             </div>
                                         </form>
                                     </div>
@@ -152,11 +154,12 @@
                                 <div class="col-lg lead_bladebtop1_n pl-0">
                                     <div class="winery_btn_n btn-section px-0 text-right">
                                         <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                                                                                                                            style="font-size: 15px; padding: 9px; width: 130px"
-                                                                                                                                            href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
-                                                                                                                                                New</span></a> -->
+                                                                                                                                                style="font-size: 15px; padding: 9px; width: 130px"
+                                                                                                                                                href="{{ 'consignments/create' }}"><span><i class="fa fa-plus"></i> Add
+                                                                                                                                                    New</span></a> -->
                                         <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
-                                            style="font-size: 15px; padding: 9px;" data-action="<?php //echo url()->current(); ?>"><span>
+                                            style="font-size: 15px; padding: 9px;" data-action="<?php //echo url()->current();
+                                            ?>"><span>
                                                 <i class="fa fa-refresh"></i> Reset Filters</span></a>
                                     </div>
                                 </div>
@@ -182,23 +185,23 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"
         integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
     <script>
-      jQuery(function () {
-            $('.my-select2').each(function () {
+        jQuery(function() {
+            $('.my-select2').each(function() {
                 $(this).select2({
                     theme: "bootstrap-5",
                     dropdownParent: $(this).parent(), // fix select2 search input focus bug
                 })
             })
             // fix select2 bootstrap modal scroll bug
-            $(document).on('select2:close', '.my-select2', function (e) {
+            $(document).on('select2:close', '.my-select2', function(e) {
                 var evt = "scroll.select2"
                 $(e.target).parents().off(evt)
                 $(window).off(evt)
             })
         })
-        
+
         $(document).ready(function() {
-            $(document).on('click', '.close', function(){
+            $(document).on('click', '.close', function() {
                 $(this).parent().siblings('.modal-body').children('form').trigger("reset");
             });
 
@@ -223,7 +226,7 @@
                 }
             });
 
-            
+
 
             $('#sheet').DataTable({
                 dom: 'Bfrtip',
@@ -231,13 +234,13 @@
                     'print'
                 ]
             });
-            
+
         });
 
 
         function fetchLrDetails(drsId) {
             console.log('ajax started')
-            
+
             $.ajax({
                 type: "GET",
                 url: "view-transactionSheet/" + drsId,
@@ -260,7 +263,7 @@
                     var re = data;
                     var drs_no = re?.fetch[0]?.drs_no;
                     $('#current_drs').val(drs_no);
-                    
+
                     var consignmentID = [];
                     var totalBox = 0;
                     var totalweight = 0;
@@ -269,7 +272,7 @@
                         consignmentID.push(value.consignment_no);
                         totalBox += parseInt(value.total_quantity);
                         totalweight += parseInt(value.total_weight);
-                        
+
                         $('#sheet tbody')
                             .append(`<tr id="${value.id}" class='move'>
                                         <td><a href='#' data-toggle='modal' data-target='modal-2' class='btn btn-danger ${value.consignment_detail?.status == 0 ? '' : 'ewayupdate'}' data-id="${value.consignment_no}" ${value.consignment_detail?.status == 0 ? 'disabled' : ''}>Edit</a></td>
@@ -302,39 +305,47 @@
                     $("#totallr").append(rowCount);
 
                     showLibrary();
-                                        
+
                     $("#Transporter").val(re?.fetch_lrs?.transporter_name);
                     $("#draft_purchase").val(re?.fetch_lrs?.purchase_price);
-                    
+
                     // Create a new option element
                     if (re?.fetchVehicle) {
-                        var newVehicleOption = `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
+                        var newVehicleOption =
+                            `<option value="${re.fetchVehicle.id}" selected>${re.fetchVehicle.regn_no}</option>`;
                         $('#vehicle_no').append(newVehicleOption);
                     }
                     if (re?.fetchDriver) {
                         var driverName = re.fetchDriver.name ? re.fetchDriver.name : '';
                         var driverPhone = re.fetchDriver.phone ? '-' + re.fetchDriver.phone : '';
-                        var newDriverOption = `<option value="${re.fetchDriver.id}" selected>${driverName}${driverPhone}</option>`;
+                        var newDriverOption =
+                            `<option value="${re.fetchDriver.id}" selected>${driverName}${driverPhone}</option>`;
                         $('#driver_id').append(newDriverOption);
                     }
 
                     if (re?.fetchVehicleType) {
                         var newVehicleTypeOption =
-                        `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
+                            `<option value="${re.fetchVehicleType.id}" selected>${re.fetchVehicleType.name}</option>`;
                         $('#vehicle_type').append(newVehicleTypeOption);
                     }
                 }
-                
+
             });
         }
         $(document).on('click', '.view-sheet', function() {
             var drsId = $(this).attr('value');
+            var lrType = $(this).data('lrtype');
 
             $("#addlr").attr('data-drsId', drsId);
-
             $('#opm').modal('show');
             $('#opm').find('input, textarea, select').val('');
-            
+
+            if (lrType == 0) {
+                $("#addlr").hide();
+            } else {
+                $("#addlr").show();
+            }
+
             fetchLrDetails(drsId)
 
             $("#mainLoader").show();
@@ -358,7 +369,7 @@
                         // $('#unverifiedlrlist').dataTable().fnDestroy();
                     },
                 success: function(data) {
-                    
+
                     var re = data;
                     console.log(data.fetch);
                     var consignmentID = [];
@@ -387,25 +398,11 @@
                             .pincode + "</td><td>" + value.total_quantity + "</td><td>" +
                             value
                             .total_weight + "</td></tr>");
-                    });                   
+                    });
 
                     $('#vehicle_no').select2();
                     $('#driver_id').select2();
                     $('#vehicle_type').select2();
-                    // jQuery(function () {
-                    //     $('.my-select2').each(function () {
-                    //         $(this).select2({
-                    //             theme: "bootstrap-5",
-                    //             dropdownParent: $(this).parent(), // fix select2 search input focus bug
-                    //         })
-                    //     })
-                    //     // fix select2 bootstrap modal scroll bug
-                    //     $(document).on('select2:close', '.my-select2', function (e) {
-                    //         var evt = "scroll.select2"
-                    //         $(e.target).parents().off(evt)
-                    //         $(window).off(evt)
-                    //     })
-                    // })
 
                     $("#mainLoader").hide();
                     $(".loader").hide();
@@ -414,7 +411,7 @@
         });
 
         /////////////Start btn drs list///////////////////
-    
+
         $(document).on('click', '.ewayupdate', function() {
             $("#all_inv_save").closest('form').find(':submit').prop('disabled', false);
 
@@ -452,9 +449,11 @@
                             "<tr><input type='hidden' name='data[" +
                             i + "][id]' value=" + value.id + " ><td>" + value
                             .consignment_id +
-                            "</td><td>" + value.invoice_no + "</td><td><input type='number' name='data[" + i +
-                                "][e_way_bill]' value="+billno+"></td><td><input type='date' name='data[" + i +
-                                "][e_way_bill_date]' value="+billdate+"></td></tr>");
+                            "</td><td>" + value.invoice_no +
+                            "</td><td><input type='number' name='data[" + i +
+                            "][e_way_bill]' value=" + billno +
+                            "></td><td><input type='date' name='data[" + i +
+                            "][e_way_bill_date]' value=" + billdate + "></td></tr>");
                         i++;
                     });
                 }
@@ -518,7 +517,7 @@
 
             // Loop through the elements
             for (var i = 0; i < elements.length; i++) {
-                if(is_started == 1){
+                if (is_started == 1) {
 
                     // Check if the element is disabled
                     if (elements[i].disabled) {
@@ -610,7 +609,7 @@
                         if (data.success == true) {
                             swal('success', 'Data Updated Successfully', 'success');
                             location.reload();
-                          
+
                             $("#opm").hide();
                             $("#start-commonconfirm").hide();
                         } else if (data.success == false) {
@@ -951,18 +950,18 @@
                                             </thead>
                                             <tbody>
                                                 ${data.lrlist.map((value) => `
-                                                                                    <tr>
-                                                                                        <td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="${value.id}" style='width: 18px; height: 18px;'></td>
-                                                                                        <td>${value.id}</td>
-                                                                                        <td>${value.consignment_date}</td>
-                                                                                        <td>${value.consigner_id}</td>
-                                                                                        <td>${value.consignee_id}</td>
-                                                                                        <td>${value.consignee_city}</td>
-                                                                                        <td>${value.consignee_district}</td>
-                                                                                        <td>${value.pincode}</td>
-                                                                                        <td>${value.zone}</td>
-                                                                                    </tr>
-                                                                                `).join('')}
+                                                                                        <tr>
+                                                                                            <td><input type='checkbox' name='checked_consign[]' class='chkBoxClass ddd' value="${value.id}" style='width: 18px; height: 18px;'></td>
+                                                                                            <td>${value.id}</td>
+                                                                                            <td>${value.consignment_date}</td>
+                                                                                            <td>${value.consigner_id}</td>
+                                                                                            <td>${value.consignee_id}</td>
+                                                                                            <td>${value.consignee_city}</td>
+                                                                                            <td>${value.consignee_district}</td>
+                                                                                            <td>${value.pincode}</td>
+                                                                                            <td>${value.zone}</td>
+                                                                                        </tr>
+                                                                                    `).join('')}
                                             </tbody>
 
                                         </table>

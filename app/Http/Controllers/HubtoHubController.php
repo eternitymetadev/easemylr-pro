@@ -637,9 +637,8 @@ class HubtoHubController extends Controller
     ////////////////////////
     public function printHrs(Request $request)
     {
-
         $id = $request->id;
-        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.consigneeDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
+        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.ShiptoDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
@@ -718,7 +717,7 @@ class HubtoHubController extends Controller
                         <table class="drs_t" style="width:100%">
                             <tr class="drs_r">
                                 <th class="drs_h">HRS No. & Date</th>
-                                <th class="drs_h">DRS-' . @$details['hrs_no'] . '</th>
+                                <th class="drs_h">HRS-' . @$details['hrs_no'] . '</th>
                                 <th class="drs_h">Hrs Date</th>
                                 <th class="drs_h">' . @$drsDate . '</th>
                             </tr>
@@ -765,7 +764,7 @@ class HubtoHubController extends Controller
                 </div>
                 <div class="column" style="width:125px;">
                     <h4 style="margin: 0px;">Delivery City, </h4>
-                    <h4 style="margin: 0px;"> Dstt & PIN</h4>
+                    <h4 style="margin: 0px;"> Distt & PIN</h4>
 
                     </div>
                     <div class="column">
@@ -809,14 +808,14 @@ class HubtoHubController extends Controller
                         <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['consignment_date']) . '</p>
                     </div>
                     <div class="column" style="width:200px;">
-                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consignee_detail']['nick_name'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['phone'] . '</p>
+                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['shipto_detail']['nick_name'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['phone'] . '</p>
 
                     </div>
                     <div class="column" style="width:125px;">
-                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consignee_detail']['city'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['district'] . '</p>
-                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['postal_code'] . '</p>
+                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['shipto_detail']['city'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['district'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['postal_code'] . '</p>
 
                       </div>
                       <div class="column" >
