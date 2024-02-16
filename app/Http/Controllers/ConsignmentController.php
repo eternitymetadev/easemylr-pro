@@ -1982,7 +1982,7 @@ class ConsignmentController extends Controller
 
     }   
      
-    public function unverifiedList(Request $request)
+    public function unverifiedList1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
@@ -1996,29 +1996,59 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '6'])
             ->where('consignment_notes.booked_drs', '!=', '1')
-            ->where('consignment_notes.lr_type', '!=', '0');
+            ->where('consignment_notes.lr_type', '!=', 3);
 
         if ($authuser->role_id == 1) {
             $data;
         } elseif ($authuser->role_id == 4) {
             $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        } elseif ($authuser->role_id == 6) {
-            $data = $data->whereIn('base_clients.id', $baseclient);
-        } elseif ($authuser->role_id == 7) {
-            $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5', '6']);
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2','6']);
             });
-            // if(!empty('consignment_notes.to_branch_id')){
-            //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
-            // }else{
-            // $data = $data->whereIn('consignment_notes.branch_id', $cc);
-            // }
         }
+        $consignments = $data->orderBy('id', 'DESC')->get();
+
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
+            ->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
+    public function unverifiedList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        $data = DB::table('consignment_notes')
+            ->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+            ->whereIn('consignment_notes.status', ['2', '6'])
+            ->where('consignment_notes.booked_drs', '!=', '1')
+            ->where('consignment_notes.lr_type', '!=', 3);
+
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == 4) {
+                $data->whereIn('consignment_notes.regclient_id', explode(',', $authuser->regionalclient_id));
+            } elseif ($authuser->role_id == 6) {
+                $data->whereIn('base_clients.id', explode(',', $authuser->baseclient_id));
+            } elseif ($authuser->role_id == 7) {
+                $data->whereIn('regional_clients.id', explode(',', $authuser->regionalclient_id));
+            } else {
+                $cc = explode(',', $authuser->branch_id);
+                $data->whereIn('consignment_notes.branch_id', $cc)
+                    ->orWhere(function ($query) use ($cc) {
+                        $query->whereIn('consignment_notes.to_branch_id', $cc)
+                            ->whereIn('consignment_notes.status', ['2', '5', '6']);
+                    });
+            }
+        }
+
         $consignments = $data->orderBy('id', 'DESC')->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -4953,7 +4983,6 @@ class ConsignmentController extends Controller
 
     public function addmoreLr(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -4966,8 +4995,8 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', ['2', '5', '6']);
-        // ->where('consignment_notes.status', '!=', 5);
+            ->where('consignment_notes.status', '=', ['2', '6'])
+            ->where('consignment_notes.lr_type', '!=', '3');
 
         if ($authuser->role_id == 1) {
             $data;
