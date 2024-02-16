@@ -2041,7 +2041,7 @@ class ConsignmentController extends Controller
                 $data->whereIn('consignment_notes.branch_id', $cc)
                     ->orWhere(function ($query) use ($cc) {
                         $query->whereIn('consignment_notes.to_branch_id', $cc)
-                            ->whereIn('consignment_notes.status', ['2', '5', '6']);
+                            ->whereIn('consignment_notes.status', ['2', '6']);
                     });
             }
         }
