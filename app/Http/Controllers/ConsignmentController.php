@@ -96,20 +96,15 @@ class ConsignmentController extends Controller
             $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
 
-            $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
+            $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1 || $authuser->role_id == 8) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 8){
-                $query;
             } else {
                 $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-
                 });
             }
 
@@ -159,29 +154,24 @@ class ConsignmentController extends Controller
 
             return response()->json(['html' => $html]);
         }
-
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
         $baseclient = explode(',', $authuser->baseclient_id);
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->where('status', '!=', 5)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
+        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-        if ($authuser->role_id == 1) {
+        if ($authuser->role_id == 1 || $authuser->role_id == 8) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        }elseif($authuser->role_id == 8){
-            $query;
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
-            // $query = $query->whereIn('branch_id', $cc)->orWhereIn('fall_in', $cc);
         }
+
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
@@ -1982,7 +1972,7 @@ class ConsignmentController extends Controller
 
     }   
      
-    public function unverifiedList(Request $request)
+    public function unverifiedList1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
@@ -1996,28 +1986,56 @@ class ConsignmentController extends Controller
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-        // ->join('consignment_items', 'consignment_items.consignment_id', '=', 'consignment_notes.id')
             ->whereIn('consignment_notes.status', ['2', '6'])
-            ->where('consignment_notes.booked_drs', '!=', '1');
+            ->where('consignment_notes.booked_drs', '!=', '1')
+            ->where('consignment_notes.lr_type', '!=', 3);
 
         if ($authuser->role_id == 1) {
             $data;
         } elseif ($authuser->role_id == 4) {
             $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        } elseif ($authuser->role_id == 6) {
-            $data = $data->whereIn('base_clients.id', $baseclient);
-        } elseif ($authuser->role_id == 7) {
-            $data = $data->whereIn('regional_clients.id', $regclient);
         } else {
             $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5', '6']);
+                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2','6']);
             });
-            // if(!empty('consignment_notes.to_branch_id')){
-            //     $data = $data->whereIn('consignment_notes.to_branch_id', $cc);
-            // }else{
-            // $data = $data->whereIn('consignment_notes.branch_id', $cc);
-            // }
         }
+        $consignments = $data->orderBy('id', 'DESC')->get();
+
+        $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
+        $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
+        $vehicletypes = VehicleType::where('status', '1')->select('id', 'name')->get();
+
+        return view('consignments.unverified-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'title' => $this->title, 'vehicles' => $vehicles, 'drivers' => $drivers, 'vehicletypes' => $vehicletypes])
+            ->with('i', ($request->input('page', 1) - 1) * 5);
+    }
+
+    public function unverifiedList(Request $request)
+    {
+        $this->prefix = request()->route()->getPrefix();
+        $authuser = Auth::user();
+        
+        $data = DB::table('consignment_notes')
+            ->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+            ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
+            ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
+            ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
+            ->whereIn('consignment_notes.status', ['2', '6'])
+            ->where('consignment_notes.booked_drs', '!=', '1')
+            ->where('consignment_notes.lr_type', '!=', 3);
+
+        if ($authuser->role_id != 1) {
+            if ($authuser->role_id == 4) {
+                $data->whereIn('consignment_notes.regclient_id', explode(',', $authuser->regionalclient_id));
+            } else {
+                $cc = explode(',', $authuser->branch_id);
+                $data->whereIn('consignment_notes.branch_id', $cc)
+                    ->orWhere(function ($query) use ($cc) {
+                        $query->whereIn('consignment_notes.to_branch_id', $cc)
+                            ->whereIn('consignment_notes.status', ['2', '6']);
+                    });
+            }
+        }
+
         $consignments = $data->orderBy('id', 'DESC')->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
@@ -2312,7 +2330,8 @@ class ConsignmentController extends Controller
                     $query->where('drs_no', 'like', '%' . $search . '%')
                         ->orWhere('vehicle_no', 'like', '%' . $search . '%')
                         ->orWhere('driver_name', 'like', '%' . $search . '%')
-                        ->orWhere('driver_no', 'like', '%' . $search . '%');
+                        ->orWhere('driver_no', 'like', '%' . $search . '%')
+                        ->orWhere('consignment_no', 'like', '%' . $search . '%');
                 });
             }
 
@@ -2456,31 +2475,31 @@ class ConsignmentController extends Controller
         ->toArray();
         
         if($drsDriverIds && count($drsDriverIds)>0){
-        $getDrivers = Driver::where('status', '1')
-        ->where(function ($query) use ($drsDriverIds) {
-            foreach ($drsDriverIds as $driver) {
-                $query->orWhere(function ($subquery) use ($driver) {
-                    $subquery->where('phone', $driver['driver_no'])
-                        ->where('name', $driver['driver_name']);
-                });
-            }
-        })
-        ->select('id', 'name', 'phone')
-        ->get()
-        ->toArray();
-
-        $excludedDriverIds = array_column($getDrivers, 'id');
-
-        // Exclude records based on both 'name' and 'phone'
-        $drivers = Driver::where('status', '1')
-            ->whereNotIn('id', $excludedDriverIds)
+            $getDrivers = Driver::where('status', '1')
+            ->where(function ($query) use ($drsDriverIds) {
+                foreach ($drsDriverIds as $driver) {
+                    $query->orWhere(function ($subquery) use ($driver) {
+                        $subquery->where('phone', $driver['driver_no'])
+                            ->where('name', $driver['driver_name']);
+                    });
+                }
+            })
             ->select('id', 'name', 'phone')
-            ->get();
-    }else{
-        $drivers = Driver::where('status', '1')
-            ->select('id', 'name', 'phone')
-            ->get();
-    }
+            ->get()
+            ->toArray();
+
+            $excludedDriverIds = array_column($getDrivers, 'id');
+
+            // Exclude records based on both 'name' and 'phone'
+            $drivers = Driver::where('status', '1')
+                ->whereNotIn('id', $excludedDriverIds)
+                ->select('id', 'name', 'phone')
+                ->get();
+        }else{
+            $drivers = Driver::where('status', '1')
+                ->select('id', 'name', 'phone')
+                ->get();
+        }
 
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
@@ -2546,13 +2565,30 @@ class ConsignmentController extends Controller
     // on unassigned btn click in drs list 
     public function getTransactionDetails(Request $request)
     {
-        $drsId = $_GET['drsId'];
+        // $drsId = $_GET['drsId'];
+        $drsId = $request->drsId;
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
-                $query->whereIn('status', [0, 1]);  //[0, 1, 2, 5]
+                $query->whereIn('status', [0, 1, 2])
+                ->where('lr_type', '!=', 3);
             }])
             ->orderBy('order_no', 'asc')
             ->get();
+
+        // $result = TransactionSheet::where('drs_no', $drsId)
+        //     ->with(['ConsignmentDetail' => function ($query) {
+        //         // $query->whereIn('status', [1, 2, 5]);
+        //         $query->where(function ($q) {
+        //             // Define the status array based on lr_type value
+        //             $q->whereIn('status', [0, 1])
+        //                 ->orWhere(function ($q2) {
+        //                     $q2->where('lr_type', 0)
+        //                         ->whereIn('status', [0, 1, 2]);
+        //                 });
+        //         });
+        //     }])
+        //     ->orderBy('order_no', 'asc')
+        //     ->get();
             
             $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
             ->pluck('consignment_no')
@@ -2761,7 +2797,7 @@ class ConsignmentController extends Controller
                 'ConsignmentItem'
             ])
             ->whereHas('ConsignmentDetail', function ($q) {
-                $q->where('status', '!=', 0);
+                $q->where('status', '!=', 0)->where('lr_type', '!=', 3);
             })
             ->where('drs_no', $id)
             ->whereIn('status', ['1', '3', '4'])
@@ -3029,7 +3065,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-        /////check order book drs
+        // check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
         foreach ($checklrstatus as $check) {
             if ($check->status == 5) {
@@ -3180,11 +3216,11 @@ class ConsignmentController extends Controller
     public function updateDeliveryStatus(Request $request)
     {
         $consignmentId = $_POST['consignment_no'];
-        $cc = explode(',', $consignmentId);
+        $lrIds = explode(',', $consignmentId);
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['delivery_status' => 'Successful']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $lrIds)->update(['delivery_status' => 'Successful']);
 
-        $drs = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['status' => '3']);
+        $drs = DB::table('transaction_sheets')->whereIn('consignment_no', $lrIds)->update(['status' => '3']);
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
@@ -3195,10 +3231,10 @@ class ConsignmentController extends Controller
     {
         $delivery_date = $_POST['delivery_date'];
         $consignmentId = $_POST['consignment_id'];
-        $consigner = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
+        $consigmentUpdate = DB::table('consignment_notes')->where('id', $consignmentId)->update(['delivery_status' => 'Successful', 'delivery_date' => $delivery_date]);
         
-        if ($consigner) {
-            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+        if ($consigmentUpdate) {
+            $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
                 ->latest('drs_no')
                 ->first();
 
@@ -3244,7 +3280,7 @@ class ConsignmentController extends Controller
 
         $query = ConsignmentNote::query();
 
-        $query = $query->where('status', '!=', 5)
+        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)
             ->with('ConsignerDetail', 'ConsigneeDetail');
 
         if ($authuser->role_id == 1) {
@@ -4796,7 +4832,7 @@ class ConsignmentController extends Controller
             if (!empty($deliverydate)) {
                 ConsignmentNote::where('id', $request->lr)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By consignment-list']);
 
-                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)
+                $latestRecord = TransactionSheet::where('consignment_no', $request->lr)->where('status',1)
                     ->latest('drs_no')
                     ->first();
 
@@ -4888,6 +4924,7 @@ class ConsignmentController extends Controller
                                     ConsignmentNote::where('id', $lrno)->where('status', '!=', 0)->update(['signed_drs' => $filename, 'pod_userid' => $authuser->id, 'delivery_date' => $deliverydate, 'delivery_status' => 'Successful', 'consignment_no'=>'By drs-list']);
 
                                     $latestRecord = TransactionSheet::where('consignment_no', $lrno)
+                                        ->where('status', 1)
                                         ->latest('drs_no')
                                         ->first();
 
@@ -4936,7 +4973,6 @@ class ConsignmentController extends Controller
 
     public function addmoreLr(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
@@ -4945,29 +4981,25 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $data = $consignments = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.city as consignee_city', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
+        $data = DB::table('consignment_notes')->select('consignment_notes.*', 'consigners.nick_name as consigner_id', 'consignees.nick_name as consignee_id', 'consignees.city as city', 'consignees.postal_code as pincode', 'consignees.city as consignee_city', 'consignees.district as consignee_district', 'zones.primary_zone as zone')
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
             ->join('consignees', 'consignees.id', '=', 'consignment_notes.consignee_id')
             ->leftjoin('zones', 'zones.id', '=', 'consignees.zone_id')
-            ->where('consignment_notes.status', '=', ['2', '5', '6']);
-        // ->where('consignment_notes.status', '!=', 5);
+            ->whereIn('consignment_notes.status', ['2', '6'])
+            ->where('consignment_notes.lr_type', '!=', '3');
 
-        if ($authuser->role_id == 1) {
-            $data;
-        } elseif ($authuser->role_id == 4) {
-            $data = $data->whereIn('consignment_notes.regclient_id', $regclient);
-        } elseif ($authuser->role_id == 6) {
-            $data = $data->whereIn('base_clients.id', $baseclient);
-        } elseif ($authuser->role_id == 7) {
-            $data = $data->whereIn('regional_clients.id', $regclient);
-        } else {
-            $data = $data->whereIn('consignment_notes.branch_id', $cc)->orWhere(function ($data) use ($cc) {
-                $data->whereIn('consignment_notes.to_branch_id', $cc)->whereIn('consignment_notes.status', ['2', '5', '6']);
+        if ($authuser->role_id == 4) {
+            $data->whereIn('consignment_notes.regclient_id', $regclient);
+        } elseif ($authuser->role_id != 1) {
+            $data->where(function ($query) use ($cc) {
+                $query->whereIn('consignment_notes.branch_id', $cc)
+                    ->orWhere(function ($query) use ($cc) {
+                        $query->whereIn('consignment_notes.to_branch_id', $cc);
+                    });
             });
-            // $data = $data->whereIn('consignment_notes.branch_id', $cc);
         }
-        $data = $data->orderBy('id', 'DESC');
-        $consignments = $data->get();
+
+        $consignments = $data->orderBy('id', 'DESC')->get();
 
         $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
@@ -4977,7 +5009,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['messages'] = 'img uploaded successfully';
         return Response::json($response);
-
     }
 
     public function addunverifiedLr(Request $request)
@@ -5005,7 +5036,6 @@ class ConsignmentController extends Controller
             ->whereIn('consignment_notes.id', $consignmentId)
             ->get(['consignees.city']);
         $simplyfy = json_decode(json_encode($consignment), true);
-
         
         $orderno = $getdrs->order_no;
 
@@ -5023,7 +5053,6 @@ class ConsignmentController extends Controller
 
             $transaction = DB::table('transaction_sheets')->insert(['drs_no' => $drs_no, 'consignment_no' => $unique_id, 'branch_id' => $cc, 'consignee_id' => $consignee_id, 'consignment_date' => $consignment_date, 'city' => $city, 'pincode' => $pincode, 'total_quantity' => $total_quantity, 'total_weight' => $total_weight, 'order_no' => $i, 'delivery_status' => 'Unassigned', 'status' => '1']);
         }
-
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
@@ -5038,7 +5067,6 @@ class ConsignmentController extends Controller
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";
         return response()->json($response);
-
     }
     public function allupdateInvoice(Request $request)
     {
@@ -5087,7 +5115,7 @@ class ConsignmentController extends Controller
                 $data->on('jobs.job_id', '=', 'consignment_notes.job_id')
                     ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.job_id = consignment_notes.job_id)"));
             })->first();
-        ////
+        
         $driver_app = DB::table('consignment_notes')->select('consignment_notes.*', 'consignment_notes.job_id as job_id', 'consignment_notes.tracking_link as tracking_link', 'consignment_notes.delivery_status as delivery_status', 'jobs.status as job_status', 'jobs.response_data as trail', 'consigners.postal_code as cnr_pincode', 'consignees.postal_code as cne_pincode', 'locations.name as branch_name', 'fall_in_branch.name as fall_in_branch_name', 'to_branch_name.name as to_branch_detail', 'drivers.name as driver_name')
             ->where('consignment_notes.id', $request->lr_id)
             ->join('consigners', 'consigners.id', '=', 'consignment_notes.consigner_id')
@@ -5159,7 +5187,7 @@ class ConsignmentController extends Controller
                     $data->on('jobs.consignment_id', '=', 'consignment_notes.id')
                         ->on('jobs.id', '=', DB::raw("(select max(id) from jobs WHERE jobs.consignment_id = consignment_notes.id)"));
                 })->first();
-            // return ($driver_app);
+                
             if ($driver_app) {
                 $app_trail = json_decode($driver_app->trail, true);
                 $status = [2];
@@ -5244,9 +5272,9 @@ class ConsignmentController extends Controller
             $response['error'] = true;
             $response['error_message'] = "Can not fetch Item master please try again";
         }
-
         return response()->json($response);
     }
+
     public function podView(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
@@ -5257,7 +5285,6 @@ class ConsignmentController extends Controller
         } else {
             $peritem = Config::get('variable.PER_PAGE');
         }
-
         $query = ConsignmentNote::query();
 
         if ($request->ajax()) {
@@ -5274,7 +5301,7 @@ class ConsignmentController extends Controller
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
             $query = $query
-                ->where('status', '!=', 5)
+                ->where('status', '!=', 5)->where('lr_type', '!=', 3)
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
@@ -5332,7 +5359,7 @@ class ConsignmentController extends Controller
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
         $query = $query
-            ->where('status', '!=', 5)
+            ->where('status', '!=', 5)->where('lr_type', '!=', 3)
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
@@ -5380,7 +5407,7 @@ class ConsignmentController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-            $query = $query->where('status', '!=', 5)
+            $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)
             ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
 
             if ($authuser->role_id == 4) {
@@ -5391,19 +5418,10 @@ class ConsignmentController extends Controller
                 });
             }
 
-            // if ($authuser->role_id == 4) {
-            //     $query->whereIn('regclient_id', $regclient);
-            // } elseif ($authuser->role_id != 1) {
-            //     $query->where(function ($query) use ($cc) {
-            //         $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-            //     });
-            // }
-
             if (!empty($request->search)) {
                 $search = $request->search;
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
-
                     $query->where('id', 'like', '%' . $search . '%');
                 });
             }
@@ -5424,10 +5442,6 @@ class ConsignmentController extends Controller
                 $reg_client = $reg_client->whereIn('id', $regclient);
             } elseif ($authuser->role_id != 1) {
                 $reg_client = $reg_client->whereIn('location_id', $cc);
-
-                // $regclients = $regclients->where(function ($query) use ($cc){
-                //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-                // });
             }
 
             $regclients = $reg_client->orderBy('name', 'ASC')->get();
@@ -5457,13 +5471,12 @@ class ConsignmentController extends Controller
         $cc = explode(',', $authuser->branch_id);
         $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
-        $query = $query->where('status', '!=', 5)
+        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)
             ->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
 
         if ($authuser->role_id == 4) {
             $query = $query->whereIn('regclient_id', $regclient);
         } elseif($authuser->role_id != 1) {
-            // $query = $query->whereIn('branch_id', $cc);
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('fall_in', $cc)->where('status', '!=', 5);
             });
@@ -5474,10 +5487,6 @@ class ConsignmentController extends Controller
             $reg_client = $reg_client->whereIn('id', $regclient);
         } elseif ($authuser->role_id != 1) {
             $reg_client = $reg_client->whereIn('location_id', $cc);
-
-            // $regclients = $regclients->where(function ($query) use ($cc){
-            //     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
-            // });
         }
 
         $regclients = $reg_client->orderBy('name', 'ASC')->get();
@@ -5944,69 +5953,45 @@ class ConsignmentController extends Controller
     {
         try {
             $lr_no = $request->lr_no;
-
             $authuser = Auth::user();
-            
-            // if($authuser->role_id == 1){
-            //     $location_name = 'By Admin';
-            // } else if($authuser->role_id == 3 || $authuser->role_id == 8){
-            //     $login_branch = $authuser->branch_id;
-            //     $location = Location::where('id', $login_branch)->first();
-            //     $location_name = '';
-            // } else {
-            //     $login_branch = $authuser->branch_id;
-            //     $location = Location::where('id', $login_branch)->first();
-            //     $location_name = $location->name;
-            // }
-
-            ////////////////
-
             $loginBranch = $authuser->branch_id;
             $location_name = '';
 
-            if ($loginBranch === null || strpos($loginBranch, ',') !== false) {
-                // Branch ID is null or contains multiple IDs
-                $location_name = '';
-            } else {
-                // Single branch ID
-                $location = Location::where('id', $loginBranch)->first();
+            if ($loginBranch && strpos($loginBranch, ',') === false) {
+                $location = Location::find($loginBranch);
                 if ($location) {
-                    $location_name = $location->name; // Assuming 'name' is the field to retrieve from the Location model
+                    $location_name = $location->name;
                 }
             }
-
-            // $get_delivery_branch = ConsignmentNote::where('id', $lr_no)->first();
-            // if ($get_delivery_branch->lr_type == 0) {
-            //     $delivery_branch = $get_delivery_branch->branch_id;
-            // } else {
-            //     if($get_delivery_branch->to_branch_id == Null || $get_delivery_branch->to_branch_id == ''){
-            //         $delivery_branch = $get_delivery_branch->branch_id;
-            //     }else{
-            //         $delivery_branch = $get_delivery_branch->to_branch_id;
-            //     }
-            // }
-
-            // if ($login_branch != $delivery_branch) {
-
-            //     $response['success'] = false;
-            //     $response['messages'] = 'Only Delivery Branch Can Upload Pod';
-            //     return Response::json($response);
-            // }
             
             $pod_img = $request->file('pod');
-            //     $file->move(public_path('drs/Image'), $filename);
+            $filename = null;
+            
             if ($pod_img) {
                 $originalFilename = uniqid() . '_' . $pod_img->getClientOriginalName();
             
                 if (Storage::disk('s3')->putFileAs('pod_images', $pod_img, $originalFilename)) {
                     $imagePath = explode('/', $originalFilename);
                     $filename = end($imagePath);
-                } else {
-                    $filename = null;
                 }
             } else {
-                $filename = null;
+                $getLr = ConsignmentNote::find($lr_no);
+                if ($getLr) {
+                    $filename = $getLr->signed_drs;
+                }
             }
+
+            if (empty($request->delivery_date)) {
+                $updatePods = ConsignmentNote::where('id', $lr_no)
+                    ->update(['signed_drs' => $filename ]);
+
+                if ($updatePods) {
+                    $response['success'] = true;
+                    $response['messages'] = 'POD uploaded successfully';
+                    return Response::json($response);
+                }
+            }
+
             if (!empty($request->delivery_date)) {
                 $updateRecords = ConsignmentNote::where('id', $lr_no)
                     ->update([
@@ -6019,6 +6004,7 @@ class ConsignmentController extends Controller
 
                 if ($updateRecords) {
                     $latestRecord = TransactionSheet::where('consignment_no', $lr_no)
+                        ->where('status', 1)
                         ->latest('drs_no')
                         ->first();
 
@@ -6044,7 +6030,7 @@ class ConsignmentController extends Controller
                 // ==== end started
 
                 $response['success'] = true;
-                $response['messages'] = 'POD uploaded successfully';
+                $response['messages'] = 'POD and delivery date updated successfully';
                 return Response::json($response);
             }else{
                 $response['success'] = false;
@@ -6053,10 +6039,9 @@ class ConsignmentController extends Controller
                 return Response::json($response);
             }
         } catch (\Exception $e) {
-            $bug = $e->getMessage();
             $response['success'] = false;
             $response['error'] = true;
-            $response['messages'] = $bug;
+            $response['messages'] = $e->getMessage();
             return Response::json($response);
         }
     }
@@ -6083,6 +6068,7 @@ class ConsignmentController extends Controller
 
         if ($mode) {
             $latestRecord = TransactionSheet::where('consignment_no', $lr_no)
+                ->where('status', 1)
                 ->latest('drs_no')
                 ->first();
 

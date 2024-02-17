@@ -409,13 +409,7 @@ class OrderController extends Controller
         return view('orders.update-order', ['prefix' => $this->prefix, 'getconsignments' => $getconsignments, 'consigners' => $consigners, 'consignees' => $consignees, 'vehicles' => $vehicles, 'vehicletypes' => $vehicletypes, 'drivers' => $drivers, 'regionalclient' => $regionalclient, 'itemlists' => $itemlists, 'branchs' => $branchs]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    // update ptl lr
     public function updateOrder(Request $request)
     {
         try {
@@ -460,11 +454,9 @@ class OrderController extends Controller
             $consignmentsave['consignee_id'] = $request->consignee_id;
             $consignmentsave['ship_to_id'] = $request->ship_to_id;
             $consignmentsave['is_salereturn'] = $request->is_salereturn;
-            // $consignmentsave['consignment_date'] = $request->consignment_date;
             $consignmentsave['payment_type'] = $request->payment_type;
             $consignmentsave['description'] = $request->description;
             $consignmentsave['packing_type'] = $request->packing_type;
-            // $consignmentsave['dispatch'] = $request->dispatch;
             $consignmentsave['freight'] = $request->freight;
             $consignmentsave['freight_on_delivery'] = $request->freight_on_delivery;
             $consignmentsave['cod'] = $request->cod;
@@ -474,10 +466,8 @@ class OrderController extends Controller
 
             $consignmentsave['vehicle_id'] = $request->vehicle_id;
             $consignmentsave['driver_id'] = $request->driver_id;
-            // $consignmentsave['branch_id'] = $authuser->branch_id;
 
             $consignmentsave['edd'] = $request->edd;
-            // $consignmentsave['user_id'] = $authuser->id;
             $consignmentsave['status'] = $status;
 
             $regional_email = [];
@@ -491,10 +481,10 @@ class OrderController extends Controller
             }
 
             if ($request->lr_type == 1 || $request->lr_type == 2) {
-                $consignee = Consignee::where('id', $request->consignee_id)->first();
-                $consignee_pincode = $consignee->postal_code;
+                $consignee = Consignee::where('id', $request->ship_to_id)->first();
+                $shipto_pincode = $consignee->postal_code;
 
-                $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+                $getpin_transfer = Zone::where('postal_code', $shipto_pincode)->first();
 
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
@@ -543,14 +533,12 @@ class OrderController extends Controller
                                 }
 
                                 if ($saveconsignmentitems) {
-                                    // dd($save_data['item_data']);
                                     if (!empty($save_data['item_data'])) {
                                         $qty_array = array();
                                         $netwt_array = array();
                                         $grosswt_array = array();
                                         $chargewt_array = array();
                                         foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                            // echo "<pre>"; print_r($save_itemdata); die;
                                             $qty_array[] = $save_itemdata['quantity'];
                                             $netwt_array[] = $save_itemdata['net_weight'];
                                             $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -578,7 +566,6 @@ class OrderController extends Controller
                                     }
                                 }
                             }
-
                         }
                     } else {
                         $consignmentsave['total_quantity'] = $request->total_quantity;
@@ -627,7 +614,6 @@ class OrderController extends Controller
                                 $savedata['invoice_amount'] = $save_data['invoice_amount'];
                                 $savedata['e_way_bill'] = $save_data['e_way_bill'];
                                 $savedata['e_way_bill_date'] = $save_data['e_way_bill_date'];
-
                                 $savedata['status'] = 1;
                                 
                                 if(isset($save_data['item_id']) && $save_data['item_id']) {
@@ -637,14 +623,12 @@ class OrderController extends Controller
                                 }
 
                                 if ($saveconsignmentitems) {
-                                    // dd($save_data['item_data']);
                                     if (!empty($save_data['item_data'])) {
                                         $qty_array = array();
                                         $netwt_array = array();
                                         $grosswt_array = array();
                                         $chargewt_array = array();
                                         foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                            // echo "<pre>"; print_r($save_itemdata); die;
                                             $qty_array[] = $save_itemdata['quantity'];
                                             $netwt_array[] = $save_itemdata['net_weight'];
                                             $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -659,11 +643,6 @@ class OrderController extends Controller
                                             $saveitemdata['status'] = 1;
 
                                             $savesubitems = ConsignmentSubItem::where('id', $save_itemdata['subitem_id'])->update($saveitemdata);
-
-                                            // $save_itemdata['conitem_id'] = $saveconsignmentitems->id;
-                                            // $save_itemdata['status'] = 1;
-
-                                            // $savesubitems = ConsignmentSubItem::create($save_itemdata);
                                         }
 
                                         $quantity_sum = array_sum($qty_array);
@@ -709,7 +688,6 @@ class OrderController extends Controller
                         }
                     }
                 }
-
             } else {
                 //regular same flow
                 //h2h branch check
@@ -717,7 +695,6 @@ class OrderController extends Controller
                     $saveconsignment = ConsignmentNote::where('id', $request->consignment_id)->update($consignmentsave);
                     if (!empty($request->data)) {
                         $get_data = $request->data;
-                        // dd($get_data);
                         foreach ($get_data as $key => $save_data) {
                             $savedata['consignment_id'] = $request->consignment_id;
                             $savedata['order_id'] = $save_data['order_id'];
@@ -733,16 +710,13 @@ class OrderController extends Controller
                             }else{
                                 $saveconsignmentitems = ConsignmentItem::create($savedata);
                             }
-                            // dd($saveconsignmentitems);
                             if ($saveconsignmentitems) {
-                                // dd($save_data['item_data']);
                                 if (!empty($save_data['item_data'])) {
                                     $qty_array = array();
                                     $netwt_array = array();
                                     $grosswt_array = array();
                                     $chargewt_array = array();
                                     foreach ($save_data['item_data'] as $key => $save_itemdata) {
-                                        // echo "<pre>"; print_r($save_itemdata); die;
                                         $qty_array[] = $save_itemdata['quantity'];
                                         $netwt_array[] = $save_itemdata['net_weight'];
                                         $grosswt_array[] = $save_itemdata['gross_weight'];
@@ -2054,11 +2028,11 @@ class OrderController extends Controller
             
             $locations = Location::whereIn('id', $cc)->first();
 
-            if (empty($request->vehicle_id)) {
-                $status = '2';
-            } else {
-                $status = '1';
-            }
+            // if (empty($request->vehicle_id)) {
+            //     $status = '2';
+            // } else {
+            //     $status = '1';
+            // }
 
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
@@ -2093,18 +2067,6 @@ class OrderController extends Controller
             } else {
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
-
-            // $consignee = Consignee::where('id', $request->consignee_id)->first();
-            // $consignee_pincode = $consignee->postal_code;
-
-            // $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
-            // $get_zonebranch = $getpin_transfer->hub_transfer;
-            // $get_branch = Location::where('name', $get_zonebranch)->first();
-            // $consignmentsave['to_branch_id'] = $get_branch->id;
-
-            // $get_location = Location::where('id', $authuser->branch_id)->first();
-            // $chk_h2h_branch = $get_location->with_h2h;
-            // $location_name = $get_location->name;
 
             if ($request->invoice_check == 1 || $request->invoice_check == 2) {
                 $saveconsignment = ConsignmentNote::create($consignmentsave);
@@ -2162,7 +2124,8 @@ class OrderController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-            } ///////////////////////////////////////// drs api push/////////////////////////////////////////////
+            } 
+            ///////////////////////////////////////// drs api push/////////////////////////////////////////////
 
             $consignment_id = $saveconsignment->id;
             $mytime = Carbon::now('Asia/Kolkata');
@@ -2334,10 +2297,10 @@ class OrderController extends Controller
                 $status = '6'; //lr without pickup and without edit
                 $hrs_status = '3';
 
-                $consignee = Consignee::where('id', $request->consignee_id)->first();
-                $consignee_pincode = $consignee->postal_code;
+                $consignee = Consignee::where('id', $request->ship_to_id)->first();
+                $shipto_pincode = $consignee->postal_code;
 
-                $getpin_transfer = Zone::where('postal_code', $consignee_pincode)->first();
+                $getpin_transfer = Zone::where('postal_code', $shipto_pincode)->first();
 
                 $get_location = Location::where('id', $authuser->branch_id)->first();
                 $chk_h2h_branch = $get_location->with_h2h;
@@ -2419,9 +2382,9 @@ class OrderController extends Controller
                 $consignmentsave['delivery_status'] = "Unassigned";
             }
 
-            // $consignee = Consignee::where('id', $request->consignee_id)->first();
-            // $consignee_pincode = $consignee->postal_code;
-            // if(empty($consignee_pincode))
+            // $consignee = Consignee::where('id', $request->ship_to_id)->first();
+            // $shipto_pincode = $consignee->postal_code;
+            // if(empty($shipto_pincode))
             // {
             //     $response['success'] = false;
             //     $response['error_message'] = "Postal Code Not Found";
@@ -3020,7 +2983,6 @@ class OrderController extends Controller
                         ->where('consignment_notes.id', $consignment_id)
                         ->first(['consignees.city']);
                     $simplyfy = json_decode(json_encode($consignmentdrs), true);
-                    //echo'<pre>'; print_r($simplyfy); die;
 
                     $no_of_digit = 5;
                     $drs = DB::table('transaction_sheets')->select('drs_no')->latest('drs_no')->first();

@@ -15,6 +15,7 @@
             </tr>
         </thead>
         <tbody>
+            <?php $authuser = Auth::user();  ?>
             @if(count($consignments)>0)
             @foreach($consignments as $consignment)
             <?php
@@ -178,7 +179,7 @@ $invoice['amt'] = implode(',', $inv_amt);
 
                         <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left"
                         data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
-                          data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}">
+                          data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}" data-roleId={{$authuser->role_id}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="feather feather-edit-2">

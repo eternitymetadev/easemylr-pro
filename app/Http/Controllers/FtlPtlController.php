@@ -215,25 +215,6 @@ class FtlPtlController extends Controller
             $locations = Location::whereIn('id', $cc)->first();
             $branch_add = BranchAddress::get();
 
-            // if(!empty($request->vehicle_id) && $request->lr_type == 0){
-            //     $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-            //     if($getVehicle){
-            //         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no')
-            //             ->where('vehicle_no', $getVehicle->regn_no)
-            //             ->whereDate('created_at', '>', '2023-12-20')
-            //             ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            //             ->whereNotIn('status', [4, 0])
-            //             ->where('is_started', 1)
-            //             ->pluck('drs_no')
-            //             ->unique()
-            //             ->toArray();
-            //         if($drsVehicleIds){
-            //             $errorMessage = "Vehicle already assigned to DRS: " . implode(', ', $drsVehicleIds);
-            //             return response()->json(['success' => false,'error_message' => $errorMessage]);
-            //         }
-            //     }
-            // }
-    
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
             $consignmentsave['consignee_id'] = $request->consignee_id;
@@ -264,7 +245,6 @@ class FtlPtlController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['status'] = $status;
             $consignmentsave['lr_type'] = $request->lr_type;
-           
 
             $regional_email = [];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();

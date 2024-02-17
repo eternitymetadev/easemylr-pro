@@ -183,11 +183,11 @@ label.statusLabel {
             <div class="modal-body">
                 <div class="d-flex flex-wrap justify-content-center align-items-center">
                     <input type="hidden" name="lr_no" id="lr_no" value="" />
+                    <input type="hidden" name="role_id" id="role_id" value="" />
                     <input type="hidden" name="dispatch_date" id="dispatch_date" value="" />
                     <div class="form-group col-12">
                         <label class="control-label">Image</label>
-                        <input type="file" class="form-control" id="image-url" accept="image/*" placeholder="Image URL"
-                            name="pod" style="border: none;" />
+                        <input type="file" class="form-control" id="image-url" accept="image/*" placeholder="Image URL" name="pod" style="border: none;" />
                     </div>
                     <div class="form-group col-12">
                         <label class="control-label">Delivery Date</label>
@@ -216,7 +216,7 @@ label.statusLabel {
             <div class="modal-body">
                 <div class="Delt-content text-center">
                     <img src="{{asset('assets/img/delte.png')}}" class="img-fluid mb-2">
-                    <h5 class="my-2">Are you sure to delete all images?</h5>
+                    <h5 class="my-2">Are you sure to delete all images and DD?</h5>
                 </div>
             </div>
             <!-- Modal footer -->
@@ -281,14 +281,14 @@ $("#update_image_pod").submit(function(e) {
     var files = $("#image-url")[0].files;
     var dd = $("#dlvery_date").val();
     var consignment_date = $("#dispatch_date").val();
-    if (files.length == 0) {
-        alert("Please choose a file");
-        return false;
-    }
-    if (!dd) {
-        alert("Please select Date");
-        return false;
-    }
+    // if (files.length == 0) {
+    //     alert("Please choose a file");
+    //     return false;
+    // }
+    // if (!dd) {
+    //     alert("Please select Date");
+    //     return false;
+    // }
 
     var c_date = new Date(consignment_date); //Year, Month, Date
     var d_date = new Date(dd); //Year, Month, Date
@@ -454,14 +454,23 @@ $(".closeButton").on("click", function () {
 jQuery(document).on('click', '.editButtonimg', function() {
     var lr_no = $(this).attr('data-id');
     var lr_date = $(this).attr('lr-date');
+    var roleId = $(this).attr('data-roleId');
     var delivery_date = $(this).attr('data-deliverydate');
+
     $('#updateImageModal').modal('show');
     $('#lr_no').val(lr_no);
     $('#dispatch_date').val(lr_date);
+    $('#role_id').val(roleId);
+    
     if (delivery_date != '') {
         $('#dlvery_date').val(delivery_date);
         $('#dlvery_date').attr('readonly', true);
     } else{
+        $('#dlvery_date').removeAttr('readonly');
+    }
+
+    // Check roleId and remove readonly attribute if roleId is 8
+    if (roleId == 8) {
         $('#dlvery_date').removeAttr('readonly');
     }
 
