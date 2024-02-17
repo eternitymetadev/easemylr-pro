@@ -177,6 +177,7 @@ class HubtoHubController extends Controller
                 $searchT = str_replace("'", "", $search);
                 $query->where(function ($query) use ($search, $searchT) {
                     $query->where('hrs_no', 'like', '%' . $search . '%')
+                    ->orWhere('consignment_id', 'like', '%' . $search . '%')
                     ->orWhereHas('VehicleDetail', function ($query) use ($search, $searchT) {
                         $query->where(function ($vehiclequery) use ($search, $searchT) {
                             $vehiclequery->where('regn_no', 'like', '%' . $search . '%');

@@ -2475,31 +2475,31 @@ class ConsignmentController extends Controller
         ->toArray();
         
         if($drsDriverIds && count($drsDriverIds)>0){
-        $getDrivers = Driver::where('status', '1')
-        ->where(function ($query) use ($drsDriverIds) {
-            foreach ($drsDriverIds as $driver) {
-                $query->orWhere(function ($subquery) use ($driver) {
-                    $subquery->where('phone', $driver['driver_no'])
-                        ->where('name', $driver['driver_name']);
-                });
-            }
-        })
-        ->select('id', 'name', 'phone')
-        ->get()
-        ->toArray();
-
-        $excludedDriverIds = array_column($getDrivers, 'id');
-
-        // Exclude records based on both 'name' and 'phone'
-        $drivers = Driver::where('status', '1')
-            ->whereNotIn('id', $excludedDriverIds)
+            $getDrivers = Driver::where('status', '1')
+            ->where(function ($query) use ($drsDriverIds) {
+                foreach ($drsDriverIds as $driver) {
+                    $query->orWhere(function ($subquery) use ($driver) {
+                        $subquery->where('phone', $driver['driver_no'])
+                            ->where('name', $driver['driver_name']);
+                    });
+                }
+            })
             ->select('id', 'name', 'phone')
-            ->get();
-    }else{
-        $drivers = Driver::where('status', '1')
-            ->select('id', 'name', 'phone')
-            ->get();
-    }
+            ->get()
+            ->toArray();
+
+            $excludedDriverIds = array_column($getDrivers, 'id');
+
+            // Exclude records based on both 'name' and 'phone'
+            $drivers = Driver::where('status', '1')
+                ->whereNotIn('id', $excludedDriverIds)
+                ->select('id', 'name', 'phone')
+                ->get();
+        }else{
+            $drivers = Driver::where('status', '1')
+                ->select('id', 'name', 'phone')
+                ->get();
+        }
 
         // $vehicles = Vehicle::where('status', '1')->select('id', 'regn_no')->get();
         // $drivers = Driver::where('status', '1')->select('id', 'name', 'phone')->get();
