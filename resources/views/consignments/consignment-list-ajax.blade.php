@@ -65,12 +65,25 @@
 
                     <!-- relocate cnr cnee check for sale to return case -->
                     <?php 
-                    if($consignment->is_salereturn == 1){
-                        $cnr_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
-                        $cne_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
-                    }else{
-                        $cnr_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
-                        $cne_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
+                    $cnr_nickname = '';
+                    $cne_nickname = '';
+
+                    if ($consignment->consignment_date > '2024-02-16') {
+                        if ($consignment->is_salereturn == 1) {
+                            $cnr_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
+                            $cne_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
+                        } else {
+                            $cnr_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
+                            $cne_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
+                        }
+                    } else {
+                        if ($consignment->is_salereturn == 1) {
+                            $cnr_nickname = @$consignment->ConsigneeDetail->nick_name ?? '';
+                            $cne_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
+                        } else {
+                            $cnr_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
+                            $cne_nickname = @$consignment->ConsigneeDetail->nick_name ?? '';
+                        }
                     } ?>
                     <ul class="ant-timeline">
                         <li class="ant-timeline-item  css-b03s4t">
@@ -90,15 +103,27 @@
                                     {{ @$cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
-                                    <?php if($consignment->is_salereturn == '1'){ ?>
+                                    <?php if ($consignment->consignment_date > '2024-02-16') {
+                                        if($consignment->is_salereturn == '1'){ ?>
                                     <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
                                         {{ $consignment->ConsignerDetail->city ?? "" }},
                                         {{ $consignment->ConsignerDetail->district ?? "" }} </span>
-                                    <?php }else{ ?>
+                                    <?php } else{ ?>
                                     <span>{{ $consignment->ShiptoDetail->postal_code ?? "" }},
                                         {{ $consignment->ShiptoDetail->city ?? "" }},
                                         {{ $consignment->ShiptoDetail->district ?? "" }} </span>
-                                    <?php } ?>
+                                    <?php } 
+                                    } else{ 
+                                        if($consignment->is_salereturn == '1'){ ?>
+                                            <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
+                                                {{ $consignment->ConsignerDetail->city ?? "" }},
+                                                {{ $consignment->ConsignerDetail->district ?? "" }} </span>
+                                        <?php } else{ ?>
+                                            <span>{{ $consignment->ConsigneeDetail->postal_code ?? "" }},
+                                                {{ $consignment->ConsigneeDetail->city ?? "" }},
+                                                {{ $consignment->ConsigneeDetail->district ?? "" }} </span>
+                                        <?php } 
+                                    } ?>
                                 </div>
                             </div>
                         </li>
@@ -291,14 +316,25 @@
                                                         </tr>
 
                                                         <tr>
-                                                            <?php if($consignment->is_salereturn ==1){
-                                                                    $cnr_nickname_txn = @$consignment->ShiptoDetail->nick_name ?? '';
-                                                                    $cne_nickname_txn = @$consignment->ConsignerDetail->nick_name ?? '';
-                                                                }else{
-                                                                $cnr_nickname_txn = @$consignment->ConsignerDetail->nick_name ?? '';
-                                                                $cne_nickname_txn = @$consignment->ShiptoDetail->nick_name ?? '';
+                                                            <?php
+                                                            if ($consignment->consignment_date > '2024-02-16') {
+                                                                if ($consignment->is_salereturn == 1) {
+                                                                    $cnr_nickname_txn = $consignment->ShiptoDetail->nick_name ?? '';
+                                                                    $cne_nickname_txn = $consignment->ConsignerDetail->nick_name ?? '';
+                                                                } else {
+                                                                    $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name ?? '';
+                                                                    $cne_nickname_txn = $consignment->ShiptoDetail->nick_name ?? '';
                                                                 }
-                                                                ?>
+                                                            } else {
+                                                                if ($consignment->is_salereturn == 1) {
+                                                                    $cnr_nickname_txn = $consignment->ConsigneeDetail->nick_name ?? '';
+                                                                    $cne_nickname_txn = $consignment->ConsignerDetail->nick_name ?? '';
+                                                                } else {
+                                                                    $cnr_nickname_txn = $consignment->ConsignerDetail->nick_name ?? '';
+                                                                    $cne_nickname_txn = $consignment->ConsigneeDetail->nick_name ?? '';
+                                                                }
+                                                            }
+                                                            ?>
                                                             <td colspan="2">
                                                                 <ul class="ant-timeline mt-3" style="">
                                                                     <li class="ant-timeline-item  css-b03s4t">

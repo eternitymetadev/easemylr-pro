@@ -96,16 +96,12 @@ class ConsignmentController extends Controller
             $regclient = explode(',', $authuser->regionalclient_id);
             $cc = explode(',', $authuser->branch_id);
 
-            $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
+            $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-            if ($authuser->role_id == 1) {
+            if ($authuser->role_id == 1 || $authuser->role_id == 8) {
                 $query;
-            } elseif ($authuser->role_id == 4) {
+            } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
                 $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 7) {
-                $query = $query->whereIn('regclient_id', $regclient);
-            } elseif ($authuser->role_id == 8){
-                $query;
             } else {
                 $query = $query->where(function ($query) use ($cc) {
                     $query->whereIn('branch_id', $cc)->orWhere('to_branch_id', $cc);
@@ -164,21 +160,18 @@ class ConsignmentController extends Controller
         $regclient = explode(',', $authuser->regionalclient_id);
         $cc = explode(',', $authuser->branch_id);
 
-        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
+        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3)->with('ConsignmentItems', 'ConsignerDetail', 'ConsigneeDetail', 'ShiptoDetail', 'VehicleDetail', 'DriverDetail', 'JobDetail');
 
-        if ($authuser->role_id == 1) {
+        if ($authuser->role_id == 1 || $authuser->role_id == 8) {
             $query;
-        } elseif ($authuser->role_id == 4) {
+        } elseif ($authuser->role_id == 4 || $authuser->role_id == 7) {
             $query = $query->whereIn('regclient_id', $regclient);
-        } elseif ($authuser->role_id == 7) {
-            $query = $query->whereIn('regclient_id', $regclient);
-        }elseif($authuser->role_id == 8){
-            $query;
         } else {
             $query = $query->whereIn('branch_id', $cc)->orWhere(function ($query) use ($cc) {
                 $query->whereIn('to_branch_id', $cc)->where('status', '!=', 5);
             });
         }
+
         $consignments = $query->orderBy('id', 'DESC')->paginate($peritem);
         $consignments = $consignments->appends($request->query());
 
@@ -2571,29 +2564,30 @@ class ConsignmentController extends Controller
     // on unassigned btn click in drs list 
     public function getTransactionDetails(Request $request)
     {
-        $drsId = $_GET['drsId'];
-        // $result = TransactionSheet::where('drs_no', $drsId)
-        //     ->with(['ConsignmentDetail' => function ($query) {
-        //         $query->whereIn('status', [0, 1, 2, 5]);
-        //     }])
-        //     // ->where('status', '!=', 0)
-        //     ->orderBy('order_no', 'asc')
-        //     ->get();
-
+        // $drsId = $_GET['drsId'];
+        $drsId = $request->drsId;
         $result = TransactionSheet::where('drs_no', $drsId)
             ->with(['ConsignmentDetail' => function ($query) {
-                // $query->whereIn('status', [1, 2, 5]);
-                $query->where(function ($q) {
-                    // Define the status array based on lr_type value
-                    $q->whereIn('status', [0, 1])
-                        ->orWhere(function ($q2) {
-                            $q2->where('lr_type', 0)
-                                ->whereIn('status', [0, 1, 2]);
-                        });
-                });
+                $query->whereIn('status', [0, 1, 2])
+                ->where('lr_type', '!=', 3);
             }])
             ->orderBy('order_no', 'asc')
             ->get();
+
+        // $result = TransactionSheet::where('drs_no', $drsId)
+        //     ->with(['ConsignmentDetail' => function ($query) {
+        //         // $query->whereIn('status', [1, 2, 5]);
+        //         $query->where(function ($q) {
+        //             // Define the status array based on lr_type value
+        //             $q->whereIn('status', [0, 1])
+        //                 ->orWhere(function ($q2) {
+        //                     $q2->where('lr_type', 0)
+        //                         ->whereIn('status', [0, 1, 2]);
+        //                 });
+        //         });
+        //     }])
+        //     ->orderBy('order_no', 'asc')
+        //     ->get();
             
             $lrIds = TransactionSheet::where('drs_no', $drsId)->where('status',1)
             ->pluck('consignment_no')
@@ -2802,7 +2796,7 @@ class ConsignmentController extends Controller
                 'ConsignmentItem'
             ])
             ->whereHas('ConsignmentDetail', function ($q) {
-                $q->where('status', '!=', 0);
+                $q->where('status', '!=', 0)->where('lr_type', '!=', 3);
             })
             ->where('drs_no', $id)
             ->whereIn('status', ['1', '3', '4'])
@@ -3070,7 +3064,7 @@ class ConsignmentController extends Controller
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
 
-        /////check order book drs
+        // check order book drs
         $checklrstatus = ConsignmentNote::whereIn('id', $consignmentId)->get();
         foreach ($checklrstatus as $check) {
             if ($check->status == 5) {
@@ -3221,11 +3215,11 @@ class ConsignmentController extends Controller
     public function updateDeliveryStatus(Request $request)
     {
         $consignmentId = $_POST['consignment_no'];
-        $cc = explode(',', $consignmentId);
+        $lrIds = explode(',', $consignmentId);
 
-        $consigner = DB::table('consignment_notes')->whereIn('id', $cc)->update(['delivery_status' => 'Successful']);
+        $consigner = DB::table('consignment_notes')->whereIn('id', $lrIds)->update(['delivery_status' => 'Successful']);
 
-        $drs = DB::table('transaction_sheets')->whereIn('consignment_no', $cc)->update(['status' => '3']);
+        $drs = DB::table('transaction_sheets')->whereIn('consignment_no', $lrIds)->update(['status' => '3']);
 
         $response['success'] = true;
         $response['success_message'] = "Data Imported successfully";

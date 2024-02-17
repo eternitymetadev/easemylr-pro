@@ -638,7 +638,7 @@ class HubtoHubController extends Controller
     public function printHrs(Request $request)
     {
         $id = $request->id;
-        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.ShiptoDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
+        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.consigneeDetail', 'ConsignmentDetail.ShiptoDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
@@ -806,8 +806,9 @@ class HubtoHubController extends Controller
                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consigner_detail']['get_reg_client']['name'] . '</p>
                         <p style="margin-top:-8px;">' . $dataitem['consignment_id'] . '</p>
                         <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['consignment_date']) . '</p>
-                    </div>
-                    <div class="column" style="width:200px;">
+                    </div>';
+                    if($dataitem['consignment_detail']['consignment_date'] > '2024-02-16'){
+                        $html .= '<div class="column" style="width:200px;">
                         <p style="margin-top:0px;">' . $dataitem['consignment_detail']['shipto_detail']['nick_name'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['phone'] . '</p>
 
@@ -817,8 +818,22 @@ class HubtoHubController extends Controller
                         <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['district'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['postal_code'] . '</p>
 
-                      </div>
-                      <div class="column" >
+                      </div>';
+                    }else{
+                        $html .= '<div class="column" style="width:200px;">
+                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consignee_detail']['nick_name'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['phone'] . '</p>
+
+                    </div>
+                    <div class="column" style="width:125px;">
+                        <p style="margin-top:0px;">' . $dataitem['consignment_detail']['consignee_detail']['city'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['district'] . '</p>
+                        <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['consignee_detail']['postal_code'] . '</p>
+
+                      </div>';
+                    }
+                
+                $html .=   '<div class="column" >
                         <p style="margin-top:0px;">Boxes:' . $dataitem['consignment_detail']['total_quantity'] . '</p>
                         <p style="margin-top:-13px;">Wt:' . $dataitem['consignment_detail']['total_gross_weight'] . '</p>
                         <p style="margin-top:-13px;">EDD:' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['edd']) . '</p>
