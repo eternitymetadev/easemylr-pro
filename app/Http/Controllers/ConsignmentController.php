@@ -2257,7 +2257,7 @@ class ConsignmentController extends Controller
                 Session::forget('peritem');
                 $url = URL::to($this->prefix . '/' . $this->segment);
                 return response()->json(['success' => true, 'redirect_url' => $url]);
-            }
+            } 
 
             if (isset($request->updatestatus)) {
                 if ($request->drs_status == 'Started') {
