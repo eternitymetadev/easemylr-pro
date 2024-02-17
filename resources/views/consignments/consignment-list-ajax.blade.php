@@ -68,7 +68,7 @@
                     $cnr_nickname = '';
                     $cne_nickname = '';
 
-                    if ($consignment->consignment_date > '2024-02-16') {
+                    if ($consignment->consignment_date > '2024-02-18') {
                         if ($consignment->is_salereturn == 1) {
                             $cnr_nickname = @$consignment->ShiptoDetail->nick_name ?? '';
                             $cne_nickname = @$consignment->ConsignerDetail->nick_name ?? '';
@@ -103,7 +103,7 @@
                                     {{ @$cne_nickname ?? "-" }}
                                 </div>
                                 <div class="css-16pld72 ellipse" style="font-size: 12px; color: rgb(102, 102, 102);">
-                                    <?php if ($consignment->consignment_date > '2024-02-16') {
+                                    <?php if ($consignment->consignment_date > '2024-02-18') {
                                         if($consignment->is_salereturn == '1'){ ?>
                                     <span>{{ $consignment->ConsignerDetail->postal_code ?? "" }},
                                         {{ $consignment->ConsignerDetail->city ?? "" }},
@@ -317,7 +317,7 @@
 
                                                         <tr>
                                                             <?php
-                                                            if ($consignment->consignment_date > '2024-02-16') {
+                                                            if ($consignment->consignment_date > '2024-02-18') {
                                                                 if ($consignment->is_salereturn == 1) {
                                                                     $cnr_nickname_txn = $consignment->ShiptoDetail->nick_name ?? '';
                                                                     $cne_nickname_txn = $consignment->ConsignerDetail->nick_name ?? '';

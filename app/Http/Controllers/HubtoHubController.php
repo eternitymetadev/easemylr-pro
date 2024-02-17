@@ -807,7 +807,7 @@ class HubtoHubController extends Controller
                         <p style="margin-top:-8px;">' . $dataitem['consignment_id'] . '</p>
                         <p style="margin-top:-13px;">' . Helper::ShowDayMonthYear($dataitem['consignment_detail']['consignment_date']) . '</p>
                     </div>';
-                    if($dataitem['consignment_detail']['consignment_date'] > '2024-02-16'){
+                    if($dataitem['consignment_detail']['consignment_date'] > '2024-02-18'){
                         $html .= '<div class="column" style="width:200px;">
                         <p style="margin-top:0px;">' . $dataitem['consignment_detail']['shipto_detail']['nick_name'] . '</p>
                         <p style="margin-top:-13px;">' . @$dataitem['consignment_detail']['shipto_detail']['phone'] . '</p>

@@ -2330,7 +2330,8 @@ class ConsignmentController extends Controller
                     $query->where('drs_no', 'like', '%' . $search . '%')
                         ->orWhere('vehicle_no', 'like', '%' . $search . '%')
                         ->orWhere('driver_name', 'like', '%' . $search . '%')
-                        ->orWhere('driver_no', 'like', '%' . $search . '%');
+                        ->orWhere('driver_no', 'like', '%' . $search . '%')
+                        ->orWhere('consignment_no', 'like', '%' . $search . '%');
                 });
             }
 
