@@ -635,11 +635,11 @@ class HubtoHubController extends Controller
         return response()->json($response);
     }
 
-    ////////////////////////
+    // hrs print
     public function printHrs(Request $request)
     {
         $id = $request->id;
-        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.consigneeDetail', 'ConsignmentDetail.ShiptoDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
+        $transcationview = Hrs::with('ConsignmentDetail.ConsignerDetail.GetRegClient', 'ConsignmentDetail.ConsigneeDetail', 'ConsignmentDetail.ShiptoDetail', 'ConsignmentItem', 'VehicleDetail', 'DriverDetail', 'Branch', 'ToBranch')
             ->whereHas('ConsignmentDetail', function ($q) {
                 $q->where('status', '!=', 0);
             })
