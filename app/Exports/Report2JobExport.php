@@ -87,7 +87,7 @@ class Report2JobExport implements FromCollection, WithHeadings, ShouldQueue
         $regclient_id = $this->regclient_id;
         $branch_id = $this->branch_id;
     
-        $query = $query->where('status', '!=', 5);
+        $query = $query->where('status', '!=', 5)->where('lr_type', '!=', 3);
     
         if (isset($startdate) && isset($enddate)) {
             $query = $query->whereBetween('consignment_date', [$startdate, $enddate]);

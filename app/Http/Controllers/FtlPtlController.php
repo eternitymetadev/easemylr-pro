@@ -976,17 +976,17 @@ class FtlPtlController extends Controller
                         // ==== end started
 
 
-                        // =================== task assign
-                        $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                        // task assign // commented at 19feb24 code working fine
+                        // $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
-                        $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                        if(!empty($lastjob->response_data)){
-                            $st = json_decode($lastjob->response_data);
-                            array_push($st, $respons3);
-                            $sts = json_encode($st);
+                        // $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                        // if(!empty($lastjob->response_data)){
+                        //     $st = json_decode($lastjob->response_data);
+                        //     array_push($st, $respons3);
+                        //     $sts = json_encode($st);
 
-                            $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                        }
+                        //     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                        // }
                         // ==== end started
                         $app_notify = $this->sendNotification($request->driver_id);
                     
@@ -1010,17 +1010,17 @@ class FtlPtlController extends Controller
                     }
                     // ==== end started
 
-                    // =================== task assign
-                    $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                    // task assign // commented at 19feb24 code working fine
+                    // $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
 
-                    $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
-                    if(!empty($lastjob->response_data)){
-                        $st = json_decode($lastjob->response_data);
-                        array_push($st, $respons3);
-                        $sts = json_encode($st);
+                    // $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+                    // if(!empty($lastjob->response_data)){
+                    //     $st = json_decode($lastjob->response_data);
+                    //     array_push($st, $respons3);
+                    //     $sts = json_encode($st);
 
-                        $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                    }
+                    //     $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                    // }
                     // ==== end started
                 }
             }else{

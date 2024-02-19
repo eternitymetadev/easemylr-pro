@@ -81,6 +81,7 @@ class Report2Export implements FromCollection, WithHeadings, ShouldQueue
             'reattempt_reason',
         ])
         ->where('status', '!=', 5)
+        ->where('lr_type', '!=', 3)
         ->with([
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsigneeDetail.GetZone:postal_code,district,state',

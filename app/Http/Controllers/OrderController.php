@@ -3029,18 +3029,18 @@ class OrderController extends Controller
                     $app_notify = $this->sendNotification($request->driver_id);
                 }
                                    
-                // task created
-                $respons = array('consignment_id' => $consignment_id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
-                $respons_data = json_encode($respons);
+                // task created  //commented at 19feb24 code working
+                // $respons = array('consignment_id' => $consignment_id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+                // $respons_data = json_encode($respons);
 
-                $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('id')->first();
-                if(!empty($lastjob->response_data)){
-                    $st = json_decode($lastjob->response_data);
-                    array_push($st, $respons);
-                    $sts = json_encode($st);
+                // $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $consignment_id)->latest('id')->first();
+                // if(!empty($lastjob->response_data)){
+                //     $st = json_decode($lastjob->response_data);
+                //     array_push($st, $respons);
+                //     $sts = json_encode($st);
 
-                    $start = Job::create(['consignment_id' => $consignment_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
-                }
+                //     $start = Job::create(['consignment_id' => $consignment_id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+                // }
                 //==== end create
             }
             // insert consignment items
