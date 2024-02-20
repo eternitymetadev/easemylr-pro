@@ -1092,6 +1092,9 @@ Route::group(['prefix'=>'lr-cancel', 'middleware'=>['auth','PermissionCheck']], 
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
     Route::any('update-poddetails', [ConsignmentController::class, 'updatePod']);
 
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+
 });
 
 Route::group(['prefix'=>'client-manager', 'middleware'=>['auth','PermissionCheck']], function()

@@ -295,6 +295,12 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-lrs'}}"> LR Contracts </a>
+            </li>
+            <li>
+                <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-pod-list'}}"> Contract Pod View </a>
+            </li>
         </ul>
     </li>
     <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
