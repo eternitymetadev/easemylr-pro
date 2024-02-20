@@ -389,7 +389,7 @@ class ContractLrController extends Controller
             $consignmentsave['edd'] = $request->edd;
             $consignmentsave['delivery_status'] = "Started";
             $consignmentsave['lr_type'] = 3;  // lr-type =0-ftl, 1-ptl, 2-prs, 3-lr-contract
-            $consignmentsave['status'] = 7;  // status = 7 for lr-contract
+            $consignmentsave['status'] = 1;
 
             $regional_email = [];
             $regional_id = RegionalClient::where('id', $request->regclient_id)->first();
