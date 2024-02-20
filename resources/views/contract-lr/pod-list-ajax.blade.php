@@ -40,9 +40,7 @@
                         @if ($consignment->status == 0)
                         <label class="lrStatus" style="background: #f40404">Cancel</label>
                         @elseif ($consignment->status == 1)
-                        <label class="lrStatus" style="background: #087408">Active</label>
-                        @elseif ($consignment->status == 2 || $consignment->status == 6)
-                        <label class="lrStatus" style="background: #e2a03f">Unverified</label>
+                        <label class="lrStatus" style="background: #087408">Active</label>                        
                         @endif
                         <br />
                         Dated: {{ Helper::ShowDayMonthYearslash($consignment->consignment_date ?? "-" )}}
@@ -186,8 +184,8 @@
                         </div>
                         {{-- delete image of pods //its working delte pod commented now--}}
                         <?php if($authuser->role_id == 8){ ?>
-                            <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
-                                data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
+                            <a class="edit @if($consignment->status == 1) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
+                                data-tooltip="@if($consignment->status == 1) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
                                 data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}" data-roleId={{$authuser->role_id}} >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -215,8 +213,8 @@
                         <div class="d-flex justify-content-center flex-wrap" style="gap: 4px; width: 220px; background: #f1f1f1; border-radius: 6px; padding: 5px">
                             Not Available
                         </div> 
-                        <a class="edit @if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
-                        data-tooltip="@if($consignment->status == 1 && !empty($consignment->vehicle_id) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
+                        <a class="edit @if($consignment->status == 1) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) editButtonimg @endif editIcon swan-tooltip-left" 
+                        data-tooltip="@if($consignment->status == 1) && ($consignment->delivery_status == 'Started' || $consignment->delivery_status == 'Successful')) Add Images @else Need to update status @endif" 
                         data-id="{{$consignment->id}}" lr-date="{{$consignment->consignment_date}}" data-deliverydate="{{$consignment->delivery_date}}" data-roleId={{$authuser->role_id}}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

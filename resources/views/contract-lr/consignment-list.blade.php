@@ -650,28 +650,18 @@ a.badge.alert.bg-secondary.shadow-sm {
 
                     <div class="container-fluid">
                         <div class="row winery_row_n spaceing_2n mb-3">
-                            <!-- <div class="col-xl-5 col-lg-3 col-md-4">
-                                <h4 class="win-h4">List</h4>
-                            </div> -->
                             <div class="col d-flex pr-0">
                                 <div class="search-inp w-100">
                                     <form class="navbar-form" role="search">
                                         <div class="input-group">
                                             <input type="text" class="form-control" placeholder="Search" id="search"
                                                 data-action="<?php echo url()->current(); ?>">
-                                            <!-- <div class="input-group-btn">
-                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                            </div> -->
                                         </div>
                                     </form>
                                 </div>
                             </div>
                             <div class="col-lg lead_bladebtop1_n pl-0">
                                 <div class="winery_btn_n btn-section px-0 text-right">
-                                    <!-- <a class="btn-primary btn-cstm btn ml-2"
-                                        style="font-size: 15px; padding: 9px; width: 130px"
-                                        href="{{'consignments/create'}}"><span><i class="fa fa-plus"></i> Add
-                                            New</span></a> -->
                                     <a href="javascript:void(0)" class="btn btn-primary btn-cstm reset_filter ml-2"
                                         style="font-size: 15px; padding: 9px;"
                                         data-action="<?php echo url()->current(); ?>"><span><i
@@ -681,7 +671,6 @@ a.badge.alert.bg-secondary.shadow-sm {
                         </div>
                     </div>
 
-
                 </div>
 
                 @csrf
@@ -690,7 +679,6 @@ a.badge.alert.bg-secondary.shadow-sm {
                 </div>
             </div>
         </div>
-
 
 
     </div>
