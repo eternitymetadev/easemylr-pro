@@ -74,6 +74,7 @@ class ReportController extends Controller
 
             $query = $query
                 ->where('status', '!=', 5)
+                ->where('lr_type', '!=', 3)
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                     'DrsDetailReattempted:consignment_no,drs_no',
@@ -171,6 +172,7 @@ class ReportController extends Controller
 
         $query = $query
             ->where('status', '!=', 5)
+            ->where('lr_type', '!=', 3)
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
                 'DrsDetailReattempted:consignment_no,drs_no',
@@ -221,6 +223,7 @@ class ReportController extends Controller
 
             $query = $query
                 ->where('status', '!=', 5)
+                ->where('lr_type', '!=', 3)
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
@@ -317,6 +320,7 @@ class ReportController extends Controller
 
         $query = $query
             ->where('status', '!=', 5)
+            ->where('lr_type', '!=', 3)
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
@@ -366,6 +370,7 @@ class ReportController extends Controller
 
             $query = $query
                 ->where('status', '!=', 5)
+                ->where('lr_type', '!=', 3)
                 ->with(
                     'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
                 );
@@ -440,6 +445,7 @@ class ReportController extends Controller
 
         $query = $query
             ->where('status', '!=', 5)
+            ->where('lr_type', '!=', 3)
             ->with(
                 'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount'
             );
@@ -488,6 +494,7 @@ class ReportController extends Controller
             $user = User::where('branch_id', $authuser->branch_id)->where('role_id', 2)->first();
 
             $query = $query->where('status', '!=', 5)
+                ->where('lr_type', '!=', 3)
                 ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient.BaseClient', 'vehicletype');
 
             if ($authuser->role_id == 1) {
@@ -561,6 +568,7 @@ class ReportController extends Controller
 
         $query = $query
             ->where('status', '!=', 5)
+            ->where('lr_type', '!=', 3)
             ->with('ConsignmentItems', 'ConsignerDetail.Zone', 'ConsigneeDetail.Zone', 'ShiptoDetail.Zone', 'VehicleDetail', 'DriverDetail', 'ConsignerDetail.GetRegClient.BaseClient', 'vehicletype');
 
         if ($authuser->role_id == 1) {

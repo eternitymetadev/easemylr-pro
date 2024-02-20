@@ -3269,7 +3269,6 @@ class ConsignmentController extends Controller
     //======================== Bulk Print LR ==============================//
     public function BulkLrView(Request $request)
     {
-
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         $role_id = Role::where('id', '=', $authuser->role_id)->first();
