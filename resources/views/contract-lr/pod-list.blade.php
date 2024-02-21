@@ -99,7 +99,7 @@
                         </h5>
                         <div class="row mt-4" style="margin-inline: auto; margin-bottom:15px;">
                             <div class="page-header flex-wrap" style="width: 100%">
-                                <h2>POD View</h2>
+                                <h2>Contract POD View</h2>
                                 <input type="text" class="form-control" placeholder="Search" id="search"
                                     data-action="<?php echo url()->current(); ?>" style="width: min(100%, 250px);" />
                             </div>
@@ -123,7 +123,7 @@
                                     <a href="<?php echo URL::to($prefix . '/pod-export'); ?>" data-url="<?php echo URL::to($prefix . '/consignment-report2'); ?>"
                                         class="consignmentReportEx btn btn-white btn-cstm"
                                         style=" font-size: 15px; padding: 9px; width: 130px"
-                                        data-action="<?php echo URL::to($prefix . '/pod-export'); ?>" download><span><i class="fa fa-download"></i>
+                                        data-action="<?php echo URL::to($prefix . '/contract-pod-export'); ?>" download><span><i class="fa fa-download"></i>
                                             Export</span></a>
                                     <a href="javascript:void();" style=" font-size: 15px; padding: 9px;"
                                         class="btn btn-primary btn-cstm ml-2 reset_filter"

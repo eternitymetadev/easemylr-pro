@@ -22,25 +22,23 @@ use Helper;
 use Auth;
 use DB;
 
-class PodExport implements FromCollection, WithHeadings, ShouldQueue
+class ContractPodExport implements FromCollection, WithHeadings, ShouldQueue
 {
 
     protected $startdate;
     protected $enddate;
     protected $regclient_id;
-    // protected $search;
 
     function __construct($startdate,$enddate,$regclient_id) {
         $this->startdate = $startdate;
         $this->enddate = $enddate;
         $this->regclient_id = $regclient_id;
-        // $this->search = $search;
     }
 
     public function collection()
     {
         ini_set('memory_limit', '2048M');
-        set_time_limit ( 6000 );
+        set_time_limit (6000);
         $arr = array();
 
         $startdate = $this->startdate;
@@ -55,7 +53,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
         
         $query = ConsignmentNote::query()
         ->where('status', '!=', 5)
-        ->where('lr_type', '!=', 3)
+        ->where('lr_type', 3)
         ->with(
             'ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount',
             'ConsignerDetail.GetZone',
@@ -69,7 +67,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
             'User:id,login_id'
         );
 
-        if($authuser->role_id ==4 || $authuser->role_id ==7){
+        if($authuser->role_id == 4 || $authuser->role_id == 7){
             $query->whereIn('regclient_id', $regclient);
         }
         elseif($authuser->role_id != 1){
@@ -85,6 +83,7 @@ class PodExport implements FromCollection, WithHeadings, ShouldQueue
         }
         
         $consignments = $query->orderBy('id','ASC')->get();
+        
         
         if($consignments->count() > 0){
             foreach ($consignments as $key => $consignment){

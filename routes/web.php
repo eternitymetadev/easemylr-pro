@@ -309,6 +309,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
     Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
     Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+    Route::any('contract-pod-export', [ContractLrController::class, 'exportPodList']);
 
 });
 
@@ -536,6 +537,7 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
     Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
     Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+    Route::any('contract-pod-export', [ContractLrController::class, 'exportPodList']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -749,6 +751,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
     Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
     Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+    Route::any('contract-pod-export', [ContractLrController::class, 'exportPodList']);
 
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -937,6 +940,7 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
     Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
     Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+    Route::any('contract-pod-export', [ContractLrController::class, 'exportPodList']);
     
 
 });
@@ -1080,6 +1084,7 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
     Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
     Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+    Route::any('contract-pod-export', [ContractLrController::class, 'exportPodList']);
 
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
