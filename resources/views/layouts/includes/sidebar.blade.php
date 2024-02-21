@@ -298,7 +298,8 @@
         </ul>
     </li>
     <!-- start -->
-    <li class="menu">
+    <?php if($authuser->role_id == 8){ ?>
+        <li class="menu">
         <a href="#lr-contract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
                 class="@if(str_contains($currentURL, 'contract-lrs') || str_contains($currentURL, 'contract-pod-list')) active @endif">
@@ -318,16 +319,16 @@
             </svg>
         </a>
         <ul class="collapse submenu list-unstyled" id="lr-contract" data-parent="#accordionExample">
-            <?php if($authuser->role_id == 8){ ?>
+            
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-lrs'}}"> LR Contracts </a>
             </li>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-pod-list'}}"> Contract Pods </a>
             </li>
-            <?php } ?>
         </ul>
     </li>
+    <?php } ?>
     <!-- End -->
     <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
     <li class="menu">
