@@ -197,21 +197,21 @@
                                 style="background-color: #f40404 !important; border-color: #f40404 !important;">Cancel</span>
                             <?php } elseif($consignment->status == 1){
                             if($consignment->delivery_status == 'Successful'){ ?>
-                            <a class="alert activestatus btn btn-success disable_n" data-id="{{ $consignment->id }}"
+                            <a class="alert cancelLr btn btn-success disable_n" data-id="{{ $consignment->id }}"
                                 data-text="consignment" data-status="0"><span><i class="fa fa-check-circle-o"></i>
                                     Active</span></a>
                             <?php }else{ ?>
-                            <a class="alert activestatus btn btn-success {{ $disable }}"
+                            <a class="alert cancelLr btn btn-success {{ $disable }}"
                                 data-id="{{ $consignment->id }}" data-text="consignment" data-status="0"><span><i
                                         class="fa fa-check-circle-o"></i>
                                     Active</span></a>
                             <?php }
                         }elseif($consignment->status == 2 && $consignment->reattempt_reason != null){ ?>
-                            <span class="badge alert activestatus bg-success swan-tooltip"
+                            <span class="badge alert cancelLr bg-success swan-tooltip"
                                 data-id="{{ $consignment->id }}" data-status="0"
                                 data-tooltip="{{ count(json_decode($consignment->reattempt_reason, true)) }}">Reattempt</span>
                             <?php } elseif($consignment->status == 2){ ?>
-                            <span class="badge alert bg-success activestatus {{ $disable }}"
+                            <span class="badge alert bg-success cancelLr {{ $disable }}"
                                 data-id="{{ $consignment->id }}" data-status="0">Unverified</span>
                             <?php } elseif($consignment->status == 3){ ?>
                             <span class="badge alert bg-gradient-bloody text-white shadow-sm">Unknown</span>

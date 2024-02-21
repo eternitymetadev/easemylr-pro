@@ -17,6 +17,7 @@ use App\Models\RegionalClient;
 use App\Models\ItemMaster;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Job;
 use Carbon\Carbon;
 use Validator;
 use Response;
@@ -345,25 +346,6 @@ class ContractLrController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $locations = Location::whereIn('id', $cc)->first();
             $branch_add = BranchAddress::get();
-
-            // if(!empty($request->vehicle_id) && $request->lr_type == 0){
-            //     $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-            //     if($getVehicle){
-            //         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no')
-            //             ->where('vehicle_no', $getVehicle->regn_no)
-            //             ->whereDate('created_at', '>', '2023-12-20')
-            //             ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            //             ->whereNotIn('status', [4, 0])
-            //             ->where('is_started', 1)
-            //             ->pluck('drs_no')
-            //             ->unique()
-            //             ->toArray();
-            //         if($drsVehicleIds){
-            //             $errorMessage = "Vehicle already assigned to DRS: " . implode(', ', $drsVehicleIds);
-            //             return response()->json(['success' => false,'error_message' => $errorMessage]);
-            //         }
-            //     }
-            // }
     
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
@@ -464,7 +446,41 @@ class ContractLrController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-            }            
+            }
+            
+            $mytime = Carbon::now('Asia/Kolkata'); 
+            $currentdate = $mytime->toDateTimeString();
+            // task created
+            $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed', 'location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
+            $respons_data = json_encode($respons);
+            $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+            // ==== end create
+
+            // task assign
+            $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
+            }
+            // ==== end started
+
+            // task assign // commented at 19feb24 code working fine
+            $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons3);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            }
+            // ==== end started
 
             $url = $this->prefix . '/contract-lrs';
             $response['success'] = true;
@@ -1270,7 +1286,7 @@ class ContractLrController extends Controller
         $file->cleanDirectory('pdf');
     }
 
-    public function contractPodlist(Request $request)
+    public function contractPodlist1(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
 
@@ -1374,6 +1390,64 @@ class ContractLrController extends Controller
         $consignments = $consignments->appends($request->query());
 
         return view('contract-lr.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
+    }
+    public function contractPodlist(Request $request)
+    {
+        $this->prefix = $request->route()->getPrefix();
+
+        $sessionPerItem = Session::get('peritem', Config::get('variable.PER_PAGE'));
+        $query = ConsignmentNote::query()->where('lr_type', 3)->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
+
+        if ($request->ajax()) {
+            if ($request->has('resetfilter')) {
+                Session::forget('peritem');
+                $url = URL::to($this->prefix . '/' . $this->segment);
+                return response()->json(['success' => true, 'redirect_url' => $url]);
+            }
+
+            $authUser = Auth::user();
+            $cc = explode(',', $authUser->branch_id);
+
+            if (!empty($request->search)) {
+                $search = str_replace("'", "", $request->search);
+                $query->where('id', 'like', '%' . $search . '%');
+            }
+
+            if ($request->filled('peritem')) {
+                Session::put('peritem', $request->peritem);
+                $sessionPerItem = $request->peritem;
+            }
+
+            if ($request->filled('startdate') && $request->filled('enddate')) {
+                $query->whereBetween('consignment_date', [$request->startdate, $request->enddate]);
+            }
+
+            $consignments = $query->orderByDesc('created_at')->paginate($sessionPerItem);
+            $html = view('contract-lr.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $sessionPerItem])->render();
+
+            return response()->json(['html' => $html]);
+        }
+
+        $query = $this->roleFilters($query);
+        $consignments = $query->orderByDesc('id')->paginate($sessionPerItem)->appends($request->query());
+
+        return view('contract-lr.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $sessionPerItem]);
+    }
+
+    private function roleFilters($query)
+    {
+        $authUser = Auth::user();
+        if ($authUser->role_id == 1 || $authUser->role_id == 8) {
+            return $query;
+        } elseif ($authUser->role_id == 4) {
+            $regClient = explode(',', $authUser->regionalclient_id);
+            return $query->whereIn('regclient_id', $regClient);
+        } else {
+            $cc = explode(',', $authUser->branch_id);
+            return $query->where(function ($query) use ($cc) {
+                $query->whereIn('branch_id', $cc)->orWhereIn('to_branch_id', $cc);
+            });
+        }
     }
     
 }
