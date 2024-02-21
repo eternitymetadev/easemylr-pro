@@ -17,6 +17,7 @@ use App\Models\RegionalClient;
 use App\Models\ItemMaster;
 use LynX39\LaraPdfMerger\Facades\PdfMerger;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Job;
 use Carbon\Carbon;
 use Validator;
 use Response;
@@ -345,25 +346,6 @@ class ContractLrController extends Controller
             $cc = explode(',', $authuser->branch_id);
             $locations = Location::whereIn('id', $cc)->first();
             $branch_add = BranchAddress::get();
-
-            // if(!empty($request->vehicle_id) && $request->lr_type == 0){
-            //     $getVehicle = Vehicle::where('id', $request->vehicle_id)->first();
-            //     if($getVehicle){
-            //         $drsVehicleIds = TransactionSheet::select('id','drs_no', 'vehicle_no')
-            //             ->where('vehicle_no', $getVehicle->regn_no)
-            //             ->whereDate('created_at', '>', '2023-12-20')
-            //             ->whereNotIn('delivery_status', ['Successful', 'Cancel'])
-            //             ->whereNotIn('status', [4, 0])
-            //             ->where('is_started', 1)
-            //             ->pluck('drs_no')
-            //             ->unique()
-            //             ->toArray();
-            //         if($drsVehicleIds){
-            //             $errorMessage = "Vehicle already assigned to DRS: " . implode(', ', $drsVehicleIds);
-            //             return response()->json(['success' => false,'error_message' => $errorMessage]);
-            //         }
-            //     }
-            // }
     
             $consignmentsave['regclient_id'] = $request->regclient_id;
             $consignmentsave['consigner_id'] = $request->consigner_id;
@@ -464,7 +446,41 @@ class ContractLrController extends Controller
                         $saveconsignmentitems = ConsignmentItem::create($save_data);
                     }
                 }
-            }            
+            }
+            
+            $mytime = Carbon::now('Asia/Kolkata'); 
+            $currentdate = $mytime->toDateTimeString();
+            // task created
+            $respons = array(['consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Order Placed', 'location'=>$locations->name,'create_at' => $currentdate, 'type' => '2']);
+            $respons_data = json_encode($respons);
+            $create = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $respons_data, 'status' => 'Created', 'type' => '2']);
+            // ==== end create
+
+            // task assign
+            $respons2 = array('consignment_id' => $saveconsignment->id, 'status' => 'Created','desc'=> 'Consignment Menifested at','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons2);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Created', 'type' => '2']);
+            }
+            // ==== end started
+
+            // task assign // commented at 19feb24 code working fine
+            $respons3 = array('consignment_id' => $saveconsignment->id, 'status' => 'Assigned','desc'=> 'Out for Delivery','location'=>$locations->name, 'create_at' => $currentdate, 'type' => '2');
+
+            $lastjob = DB::table('jobs')->select('response_data')->where('consignment_id', $saveconsignment->id)->latest('id')->first();
+            if(!empty($lastjob->response_data)){
+                $st = json_decode($lastjob->response_data);
+                array_push($st, $respons3);
+                $sts = json_encode($st);
+
+                $start = Job::create(['consignment_id' => $saveconsignment->id, 'response_data' => $sts, 'status' => 'Assigned', 'type' => '2']);
+            }
+            // ==== end started
 
             $url = $this->prefix . '/contract-lrs';
             $response['success'] = true;
@@ -1375,5 +1391,6 @@ class ContractLrController extends Controller
 
         return view('contract-lr.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
+    
     
 }

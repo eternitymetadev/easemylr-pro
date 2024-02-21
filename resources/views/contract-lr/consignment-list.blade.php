@@ -771,8 +771,7 @@ function row_click(row_id, job_id, url) {
                             modal_html += "<a style='margin-left:245px;' href='" + image +
                                 "' target='_blank' class='btn btn-warning mt-3'>" + view_text +
                                 "</a>";
-                            // modal_html += '<button type="button" style="margin-left:245px;" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#mod_'+task.id+'">'+ view_text +'</button>';
-
+                            
                             //  Modal start //
                             modal_html += '<div class="modal fade" id="mod_' + task.id +
                                 '" tabindex="-1" role="dialog">';
@@ -792,13 +791,7 @@ function row_click(row_id, job_id, url) {
                             var text = task.label_description;
                             var label_text = text.replace("at", " by");
                             var result = label_text + ' ' + task.fleet_name;
-                            // var result = task.label_description.replace(/^\s+|\s+$/gm,'at');+ ' by ' + task.fleet_name;
-                            // var str = trim(task.label_description, 'at') + ' by ' + task.fleet_name;
-                            // if (str_contains(str, 'CREATED')) {
-                            //     var deresults_data += "LR Created";
-                            // } else {
-                            // var des_data += str;
-                            // }
+                            
                         }
                         var text_date = task.creation_datetime;
                         var creation_datetime = text_date.replace("T", " ");
@@ -1071,6 +1064,74 @@ jQuery(document).on('click', '.viewImageInNewTab', function() {
     let toggledImage = $(this).attr('src');
     $('#toggledImageView').attr('src', toggledImage);
 });
+
+// consignment status change onchange
+var lr_id = null;
+    jQuery(document).on(
+        "click",
+        ".cancelLr",
+        function (event) {
+            event.stopPropagation();
+
+            lr_id = jQuery(this).attr("data-id");
+
+            var dataaction = jQuery(this).attr("data-action");
+            var datastatus = jQuery(this).attr("data-status");
+            var updatestatus = "updatestatus";
+
+            if (datastatus == 0) {
+                statustext = "disable";
+            } else {
+                statustext = "enable";
+            }
+            jQuery("#commonconfirm").modal("show");
+            jQuery(".commonconfirmclick").on("click", function () {
+                var reason_to_cancel = jQuery("#reason_to_cancel").val();
+                if(!reason_to_cancel){
+                    swal("Error", "Enter Reason to cancel", "error");
+                    return false;
+                }
+                var data = {
+                    id: lr_id,
+                    status: datastatus,
+                    updatestatus: updatestatus,
+                    reason_to_cancel: reason_to_cancel,
+                };
+
+                jQuery.ajax({
+                    url: "contract-lrs",
+                    type: "get",
+                    cache: false,
+                    data: data,
+                    dataType: "json",
+                    headers: {
+                        "X-CSRF-TOKEN": jQuery('meta[name="_token"]').attr(
+                            "content"
+                        ),
+                    },
+                    processData: true,
+                    beforeSend: function () {
+                        // jQuery("input[type=submit]").attr("disabled", "disabled");
+                    },
+                    complete: function () {
+                        //jQuery("#loader-section").css('display','none');
+                    },
+
+                    success: function (response) {
+                        if (response.success) {
+                            jQuery("#commonconfirm").modal("hide");
+                            if (response.page == "consignment-updateupdate") {
+                                setTimeout(() => {
+                                    window.location.href =
+                                        response.redirect_url;
+                                }, 10);
+                            }
+                        }
+                    },
+                });
+            });
+        }
+    );
 </script>
 
 
