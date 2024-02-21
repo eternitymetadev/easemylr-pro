@@ -1073,6 +1073,14 @@ Route::group(['prefix'=>'account-manager', 'middleware'=>['auth','PermissionChec
     Route::any('edit-baseclient/{id}', [ClientController::class, 'editBaseClient']);
     Route::any('update-base-client', [ClientController::class, 'updateBaseClient']);
 
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
+    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+
 });
 Route::group(['prefix'=>'client-account', 'middleware'=>['auth','PermissionCheck']], function()
 {
