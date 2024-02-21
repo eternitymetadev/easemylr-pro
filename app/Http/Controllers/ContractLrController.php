@@ -1286,7 +1286,7 @@ class ContractLrController extends Controller
         $file->cleanDirectory('pdf');
     }
 
-    public function contractPodlist1(Request $request)
+    public function contractPodlist(Request $request)
     {
         $this->prefix = request()->route()->getPrefix();
 
@@ -1391,63 +1391,6 @@ class ContractLrController extends Controller
 
         return view('contract-lr.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
-    public function contractPodlist(Request $request)
-    {
-        $this->prefix = $request->route()->getPrefix();
-
-        $sessionPerItem = Session::get('peritem', Config::get('variable.PER_PAGE'));
-        $query = ConsignmentNote::query()->where('lr_type', 3)->with('ConsignmentItems:id,consignment_id,order_id,invoice_no,invoice_date,invoice_amount');
-
-        if ($request->ajax()) {
-            if ($request->has('resetfilter')) {
-                Session::forget('peritem');
-                $url = URL::to($this->prefix . '/' . $this->segment);
-                return response()->json(['success' => true, 'redirect_url' => $url]);
-            }
-
-            $authUser = Auth::user();
-            $cc = explode(',', $authUser->branch_id);
-
-            if (!empty($request->search)) {
-                $search = str_replace("'", "", $request->search);
-                $query->where('id', 'like', '%' . $search . '%');
-            }
-
-            if ($request->filled('peritem')) {
-                Session::put('peritem', $request->peritem);
-                $sessionPerItem = $request->peritem;
-            }
-
-            if ($request->filled('startdate') && $request->filled('enddate')) {
-                $query->whereBetween('consignment_date', [$request->startdate, $request->enddate]);
-            }
-
-            $consignments = $query->orderByDesc('created_at')->paginate($sessionPerItem);
-            $html = view('contract-lr.pod-list-ajax', ['prefix' => $this->prefix, 'consignments' => $consignments, 'peritem' => $sessionPerItem])->render();
-
-            return response()->json(['html' => $html]);
-        }
-
-        $query = $this->roleFilters($query);
-        $consignments = $query->orderByDesc('id')->paginate($sessionPerItem)->appends($request->query());
-
-        return view('contract-lr.pod-list', ['consignments' => $consignments, 'prefix' => $this->prefix, 'peritem' => $sessionPerItem]);
-    }
-
-    private function roleFilters($query)
-    {
-        $authUser = Auth::user();
-        if ($authUser->role_id == 1 || $authUser->role_id == 8) {
-            return $query;
-        } elseif ($authUser->role_id == 4) {
-            $regClient = explode(',', $authUser->regionalclient_id);
-            return $query->whereIn('regclient_id', $regClient);
-        } else {
-            $cc = explode(',', $authUser->branch_id);
-            return $query->where(function ($query) use ($cc) {
-                $query->whereIn('branch_id', $cc)->orWhereIn('to_branch_id', $cc);
-            });
-        }
-    }
+    
     
 }
