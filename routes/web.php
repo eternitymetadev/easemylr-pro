@@ -302,6 +302,14 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth','PermissionCheck']], func
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
     Route::post('new-Ptl-create', [FtlPtlController::class, 'storePtlLr']);
 
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
+    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
+
 });
 
 Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -362,14 +370,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::get('consignments/{id}/print-view/{typeid}', [ConsignmentController::class, 'consignPrintview']);
     Route::get('consignments/{id}/print-viewold/{typeid}', [ConsignmentController::class, 'consignPrintviewold']);
     Route::get('transaction-sheet', [ConsignmentController::class, 'transactionSheet']);
-
-    // lr contract
-    Route::resource('contract-lrs', ContractLrController::class);
-    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
-    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
-    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
-    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
-    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
     
     // Route::any('get-driver-drs', [ConsignmentController::class, 'getDriverdrs']);
     Route::any('view-transactionSheet/{id}', [ConsignmentController::class, 'getTransactionDetails']);
@@ -521,8 +521,6 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('update-purchas-price-vehicle-type-hrs', [HubtoHubController::class, 'updatePurchasePriceVehicleTypeHrs']);
     Route::any('remove-hrs', [HubtoHubController::class, 'removeHrs']);
 
-
-
     Route::any('create-ftl', [FtlPtlController::class, 'createFtlLrForm']);
     Route::post('new-Ftl-create', [FtlPtlController::class, 'storeFtlLr']);
     Route::any('create-ptl', [FtlPtlController::class, 'createPtlLrForm']);
@@ -530,6 +528,14 @@ Route::group(['prefix'=>'branch-manager', 'middleware'=>['auth','PermissionCheck
     Route::any('postal-code', [SettingController::class,'postalCode']);
     Route::any('edit-postal-code/{id}', [SettingController::class, 'editPostalCode']);
     Route::any('update-postal-code', [SettingController::class, 'updatePostalCode']);
+
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
+    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
 
 });
 Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionCheck']], function()
@@ -615,7 +621,6 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('delete-pod-status', [ConsignmentController::class, 'deletePodStatus']);
     Route::any('pod-export', [ConsignmentController::class, 'exportPodFile']);
     Route::get('get-jobs', [ConsignmentController::class, 'getJob']);
-
 
     Route::resource('locations', LocationController::class);
     Route::post('/locations/update', [LocationController::class, 'updateLocation']); 
@@ -736,6 +741,14 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
 
     Route::get('mix-report', [ReportController::class, 'mixReport']);
     Route::get('export-mix-report', [ReportController::class, 'exportmixReport']);
+
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
+    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
 
 });
 Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']], function()
@@ -916,6 +929,14 @@ Route::group(['prefix'=>'branch-user', 'middleware'=>['auth','PermissionCheck']]
     Route::any('prs-paymentlist', [PickupRunSheetController::class, 'paymentList']);
     Route::get('pickup-loads/prs-printlr/{lr_id}', [PickupRunSheetController::class, 'prsPrintLR']);
     Route::any('prs/prs-print/{id}', [PickupRunSheetController::class, 'prsPrint']);
+
+    // lr contract
+    Route::resource('contract-lrs', ContractLrController::class);
+    Route::get('create-contractlr', [ContractLrController::class, 'createContractLr']);
+    Route::post('store-contract-lr', [ContractLrController::class, 'storeContractLr']);
+    Route::any('contract-bulklr-list', [ContractLrController::class, 'contractBulkLrList']);
+    Route::any('download-contract-bulklr', [ContractLrController::class, 'downloadBulkLr']);
+    Route::get('contract-pod-list', [ContractLrController::class, 'contractPodlist']);
     
 
 });
@@ -1143,7 +1164,7 @@ Route::post('webhook', [ConsignmentController::class, 'handle']);
 Route::any('track-order', [TrackingController::class, 'trackOrder']);
 Route::any('track-vehicle/{id}', [TrackingController::class, 'trackLr']);
 
-///check paid status
+// check paid status
 Route::any('check-paid-status', [VendorController::class, 'check_paid_status']);
 Route::any('check-paid-status-fully', [VendorController::class, 'check_paid_status_fully']);
 Route::any('check-paid-status-advance', [VendorController::class, 'check_paid_status_advance']);
@@ -1153,6 +1174,3 @@ Route::any('store-mix-report-hrs', [ReportController::class, 'storeMixReportHrs'
 Route::any('store-mix-report-prs', [ReportController::class, 'storeMixReportPrs']);
 Route::get('mis2report', [ReportController::class, 'exportExcelReport2']);
 Route::any('update-delivery-status', [ReportController::class, 'updateDeliverystatus']);
-
-
-
