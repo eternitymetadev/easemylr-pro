@@ -251,7 +251,7 @@
     <li class="menu">
         <a href="#ftl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div
-                class="@if(str_contains($currentURL, 'order-book-ftl') || str_contains($currentURL, 'create-ftl')) active @endif">
+                class="@if(str_contains($currentURL, 'order-book-ftl') || str_contains($currentURL, 'create-ftl') || str_contains($currentURL, 'reserve-lr') || str_contains($currentURL, 'consignments') || str_contains($currentURL, 'bulklr-view') || str_contains($currentURL, 'pod-view')) active @endif">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="feather feather-layers">
@@ -295,6 +295,29 @@
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'pod-view'}}"> Pod View </a>
             </li>
+        </ul>
+    </li>
+    <!-- start -->
+    <li class="menu">
+        <a href="#lr-contract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <div
+                class="@if(str_contains($currentURL, 'contract-lrs') || str_contains($currentURL, 'contract-pod-list')) active @endif">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-layers">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <span>LR Contract</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-chevron-right submenuArrow">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        <ul class="collapse submenu list-unstyled" id="lr-contract" data-parent="#accordionExample">
             <?php if($authuser->role_id == 8){ ?>
             <li>
                 <div class="submenuListStyle"></div><a href="{{$prefixurl.'contract-lrs'}}"> LR Contracts </a>
@@ -305,6 +328,7 @@
             <?php } ?>
         </ul>
     </li>
+    <!-- End -->
     <?php if($authuser->role_id != 7 && $authuser->role_id != 8){ ?>
     <li class="menu">
         <a href="#Ptl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
