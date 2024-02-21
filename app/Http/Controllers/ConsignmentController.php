@@ -404,8 +404,6 @@ class ConsignmentController extends Controller
 
     public function storeLRItem(Request $request)
     {
-        // echo '<pre>';
-        // print_r($request->all());die;
         try {
             DB::beginTransaction();
 
@@ -4552,9 +4550,7 @@ class ConsignmentController extends Controller
 
     public function createTookanTasks($taskDetails)
     {
-
         //echo "<pre>";print_r($taskDetails);die;
-
         foreach ($taskDetails as $task) {
 
             $td = '{
