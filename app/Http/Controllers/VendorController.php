@@ -1397,8 +1397,6 @@ class VendorController extends Controller
             $peritem = Config::get('variable.PER_PAGE');
         }
 
-        // $query = PaymentRequest::query();
-
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
                 Session::forget('peritem');
@@ -1497,6 +1495,7 @@ class VendorController extends Controller
     // prs payment report
     public function prsPaymentReport(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1505,8 +1504,6 @@ class VendorController extends Controller
         } else {
             $peritem = Config::get('variable.PER_PAGE');
         }
-
-        // $query = PaymentRequest::query();
 
         if ($request->ajax()) {
             if (isset($request->resetfilter)) {
@@ -1640,6 +1637,7 @@ class VendorController extends Controller
 
     public function drsWiseReport(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
