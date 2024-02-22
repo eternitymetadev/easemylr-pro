@@ -1595,25 +1595,6 @@ class VendorController extends Controller
         return view('vendors.prs-paymentreport', ['payment_lists' => $payment_lists, 'prefix' => $this->prefix, 'peritem' => $peritem]);
     }
 
-    // public function paymentReportView(Request $request)
-    // {
-    //     $this->prefix = request()->route()->getPrefix();
-    //     $authuser = Auth::user();
-    //     $role_id = Role::where('id', '=', $authuser->role_id)->first();
-    //     $cc = explode(',', $authuser->branch_id);
-    //     $query = PaymentHistory::with('PaymentRequest.Branch', 'PaymentRequest.TransactionDetails.ConsignmentNote.RegClient', 'PaymentRequest.VendorDetails', 'PaymentRequest.TransactionDetails.ConsignmentNote.ConsignmentItems', 'PaymentRequest.TransactionDetails.ConsignmentNote.vehicletype');
-
-    //     if ($authuser->role_id == 2) {
-    //         $query->whereHas('PaymentRequest', function ($query) use ($cc) {
-    //             $query->whereIn('branch_id', $cc);
-    //         });
-    //     } else {
-    //         $query = $query;
-    //     }
-    //     $payment_lists = $query->groupBy('transaction_id')->get();
-    //     return view('vendors.payment-report-view', ['prefix' => $this->prefix, 'payment_lists' => $payment_lists]);
-    // }
-
     public function exportPaymentReport(Request $request)
     {
         return Excel::download(new PaymentReportExport($request->startdate, $request->enddate, $request->search), 'PaymentReport.xlsx');
