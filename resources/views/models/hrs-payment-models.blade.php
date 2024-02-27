@@ -44,7 +44,6 @@
 <div class="modal fade" id="show_hrs_model" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
             <!-- Modal Header -->
             <div class="modal-header text-center">
                 <h4 class="modal-title">Confirm</h4>
@@ -56,7 +55,8 @@
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Drs No</th>
+                            <th>Hrs No</th>
+                            <th>Hrs Date</th>
 
                         </tr>
                     </thead>

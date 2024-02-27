@@ -75,10 +75,18 @@ class HubtoHubController extends Controller
 
     public function createHrs(Request $request)
     {
-        $consignmentId = $_POST['consignmentID'];
         $authuser = Auth::user();
         $cc = $authuser->branch_id;
+        
+        if($authuser->role_id != 2 || $authuser->role_id != 4){
+            return response()->json([
+                'success' => false,
+                'check_role' => 'role-exist', 
+                'error_message' => "You are not authorized to create HRS."
+            ]);
+        }
 
+        $consignmentId = $_POST['consignmentID'];
         $location = Location::where('id', $cc)->first();
 
         $hrsid = DB::table('hrs')->select('hrs_no')->latest('hrs_no')->first();
@@ -1417,8 +1425,6 @@ class HubtoHubController extends Controller
                     });
             } elseif ($authuser->role_id == 7) {
                 $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-            } elseif($authuser->role_id == 3){
-                $query = $query->where('rm_id', $authuser->id);
             } else {
                 $query = $query->whereIn('branch_id', $cc);
             }
@@ -1484,11 +1490,10 @@ class HubtoHubController extends Controller
                 });
         } elseif ($authuser->role_id == 7) {
             $query = $query->with('ConsignmentDetail')->whereIn('regional_clients.id', $regclient);
-        } elseif($authuser->role_id == 3){
-            $query = $query->where('rm_id', $authuser->id);
         } else {
             $query = $query->whereIn('branch_id', $cc);
         }
+
         $hrsRequests = $query->orderBy('id', 'DESC')->paginate($peritem);
         $hrsRequests = $hrsRequests->appends($request->query());
         $vendors = Vendor::with('Branch')->get();
@@ -1874,7 +1879,12 @@ class HubtoHubController extends Controller
 
     public function showHrs(Request $request)
     {
-        $gethrs = HrsPaymentRequest::select('hrs_no')->where('transaction_id', $request->trans_id)->get();
+        $gethrs = HrsPaymentRequest::select('hrs_no','created_at')
+            ->where('transaction_id', $request->trans_id)->get()
+            ->map(function ($hrs) {
+                $hrs->formatted_created_at = Helper::ShowDayMonthYear($hrs->created_at);
+                return $hrs;
+            });
 
         $response['gethrs'] = $gethrs;
         $response['success'] = true;

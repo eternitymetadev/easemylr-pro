@@ -8,6 +8,7 @@
                 <th>Vendor Name</th>
                 <th>Purchase Amount</th>
                 <th>Transaction ID</th>
+                <th>Transaction Date</th>
                 <th>Payment Type</th>
                 <th>Advanced</th>
                 <th>Balance</th>
@@ -29,6 +30,7 @@
                 <td>{{$hrsRequest->VendorDetails->name}}</td>
                 <td>{{$hrsRequest->total_amount}}</td>
                 <td>{{$hrsRequest->transaction_id}}</td>
+                <td>{{ Helper::ShowDayMonthYear($hrsRequest->HrsPaymentHistory->payment_date) ?? "" }}</td>
                 <td>{{$hrsRequest->payment_type}}</td>
                 <td>{{$hrsRequest->advanced}}</td>
                 <td>{{$hrsRequest->balance}}</td>

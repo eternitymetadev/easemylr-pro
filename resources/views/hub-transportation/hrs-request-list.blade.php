@@ -304,7 +304,7 @@ $(document).on('click', '.show-hrs', function() {
             // console.log(data.)
             $.each(data.gethrs, function(index, value) {
 
-                $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td></tr>");
+                $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td><td>" + value.formatted_created_at + "</td></tr>");
 
             });
         }

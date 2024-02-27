@@ -581,7 +581,7 @@ Route::group(['prefix'=>'regional-manager', 'middleware'=>['auth','PermissionChe
     Route::any('print-transaction/{id}', [ConsignmentController::class, 'printTransactionsheet']);
     Route::any('print-transactionold/{id}', [ConsignmentController::class, 'printTransactionsheetold']);
     Route::any('update-edd', [ConsignmentController::class, 'updateEDD']);
-    Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
+    // Route::any('create-drs', [ConsignmentController::class, 'CreateEdd']);
     Route::any('update-suffle', [ConsignmentController::class, 'updateSuffle']);
     Route::any('view-draftSheet/{id}', [ConsignmentController::class, 'view_saveDraft']);
     Route::any('update-delivery/{id}', [ConsignmentController::class, 'updateDelivery']);
