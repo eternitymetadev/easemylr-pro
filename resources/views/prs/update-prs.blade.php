@@ -19,6 +19,7 @@
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/prs/update-prs')}}"
                             id="updateprs">
+                            @csrf
                             <?php $authuser = Auth::user(); ?>
                             <input type="hidden" class="form-seteing" name="prs_id" placeholder=""
                                 value="{{$getprs->id}}" />
@@ -80,7 +81,7 @@
                                         ?>
                                             <tr class="rrow">
                                                 <td valign="middle" class="p-2">
-                                                    <select class="form-control my-select2 select_prsregclient disabled"
+                                                    <select class="form-control my-select2 disabled"
                                                         onchange="onChangePrsRegClient(this)"
                                                         name="data[{{$i}}][regclient_id]" readonly disabled>
                                                         <option selected="selected">

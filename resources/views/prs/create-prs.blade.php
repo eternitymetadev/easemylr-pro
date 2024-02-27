@@ -37,6 +37,7 @@ tbody tr:last-child .rowAddButton {
                 <div class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
                         <form class="general_form" method="POST" action="{{url($prefix.'/prs')}}" id="createprs">
+                            @csrf
                             <?php $authuser = Auth::user(); ?>
                             <input type="hidden" class="form-seteing date-picker" id="prsDate" name="prs_date"
                                 placeholder="" value="<?php echo date('d-m-Y'); ?>" />
@@ -93,7 +94,7 @@ tbody tr:last-child .rowAddButton {
                                                 <td valign="middle" class="p-2">
                                                     <select class="form-control my-select2 select_prsregclient"
                                                         onchange="onChangePrsRegClient(this)" id=""
-                                                        name="data[1][regclient_id]">
+                                                        name="data[1][regclient_id]" required>
                                                         <option selected="selected" disabled>
                                                             Select client..
                                                         </option>
@@ -114,7 +115,7 @@ tbody tr:last-child .rowAddButton {
                                                 <td valign="middle" class="p-2">
                                                     <select class="form-control consigner_prs taggingFalse"
                                                         id="select_consigner" multiple="multiple"
-                                                        name="data[1][consigner_id][]">
+                                                        name="data[1][consigner_id][]" required>
                                                         <option disabled>Select</option>
                                                     </select>
                                                 </td>
@@ -213,7 +214,7 @@ function addrow() {
     rows += '<td valign="middle" class="p-2">';
     rows +=
         '<select class="form-control taggingFalse select_prsregclient" id="" onchange="onChangePrsRegClient(this)" name="data[' +
-        i + '][regclient_id]">';
+        i + '][regclient_id]" required>';
     rows += '<option selected="selected" disabled>Select client..</option>';
     <?php
         foreach ($regclients as $key => $client) {
@@ -226,7 +227,7 @@ function addrow() {
     rows += '</select></td>';
     rows += '<td valign="middle" class="p-2">';
     rows += '<select class="form-control consigner_prs taggingFalse" multiple="multiple" name="data[' + i +
-        '][consigner_id][]">';
+        '][consigner_id][]" required>';
     rows += '<option disabled>Select</option></select></td>';
     rows += '<td valign="middle" class="p-2" width="24px">';
     rows +=

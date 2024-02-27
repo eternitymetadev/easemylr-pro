@@ -2009,6 +2009,7 @@ class ConsignmentController extends Controller
 
     public function unverifiedList(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
         $authuser = Auth::user();
         
