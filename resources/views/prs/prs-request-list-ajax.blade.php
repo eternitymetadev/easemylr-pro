@@ -2,15 +2,16 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                <th>Requesting Branch</th>
-                <th>BM Name</th>
-                <th>Total Prs</th>
-                <th>Vendor Name</th>
-                <th>Purchase Amount</th>
                 <th>Transaction ID</th>
+                <th>Created Date</th>
+                <th>Vendor Name</th>
+                <th>Branch</th>
+                <th>State</th>
+                <th>Total Prs</th>
                 <th>Payment Type.</th>
                 <th>Advanced</th>
                 <th>Balance</th>
+                <th>Purchase Amount</th>
                 <th>Create Payment</th>
                 <th>Status</th>
             </tr>
@@ -22,16 +23,17 @@
             
             ?>
             <tr>
-                <td>{{$prsRequest->Branch->name}}</td>
-                <td>{{$prsRequest->User->name}}</td>
+                <td>{{$prsRequest->transaction_id}}</td>
+                <td>{{ Helper::ShowDayMonthYear($prsRequest->created_at) ?? "" }}</td>
+                <td>{{$prsRequest->VendorDetails->name}}</td>
+                <td>{{ @$prsRequest->Branch->name}}</td>
+                <td>{{ @$prsRequest->Branch->nick_name }}</td>
                 <td class="show-prs" data-id="{{$prsRequest->transaction_id}}">
                     {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
-                <td>{{$prsRequest->VendorDetails->name}}</td>
-                <td>{{$prsRequest->total_amount}}</td>
-                <td>{{$prsRequest->transaction_id}}</td>
-                <td>{{$prsRequest->payment_type}}</td>
-                <td>{{$prsRequest->advanced}}</td>
-                <td>{{$prsRequest->balance}}</td>
+                    <td>{{$prsRequest->payment_type}}</td>
+                    <td>{{$prsRequest->advanced}}</td>
+                    <td>{{$prsRequest->balance}}</td>
+                    <td>{{$prsRequest->total_amount}}</td>
                 <!--------- Payment Request Status --------->
                 <?php if($prsRequest->payment_status == 0){?>
                 <td><button class="btn btn-warning" value="{{$prsRequest->transaction_id}}"> Unpaid </button></td>

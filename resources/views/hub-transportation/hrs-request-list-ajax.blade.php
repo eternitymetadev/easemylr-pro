@@ -2,16 +2,16 @@
     <table id="" class="table table-hover" style="width:100%">
         <thead>
             <tr>
-                <th>Requesting Branch</th>
-                <th>BM Name</th>
-                <th>Total Hrs</th>
-                <th>Vendor Name</th>
-                <th>Purchase Amount</th>
                 <th>Transaction ID</th>
-                <th>Transaction Date</th>
+                <th>Created Date</th>
+                <th>Vendor Name</th>
+                <th>Branch</th>
+                <th>State</th>
+                <th>Total Hrs</th>
                 <th>Payment Type</th>
                 <th>Advanced</th>
                 <th>Balance</th>
+                <th>Total Amount</th>
                 <th>Create Payment</th>
                 <th>Status</th>
             </tr>
@@ -23,18 +23,22 @@
             
             ?>
             <tr>
-                <td>{{$hrsRequest->Branch->name}}</td>
-                <td>{{$hrsRequest->User->name}}</td>
-                <td class="show-hrs" data-id="{{$hrsRequest->transaction_id}}">
-                            {{ Helper::countHrsInTransaction($hrsRequest->transaction_id) ?? "" }}</td>
-                <td>{{$hrsRequest->VendorDetails->name}}</td>
-                <td>{{$hrsRequest->total_amount}}</td>
+                {{-- <td>{{ Helper::ShowDayMonthYear($hrsRequest->HrsPaymentHistory->payment_date) ?? "" }}</td> --}}
                 <td>{{$hrsRequest->transaction_id}}</td>
-                <td>{{ Helper::ShowDayMonthYear($hrsRequest->HrsPaymentHistory->payment_date) ?? "" }}</td>
+                <td>{{ Helper::ShowDayMonthYear($hrsRequest->created_at) ?? "" }}</td>
+                <td>{{ @$hrsRequest->VendorDetails->name }}</td>
+                <td>{{ @$hrsRequest->Branch->name }}</td>
+                <td>{{ @$hrsRequest->Branch->nick_name ?? "-" }}</td>
+                <td class="show-hrs" data-id="{{$hrsRequest->transaction_id}}">
+                    {{ Helper::countHrsInTransaction($hrsRequest->transaction_id) ?? "" }}
+                </td>
+                
                 <td>{{$hrsRequest->payment_type}}</td>
                 <td>{{$hrsRequest->advanced}}</td>
                 <td>{{$hrsRequest->balance}}</td>
-                <!--------- Payment Request Status --------->
+                <td>{{$hrsRequest->total_amount}}</td>
+
+                <!---- Payment Request Status ---->
                 <?php if($hrsRequest->payment_status == 0){?>
                 <td><button class="btn btn-warning" value="{{$hrsRequest->transaction_id}}"> Unpaid </button></td>
                 <?php } else if($hrsRequest->payment_status == 1) { ?>

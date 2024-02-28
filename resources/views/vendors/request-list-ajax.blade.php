@@ -4,15 +4,16 @@
         <thead>
             <tr>
                 <th>Transaction Id</th>
-                <th>Date</th>
-                <th>Total Drs</th>
-                <!-- <th style="max-width:200px;">Drs No</th> -->
-                <th>Vendor</th>
-                <th>Total Amount</th>
-                <th>Adavanced</th>
-                <th>Balance</th>
+                <th>Created Date</th>
+                <th>Vendor Name</th>
                 <th>Branch </th>
                 <th>State </th>
+                <th>Total Drs</th>
+                <th>Payment Type</th>
+
+                <th>Adavanced</th>
+                <th>Balance</th>
+                <th>Total Amount</th>
                 <th>Create Payment</th>
                 <th>Status</th>
             </tr>
@@ -20,22 +21,23 @@
         <tbody>
             @if(count($requestlists)>0)
             @foreach($requestlists as $requestlist)
-                <?php 
-                    $date = date('d-m-Y',strtotime($requestlist->created_at));
-                ?>
                 <tr>
                     <td>{{ $requestlist->transaction_id ?? "-" }}</td>
-                    <td>{{ $date }}</td>
+                    <td>{{ Helper::ShowDayMonthYear($requestlist->created_at) ?? "" }}</td>
+                    <td>{{ @$requestlist->VendorDetails->name ?? "-"}}</td>
+                    <td>{{ @$requestlist->Branch->name ?? "-" }}</td>
+                    <td>{{ @$requestlist->Branch->nick_name ?? "-" }}</td>
                     <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
                         {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                     </td>
-                    <td>{{ @$requestlist->VendorDetails->name ?? "-"}}</td>
-                    <td>{{ @$requestlist->total_amount ?? "-"}}</td>
+
+                    <td>{{$requestlist->payment_type}}</td>
+
                     <td>{{ @$requestlist->advanced ?? "-"}}</td>
-                    <td>{{ @$requestlist->balance ?? "-" }}</td>
-                    <td>{{ @$requestlist->Branch->name ?? "-" }}</td>
-                    <td>{{ @$requestlist->Branch->nick_name ?? "-" }}</td>
-                    
+                    <td>{{ @$requestlist->balance ?? "-" }}</td>                    
+                    <td>{{ @$requestlist->total_amount ?? "-"}}</td>
+
+                    {{--  create payment status --}}
                     <?php if($requestlist->payment_status == 1){?>
                     <td><button class="btn btn-warning" value="{{$requestlist->transaction_id}}" disabled>Fully
                             Paid</button></td>
