@@ -29,7 +29,7 @@
                 <td>{{ @$hrsRequest->VendorDetails->name }}</td>
                 <td>{{ @$hrsRequest->Branch->name }}</td>
                 <td>{{ @$hrsRequest->Branch->nick_name ?? "-" }}</td>
-                <td class="show-hrs" data-id="{{$hrsRequest->transaction_id}}">
+                <td class="show-hrs highlight-on-hover" data-id="{{$hrsRequest->transaction_id}}">
                     {{ Helper::countHrsInTransaction($hrsRequest->transaction_id) ?? "" }}
                 </td>
                 

@@ -43,11 +43,11 @@
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="show_drs" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- <button type="button" class="close" data-dismiss="modal"><img src="/assets/images/close-bottle.png" class="img-fluid"></button> -->
+        <div class="modal-content" style="width: min(90vw, 700px)">
+            
             <!-- Modal Header -->
             <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
+                <h4 class="modal-title">DRS Details</h4>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
@@ -56,7 +56,10 @@
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Drs No</th>
+                            <th>DRS No</th>
+                            <th>Sum of Boxes</th>
+                            <th>Sum of Net Weight</th>
+                            <th>Sum of Gross Weight</th>
 
                         </tr>
                     </thead>

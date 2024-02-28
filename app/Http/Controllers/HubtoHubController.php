@@ -1879,12 +1879,13 @@ class HubtoHubController extends Controller
 
     public function showHrs(Request $request)
     {
-        $gethrs = HrsPaymentRequest::select('hrs_no','created_at')
-            ->where('transaction_id', $request->trans_id)->get()
-            ->map(function ($hrs) {
-                $hrs->formatted_created_at = Helper::ShowDayMonthYear($hrs->created_at);
-                return $hrs;
-            });
+        $gethrs = HrsPaymentRequest::with(['HrsDetails','HrsDetails.ConsignmentDetail'])->select('hrs_no')->where('transaction_id', $request->trans_id)->get();
+        // $gethrs = HrsPaymentRequest::with(['HrsDetails','HrsDetails.ConsignmentDetail'])->select('hrs_no','created_at')
+        //     ->where('transaction_id', $request->trans_id)->get()
+        //     ->map(function ($hrs) {
+        //         $hrs->formatted_created_at = Helper::ShowDayMonthYear($hrs->created_at);
+        //         return $hrs;
+        //     });
 
         $response['gethrs'] = $gethrs;
         $response['success'] = true;

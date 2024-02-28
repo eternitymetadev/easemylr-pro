@@ -1703,7 +1703,7 @@ class PickupRunSheetController extends Controller
     }
     public function showPrs(Request $request)
     {
-        $getprs = PrsPaymentRequest::select('prs_no')->where('transaction_id', $request->trans_id)->get();
+        $getprs = PrsPaymentRequest::with(['PickupRunSheet','PickupRunSheet.Consignments'])->select('prs_no')->where('transaction_id', $request->trans_id)->get();
 
         $response['getprs'] = $getprs;
         $response['success'] = true;

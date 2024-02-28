@@ -27,7 +27,7 @@
                     <td>{{ @$requestlist->VendorDetails->name ?? "-"}}</td>
                     <td>{{ @$requestlist->Branch->name ?? "-" }}</td>
                     <td>{{ @$requestlist->Branch->nick_name ?? "-" }}</td>
-                    <td class="show-drs" data-id="{{$requestlist->transaction_id}}">
+                    <td class="show-drs highlight-on-hover" data-id="{{$requestlist->transaction_id}}" >
                         {{ Helper::countDrsInTransaction($requestlist->transaction_id) ?? "" }}
                     </td>
 

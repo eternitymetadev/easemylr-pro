@@ -231,6 +231,7 @@ class VendorController extends Controller
 
     public function paymentList(Request $request)
     {
+        set_time_limit(120);
         $this->prefix = request()->route()->getPrefix();
 
         $sessionperitem = Session::get('peritem');
@@ -1212,7 +1213,7 @@ class VendorController extends Controller
 
     public function showDrs(Request $request)
     {
-        $getdrs = PaymentRequest::select('drs_no')->where('transaction_id', $request->trans_id)->get();
+        $getdrs = PaymentRequest::with(['TransactionDetails', 'TransactionDetails.ConsignmentDetail'])->select('drs_no')->where('transaction_id', $request->trans_id)->get();
         // dd($request->transaction_id);
 
         $response['getdrs'] = $getdrs;

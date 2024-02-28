@@ -67,6 +67,13 @@ input[readonly].styledInput {
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+.highlight-on-hover {
+    cursor: pointer;
+}
+
+.highlight-on-hover:hover {
+    background-color: lightgrey;
+}
 </style>
 
 <div class="layout-px-spacing">
@@ -296,12 +303,31 @@ $(document).on('click', '.show-prs', function() {
                 $('#show_prs_table').dataTable().fnDestroy();
             },
         success: function(data) {
-            // console.log(data.)
-            $.each(data.getprs, function(index, value) {
+            if (data.success) {
+                $.each(data.getprs, function(index, prsPaymentreq) {                    
+                    var totalQuantitySum = 0;
+                    var totalNetweightSum = 0;
+                    var totalGrossweightSum = 0;
+                    
+                    console.log(prsPaymentreq.pickup_run_sheet);
+                    $.each(prsPaymentreq.pickup_run_sheet.consignments, function(index, prsdetail) {
+                        console.log(prsdetail.consignments);
+                        totalQuantitySum += parseInt(prsdetail.total_quantity);
+                        totalNetweightSum += parseInt(prsdetail.total_weight);
+                        totalGrossweightSum += parseInt(prsdetail.total_gross_weight);
+                    });
+                    $('#show_prs_table tbody').append("<tr><td>" + prsPaymentreq.prs_no +
+                        "</td><td>" + totalQuantitySum +
+                        "</td><td>" + totalNetweightSum +
+                        "</td><td>" + totalGrossweightSum +
+                        "</td></tr>");
+                });
+            }
+            // $.each(data.getprs, function(index, value) {
 
-                $('#show_prs_table tbody').append("<tr><td>" + value.prs_no + "</td></tr>");
+            //     $('#show_prs_table tbody').append("<tr><td>" + value.prs_no + "</td></tr>");
 
-            });
+            // });
         }
 
     });

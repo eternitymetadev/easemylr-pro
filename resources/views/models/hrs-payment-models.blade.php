@@ -43,20 +43,22 @@
 <!-- /////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="show_hrs_model" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width: min(90vw, 700px)">
             <!-- Modal Header -->
             <div class="modal-header text-center">
-                <h4 class="modal-title">Confirm</h4>
+                <h4 class="modal-title">HRS Details</h4>
             </div>
             <!-- Modal body -->
             <div class="modal-body">
 
-                <table id="show_drs_table" class="table table-hover"
+                <table id="show_hrs_table" class="table table-hover"
                     style="width:100%; text-align:left; border: 1px solid #c7c7c7;">
                     <thead>
                         <tr>
-                            <th>Hrs No</th>
-                            <th>Hrs Date</th>
+                            <th>HRS No</th>
+                            <th>Sum of Boxes</th>
+                            <th>Sum of Net Weight</th>
+                            <th>Sum of Gross Weight</th>
 
                         </tr>
                     </thead>

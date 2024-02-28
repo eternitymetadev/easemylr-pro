@@ -42,6 +42,14 @@
             /* scroll-margin: 38px; */
             overflow: auto;
         }
+
+        .highlight-on-hover {
+            cursor: pointer;
+        }
+
+        .highlight-on-hover:hover {
+            background-color: lightgrey;
+        }
     </style>
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/table/datatable/datatables.css') }}">
@@ -310,17 +318,50 @@
                         $('#show_drs_table').dataTable().fnDestroy();
                     },
                 success: function(data) {
-                    // console.log(data.)
-                    $.each(data.getdrs, function(index, value) {
-
-                        $('#show_drs_table tbody').append("<tr><td>" + value.drs_no +
-                            "</td></tr>");
-
-                    });
+                    if (data.success) {
+                        $.each(data.getdrs, function(index, drsPaymentreq) {
+                            console.log(drsPaymentreq);
+                            var totalQuantitySum = 0;
+                            var totalNetweightSum = 0;
+                            var totalGrossweightSum = 0;
+                            $.each(drsPaymentreq.transaction_details, function(index, drsdetail) {
+                                
+                                totalQuantitySum += parseInt(drsdetail.consignment_detail.total_quantity);
+                                totalNetweightSum += parseInt(drsdetail.consignment_detail.total_weight);
+                                totalGrossweightSum += parseInt(drsdetail.consignment_detail.total_gross_weight);
+                            });
+                            $('#show_drs_table tbody').append("<tr><td>" + drsPaymentreq.drs_no +
+                                "</td><td>" + totalQuantitySum +
+                                "</td><td>" + totalNetweightSum +
+                                "</td><td>" + totalGrossweightSum +
+                                "</td></tr>");
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
                 }
-
             });
         });
+
+        // if (data.success) {
+        //                 var totalQuantitySum = 0;
+        //                 // console.log(data.getdrs)
+        //                 $.each(data.getdrs, function(index, value) {
+        //                     $.each(value, function(index, drs) {
+        //                         totalQuantitySum += parseInt(drs.TransactionDetails.ConsignmentDetail.total_quantity);
+
+        //                     });
+        //                     $('#show_drs_table tbody').append("<tr><td>" + value.drs_no +
+        //                         "</td><td>" + totalQuantitySum +
+        //                         "</td></tr>");
+
+        //                 });
+        //             }
+        //         }
+
+        //     });
+
         /////////////////////////////////////////////////////////////////
         // $('#unverified-table').DataTable({
         //     bFilter: false,

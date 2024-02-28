@@ -28,7 +28,7 @@
                 <td>{{$prsRequest->VendorDetails->name}}</td>
                 <td>{{ @$prsRequest->Branch->name}}</td>
                 <td>{{ @$prsRequest->Branch->nick_name }}</td>
-                <td class="show-prs" data-id="{{$prsRequest->transaction_id}}">
+                <td class="show-prs highlight-on-hover" data-id="{{$prsRequest->transaction_id}}">
                     {{ Helper::countPrsInTransaction($prsRequest->transaction_id) ?? "" }}</td>
                     <td>{{$prsRequest->payment_type}}</td>
                     <td>{{$prsRequest->advanced}}</td>

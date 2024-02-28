@@ -67,6 +67,13 @@ input[readonly].styledInput {
     /* scroll-margin: 38px; */
     overflow: auto;
 }
+.highlight-on-hover {
+    cursor: pointer;
+}
+
+.highlight-on-hover:hover {
+    background-color: lightgrey;
+}
 </style>
 
 <div class="layout-px-spacing">
@@ -297,16 +304,30 @@ $(document).on('click', '.show-hrs', function() {
         },
         beforeSend: //reinitialize Datatables
             function() {
-                $('#show_drs_table').dataTable().fnClearTable();
-                $('#show_drs_table').dataTable().fnDestroy();
+                $('#show_hrs_table').dataTable().fnClearTable();
+                $('#show_hrs_table').dataTable().fnDestroy();
             },
         success: function(data) {
-            // console.log(data.)
-            $.each(data.gethrs, function(index, value) {
-
-                $('#show_drs_table tbody').append("<tr><td>" + value.hrs_no + "</td><td>" + value.formatted_created_at + "</td></tr>");
-
-            });
+            // console.log(data)
+            if (data.success) {
+                $.each(data.gethrs, function(index, hrsPaymentreq) {
+                    console.log(hrsPaymentreq);
+                    var totalQuantitySum = 0;
+                    var totalNetweightSum = 0;
+                    var totalGrossweightSum = 0;
+                    $.each(hrsPaymentreq.hrs_details, function(index, hrsdetail) {
+                        
+                        totalQuantitySum += parseInt(hrsdetail.consignment_detail.total_quantity);
+                        totalNetweightSum += parseInt(hrsdetail.consignment_detail.total_weight);
+                        totalGrossweightSum += parseInt(hrsdetail.consignment_detail.total_gross_weight);
+                    });
+                    $('#show_hrs_table tbody').append("<tr><td>" + hrsPaymentreq.hrs_no +
+                        "</td><td>" + totalQuantitySum +
+                        "</td><td>" + totalNetweightSum +
+                        "</td><td>" + totalGrossweightSum +
+                        "</td></tr>");
+                });
+            }
         }
 
     });
